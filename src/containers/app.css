@@ -1,0 +1,16 @@
+.o-hidden {
+	overflow: hidden !important;
+  }
+.bg-login-image {
+	background: url("https://static-resources.vinpearl.com/wp-content/uploads/2019/08/14213910/vp_vinpearl-luxury-landmark-81-banner.jpg");
+	background-position: center;
+	background-size: cover;
+  }
+.btn-login{
+	background-image: linear-gradient(to right, #2E3192 , #29ABE2);
+	border: none;
+}
+.logo-login{
+	max-width: 80%;
+	margin: 20px 0;
+}
