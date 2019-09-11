@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
+import React from "react";
+import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import Amplify, { Auth } from 'aws-amplify';
-import AWS from 'aws-sdk';
+import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/logo-vp-vt.png';
 import '../app.css';

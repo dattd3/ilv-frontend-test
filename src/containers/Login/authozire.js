@@ -3,8 +3,12 @@ import PropTypes from 'prop-types';
 import { Auth, Hub } from 'aws-amplify';
 import _ from 'lodash';
 import axios from "axios";
+import Api, { GuardContext } from '../../modules';
 
-class authorize extends Component {
+class Authorize extends Component {
+
+    static contextType = GuardContext;
+
     constructor(props) {
         super(props);
 
@@ -16,9 +20,7 @@ class authorize extends Component {
             errorMessage: ''
         };
         this.interval = null;
-
         this.validateUserSession.bind(this);
-
         Hub.listen('auth', this, 'MyListener');
     }
 
@@ -32,7 +34,7 @@ class authorize extends Component {
             if (_.isUndefined(this.props.authenticated) || this.props.authenticated === false) {
                 this.validateUserSession();
             }
-        }, 2000);
+        }, 2000); 
     }
 
     componentWillUnmount() {
@@ -80,26 +82,27 @@ class authorize extends Component {
                         // if tokens have expired, lets call "logout"
                         // otherwise, dispatch AUTH_USER success action and by-pass login screen
                         if (session.isValid()) {
-                            // fire user is authenticated
-                            console.log('user session is valid!');
-                            const config = {
-                                method: 'get',
-                                url: 'http://localhost:5000/api/values',
-                                headers: { 'Authorization': 'Bearer ' + session.idToken.jwtToken }
-                            }
-                            axios(config).then(response => {
-                                this.setState({
-                                    signedIn: true,
-                                    errorMessage: '',
-                                    accessToken: session.accessToken.jwtToken,
-                                    idToken: session.idToken.jwtToken,
-                                    refreshToken: session.refreshToken.token,
-                                    userEmail: response.data
-                                });
-                            });
+                            this.context.setIsAuth(true);
                             
-
-                            //history.push('/main', { signedIn: true, authenticated: true });
+                            // fire user is authenticated
+                            // console.log('user session is valid!');
+                            // const config = {
+                            //     method: 'get',
+                            //     url: 'http://localhost:5000/api/user',
+                            //     headers: { 'Authorization': 'Bearer ' + session.idToken.jwtToken }
+                            // }
+                            // axios(config).then(response => {
+                            //     this.setState({
+                            //         signedIn: true,
+                            //         errorMessage: '',
+                            //         accessToken: session.accessToken.jwtToken,
+                            //         idToken: session.idToken.jwtToken,
+                            //         refreshToken: session.refreshToken.token,
+                            //         userEmail: response.data
+                            //     });
+                            // });
+                            
+                            history.push('/main', { signedIn: true, authenticated: true });
                         } else {
                             // fire user is unauthenticated
                             const errorMessage = 'user session invalid. auth required';
@@ -113,7 +116,7 @@ class authorize extends Component {
                             });
 
                             console.log(errorMessage);
-                            history.push('/signin', { signInFailure: true, errorMessage, authenticated: false });
+                            history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
                         }
                     })
                     .catch(err => {
@@ -128,7 +131,7 @@ class authorize extends Component {
                         });
 
                         console.error('Redirect.validateUserSession():Auth.userSession() err:', err);
-                        history.push('/signin', { signInFailure: true, errorMessage, authenticated: false });
+                        history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
                     });
             })
             .catch(err => {
@@ -143,7 +146,7 @@ class authorize extends Component {
                 });
 
                 console.error('Redirect.validateUserSession():Auth.currentAuthenticatedUser() err:', err);
-                history.push('/signin', { signInFailure: true, errorMessage, authenticated: false });
+                history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
             });
     }
 
@@ -157,7 +160,6 @@ class authorize extends Component {
 
         console.log('Redirect.render() state: ', this.state);
         console.log('Redirect.render() props: ', this.props);
-
 
         return (
             <>
@@ -177,11 +179,5 @@ class authorize extends Component {
     }
     /* eslint-enable react/jsx-handler-names */
 }
-
-// Runtime type checking for React props
-authorize.propTypes = {
-    authenticated: PropTypes.bool,
-    history: PropTypes.object
-};
-
-export default authorize;
+ 
+export default Authorize;

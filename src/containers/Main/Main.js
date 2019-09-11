@@ -10,25 +10,25 @@ import {
 import { observer } from "mobx-react-lite";
 
 const usePreload = () => {
-  const api = useApi();
-  const guard = useGuardStore();
-  const [data] = useFetcher({
-    api: api.getPermissions,
-    autoRun: true
-  });
+  // const api = useApi();
+  // const guard = useGuardStore();
+  // const [data] = useFetcher({
+  //   api: api.getPermissions,
+  //   autoRun: true
+  // });
 
-  useEffect(() => {
-    if (data) {
-      Object.keys(data).forEach(activity =>
-        guard.setActivity(activity, data[activity])
-      );
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     Object.keys(data).forEach(activity =>
+  //       guard.setActivity(activity, data[activity])
+  //     );
+  //   }
+  // }, [data]);
 };
 
 function MainLayout(props) {
   usePreload();
-
+  
   return (
     <>
       <NestedRoute routes={props.routes} />

@@ -3,7 +3,7 @@ import { demoCallApi, getPermissions, signinApi } from "./mockCallApi";
 
 export default class Api {
   inject = {
-    request: (listener: Listener): number => {
+    request: (listener) => {
       return this.instance.interceptors.request.use(
         function(config) {
           listener(null, config);
@@ -15,7 +15,7 @@ export default class Api {
         }
       );
     },
-    response: (listener: Listener): number => {
+    response: (listener) => {
       return this.instance.interceptors.response.use(
         function(response) {
           listener(null, response);
@@ -30,10 +30,10 @@ export default class Api {
   };
 
   eject = {
-    request: (interceptorId: number) => {
+    request: (interceptorId) => {
       this.instance.interceptors.request.eject(interceptorId);
     },
-    response: (interceptorId: number) => {
+    response: (interceptorId) => {
       this.instance.interceptors.response.eject(interceptorId);
     }
   };

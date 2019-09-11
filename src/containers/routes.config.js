@@ -4,19 +4,27 @@ import map from "./map.config";
 export const RouteSettings = {
   authorization: {
     defaultRoute: map.Root,
-    routes: [map.Main, map.Root]
+    routes: [map.Main, map.Root, map.Dashboard]
   },
   unauthorization: {
-    defaultRoute: map.Auth,
-    routes: [ map.About, map.Auth]
+    defaultRoute: map.About,
+    routes: [map.About]
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login]
+    routes: [map.Login, map.Auth]
   }
-};
+}; 
 
 export default [
+  {
+    key: "home",
+    routeProps: {
+      path: map.Root,
+      exact: true
+    },
+    component: lazy(() => import("./Home"))
+  },
   {
     key: "main",
     routeProps: {
@@ -26,20 +34,12 @@ export default [
     contentProps: {
       routes: [
         {
-          key: "home",
-          routeProps: {
-            path: map.Root,
-            exact: true
-          },
-          component: lazy(() => import("./Home"))
-        },
-        {
           key: "dashboard",
           routeProps: {
             exact: true,
-            path: map.Main
+            path: map.Dashboard
           },
-          component: lazy(() => import("./Dashboard"))
+          component: lazy(() => import("./Dashboard/index"))
         }
       ]
     }
@@ -51,7 +51,7 @@ export default [
       path: map.About
     },
     component: lazy(() => import("./About"))
-  },
+  }, 
   {
     key: "login",
     routeProps: {

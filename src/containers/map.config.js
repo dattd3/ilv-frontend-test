@@ -3,5 +3,6 @@ export default {
   Main: "/main/",
   About: "/about/:id",
   Login: "/login",
-  Auth: "/auth"
+  Auth: "/auth",
+  Dashboard: "/dashboard"
 };
