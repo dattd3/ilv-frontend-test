@@ -1,7 +1,5 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import SideBar from '../../components/Common/sidebar';
-import Header from '../../components/Common/header';
 import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
 import ContextProviders from "./providers";
@@ -27,7 +25,7 @@ function Root() {
         responseType: config.AWS_COGNITO_IDP_GRANT_FLOW
       }
     }
-  });
+  }); 
 
   return (
     <ContextProviders>
@@ -42,13 +40,7 @@ function Root() {
                   <GuardianRouter {...props} settings={RouteSettings}>
                     {childProps => (
                       <Suspense fallback={"loading..."}>
-                        <SideBar />
-                        <div id="content-wrapper" className="d-flex flex-column">
-                          <Header />
-                          <div className="container-fluid">
-                            <Content {...contentProps} {...childProps} />
-                          </div>
-                        </div>
+                        <Content {...contentProps} {...childProps} />
                       </Suspense>
                     )}
                   </GuardianRouter>

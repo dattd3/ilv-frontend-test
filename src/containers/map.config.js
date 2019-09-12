@@ -1,8 +1,7 @@
 export default {
   Root: "/",
-  Main: "/main/",
+  Dashboard: "/dashboard",
   About: "/about/:id",
   Login: "/login",
   Auth: "/auth",
-  Dashboard: "/dashboard"
 };

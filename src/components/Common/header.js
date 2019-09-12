@@ -1,8 +1,7 @@
 import React from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faBell, faFileAlt, faDonate, faExclamationTriangle, faEnvelope, faUser } from '@fortawesome/free-solid-svg-icons'
 
 function Header(props) {
+    const { email } = props;
     return (
         <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
             <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3">
@@ -13,7 +12,7 @@ function Header(props) {
                     <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
                     <div className="input-group-append">
                         <button className="btn btn-primary" type="button">
-                            <FontAwesomeIcon icon={faSearch} />
+                        <i className="fas fa-search fa-sm"></i>
                         </button>
                     </div>
                 </div>
@@ -21,7 +20,7 @@ function Header(props) {
             <ul className="navbar-nav ml-auto">
                 <li className="nav-item dropdown no-arrow d-sm-none">
                     <a className="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <FontAwesomeIcon icon={faSearch} />
+                    <i className="fas fa-search fa-sm"></i>
                     </a>
                     <div className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                         <form className="form-inline mr-auto w-100 navbar-search">
@@ -29,7 +28,7 @@ function Header(props) {
                                 <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
                                 <div className="input-group-append">
                                     <button className="btn btn-primary" type="button">
-                                    <FontAwesomeIcon icon={faSearch} />
+                                    <i className="fas fa-search fa-sm"></i>
                                     </button>
                                 </div>
                             </div>
@@ -38,7 +37,7 @@ function Header(props) {
                 </li>
                 <li className="nav-item dropdown no-arrow mx-1">
                     <a className="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <FontAwesomeIcon icon={faBell} />
+                    <i className="fas fa-bell fa-fw"></i>
                         <span className="badge badge-danger badge-counter">3+</span>
                     </a>
                     <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -48,7 +47,7 @@ function Header(props) {
                         <a className="dropdown-item d-flex align-items-center" href="#">
                             <div className="mr-3">
                                 <div className="icon-circle bg-primary">
-                                <FontAwesomeIcon icon={faFileAlt} />
+                                <i className="fas fa-file-alt text-white"></i>
                                 </div>
                             </div>
                             <div>
@@ -59,7 +58,7 @@ function Header(props) {
                         <a className="dropdown-item d-flex align-items-center" href="#">
                             <div className="mr-3">
                                 <div className="icon-circle bg-success">
-                            <FontAwesomeIcon icon={faDonate} /> 
+                                <i className="fas fa-donate text-white"></i>
                                 </div>
                             </div>
                             <div>
@@ -70,7 +69,7 @@ function Header(props) {
                         <a className="dropdown-item d-flex align-items-center" href="#">
                             <div className="mr-3">
                                 <div className="icon-circle bg-warning">
-                            <FontAwesomeIcon icon={faExclamationTriangle} /> 
+                                <i className="fas fa-exclamation-triangle text-white"></i>
                                 </div>
                             </div>
                             <div>
@@ -83,7 +82,7 @@ function Header(props) {
                 </li>
                 <li className="nav-item dropdown no-arrow mx-1">
                     <a className="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <FontAwesomeIcon icon={faEnvelope} /> 
+                    <i className="fas fa-envelope fa-fw"></i>
                         <span className="badge badge-danger badge-counter">7</span>
                     </a>
                     <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
@@ -136,13 +135,12 @@ function Header(props) {
                 <div className="topbar-divider d-none d-sm-block"></div>
                 <li className="nav-item dropdown no-arrow">
                     <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span className="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
+                        <span className="mr-2 d-none d-lg-inline text-gray-600 small">{email}</span>
                         <img className="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" />
                     </a>
                     <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                         <a className="dropdown-item" href="#">
                             <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                            <FontAwesomeIcon icon={faUser} /> 
                             Profile
                 </a>
                         <a className="dropdown-item" href="#">

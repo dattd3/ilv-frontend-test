@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/logo-vp-vt.png';
-import '../app.css';
 
 function Login() {
   const { t } = useTranslation();
@@ -19,8 +18,6 @@ function Login() {
 
     const clientId = config.AWS_COGNITO_CLIENT_ID;
     const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
-
-    console.log('Signin.signIn() sign url: ', url);
     window.location.assign(url);
   }
 

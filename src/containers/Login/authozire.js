@@ -4,6 +4,7 @@ import { Auth, Hub } from 'aws-amplify';
 import _ from 'lodash';
 import axios from "axios";
 import Api, { GuardContext } from '../../modules';
+import map from '../map.config';
 
 class Authorize extends Component {
 
@@ -44,23 +45,19 @@ class Authorize extends Component {
     }
 
     onHubCapsule(capsule) {
-        console.log('onHubCapsule(): ', capsule);
         const { channel, payload } = capsule;
-
         if (channel === 'auth') {
             switch (payload.event) {
                 case 'signIn':
-                    console.log('Redirect.onHubCapsule() user signed in');
                     this.validateUserSession();
                     break;
                 case 'signUp':
-                    console.log('Redirect.onHubCapsule() user signed up');
                     break;
                 case 'signOut':
-                    console.log('Redirect.onHubCapsule() user signed out');
+                    console.log('user signed out');
                     break;
                 case 'signIn_failure':
-                    console.log('Redirect.onHubCapsule() user sign in failed');
+                    console.log('user sign in failed');
                     break;
             }
         }
@@ -81,71 +78,21 @@ class Authorize extends Component {
                         // finally invoke isValid() method on session to check if auth tokens are valid
                         // if tokens have expired, lets call "logout"
                         // otherwise, dispatch AUTH_USER success action and by-pass login screen
-                        if (session.isValid()) {
-                            this.context.setIsAuth(true);
-                            
-                            // fire user is authenticated
-                            // console.log('user session is valid!');
-                            // const config = {
-                            //     method: 'get',
-                            //     url: 'http://localhost:5000/api/user',
-                            //     headers: { 'Authorization': 'Bearer ' + session.idToken.jwtToken }
-                            // }
-                            // axios(config).then(response => {
-                            //     this.setState({
-                            //         signedIn: true,
-                            //         errorMessage: '',
-                            //         accessToken: session.accessToken.jwtToken,
-                            //         idToken: session.idToken.jwtToken,
-                            //         refreshToken: session.refreshToken.token,
-                            //         userEmail: response.data
-                            //     });
-                            // });
-                            
-                            history.push('/main', { signedIn: true, authenticated: true });
+                        if (session.isValid()) { 
+                            this.context.setIsAuth(session); 
+                            history.push(map.Dashboard, { signedIn: true, authenticated: true });
                         } else {
-                            // fire user is unauthenticated
                             const errorMessage = 'user session invalid. auth required';
-
-                            this.setState({
-                                signedIn: false,
-                                errorMessage,
-                                accessToken: '',
-                                idToken: '',
-                                refreshToken: ''
-                            });
-
-                            console.log(errorMessage);
                             history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
                         }
                     })
                     .catch(err => {
                         const errorMessage = JSON.stringify(err);
-
-                        this.setState({
-                            signedIn: false,
-                            errorMessage,
-                            accessToken: '',
-                            idToken: '',
-                            refreshToken: ''
-                        });
-
-                        console.error('Redirect.validateUserSession():Auth.userSession() err:', err);
                         history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
                     });
             })
             .catch(err => {
                 const errorMessage = JSON.stringify(err);
-
-                this.setState({
-                    signedIn: false,
-                    errorMessage,
-                    accessToken: '',
-                    idToken: '',
-                    refreshToken: ''
-                });
-
-                console.error('Redirect.validateUserSession():Auth.currentAuthenticatedUser() err:', err);
                 history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
             });
     }
@@ -156,11 +103,7 @@ class Authorize extends Component {
             signedIn,
             errorMessage,
             userEmail
-        } = this.state;
-
-        console.log('Redirect.render() state: ', this.state);
-        console.log('Redirect.render() props: ', this.props);
-
+        } = this.state; 
         return (
             <>
                 {signedIn && !errorMessage && (

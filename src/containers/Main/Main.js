@@ -8,30 +8,31 @@ import {
   useGuardStore
 } from "../../modules";
 import { observer } from "mobx-react-lite";
+import Header from '../../components/Common/Header';
+import SideBar from '../../components/Common/Sidebar';
 
 const usePreload = () => {
-  // const api = useApi();
-  // const guard = useGuardStore();
-  // const [data] = useFetcher({
-  //   api: api.getPermissions,
-  //   autoRun: true
-  // });
-
-  // useEffect(() => {
-  //   if (data) {
-  //     Object.keys(data).forEach(activity =>
-  //       guard.setActivity(activity, data[activity])
-  //     );
-  //   }
-  // }, [data]);
+  const api = useApi();
+  const [user = '', error] = useFetcher({
+    api: api.fetchUser,
+    autoRun: true
+  });
+ 
+  return user;
 };
 
 function MainLayout(props) {
-  usePreload();
-  
+  const user = usePreload();
+
   return (
     <>
-      <NestedRoute routes={props.routes} />
+      <SideBar />
+      <div id="content-wrapper" className="d-flex flex-column">
+        <Header />
+        <div className="container-fluid">
+          <NestedRoute routes={props.routes} />
+        </div>
+      </div>
     </>
   );
 }

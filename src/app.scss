@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.o-hidden {
+	overflow: hidden !important;
+  }
+.bg-login-image {
+	background: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+	background-position: center;
+	background-size: cover;
+  }
+.btn-login{
+	background-image: linear-gradient(to right, #2E3192 , #29ABE2);
+	border: none;
+}
+.logo-login{
+	max-width: 80%;
+	margin: 20px 0;
+}

@@ -8,16 +8,21 @@ export const useGuardStore = () => {
 };
 
 export const useCreateLocalGuardStore = () => {
-  const store = useLocalStore(createStore);
+  const store = useLocalStore(() => createStore(Storage.load()));
   return store;
 };
 
-function createStore() {
+function createStore(session) {
   return {
-    isAuthenticated: false,
     activities: new Map(),
-    setIsAuth(isAuthenticated) {
-      this.isAuthenticated = isAuthenticated;
+    session: session,
+    get isAuthenticated() {
+      return !!this.session
+    },
+    setIsAuth(session, isRemember = true) {
+      if (!session) return;
+      this.session = deserialize(session);
+      if (isRemember) Storage.save(this.session);
     },
     setActivity(activity, hasAccess) {
       this.activities.set(activity, hasAccess);
@@ -27,3 +32,29 @@ function createStore() {
     }
   };
 }
+
+const Storage = {
+  save(session) {
+    localStorage.setItem('accessToken', session.idToken.jwtToken);
+    localStorage.setItem('tokenType', session.tokenType);
+    localStorage.setItem('idToken', session.idToken);
+    localStorage.setItem('refreshToken', session.refreshToken);
+  },
+  load() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return;
+    return {
+      accessToken: localStorage.getItem('accessToken'),
+      tokenType: localStorage.getItem('tokenType'),
+      idToken: localStorage.getItem('idToken'),
+      refreshToken: localStorage.getItem('refreshToken')
+    }
+  }
+}
+
+const deserialize = (session) => ({
+  accessToken: session.accessToken.jwtToken,
+  tokenType: "Bearer",
+  idToken: session.idToken.jwtToken,
+  refreshToken: session.refreshToken.token,
+})

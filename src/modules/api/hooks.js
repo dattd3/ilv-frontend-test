@@ -27,13 +27,13 @@ export const useFetcher = settings => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetch]);
+  }, [api]);
 
   useEffect(() => {
     if (autoRun) request(...params);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetch, ...params]);
+  }, [api, ...params]);
 
   return [data, error, request];
 };

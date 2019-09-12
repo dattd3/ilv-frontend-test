@@ -10,9 +10,9 @@ export default observer(function Guard({ children, settings, ...routeProps }) {
   const guardStore = useGuardStore();
   const { unauthorization, authorization, authentication } = settings;
   
-  if (path === Root && routeProps.location.pathname !== Root) {
-    return children(routeProps);
-  }
+  // if (path === Root && routeProps.location.pathname !== Root) {
+  //   return children(routeProps);
+  // }
 
   if (unauthorization.routes.includes(path)) {
     return children(routeProps);
