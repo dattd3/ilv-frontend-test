@@ -1,23 +1,20 @@
-import React, { Suspense, useEffect } from "react";
-import clsx from "clsx";
+import React from "react";
 import NestedRoute from "./NestedRoute";
 import {
-  GuardianComponent,
   useApi,
-  useFetcher,
-  useGuardStore
+  useFetcher
 } from "../../modules";
 import { observer } from "mobx-react-lite";
 import Header from '../../components/Common/Header';
 import SideBar from '../../components/Common/Sidebar';
+import Footer from '../../components/Common/Footer';
 
 const usePreload = () => {
   const api = useApi();
-  const [user = '', error] = useFetcher({
+  const [user = {  }, error] = useFetcher({
     api: api.fetchUser,
     autoRun: true
   });
- 
   return user;
 };
 
@@ -28,10 +25,11 @@ function MainLayout(props) {
     <>
       <SideBar />
       <div id="content-wrapper" className="d-flex flex-column">
-        <Header />
+        <Header user={user}/>
         <div className="container-fluid">
           <NestedRoute routes={props.routes} />
         </div>
+        <Footer />
       </div>
     </>
   );

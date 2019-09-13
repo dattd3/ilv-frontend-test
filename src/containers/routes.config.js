@@ -7,8 +7,8 @@ export const RouteSettings = {
     routes: [map.Root, map.Dashboard]
   },
   unauthorization: {
-    defaultRoute: map.About,
-    routes: [map.About]
+    defaultRoute: [],
+    routes: []
   },
   authentication: {
     defaultRoute: map.Login,
@@ -16,15 +16,7 @@ export const RouteSettings = {
   }
 }; 
 
-export default [
-  {
-    key: "about",
-    routeProps: {
-      exact: true,
-      path: map.About
-    },
-    component: lazy(() => import("./About"))
-  }, 
+export default [ 
   {
     key: "login",
     routeProps: {
@@ -44,7 +36,7 @@ export default [
   {
     key: "main",
     routeProps: {
-      path: map.Root,
+      path: map.Root
     },
     component: lazy(() => import("./Main/Main")),
     contentProps: {
@@ -64,6 +56,14 @@ export default [
             path: map.Dashboard
           },
           component: lazy(() => import("./Dashboard"))
+        },
+        {
+          key: "training-certification",
+          routeProps: {
+            exact: true,
+            path: map.Certification
+          },
+          component: lazy(() => import("./Training/certification"))
         }
       ]
     }

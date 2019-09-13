@@ -24,18 +24,24 @@ function createStore(session) {
       this.session = deserialize(session);
       if (isRemember) Storage.save(this.session);
     },
+    getCurentUser(){
+      return Storage.load();
+    },
     setActivity(activity, hasAccess) {
       this.activities.set(activity, hasAccess);
     },
     canAccess(activity) {
       return this.activities.has(activity) && !!this.activities.get(activity);
+    },
+    setLogOut() {
+      Storage.reset();
     }
   };
 }
 
 const Storage = {
   save(session) {
-    localStorage.setItem('accessToken', session.idToken.jwtToken);
+    localStorage.setItem('accessToken', session.accessToken);
     localStorage.setItem('tokenType', session.tokenType);
     localStorage.setItem('idToken', session.idToken);
     localStorage.setItem('refreshToken', session.refreshToken);
@@ -49,11 +55,17 @@ const Storage = {
       idToken: localStorage.getItem('idToken'),
       refreshToken: localStorage.getItem('refreshToken')
     }
+  },
+  reset() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('tokenType');
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('refreshToken');
   }
 }
 
 const deserialize = (session) => ({
-  accessToken: session.accessToken.jwtToken,
+  accessToken: session.idToken.jwtToken,
   tokenType: "Bearer",
   idToken: session.idToken.jwtToken,
   refreshToken: session.refreshToken.token,

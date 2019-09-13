@@ -3,17 +3,17 @@ import {
   ApiContext,
   useApiMemo,
   LocalizeContext,
-  ThemeContext,
   GuardContext,
-  useCreateLocalThemeStore,
   useCreateLocalizeStore,
   useCreateLocalGuardStore,
   useGuardStore,
   useApi
 } from "../../modules";
 import { I18nextProvider } from "react-i18next";
-import { observer, useDisposable } from "mobx-react-lite";
-import { reaction } from "mobx";
+import { autorun } from "mobx";
+import { useDisposable } from "mobx-react-lite";
+import { withRouter } from 'react-router-dom';
+import map from '../map.config';
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -41,17 +41,26 @@ const GuardProvider = function ({ children }) {
 const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
-
-  useDisposable(() =>
-    reaction(
-      () => guard.session,
-      session => {
-        api.setAuthorization(session);
+  //withRouter(function ({ children, history }) {
+    useDisposable(() => autorun(() => {
+      if (guard.session) {
+        api.setAuthorization(guard.session);
+        api.inject.response((err) => {
+          if (err.response.status == 401) {
+            //history.push(map.Login);
+          }
+        });
+        return;
       }
-    )
-  )
-
-  return children;
+      api.removeAuthorization()
+      api.eject.response((err) => {
+        if (err.response.status == 401) {
+          //window.location.assign(map.Login);
+        }
+      })
+    }));
+    return children;
+ // });
 }
 
 export default function ({ children }) {

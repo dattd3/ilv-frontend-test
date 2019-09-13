@@ -6,7 +6,7 @@ const awsConfig = {
     AWS_COGNITO_CLIENT_DOMAIN_NAME: 'vinpearl-portal-sso.auth.ap-southeast-1.amazoncognito.com',
     AWS_COGNITO_IDP_NAME: 'vinpearl-portal-ad-sso',
     AWS_COGNITO_IDP_SIGNIN_URL: 'http://localhost:3000/auth', // must match cognito setting
-    AWS_COGNITO_IDP_SIGNOUT_URL: 'http://localhost:3000/sign-out', // must match cognito setting
+    AWS_COGNITO_IDP_SIGNOUT_URL: 'http://localhost:3000/login', // must match cognito setting
     AWS_COGNITO_IDP_OAUTH_CLAIMS: ['email', 'profile', 'openid', 'aws.cognito.signin.user.admin'],
     AWS_COGNITO_IDP_GRANT_FLOW: 'token' // 'code' or 'token'
   };

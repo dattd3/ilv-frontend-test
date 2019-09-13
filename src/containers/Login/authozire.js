@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Spinner } from 'react-bootstrap';
 import { Auth, Hub } from 'aws-amplify';
 import _ from 'lodash';
-import axios from "axios";
-import Api, { GuardContext } from '../../modules';
+import { GuardContext } from '../../modules';
 import map from '../map.config';
 
 class Authorize extends Component {
@@ -12,14 +11,6 @@ class Authorize extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            accessToken: '',
-            idToken: '',
-            refreshToken: '',
-            signedIn: false,
-            errorMessage: ''
-        };
         this.interval = null;
         this.validateUserSession.bind(this);
         Hub.listen('auth', this, 'MyListener');
@@ -35,7 +26,7 @@ class Authorize extends Component {
             if (_.isUndefined(this.props.authenticated) || this.props.authenticated === false) {
                 this.validateUserSession();
             }
-        }, 2000); 
+        }, 2000);
     }
 
     componentWillUnmount() {
@@ -70,57 +61,41 @@ class Authorize extends Component {
 
         Auth.currentAuthenticatedUser()
             .then(currentAuthUser => {
-                console.log('Redirect.validateUserSession():Auth.currentAuthenticatedUser() currentAuthUser:', currentAuthUser);
                 // grab the user session
                 Auth.userSession(currentAuthUser)
                     .then(session => {
-                        console.log('Redirect.validateUserSession():Auth.userSession() session:', session);
                         // finally invoke isValid() method on session to check if auth tokens are valid
                         // if tokens have expired, lets call "logout"
                         // otherwise, dispatch AUTH_USER success action and by-pass login screen
                         if (session.isValid()) { 
-                            this.context.setIsAuth(session); 
+                            this.context.setIsAuth(session);
                             history.push(map.Dashboard, { signedIn: true, authenticated: true });
                         } else {
                             const errorMessage = 'user session invalid. auth required';
-                            history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
+                            history.push(map.Login, { signInFailure: true, errorMessage, authenticated: false });
                         }
                     })
                     .catch(err => {
                         const errorMessage = JSON.stringify(err);
-                        history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
+                        history.push(map.Login, { signInFailure: true, errorMessage, authenticated: false });
                     });
             })
             .catch(err => {
                 const errorMessage = JSON.stringify(err);
-                history.push('/login', { signInFailure: true, errorMessage, authenticated: false });
+                history.push(map.Login, { signInFailure: true, errorMessage, authenticated: false });
             });
     }
 
     /* eslint-disable react/jsx-handler-names */
     render() {
-        const {
-            signedIn,
-            errorMessage,
-            userEmail
-        } = this.state; 
+
         return (
             <>
-                {signedIn && !errorMessage && (
-                    <span>Login successful! Hello {userEmail}!</span>
-                )}
-
-                {!signedIn && !errorMessage && (
-                    <span>Please wait...</span>
-                )}
-
-                {errorMessage && (
-                    <span>Login error: {errorMessage}</span>
-                )}
+                <Spinner animation="border" variant="primary" />
             </>
         );
     }
     /* eslint-enable react/jsx-handler-names */
 }
- 
+
 export default Authorize;

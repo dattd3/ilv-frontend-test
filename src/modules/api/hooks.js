@@ -21,7 +21,7 @@ export const useFetcher = settings => {
       setError();
       try {
         const response = await api.apply(undefined, args);
-        setData(() => response);
+        setData(() => response.data);
       } catch (e) {
         setError(() => e);
       }
