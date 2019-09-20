@@ -1,14 +1,76 @@
- 
-.bg-login-image {
-	background: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
-	background-position: center;
-	background-size: cover;
-  }
-.btn-login{
-	background-image: linear-gradient(to right, #2E3192 , #29ABE2);
-	border: none;
+.my-10 {
+  margin: 10rem 0 !important;
 }
-.logo-login{
-	max-width: 80%;
-	margin: 20px 0;
+
+.bg-login-image {
+  background: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+  background-position: center;
+  background-size: cover;
+}
+.btn-login {
+  background-image: linear-gradient(to right, #2e3192, #29abe2);
+  border: none;
+  padding: 15px 0;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+.logo-login {
+  max-width: 80%;
+  padding: 5vh 0;
+}
+.language-selector {
+  padding: 10px;
+  button {
+    cursor: pointer;
+    padding: 0 5px;
+    color: #2e3192;
+    &:hover {
+      text-decoration: none;
+      font-weight: 700;
+    }
+  }
+  .lang-active {
+	font-weight: 700;
+	&::before{
+		margin-right: 5px;
+		content: "\f0ac";
+		font-family: 'Font Awesome 5 Free';
+	}
+  }
+}
+.login-guide {
+  margin-top: 1rem;
+  button {
+    font-weight: 700;
+  }
+}
+.modal-content {
+  border: none !important;
+  background: none !important;
+  .modal-header {
+    background: #293281;
+    padding: 0.5rem;
+    border: none !important;
+    border-top-left-radius: 0.6rem;
+    border-top-right-radius: 0.6rem;
+    .close {
+      background: #fff;
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-radius: 50%;
+      padding: 0.5rem;
+      color: #293281;
+      font-size: 30px;
+      font-weight: 700;
+      opacity: 1;
+      width: 40px;
+      height: 40px;
+      line-height: 1px;
+    }
+  }
+  .modal-body {
+	background: #fff;
+	padding: 2rem;
+  }
 }

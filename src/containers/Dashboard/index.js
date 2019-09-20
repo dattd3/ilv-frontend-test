@@ -1,4 +1,5 @@
 import React from "react";
+import Chart from 'react-google-charts';
 
 function Dashboard(props) {
 
@@ -7,6 +8,34 @@ function Dashboard(props) {
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
         <a href="#" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i className="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+      </div>
+      <div className="row summary-chart">
+        <div className="col-xl-4 col-md-6 mb-4">
+          <Chart
+            width='100%' 
+            chartType="PieChart"
+            loader={<div>Loading Chart</div>}
+            data={[
+              ['Task', 'Hours per Day'],
+              ['Work', 11],
+              ['Eat', 2],
+              ['Commute', 2],
+              ['Watch TV', 2],
+              ['Sleep', 7],
+            ]}
+            options={{
+              pieHole: 0.4,
+              legend: 'none'
+            }}
+            rootProps={{ 'data-testid': '3' }}
+          />
+        </div>
+        <div className="col-xl-4 col-md-6 mb-4">
+          abc
+        </div>
+        <div className="col-xl-4 col-md-6 mb-4">
+          abc
+        </div>
       </div>
       <div className="row">
         <div className="col-xl-3 col-md-6 mb-4">

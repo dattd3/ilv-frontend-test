@@ -42,25 +42,25 @@ const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
   //withRouter(function ({ children, history }) {
-    useDisposable(() => autorun(() => {
-      if (guard.session) {
-        api.setAuthorization(guard.session);
-        api.inject.response((err) => {
-          if (err.response.status == 401) {
-            //history.push(map.Login);
-          }
-        });
-        return;
-      }
-      api.removeAuthorization()
-      api.eject.response((err) => {
-        if (err.response.status == 401) {
+  useDisposable(() => autorun(() => {
+    if (guard.session) {
+      api.setAuthorization(guard.session);
+      api.inject.response((err) => {
+        if (err && err.response.status == 401) {
           //window.location.assign(map.Login);
         }
-      })
-    }));
-    return children;
- // });
+      });
+      return;
+    }
+    api.removeAuthorization();
+    api.eject.response((err) => {
+      if (err && err.response.status == 401) {
+        //window.location.assign(map.Login);
+      }
+    });
+  }));
+  return children;
+  // });
 }
 
 export default function ({ children }) {

@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Auth } from 'aws-amplify';
-import { useGuardStore } from '../../modules'; 
+import { useGuardStore } from '../../modules';
 function Header(props) {
     const { email, jobTitle } = props.user;
     const [isShowUserMenu, setIsShowUserMenu] = useState(false);
     const [isShowNotification, setIsShowNotification] = useState(false);
-    
+
     const guard = useGuardStore();
     const userLogOut = () => {
         guard.setLogOut();
         Auth.signOut()
-        .then(data => {
-          console.log('Signout.signOut():Auth.signOut() data:', data);
-        })
-        .catch(err => {
-          console.error('Signout.signOut():Auth.signOut() err:', err);
-        });
+            .then(data => {
+                console.log('Signout.signOut():Auth.signOut() data:', data);
+            })
+            .catch(err => {
+                console.error('Signout.signOut():Auth.signOut() err:', err);
+            });
     }
 
     return (
@@ -56,10 +56,10 @@ function Header(props) {
                         <i className="fas fa-bell fa-fw"></i>
                         <span className="badge badge-danger badge-counter">3+</span>
                     </a>
-                    <div className={!isShowNotification ? 
-                                "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" 
-                                : "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in show"} 
-                                aria-labelledby="userDropdown" onBlur={() => setIsShowNotification(false)}> 
+                    <div className={!isShowNotification ?
+                        "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        : "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in show"}
+                        aria-labelledby="userDropdown" onBlur={() => setIsShowNotification(false)}>
                         <h6 className="dropdown-header">
                             Nofitication
                         </h6>
@@ -99,20 +99,20 @@ function Header(props) {
                         <a className="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                     </div>
                 </li>
-                
+
                 <div className="topbar-divider d-none d-sm-block"></div>
                 <li className={!isShowUserMenu ? 'nav-item dropdown no-arrow' : 'nav-item dropdown no-arrow show'}>
                     <a className="nav-link dropdown-toggle" href="#" onClick={() => setIsShowUserMenu(!isShowUserMenu)} id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div>
-                        <span className="mr-2 d-none d-flex text-gray-700">{email}</span>
-                        <p className="mr-2 d-none d-lg-inline small">{jobTitle}</p>
+                            <span className="mr-2 d-none d-flex text-gray-700">{email}</span>
+                            <p className="mr-2 d-none d-lg-inline small">{jobTitle}</p>
                         </div>
                         <img className="img-profile rounded-circle" src="https://www.biography.com/.image/t_share/MTIwNjA4NjM0MjAzODMzODY4/to-go-with-oly-2012-prkfeaturefiles.jpg" />
                     </a>
-                    <div className={!isShowUserMenu ? 
-                                    "dropdown-menu dropdown-menu-right shadow animated--grow-in" 
-                                    : "dropdown-menu dropdown-menu-right shadow animated--grow-in show"} 
-                                    aria-labelledby="userDropdown" onBlur={() => setIsShowUserMenu(false)}>
+                    <div className={!isShowUserMenu ?
+                        "dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        : "dropdown-menu dropdown-menu-right shadow animated--grow-in show"}
+                        aria-labelledby="userDropdown" onBlur={() => setIsShowUserMenu(false)}>
                         <a className="dropdown-item" href="#">
                             <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                             Profile

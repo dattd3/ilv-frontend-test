@@ -17,7 +17,7 @@ export default class Api {
     },
     response: (listener) => { 
       return this.request.interceptors.response.use(
-        function (response) {
+        function (response) { 
           listener(null, response); 
           return response;
         },
@@ -46,8 +46,6 @@ export default class Api {
 
   setAuthorization = ({ tokenType, accessToken }) => { 
     this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
-    this.request.defaults.headers.common['SabaCertificate'] = `41353031534E42303037372D33313336363436323636333633353338333233353334354532333545344534313444344535343333333234303536343934453437353234463535353032453445343535343545323335453431333533303331353334453432333033303337333735453233354536353645354635353533354532333545353336313632363135453233354532443331354532333545323434313432343033303244303231353030383939303043423139423039364442434136313634363032463331393236433539393835413833463032313437463638303839364245434246394436363845333046334136344634313244353238453337344135`;
-    this.request.defaults.headers.common['Bearer'] = `${accessToken}`;
   }
 
   removeAuthorization = () => {
@@ -57,14 +55,12 @@ export default class Api {
   getPermissions = async () => {
     return await getPermissions();
   };
-
-  signin = (username, password) => {
-    return signinApi(username, password);
-  };
-
+ 
   // user
   fetchUser = async () => {
-    return await this.request.get('/api/v1/user/me');
+    const val = await this.request.get('/api/v1/user/me');
+    console.log(val);
+    return val;
   };
 
   // training

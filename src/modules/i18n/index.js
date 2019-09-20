@@ -45,7 +45,7 @@ function createStore() {
 
   const store = {
     i18n,
-    locale: "en",
+    locale: "vi",
     appSupportedLanguages: [
       { language: "English", code: "en" },
       { language: "Vietnamese", code: "vi" }
