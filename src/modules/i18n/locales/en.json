@@ -1,4 +1,8 @@
 {
   "Failed": "Failed",
-  "Successful": "Successful"
+  "Successful": "Successful",
+  "LangViet": "Vietnamese",
+  "LangEng" : "English",
+  "HelpToLogin": "Login guideline",
+  "Login": "Login"
 }
