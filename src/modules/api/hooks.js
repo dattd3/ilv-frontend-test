@@ -20,7 +20,7 @@ export const useFetcher = settings => {
     return async function request(...args) {
       setError();
       try {
-        const response = await api.apply(undefined, args);
+        const response = await api.apply(args);
         setData(() => response.data);
       } catch (e) {
         setError(() => e);

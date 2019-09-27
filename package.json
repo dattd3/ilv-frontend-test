@@ -16,6 +16,7 @@
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.12",
     "react-dom": "^16.9.0",
+    "react-google-charts": "^3.0.15",
     "react-i18next": "^10.12.2",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1"
@@ -23,6 +24,7 @@
   "scripts": {
     "start": "react-scripts start ",
     "build": "react-scripts build",
+    "deploy": "react-scripts build & aws s3 sync build/ s3://myvinpearl-frontent-test --acl public-read",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
