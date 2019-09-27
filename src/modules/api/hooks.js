@@ -18,8 +18,8 @@ export const useFetcher = settings => {
 
   const request = useMemo(() => {
     return async function request(...args) {
-      setError(); 
-      try { 
+      setError();
+      try {
         const response = await api.apply(args);
         setData(() => response.data);
       } catch (e) {

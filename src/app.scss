@@ -1,5 +1,14 @@
+#content-wrapper {
+  background-color: #f2f2f2 !important;
+}
+
 .my-10 {
   margin: 10rem 0 !important;
+}
+
+.img-profile{
+  height: 2rem;
+  width: 2rem;
 }
 
 .bg-login-image {
@@ -30,12 +39,12 @@
     }
   }
   .lang-active {
-	font-weight: 700;
-	&::before{
-		margin-right: 5px;
-		content: "\f0ac";
-		font-family: 'Font Awesome 5 Free';
-	}
+    font-weight: 700;
+    &::before {
+      margin-right: 5px;
+      content: "\f0ac";
+      font-family: "Font Awesome 5 Free";
+    }
   }
 }
 .login-guide {
@@ -70,7 +79,68 @@
     }
   }
   .modal-body {
-	background: #fff;
-	padding: 2rem;
+    background: #fff;
+    padding: 2rem;
+  }
+}
+
+.pd-0 {
+  padding: 0 !important;
+}
+
+.color-blue {
+  color: #1aa6a4 !important;
+}
+.color-pink {
+  color: #fc345b !important;
+}
+
+.news-home {
+  .list-group-item {
+    // padding: 0;
+  }
+  .db-card-header {
+    text-transform: uppercase;
+    font-size: 20px;
+  }
+  .card-title {
+    margin: 0;
+  }
+  .card-text {
+    padding: 0.5rem 0;
+    margin: 0;
+    // border-left: 5px solid #00a8af;
+  }
+}
+
+.pl-1 {
+  padding-left: 1rem !important;
+}
+
+.bg-vp-blue {
+  background: #293281;
+}
+
+.sidebar-dark {
+  .nav-item {
+    .nav-link {
+      i {
+        margin-right: 20px;
+      }
+    }
+  }
+
+  .collapse-inner {
+    .collapse-item {
+      color: rgba(255, 255, 255, 0.8) !important;
+      border-left: 3px solid #fff;
+      border-radius: unset !important;
+      margin-left: 38px !important;
+
+      &:hover {
+        background: none !important;
+        color: #fff !important;
+      }
+    }
   }
 }

@@ -12,19 +12,19 @@ export const useCreateLocalGuardStore = () => {
   return store;
 };
 
-function createStore(session) {
+function createStore(currentAuthUser) {
   return {
     activities: new Map(),
-    session: session,
+    currentAuthUser: currentAuthUser,
     get isAuthenticated() {
-      return !!this.session
+      return !!this.currentAuthUser
     },
-    setIsAuth(session, isRemember = true) {
-      if (!session) return;
-      this.session = deserialize(session);
-      if (isRemember) Storage.save(this.session);
+    setIsAuth(currentAuthUser, isRemember = true) { 
+      if (!currentAuthUser) return;
+      this.currentAuthUser = deserialize(currentAuthUser);
+      if (isRemember) Storage.save(this.currentAuthUser);
     },
-    getCurentUser(){
+    getCurentUser() {
       return Storage.load();
     },
     setActivity(activity, hasAccess) {
@@ -40,11 +40,13 @@ function createStore(session) {
 }
 
 const Storage = {
-  save(session) {
-    localStorage.setItem('accessToken', session.accessToken);
-    localStorage.setItem('tokenType', session.tokenType);
-    localStorage.setItem('idToken', session.idToken);
-    localStorage.setItem('refreshToken', session.refreshToken);
+  save(currentAuthUser) {
+    localStorage.setItem('accessToken', currentAuthUser.accessToken);
+    localStorage.setItem('tokenType', currentAuthUser.tokenType);
+    localStorage.setItem('idToken', currentAuthUser.idToken);
+    localStorage.setItem('refreshToken', currentAuthUser.refreshToken);
+    localStorage.setItem('username', currentAuthUser.username);
+    localStorage.setItem('userEmail', currentAuthUser.userEmail);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -53,7 +55,9 @@ const Storage = {
       accessToken: localStorage.getItem('accessToken'),
       tokenType: localStorage.getItem('tokenType'),
       idToken: localStorage.getItem('idToken'),
-      refreshToken: localStorage.getItem('refreshToken')
+      refreshToken: localStorage.getItem('refreshToken'),
+      username: localStorage.getItem('username'),
+      userEmail: localStorage.getItem('userEmail')
     }
   },
   reset() {
@@ -61,12 +65,16 @@ const Storage = {
     localStorage.removeItem('tokenType');
     localStorage.removeItem('idToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userEmail');
   }
 }
 
-const deserialize = (session) => ({
-  accessToken: session.idToken.jwtToken,
+const deserialize = (currentAuthUser) => ({
+  accessToken: currentAuthUser.signInUserSession.idToken.jwtToken,
   tokenType: "Bearer",
-  idToken: session.idToken.jwtToken,
-  refreshToken: session.refreshToken.token,
+  idToken: currentAuthUser.signInUserSession.idToken.jwtToken,
+  refreshToken: currentAuthUser.signInUserSession.refreshToken.token,
+  username: currentAuthUser.attributes.name,
+  userEmail: currentAuthUser.attributes.email
 })
