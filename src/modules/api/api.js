@@ -70,8 +70,8 @@ export default class Api {
     return await this.request.get('https://gcofk70fsh.execute-api.ap-southeast-1.amazonaws.com/dev/saba/v1/people/username=tunglt16@vingroup.net/certifications/search?type=internal&includeDetails=true', param);
   }
 
-  fetchSabaCredit = async (email) => {
-    return await this.request.get(`https://dnyxeec805.execute-api.ap-southeast-1.amazonaws.com/dev/v1/app/saba/people/namnt32@vingroup.net/transcripts`);
+  fetchSabaCredit = async (username) => {
+    return await this.request.get(`https://dnyxeec805.execute-api.ap-southeast-1.amazonaws.com/dev/v1/app/saba/people/transcripts?username=namnt32@vingroup.net`);
   }
 
 }
