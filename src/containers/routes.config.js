@@ -35,7 +35,7 @@ export default [
   },
   {
     key: "main",
-    routeProps: {
+    routeProps: { 
       path: map.Root
     },
     component: lazy(() => import("./Main/Main")),
@@ -68,7 +68,6 @@ export default [
       ]
     }
   },
-  
   // NotFound must at end of the routes
   {
     key: "not-found",

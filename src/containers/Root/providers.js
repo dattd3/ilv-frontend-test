@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React from "react";
 import {
   ApiContext,
@@ -12,8 +13,8 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
-import { withRouter } from 'react-router-dom';
 import map from '../map.config';
+import { Auth } from 'aws-amplify';
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -41,13 +42,13 @@ const GuardProvider = function ({ children }) {
 const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
-  //withRouter(function ({ children, history }) {
   useDisposable(() => autorun(() => {
-    if (guard.session) {
-      api.setAuthorization(guard.session);
+    if (guard.currentAuthUser) {
+      api.setAuthorization(guard.currentAuthUser);
       api.inject.response((err) => {
         if (err && err.response.status == 401) {
-          //window.location.assign(map.Login);
+          guard.setLogOut();
+          Auth.signOut();
         }
       });
       return;
@@ -55,12 +56,12 @@ const ComposeApiWithGuard = function ({ children }) {
     api.removeAuthorization();
     api.eject.response((err) => {
       if (err && err.response.status == 401) {
-        //window.location.assign(map.Login);
+        guard.setLogOut();
+        Auth.signOut(); 
       }
     });
   }));
   return children;
-  // });
 }
 
 export default function ({ children }) {

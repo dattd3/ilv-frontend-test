@@ -5,5 +5,7 @@ export default {
   Auth: "/auth",
   
   // Training
-  Certification: "/training/certification"
+  Certification: "/training/certification",
+  
+  NotFound: "/notfound"
 };

@@ -38,6 +38,7 @@ class Authorize extends Component {
     onHubCapsule(capsule) {
         const { channel, payload } = capsule;
         if (channel === 'auth') {
+            // eslint-disable-next-line default-case
             switch (payload.event) {
                 case 'signIn':
                     this.validateUserSession();
@@ -68,7 +69,7 @@ class Authorize extends Component {
                         // if tokens have expired, lets call "logout"
                         // otherwise, dispatch AUTH_USER success action and by-pass login screen
                         if (session.isValid()) { 
-                            this.context.setIsAuth(session);
+                            this.context.setIsAuth(currentAuthUser);
                             history.push(map.Dashboard, { signedIn: true, authenticated: true });
                         } else {
                             const errorMessage = 'user session invalid. auth required';

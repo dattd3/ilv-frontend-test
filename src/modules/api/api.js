@@ -9,20 +9,20 @@ export default class Api {
           listener(null, config);
           return config;
         },
-        function (error) { 
+        function (error) {
           listener(error);
           return Promise.reject(error);
         }
       );
     },
-    response: (listener) => { 
+    response: (listener) => {
       return this.request.interceptors.response.use(
-        function (response) { 
-          listener(null, response); 
+        function (response) {
+          listener(null, response);
           return response;
         },
         function (error) {
-          listener(error); 
+          listener(error);
           return Promise.reject(error);
         }
       );
@@ -44,7 +44,7 @@ export default class Api {
     });
   }
 
-  setAuthorization = ({ tokenType, accessToken }) => { 
+  setAuthorization = ({ tokenType, accessToken }) => {
     this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
   }
 
@@ -55,21 +55,23 @@ export default class Api {
   getPermissions = async () => {
     return await getPermissions();
   };
- 
+
   // user
   fetchUser = async () => {
-    const val = await this.request.get('/api/v1/user/me');
-    console.log(val);
-    return val;
+    return await this.request.get('/api/v1/user/me');
   };
 
   // training
   fetchCertification = async (type, includeDetails) => {
     let param = {
-      type: type, 
+      type: type,
       includeDetails: includeDetails
     };
-    return await this.request.post('https://gcofk70fsh.execute-api.ap-southeast-1.amazonaws.com/dev/saba/v1/people/username=tunglt16@vingroup.net/certifications/search?type=internal&includeDetails=true', param);
+    return await this.request.get('https://gcofk70fsh.execute-api.ap-southeast-1.amazonaws.com/dev/saba/v1/people/username=tunglt16@vingroup.net/certifications/search?type=internal&includeDetails=true', param);
+  }
+
+  fetchSabaCredit = async (email) => {
+    return await this.request.get(`https://dnyxeec805.execute-api.ap-southeast-1.amazonaws.com/dev/v1/app/saba/people/namnt32@vingroup.net/transcripts`);
   }
 
 }
