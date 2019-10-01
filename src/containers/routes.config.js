@@ -72,6 +72,12 @@ export default [
             path: map.Roadmap
           },
           component: lazy(() => import("./Training/roadmap"))
+          key: "training-learning",
+          routeProps: {
+            exact: true,
+            path: map.Learning
+          },
+          component: lazy(() => import("./Training/learning"))
         }
       ]
     }
