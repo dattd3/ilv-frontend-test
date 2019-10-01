@@ -37,6 +37,7 @@ export default class Api {
       this.request.interceptors.response.eject(interceptorId);
     }
   };
+
   constructor(url) {
     this.request = axios.create({
       baseURL: url,
@@ -61,17 +62,19 @@ export default class Api {
     return await this.request.get('/api/v1/user/me');
   };
 
-  // training
-  fetchCertification = async (type, includeDetails) => {
-    let param = {
-      type: type,
-      includeDetails: includeDetails
-    };
-    return await this.request.get('https://gcofk70fsh.execute-api.ap-southeast-1.amazonaws.com/dev/saba/v1/people/username=tunglt16@vingroup.net/certifications/search?type=internal&includeDetails=true', param);
-  }
-
+  // training 
   fetchSabaCredit = async (username) => {
-    return await this.request.get(`https://dnyxeec805.execute-api.ap-southeast-1.amazonaws.com/dev/v1/app/saba/people/transcripts?username=namnt32@vingroup.net`);
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts?username=namnt32@vingroup.net`);
   }
 
-}
+  fetchSabaEnrollments = async (username, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
+      params: {
+        username: 'thanhpt2@vingroup.net',
+        page_no: 1,
+        page_size: 10
+      }
+    });
+  }
+
+};

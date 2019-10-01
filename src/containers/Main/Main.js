@@ -38,7 +38,6 @@ function MainLayout(props) {
           </div>
         </div>
         <Footer />
-
       </div>
     </>
   );
