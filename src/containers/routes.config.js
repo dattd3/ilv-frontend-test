@@ -64,6 +64,14 @@ export default [
             path: map.Certification
           },
           component: lazy(() => import("./Training/certification"))
+        },
+        {
+          key: "training-roadmap",
+          routeProps: {
+            exact: true,
+            path: map.Roadmap
+          },
+          component: lazy(() => import("./Training/roadmap"))
         }
       ]
     }

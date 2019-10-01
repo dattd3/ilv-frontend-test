@@ -6,6 +6,7 @@ export default {
   
   // Training
   Certification: "/training/certification",
-  
+  Roadmap: "/training/roadmap",
+
   NotFound: "/notfound"
 };
