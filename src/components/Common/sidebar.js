@@ -24,6 +24,7 @@ function SideBar(props) {
                         <div className="py-2 collapse-inner rounded">
                             <a className="collapse-item" href={map.Learning}>Học tập</a>
                             <a className="collapse-item" href="#">Giảng dạy</a>
+                            <a className="collapse-item" href={map.Roadmap}>Lộ trình đào tạo</a>
                             <a className="collapse-item" href="#">Thi tay nghề</a>
                             <a className="collapse-item" href="#">Chỉ tiêu đào tạo</a>
                         </div>
