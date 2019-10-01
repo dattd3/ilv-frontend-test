@@ -6,7 +6,7 @@ import ContextProviders from "./providers";
 import Amplify from 'aws-amplify';
 import AWS from 'aws-sdk';
 import config from '../../commons/aws-config';
-import '../../assets/css/sb-admin-2.css';
+import '../../assets/scss/sb-admin-2.scss';
 
 function Root() {
   // AWS SDK & AWS Amplity Configuration

@@ -17,7 +17,7 @@ export const useFetcher = settings => {
   const [error, setError] = useState();
 
   const request = useMemo(() => {
-    return async function request(...args) {
+    return async function request(...args) { 
       setError();
       try {
         const response = await api.apply(args);
@@ -31,7 +31,7 @@ export const useFetcher = settings => {
 
   useEffect(() => {
     if (autoRun) request(...params);
-
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, ...params]);
 
