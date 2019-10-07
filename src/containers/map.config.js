@@ -9,6 +9,8 @@ export default {
   
   Roadmap: "/training/roadmap",
 
+  RoadmapDetails: "/training/roadmapdetails",
+
   Learning: "/training/learning",
   
   NotFound: "/notfound"

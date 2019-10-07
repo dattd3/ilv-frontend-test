@@ -1,0 +1,15 @@
+.white-background{
+	background-color: white;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-bottom: 15px;
+}
+.red-button{
+	color: #FF0000 !important;
+}
+
+.text-center{
+	text-align: center;
+}

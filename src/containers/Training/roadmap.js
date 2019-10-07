@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from "react";
-import {
-    useApi,
-    useFetcher
-  } from "../../modules";
-import DefaultPaginationTable from "../../components/Forms/DefaultPaginationTable"
+import { useApi, useFetcher, useGuardStore } from "../../modules";
+import Course from "../../components/Forms/CustomForm/Course"
 
-const usePreload = () => {
-    const api = useApi();
-    const [cers = {}, error] = useFetcher({
-        api: api.fetchCertification,
-        autoRun: true,
-        params: ['internal', true]
-    });
-    return cers;
+const useGetRoadmap = () => {
+  const guard = useGuardStore();
+  const api = useApi();
+  const [roadmapList = undefined] = useFetcher({
+    api: api.fetchRoadmapList,
+    autoRun: true
+  }); 
+  return roadmapList;
 };
+
+    
 
 function Roadmap(props) {
     
     useEffect(() => {
         document.title = `Lộ trình học tập`;
     });
-
+    const roadmap = useGetRoadmap();
+    let elmCourses;
+    if (roadmap &&  roadmap.data && roadmap.data.curriculums) {
+       elmCourses = roadmap.data.curriculums.map((item, index) =>
+        <Course name = {item.name} status = {item.status} key={index} id={item.id} target_date = {item.target_date} />
+      );
+    }
+    
     return (
       <div>
-        <DefaultPaginationTable tableName="ĐÀO TẠO KỸ NĂNG CHUYÊN MÔN NGHIỆP VỤ" id = "BasicSkillTable"/>
-
-        <DefaultPaginationTable tableName="QUẢN LÝ THÔNG TIN DOANH NGHIỆP" id = "ManageSkillTable" />
+       {elmCourses}
       </div>
     );
 }
