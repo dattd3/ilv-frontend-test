@@ -1,5 +1,5 @@
 import axios from "axios";
-import { demoCallApi, getPermissions, signinApi } from "./mockCallApi";
+import { getPermissions } from "./mockCallApi";
 
 export default class Api {
   inject = {
@@ -70,9 +70,9 @@ export default class Api {
   fetchSabaEnrollments = async (username, pageIndex, pageSize) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
       params: {
-        username: 'thanhpt2@vingroup.net',
-        page_no: 1,
-        page_size: 10
+        username: username,
+        page_no: pageIndex,
+        page_size: pageSize
       }
     });
   }
