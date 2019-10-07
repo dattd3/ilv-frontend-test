@@ -6,13 +6,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
 
-const usePreload = () => {
+const usePreload = (Id) => {
   // const guard = useGuardStore();
   const api = useApi();
   const [roadmapDetails = {}, error] = useFetcher({
     api: api.fetchRoadmapDetails,
     autoRun: true,
-    params: ['curra000000000003700','trangdt28@vingroup.net']
+    params: [Id,'trangdt28@vingroup.net']
   }); 
   if (roadmapDetails) {
   return roadmapDetails;
@@ -23,7 +23,7 @@ const RoadmapDetailsElement = ({ match, location }) => {
   const {
     params: { Id }
   } = match;
-  const data = usePreload();
+  const data = usePreload(Id);
   let courseData;
   if (data && data.data && data.data.paths) {
     courseData = data.data.paths[0];
@@ -34,7 +34,7 @@ const RoadmapDetailsElement = ({ match, location }) => {
    if (courseData && courseData.learning_modules) 
    {
       courseDataElement = courseData.learning_modules.map((item, index) =>
-         <CourseListTable data ={item} tableName = {item.name} key={index} id={item.name} />
+         <CourseListTable data ={item} tableName = {item.name} key={index} id={item.id} />
         
         )
     }

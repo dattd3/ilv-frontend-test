@@ -88,9 +88,7 @@ export default class Api {
   }
 
   fetchRoadmapDetails = async (id, username) => {
-    console.log(username);
-    let id2 = 'curra000000000003700';
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id2}`,
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id}`,
       {
         params: {
         username: username
