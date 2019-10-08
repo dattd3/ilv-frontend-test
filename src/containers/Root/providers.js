@@ -1,5 +1,5 @@
-/* eslint-disable eqeqeq */
-import React from "react";
+import React, { useState } from "react";
+import { Modal, Spinner } from 'react-bootstrap';
 import {
   ApiContext,
   useApiMemo,
@@ -13,8 +13,9 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
-import map from '../map.config';
 import { Auth } from 'aws-amplify';
+
+
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -42,11 +43,17 @@ const GuardProvider = function ({ children }) {
 const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
+  const [isShowModal, SetIsShowModal] = useState(false);
+
   useDisposable(() => autorun(() => {
     if (guard.currentAuthUser) {
       api.setAuthorization(guard.currentAuthUser);
+      api.inject.request(() => {
+        SetIsShowModal(true);
+      });
       api.inject.response((err) => {
-        if (err && err.response.status == 401) {
+        SetIsShowModal(false);
+        if (err && err.response.status === 401) {
           guard.setLogOut();
           Auth.signOut();
         }
@@ -55,13 +62,23 @@ const ComposeApiWithGuard = function ({ children }) {
     }
     api.removeAuthorization();
     api.eject.response((err) => {
-      if (err && err.response.status == 401) {
+      SetIsShowModal(false);
+      if (err && err.response.status === 401) {
         guard.setLogOut();
-        Auth.signOut(); 
+        Auth.signOut();
       }
     });
   }));
-  return children;
+  return [
+    children,
+    isShowModal,
+    (
+      <Modal centered show={isShowModal} onHide={() => { return; }}>
+        <Modal.Body className='text-center no-bg'>
+          <Spinner animation="border" variant="light" size='lg' />
+        </Modal.Body>
+      </Modal>
+    )];
 }
 
 export default function ({ children }) {
@@ -69,7 +86,9 @@ export default function ({ children }) {
     <ApiProvider>
       <LanguageProvider>
         <GuardProvider>
-          <ComposeApiWithGuard>{children}</ComposeApiWithGuard>
+          <ComposeApiWithGuard>
+            {children}
+          </ComposeApiWithGuard>
         </GuardProvider>
       </LanguageProvider>
     </ApiProvider>

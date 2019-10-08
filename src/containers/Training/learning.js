@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import {
-    useApi,
-    useFetcher
-} from "../../modules";
+import { useApi, useFetcher } from "../../modules";
 import { Table, Pagination, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../components/Common/CustomPaging';
 
@@ -32,6 +29,7 @@ function Learning(props) {
 
     function onChangePageSize(evt) {
         SetPageSize(evt.target.value);
+        SetPageIndex(1);
     }
 
     try {
@@ -67,8 +65,8 @@ function Learning(props) {
                                                 <tr key={obj.id}>
                                                     <td>{i + 1}</td>
                                                     <td>{obj.name}</td>
-                                                    <td>{`?`}</td>
-                                                    <td>{`?`}</td>
+                                                    <td>{`n/a`}</td>
+                                                    <td>{`n/a`}</td>
                                                 </tr>
                                             );
                                         })
@@ -85,7 +83,7 @@ function Learning(props) {
                                     Tổng số: {sabaEnrollments.data.total} khoá học
                                 </Col>
                                 <Col className='paging'>
-                                    <CustomPaging onChangePage={onChangePage} pageSize={parseInt(pageSize)} totalRecords={sabaEnrollments.data.total} />
+                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
                                 </Col>
                                 <Col>
                                     <Form.Control as="select" id='ddlPageSize' onChange={onChangePageSize} className='w-auto float-right'>
