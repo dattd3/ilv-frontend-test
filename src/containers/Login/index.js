@@ -38,14 +38,13 @@ function Login() {
 
   useEffect(() => {
     localizeStore.setLocale(langCode);
-  }, [langCode]);
+  }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
     const authConfig = Auth.configure();
     const {
       domain,
       redirectSignIn,
-      redirectSignOut,
       responseType } = authConfig.oauth;
 
     const clientId = config.AWS_COGNITO_CLIENT_ID;
@@ -63,8 +62,8 @@ function Login() {
                 <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div className="col-lg-6">
                   <div className="float-right language-selector">
-                    <Button className={langCode == 'vi' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi')}>{t("LangViet")}</Button>|
-                    <Button className={langCode == 'en' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en')}>{t("LangEng")}</Button>
+                    <Button className={langCode === 'vi' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi')}>{t("LangViet")}</Button>|
+                    <Button className={langCode === 'en' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en')}>{t("LangEng")}</Button>
                   </div>
                   <div className="p-5">
                     <div className="text-center">

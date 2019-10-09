@@ -2,8 +2,7 @@ import React from "react";
 import NestedRoute from "./NestedRoute";
 import {
   useApi,
-  useFetcher,
-  useGuardStore
+  useFetcher
 } from "../../modules";
 import { observer } from "mobx-react-lite";
 import Header from '../../components/Common/Header';
@@ -20,12 +19,7 @@ const usePreload = () => {
 };
 
 function MainLayout(props) {
-  // const guard = useGuardStore();
-  // const userObj = guard.getCurentUser();
-  // const user = {
-  //   name : userObj.username,
-  //   email: userObj.userEmail
-  // }
+
   const user = usePreload();
   return (
     <>

@@ -41,9 +41,10 @@ export default class Api {
   constructor(url) {
     this.request = axios.create({
       baseURL: url,
-      timeout: 7000
+      timeout: 20000
     });
   }
+
 
   setAuthorization = ({ tokenType, accessToken }) => {
     this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
