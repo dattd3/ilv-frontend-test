@@ -14,8 +14,7 @@ import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
 import { Auth } from 'aws-amplify';
-
-
+import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -44,6 +43,14 @@ const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
   const [isShowModal, SetIsShowModal] = useState(false);
+  const [alert, SetAlert] = useState([]);
+
+  function onAlertDismissed(alr) {
+    const idx = alert.indexOf(alr);
+    if (idx >= 0) {
+      SetAlert([...alert.slice(0, idx), ...alert.slice(idx + 1)]);
+    }
+  }
 
   useDisposable(() => autorun(() => {
     if (guard.currentAuthUser) {
@@ -53,9 +60,17 @@ const ComposeApiWithGuard = function ({ children }) {
       });
       api.inject.response((err) => {
         SetIsShowModal(false);
-        if (err && err.response.status === 401) {
-          guard.setLogOut();
-          Auth.signOut();
+        if (err) {
+          SetAlert(...alert, [{
+            id: (new Date()).getTime(),
+            type: 'danger',
+            headline: `Hmm, something went wrong :(`,
+            message: err.message
+          }]);
+          if (err.response.status === 401) {
+            guard.setLogOut();
+            Auth.signOut();
+          }
         }
       });
       return;
@@ -63,34 +78,54 @@ const ComposeApiWithGuard = function ({ children }) {
     api.removeAuthorization();
     api.eject.response((err) => {
       SetIsShowModal(false);
-      if (err && err.response.status === 401) {
-        guard.setLogOut();
-        Auth.signOut();
+      if (err) {
+        SetAlert(...alert, [{
+          id: (new Date()).getTime(),
+          type: 'danger',
+          headline: `Hmm, something went wrong :(`,
+          message: err.message
+        }]);
+        if (err.response.status === 401) {
+          guard.setLogOut();
+          Auth.signOut();
+        }
       }
     });
   }));
-  return [
-    children,
-    isShowModal,
-    (
-      <Modal centered show={isShowModal} onHide={() => { return; }}>
-        <Modal.Body className='text-center no-bg'>
-          <Spinner animation="border" variant="light" size='lg' />
-        </Modal.Body>
-      </Modal>
-    )];
+
+  const modal = (
+    <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
+      <Modal.Body className='text-center no-bg'>
+        <Spinner animation="border" variant="light" size='lg' />
+      </Modal.Body>
+    </Modal>
+  );
+
+  const alertCom = (
+    <AlertList key={`alertCom`}
+      position='top-right'
+      alerts={alert}
+      timeout={3000}
+      dismissTitle="Begone!"
+      onDismiss={onAlertDismissed.bind(this)}
+    />
+  );
+
+  return [children, modal, alertCom];
 }
 
 export default function ({ children }) {
   return (
-    <ApiProvider>
-      <LanguageProvider>
-        <GuardProvider>
-          <ComposeApiWithGuard>
-            {children}
-          </ComposeApiWithGuard>
-        </GuardProvider>
-      </LanguageProvider>
-    </ApiProvider>
+    <>
+      <ApiProvider>
+        <LanguageProvider>
+          <GuardProvider>
+            <ComposeApiWithGuard>
+              {children}
+            </ComposeApiWithGuard>
+          </GuardProvider>
+        </LanguageProvider>
+      </ApiProvider>
+    </>
   );
 }

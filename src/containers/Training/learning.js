@@ -6,7 +6,7 @@ import CustomPaging from '../../components/Common/CustomPaging';
 
 const usePreload = (params) => {
     const api = useApi();
-    const [sabaEnrollments = undefined] = useFetcher({
+    const [sabaEnrollments = undefined, err] = useFetcher({
         api: api.fetchSabaEnrollments,
         autoRun: true,
         params: params
@@ -31,12 +31,14 @@ function Learning(props) {
         SetPageSize(evt.target.value);
         SetPageIndex(1);
     }
-
+    console.log(sabaEnrollments);
     try {
         if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
         }
     } catch { }
+
+
 
     return (
         <>
@@ -65,8 +67,8 @@ function Learning(props) {
                                                 <tr key={obj.id}>
                                                     <td>{i + 1}</td>
                                                     <td>{obj.name}</td>
-                                                    <td>{`n/a`}</td>
-                                                    <td>{`n/a`}</td>
+                                                    <td>{obj.start_date}</td>
+                                                    <td>{obj.credits}</td>
                                                 </tr>
                                             );
                                         })

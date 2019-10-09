@@ -19,12 +19,7 @@ const usePreload = () => {
 };
 
 function MainLayout(props) {
-  // const guard = useGuardStore();
-  // const userObj = guard.getCurentUser();
-  // const user = {
-  //   name : userObj.username,
-  //   email: userObj.userEmail
-  // }
+
   const user = usePreload();
   return (
     <>
