@@ -15,9 +15,12 @@
   height: 2rem;
   width: 2rem;
 }
+.no-bg{
+  background: none !important;
+}
 
 .bg-login-image {
-  background: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+  background: url("./assets/img/Login590x590.png");
   background-position: center;
   background-size: cover;
 }
