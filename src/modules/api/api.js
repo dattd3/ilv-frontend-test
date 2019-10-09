@@ -78,4 +78,24 @@ export default class Api {
     });
   }
 
+  fetchRoadmapList = async () => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
+      params: {
+        username: 'trangdt28@vingroup.net',
+        startPage: 1,
+        count: 10
+      }
+    });
+  }
+
+  fetchRoadmapDetails = async (id, username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id}`,
+      {
+        params: {
+        username: username
+      }
+      }
+    );
+  }
+
 };

@@ -1,6 +1,7 @@
 .white-body{
   background-color: white;
   padding-left: 2px;
+  padding-right: 2px;
   margin-bottom: 15px;
   padding-bottom: 10px;
 }
@@ -8,8 +9,9 @@
 .table-title{
   color: #293281;
   padding-top: 15px;
-  padding-bottom: 10px;
-  padding-left: 15px;
+  padding-bottom: 20px;
+  padding-left: 5px;
+  font-size: larger;
 }
 .table-content{
   font-weight: normal !important;
@@ -28,25 +30,18 @@
 .center-text{
   text-align: center;
 }
-.course-status-ok{
-  border: 2px solid #293281;
-  border-radius: 15px;
-  color: #293281;
-  padding-right: 33px;
-  padding-left: 33px;
-  padding-top: 3px;
-  padding-bottom: 4px;
-}
-.course-status-ng{
-  border: 2px solid #ce4844;
-  border-radius: 15px;
-  color: #ce4844;
-  padding-right: 25px;
-  padding-left: 25px;
-  padding-top: 3px;
-  padding-bottom: 4px;
-}
-
 td {
   vertical-align: middle !important;
+}
+
+div.dataTables_paginate {
+  text-align: center !important;
+}
+
+ul.pagination{
+  display: inline-flex;
+}
+.padding-right-50{
+  padding-right: 50px;
+  text-align: right;;
 }
