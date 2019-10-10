@@ -12,6 +12,10 @@ export default {
   RoadmapDetails: "/training/roadmapdetails",
 
   Learning: "/training/learning",
+
+  LearningKPI: "/training/learningKPI",
+
+  TeachingKPI: "/training/teachingKPI",
   
   NotFound: "/notfound"
 };

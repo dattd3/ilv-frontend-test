@@ -88,6 +88,22 @@ export default [
             path: map.Learning
           },
           component: lazy(() => import("./Training/learning"))
+        },
+        {
+          key: "learning-KPI",
+          routeProps: {
+            exact: true,
+            path: map.LearningKPI
+          },
+          component: lazy(() => import("./Training/learningKPI"))
+        },
+        {
+          key: "teaching-KPI",
+          routeProps: {
+            exact: true,
+            path: map.TeachingKPI
+          },
+          component: lazy(() => import("./Training/teachingKPI"))
         }
       ]
     }

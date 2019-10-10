@@ -3,6 +3,7 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import CourseListTable from "../../components/Forms/CustomForm/CourseListTable"
 import Roadmap from "./roadmap.js"
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
 
 
@@ -38,7 +39,11 @@ const RoadmapDetailsElement = ({ match, location }) => {
         
         )
     }
-
+  if (!courseData) {
+    return (
+         <LoadingSpinner />
+      )
+  }
   return (
     <>{courseDataElement}</>
   );
@@ -49,6 +54,7 @@ function RoadmapDetails(props) {
     useEffect(() => {
         document.title = `Lộ trình học tập`;
     });
+
 
     return (
       <div>

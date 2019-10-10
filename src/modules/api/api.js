@@ -83,7 +83,7 @@ export default class Api {
       params: {
         username: 'trangdt28@vingroup.net',
         startPage: 1,
-        count: 10
+        count: 1000
       }
     });
   }
@@ -93,6 +93,16 @@ export default class Api {
       {
         params: {
         username: username
+      }
+      }
+    );
+  }
+
+  fetchKPI = async (username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
+      {
+        params: {
+        username: 'quyennd9@vingroup.net'
       }
       }
     );

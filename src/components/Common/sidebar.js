@@ -27,6 +27,12 @@ function SideBar(props) {
                             <a className="collapse-item" href={map.RoadmapDetails}>Lộ trình đào tạo</a>
                             <a className="collapse-item" href="#">Thi tay nghề</a>
                             <a className="collapse-item" href="#">Chỉ tiêu đào tạo</a>
+                            <div id="collapseTwo" className="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                                <div className="py-2 collapse-inner rounded">
+                                    <a className="collapse-item" href={map.LearningKPI}>Học tập</a>
+                                    <a className="collapse-item" href={map.TeachingKPI}>Giảng dạy</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>
