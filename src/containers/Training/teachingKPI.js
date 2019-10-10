@@ -32,9 +32,9 @@ function Dashboard(props) {
 
   if (kpiData && kpiData.data) {
     sbCredit = {
-      totalHours: kpiData.data.learning_target_credits,
-      perLearned: Math.round(kpiData.data.learning_earned_credits / kpiData.data.learning_target_credits),
-      totalEarned: kpiData.data.learning_earned_credits
+      totalHours: kpiData.data.instructing_target_credits,
+      perLearned: Math.round(kpiData.data.instructing_earned_credits / kpiData.data.instructing_target_credits),
+      totalEarned: kpiData.data.instructing_earned_credits
     };
   }
 
