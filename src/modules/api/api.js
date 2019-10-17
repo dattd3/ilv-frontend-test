@@ -63,15 +63,45 @@ export default class Api {
     return await this.request.get('/api/v1/user/me');
   };
 
+  fetchSabaUser = async (username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
+      params: {
+        username: username,
+      }
+    });
+  };
+
   // training 
   fetchSabaCredit = async (username) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts?username=namnt32@vingroup.net`);
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits?username=${username}`);
   }
 
-  fetchSabaEnrollments = async (username, pageIndex, pageSize) => {
+  fetchSabaLearning_OnGoing = async (username, pageIndex, pageSize) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
       params: {
         username: username,
+        page_no: pageIndex,
+        page_size: pageSize
+      }
+    });
+  }
+
+  fetchSabaLearning_Transcript = async (username, status, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`, {
+      params: {
+        username: username,
+        status: status,
+        page_no: pageIndex,
+        page_size: pageSize
+      }
+    });
+  }
+
+  fetchSabaIntruction = async (user_id, status, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`, {
+      params: {
+        user_id: user_id,
+        status: status,
         page_no: pageIndex,
         page_size: pageSize
       }
@@ -92,8 +122,8 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id}`,
       {
         params: {
-        username: username
-      }
+          username: username
+        }
       }
     );
   }
@@ -102,8 +132,8 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
       {
         params: {
-        username: 'quyennd9@vingroup.net'
-      }
+          username: 'quyennd9@vingroup.net'
+        }
       }
     );
   }

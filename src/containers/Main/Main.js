@@ -1,26 +1,16 @@
 import React from "react";
-import NestedRoute from "./NestedRoute";
-import {
-  useApi,
-  useFetcher
-} from "../../modules";
+import NestedRoute from "./NestedRoute"; 
 import { observer } from "mobx-react-lite";
 import Header from '../../components/Common/Header';
 import SideBar from '../../components/Common/Sidebar';
 import Footer from '../../components/Common/Footer';
-
-const usePreload = () => {
-  const api = useApi();
-  const [user = {}, err] = useFetcher({
-    api: api.fetchUser,
-    autoRun: true
-  });
-  return user;
-};
+import { useGuardStore } from '../../modules';
 
 function MainLayout(props) {
+  
+  const guard = useGuardStore();
+  let user = guard.getCurentUser();
 
-  const user = usePreload();
   return (
     <>
       <SideBar />
