@@ -1,5 +1,6 @@
 .loading-spinner{
-	position: fixed;
+	/* position: fixed;
     top: 30%;
-    left: 48%;
+    left: 48%; */
+    text-align: center;
 }

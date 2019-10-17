@@ -21,7 +21,6 @@ function Learning(props) {
     const sabaEnrollments = usePreload([`quyennd9@vingroup.net`, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
-    //const [isDone, SetIsDone] = useState(false);
 
     function onChangePage(page) {
         SetPageIndex(page);
@@ -31,7 +30,6 @@ function Learning(props) {
         SetPageSize(evt.target.value);
         SetPageIndex(1);
     }
-    console.log(sabaEnrollments);
     try {
         if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
@@ -88,7 +86,7 @@ function Learning(props) {
                                     <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
                                 </Col>
                                 <Col>
-                                    <Form.Control as="select" id='ddlPageSize' onChange={onChangePageSize} className='w-auto float-right'>
+                                    <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
                                         <option value={5}>Hiển thị 5 lớp học</option>
                                         <option value={10}>Hiển thị 10 lớp học</option>
                                         <option value={15}>Hiển thị 15 lớp học</option>

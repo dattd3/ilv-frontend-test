@@ -5,29 +5,29 @@ import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
 
 
-const usePreload = () => {
+const usePreload = (params) => {
   const guard = useGuardStore();
   const api = useApi();
   const [sabaCredit = undefined] = useFetcher({
     api: api.fetchSabaCredit,
-    autoRun: true
-  }); 
+    autoRun: true,
+    params: params
+  });
   return sabaCredit;
 };
 function Dashboard(props) {
 
-  const sabaCredit = usePreload();
+  const sabaCredit = usePreload([`trangdt28@vingroup.net`]);
   let sbCredit = {
     totalHours: 0,
     perLearned: 100
   };
   if (sabaCredit && sabaCredit.data) {
     sbCredit = {
-      totalHours: sabaCredit.data.learning_credit_KPI,
-      perLearned: Math.round(sabaCredit.data.learning_credits / sabaCredit.data.learning_credit_KPI)
+      totalHours: sabaCredit.data.learning_target_credits,
+      perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
     };
   }
-
   const sabaCreditData = (canvas) => {
     const ctx = canvas.getContext("2d")
     const grdGreen = ctx.createLinearGradient(500, 0, 100, 0);
@@ -46,7 +46,7 @@ function Dashboard(props) {
         data: [100 - sbCredit.perLearned, sbCredit.perLearned],
         title: {
           display: true
-        }, 
+        },
         backgroundColor: [
           grdRed,
           grdGreen
@@ -66,7 +66,7 @@ function Dashboard(props) {
         data: [25, 75],
         title: {
           display: true
-        }, 
+        },
         backgroundColor: [
           '#F4F3F8',
           grdGreen

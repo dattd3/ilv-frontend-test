@@ -7,7 +7,7 @@ import { Nav, Navbar, NavDropdown, Form, InputGroup, Button, FormControl } from 
 
 
 function Header(props) {
-    const { name } = props.user;
+    const { fullName, plEmail, jobTitle, employeeNo, company } = props.user;
     const guard = useGuardStore();
     const userLogOut = () => {
         guard.setLogOut();
@@ -19,7 +19,7 @@ function Header(props) {
             <Navbar expand="lg" className="topbar mb-4 static-top">
 
                 <Form className="form-inline mr-auto w-100 navbar-search">
-                    <InputGroup className="mb-3">
+                    <InputGroup>
                         <InputGroup.Prepend>
                             <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
                         </InputGroup.Prepend>
@@ -31,7 +31,12 @@ function Header(props) {
                         className="mr-auto dropdown-menu-right animated--grow-in"
                         title={
                             <>
-                                <span className="mr-2 text-gray-700">{name}</span>
+
+                                <div className='mr-2 small text-right'>
+                                    <div className="text-gray-600">{fullName}({plEmail})</div>
+                                    <span className='small text-gray-500'>{jobTitle}</span> <br />
+                                    <span className='small text-gray-500'>{company}</span>
+                                </div>
                                 <img className="img-profile rounded-circle" src="https://i.pravatar.cc/150" />
                             </>
                         }>

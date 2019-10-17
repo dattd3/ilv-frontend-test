@@ -14,7 +14,7 @@ import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
 import { Auth } from 'aws-amplify';
-import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
+import { AlertList } from "react-bs-notifier";
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -92,7 +92,6 @@ const ComposeApiWithGuard = function ({ children }) {
       }
     });
   }));
-
   const modal = (
     <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
       <Modal.Body className='text-center no-bg'>

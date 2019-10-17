@@ -12,10 +12,10 @@
 }
 
 .img-profile {
-  height: 2rem;
-  width: 2rem;
+  height: 3rem !important;
+  width: 3rem !important;
 }
-.no-bg{
+.no-bg {
   background: none !important;
 }
 
@@ -193,4 +193,42 @@
     color: #585858;
     border: 1px solid #ccc;
   }
+}
+
+.vp-loading {
+  img {
+    width: 80px;
+    position: absolute;
+    left: 70px;
+    top: 80px;
+  }
+  .loader {
+    border: 5px solid #df9d25;
+    border-top: 10px solid #df9d25;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.loading-note {
+  color: white;
+  padding-top: 1em;
+}
+
+.blank-page-cover {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-image: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Pagination } from 'react-bootstrap';
 
-function SimplePaging(props) {
+function CustomPaging(props) {
     const { pageSize = 5, totalRecords = 0, onChangePage } = props;
     const [currentPage, SetCurrentPage] = useState(1);
 
@@ -59,4 +59,4 @@ function SimplePaging(props) {
     );
 }
 
-export default SimplePaging;
+export default CustomPaging;

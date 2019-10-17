@@ -7,6 +7,7 @@ import Amplify from 'aws-amplify';
 import AWS from 'aws-sdk';
 import config from '../../commons/aws-config';
 import '../../assets/scss/sb-admin-2.scss';
+import LoadingModal from '../../components/Common/LoadingModal';
 
 function Root() {
   // AWS SDK & AWS Amplity Configuration
@@ -39,7 +40,7 @@ function Root() {
                 render={props => (
                   <GuardianRouter {...props} settings={RouteSettings}>
                     {childProps => (
-                      <Suspense fallback={"loading..."}>
+                      <Suspense fallback={<LoadingModal show={true} />}>
                         <Content {...contentProps} {...childProps} />
                       </Suspense>
                     )}

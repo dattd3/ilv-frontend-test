@@ -14,9 +14,9 @@ export const RouteSettings = {
     defaultRoute: map.Login,
     routes: [map.Login, map.Auth]
   }
-}; 
+};
 
-export default [ 
+export default [
   {
     key: "login",
     routeProps: {
@@ -35,7 +35,7 @@ export default [
   },
   {
     key: "main",
-    routeProps: { 
+    routeProps: {
       path: map.Root
     },
     component: lazy(() => import("./Main/Main")),
@@ -87,7 +87,15 @@ export default [
             exact: true,
             path: map.Learning
           },
-          component: lazy(() => import("./Training/learning"))
+          component: lazy(() => import("./Training/Learning"))
+        },
+        {
+          key: "training-instruction",
+          routeProps: {
+            exact: true,
+            path: map.Instruction
+          },
+          component: lazy(() => import("./Training/Instruction"))
         },
         {
           key: "learning-KPI",
