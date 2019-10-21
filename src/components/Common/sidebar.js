@@ -1,43 +1,98 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import map from '../../containers/map.config';
+import logo from '../../assets/img/myvp-logo-white.png';
+import 'react-metismenu/dist/react-metismenu-standart.min.css';
+import MetisMenu from 'react-metismenu';
+import { useTranslation } from "react-i18next";
 
 function SideBar(props) {
+    const { show } = props;
+    const { t } = useTranslation();
+    const content = [
+        {
+            icon: 'bars',
+            label: t("Menu"),
+            to: '/',
+        },
+        {
+            icon: 'graduation-cap',
+            label: t("Menu_Training"),
+            content: [
+                {
+                    icon: 'no-icon',
+                    label: t("Menu_Learning"),
+                    to: map.Learning,
+                },
+                {
+                    icon: 'no-icon',
+                    label: t("Menu_Intruction"),
+                    to: map.Instruction,
+                },
+                {
+                    icon: 'no-icon',
+                    label: t("Menu_TrainingRoadmap"),
+                    to: map.RoadmapDetails,
+                },
+                {
+                    icon: 'no-icon',
+                    label: t("Menu_ExeTest"),
+                    to: "#",
+                },
+                {
+                    icon: 'no-icon',
+                    label: t("Menu_TrainingKPI"),
+                    to: "#",
+                    content: [
+                        {
+                            icon: 'no-icon',
+                            label: t("Menu_Learning"),
+                            to: map.LearningKPI,
+                        },
+                        {
+                            icon: 'no-icon',
+                            label: t("Menu_Intruction"),
+                            to: map.TeachingKPI,
+                        }
+                    ]
+                },
+            ],
+        },
+        {
+            icon: 'user',
+            label: t("Menu_HumanResource"),
+            to: '/hr',
+        },
+        {
+            icon: 'address-book',
+            label: t("Menu_ContactAddress"),
+            to: '/contact',
+        },
+        {
+            icon: 'clipboard',
+            label: t("Menu_TermPolicy"),
+            to: '/term-policy',
+        },
+        {
+            icon: 'bullhorn',
+            label: t("Menu_CompanyAnnouncement"),
+            to: '/announcement',
+        },
+    ];
+
     return (
-        <>
-            <ul className="navbar-nav bg-vp-blue sidebar sidebar-dark accordion" id="accordionSidebar">
-                <a className="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-                    <div className="sidebar-brand-text mx-3">MyVinpearl</div>
-                </a>
-                <li className="nav-item active">
-                    <a className="nav-link text-uppercase" href="/">
-                        <i className="fas fa-fw fa-bars"></i>
-                        <span>Danh mục</span></a>
-                </li>
-                <div className="sidebar-heading">Training</div>
-                <li className="nav-item">
-                    <a className="nav-link collapsed" aria-expanded="true" aria-controls="collapseTwo">
-                        <i className="fas fa-fw fa-graduation-cap"></i>
-                        <span>Đào tạo</span>
-                    </a>
-                    <div id="collapseTwo" className="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                        <div className="py-2 collapse-inner rounded">
-                            <a className="collapse-item" href={map.Learning}>Học tập</a>
-                            <a className="collapse-item" href={map.Instruction}>Giảng dạy</a>
-                            <a className="collapse-item" href={map.RoadmapDetails}>Lộ trình đào tạo</a>
-                            <a className="collapse-item" href="#">Thi tay nghề</a>
-                            <a className="collapse-item" href="#">Chỉ tiêu đào tạo</a>
-                            <div id="collapseTwo" className="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                                <div className="py-2 collapse-inner rounded">
-                                    <a className="collapse-item" href={map.LearningKPI}>Học tập</a>
-                                    <a className="collapse-item" href={map.TeachingKPI}>Giảng dạy</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </>
+        <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block' : 'bg-vp-blue sidebar'}>
+            <a className="d-flex align-items-center justify-content-center" href="/">
+                <img className='vp-logo' src={logo} alt='My Vinpearl' />
+            </a>
+            <MetisMenu
+                className='sidebar sidebar-dark'
+                content={content}
+                activeLinkFromLocation
+                iconNameStateVisible="angle-down"
+                iconNameStateHidden="angle-right"
+            />
+        </div>
     );
 }
 export default SideBar;

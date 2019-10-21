@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useApi, useFetcher } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
-import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner"
+import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -19,6 +20,7 @@ const usePreload = (params) => {
 };
 
 function OnGoingClass(props) {
+    const { t } = useTranslation();
     document.title = `Learning`;
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
@@ -45,7 +47,7 @@ function OnGoingClass(props) {
         <>
             <div className="card mb-4">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">Lớp học đang tiến hành</h6>
+                    <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("ClassInprogress")}</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
@@ -53,9 +55,9 @@ function OnGoingClass(props) {
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>tên lớp học</th>
-                                    <th>ngày vào học</th>
-                                    <th>số tín chỉ của lớp</th>
+                                    <th>{t("ClassName")}</th>
+                                    <th>{t("ClassStartDate")}</th>
+                                    <th>{t("ClassCredit")}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,7 +76,7 @@ function OnGoingClass(props) {
                                         :
                                         (sabaEnrollments.length == 0
                                             ? <tr><td className='text-center p-3' colSpan='4'><LoadingSpinner /></td></tr>
-                                            : <tr><td className='text-center p-3' colSpan='4'>Không tìm thấy dữ liệu</td></tr>)
+                                            : <tr><td className='text-center p-3' colSpan='4'>{t("NoDataFound")}</td></tr>)
                                 }
                             </tbody>
                         </Table>
@@ -83,16 +85,16 @@ function OnGoingClass(props) {
                         isOnGoing ?
                             <Row>
                                 <Col className='total'>
-                                    Tổng số: {sabaEnrollments.data.total} khoá học
-                            </Col>
+                                    {t("Total")}: {sabaEnrollments.data.total} {t("Course")}
+                                </Col>
                                 <Col className='paging'>
                                     <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
                                 </Col>
                                 <Col>
                                     <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
-                                        <option value={5}>Hiển thị 5 lớp học</option>
-                                        <option value={10}>Hiển thị 10 lớp học</option>
-                                        <option value={15}>Hiển thị 15 lớp học</option>
+                                        <option value={5}>{t("Display5Classes")}</option>
+                                        <option value={10}>{t("Display10Classes")}</option>
+                                        <option value={15}>{t("Display15Classes")}</option>
                                     </Form.Control>
                                 </Col>
                             </Row> : null
@@ -102,4 +104,5 @@ function OnGoingClass(props) {
         </>
     );
 }
+
 export default OnGoingClass;

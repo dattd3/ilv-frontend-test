@@ -112,13 +112,17 @@ export default [
             path: map.TeachingKPI
           },
           component: lazy(() => import("./Training/teachingKPI"))
+        },
+        // NotFound must at end of the routes
+        {
+          key: "not-found", 
+          routeProps: {
+            exact: true,
+            path: '/not-found'
+          },
+          component: lazy(() => import("./NotFound"))
         }
       ]
     }
-  },
-  // NotFound must at end of the routes
-  {
-    key: "not-found",
-    component: lazy(() => import("./NotFound"))
   }
 ];

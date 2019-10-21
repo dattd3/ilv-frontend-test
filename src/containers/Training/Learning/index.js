@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
-import { Table, Pagination, Row, Col, Form } from 'react-bootstrap';
-import CustomPaging from '../../../components/Common/CustomPaging';
+import React from "react";
 import OnGoingClass from './OnGoingClass';
 import SuccessClass from './SuccessClass';
 import RejectClass from './RejectClass';
+import { useTranslation } from "react-i18next";
 
 function Learning(props) {
+    const { t } = useTranslation();
 
 
     return (
         <>
-            <h1 className="h3 mb-2 text-gray-800">Learning</h1>
-            <p className="mb-4">dat'z how we do</p>
+            <h1 className="h3 mb-3 text-uppercase text-gray-800">{t("TeachingHistory")}</h1>
             <OnGoingClass />
             <SuccessClass />
             <RejectClass />

@@ -12,8 +12,8 @@
 }
 
 .img-profile {
-  height: 3rem !important;
-  width: 3rem !important;
+  height: 2.5rem !important;
+  width: 2.5rem !important;
 }
 .no-bg {
   background: none !important;
@@ -50,6 +50,25 @@
     font-weight: 700;
     &::before {
       margin-right: 5px;
+      content: "\f0ac";
+      font-family: "Font Awesome 5 Free";
+    }
+  }
+}
+.language-selector-main {
+  button {
+    cursor: pointer;
+    padding: 0 5px;
+    color: #2e3192;
+    &:hover {
+      text-decoration: none;
+      font-weight: 700;
+    }
+  }
+  .lang-active {
+    font-weight: 700;
+    &::after {
+      margin-left: 5px;
       content: "\f0ac";
       font-family: "Font Awesome 5 Free";
     }
@@ -121,12 +140,33 @@
   }
 }
 
+.user-infor-header {
+  background: none;
+  border: none;
+  &:hover {
+    background: none;
+  }
+  .username {
+    float: left;
+  }
+}
+.sidebar {
+  width: 300px !important;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  animation: 0.5s;
+  -moz-animation: 0.5s;
+  -webkit-animation: 0.5s;
+  -o-animation: 0.5s;
+}
 .pl-1 {
   padding-left: 1rem !important;
 }
 
 .bg-vp-blue {
-  background: #293281;
+  background: #293281 !important;
 }
 
 .sidebar-dark {
@@ -152,6 +192,52 @@
         color: #fff !important;
       }
     }
+  }
+}
+
+.metismenu {
+  background: #293281 !important;
+  &::after {
+    box-shadow: none !important;
+  }
+  .metismenu-container {
+    box-shadow: none !important;
+    background: none !important;
+    .metismenu-item {
+      .has-active-child {
+        color: #fff !important;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .active {
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+    .visible .metismenu-item {
+      margin: 0;
+      padding: 0;
+
+      .metismenu-link {
+        padding-left: none !important;
+      }
+      a {
+        color: rgba(255, 255, 255, 0.8) !important;
+        border-left: 3px solid #fff;
+        border-radius: unset !important;
+        &:hover {
+          background: none !important;
+          color: #fff !important;
+        }
+      }
+    }
+    ul {
+      margin-left: 30px;
+    }
+  }
+
+  .fa-no-icon {
+    width: 0 !important;
   }
 }
 
@@ -231,4 +317,8 @@
   height: 100vh;
   background-size: cover;
   background-image: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+}
+.vp-logo {
+  width: 80%;
+  padding: 1rem 0;
 }

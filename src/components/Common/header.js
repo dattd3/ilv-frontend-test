@@ -1,52 +1,52 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useState } from "react";
 import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
-import { Nav, Navbar, NavDropdown, Form, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Navbar, Form, InputGroup, Button, FormControl, Dropdown } from 'react-bootstrap';
+import { useTranslation } from "react-i18next";
 
 
 function Header(props) {
     const { fullName, plEmail, jobTitle, employeeNo, company } = props.user;
+    const { setShow } = props;
+    const [isShow, SetIsShow] = useState(false);
     const guard = useGuardStore();
+
     const userLogOut = () => {
         guard.setLogOut();
         Auth.signOut();
+    }
+    const { t } = useTranslation();
+
+    const handleClickSetShow = () => {
+        SetIsShow(!isShow);
+        setShow(isShow);
     }
 
     return (
         <>
             <Navbar expand="lg" className="topbar mb-4 static-top">
-
-                <Form className="form-inline mr-auto w-100 navbar-search">
-                    <InputGroup>
+                <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
+                <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
+                    <InputGroup className='d-none'>
                         <InputGroup.Prepend>
                             <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
                         </InputGroup.Prepend>
-                        <FormControl className="bg-light border-0" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
+                        <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                     </InputGroup>
                 </Form>
-                <Nav className="mr-auto">
-                    <NavDropdown
-                        className="mr-auto dropdown-menu-right animated--grow-in"
-                        title={
-                            <>
-
-                                <div className='mr-2 small text-right'>
-                                    <div className="text-gray-600">{fullName}({plEmail})</div>
-                                    <span className='small text-gray-500'>{jobTitle}</span> <br />
-                                    <span className='small text-gray-500'>{company}</span>
-                                </div>
-                                <img className="img-profile rounded-circle" src="https://i.pravatar.cc/150" />
-                            </>
-                        }>
-                        <NavDropdown.Item href="#"><i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</NavDropdown.Item>
-                        <NavDropdown.Item href="#"><i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i> Settings</NavDropdown.Item>
-                        <NavDropdown.Item href="#"><i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i> Activity Log</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout</NavDropdown.Item>
-                    </NavDropdown>
-                </Nav>
+                <Dropdown>
+                    <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header'>
+                        <div className='mr-2 small text-right username'>
+                            <div className="text-gray-600">{fullName} ({plEmail})</div>
+                            <div className='d-none d-md-block'>
+                                <span className='small text-gray-500'>{jobTitle}</span> - <span className='small text-gray-500'>{company}</span>
+                            </div>
+                        </div>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className='animated--grow-in'>
+                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
             </Navbar>
         </>
     );
