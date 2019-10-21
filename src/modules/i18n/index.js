@@ -20,8 +20,7 @@ export const useCreateLocalizeStore = () => {
       moment.locale(store.locale);
     });
     return () => dispose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   return store;
 };

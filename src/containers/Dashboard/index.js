@@ -3,6 +3,7 @@ import { Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
+import { useTranslation } from "react-i18next";
 
 
 const usePreload = (params) => {
@@ -16,7 +17,7 @@ const usePreload = (params) => {
   return sabaCredit;
 };
 function Dashboard(props) {
-
+  const { t } = useTranslation();
   const sabaCredit = usePreload([`trangdt28@vingroup.net`]);
   let sbCredit = {
     totalHours: 0,
@@ -41,7 +42,7 @@ function Dashboard(props) {
     grdRed.addColorStop(1, "#FD5D11");
 
     return {
-      labels: ['Chưa hoàn thành', 'Đã hoàn thành'],
+      labels: [t("Status_NotDoneYet"), t("Status_Done")],
       datasets: [{
         data: [100 - sbCredit.perLearned, sbCredit.perLearned],
         title: {
@@ -62,6 +63,7 @@ function Dashboard(props) {
     grdGreen.addColorStop(0.5, "#FFAE46");
     grdGreen.addColorStop(1, "#FF428D");
     return {
+      labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
         data: [25, 75],
         title: {
@@ -82,6 +84,7 @@ function Dashboard(props) {
     grdGreen.addColorStop(0.5, "#7ED4EF");
     grdGreen.addColorStop(1, "#0169C2");
     return {
+      labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
         data: [25, 75],
         title: {
@@ -126,8 +129,8 @@ function Dashboard(props) {
                 />
               </div>
               <div className="text-center mt-3">
-                <p className="mb-2">Tín chỉ học tập đã hoàn thành</p>
-                <strong>{sbCredit.totalHours} giờ / năm</strong>
+                <p className="mb-2">{t("LearningCreditSuccessful")}</p>
+                <strong>{sbCredit.totalHours} {t("Hour")} / {t("Year")}</strong>
               </div>
             </Card.Body>
           </Card>
@@ -142,8 +145,8 @@ function Dashboard(props) {
                 />
               </div>
               <div className="text-center mt-3">
-                <p className="mb-2">Ngàp phép đã sử dụng</p>
-                <strong>7/12 ngày</strong>
+                <p className="mb-2">{t("AnnualLeaveDateBeUsed")}</p>
+                <strong>7/12 {t("Day")}</strong>
               </div>
             </Card.Body>
           </Card>
@@ -158,20 +161,20 @@ function Dashboard(props) {
                 />
               </div>
               <div className="text-center mt-3">
-                <p className="mb-2">Đêm nghỉ dưỡng đã sử dụng</p>
-                <strong>1/3 đêm</strong>
+                <p className="mb-2">{t("VPNightBenefitBeUsed")}</p>
+                <strong>1/3 {t("Night")}</strong>
               </div>
             </Card.Body>
           </Card>
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col xl={6}>
           <Card className="mb-4 news-home">
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <span className="db-card-header color-blue"><i className="fas fa-fw fa-clipboard"></i> Quy định / quy chế</span>
+                  <span className="db-card-header color-blue"><i className="fas fa-fw fa-clipboard"></i> {t("TermPolicy")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Card.Title>What is Lorem Ipsum?</Card.Title>
@@ -198,12 +201,12 @@ function Dashboard(props) {
             </Card.Body>
           </Card>
         </Col>
-        <Col>
+        <Col xl={6}>
           <Card className="mb-4 news-home">
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <span className="db-card-header color-pink"><i className="fas fa-fw fa-bullhorn"></i> Thông tin tập đoàn</span>
+                  <span className="db-card-header color-pink"><i className="fas fa-fw fa-bullhorn"></i>  {t("CompanyAnnouncement")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Card.Title>Lorem Ipsum Generator</Card.Title>

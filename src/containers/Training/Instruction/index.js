@@ -1,14 +1,14 @@
 import React from "react";
 import OnGoingClass from './OnGoingClass';
 import SuccessClass from './SuccessClass';
+import { useTranslation } from "react-i18next";
 
 function Instruction() {
-
-
+    const { t } = useTranslation();
+    
     return (
         <>
-            <h1 className="h3 mb-2 text-gray-800">Instruction</h1>
-            <p className="mb-4">dat'z how we play</p>
+            <h1 className="h3 mb-3 text-uppercase text-gray-800">{t("LearningHistory")}</h1>
             <OnGoingClass />
             <SuccessClass />
         </>
