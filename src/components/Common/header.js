@@ -13,7 +13,7 @@ function Header(props) {
 
     const userLogOut = () => {
         guard.setLogOut();
-        Auth.signOut();
+        Auth.signOut({ global: true });
     }
     const { t } = useTranslation();
 

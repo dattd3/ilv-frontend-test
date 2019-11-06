@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useApi, useFetcher, useGuardStore } from "../../modules";
+import React, { useEffect } from "react";
+import { useApi, useFetcher } from "../../modules";
 import CourseListTable from "../../components/Forms/CustomForm/CourseListTable"
 import Roadmap from "./roadmap.js"
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -10,7 +10,7 @@ import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 const usePreload = (Id) => {
   // const guard = useGuardStore();
   const api = useApi();
-  const [roadmapDetails = {}, error] = useFetcher({
+  const [roadmapDetails = {}] = useFetcher({
     api: api.fetchRoadmapDetails,
     autoRun: true,
     params: [Id,'trangdt28@vingroup.net']
