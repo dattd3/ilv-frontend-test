@@ -56,12 +56,12 @@ function Authorize(props) {
                 }
             }
             else {
-                //SetNotifyContent(t("NorificationError"));
-                setTimeout(() => { history.push(map.Login); }, 5000);
+                SetNotifyContent(t("NorificationError"));
+                //setTimeout(() => { history.push(map.Login); }, 5000);
             }
         }).catch(err => {
-            //SetNotifyContent(t("NorificationError"));
-            setTimeout(() => { history.push(map.Login); },  5000);
+            SetNotifyContent(t("NorificationError"));
+            //setTimeout(() => { history.push(map.Login); },  5000);
         });
     }
 
