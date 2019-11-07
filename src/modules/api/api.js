@@ -1,5 +1,5 @@
 import axios from "axios";
-import { demoCallApi, getPermissions, signinApi } from "./mockCallApi";
+import { getPermissions } from "./mockCallApi";
 
 export default class Api {
   inject = {
@@ -37,12 +37,14 @@ export default class Api {
       this.request.interceptors.response.eject(interceptorId);
     }
   };
+
   constructor(url) {
     this.request = axios.create({
       baseURL: url,
-      timeout: 5000
+      timeout: 20000
     });
   }
+
 
   setAuthorization = ({ tokenType, accessToken }) => {
     this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
@@ -61,17 +63,79 @@ export default class Api {
     return await this.request.get('/api/v1/user/me');
   };
 
-  // training
-  fetchCertification = async (type, includeDetails) => {
-    let param = {
-      type: type,
-      includeDetails: includeDetails
-    };
-    return await this.request.get('https://gcofk70fsh.execute-api.ap-southeast-1.amazonaws.com/dev/saba/v1/people/username=tunglt16@vingroup.net/certifications/search?type=internal&includeDetails=true', param);
+  fetchSabaUser = async (username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
+      params: {
+        username: username,
+      }
+    });
+  };
+
+  // training 
+  fetchSabaCredit = async (username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits?username=${username}`);
   }
 
-  fetchSabaCredit = async (email) => {
-    return await this.request.get(`https://dnyxeec805.execute-api.ap-southeast-1.amazonaws.com/dev/v1/app/saba/people/namnt32@vingroup.net/transcripts`);
+  fetchSabaLearning_OnGoing = async (username, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
+      params: {
+        username: username,
+        page_no: pageIndex,
+        page_size: pageSize
+      }
+    });
   }
 
-}
+  fetchSabaLearning_Transcript = async (username, status, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`, {
+      params: {
+        username: username,
+        status: status,
+        page_no: pageIndex,
+        page_size: pageSize
+      }
+    });
+  }
+
+  fetchSabaIntruction = async (user_id, status, pageIndex, pageSize) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`, {
+      params: {
+        user_id: user_id,
+        status: status,
+        page_no: pageIndex,
+        page_size: pageSize
+      }
+    });
+  }
+
+  fetchRoadmapList = async () => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
+      params: {
+        username: 'trangdt28@vingroup.net',
+        startPage: 1,
+        count: 1000
+      }
+    });
+  }
+
+  fetchRoadmapDetails = async (id, username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id}`,
+      {
+        params: {
+          username: username
+        }
+      }
+    );
+  }
+
+  fetchKPI = async (username) => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
+      {
+        params: {
+          username: 'quyennd9@vingroup.net'
+        }
+      }
+    );
+  }
+
+};

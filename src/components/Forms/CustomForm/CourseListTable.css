@@ -1,0 +1,47 @@
+.white-body{
+  background-color: white;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
+.table-title{
+  color: #293281;
+  padding-top: 15px;
+  padding-bottom: 20px;
+  padding-left: 5px;
+  font-size: larger;
+}
+.table-content{
+  font-weight: normal !important;
+  font-size: smaller;
+}
+
+.table-header{
+  font-weight: normal !important;
+}
+
+.wrap-text{
+  word-wrap: break-word;
+  min-width: 160px;
+  max-width: 300px;
+}
+.center-text{
+  text-align: center;
+}
+td {
+  vertical-align: middle !important;
+}
+
+div.dataTables_paginate {
+  text-align: center !important;
+}
+
+ul.pagination{
+  display: inline-flex;
+}
+.padding-right-50{
+  padding-right: 50px;
+  text-align: right;;
+}

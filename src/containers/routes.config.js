@@ -14,9 +14,9 @@ export const RouteSettings = {
     defaultRoute: map.Login,
     routes: [map.Login, map.Auth]
   }
-}; 
+};
 
-export default [ 
+export default [
   {
     key: "login",
     routeProps: {
@@ -35,7 +35,7 @@ export default [
   },
   {
     key: "main",
-    routeProps: { 
+    routeProps: {
       path: map.Root
     },
     component: lazy(() => import("./Main/Main")),
@@ -64,13 +64,65 @@ export default [
             path: map.Certification
           },
           component: lazy(() => import("./Training/certification"))
+        },
+        {
+          key: "training-roadmap",
+          routeProps: {
+            exact: true,
+            path: map.Roadmap
+          },
+          component: lazy(() => import("./Training/roadmap"))
+        },
+        {
+          key: "training-roadmap-details",
+          routeProps: {
+            exact: true,
+            path: map.roadmapdetails
+          },
+          component: lazy(() => import("./Training/roadmapdetails"))
+        },
+        {
+          key: "training-learning",
+          routeProps: {
+            exact: true,
+            path: map.Learning
+          },
+          component: lazy(() => import("./Training/Learning"))
+        },
+        {
+          key: "training-instruction",
+          routeProps: {
+            exact: true,
+            path: map.Instruction
+          },
+          component: lazy(() => import("./Training/Instruction"))
+        },
+        {
+          key: "learning-KPI",
+          routeProps: {
+            exact: true,
+            path: map.LearningKPI
+          },
+          component: lazy(() => import("./Training/learningKPI"))
+        },
+        {
+          key: "teaching-KPI",
+          routeProps: {
+            exact: true,
+            path: map.TeachingKPI
+          },
+          component: lazy(() => import("./Training/teachingKPI"))
+        },
+        // NotFound must at end of the routes
+        {
+          key: "not-found", 
+          routeProps: {
+            exact: true,
+            path: '/not-found'
+          },
+          component: lazy(() => import("./NotFound"))
         }
       ]
     }
-  },
-  // NotFound must at end of the routes
-  {
-    key: "not-found",
-    component: lazy(() => import("./NotFound"))
   }
 ];

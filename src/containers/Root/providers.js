@@ -1,5 +1,5 @@
-/* eslint-disable eqeqeq */
-import React from "react";
+import React, { useState } from "react";
+import { Modal, Spinner } from 'react-bootstrap';
 import {
   ApiContext,
   useApiMemo,
@@ -13,8 +13,8 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
-import map from '../map.config';
 import { Auth } from 'aws-amplify';
+import { AlertList } from "react-bs-notifier";
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -42,36 +42,89 @@ const GuardProvider = function ({ children }) {
 const ComposeApiWithGuard = function ({ children }) {
   const guard = useGuardStore();
   const api = useApi();
+  const [isShowModal, SetIsShowModal] = useState(false);
+  const [alert, SetAlert] = useState([]);
+
+  function onAlertDismissed(alr) {
+    const idx = alert.indexOf(alr);
+    if (idx >= 0) {
+      SetAlert([...alert.slice(0, idx), ...alert.slice(idx + 1)]);
+    }
+  }
+
   useDisposable(() => autorun(() => {
     if (guard.currentAuthUser) {
       api.setAuthorization(guard.currentAuthUser);
+      api.inject.request(() => {
+        SetIsShowModal(true);
+      });
       api.inject.response((err) => {
-        if (err && err.response.status == 401) {
-          guard.setLogOut();
-          Auth.signOut();
+        SetIsShowModal(false);
+        if (err) {
+          SetAlert(...alert, [{
+            id: (new Date()).getTime(),
+            type: 'danger',
+            headline: `Hmm, something went wrong :(`,
+            message: err.message
+          }]);
+          if (err.response.status === 401) {
+            guard.setLogOut();
+            Auth.signOut();
+          }
         }
       });
       return;
     }
     api.removeAuthorization();
     api.eject.response((err) => {
-      if (err && err.response.status == 401) {
-        guard.setLogOut();
-        Auth.signOut(); 
+      SetIsShowModal(false);
+      if (err) {
+        SetAlert(...alert, [{
+          id: (new Date()).getTime(),
+          type: 'danger',
+          headline: `Hmm, something went wrong :(`,
+          message: err.message
+        }]);
+        if (err.response.status === 401) {
+          guard.setLogOut();
+          Auth.signOut();
+        }
       }
     });
   }));
-  return children;
+  const modal = (
+    <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
+      <Modal.Body className='text-center no-bg'>
+        <Spinner animation="border" variant="light" size='lg' />
+      </Modal.Body>
+    </Modal>
+  );
+
+  const alertCom = (
+    <AlertList key={`alertCom`}
+      position='top-right'
+      alerts={alert}
+      timeout={3000}
+      dismissTitle="Begone!"
+      onDismiss={onAlertDismissed.bind(this)}
+    />
+  );
+
+  return [children, modal, alertCom];
 }
 
 export default function ({ children }) {
   return (
-    <ApiProvider>
-      <LanguageProvider>
-        <GuardProvider>
-          <ComposeApiWithGuard>{children}</ComposeApiWithGuard>
-        </GuardProvider>
-      </LanguageProvider>
-    </ApiProvider>
+    <>
+      <ApiProvider>
+        <LanguageProvider>
+          <GuardProvider>
+            <ComposeApiWithGuard>
+              {children}
+            </ComposeApiWithGuard>
+          </GuardProvider>
+        </LanguageProvider>
+      </ApiProvider>
+    </>
   );
 }

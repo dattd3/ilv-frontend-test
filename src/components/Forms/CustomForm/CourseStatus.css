@@ -1,0 +1,32 @@
+
+.course-status{
+  border-radius: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  vertical-align: middle !important;
+  display: inline-block;
+  width: 160px;
+}
+.ok{
+  border: 2px solid #283280;
+  color: #283280;
+  
+}
+.overdue{
+  border: 2px solid #FF0000;
+  color: #FF0000;
+}
+
+.inprogress{
+  border: 2px solid #05BD29;
+  color: #05BD29;
+}
+
+.cancelled{
+  border: 2px solid #FF7F00;
+  color: #FF7F00;
+}
+.undefined{
+  border: 2px solid #dee2e6;
+  color: #dee2e6;
+}

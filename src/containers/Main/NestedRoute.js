@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { Route } from "react-router-dom";
+import LoadingModal from '../../components/Common/LoadingModal';
 
 export default function NestedRoute({ routes }) {
   return routes.map(({ key, component: Content, routeProps }) => {
@@ -7,7 +8,7 @@ export default function NestedRoute({ routes }) {
       <Route key={key} {...routeProps}
         render={childProps => {
           return (
-            <Suspense fallback={"loading..."}>
+            <Suspense fallback={<LoadingModal show={true} />}>
               <Content {...childProps} />
             </Suspense>
           );

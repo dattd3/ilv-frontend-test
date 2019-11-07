@@ -1,18 +1,26 @@
 #content-wrapper {
   background-color: #f2f2f2 !important;
 }
-
+.text-color-vp {
+  color: #293281 !important;
+}
+.font-weight-500 {
+  font-weight: 500;
+}
 .my-10 {
   margin: 10rem 0 !important;
 }
 
-.img-profile{
-  height: 2rem;
-  width: 2rem;
+.img-profile {
+  height: 2.5rem !important;
+  width: 2.5rem !important;
+}
+.no-bg {
+  background: none !important;
 }
 
 .bg-login-image {
-  background: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+  background: url("./assets/img/Login590x590.png");
   background-position: center;
   background-size: cover;
 }
@@ -42,6 +50,25 @@
     font-weight: 700;
     &::before {
       margin-right: 5px;
+      content: "\f0ac";
+      font-family: "Font Awesome 5 Free";
+    }
+  }
+}
+.language-selector-main {
+  button {
+    cursor: pointer;
+    padding: 0 5px;
+    color: #2e3192;
+    &:hover {
+      text-decoration: none;
+      font-weight: 700;
+    }
+  }
+  .lang-active {
+    font-weight: 700;
+    &::after {
+      margin-left: 5px;
       content: "\f0ac";
       font-family: "Font Awesome 5 Free";
     }
@@ -96,15 +123,15 @@
 }
 
 .news-home {
-  .list-group-item {
-    // padding: 0;
-  }
   .db-card-header {
     text-transform: uppercase;
     font-size: 20px;
   }
   .card-title {
     margin: 0;
+    color: #585858;
+    font-weight: 600;
+    font-size: 18px;
   }
   .card-text {
     padding: 0.5rem 0;
@@ -113,12 +140,33 @@
   }
 }
 
+.user-infor-header {
+  background: none;
+  border: none;
+  &:hover {
+    background: none;
+  }
+  .username {
+    float: left;
+  }
+}
+.sidebar {
+  width: 300px !important;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  animation: 0.5s;
+  -moz-animation: 0.5s;
+  -webkit-animation: 0.5s;
+  -o-animation: 0.5s;
+}
 .pl-1 {
   padding-left: 1rem !important;
 }
 
 .bg-vp-blue {
-  background: #293281;
+  background: #293281 !important;
 }
 
 .sidebar-dark {
@@ -130,7 +178,9 @@
     }
   }
 
-  .collapse-inner {
+  .collapse {
+    transition: width 2s;
+    -webkit-transition: width 2s;
     .collapse-item {
       color: rgba(255, 255, 255, 0.8) !important;
       border-left: 3px solid #fff;
@@ -143,4 +193,132 @@
       }
     }
   }
+}
+
+.metismenu {
+  background: #293281 !important;
+  &::after {
+    box-shadow: none !important;
+  }
+  .metismenu-container {
+    box-shadow: none !important;
+    background: none !important;
+    .metismenu-item {
+      .has-active-child {
+        color: #fff !important;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .active {
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+    .visible .metismenu-item {
+      margin: 0;
+      padding: 0;
+
+      .metismenu-link {
+        padding-left: none !important;
+      }
+      a {
+        color: rgba(255, 255, 255, 0.8) !important;
+        border-left: 3px solid #fff;
+        border-radius: unset !important;
+        &:hover {
+          background: none !important;
+          color: #fff !important;
+        }
+      }
+    }
+    ul {
+      margin-left: 30px;
+    }
+  }
+
+  .fa-no-icon {
+    width: 0 !important;
+  }
+}
+
+.navbar-search {
+  button {
+    border-radius: 20px;
+  }
+  input {
+    border-radius: 20px;
+    font-size: 15px !important;
+    padding-left: 0 !important;
+    width: 20vw !important;
+  }
+}
+
+.table-bordered {
+  th,
+  td {
+    border: none !important;
+  }
+  th {
+    text-transform: uppercase;
+  }
+}
+
+.page-link {
+  color: #515151;
+}
+.page-item.active {
+  .page-link {
+    background-color: #f8c20b !important;
+    border-color: #f8c20b !important;
+  }
+}
+
+.paging-pagesize {
+  button {
+    background: #fff;
+    color: #585858;
+    border: 1px solid #ccc;
+  }
+}
+
+.vp-loading {
+  img {
+    width: 80px;
+    position: absolute;
+    left: 70px;
+    top: 80px;
+  }
+  .loader {
+    border: 5px solid #df9d25;
+    border-top: 10px solid #df9d25;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.loading-note {
+  color: white;
+  padding-top: 1em;
+}
+
+.blank-page-cover {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-image: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
+}
+.vp-logo {
+  width: 80%;
+  padding: 1rem 0;
 }

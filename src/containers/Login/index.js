@@ -7,6 +7,7 @@ import logo from '../../assets/img/logo-vp-vt.png';
 import { useLocalizeStore } from '../../modules';
 
 function LoginGuideModal(props) {
+  const { t } = props;
   return (
     <Modal
       {...props}
@@ -17,13 +18,13 @@ function LoginGuideModal(props) {
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>
-        <h4>Hướng dẫn đăng nhập:</h4>
-        <p>Bạn vui lòng chọn "Tiếp theo" sau đó nhập thông tin tên đăng nhập và mật khẩu để truy cập website.</p>
+        <h4>{t("LoginGuide_Title")}:</h4>
+        <p>{t("LoginGuide_Description")}</p>
         <ul>
-          <li><strong>Tên đăng nhập:</strong> sử dụng account AD</li>
-          <li><strong>Mật khẩu:</strong> sử dụng mật khẩu account AD</li>
+          <li><strong>{t("Username")}:</strong> {t("LoginGuide_UserName")}</li>
+          <li><strong>{t("Password")}:</strong> {t("LoginGuide_Password")}</li>
         </ul>
-        <p>Trường hợp không rõ Account AD của mình hoặc không đăng nhập được, vui lòng liên hệ bộ phận IT của đơn vị để kiểm tra. </p>
+        <p>{t("LoginGuide_Note")} </p>
       </Modal.Body>
     </Modal>
   );
@@ -35,24 +36,22 @@ function Login() {
   const [modalShow, setModalShow] = useState(false);
   const [langCode, setLangCode] = useState('vi');
 
-
   useEffect(() => {
     localizeStore.setLocale(langCode);
-  }, [langCode]);
+  }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
     const authConfig = Auth.configure();
     const {
       domain,
       redirectSignIn,
-      redirectSignOut,
       responseType } = authConfig.oauth;
 
     const clientId = config.AWS_COGNITO_CLIENT_ID;
     const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
     window.location.assign(url);
   }
- 
+
   return (
     <Container>
       <Row className="justify-content-center">
@@ -63,12 +62,12 @@ function Login() {
                 <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div className="col-lg-6">
                   <div className="float-right language-selector">
-                    <Button className={langCode == 'vi' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi')}>{t("LangViet")}</Button>|
-                    <Button className={langCode == 'en' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en')}>{t("LangEng")}</Button>
+                    <Button className={langCode === 'vi' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi')}>{t("LangViet")}</Button>|
+                    <Button className={langCode === 'en' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en')}>{t("LangEng")}</Button>
                   </div>
                   <div className="p-5">
                     <div className="text-center">
-                      <img src={logo} className="logo-login" />
+                      <img src={logo} className="logo-login" alt='' />
                     </div>
                     <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}> {t("Login")}</Button>
                     <div className="text-center login-guide">
@@ -81,7 +80,7 @@ function Login() {
           </div>
         </Col>
       </Row>
-      <LoginGuideModal show={modalShow} onHide={() => setModalShow(false)}
+      <LoginGuideModal show={modalShow} t={t} onHide={() => setModalShow(false)}
       />
     </Container>
   );
