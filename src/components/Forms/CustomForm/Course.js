@@ -3,16 +3,13 @@ import './Course.css';
 import icon from "../../Logo/IconBooks56x56.png"
 import CourseStatus from "./CourseStatus"
 import map from '../../../containers/map.config';
-import { Link, BrowserRouter as Router, Route, Redirect, generatePath } from 'react-router-dom';
-import RoadmapDetails from "../../../containers/Training/roadmapdetails.js"
+import { Link } from 'react-router-dom';
 
 class Course extends React.Component {
   constructor(props) {
     super(props);
   }
   
-
-
   render() {
 
     return (

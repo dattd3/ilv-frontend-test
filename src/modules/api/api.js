@@ -46,8 +46,8 @@ export default class Api {
   }
 
 
-  setAuthorization = ({ tokenType, accessToken }) => {
-    this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
+  setAuthorization = ({  accessToken }) => {
+    this.request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
   }
 
   removeAuthorization = () => {
