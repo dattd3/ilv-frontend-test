@@ -113,7 +113,14 @@ export default [
           },
           component: lazy(() => import("./Training/teachingKPI"))
         },
-        // NotFound must at end of the routes
+        {
+          key: "forbidden", 
+          routeProps: {
+            exact: true,
+            path: '/access-denied'
+          },
+          component: lazy(() => import("./AccessDenied"))
+        },
         {
           key: "not-found", 
           routeProps: {

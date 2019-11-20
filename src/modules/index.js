@@ -11,3 +11,4 @@ export {
   useGuardStore,
   useCreateLocalGuardStore
 } from "./guard";
+export * from './auth';

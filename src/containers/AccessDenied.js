@@ -1,12 +1,13 @@
 import React from "react";
-import { Link } from 'react-router-dom';
-import PageNotFound from '../assets/img/404.png';
+import map from './map.config';
 
-export default function AccessDenied({ location }) {
+export default function AccessDenied() {
   return (
-    <div>
-      <img src={PageNotFound} style={{ display: 'block', margin: 'auto', position: 'relative' }} />
-      <center><Link to="/">Return to Home Page</Link></center>
+    <div className="text-center">
+      <div className="error mx-auto" data-text="403">403</div>
+      <p className="lead text-gray-800 mb-3">Forbidden: Access Denied</p>
+      <p className="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+      <a href={map.Dashboard}>&larr; Back to Dashboard</a>
     </div>
   );
 }

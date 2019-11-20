@@ -12,5 +12,6 @@ export default {
   Instruction: "/training/instruction",
   LearningKPI: "/training/learningKPI",
   TeachingKPI: "/training/teachingKPI",
-  NotFound: "/notfound"
+  NotFound: "/not-found",
+  AccessDenied: "/access-denied"
 };

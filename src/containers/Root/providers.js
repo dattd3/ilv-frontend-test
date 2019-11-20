@@ -15,6 +15,8 @@ import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
 import { Auth } from 'aws-amplify';
 import { AlertList } from "react-bs-notifier";
+import { render } from 'react-dom';
+import AccessDenied from '../AccessDenied';
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -58,7 +60,7 @@ const ComposeApiWithGuard = function ({ children }) {
       api.inject.request(() => {
         SetIsShowModal(true);
       });
-      api.inject.response((err) => {
+      api.inject.response((err) => { 
         SetIsShowModal(false);
         if (err) {
           SetAlert(...alert, [{
@@ -70,6 +72,8 @@ const ComposeApiWithGuard = function ({ children }) {
           if (err.response.status === 401) {
             guard.setLogOut();
             Auth.signOut();
+          } else if (err.response.status === 403) {
+            render(<AccessDenied />, document.getElementById('main-content'));
           }
         }
       });
@@ -88,6 +92,8 @@ const ComposeApiWithGuard = function ({ children }) {
         if (err.response.status === 401) {
           guard.setLogOut();
           Auth.signOut();
+        } else if (err.response.status === 403) {
+          render(<AccessDenied />, document.getElementById('main-content'));
         }
       }
     });
