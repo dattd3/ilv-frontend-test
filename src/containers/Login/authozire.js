@@ -55,10 +55,10 @@ function Authorize(props) {
                 }
             }
             else {
-                SetNotifyContent(t("NorificationError"));
+                SetNotifyContent(t("WaitNotice"));
             }
         }).catch(err => {
-            SetNotifyContent(t("NorificationError"));
+            SetNotifyContent(t("WaitNotice"));
         });
     }
 

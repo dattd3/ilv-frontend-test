@@ -13,10 +13,10 @@ const usePreload = (Id) => {
   const [roadmapDetails = {}] = useFetcher({
     api: api.fetchRoadmapDetails,
     autoRun: true,
-    params: [Id,'trangdt28@vingroup.net']
-  }); 
+    params: [Id, 'trangdt28@vingroup.net']
+  });
   if (roadmapDetails) {
-  return roadmapDetails;
+    return roadmapDetails;
   }
 };
 
@@ -29,20 +29,19 @@ const RoadmapDetailsElement = ({ match, location }) => {
   if (data && data.data && data.data.paths) {
     courseData = data.data.paths[0];
   }
-  
+
 
   let courseDataElement;
-   if (courseData && courseData.learning_modules) 
-   {
-      courseDataElement = courseData.learning_modules.map((item, index) =>
-         <CourseListTable data ={item} tableName = {item.name} key={index} id={item.id} />
-        
-        )
-    }
+  if (courseData && courseData.learning_modules) {
+    courseDataElement = courseData.learning_modules.map((item, index) =>
+      <CourseListTable data={item} tableName={item.name} key={index} id={item.id} />
+
+    )
+  }
   if (!courseData) {
     return (
-         <LoadingSpinner />
-      )
+      <LoadingSpinner />
+    )
   }
   return (
     <>{courseDataElement}</>
@@ -50,21 +49,21 @@ const RoadmapDetailsElement = ({ match, location }) => {
 };
 
 function RoadmapDetails(props) {
-    
-    useEffect(() => {
-        document.title = `Lộ trình học tập`;
-    });
+
+  useEffect(() => {
+    document.title = `Lộ trình học tập`;
+  });
 
 
-    return (
-      <div>
-        <Router>
-          <Switch>
-            <Route exact path="/training/roadmapdetails" component={Roadmap} />
-            <Route path="/training/roadmapdetails/:Id" component = {RoadmapDetailsElement} />
-          </Switch>
-        </Router>
-      </div>
-    );
+  return (
+    <div>
+      <Router>
+        <Switch>
+          <Route exact path="/training/roadmapdetails" component={Roadmap} />
+          <Route path="/training/roadmapdetails/:Id" component={RoadmapDetailsElement} />
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 export default RoadmapDetails;
