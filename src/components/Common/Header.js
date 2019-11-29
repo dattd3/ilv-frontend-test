@@ -4,7 +4,6 @@ import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 
-
 function Header(props) {
     const { fullName, plEmail, jobTitle, employeeNo, company, department, location } = props.user;
     const { setShow } = props;
@@ -13,7 +12,11 @@ function Header(props) {
 
     const userLogOut = () => {
         guard.setLogOut();
-        Auth.signOut({ global: true });
+        try {
+            Auth.signOut({ global: true });
+        } catch  {
+            
+        }
     }
 
     const { t } = useTranslation();

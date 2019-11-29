@@ -47,6 +47,8 @@ const ComposeApiWithGuard = function ({ children }) {
   const [isShowModal, SetIsShowModal] = useState(false);
   const [alert, SetAlert] = useState([]);
 
+  const currentLocale = localStorage.getItem("locale");
+
   function onAlertDismissed(alr) {
     const idx = alert.indexOf(alr);
     if (idx >= 0) {
@@ -57,6 +59,7 @@ const ComposeApiWithGuard = function ({ children }) {
   useDisposable(() => autorun(() => {
     if (guard.currentAuthUser) {
       api.setAuthorization(guard.currentAuthUser);
+      api.setLanguage(currentLocale);
       api.inject.request(() => {
         SetIsShowModal(true);
       });
@@ -98,13 +101,13 @@ const ComposeApiWithGuard = function ({ children }) {
       }
     });
   }));
-  const modal = (
-    <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
-      <Modal.Body className='text-center no-bg'>
-        <Spinner animation="border" variant="light" size='lg' />
-      </Modal.Body>
-    </Modal>
-  );
+  // const modal = (
+  //   <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
+  //     <Modal.Body className='text-center no-bg'>
+  //       <Spinner animation="border" variant="light" size='lg' />
+  //     </Modal.Body>
+  //   </Modal>
+  // );
 
   const alertCom = (
     <AlertList key={`alertCom`}
@@ -116,7 +119,7 @@ const ComposeApiWithGuard = function ({ children }) {
     />
   );
 
-  return [children, modal, alertCom];
+  return [children, alertCom];
 }
 
 export default function ({ children }) {

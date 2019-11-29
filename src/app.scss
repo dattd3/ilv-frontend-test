@@ -1,5 +1,118 @@
+@font-face {
+  font-family: "icomoon";
+  src: url("./assets/fonts/icomoon.eot?kpoxqk");
+  src: url("./assets/fonts/icomoon.eot?kpoxqk#iefix") format("embedded-opentype"),
+    url("./assets/fonts/icomoon.ttf?kpoxqk") format("truetype"),
+    url("./assets/fonts/icomoon.woff?kpoxqk") format("woff"),
+    url("./assets/fonts/icomoon.svg?kpoxqk#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "icomoon" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.login-modal {
+  width: 700px;
+}
+
+.metismenu-icon {
+  text-align: center;
+  padding: 0 1rem;
+  font-size: 1.5em;
+}
+
+.icon-no-icon {
+  padding: 0 !important;
+  width: 0 !important;
+}
+
+.icon-arrow_collapse {
+  padding: 7px 0;
+  margin-left: auto;
+  &:before {
+    content: "\e900";
+  }
+}
+.icon-arrow_expand {
+  padding: 7px 0;
+  margin-left: auto;
+  &:before {
+    content: "\e901";
+  }
+}
+.icon-contact {
+  &:before {
+    content: "\e902";
+  }
+}
+.icon-copyright {
+  &:before {
+    content: "\e903";
+  }
+}
+.icon-groupinfo {
+  &:before {
+    content: "\e904";
+  }
+}
+.icon-groupnotice {
+  &:before {
+    content: "\e905";
+  }
+}
+.icon-hr {
+  &:before {
+    content: "\e906";
+  }
+}
+.icon-language {
+  &:before {
+    content: "\e907";
+  }
+}
+.icon-menu {
+  &:before {
+    content: "\e908";
+  }
+}
+.icon-menu_term {
+  &:before {
+    content: "\e909";
+  }
+}
+.icon-report {
+  &:before {
+    content: "\e90a";
+  }
+}
+.icon-term_policy {
+  &:before {
+    content: "\e90b";
+  }
+}
+.icon-training {
+  &:before {
+    content: "\e90c";
+  }
+}
+
 #content-wrapper {
   background-color: #f2f2f2 !important;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .text-color-vp {
   color: #293281 !important;
@@ -50,8 +163,8 @@
     font-weight: 700;
     &::before {
       margin-right: 5px;
-      content: "\f0ac";
-      font-family: "Font Awesome 5 Free";
+      content: "\e907";
+      font-family: "icomoon" !important;
     }
   }
 }
@@ -92,22 +205,34 @@
     .close {
       background: #fff;
       position: absolute;
-      right: 0;
-      top: 0;
+      right: 0px;
+      top: 0px;
       border-radius: 50%;
       padding: 0.5rem;
       color: #293281;
-      font-size: 30px;
+      font-size: 40px;
       font-weight: 700;
       opacity: 1;
       width: 40px;
       height: 40px;
       line-height: 1px;
+      z-index: 999;
+      text-shadow: none;
+      &:hover{
+        opacity: 1;
+      }
+      span{
+        position: absolute;
+        top: 16px;
+        left: 6px;
+      }
     }
   }
   .modal-body {
     background: #fff;
     padding: 2rem;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
 }
 
@@ -194,7 +319,17 @@
     }
   }
 }
-
+.metismenu-link {
+  padding-left: none !important;
+  line-height: 3.5 !important;
+  font-size: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  &:hover {
+    color: #f9c20a !important;
+    text-decoration: none;
+  }
+}
 .metismenu {
   background: #293281 !important;
   &::after {
@@ -205,34 +340,39 @@
     background: none !important;
     .metismenu-item {
       .has-active-child {
-        color: #fff !important;
-        font-weight: 600;
+        color: #f9c20a !important;
         background: rgba(255, 255, 255, 0.05);
       }
       .active {
-        font-weight: 700;
         background: rgba(255, 255, 255, 0.05);
+        color: #f9c20a;
       }
     }
-    .visible .metismenu-item {
-      margin: 0;
-      padding: 0;
 
-      .metismenu-link {
-        padding-left: none !important;
-      }
-      a {
-        color: rgba(255, 255, 255, 0.8) !important;
-        border-left: 3px solid #fff;
-        border-radius: unset !important;
-        &:hover {
-          background: none !important;
-          color: #fff !important;
+    .visible {
+      .metismenu-item {
+        margin: 0;
+        padding: 0;
+        ul {
+          margin-left: 2em;
+        }
+        .metismenu-link {
+          padding-left: 2em !important;
+        }
+        a {
+          color: rgba(255, 255, 255, 0.8) !important;
+          border-left: 3px solid #fff;
+          border-radius: unset !important;
+          line-height: 36px !important;
+          &:hover {
+            background: none !important;
+            color: #f9c20a !important;
+          }
         }
       }
     }
     ul {
-      margin-left: 30px;
+      margin-left: 3em;
     }
   }
 
@@ -257,10 +397,17 @@
   th,
   td {
     border: none !important;
+    &:hover {
+      color: #4d4d4d;
+    }
   }
   th {
     text-transform: uppercase;
   }
+  tbody tr:nth-of-type(odd) {
+    background-color: #f4f3f8;
+  }
+  color: #4d4d4d;
 }
 
 .page-link {
@@ -319,6 +466,10 @@
   background-image: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
 }
 .vp-logo {
-  width: 80%;
-  padding: 1rem 0;
+  width: 60%;
+  padding: 3rem 1rem 1rem 1rem;
+}
+
+.color-283280 {
+  color: #283280 !important;
 }

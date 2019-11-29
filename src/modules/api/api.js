@@ -50,6 +50,10 @@ export default class Api {
     this.request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
   }
 
+  setLanguage = (language) => {
+    this.request.defaults.headers.common['accept-language'] = language;
+  }
+
   removeAuthorization = () => {
     delete this.request.defaults.headers.Authorization;
   }
