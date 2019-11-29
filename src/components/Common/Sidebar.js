@@ -3,12 +3,10 @@ import React from "react";
 import logo from '../../assets/img/myvp-logo-white.png';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import MetisMenu from 'react-metismenu';
-import { Navigation } from '../../modules/';
+import { Navigation } from '../../modules';
 import { useGuardStore } from '../../modules';
 import { useTranslation } from "react-i18next";
-
-
-
+ 
 function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
@@ -31,19 +29,20 @@ function SideBar(props) {
         return rootNav;
     }
 
-    const content = getNavigation(user.jobType);
+    const content = getNavigation(user.jobType); 
 
     return (
         <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block' : 'bg-vp-blue sidebar'}>
-            <a className="d-flex align-items-center justify-content-center" href="/">
+            <a className="d-flex" href="/">
                 <img className='vp-logo' src={logo} alt='My Vinpearl' />
             </a>
             <MetisMenu
                 className='sidebar sidebar-dark'
                 content={content}
                 activeLinkFromLocation
-                iconNameStateVisible="angle-down"
-                iconNameStateHidden="angle-right"
+                iconNameStateVisible="arrow_expand"
+                iconNameStateHidden="arrow_collapse"
+                iconNamePrefix="icon-"
             />
         </div>
     );

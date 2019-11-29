@@ -1,14 +1,10 @@
 import map from '../../containers/map.config';
 
-
-
-
-
 export const Navigation = [
     {
         id: 1,
         parentId: 0,
-        icon: 'bars',
+        icon: 'menu',
         label: "Menu",
         to: '/',
         role: 'U'
@@ -16,7 +12,7 @@ export const Navigation = [
     {
         id: 2,
         parentId: 0,
-        icon: 'graduation-cap',
+        icon: 'training',
         label: "Menu_Training",
         role: 'U'
     },
@@ -78,7 +74,7 @@ export const Navigation = [
     {
         id: 10,
         parentId: 0,
-        icon: 'user',
+        icon: 'hr',
         label: "Menu_HumanResource",
         to: '/hr',
         role: 'U'
@@ -86,7 +82,7 @@ export const Navigation = [
     {
         id: 11,
         parentId: 0,
-        icon: 'address-book',
+        icon: 'contact',
         label: "Menu_ContactAddress",
         to: '/contact',
         role: 'U'
@@ -94,7 +90,7 @@ export const Navigation = [
     {
         id: 12,
         parentId: 0,
-        icon: 'clipboard',
+        icon: 'term_policy',
         label: "Menu_TermPolicy",
         to: '/term-policy',
         role: 'U'
@@ -102,7 +98,7 @@ export const Navigation = [
     {
         id: 13,
         parentId: 0,
-        icon: 'bullhorn',
+        icon: 'groupinfo',
         label: "Menu_CompanyAnnouncement",
         to: '/announcement',
         role: 'U'

@@ -34,19 +34,13 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [langCode, setLangCode] = useState('vi');
+  const [langCode, setLangCode] = useState('vi-VN');
 
-  useEffect(() => {
-    localizeStore.setLocale(langCode);
-  }, [langCode, localizeStore]);
+  useEffect(() => { localizeStore.setLocale(langCode); }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
     const authConfig = Auth.configure();
-    const {
-      domain,
-      redirectSignIn,
-      responseType } = authConfig.oauth;
-
+    const { domain, redirectSignIn, responseType } = authConfig.oauth;
     const clientId = config.AWS_COGNITO_CLIENT_ID;
     const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
     window.location.assign(url);
@@ -62,8 +56,8 @@ function Login() {
                 <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
                 <div className="col-lg-6">
                   <div className="float-right language-selector">
-                    <Button className={langCode === 'vi' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi')}>{t("LangViet")}</Button>|
-                    <Button className={langCode === 'en' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en')}>{t("LangEng")}</Button>
+                    <Button className={langCode === 'vi-VN' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi-VN')}>{t("LangViet")}</Button>|
+                    <Button className={langCode === 'en-US' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en-US')}>{t("LangEng")}</Button>
                   </div>
                   <div className="p-5">
                     <div className="text-center">
@@ -71,7 +65,7 @@ function Login() {
                     </div>
                     <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}> {t("Login")}</Button>
                     <div className="text-center login-guide">
-                      <Button className="small" variant="link" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
+                      <Button className="small color-283280" variant="link" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
                     </div>
                   </div>
                 </div>

@@ -23,7 +23,7 @@ function SuccessClass(props) {
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
     document.title = `Learning`;
-    const sabaEnrollments = usePreload([`quyennd9@vingroup.net`, 200, pageIndex, pageSize]);
+    const sabaEnrollments = usePreload([`quyennd9@vingroup.net`, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
