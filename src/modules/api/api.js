@@ -46,8 +46,12 @@ export default class Api {
   }
 
 
-  setAuthorization = ({ tokenType, accessToken }) => {
-    this.request.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`;
+  setAuthorization = ({  accessToken }) => {
+    this.request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+  }
+
+  setLanguage = (language) => {
+    this.request.defaults.headers.common['accept-language'] = language;
   }
 
   removeAuthorization = () => {
@@ -108,10 +112,10 @@ export default class Api {
     });
   }
 
-  fetchRoadmapList = async () => {
+  fetchRoadmapList = async (username) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
       params: {
-        username: 'trangdt28@vingroup.net',
+        username: username,
         startPage: 1,
         count: 1000
       }
@@ -119,10 +123,11 @@ export default class Api {
   }
 
   fetchRoadmapDetails = async (id, username) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/${id}`,
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
       {
         params: {
-          username: username
+          username: username,
+          id: id
         }
       }
     );
@@ -132,7 +137,7 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
       {
         params: {
-          username: 'quyennd9@vingroup.net'
+          username: username
         }
       }
     );

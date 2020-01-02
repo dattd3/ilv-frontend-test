@@ -3,17 +3,14 @@ import { Auth, Hub } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
-import {
-    useApi,
-    useFetcher
-} from "../../modules";
+import { useApi,  useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 
 const usePreload = (params) => {
     const api = useApi();
     api.setAuthorization({ tokenType: 'Bearer', accessToken: params.token });
     const [user = undefined, err] = useFetcher({
-        api: api.fetchSabaUser,
+        api: api.fetchUser,
         autoRun: true,
         params: [params.email]
     });
@@ -26,8 +23,7 @@ function Authorize(props) {
     const guard = useGuardStore();
     const [email, SetEmail] = useState('');
     const [token, SetToken] = useState('');
-    const [notifyContent, SetNotifyContent] = useState('');
-
+    const [notifyContent, SetNotifyContent] = useState(''); 
     let user = usePreload({ email: email, token: token });
 
     function getUserData() {
@@ -35,33 +31,34 @@ function Authorize(props) {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetNotifyContent(t("LoginSuccessful"));
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                SetEmail('quyennd9@vingroup.net');
-                let vgUsernameMatch = (/[v.]+([^@]*)@/gmi).exec(currentAuthUser.attributes.email);
-                let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
+                SetEmail(currentAuthUser.attributes.email);
+                // let vgUsernameMatch = (/[v.]+([^@]*)@/gmi).exec(currentAuthUser.attributes.email);
+                // let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                 if (user) {
                     let u = {
                         tokenType: 'Bearer',
                         accessToken: currentAuthUser.signInUserSession.idToken.jwtToken,
                         tokenExpired: '',
                         plEmail: currentAuthUser.attributes.email,
-                        email: vgEmail,
-                        fullName: `${user.data.details.lastname} ${user.data.details.firstname}`,
-                        jobTitle: user.data.details.jobtype,
-                        company: user.data.details.company,
-                        sabaId: user.data.details.id,
-                        employeeNo: user.data.details.person_no
+                        email: user.email,
+                        fullName: `${user.title} ${user.lastName} ${user.firstName}`,
+                        jobTitle: user.jobTitle,
+                        company: user.company,
+                        sabaId: user.sabaId,
+                        employeeNo: user.employeeNo,
+                        jobType: user.jobType,
+                        location: user.sabaLocationName,
+                        department: user.department
                     }
                     guard.setIsAuth(u);
-                    setTimeout(() => { history.push(map.Dashboard); }, 500);
+                    history.push(map.Dashboard);
                 }
             }
             else {
-                SetNotifyContent(t("NorificationError"));
-                //setTimeout(() => { history.push(map.Login); }, 5000);
+                SetNotifyContent(t("WaitNotice"));
             }
         }).catch(err => {
-            SetNotifyContent(t("NorificationError"));
-            //setTimeout(() => { history.push(map.Login); },  5000);
+            SetNotifyContent(t("WaitNotice"));
         });
     }
 
@@ -72,14 +69,10 @@ function Authorize(props) {
                 case 'signIn':
                     getUserData();
                     break;
-                case 'signOut':
-                    SetNotifyContent('Logging out...');
-                    setTimeout(() => { history.push(map.Login); }, 3000);
-                    break;
                 default:
                     return;
             }
-        })
+        });
     });
 
     return (

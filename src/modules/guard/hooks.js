@@ -46,11 +46,14 @@ const Storage = {
     localStorage.setItem('tokenExpired', currentAuthUser.tokenExpired);
     localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('email', currentAuthUser.email);
+    localStorage.setItem('jobType', currentAuthUser.jobType);
     localStorage.setItem('fullName', currentAuthUser.fullName);
     localStorage.setItem('jobTitle', currentAuthUser.jobTitle);
     localStorage.setItem('company', currentAuthUser.company);
     localStorage.setItem('sabaId', currentAuthUser.sabaId);
     localStorage.setItem('employeeNo', currentAuthUser.employeeNo);
+    localStorage.setItem('department', currentAuthUser.department);
+    localStorage.setItem('location', currentAuthUser.location);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -61,10 +64,13 @@ const Storage = {
       tokenExpired: localStorage.getItem('tokenExpired'),
       plEmail: localStorage.getItem('plEmail'),
       email: localStorage.getItem('email'),
+      jobType: localStorage.getItem('jobType'),
       fullName: localStorage.getItem('fullName'),
       jobTitle: localStorage.getItem('jobTitle'),
       company: localStorage.getItem('company'),
       sabaId: localStorage.getItem('sabaId'),
+      department: localStorage.getItem('department'),
+      location: localStorage.getItem('location'),
       employeeNo: localStorage.getItem('employeeNo')
     }
   },
@@ -79,6 +85,9 @@ const Storage = {
     localStorage.removeItem('company');
     localStorage.removeItem('sabaId');
     localStorage.removeItem('employeeNo');
+    localStorage.removeItem('location');
+    localStorage.removeItem('department');
+    localStorage.removeItem('jobType');
   }
 }
 
@@ -92,5 +101,8 @@ const deserialize = (currentAuthUser) => ({
   jobTitle: currentAuthUser.jobTitle,
   company: currentAuthUser.company,
   sabaId: currentAuthUser.sabaId,
+  department: currentAuthUser.department,
+  location: currentAuthUser.location,
+  jobType: currentAuthUser.jobType,
   employeeNo: currentAuthUser.employeeNo
 })

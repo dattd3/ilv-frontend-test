@@ -8,7 +8,7 @@ function Instruction() {
     
     return (
         <>
-            <h1 className="h3 mb-3 text-uppercase text-gray-800">{t("LearningHistory")}</h1>
+            <h1 className="h3 mb-3 text-uppercase text-gray-800">{t("TeachingHistory")}</h1>
             <OnGoingClass />
             <SuccessClass />
         </>

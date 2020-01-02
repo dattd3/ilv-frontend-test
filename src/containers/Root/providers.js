@@ -15,6 +15,8 @@ import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
 import { Auth } from 'aws-amplify';
 import { AlertList } from "react-bs-notifier";
+import { render } from 'react-dom';
+import AccessDenied from '../AccessDenied';
 
 const LanguageProvider = function ({ children }) {
   const localize = useCreateLocalizeStore();
@@ -45,6 +47,8 @@ const ComposeApiWithGuard = function ({ children }) {
   const [isShowModal, SetIsShowModal] = useState(false);
   const [alert, SetAlert] = useState([]);
 
+  const currentLocale = localStorage.getItem("locale");
+
   function onAlertDismissed(alr) {
     const idx = alert.indexOf(alr);
     if (idx >= 0) {
@@ -55,10 +59,11 @@ const ComposeApiWithGuard = function ({ children }) {
   useDisposable(() => autorun(() => {
     if (guard.currentAuthUser) {
       api.setAuthorization(guard.currentAuthUser);
+      api.setLanguage(currentLocale);
       api.inject.request(() => {
         SetIsShowModal(true);
       });
-      api.inject.response((err) => {
+      api.inject.response((err) => { 
         SetIsShowModal(false);
         if (err) {
           SetAlert(...alert, [{
@@ -70,6 +75,8 @@ const ComposeApiWithGuard = function ({ children }) {
           if (err.response.status === 401) {
             guard.setLogOut();
             Auth.signOut();
+          } else if (err.response.status === 403) {
+            render(<AccessDenied />, document.getElementById('main-content'));
           }
         }
       });
@@ -88,17 +95,19 @@ const ComposeApiWithGuard = function ({ children }) {
         if (err.response.status === 401) {
           guard.setLogOut();
           Auth.signOut();
+        } else if (err.response.status === 403) {
+          render(<AccessDenied />, document.getElementById('main-content'));
         }
       }
     });
   }));
-  const modal = (
-    <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
-      <Modal.Body className='text-center no-bg'>
-        <Spinner animation="border" variant="light" size='lg' />
-      </Modal.Body>
-    </Modal>
-  );
+  // const modal = (
+  //   <Modal key={`loadModal`} centered show={isShowModal} onHide={() => { return; }}>
+  //     <Modal.Body className='text-center no-bg'>
+  //       <Spinner animation="border" variant="light" size='lg' />
+  //     </Modal.Body>
+  //   </Modal>
+  // );
 
   const alertCom = (
     <AlertList key={`alertCom`}
@@ -110,7 +119,7 @@ const ComposeApiWithGuard = function ({ children }) {
     />
   );
 
-  return [children, modal, alertCom];
+  return [children, alertCom];
 }
 
 export default function ({ children }) {

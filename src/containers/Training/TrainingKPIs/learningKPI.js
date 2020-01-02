@@ -1,13 +1,13 @@
 import React from "react";
-import { Row, Col, Card, ListGroup } from 'react-bootstrap';
-import { useApi, useFetcher, useGuardStore } from "../../modules";
+import { Row, Col, Card } from 'react-bootstrap';
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
-import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
+import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 
 
-const usePreload = () => {
-  const guard = useGuardStore();
+const usePreload = () => { 
   const api = useApi();
   const [kpiData = undefined] = useFetcher({
     api: api.fetchKPI,
@@ -17,6 +17,7 @@ const usePreload = () => {
 };
 function Dashboard(props) {
 
+  const { t } = useTranslation();
   const kpiData = usePreload();
   let sbCredit = {
     totalHours: 0,
@@ -51,7 +52,7 @@ function Dashboard(props) {
     grdRed.addColorStop(1, "#FD5D11");
 
     return {
-      labels: ['Chưa hoàn thành', 'Đã hoàn thành'],
+      labels: [t("Status_NotDoneYet"), t("Status_Done")],
       datasets: [{
         data: [100 - sbCredit.perLearned  , sbCredit.perLearned],
         title: {
@@ -123,7 +124,7 @@ function Dashboard(props) {
   return (
     <div>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Chỉ tiêu đào tạo / Học tập</h1>
+        <h1 className="h3 mb-0 text-gray-800">{t("LearnKPI")}</h1>
       </div>
       <Row className="summary-chart">
         <Col xl={4} className="mb-4">

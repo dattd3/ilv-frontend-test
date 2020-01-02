@@ -13,7 +13,6 @@ export const useLocalizeStore = () => useContext(LocalizeContext);
 
 export const useCreateLocalizeStore = () => {
   const store = useLocalStore(createStore);
-
   useEffect(() => {
     const dispose = autorun(() => {
       i18n.changeLanguage(store.locale);
@@ -29,7 +28,7 @@ function createStore() {
   i18n.init({
     keySeparator: ">",
     nsSeparator: "|",
-    lng: "vi",
+    lng: "vi-VN",
     resources: {
       en: {
         common: en
@@ -44,24 +43,23 @@ function createStore() {
 
   const store = {
     i18n,
-    locale: "vi",
+    locale: "vi-VN",
     appSupportedLanguages: [
-      { language: "English", code: "en" },
-      { language: "Vietnamese", code: "vi" }
+      { language: "English", code: "en-US" },
+      { language: "Vietnamese", code: "vi-VN" }
     ],
-    async setLocale(locale) {
+    setLocale(locale) {
       i18n.removeResourceBundle(this.locale, "remote");
       this.locale = locale;
-      this.loadLanguage();
-      try {
-        await localStorage.setItem("locale", this.locale);
+      try { 
+        localStorage.setItem("locale", this.locale);
       } catch (error) {
         console.debug(error);
       }
     },
-    async loadAsyncStorageLanguage() {
+     loadAsyncStorageLanguage() {
       try {
-        let currentLocale = await localStorage.getItem("locale");
+        let currentLocale =  localStorage.getItem("locale");
         runInAction(() => {
           if (currentLocale) {
             this.locale = currentLocale;
@@ -71,24 +69,11 @@ function createStore() {
         console.debug(error);
       }
     },
-    async loadLanguage() {
-      try {
-        // call get language from be
-        // const remoteTranslationResource = await getLanguage(this.locale);
-        // i18next.addResources(this.locale, "remote", remoteTranslationResource.data);
-      } catch (error) {
-        /*implement later*/
-        // this.setError('Can not load language');
-        console.debug(error);
-      }
-    },
-    async load() {
-      await this.loadAsyncStorageLanguage();
-      await this.loadLanguage();
+    load() { 
+       this.loadAsyncStorageLanguage();
     }
   };
 
-  store.load();
-
+  store.load(); 
   return store;
 }

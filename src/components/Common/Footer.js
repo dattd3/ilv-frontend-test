@@ -5,7 +5,7 @@ function Footer(props) {
         <footer className="sticky-footer bg-white">
         <div className="container my-auto">
           <div className="copyright text-center my-auto">
-            <span>Copyright &copy; MyVinpearl</span>
+            <span> &copy; Copyright MyVinpearl. All right Reversed</span>
           </div>
         </div>
       </footer>

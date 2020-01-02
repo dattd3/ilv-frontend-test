@@ -7,9 +7,8 @@ import { useTranslation } from "react-i18next";
 
 
 const usePreload = (params) => {
-  const guard = useGuardStore();
   const api = useApi();
-  const [sabaCredit = undefined] = useFetcher({
+  const [sabaCredit = undefined, err] = useFetcher({
     api: api.fetchSabaCredit,
     autoRun: true,
     params: params
@@ -18,16 +17,26 @@ const usePreload = (params) => {
 };
 function Dashboard(props) {
   const { t } = useTranslation();
-  const sabaCredit = usePreload([`trangdt28@vingroup.net`]);
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();
+  const sabaCredit = usePreload([user.email]);
   let sbCredit = {
     totalHours: 0,
     perLearned: 100
   };
   if (sabaCredit && sabaCredit.data) {
-    sbCredit = {
-      totalHours: sabaCredit.data.learning_target_credits,
-      perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
-    };
+    if (sabaCredit.data.learning_target_credits != 0) {
+      sbCredit = {
+        totalHours: sabaCredit.data.learning_target_credits,
+        perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
+      };
+    } else {
+      sbCredit = {
+        totalHours: 0,
+        perLearned: 100
+      };
+    }
+
   }
   const sabaCreditData = (canvas) => {
     const ctx = canvas.getContext("2d")
@@ -174,7 +183,7 @@ function Dashboard(props) {
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <span className="db-card-header color-blue"><i className="fas fa-fw fa-clipboard"></i> {t("TermPolicy")}</span>
+                  <span className="db-card-header color-blue"><i className="fas icon-term_policy"></i> {t("TermPolicy")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Card.Title>What is Lorem Ipsum?</Card.Title>
@@ -206,7 +215,7 @@ function Dashboard(props) {
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <span className="db-card-header color-pink"><i className="fas fa-fw fa-bullhorn"></i>  {t("CompanyAnnouncement")}</span>
+                  <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i>  {t("CompanyAnnouncement")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Card.Title>Lorem Ipsum Generator</Card.Title>

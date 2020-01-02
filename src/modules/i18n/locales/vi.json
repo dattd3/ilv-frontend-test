@@ -13,9 +13,9 @@
   "LoginGuide_UserName": "sử dụng account AD",
   "LoginGuide_Password": "sử dụng mật khẩu account AD",
   "LoginGuide_Note": "Trường hợp không rõ Account AD của mình hoặc không đăng nhập được, vui lòng liên hệ bộ phận IT của đơn vị để kiểm tra.",
-  "LoginSuccessful": "Đăng nhập thành công. Vui lòng đợi...",
+  "LoginSuccessful": "Đăng nhập thành công...",
   "SearchTextPlaceholder": "Tìm kiếm",
-  "Menu": "Danh mục",
+  "Menu": "Trang chủ",
   "Menu_Training": "Đào tạo",
   "Menu_Learning": "Học tập",
   "Menu_Intruction": "Giảng dạy",
@@ -26,6 +26,7 @@
   "Menu_TermPolicy": "Quy định / Quy chế",
   "Menu_CompanyAnnouncement": "Thông báo từ tập đoàn",
   "Menu_ContactAddress": "Danh bạ tập đoàn",
+  "Menu_CheckList" : "Check List",
   "Status_Done": "Hoàn thành",
   "Status_NotDoneYet": "Chưa hoàn thành",
   "Status_Used": "Đã sử dụng",
@@ -39,7 +40,7 @@
   "Year": "năm",
   "Day": "ngày",
   "Night": "đêm",
-  "NorificationError": "Có lỗi xảy ra. Vui lòng thử lại.",
+  "WaitNotice": "Vui lòng đợi...",
   "Total": "Tổng số",
   "Course": "khoá học",
   "Display5Classes": "Hiển thị 5 lớp",
@@ -53,5 +54,7 @@
   "UnsuccessfulClass" : "Lớp không đạt điều kiện",
   "SuccessfulClass": "Lớp đã hoàn thành",
   "LearningHistory": "Quá trình học tập",
-  "TeachingHistory": "Quá trình giảng dạy"
+  "TeachingHistory": "Quá trình giảng dạy",
+  "LearnKPI": "Chỉ tiêu học tập",
+  "TeachingKPI": "Chỉ tiêu đào tạo"
 }

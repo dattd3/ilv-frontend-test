@@ -1,4 +1,6 @@
 {
+  "LangViet": "Tiếng Việt",
+  "LangEng": "English",
   "HelpToLogin": "Login Instruction",
   "Login": "Login",
   "Logout": "Logout",
@@ -9,9 +11,9 @@
   "LoginGuide_UserName": "AD account",
   "LoginGuide_Password": "AD password",
   "LoginGuide_Note": "Forget your password? Contact IT HelpDesk for assistance.",
-  "LoginSuccessful": "Successful. Please wait...",
+  "LoginSuccessful": "Login successful...",
   "SearchTextPlaceholder": "Search",
-  "Menu": "Menu",
+  "Menu": "Home",
   "Menu_Training": "Training",
   "Menu_Learning": "Learning",
   "Menu_Intruction": "Teaching",
@@ -22,6 +24,7 @@
   "Menu_TermPolicy" : "Policy",
   "Menu_CompanyAnnouncement" : "Announcement",
   "Menu_ContactAddress" : "Contact",
+  "Menu_CheckList" : "Check List",
   "Status_Done": "Completed",
   "Status_NotDoneYet": "In Progress",
   "Status_Used": "Used",
@@ -35,7 +38,7 @@
   "Year" : "year",
   "Day" : "day",
   "Night" : "night",
-  "NorificationError" : "Please try again",
+  "WaitNotice" : "Please wait...",
   "Total": "Total",
   "Course": "course",
   "Display5Classes": "Display 5 records",
@@ -49,5 +52,7 @@
   "UnsuccessfulClass" : "Unsuccessful classes",
   "SuccessfulClass": "Successful classes",
   "LearningHistory": "Learning history",
-  "TeachingHistory": "Teaching history"
+  "TeachingHistory": "Teaching history",
+  "LearnKPI": "Learning KPI",
+  "TeachingKPI": "Teaching KPI"
 }

@@ -1,33 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NestedRoute from "./NestedRoute";
 import { observer } from "mobx-react-lite";
 import Header from '../../components/Common/Header';
 import SideBar from '../../components/Common/Sidebar';
 import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
-import { useLocalizeStore } from '../../modules';
+import map from "../map.config";
 
 function MainLayout(props) {
-  const guard = useGuardStore();
-  const localizeStore = useLocalizeStore();
   const [show, SetShow] = useState(true);
-
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();
+  
   const setShow = (show) => {
     SetShow(show);
+  }  
+  console.log(props.location.pathname.indexOf("training"));
+
+  if (props.location.pathname.indexOf("training") < 0) {
+    const { history } = props;
+    let is404 = props.routes.filter(r => r.routeProps.path === props.location.pathname).length <= 0;
+    if (is404) {
+      history.push(map.NotFound);
+    }
   }
 
-  useEffect(() => {
-    localizeStore.load();
-  });
-
-  let user = guard.getCurentUser();
   return (
     <>
       <SideBar show={show} />
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
           <Header user={user} setShow={setShow} />
-          <div className="container-fluid">
+          <div className="container-fluid" id='main-content'>
             <NestedRoute routes={props.routes} />
           </div>
         </div>

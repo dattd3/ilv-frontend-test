@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { Table, Pagination, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../components/Common/CustomPaging';
 
@@ -17,8 +17,10 @@ const usePreload = (params) => {
 function Learning(props) {
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
     document.title = `Learning`;
-    const sabaEnrollments = usePreload([`quyennd9@vingroup.net`, pageIndex, pageSize]);
+    const sabaEnrollments = usePreload([user.email, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 

@@ -65,7 +65,7 @@ function SuccessClass(props) {
                                         sabaEnrollments.data.classes.map(function (obj, i) {
                                             return (
                                                 <tr key={obj.id}>
-                                                    <td>{i + 1}</td>
+                                                    <td>{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
                                                     <td>{obj.course_name}</td>
                                                     <td>{moment(obj.start_date).format('DD/MM/YYYY')}</td>
                                                     <td>{obj.credits}</td>
@@ -93,7 +93,6 @@ function SuccessClass(props) {
                                     <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
                                         <option value={5}>{t("Display5Classes")}</option>
                                         <option value={10}>{t("Display10Classes")}</option>
-                                        <option value={15}>{t("Display15Classes")}</option>
                                     </Form.Control>
                                 </Col>
                             </Row> : null
