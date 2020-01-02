@@ -5,13 +5,16 @@ export default {
   Auth: "/auth",
   
   // Training
-  Certification: "/training/certification",
   Roadmap: "/training/roadmap",
-  RoadmapDetails: "/training/roadmapdetails",
+  RoadmapDetails: "/training/roadmap-detail/:id",
   Learning: "/training/learning",
   Instruction: "/training/instruction",
-  LearningKPI: "/training/learningKPI",
-  TeachingKPI: "/training/teachingKPI",
+  TraniningKPI: "/training/kpi",
+
+  //Checklist
+  CheckListCreate: "/checklist/create",
+  CheckListWorkflow: "/checklist/workflow",
+
   NotFound: "/not-found",
   AccessDenied: "/access-denied"
 };

@@ -3,24 +3,26 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import Course from "../../components/Forms/CustomForm/Course"
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
-const useGetRoadmap = () => {
+const useGetRoadmap = (params) => {
   const guard = useGuardStore();
   const api = useApi();
   const [roadmapList = undefined] = useFetcher({
     api: api.fetchRoadmapList,
-    autoRun: true
+    autoRun: true,
+    params: params
   }); 
   return roadmapList;
 };
 
-    
 
 function Roadmap(props) {
     
     useEffect(() => {
         document.title = `Lộ trình học tập`;
     });
-    const roadmap = useGetRoadmap();
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
+    const roadmap = useGetRoadmap([user.email]);
     let elmCourses;
     if (roadmap &&  roadmap.data && roadmap.data.curriculums) {
        elmCourses = roadmap.data.curriculums.map((item, index) =>

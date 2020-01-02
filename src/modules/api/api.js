@@ -112,10 +112,10 @@ export default class Api {
     });
   }
 
-  fetchRoadmapList = async () => {
+  fetchRoadmapList = async (username) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
       params: {
-        username: 'trangdt28@vingroup.net',
+        username: username,
         startPage: 1,
         count: 1000
       }
@@ -137,7 +137,7 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
       {
         params: {
-          username: 'quyennd9@vingroup.net'
+          username: username
         }
       }
     );

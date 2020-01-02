@@ -31,16 +31,16 @@ function Authorize(props) {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetNotifyContent(t("LoginSuccessful"));
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                SetEmail('quyennd9@vingroup.net');
-                let vgUsernameMatch = (/[v.]+([^@]*)@/gmi).exec(currentAuthUser.attributes.email);
-                let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
+                SetEmail(currentAuthUser.attributes.email);
+                // let vgUsernameMatch = (/[v.]+([^@]*)@/gmi).exec(currentAuthUser.attributes.email);
+                // let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                 if (user) {
                     let u = {
                         tokenType: 'Bearer',
                         accessToken: currentAuthUser.signInUserSession.idToken.jwtToken,
                         tokenExpired: '',
                         plEmail: currentAuthUser.attributes.email,
-                        email: vgEmail,
+                        email: user.email,
                         fullName: `${user.title} ${user.lastName} ${user.firstName}`,
                         jobTitle: user.jobTitle,
                         company: user.company,

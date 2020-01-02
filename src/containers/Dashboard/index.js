@@ -18,16 +18,25 @@ const usePreload = (params) => {
 function Dashboard(props) {
   const { t } = useTranslation();
   const guard = useGuardStore();
-  const sabaCredit = usePreload([`trangdt28@vingroup.net`]);
+  const user = guard.getCurentUser();
+  const sabaCredit = usePreload([user.email]);
   let sbCredit = {
     totalHours: 0,
     perLearned: 100
-  };  
+  };
   if (sabaCredit && sabaCredit.data) {
-    sbCredit = {
-      totalHours: sabaCredit.data.learning_target_credits,
-      perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
-    };
+    if (sabaCredit.data.learning_target_credits != 0) {
+      sbCredit = {
+        totalHours: sabaCredit.data.learning_target_credits,
+        perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
+      };
+    } else {
+      sbCredit = {
+        totalHours: 0,
+        perLearned: 100
+      };
+    }
+
   }
   const sabaCreditData = (canvas) => {
     const ctx = canvas.getContext("2d")

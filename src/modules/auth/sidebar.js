@@ -19,7 +19,7 @@ export const Navigation = [
     {
         id: 3,
         parentId: 2,
-        icon: 'no-icon',
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_Learning",
         to: map.Learning,
         role: 'U'
@@ -27,7 +27,7 @@ export const Navigation = [
     {
         id: 4,
         parentId: 2,
-        icon: 'no-icon',
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_Intruction",
         to: map.Instruction,
         role: 'U'
@@ -35,15 +35,15 @@ export const Navigation = [
     {
         id: 5,
         parentId: 2,
-        icon: 'no-icon',
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_TrainingRoadmap",
-        to: map.RoadmapDetails,
-        role: ['T', 'P']
+        to: map.Roadmap,
+        role: 'U'
     },
     {
         id: 6,
         parentId: 2,
-        icon: 'no-icon',
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_ExeTest",
         to: "#",
         role: 'U'
@@ -51,26 +51,19 @@ export const Navigation = [
     {
         id: 7,
         parentId: 2,
-        icon: 'no-icon',
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_TrainingKPI",
+        to: map.TraniningKPI,
         role: 'U'
-    },
-    {
-        id: 8,
-        parentId: 7,
-        icon: 'no-icon',
-        label: "Menu_Learning",
-        to: map.LearningKPI,
-        role: 'U'
-    },
-    {
-        id: 9,
-        parentId: 7,
-        icon: 'no-icon',
-        label: "Menu_Intruction",
-        to: map.TeachingKPI,
-        role: ['T', 'P', 'C']
-    },
+    },  
+    // {
+    //     id: 9,
+    //     parentId: 0,
+    //     icon: 'menu',
+    //     label: "Menu_CheckList",
+    //     to: '/checklist/workflow',
+    //     role: 'U'
+    // },
     {
         id: 10,
         parentId: 0,

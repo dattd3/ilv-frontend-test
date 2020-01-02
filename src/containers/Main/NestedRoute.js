@@ -8,15 +8,6 @@ export default function NestedRoute({ routes }) {
     return (
       <Route key={key} {...routeProps}
         render={childProps => {
-          const { history } = childProps;
-          let is404 = routes.filter(r => r.routeProps.path === childProps.location.pathname).length <= 0;
-          if (is404) {
-            history.push(map.NotFound);
-          }
-
-          
-
-
           return (
             <Suspense fallback={<LoadingModal show={true} />}>
               <Content {...childProps} />

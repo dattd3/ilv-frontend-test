@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Col, Card, ListGroup } from 'react-bootstrap';
-import { useApi, useFetcher, useGuardStore } from "../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
-import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
+import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner"
 
 
 const usePreload = () => {

@@ -56,15 +56,7 @@ export default [
             path: map.Dashboard
           },
           component: lazy(() => import("./Dashboard"))
-        },
-        {
-          key: "training-certification",
-          routeProps: {
-            exact: true,
-            path: map.Certification
-          },
-          component: lazy(() => import("./Training/certification"))
-        },
+        }, 
         {
           key: "training-roadmap",
           routeProps: {
@@ -77,7 +69,7 @@ export default [
           key: "training-roadmap-details",
           routeProps: {
             exact: true,
-            path: map.roadmapdetails
+            path: map.RoadmapDetails
           },
           component: lazy(() => import("./Training/roadmapdetails"))
         },
@@ -98,23 +90,31 @@ export default [
           component: lazy(() => import("./Training/Instruction"))
         },
         {
-          key: "learning-KPI",
+          key: "training-kpi",
           routeProps: {
             exact: true,
-            path: map.LearningKPI
+            path: map.TraniningKPI
           },
-          component: lazy(() => import("./Training/learningKPI"))
-        },
+          component: lazy(() => import("./Training/TrainingKPI"))
+        }, 
         {
-          key: "teaching-KPI",
+          key: "checklist-create",
           routeProps: {
             exact: true,
-            path: map.TeachingKPI
+            path: map.CheckListCreate
           },
-          component: lazy(() => import("./Training/teachingKPI"))
+          component: lazy(() => import("./CheckList/Create"))
         },
         {
-          key: "forbidden", 
+          key: "checklist-workflow",
+          routeProps: {
+            exact: true,
+            path: map.CheckListWorkflow
+          },
+          component: lazy(() => import("./CheckList/Workflow"))
+        },
+        {
+          key: "forbidden",
           routeProps: {
             exact: true,
             path: '/access-denied'
@@ -122,7 +122,7 @@ export default [
           component: lazy(() => import("./AccessDenied"))
         },
         {
-          key: "not-found", 
+          key: "not-found",
           routeProps: {
             exact: true,
             path: '/not-found'
