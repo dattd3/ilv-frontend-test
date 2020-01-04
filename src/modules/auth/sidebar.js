@@ -55,7 +55,7 @@ export const Navigation = [
         label: "Menu_TrainingKPI",
         to: map.TraniningKPI,
         role: 'U'
-    },  
+    },
     // {
     //     id: 9,
     //     parentId: 0,
@@ -69,7 +69,7 @@ export const Navigation = [
         parentId: 0,
         icon: 'hr',
         label: "Menu_HumanResource",
-        to: '/hr',
+        to: map.PersonInfo,
         role: 'U'
     },
     {

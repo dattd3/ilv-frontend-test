@@ -1,0 +1,40 @@
+
+table {
+    width: 100%;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.table-header {
+    padding-left: 20px;
+    font-weight: normal !important;
+    font-size: 17px;
+    padding-top: 20px;
+    width: 33.33%;
+    font-family: Helvetica !important;
+}
+
+.table-content {
+    height: 60px;
+}
+
+.colum-end {
+    /*padding-right: 15px !important;*/
+    margin-right: 15px !important;
+}
+
+table td {
+  padding-left: 15px;
+}
+
+.bgText {
+    background-color: #F4F3F7;
+    margin-top: 0;
+    padding: 10px;
+    height: 44px;
+}
+
+.headerText {
+    height: 30px;
+}
