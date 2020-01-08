@@ -13,13 +13,11 @@ const usePreload = (params) => {
     return user;
 };
 
-
-
 function PersonInfo() {
-    const { t } = useTranslation();
-    //console.log('******* DAY LA PHAN GHI LOG *******');
-    let objDataRes = usePreload([]);
 
+    const { t } = useTranslation();
+
+    let objDataRes = usePreload([]);
     if (objDataRes) {
 
      let personCommonInfo = objDataRes.PersonCommonInfo;
@@ -31,15 +29,15 @@ function PersonInfo() {
 
         {/* THÔNG TIN CÁ NHÂN */}
 
-        <div className='headerText'>THÔNG TIN CÁ NHÂN</div>
+        <div className='headerText'> {t("PersonalInformation")} </div>
 
         <table>
         <thead>
           <tr>
-            <th className="table-header">Họ và tên</th>
-            <th className="table-header">Mã nhân viên</th>
-            <th className="table-header">P&L</th>
-            <th className="table-header">Chức danh</th>
+            <th className="table-header"> {t("FirstAndLastName")} </th>
+            <th className="table-header"> {t("EmployeeCode")} </th>
+            <th className="table-header"> {t("PAndL")} </th>
+            <th className="table-header"> {t("Title")} </th>
           </tr>
           </thead>
           <tbody>
@@ -63,14 +61,14 @@ function PersonInfo() {
           <br/>
 
     {/*ĐỊA CHỈ HIỆN TẠI*/}
-    <div className='headerText'>ĐỊA CHỈ HIỆN TẠI</div>
+    <div className='headerText'> {t("CurrentAddress")} </div>
       <table>
             <thead>
               <tr>
-                <th className="table-header">Quốc gia</th>
-                <th className="table-header">Tỉnh / Thành phố</th>
-                <th className="table-header">Quận / Huyện</th>
-                <th className="table-header">Địa chỉ</th>
+                <th className="table-header"> {t("Nation")} </th>
+                <th className="table-header"> {t("Province_City")} </th>
+                <th className="table-header"> {t("District")} </th>
+                <th className="table-header"> {t("Address")} </th>
               </tr>
               </thead>
               <tbody>
@@ -93,13 +91,13 @@ function PersonInfo() {
           <br/>
 
       {/* CMND / THẺ CĂN CƯỚC */}
-      <div className='headerText'>CMND / THẺ CĂN CƯỚC</div>
+      <div className='headerText'> {t("CardId_Title")} </div>
         <table>
                   <thead>
                     <tr>
-                      <th className="table-header">Số CMND / Thẻ căn cước</th>
-                      <th className="table-header">Ngày cấp</th>
-                      <th className="table-header">Nơi cấp</th>
+                      <th className="table-header"> {t("CardId")} </th>
+                      <th className="table-header"> {t("DateIssue")} </th>
+                      <th className="table-header"> {t("PlaceIssue")} </th>
                       <th className="table-header"></th>
                     </tr>
                     </thead>
@@ -120,14 +118,14 @@ function PersonInfo() {
         <br/>
 
         {/* THÔNG TIN TÀI KHOẢN */}
-          <div className='headerText'>THÔNG TIN TÀI KHOẢN</div>
+          <div className='headerText'> {t("AccountInformation")} </div>
            <table>
                   <thead>
                     <tr>
-                      <th className="table-header">Mã số thuế</th>
-                      <th className="table-header">Số BHXH</th>
-                      <th className="table-header">Số thẻ VinID</th>
-                      <th className="table-header">Số TK ngân hàng</th>
+                      <th className="table-header"> {t("TaxCode")} </th>
+                      <th className="table-header"> {t("SocialInsuranceNumber")} </th>
+                      <th className="table-header"> {t("VinID")} </th>
+                      <th className="table-header"> {t("BankAccountNumber")} </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -149,7 +147,7 @@ function PersonInfo() {
 
                     <thead>
                       <tr>
-                        <th className="table-header">Ngân hàng</th>
+                        <th className="table-header"> {t("BankName")} </th>
                       </tr>
                    </thead>
                   <tbody>
@@ -163,7 +161,7 @@ function PersonInfo() {
             <br/>
 
         {/* THÔNG TIN NGƯỜI THÂN */}
-        <div className='headerText'>THÔNG TIN NGƯỜI THÂN</div>
+        <div className='headerText'> {t("LegalInformation")} </div>
 
          {
           curriculumVitae.ListFamily.map(function (obj, i) {
@@ -171,10 +169,10 @@ function PersonInfo() {
            <table className="no-border">
                 <thead>
                   <tr>
-                    <th className="table-header">Họ tên</th>
-                    <th className="table-header">Ngày sinh</th>
-                    <th className="table-header">Mối quan hệ</th>
-                    <th className="table-header">Giảm / Trừ gia cảnh</th>
+                    <th className="table-header"> {t("FullName")} </th>
+                    <th className="table-header"> {t("DateOfBirth")} </th>
+                    <th className="table-header"> {t("Relationship")} </th>
+                    <th className="table-header"> {t("FamilyAllowances")} </th>
                   </tr>
                   </thead>
                   <tbody>
