@@ -1,287 +1,210 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import './PersonInfo.css';
+import { useApi, useFetcher } from "../../modules";
+
+const usePreload = (params) => {
+    const api = useApi();
+    const [user = undefined, err] = useFetcher({
+        api: api.fetchPersonCommonInfo,
+        autoRun: true,
+        params: params
+    });
+    return user;
+};
+
+
 
 function PersonInfo() {
     const { t } = useTranslation();
+    //console.log('******* DAY LA PHAN GHI LOG *******');
+    let objDataRes = usePreload([]);
 
-    return (
-      <div className="bgColor">
-      <br/>
+    if (objDataRes) {
 
-      {/* THÔNG TIN CÁ NHÂN */}
+     let personCommonInfo = objDataRes.PersonCommonInfo;
+     let curriculumVitae = objDataRes.CurriculumVitae;
 
-      <div class='headerText'>THÔNG TIN CÁ NHÂN</div>
-      <table>
-      <thead>
-        <tr>
-          <th className="table-header">Họ và tên</th>
-          <th className="table-header">Mã nhân viên</th>
-          <th className="table-header column-end">Master Code</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td className="table-content">
-              <div className="bgText"> Nguyễn Đức Chiến </div>
-          </td>
-          <td >
-              <div className='bgText'> 03603602 </div>
-          </td>
-          <td className="column-end">
-              <div className='bgText'>VG225698 </div>
-          </td>
-        </tr>
-        </tbody>
-        </table>
-        <br/><br/>
+      return (
+        <div className="bgColor">
+        <br/>
 
-        {/*THÔNG TIN CÔNG VIỆC*/}
+        {/* THÔNG TIN CÁ NHÂN */}
 
-        <div className='headerText'>THÔNG TIN CÔNG VIỆC </div>
+        <div className='headerText'>THÔNG TIN CÁ NHÂN</div>
+
         <table>
         <thead>
           <tr>
-              <td className="table-header">Thông tin pháp lý</td>
-              <td className="table-header">P&L</td>
-              <td className="table-header">Ban/Chuỗi/Khối</td>
+            <th className="table-header">Họ và tên</th>
+            <th className="table-header">Mã nhân viên</th>
+            <th className="table-header">P&L</th>
+            <th className="table-header">Chức danh</th>
           </tr>
           </thead>
           <tbody>
           <tr>
-              <td className="table-content">
-                    <div className='bgText'> Công ty Cổ phần Vinpearl </div>
-              </td>
-              <td >
-                    <div className='bgText'> Công ty Vinpearl </div>
-              </td>
-              <td className="column-end">
-                    <div className='bgText'> Dự án Chuyển đổi kỹ thuật số </div>
-              </td>
-           </tr>
-           </tbody>
-           <thead>
-             <tr>
-                 <td className="table-header">Phòng/Vùng/Miền</td>
-                 <td className="table-header">Đơn vị thành viên</td>
-                 <td className="table-header">Phòng/Bộ phận/Nhóm</td>
-             </tr>
-             </thead>
-             <tbody>
-             <tr>
-                 <td className="table-content">
-                       <div className='bgText'> Head Office</div>
-                 </td>
-                 <td >
-                       <div className='bgText'> Dự án Chuyển đổi kỹ thuật số </div>
-                 </td>
-                 <td className="column-end">
-                       <div className='bgText'> Phòng chuyển đổi kỹ thuật số </div>
-                 </td>
+            <td className="table-content">
+                <div className="bgText"> {personCommonInfo.FullName} </div>
+            </td>
+            <td >
+                <div className='bgText'> {personCommonInfo.PersonNo} </div>
+            </td>
+            <td>
+                <div className="bgText"> {personCommonInfo.PAndL} </div>
+            </td>
+            <td>
+                <div className="bgText div-end"> {personCommonInfo.Position} </div>
+            </td>
+          </tr>
+          </tbody>
+
+          </table>
+          <br/>
+
+    {/*ĐỊA CHỈ HIỆN TẠI*/}
+    <div className='headerText'>ĐỊA CHỈ HIỆN TẠI</div>
+      <table>
+            <thead>
+              <tr>
+                <th className="table-header">Quốc gia</th>
+                <th className="table-header">Tỉnh / Thành phố</th>
+                <th className="table-header">Quận / Huyện</th>
+                <th className="table-header">Địa chỉ</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td className="table-content">
+                    <div className="bgText"> {curriculumVitae.HT_QuocGia} </div>
+                </td>
+                <td >
+                    <div className='bgText'> {curriculumVitae.HT_ThanhPho} </div>
+                </td>
+                <td >
+                    <div className='bgText'> {curriculumVitae.HT_QuanHuyen} </div>
+                </td>
+                <td>
+                    <div className="bgText div-end"> {curriculumVitae.HT_DiaChi} </div>
+                </td>
               </tr>
               </tbody>
+          </table>
+          <br/>
 
-              <thead>
-                <tr>
-                    <td className="table-header">Nhóm chức danh</td>
-                    <td className="table-header">Chức danh</td>
-                    <td className="table-header">Cấp bậc</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td className="table-content">
-                          <div className='bgText'> Chuyên viên</div>
-                    </td>
-                    <td >
-                          <div className='bgText'> Chuyên viên thiết kế </div>
-                    </td>
-                    <td className="column-end">
-                          <div className='bgText'> CV3 </div>
-                    </td>
-                 </tr>
-                 </tbody>
+      {/* CMND / THẺ CĂN CƯỚC */}
+      <div className='headerText'>CMND / THẺ CĂN CƯỚC</div>
+        <table>
+                  <thead>
+                    <tr>
+                      <th className="table-header">Số CMND / Thẻ căn cước</th>
+                      <th className="table-header">Ngày cấp</th>
+                      <th className="table-header">Nơi cấp</th>
+                      <th className="table-header"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td className="table-content">
+                          <div className="bgText"> {curriculumVitae.SoCMND} </div>
+                      </td>
+                      <td >
+                          <div className='bgText'> {curriculumVitae.NgayCapCMND} </div>
+                      </td>
+                      <td>
+                          <div className="bgText div-end"> {curriculumVitae.NoiCapCMND} </div>
+                      </td>
+                    </tr>
+                    </tbody>
+        </table>
+        <br/>
 
-                 <thead>
-                   <tr>
-                       <td className="table-header">Phân loại nhân viên</td>
-                       <td className="table-header">SĐT cố định - Số máy lẻ</td>
-                       <td className="table-header">Số di động</td>
-                   </tr>
-                   </thead>
-                   <tbody>
-                   <tr>
-                       <td className="table-content">
-                             <div className='bgText'> </div>
-                       </td>
-                       <td >
-                             <div className='bgText'> 0243 974 9999 </div>
-                       </td>
-                       <td className="column-end">
-                             <div className='bgText'> 0987 498238 </div>
-                       </td>
+        {/* THÔNG TIN TÀI KHOẢN */}
+          <div className='headerText'>THÔNG TIN TÀI KHOẢN</div>
+           <table>
+                  <thead>
+                    <tr>
+                      <th className="table-header">Mã số thuế</th>
+                      <th className="table-header">Số BHXH</th>
+                      <th className="table-header">Số thẻ VinID</th>
+                      <th className="table-header">Số TK ngân hàng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td className="table-content">
+                          <div className="bgText"> {curriculumVitae.MaSoThue} </div>
+                      </td>
+                      <td >
+                          <div className='bgText'> {curriculumVitae.SoBHXH} </div>
+                      </td>
+                      <td >
+                          <div className='bgText'> {curriculumVitae.SoTheVinID} </div>
+                      </td>
+                      <td >
+                          <div className='bgText div-end'> {curriculumVitae.SoTaiKhoan} </div>
+                      </td>
                     </tr>
                     </tbody>
 
                     <thead>
                       <tr>
-                          <td className="table-header">Email</td>
-                          <td className="table-header">Ngày vào Tập đoàn</td>
-                          <td className="table-header">Ngày vào Công ty</td>
+                        <th className="table-header">Ngân hàng</th>
                       </tr>
-                      </thead>
-                      <tbody>
+                   </thead>
+                  <tbody>
                       <tr>
-                          <td className="table-content">
-                                <div className='bgText'> V.CHIENND4@VINPEARL.COM</div>
+                          <td className="table-content" colspan="2">
+                              <div className="bgText"> {curriculumVitae.Bank} </div>
                           </td>
-                          <td >
-                                <div className='bgText'> 9/9/2019 </div>
-                          </td>
-                          <td className="colum-end">
-                                <div className='bgText'> 9/9/2019 </div>
-                          </td>
-                       </tr>
-                       </tbody>
-
-                       <thead>
-                         <tr>
-                             <td className="table-header">Loại hợp đồng</td>
-                             <td className="table-header">Ngày bắt đầu hợp đồng</td>
-                             <td className="table-header">Ngày hết hạn hợp đồng</td>
-                         </tr>
-                         </thead>
-                         <tbody>
-                         <tr>
-                             <td className="table-content">
-                                   <div className='bgText'> Hợp đồng vô thời hạn</div>
-                             </td>
-                             <td >
-                                   <div className='bgText'> 09/11/2019 </div>
-                             </td>
-                             <td className="column-end">
-                                   <div className='bgText'> </div>
-                             </td>
-                          </tr>
-                          </tbody>
-
-                          <thead>
-                            <tr>
-                                <td className="table-header" colspan="3">Địa chỉ làm việc</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td className="table-content column-end" colspan="3">
-                                      <div className='bgText'> Số 7 đường bằng lăng 1, KĐT Sinh thái Vinhomes Riverside, phường Việt Hưng</div>
-                                </td>
-                             </tr>
-                             </tbody>
-
-         </table>
-
-         {/* QUÁ TRÌNH CÔNG TÁC */}
-         <br/><br/>
-         <div class='headerText'>QUÁ TRÌNH CÔNG TÁC</div>
-         <table>
-         <thead>
-           <tr>
-             <th className="table-header">P&L</th>
-             <th className="table-header">Từ ngày</th>
-             <th className="table-header column-end">Đến ngày</th>
-           </tr>
-           </thead>
-           <tbody>
-           <tr>
-             <td className="table-content">
-                 <div className="bgText">Công ty Vinpearl</div>
-             </td>
-             <td >
-                 <div className='bgText'> 9/9/2019 </div>
-             </td>
-             <td className="column-end">
-                 <div className='bgText'> 9/9/2020 </div>
-             </td>
-           </tr>
-           </tbody>
-
-           <thead>
-             <tr>
-               <th className="table-header">Loại hợp đồng</th>
-               <th className="table-header">Chức danh</th>
-               <th className="table-header column-end">Cấp bậc</th>
-             </tr>
-             </thead>
-             <tbody>
-             <tr>
-               <td className="table-content">
-                   <div className="bgText">HĐLĐ 1 năm</div>
-               </td>
-               <td >
-                   <div className='bgText'> Chuyên viên phát triển ứng dụng </div>
-               </td>
-               <td className="column-end">
-                   <div className='bgText'> Chuyên viên </div>
-               </td>
-             </tr>
-             </tbody>
-
-           </table>
-           <br/><br/>
-
-           {/* KHEN THƯỞNG THÀNH TÍCH */}
-           <div class='headerText'>KHEN THƯỞNG THÀNH TÍCH</div>
-           <table>
-           <thead>
-             <tr>
-               <th className="table-header">Bình chọn cuối năm</th>
-               <th className="table-header">Hội thi văn nghệ</th>
-               <th className="table-header column-end">Hội thi thể thao</th>
-             </tr>
-             </thead>
-             <tbody>
-             <tr>
-               <td className="table-content">
-                   <div className="bgText">Nhân viên xuất sắc nhất năm</div>
-               </td>
-               <td >
-                   <div className='bgText'> Giải nhất </div>
-               </td>
-               <td className="column-end">
-                   <div className='bgText'> Giải nhì </div>
-               </td>
-             </tr>
-             </tbody>
+                      </tr>
+                  </tbody>
              </table>
-             <br/><br/>
+            <br/>
 
-             {/* KỶ LUẬT */}
-             <div class='headerText'>KỶ LUẬT</div>
-             <table>
-             <thead>
-               <tr>
-                 <th className="table-header">Trang phục</th>
-                 <th className="table-header">Lưu trữ dữ liệu</th>
-                 <th className="table-header column-end">Gửi mail</th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr>
-                 <td className="table-content">
-                     <div className="bgText">Không đúng quy định ngày 20/9/2019</div>
-                 </td>
-                 <td >
-                     <div className='bgText'> Không đúng quy định ngày 10/6/2019 </div>
-                 </td>
-                 <td className="column-end">
-                     <div className='bgText'> Không đúng quy định ngày 15/4/2019 </div>
-                 </td>
-               </tr>
-               </tbody>
-               </table>
-               <br/>
+        {/* THÔNG TIN NGƯỜI THÂN */}
+        <div className='headerText'>THÔNG TIN NGƯỜI THÂN</div>
+
+         {
+          curriculumVitae.ListFamily.map(function (obj, i) {
+              return (
+           <table className="no-border">
+                <thead>
+                  <tr>
+                    <th className="table-header">Họ tên</th>
+                    <th className="table-header">Ngày sinh</th>
+                    <th className="table-header">Mối quan hệ</th>
+                    <th className="table-header">Giảm / Trừ gia cảnh</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td className="table-content">
+                        <div className="bgText"> {obj.HoVaTen} </div>
+                    </td>
+                    <td >
+                        <div className='bgText'> {obj.NgaySinh} </div>
+                    </td>
+                    <td >
+                        <div className='bgText'> {obj.MoiQuanHe} </div>
+                    </td>
+                    <td>
+                        <div className="bgText div-end"> {obj.NgayHieuLucGiamTru} </div>
+                    </td>
+                  </tr>
+                  </tbody>
+              </table>
+              );
+            })
+          }
+
+        <br/>
 
         </div>
-    );
+      );
+    }else {
+      return null;
+    }
+
 }
 export default PersonInfo;

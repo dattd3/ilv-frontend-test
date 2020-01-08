@@ -75,7 +75,7 @@ export default class Api {
     });
   };
 
-  // training 
+  // training
   fetchSabaCredit = async (username) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits?username=${username}`);
   }
@@ -141,6 +141,11 @@ export default class Api {
         }
       }
     );
+  }
+
+  // GetPersonCommonInfo
+  fetchPersonCommonInfo = async () => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/user/GetPersonCommonInfo`);    
   }
 
 };
