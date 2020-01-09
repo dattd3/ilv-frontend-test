@@ -81,5 +81,9 @@
   "FullName" : "Họ tên" ,
   "DateOfBirth" : "Ngày sinh" ,
   "Relationship" : "Mối quan hệ" ,
-  "FamilyAllowances" : "Giảm / Trừ gia cảnh"
+  "FamilyAllowances" : "Giảm / Trừ gia cảnh",
+  "Menu_GroupInformation": "Thông tin tập đoàn",
+  "Menu_GroupIntroduction": "Giới thiệu tập đoàn",
+  "Menu_VinpearlIntroduction": "Giới thiệu Vinpearl",
+  "Menu_News": "Tin tức"
 }

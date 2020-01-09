@@ -92,8 +92,32 @@ export const Navigation = [
         id: 13,
         parentId: 0,
         icon: 'groupinfo',
-        label: "Menu_CompanyAnnouncement",
+        label: "Menu_GroupInformation",
         to: '/announcement',
+        role: 'U'
+    },
+    {
+        id: 14,
+        parentId: 13,
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+        label: "Menu_GroupIntroduction",
+        to: "#",
+        role: 'U'
+    },
+    {
+        id: 15,
+        parentId: 13,
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+        label: "Menu_VinpearlIntroduction",
+        to: "#",
+        role: 'U'
+    },
+    {
+        id: 16,
+        parentId: 13,
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+        label: "Menu_News",
+        to: map.News,
         role: 'U'
     }
 ];

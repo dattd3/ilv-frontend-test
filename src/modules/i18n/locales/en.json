@@ -79,5 +79,9 @@
   "FullName" : "Full name" ,
   "DateOfBirth" : "Date of birth" ,
   "Relationship" : "Relationship" ,
-  "FamilyAllowances" : "Family allowances"
+  "FamilyAllowances" : "Family allowances",
+  "Menu_GroupInformation": "Group information",
+  "Menu_GroupIntroduction": "Group introduction",
+  "Menu_VinpearlIntroduction": "Vinpearl introduction",
+  "Menu_News": "News"
 }

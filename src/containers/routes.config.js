@@ -122,6 +122,14 @@ export default [
           component: lazy(() => import("./PersonInfo"))
         },
         {
+          key: "news",
+          routeProps: {
+            exact: true,
+            path: map.News
+          },
+          component: lazy(() => import("./GroupInfo/News"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,
