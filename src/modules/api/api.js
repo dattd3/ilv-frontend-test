@@ -46,8 +46,8 @@ export default class Api {
   }
 
 
-  setAuthorization = ({  accessToken }) => {
-    this.request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+  setAuthorization = ({ accessToken }) => {
+    this.request.defaults.headers.common['Authorization'] = `${accessToken}`;
   }
 
   setLanguage = (language) => {
@@ -143,4 +143,9 @@ export default class Api {
     );
   }
 
+
+  /* News  */
+  fetchNewsOnHome = async () => {
+    return await this.request.get(`/api/v1/article/listhome`);
+  }
 };
