@@ -147,11 +147,11 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/user/GetPersonCommonInfo`);
   }
 
-  fetchArticleList = async (pageIndex) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}api/v1/article/list`, {
+  fetchArticleList = async () => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/list`, {
       params: {
         domain: '',
-        pageIndex: pageIndex,
+        pageIndex: 1,
         pageSize: 10
       }
     });

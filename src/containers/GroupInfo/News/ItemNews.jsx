@@ -1,7 +1,5 @@
 import React from "react";
 import './font-karma.css';
-import './w3.css';
-import './news.css';
 
 export default function ItemNews(props) {
 
@@ -11,15 +9,17 @@ export default function ItemNews(props) {
    document.body.appendChild(script);
 
   return (
-    <div className="w3-quarter border-shadow content-margin no-padding content-width">
+   <a href="#">
+      <div className="w3-quarter border-shadow content-margin no-padding content-width">
          <img src= {props.thumbnail} className="image-top-radius">
          </img>
          <div className="content-padding">
              <h4 className="row-2lines" >
-              <div contentEditable='false' dangerouslySetInnerHTML={{ __html: props.title }}></div>
+               {/* <div contentEditable='false' dangerouslySetInnerHTML={{ __html: props.title }}></div> */}
+               { props.title }
              </h4>
-             <p className="row-2lines"> {props.description}
-                  <div contentEditable='false' dangerouslySetInnerHTML={{ __html: props.description }}></div>
+             <p className="row-2lines">
+                {props.description}
              </p>
              <span className="datetime-info w3-left">
                 <i className="far fa-user"></i> &nbsp;
@@ -30,6 +30,8 @@ export default function ItemNews(props) {
                   {props.publishedDate}
              </span>
          </div>
-    </div>
+
+        </div>
+     </a>
   );
 }
