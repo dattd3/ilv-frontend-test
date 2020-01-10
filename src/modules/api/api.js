@@ -156,4 +156,10 @@ export default class Api {
       }
     });
   }
+
+  /* News  */
+ fetchNewsOnHome = async () => {
+    return await this.request.get(`/api/v1/article/listhome`);
+  }
+
 };
