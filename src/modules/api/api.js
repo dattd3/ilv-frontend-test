@@ -47,7 +47,7 @@ export default class Api {
 
 
   setAuthorization = ({  accessToken }) => {
-    this.request.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    this.request.defaults.headers.common['Authorization'] = `${accessToken}`;
   }
 
   setLanguage = (language) => {
