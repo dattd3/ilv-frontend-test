@@ -56,7 +56,7 @@ export default [
             path: map.Dashboard
           },
           component: lazy(() => import("./Dashboard"))
-        }, 
+        },
         {
           key: "training-roadmap",
           routeProps: {
@@ -96,7 +96,7 @@ export default [
             path: map.TraniningKPI
           },
           component: lazy(() => import("./Training/TrainingKPI"))
-        }, 
+        },
         {
           key: "checklist-create",
           routeProps: {
@@ -112,6 +112,22 @@ export default [
             path: map.CheckListWorkflow
           },
           component: lazy(() => import("./CheckList/Workflow"))
+        },
+        {
+          key: "personinfo",
+          routeProps: {
+            exact: true,
+            path: map.PersonInfo
+          },
+          component: lazy(() => import("./PersonInfo"))
+        },
+        {
+          key: "news",
+          routeProps: {
+            exact: true,
+            path: map.News
+          },
+          component: lazy(() => import("./GroupInfo/News"))
         },
         {
           key: "forbidden",
