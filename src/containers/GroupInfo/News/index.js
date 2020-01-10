@@ -19,9 +19,16 @@ const usePreload = (params) => {
 };
 
 function News() {
-  
+
 const { t } = useTranslation();
-const objDataRes = usePreload([]);
+const [pageIndex, SetPageIndex] = useState(1);
+const [pageSize, SetPageSize] = useState(9);
+
+const objDataRes = usePreload([pageIndex, pageSize]);
+
+function onChangePage(page) {
+    SetPageIndex(page);
+}
 
 if (objDataRes && objDataRes.listArticles) {
 
@@ -30,7 +37,8 @@ if (objDataRes && objDataRes.listArticles) {
 
        {/* ĐÂY LÀ DÒNG TIÊU ĐỀ */}
          <h4 className="news-title w3-left"> {t("NewsAndEvent")} </h4>
-         <hr></hr>
+         
+         <hr id="hr-style"></hr>
 
          <div className="row">
            {
@@ -47,21 +55,24 @@ if (objDataRes && objDataRes.listArticles) {
           </div>
 
      {/* ĐÂY LÀ MỤC PHÂN TRANG */}
-         <div className="w3-center w3-padding-32">
-           <div className="w3-bar">
-             <a href="#" className="w3-bar-item w3-button w3-hover-black">«</a>
-             <a href="#" className="w3-bar-item w3-black w3-button">1</a>
-             <a href="#" className="w3-bar-item w3-button w3-hover-black">2</a>
-             <a href="#" className="w3-bar-item w3-button w3-hover-black">3</a>
-             <a href="#" className="w3-bar-item w3-button w3-hover-black">4</a>
-             <a href="#" className="w3-bar-item w3-button w3-hover-black">»</a>
-           </div>
-        </div>
+      <div class="container">
+          <div class="row">
+              <div class="col-sm"> </div>
+              <div class="col-sm">
+                  <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={objDataRes.totalRecord} />
+              </div>
+              <div class="col-sm">
+                  {t("Total")}: {objDataRes.totalRecord} ({t("Menu_News")})
+              </div>
+          </div>
+       </div>
+
      </div>
   );
-} else {
-  return null;
-}
+
+ } else {
+    return null;
+ }
 
 }
 
