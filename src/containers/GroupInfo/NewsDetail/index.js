@@ -1,11 +1,7 @@
 import React from "react";
 import { useApi, useFetcher } from "../../../modules";
 import './NewsDetail.css';
-
-import ItemNews from '../News/ItemNews.jsx';
-import { Table, Row, Col, Form } from 'react-bootstrap';
-import '../News/w3.css';
-import '../News/news.css';
+import NewsRelation from './NewsRelation.jsx'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -71,27 +67,7 @@ export default function NewsDetail() {
                 </div>
 
                 {/*HIỂN THỊ CÁC TIN LIÊN QUAN */}
-              <div>
-                  <h2 className="titleNewsRelation">Tin tức khác</h2>
-              </div>
-
-              <table>
-                  <tbody>
-                      <tr>
-                          <td>
-                              <ItemNews key={1} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
-                          </td>
-                          <td>
-                              <ItemNews key={2} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
-                          </td>
-                          <td>
-                              <ItemNews key={3} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
-                          </td>
-                      </tr>
-                  </tbody>
-              </table>
-
-
+                <NewsRelation />
 
            </div>
     );
