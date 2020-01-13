@@ -8,8 +8,12 @@ export default function ItemNews(props) {
    script.async = true;
    document.body.appendChild(script);
 
+  function onViewDetail(props){
+          console.log(props);
+      }
+
   return (
-   <a href="#">
+   <a href="/groupinfo/newsdetail" onClick= {() => this.onViewDetail({props})} >
       <div className="w3-quarter border-shadow content-margin no-padding content-width">
          <img src= {props.thumbnail} className="image-top-radius">
          </img>
@@ -30,7 +34,6 @@ export default function ItemNews(props) {
                   {props.publishedDate}
              </span>
          </div>
-
         </div>
      </a>
   );

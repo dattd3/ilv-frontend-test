@@ -1,0 +1,102 @@
+import React from "react";
+import { useApi, useFetcher } from "../../../modules";
+import './NewsDetail.css';
+
+import ItemNews from '../News/ItemNews.jsx';
+import { Table, Row, Col, Form } from 'react-bootstrap';
+import '../News/w3.css';
+import '../News/news.css';
+
+const usePreload = (params) => {
+    const api = useApi();
+    const [data = [], err] = useFetcher({
+        api: api.fetchArticleDetail,
+        autoRun: true,
+        params: params
+    });
+    return data;
+};
+
+export default function NewsDetail() {
+  const detail = usePreload([1]);
+
+  if(detail && detail.content) {
+
+    var content = detail.content;
+     content = content.replace('\\r\\n', '<br/>');
+     content = content.replace('\\', '');
+     var publishedDate = detail.publishedDate ? detail.publishedDate : '';
+     publishedDate = publishedDate.replace('T00:00:00', '');
+
+    return (
+           <div id="mainNewsDetail">
+
+           {/* TIÊU ĐỀ PHẦN TIN TỨC */}
+           <div>
+              <a href="/"><i className="fas fa-home"></i></a> &nbsp;
+              <i className="fas fa-chevron-right"></i> &nbsp;
+              <a href="/groupinfo/news">TIN TỨC SỰ KIỆN</a>
+           </div>
+
+              <div className="titleNewsDetail">
+                 <h2> { detail.title } </h2>
+                   <div>
+                      <span className="datetime-info w3-left">
+                          <i className="far fa-user"></i> &nbsp;
+                            {detail.sourceSite}
+                       </span>
+                       &nbsp;&nbsp;&nbsp;
+                       <span className="datetime-info">
+                          <i className="far">&#xf017;</i> &nbsp;
+                             {publishedDate}
+                        </span>
+                    </div>
+              </div>
+               <div id="contentNewsDetail" contentEditable='false'
+                    dangerouslySetInnerHTML = { { __html: content } } >
+               </div>
+
+               {/* CHIA SẺ TIN TỨC */}
+               <div className="sharePost">
+                 <p>Chia sẻ:</p>
+                  <a className="fb" href={`https://www.facebook.com/sharer/sharer.php?u=${detail.sourceUrl}`} target="_blank">
+                    <i className="fab fa-facebook-f"></i>
+                  </a>
+                  <a className="gp" href={`https://plus.google.com/share?url=${detail.sourceUrl}`} target="_blank">
+                    <i className="fab fa-google-plus-g"></i>
+                  </a>
+                  <a className="mail" href={`mailto:?subject=${detail.title}&amp;body=${detail.sourceUrl}`} target="_blank">
+                    <i className="fas fa-envelope"></i>
+                  </a>
+                </div>
+
+                {/*HIỂN THỊ CÁC TIN LIÊN QUAN */}
+              <div>
+                  <h2 className="titleNewsRelation">Tin tức khác</h2>
+              </div>
+
+              <table>
+                  <tbody>
+                      <tr>
+                          <td>
+                              <ItemNews key={1} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
+                          </td>
+                          <td>
+                              <ItemNews key={2} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
+                          </td>
+                          <td>
+                              <ItemNews key={3} title = {detail.title} description= {detail.description} thumbnail= {detail.thumbnail} sourceSite = {detail.sourceSite} publishedDate = {publishedDate}/>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+
+
+
+           </div>
+    );
+
+  } else {
+    return null;
+  }
+}

@@ -54,13 +54,13 @@ if (objDataRes && objDataRes.listArticles) {
           </div>
 
      {/* ĐÂY LÀ MỤC PHÂN TRANG */}
-      <div class="container">
-          <div class="row">
-              <div class="col-sm"> </div>
-              <div class="col-sm">
+      <div className="container">
+          <div className="row">
+              <div className="col-sm"> </div>
+              <div className="col-sm">
                   <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={objDataRes.totalRecord} />
               </div>
-              <div class="col-sm">
+              <div className="col-sm">
                   {t("Total")}: {objDataRes.totalRecord} ({t("Menu_News")})
               </div>
           </div>

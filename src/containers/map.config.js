@@ -18,5 +18,6 @@ export default {
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
-  News: "/groupinfo/news"
+  News: "/groupinfo/news",
+  NewsDetail: "/groupinfo/newsdetail"
 };
