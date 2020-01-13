@@ -36,8 +36,7 @@ if (objDataRes && objDataRes.listArticles) {
      <div className="w3-main w3-padding w3-center">
 
        {/* ĐÂY LÀ DÒNG TIÊU ĐỀ */}
-         <h4 className="news-title w3-left"> {t("NewsAndEvent")} </h4>
-         
+         <h3 className="news-title w3-left"> {t("NewsAndEvent")} </h3>
          <hr id="hr-style"></hr>
 
          <div className="row">
