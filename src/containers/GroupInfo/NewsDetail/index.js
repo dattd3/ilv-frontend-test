@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../../modules";
 import './NewsDetail.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -22,6 +23,8 @@ const usePreload = (params) => {
 
   const result = usePreload([Id]);
 
+  const { t } = useTranslation();
+
   if(result && result.data) {
     const detail =result.data;
     var content = detail.content;
@@ -37,7 +40,7 @@ const usePreload = (params) => {
            <div>
               <a href="/"><i className="fas fa-home"></i></a> &nbsp;
               <i className="fas fa-chevron-right"></i> &nbsp;
-              <a href="/groupinfo/news">TIN TỨC SỰ KIỆN</a>
+              <a href="/groupinfo/news"> {t("NewsAndEvent")} </a>
            </div>
 
               <div className="titleNewsDetail">
