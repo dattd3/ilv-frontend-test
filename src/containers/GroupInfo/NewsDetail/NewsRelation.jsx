@@ -16,8 +16,9 @@ const usePreload = (params) => {
 };
 
 export default function NewsRelation(props) {
-  const objDataRes = usePreload([1, 3]);
-  if (objDataRes && objDataRes.listArticles) {
+  const result = usePreload([1, 3]);
+  if (result && result.data) {
+    const objDataRes =  result.data;    
       return (
         <div>
               <div>

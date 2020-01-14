@@ -1,7 +1,9 @@
 import React from "react";
 import { useApi, useFetcher } from "../../../modules";
 import './NewsDetail.css';
-import NewsRelation from './NewsRelation.jsx'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import NewsRelation from './NewsRelation.jsx';
+import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -13,11 +15,16 @@ const usePreload = (params) => {
     return data;
 };
 
-export default function NewsDetail() {
-  const detail = usePreload([1]);
 
-  if(detail && detail.content) {
+ function NewsDetailElement({match, location}) {
+   const {
+     params: { Id }
+   } = match;
 
+  const result = usePreload([Id]);
+
+  if(result && result.data) {
+    const detail =result.data;
     var content = detail.content;
      content = content.replace('\\r\\n', '<br/>');
      content = content.replace('\\', '');
@@ -53,6 +60,7 @@ export default function NewsDetail() {
                </div>
 
                {/* CHIA SẺ TIN TỨC */}
+
                <div className="sharePost">
                  <p>Chia sẻ:</p>
                   <a className="fb" href={`https://www.facebook.com/sharer/sharer.php?u=${detail.sourceUrl}`} target="_blank">
@@ -73,6 +81,20 @@ export default function NewsDetail() {
     );
 
   } else {
-    return null;
+    return <LoadingSpinner />;
   }
 }
+
+function NewsDetail(props) {
+ console.log(props);
+  return (
+    <div>
+      <Router>
+        <Switch>
+          <Route path="/groupinfo/newsdetail/:Id" component={NewsDetailElement} />
+        </Switch>
+      </Router>
+    </div>
+  );
+}
+export default NewsDetail;

@@ -16,8 +16,10 @@ export default {
   CheckListCreate: "/checklist/create",
   CheckListWorkflow: "/checklist/workflow",
 
-  NotFound: "/not-found",
-  AccessDenied: "/access-denied",
   News: "/groupinfo/news",
-  NewsDetail: "/groupinfo/newsdetail"
+  NewsDetail: "/groupinfo/newsdetail/:id",
+
+  NotFound: "/not-found",
+  AccessDenied: "/access-denied"
+
 };
