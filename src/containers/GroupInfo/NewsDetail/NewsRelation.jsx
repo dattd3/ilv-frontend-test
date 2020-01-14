@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import ItemNews from '../News/ItemNews.jsx';
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import '../News/w3.css';
@@ -16,13 +17,16 @@ const usePreload = (params) => {
 };
 
 export default function NewsRelation(props) {
+
+  const { t } = useTranslation();
+
   const result = usePreload([1, 3]);
   if (result && result.data) {
-    const objDataRes =  result.data;    
+    const objDataRes =  result.data;
       return (
         <div>
               <div>
-                  <h2 className="titleNewsRelation">Tin tức khác</h2>
+                  <h2 className="titleNewsRelation"> {t("OtherNews")} </h2>
               </div>
               <div className="row">
                 {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useApi, useFetcher } from "../../../modules";
 import './NewsDetail.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import NewsRelation from './NewsRelation.jsx';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 
@@ -14,7 +14,6 @@ const usePreload = (params) => {
     });
     return data;
 };
-
 
  function NewsDetailElement({match, location}) {
    const {
@@ -86,13 +85,10 @@ const usePreload = (params) => {
 }
 
 function NewsDetail(props) {
- console.log(props);
   return (
     <div>
       <Router>
-        <Switch>
           <Route path="/groupinfo/newsdetail/:Id" component={NewsDetailElement} />
-        </Switch>
       </Router>
     </div>
   );
