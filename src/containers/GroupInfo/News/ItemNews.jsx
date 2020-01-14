@@ -9,19 +9,8 @@ export default function ItemNews(props) {
   script.src = "https://kit.fontawesome.com/a076d05399.js";
    script.async = true;
    document.body.appendChild(script);
-
-   {/*<a href={`/groupinfo/newsdetail/${props.id}`}>
-
-   <Router>
-     <Route path="/groupinfo/newsdetail/:id" component={NewsDetail}></Route>
-   </Router>
-
-   */}
-
+   
   return (
-
-
-
     <a href={`/groupinfo/newsdetail/${props.id}`}>
       <div className="w3-quarter border-shadow content-margin no-padding content-width">
          <img src= {props.thumbnail} className="image-top-radius">
