@@ -18,7 +18,7 @@ function PersonInfo() {
     const { t } = useTranslation();
 
     let objDataRes = usePreload([]);
-    if (objDataRes) {
+    if (objDataRes && objDataRes.PersonCommonInfo && objDataRes.CurriculumVitae) {
 
      let personCommonInfo = objDataRes.PersonCommonInfo;
      let curriculumVitae = objDataRes.CurriculumVitae;

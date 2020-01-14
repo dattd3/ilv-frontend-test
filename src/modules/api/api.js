@@ -157,6 +157,14 @@ export default class Api {
     });
   }
 
+  fetchArticleDetail = async (id) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/detail`, {
+      params: {
+        id: id
+      }
+    });
+  }
+  
   /* News  */
  fetchNewsOnHome = async () => {
     return await this.request.get(`/api/v1/article/listhome`);

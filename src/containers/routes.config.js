@@ -130,6 +130,14 @@ export default [
           component: lazy(() => import("./GroupInfo/News"))
         },
         {
+          key: "newsdetail",
+          routeProps: {
+            exact: true,
+            path: map.NewsDetail
+          },
+          component: lazy(() => import("./GroupInfo/NewsDetail"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,
