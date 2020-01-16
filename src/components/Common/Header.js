@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 function Header(props) {
     const { fullName, plEmail, jobTitle, employeeNo, company, department, location } = props.user;
-    const { setShow, isApp } = props;
+    const { setShow } = props;
     const [isShow, SetIsShow] = useState(false);
     const guard = useGuardStore();
 
@@ -27,7 +27,6 @@ function Header(props) {
     }
 
     return (
-        isApp ? null :
         <Navbar expand="lg" className="topbar mb-4 static-top">
             <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
             <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
