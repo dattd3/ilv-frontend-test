@@ -4,6 +4,7 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
 import { useTranslation } from "react-i18next";
+import NewsOnHome from './NewsOnHome';
 
 
 const usePreload = (params) => {
@@ -15,6 +16,7 @@ const usePreload = (params) => {
   });
   return sabaCredit;
 };
+
 function Dashboard(props) {
   const { t } = useTranslation();
   const guard = useGuardStore();
@@ -211,36 +213,7 @@ function Dashboard(props) {
           </Card>
         </Col>
         <Col xl={6}>
-          <Card className="mb-4 news-home">
-            <Card.Body className="card-body pd-0">
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i>  {t("CompanyAnnouncement")}</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Lorem Ipsum Generator</Card.Title>
-                  <Card.Text>
-                    Generate Lorem Ipsum placeholder text. Select the number of characters, words, sentences or paragraphs, and hit generate!
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Pellentesque sit amet porttitor eget dolor morbi non</Card.Title>
-                  <Card.Text>
-                    Duis convallis convallis tellus id. Nunc lobortis mattis aliquam faucibus purus in. Lacinia quis vel eros donec ac odio tempor. Posuere morbi leo urna molestie at elementum eu facilisis.
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Et ligula ullamcorper malesuada proin libero nunc consequat interdum varius</Card.Title>
-                  <Card.Text>
-                    Elementum facilisis leo vel fringilla. A iaculis at erat pellentesque adipiscing commodo. Rhoncus urna neque viverra justo nec ultrices dui. Arcu cursus vitae congue mauris rhoncus aenean vel elit
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card.Body>
-          </Card>
+          <NewsOnHome />
         </Col>
       </Row>
     </div >

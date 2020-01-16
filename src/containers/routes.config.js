@@ -127,7 +127,7 @@ export default [
             exact: true,
             path: map.News
           },
-          component: lazy(() => import("./GroupInfo/News"))
+          component: lazy(() => import("./Corporation/News/ListNews"))
         },
         {
           key: "newsdetail",
@@ -135,7 +135,7 @@ export default [
             exact: true,
             path: map.NewsDetail
           },
-          component: lazy(() => import("./GroupInfo/NewsDetail"))
+          component: lazy(() => import("./Corporation/News/NewsDetail"))
         },
         {
           key: "forbidden",

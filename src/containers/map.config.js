@@ -16,8 +16,8 @@ export default {
   CheckListCreate: "/checklist/create",
   CheckListWorkflow: "/checklist/workflow",
 
-  News: "/groupinfo/news",
-  NewsDetail: "/groupinfo/newsdetail/:id",
+  News: "/news",
+  NewsDetail: "/news/:slug/:id",
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied"
