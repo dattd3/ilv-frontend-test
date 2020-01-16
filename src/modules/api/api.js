@@ -46,7 +46,7 @@ export default class Api {
   }
 
 
-  setAuthorization = ({  accessToken }) => {
+  setAuthorization = ({ accessToken }) => {
     this.request.defaults.headers.common['Authorization'] = `${accessToken}`;
   }
 
@@ -147,6 +147,12 @@ export default class Api {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/user/GetPersonCommonInfo`);
   }
 
+
+  /* News  */
+  fetchNewsOnHome = async () => {
+    return await this.request.get(`/api/v1/article/listhome`);
+  }
+
   fetchArticleList = async (pageIndex, pageSize) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/list`, {
       params: {
@@ -164,10 +170,13 @@ export default class Api {
       }
     });
   }
-  
-  /* News  */
- fetchNewsOnHome = async () => {
-    return await this.request.get(`/api/v1/article/listhome`);
-  }
 
+  fetchArticleOthers = async (id, count) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/listothers`, {
+      params: {
+        id: id, 
+        count: count
+      }
+    });
+  }
 };
