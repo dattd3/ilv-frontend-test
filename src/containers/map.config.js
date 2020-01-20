@@ -16,6 +16,7 @@ export default {
   CheckListCreate: "/checklist/create",
   CheckListWorkflow: "/checklist/workflow",
 
+  NewsDetailApp: "/news-app/:id",
   News: "/news",
   NewsDetail: "/news/:slug/:id",
 

@@ -10,6 +10,14 @@ export const Navigation = [
         role: 'U'
     },
     {
+        id: 10,
+        parentId: 0,
+        icon: 'hr',
+        label: "Menu_HumanResource",
+        to: map.PersonInfo,
+        role: 'U'
+    },
+    {
         id: 2,
         parentId: 0,
         icon: 'training',
@@ -40,14 +48,14 @@ export const Navigation = [
         to: map.Roadmap,
         role: 'U'
     },
-    {
-        id: 6,
-        parentId: 2,
-        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-        label: "Menu_ExeTest",
-        to: "#",
-        role: 'U'
-    },
+    // {
+    //     id: 6,
+    //     parentId: 2,
+    //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    //     label: "Menu_ExeTest",
+    //     to: "#",
+    //     role: 'U'
+    // },
     {
         id: 7,
         parentId: 2,
@@ -65,14 +73,6 @@ export const Navigation = [
     //     role: 'U'
     // },
     {
-        id: 10,
-        parentId: 0,
-        icon: 'hr',
-        label: "Menu_HumanResource",
-        to: map.PersonInfo,
-        role: 'U'
-    },
-    {
         id: 11,
         parentId: 0,
         icon: 'contact',
@@ -80,14 +80,14 @@ export const Navigation = [
         to: '/contact',
         role: 'U'
     },
-    {
-        id: 12,
-        parentId: 0,
-        icon: 'term_policy',
-        label: "Menu_TermPolicy",
-        to: '/term-policy',
-        role: 'U'
-    },
+    // {
+    //     id: 12,
+    //     parentId: 0,
+    //     icon: 'term_policy',
+    //     label: "Menu_TermPolicy",
+    //     to: '/term-policy',
+    //     role: 'U'
+    // },
     {
         id: 13,
         parentId: 0,
