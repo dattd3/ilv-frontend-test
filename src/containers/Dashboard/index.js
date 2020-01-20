@@ -188,25 +188,19 @@ function Dashboard(props) {
                   <span className="db-card-header color-blue"><i className="fas icon-term_policy"></i> {t("TermPolicy")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Card.Title>What is Lorem Ipsum?</Card.Title>
-                  <Card.Text>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                  </Card.Text>
+                  <Card.Title>Thông báo quyết định về việc ban hành chính sách thưởng khoán cho Nhân viên buồng phòng và phụ cấp làm việc ca gãy cho Nhân viên phục vụ</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
+                  <span className="small"><i className="far fa-clock"></i> 1 days ago</span>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Card.Title>Thông báo quyết định về việc bố trí nghỉ Tết Dương lịch, Tết Nguyên Đán năm 2020 và thời hạn chi trả các loại lương, thưởng, phúc lợi năm 2019</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
                   <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Card.Title>Where does it come from?</Card.Title>
-                  <Card.Text>
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Why do we use it?</Card.Title>
-                  <Card.Text>
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
+                  <Card.Title>Thông báo quyết định khen thưởng “Gương người tốt việc tốt” cho Nhân viên Cứu hộ tại Vinpearl Condotel Empire Nha Trang</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
+                  <span className="small"><i className="far fa-clock"></i> 5 days ago</span>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
