@@ -789,10 +789,15 @@
   padding: 1em;
 }
 
+/* benefit */
 #benefit-title {
   font-size: 20px;
-  font-weight: medium;
+  font-weight: bold;
   text-transform: uppercase;
-  color: #2A377C;
-  margin-bottom: 20px;
+  color: #2A377C;  
+  margin : 10px 0 20px 10px;
+}
+
+.benefit-title-row {
+  color: #4D4D4D;
 }
