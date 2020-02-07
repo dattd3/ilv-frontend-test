@@ -88,5 +88,7 @@
   "Menu_News": "Tin tức",
   "NewsAndEvent" : "Tin tức sự kiện",
   "OtherNews" : "Tin tức khác",
-  "BenefitRegime" : "Chế độ phúc lợi"
+  "BenefitRegime" : "Chế độ phúc lợi",
+  "BenefitNumber" : "STT",
+  "BenefitService" : "Dịch vụ"
 }

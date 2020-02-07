@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function BenefitItem(props) {
+    const { t } = useTranslation();
+
     var data = props.data;
     if (data && data.title && data.benefits) {
       return (
@@ -9,9 +12,9 @@ export default function BenefitItem(props) {
               <table className="table table-striped">
                     <thead className="benefit-title-row">
                       <tr>
-                        <th>STT</th>
-                        <th>Dịch vụ</th>
-                        <th>Chế độ phúc lợi</th>
+                        <th> {t("BenefitNumber")} </th>
+                        <th> {t("BenefitService")} </th>
+                        <th> {t("BenefitRegime")} </th>
                       </tr>
                     </thead>    
                     <tbody>                                
@@ -20,7 +23,7 @@ export default function BenefitItem(props) {
                            <tr key= {index}>
                                 <td> {index + 1} </td>
                                 <td>
-                                    <div dangerouslySetInnerHTML={{ __html: item.user }}>
+                                    <div dangerouslySetInnerHTML={{ __html: item.subtitle }}>
                                     </div>
                                 </td>   
                                 <td>                                 
