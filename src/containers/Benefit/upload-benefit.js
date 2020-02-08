@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios, { post } from "axios";
+import axios from "axios";
 import { Progress } from "reactstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,7 +21,6 @@ class UploadBenefit extends Component {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ];
     for (var x = 0; x < files.length; x++) {
-      // compare file type find doesn't matach
       if (types.every(type => files[x].type !== type)) {
         err[x] = files[x].type + " is not a supported format\n";
       }
@@ -67,7 +66,6 @@ class UploadBenefit extends Component {
       this.checkMimeType(event) &&
       this.checkFileSize(event)
     ) {
-      // if return true allow to setState
       this.setState({
         selectedFile: files,
         loaded: 0
@@ -76,9 +74,15 @@ class UploadBenefit extends Component {
   };
 
   onClickHandler = () => {
+    var selectedFile = this.state.selectedFile;
+
+    if (selectedFile == null) {
+      return;
+    }
+
     const data = new FormData();
-    for (var x = 0; x < this.state.selectedFile.length; x++) {
-      data.append("body", this.state.selectedFile[x]);
+    for (var x = 0; x < selectedFile.length; x++) {
+      data.append("body", selectedFile[x]);
     }
     axios
       .post("https://localhost:5001/api/v1/benifit/file-upload", data, {
@@ -89,11 +93,9 @@ class UploadBenefit extends Component {
         }
       })
       .then(res => {
-        // then print response status
         toast.success("upload success");
       })
       .catch(err => {
-        // then print response status
         toast.error("upload fail");
       });
   };
