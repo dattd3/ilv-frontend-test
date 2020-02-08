@@ -22,6 +22,6 @@ export default {
   NewsDetail: "/news/:slug/:id",
 
   NotFound: "/not-found",
-  AccessDenied: "/access-denied"
-
+  AccessDenied: "/access-denied",
+  BenefitUpload: "/benefit/upload"
 };
