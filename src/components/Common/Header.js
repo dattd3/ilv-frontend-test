@@ -49,7 +49,7 @@ function Header(props) {
                                 <span className="badge-notification mt-5" data-badge="4"></span> &nbsp; | &nbsp;                                
                              </span>                                              
                                 
-                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header'>  
+                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>  
                                  <span className="text-gray-600"> {plEmail} &nbsp;                                                                 
                                    <i className="avatar-custom fa fa-user-circle"></i>    
                                 </span>
