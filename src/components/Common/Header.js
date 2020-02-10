@@ -50,7 +50,7 @@ function Header(props) {
                              </span>                                              
                                 
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header'>  
-                                 <span className="text-gray-600"> {fullName} [<span className="strong">{employeeNo}</span>] &nbsp;                                                                 
+                                 <span className="text-gray-600"> {plEmail} &nbsp;                                                                 
                                    <i className="avatar-custom fa fa-user-circle"></i>    
                                 </span>
                             </Dropdown.Toggle>                     
