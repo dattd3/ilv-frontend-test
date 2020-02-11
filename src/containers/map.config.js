@@ -11,6 +11,7 @@ export default {
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
   PersonInfo: "/personinfo",
+  Benefit: "/benefit",
 
   //Checklist
   CheckListCreate: "/checklist/create",

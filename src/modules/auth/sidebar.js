@@ -13,8 +13,7 @@ export const Navigation = [
         id: 10,
         parentId: 0,
         icon: 'hr',
-        label: "Menu_HumanResource",
-        to: map.PersonInfo,
+        label: "Menu_HumanResource",        
         role: 'U'
     },
     {
@@ -118,6 +117,22 @@ export const Navigation = [
         icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_News",
         to: map.News,
+        role: 'U'
+    },
+    {
+        id: 17,
+        parentId: 10,
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+        label: "PersonalInformation",        
+        to: map.PersonInfo,
+        role: 'U'
+    },
+    {
+        id: 18,
+        parentId: 10,
+        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+        label: "BenefitRegime",
+        to: map.Benefit,
         role: 'U'
     }
 ];

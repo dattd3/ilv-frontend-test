@@ -22,13 +22,17 @@ function Header(props) {
     const { t } = useTranslation();
 
     const handleClickSetShow = () => {
+
         SetIsShow(!isShow);
         setShow(isShow);
     }
 
+    const openTopNotification = () => {
+        alert('nguyen duc chien');
+    }
     return (
         isApp ? null :
-        <Navbar expand="lg" className="topbar mb-4 static-top">
+        <Navbar expand="lg" className="navigation-top-bar-custom">
             <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
             <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
                 <InputGroup className='d-none'>
@@ -38,18 +42,19 @@ function Header(props) {
                     <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                 </InputGroup>
             </Form>
-            <Dropdown>
-                <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header'>
-                    <div className='mr-2 small text-right username'>
-                        <div className="text-gray-600">{fullName} [<span className="strong">{employeeNo}</span>] ({plEmail})</div>
-                        <div className='d-none d-md-block'>
-                            <span className='small text-gray-500'>{jobTitle}</span><span className='small text-gray-500'>({department})</span>
-                        </div>
-                        <div className='d-none d-md-block'>
-                            <span className='small text-gray-500'>{company}</span> - <span className='small text-gray-500'>{location}</span>
-                        </div>
+            <Dropdown>                                
+                    <div className='mr-2 small text-right username'>   
+                             <span onClick= { openTopNotification } >
+                                <i className="notification-custom far fa-bell"></i>
+                                <span className="badge-notification mt-5" data-badge="4"></span> &nbsp; | &nbsp;                                
+                             </span>                                              
+                                
+                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>  
+                                 <span className="text-gray-600"> {plEmail} &nbsp;                                                                 
+                                   <i className="avatar-custom fa fa-user-circle"></i>    
+                                </span>
+                            </Dropdown.Toggle>                     
                     </div>
-                </Dropdown.Toggle>
                 <Dropdown.Menu className='animated--grow-in'>
                     <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
                 </Dropdown.Menu>

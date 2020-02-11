@@ -179,4 +179,11 @@ export default class Api {
       }
     });
   }
+
+  fetchBenefit = async (jobType) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/benifit/${jobType}`, {
+      params: {
+      }
+    });
+  }
 };

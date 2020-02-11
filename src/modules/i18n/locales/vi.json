@@ -87,5 +87,8 @@
   "Menu_VinpearlIntroduction": "Giới thiệu Vinpearl",
   "Menu_News": "Tin tức",
   "NewsAndEvent" : "Tin tức sự kiện",
-  "OtherNews" : "Tin tức khác"
+  "OtherNews" : "Tin tức khác",
+  "BenefitRegime" : "Chế độ phúc lợi",
+  "BenefitNumber" : "STT",
+  "BenefitService" : "Dịch vụ"
 }

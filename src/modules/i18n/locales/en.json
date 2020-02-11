@@ -85,5 +85,8 @@
   "Menu_VinpearlIntroduction": "Vinpearl introduction",
   "Menu_News": "News",
   "NewsAndEvent" : "News and event",
-  "OtherNews" : "Others"
+  "OtherNews" : "Others",
+  "BenefitRegime" : "Benefit regime",
+  "BenefitNumber" : "No",
+  "BenefitService" : "Service"
 }
