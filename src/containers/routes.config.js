@@ -154,6 +154,22 @@ export default [
           component: lazy(() => import("./Corporation/News/NewsDetail"))
         },
         {
+          key: "about-vingroup",
+          routeProps: {
+            exact: true,
+            path: map.Vingroup
+          },
+          component: lazy(() => import("./Corporation/Vingroup"))
+        },
+        {
+          key: "about-vinpearl",
+          routeProps: {
+            exact: true,
+            path: map.Vinpearl
+          },
+          component: lazy(() => import("./Corporation/Vinpearl"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,

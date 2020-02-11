@@ -90,5 +90,7 @@
   "OtherNews" : "Tin tức khác",
   "BenefitRegime" : "Chế độ phúc lợi",
   "BenefitNumber" : "STT",
-  "BenefitService" : "Dịch vụ"
+  "BenefitService" : "Dịch vụ",
+  "LoginError": "Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng liên hệ IT cơ sở để được trợ giúp!",
+  "NotConnectToSaba": "Tài khoản không hợp lệ. Vui lòng liên hệ IT cơ sở để được trợ giúp!" 
 }
