@@ -100,7 +100,7 @@ export const Navigation = [
         parentId: 13,
         icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_GroupIntroduction",
-        to: "#",
+        to: map.Vingroup,
         role: 'U'
     },
     {
@@ -108,7 +108,7 @@ export const Navigation = [
         parentId: 13,
         icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_VinpearlIntroduction",
-        to: "#",
+        to: map.Vinpearl,
         role: 'U'
     },
     {

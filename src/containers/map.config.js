@@ -21,6 +21,11 @@ export default {
   News: "/news",
   NewsDetail: "/news/:slug/:id",
 
+
+  //about us
+  Vingroup: "/about-vingroup",
+  Vinpearl: "/about-vinpearl",
+
   NotFound: "/not-found",
   AccessDenied: "/access-denied"
 

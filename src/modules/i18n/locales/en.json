@@ -88,5 +88,7 @@
   "OtherNews" : "Others",
   "BenefitRegime" : "Benefit regime",
   "BenefitNumber" : "No",
-  "BenefitService" : "Service"
+  "BenefitService" : "Service",
+  "LoginError": "Login Error. Please contact IT Department for assistance",
+  "NotConnectToSaba": "Invalid account. Please contact IT Department for assistance!" 
 }
