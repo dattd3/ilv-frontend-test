@@ -848,3 +848,27 @@ span.badge-notification[data-badge]::after {
 .user-info-margin {
   margin-top: -8px !important;
 }
+
+.model-body-notify {
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    background-color: white !important;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.model-footer-notify {
+  display: block;
+  background-color: white !important;
+  align-content: center;
+}
+
+.list-group-item-notify {
+  border-radius: 0rem !important;
+}
+
+.item-notify-unread {
+  font-weight: 400;
+  color: midnightblue;
+}
+
