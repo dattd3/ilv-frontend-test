@@ -51,7 +51,7 @@ function Header(props) {
 
                         <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
                             <span className="text-gray-600"> {fullName}</span>
-                            <img class="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName}></img>
+                            <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName}></img>
                         </Dropdown.Toggle>
                     </div>
                     <Dropdown.Menu className='animated--grow-in'>
