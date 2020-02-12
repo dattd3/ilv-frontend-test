@@ -6,36 +6,53 @@ import LoadingModal from '../../components/Common/LoadingModal'
 import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 
-const usePreload = (params) => {
-    const api = useApi();
-    api.setAuthorization({ tokenType: 'Bearer', accessToken: params.token });
-    const [user = undefined, err] = useFetcher({
-        api: api.fetchUser,
-        autoRun: true,
-        params: [params.email]
-    });
-    return user;
-};
 
 function Authorize(props) {
     const { t } = useTranslation();
     const { history } = props;
     const guard = useGuardStore();
+
+
+    const usePreload = (params) => {
+        const api = useApi();
+        api.setAuthorization({ tokenType: 'Bearer', accessToken: params.token });
+        const [user = undefined, err] = useFetcher({
+            api: api.fetchUser,
+            autoRun: true,
+            params: [params.email]
+        });
+        return [user, err];
+    };
     const [email, SetEmail] = useState('');
-    const [show, SetShow] = useState(true);
     const [token, SetToken] = useState('');
+    const [isloading, SetIsloading] = useState(true);
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
-    let user = usePreload({ email: email, token: token });
+    let api = usePreload({ email: email, token: token });
 
     function getUserData() {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
                 SetEmail(currentAuthUser.attributes.email);
-                let email = 'v.trangdt28@vinpearl.com'; //user.email;
-                let vgUsernameMatch = (/[v.]+([^@]*)@/gmi).exec(email);
+                let email = currentAuthUser.attributes.email;
+                console.log(process.env.REACT_APP_IS_FIXED_SABA);
+                if (process.env.REACT_APP_IS_FIXED_SABA) {
+                    email = process.env.REACT_APP_FIXED_SABA_ACCOUNT;
+                }
+                let tEmail = email.replace('v.', '');
+                console.log(tEmail);
+                let vgUsernameMatch = (/([^@]+)/gmi).exec(tEmail);
                 let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
-
+                let user = api[0];
+                
+                if (api[1] && api[1] !== undefined) {
+                    SetNotifyContent(t("LoginError"));
+                    SetIsloading(false);
+                } else {
+                    SetNotifyContent(t("WaitNotice"));
+                    SetIsloading(true);
+                }
+                
                 if (user) {
                     SetNotifyContent(t("LoginSuccessful"));
                     guard.setIsAuth({
@@ -59,8 +76,6 @@ function Authorize(props) {
             else {
                 SetNotifyContent(t("WaitNotice"));
             }
-        }).catch(err => {
-            SetNotifyContent(t("WaitNotice"));
         });
     }
 
@@ -79,7 +94,7 @@ function Authorize(props) {
 
     return (
         <div className='blank-page-cover'>
-            <LoadingModal show={show} content={notifyContent} />
+            <LoadingModal show={true} content={notifyContent} isloading={isloading} />
         </div>
     );
 }
