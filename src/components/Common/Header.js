@@ -3,8 +3,11 @@ import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+import dataNotify from "../../containers/Notify/data/notify.json";
+import NotifyItem from "../../containers/Notify/NotifyItem";
 
 function Header(props) {
+
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
@@ -22,7 +25,6 @@ function Header(props) {
     const { t } = useTranslation();
 
     const handleClickSetShow = () => {
-
         SetIsShow(!isShow);
         setShow(isShow);
     }
@@ -64,32 +66,23 @@ function Header(props) {
             <div>                
                   <Modal show={showNotify} onHide={handleCloseNotify}>
                     <Modal.Header>
-                      <Modal.Title> &nbsp; Thông báo</Modal.Title>
+                      <Modal.Title> &nbsp; {t("Notification")} </Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="model-body-notify">
-
                         <div className="list-group">
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify item-notify-unread"> <i class="fa fa-circle"></i> &nbsp;
-                          THÔNG BÁO KHẨN CỦA BAN LÃNH ĐẠO TẬP ĐOÀN!</a>
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify item-notify-unread"><i class="fa fa-circle"></i> &nbsp;
-                          THÔNG BÁO: Nhận đồng phục may đo cho CBNV HO (khu vực Hà Nội)</a>
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify"><i class="far fa-circle"></i> &nbsp;
-                          Thông báo về việc phối hợp nhận diện khuôn mặt ra vào Tòa VP Symphony</a>
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify"><i class="far fa-circle"></i> &nbsp;
-                          (PASSWORD EXPIRATION NOTIFICATION) THONG BAO MAT KHAU SAP HET HAN</a>
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify"><i class="far fa-circle"></i> &nbsp;
-                          Thông báo nhận HĐ thuê xe</a>
-                          <a href="#" className="list-group-item list-group-item-action list-group-item-notify"><i class="far fa-circle"></i> &nbsp;
-                          Tạo tài khoản ví VinID Pay thành công</a>
-                          
-                        </div>
+                          {           
+                            dataNotify.data.map((item,index) =>                                         
+                                    <NotifyItem key={index} data={item}/>
+                                )
+                          }
 
+                        </div>
                     </Modal.Body>
                     <Modal.Footer className="model-footer-notify">                       
                        <center>
-                           <Button className="btn btn-default" onClick={ handleCloseNotify }>
-                              Hiển thị tất cả thông báo
-                          </Button>
+                           <a href="/notify" className="notify-show-all-items" onClick={ handleCloseNotify }>
+                              {t("ShowAll")}
+                          </a>
                       </center>                      
                     </Modal.Footer>
                   </Modal>

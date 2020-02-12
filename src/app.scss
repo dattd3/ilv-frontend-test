@@ -868,7 +868,19 @@ span.badge-notification[data-badge]::after {
 }
 
 .item-notify-unread {
-  font-weight: 400;
+  font-weight: 500;
   color: midnightblue;
+}
+
+.item-notify-datetime-info {
+  color: gray !important;
+}
+
+.item-notify-group-datetime-info {
+  float:left;
+}
+
+.notify-show-all-items {
+  font-weight: 600;
 }
 
