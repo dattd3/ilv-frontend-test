@@ -139,8 +139,8 @@ export const Navigation = [
     id: 19,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "BenefitRegime",
+    label: "BenefitUpload",
     to: map.BenefitUpload,
-    role: "U"
+    role: "A"
   }
 ];

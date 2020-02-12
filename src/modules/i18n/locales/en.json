@@ -88,5 +88,6 @@
   "OtherNews" : "Others",
   "BenefitRegime" : "Benefit regime",
   "BenefitNumber" : "No",
-  "BenefitService" : "Service"
+  "BenefitService" : "Service",
+  "BenefitUpload" : "Upload benefit"
 }
