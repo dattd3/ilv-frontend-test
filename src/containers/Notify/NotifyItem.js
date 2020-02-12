@@ -2,10 +2,16 @@ import React from "react";
 
 export default function NotifyItem(props) {    
     var data = props.data;
+
+   const handleLangChange = (event) => {  
+        console.log("stt:",data.content);      
+        props.onSelectLanguage(event, data.content);            
+    }
+
     if (data && data.content) {
         if (data.read && data.read == "false") {
           return (
-              <a href="#" className="list-group-item list-group-item-action list-group-item-notify item-notify-unread"> 
+              <a href="#" onClick={ handleLangChange } className="list-group-item list-group-item-action list-group-item-notify item-notify-unread"> 
                  <div>
                       <i className="fas icon-term_policy"></i> &nbsp;
                       { data.content }
@@ -22,7 +28,7 @@ export default function NotifyItem(props) {
            )
         } else {          
           return (
-                <a href="#" className="list-group-item list-group-item-action list-group-item-notify"> 
+                <a href="#" onClick={ handleLangChange } className="list-group-item list-group-item-action list-group-item-notify"> 
                     <div>
                         <i className="fas icon-term_policy"></i> &nbsp;
                         { data.content }
