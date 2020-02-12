@@ -53,7 +53,7 @@ function MainLayout(props) {
           <div id="content">
             <Header user={user} setShow={setShow} isApp={isApp} />
             <div className="container-fluid" id='main-content'>
-              {t("ClassName")}
+              {t("NotConnectToSaba")}
             </div>
           </div>
           <Footer />
