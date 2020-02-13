@@ -1,63 +1,77 @@
 import React,{ useState, useRef } from 'react';
-/*import { useApi, useFetcher } from "../../modules";*/
-import result from "./data/notify.json";
+import { useApi, useFetcher } from "../../modules";
+/*import result from "./data/notify.json";*/
 import NotifyItem from "./NotifyItem";
 import { useTranslation } from "react-i18next";
 import {Button, ButtonToolbar, OverlayTrigger, Overlay, Popover } from "react-bootstrap";
+import CustomPaging from '../../components/Common/CustomPaging';
 
-/*const usePreload = (params) => {
+const usePreload = (params) => {
     const api = useApi();
     const [data = [], err] = useFetcher({
-        api: api.fetchBenefit,
+        api: api.fetchNotifyList,
         autoRun: true,
         params: params
     });
     return data;
-};*/
+};
  
 function Notify() {    
-     /*var result = usePreload([jobType.toLowerCase()]);*/
-
-    const { t } = useTranslation();
-    var items = result.data;
-
-    var placement = " button test";
     
+    const { t } = useTranslation();
     const [show, setShow] = useState(false);
     const [target, setTarget] = useState(null);
     const [titlePopOver, setTitlePopOver] = useState(null);
-
+    const [contentPopOver, setContentPopOver] = useState(null);
     const ref = useRef(null);
 
+    const [pageIndex, SetPageIndex] = useState(1);
+    const [pageSize, SetPageSize] = useState(10);
+    const emailTest = "v.chiennd4@vinpearl.com";
+    const totalRecord = 50; 
+ 
+    const result = usePreload([emailTest, pageIndex, pageSize]);  
+    var items = result.data;
+    
+    /*Get top pageSize elements*/
+
+    if (items && items.length > pageSize) {
+        items = items.slice(0, pageSize);
+    }
+
+    function onChangePage(page) {
+        SetPageIndex(page);
+    } 
+    
     const handleClick = event => {
       setShow(!show);
       setTarget(event.target);
     };
 
-
-    const onSelectLanguage = (event,title) => {        
+    const onSelectItemDetail = (event, title, content) => {        
         console.log("click :",title);
         handleClick(event);
         setTitlePopOver(title);
+        setContentPopOver(content);
     }
 
     if(items) {        
           return (     
             <div>
                 <h1 className="h3 mb-0 text-gray-800"> {t("Notification").toUpperCase()}</h1>
-                <p></p>
+                <br/>
 
                 <div className="list-group">
-                  {           
-                      items.map((item,index) =>                                                                 
-                               <NotifyItem onSelectLanguage={ onSelectLanguage } key={index} data={item}/>                                                
+                  {    
+                     !items ? null :     
+                     items.map((item,index) =>                                                                 
+                               <NotifyItem onSelectItemDetail={ onSelectItemDetail } key={index} data={item}/>                                                
                           )
                   }
                  </div>
                 
                  <ButtonToolbar ref={ref}>
-                    <Button onClick={handleClick}>Holy guacamole!</Button>
-
+                    {/*<Button onClick={handleClick}>Holy guacamole!</Button>*/}
                     <Overlay
                       show={show}
                       target={target}
@@ -65,14 +79,26 @@ function Notify() {
                       container={ref.current}
                       containerPadding={20}
                     >
-                      <Popover id="popover-contained">
-                        <Popover.Title as="h3"> {titlePopOver} </Popover.Title>
-                        <Popover.Content>
-                          <strong>Holy guacamole!</strong> Check this info.
+                      <Popover id="popover-contained" className="pop-over-notify-custom">
+                        <Popover.Title as="h4" className="pop-over-header-notify-custom"> 
+                            <i className="fas icon-term_policy"></i> &nbsp; { titlePopOver } 
+                        </Popover.Title>
+                        <Popover.Content className="pop-over-body-notify-custom">
+                           { contentPopOver }                          
                         </Popover.Content>
                       </Popover>
                     </Overlay>
                   </ButtonToolbar>
+                  <br/>
+                  <div className="row">
+                      <div className="col-sm"> </div>
+                      <div className="col-sm">                      
+                          <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={totalRecord} />
+                      </div>
+                      <div className="col-sm text-right">
+                          {t("Total")}: {totalRecord}
+                      </div>
+                  </div>
 
            </div>
            );

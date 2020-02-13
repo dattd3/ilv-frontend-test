@@ -5,6 +5,17 @@ import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from '
 import { useTranslation } from "react-i18next";
 import dataNotify from "../../containers/Notify/data/notify.json";
 import NotifyItem from "../../containers/Notify/NotifyItem";
+import { useApi, useFetcher } from "../../modules";
+
+const usePreload = (params) => {
+    const api = useApi();
+    const [data = [], err] = useFetcher({
+        api: api.fetchNotifyList,
+        autoRun: true,
+        params: params
+    });
+    return data;
+};
 
 function Header(props) {
 
@@ -32,6 +43,22 @@ function Header(props) {
     const [showNotify, setShowNotify] = useState(false);
     const handleCloseNotify = () => setShowNotify(false);
     const handleShowNotify = () => setShowNotify(true);
+
+    var result = usePreload(["v.chiennd4@vinpearl.com"]);
+
+
+
+    var items = result.data;
+
+    /*Get top 5 elements*/
+
+    if (items && items.length > 5) {
+        items = items.slice(0,5);
+    }
+
+     const onSelectItemDetail = (event, title, content) => {        
+            
+        }
 
     return (
         isApp ? null :
@@ -70,10 +97,11 @@ function Header(props) {
                     </Modal.Header>
                     <Modal.Body className="model-body-notify">
                         <div className="list-group">
-                          {           
-                            dataNotify.data.map((item,index) =>                                         
-                                    <NotifyItem key={index} data={item}/>
-                                )
+                          {    
+                            !items ? null :     
+                            items.map((item,index) =>                                                                 
+                               <NotifyItem onSelectItemDetail={ onSelectItemDetail } key={index} data={item}/>                                                
+                             )
                           }
 
                         </div>
