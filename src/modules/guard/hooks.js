@@ -45,7 +45,7 @@ const Storage = {
     localStorage.setItem('accessToken', currentAuthUser.accessToken);
     localStorage.setItem('tokenExpired', currentAuthUser.tokenExpired);
     localStorage.setItem('email', currentAuthUser.email);
-    localStorage.setItem('plEmail', currentAuthUser.email);
+    localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('jobType', currentAuthUser.jobType);
     localStorage.setItem('fullName', currentAuthUser.fullName);
     localStorage.setItem('jobTitle', currentAuthUser.jobTitle);

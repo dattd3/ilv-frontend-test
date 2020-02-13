@@ -35,7 +35,7 @@ function Notify() {
     };
 
 
-    const handleLanguage = (event,title) => {        
+    const onSelectLanguage = (event,title) => {        
         console.log("click :",title);
         handleClick(event);
         setTitlePopOver(title);
@@ -50,7 +50,7 @@ function Notify() {
                 <div className="list-group">
                   {           
                       items.map((item,index) =>                                                                 
-                               <NotifyItem onSelectLanguage={ handleLanguage } key={index} data={item}/>                                                
+                               <NotifyItem onSelectLanguage={ onSelectLanguage } key={index} data={item}/>                                                
                           )
                   }
                  </div>
