@@ -28,6 +28,6 @@ export default {
   Vinpearl: "/about-vinpearl",
 
   NotFound: "/not-found",
-  AccessDenied: "/access-denied"
-
+  AccessDenied: "/access-denied",
+  BenefitUpload: "/benefit/upload"
 };
