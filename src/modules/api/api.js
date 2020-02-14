@@ -186,4 +186,16 @@ export default class Api {
       }
     });
   }
+
+
+  fetchNotifyList = async (email, pageIndex, pageSize) => {
+      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/notification/list`, {
+        params: {
+          email: email,
+          pageIndex: pageIndex,
+          pageSize: pageSize
+        }
+      });
+    }
+
 };
