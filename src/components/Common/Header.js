@@ -3,7 +3,6 @@ import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import dataNotify from "../../containers/Notify/data/notify.json";
 import NotifyItem from "../../containers/Notify/NotifyItem";
 import { useApi, useFetcher } from "../../modules";
 
@@ -44,14 +43,14 @@ function Header(props) {
     const handleCloseNotify = () => setShowNotify(false);
     const handleShowNotify = () => setShowNotify(true);
 
-    var result = usePreload(["v.chiennd4@vinpearl.com"]);
+    const user = guard.getCurentUser();
+    const pageIndex = 1;
+    const pageSize = 5;
 
-
+    const result = usePreload([user.email, pageIndex, pageSize]); 
 
     var items = result.data;
-
     /*Get top 5 elements*/
-
     if (items && items.length > 5) {
         items = items.slice(0,5);
     }

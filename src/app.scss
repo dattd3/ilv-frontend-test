@@ -900,5 +900,28 @@ span.badge-notification[data-badge]::after {
 .pop-over-body-notify-custom {
   margin : 10px;
   font-size: 1rem;
+  color: black;
 }
+
+.list-item-notify-datetime {
+  float: right;
+  color: deeppink !important;
+  font-family: serif;
+}
+
+.list-item-notify-content {  
+  color: gray !important;
+  margin-left: 15px;
+  color: darkslategray;
+  font-style: italic;
+}
+
+.text-clip-2lines {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
 

@@ -1,7 +1,6 @@
 import React,{ useState, useRef } from 'react';
-import { useApi, useFetcher } from "../../modules";
-/*import result from "./data/notify.json";*/
-import NotifyItem from "./NotifyItem";
+import { useApi, useFetcher, useGuardStore } from "../../modules";
+import NotifyItem from "./NotifyListItem";
 import { useTranslation } from "react-i18next";
 import {Button, ButtonToolbar, OverlayTrigger, Overlay, Popover } from "react-bootstrap";
 import CustomPaging from '../../components/Common/CustomPaging';
@@ -26,11 +25,14 @@ function Notify() {
     const ref = useRef(null);
 
     const [pageIndex, SetPageIndex] = useState(1);
-    const [pageSize, SetPageSize] = useState(10);
-    const emailTest = "v.chiennd4@vinpearl.com";
+    const [pageSize, SetPageSize] = useState(10);    
     const totalRecord = 50; 
- 
-    const result = usePreload([emailTest, pageIndex, pageSize]);  
+
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
+
+    const result = usePreload([user.email, pageIndex, pageSize]); 
+
     var items = result.data;
     
     /*Get top pageSize elements*/
