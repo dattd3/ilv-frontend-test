@@ -71,14 +71,14 @@ export const Navigation = [
     //     to: '/checklist/workflow',
     //     role: 'U'
     // },
-    {
-        id: 11,
-        parentId: 0,
-        icon: 'contact',
-        label: "Menu_ContactAddress",
-        to: '/contact',
-        role: 'U'
-    },
+    // {
+    //     id: 11,
+    //     parentId: 0,
+    //     icon: 'contact',
+    //     label: "Menu_ContactAddress",
+    //     to: '/contact',
+    //     role: 'U'
+    // },
     // {
     //     id: 12,
     //     parentId: 0,
@@ -95,22 +95,22 @@ export const Navigation = [
         to: '/announcement',
         role: 'U'
     },
-    {
-        id: 14,
-        parentId: 13,
-        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-        label: "Menu_GroupIntroduction",
-        to: map.Vingroup,
-        role: 'U'
-    },
-    {
-        id: 15,
-        parentId: 13,
-        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-        label: "Menu_VinpearlIntroduction",
-        to: map.Vinpearl,
-        role: 'U'
-    },
+    // {
+    //     id: 14,
+    //     parentId: 13,
+    //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    //     label: "Menu_GroupIntroduction",
+    //     to: map.Vingroup,
+    //     role: 'U'
+    // },
+    // {
+    //     id: 15,
+    //     parentId: 13,
+    //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    //     label: "Menu_VinpearlIntroduction",
+    //     to: map.Vinpearl,
+    //     role: 'U'
+    // },
     {
         id: 16,
         parentId: 13,
@@ -127,12 +127,12 @@ export const Navigation = [
         to: map.PersonInfo,
         role: 'U'
     },
-    {
-        id: 18,
-        parentId: 10,
-        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-        label: "BenefitRegime",
-        to: map.Benefit,
-        role: 'U'
-    }
+    // {
+    //     id: 18,
+    //     parentId: 10,
+    //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    //     label: "BenefitRegime",
+    //     to: map.Benefit,
+    //     role: 'U'
+    // }
 ];

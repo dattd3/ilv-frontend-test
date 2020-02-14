@@ -76,7 +76,7 @@ function Dashboard(props) {
     return {
       labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
-        data: [25, 75],
+        data: [0, 100],
         title: {
           display: true
         },
@@ -97,7 +97,7 @@ function Dashboard(props) {
     return {
       labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
-        data: [25, 75],
+        data: [0, 100],
         title: {
           display: true
         },
@@ -157,7 +157,7 @@ function Dashboard(props) {
               </div>
               <div className="text-center mt-3">
                 <p className="mb-2">{t("AnnualLeaveDateBeUsed")}</p>
-                <strong>7/12 {t("Day")}</strong>
+                <strong>N/A {t("Day")}</strong>
               </div>
             </Card.Body>
           </Card>
@@ -173,7 +173,7 @@ function Dashboard(props) {
               </div>
               <div className="text-center mt-3">
                 <p className="mb-2">{t("VPNightBenefitBeUsed")}</p>
-                <strong>1/3 {t("Night")}</strong>
+                <strong>N/A {t("Night")}</strong>
               </div>
             </Card.Body>
           </Card>

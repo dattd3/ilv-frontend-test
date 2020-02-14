@@ -33,15 +33,9 @@ function Authorize(props) {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                SetEmail(currentAuthUser.attributes.email);
-                let email = currentAuthUser.attributes.email;
-                console.log(process.env.REACT_APP_IS_FIXED_SABA);
-                if (process.env.REACT_APP_IS_FIXED_SABA) {
-                    email = process.env.REACT_APP_FIXED_SABA_ACCOUNT;
-                }
-                let tEmail = email.replace('v.', '');
-                console.log(tEmail);
-                let vgUsernameMatch = (/([^@]+)/gmi).exec(tEmail);
+                SetEmail(currentAuthUser.attributes.email); 
+                let email = currentAuthUser.attributes.email.replace('v.', '');
+                let vgUsernameMatch = (/([^@]+)/gmi).exec(email);
                 let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                 let user = api[0];
                 
