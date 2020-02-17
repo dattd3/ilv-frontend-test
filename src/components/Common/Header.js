@@ -30,6 +30,7 @@ function Header(props) {
     const openTopNotification = () => {
         alert('nguyen duc chien');
     }
+ 
     return (
         isApp ? null :
             <Navbar expand="lg" className="navigation-top-bar-custom">
@@ -47,11 +48,11 @@ function Header(props) {
                         <span onClick={openTopNotification} >
                             <i className="notification-custom far fa-bell"></i>
                             <span className="badge-notification mt-5" data-badge="4"></span> &nbsp; | &nbsp;
-                             </span>
+                        </span>
 
                         <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
                             <span className="text-gray-600"> {fullName}</span>
-                            <img class="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName}></img>
+                            <img className="ml-2 img-profile rounded-circle" src={(avatar != null && avatar !== '' && avatar !== 'null') ? `data:image/png;base64, ${avatar}` : '/no-img.png'} alt={fullName} />
                         </Dropdown.Toggle>
                     </div>
                     <Dropdown.Menu className='animated--grow-in'>

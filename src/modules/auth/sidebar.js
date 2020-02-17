@@ -9,13 +9,13 @@ export const Navigation = [
         to: '/',
         role: 'U'
     },
-    {
-        id: 10,
-        parentId: 0,
-        icon: 'hr',
-        label: "Menu_HumanResource",        
-        role: 'U'
-    },
+    // {
+    //     id: 10,
+    //     parentId: 0,
+    //     icon: 'hr',
+    //     label: "Menu_HumanResource",        
+    //     role: 'U'
+    // },
     {
         id: 2,
         parentId: 0,
@@ -119,14 +119,14 @@ export const Navigation = [
         to: map.News,
         role: 'U'
     },
-    {
-        id: 17,
-        parentId: 10,
-        icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-        label: "PersonalInformation",        
-        to: map.PersonInfo,
-        role: 'U'
-    },
+    // {
+    //     id: 17,
+    //     parentId: 10,
+    //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    //     label: "PersonalInformation",        
+    //     to: map.PersonInfo,
+    //     role: 'U'
+    // },
     // {
     //     id: 18,
     //     parentId: 10,

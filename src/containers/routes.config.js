@@ -121,22 +121,22 @@ export default [
           },
           component: lazy(() => import("./CheckList/Workflow"))
         },
-        {
-          key: "personinfo",
-          routeProps: {
-            exact: true,
-            path: map.PersonInfo
-          },
-          component: lazy(() => import("./PersonInfo"))
-        },
-        {
-          key: "benefit",
-          routeProps: {
-            exact: true,
-            path: map.Benefit
-          },
-          component: lazy(() => import("./Benefit"))
-        },
+        // {
+        //   key: "personinfo",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.PersonInfo
+        //   },
+        //   component: lazy(() => import("./PersonInfo"))
+        // },
+        // {
+        //   key: "benefit",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.Benefit
+        //   },
+        //   component: lazy(() => import("./Benefit"))
+        // },
         {
           key: "news",
           routeProps: {
@@ -153,22 +153,22 @@ export default [
           },
           component: lazy(() => import("./Corporation/News/NewsDetail"))
         },
-        {
-          key: "about-vingroup",
-          routeProps: {
-            exact: true,
-            path: map.Vingroup
-          },
-          component: lazy(() => import("./Corporation/Vingroup"))
-        },
-        {
-          key: "about-vinpearl",
-          routeProps: {
-            exact: true,
-            path: map.Vinpearl
-          },
-          component: lazy(() => import("./Corporation/Vinpearl"))
-        },
+        // {
+        //   key: "about-vingroup",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.Vingroup
+        //   },
+        //   component: lazy(() => import("./Corporation/Vingroup"))
+        // },
+        // {
+        //   key: "about-vinpearl",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.Vinpearl
+        //   },
+        //   component: lazy(() => import("./Corporation/Vinpearl"))
+        // },
         {
           key: "forbidden",
           routeProps: {
