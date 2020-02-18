@@ -64,7 +64,7 @@ export default class Api {
 
   // user
   fetchUser = async () => {
-    return await this.request.get('/api/v1/user/me');
+    return await this.request.get('user/me');
   };
 
   fetchSabaUser = async (username) => {
@@ -144,17 +144,17 @@ export default class Api {
   }
 
   fetchPersonCommonInfo = async () => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/user/GetPersonCommonInfo`);
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}user/GetPersonCommonInfo`);
   }
 
 
   /* News  */
   fetchNewsOnHome = async () => {
-    return await this.request.get(`/api/v1/article/listhome`);
+    return await this.request.get(`/article/listhome`);
   }
 
   fetchArticleList = async (pageIndex, pageSize) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/list`, {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/list`, {
       params: {
         domain: '',
         pageIndex: pageIndex,
@@ -164,7 +164,7 @@ export default class Api {
   }
 
   fetchArticleDetail = async (id) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/detail`, {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {
       params: {
         id: id
       }
@@ -172,16 +172,16 @@ export default class Api {
   }
 
   fetchArticleOthers = async (id, count) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/article/listothers`, {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/listothers`, {
       params: {
-        id: id, 
+        id: id,
         count: count
       }
     });
   }
 
   fetchBenefit = async (jobType) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}api/v1/benifit/${jobType}`, {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}benifit/${jobType}`, {
       params: {
       }
     });
