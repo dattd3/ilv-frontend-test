@@ -1,4 +1,4 @@
-import map from '../../containers/map.config';
+import map from "../../containers/map.config";
 
 export const Navigation = [
     {

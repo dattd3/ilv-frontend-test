@@ -1,10 +1,23 @@
 import React, { useState } from "react";
 import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
-import { Navbar, Form, InputGroup, Button, FormControl, Dropdown } from 'react-bootstrap';
+import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+import NotifyItem from "../../containers/Notify/NotifyItem";
+import { useApi, useFetcher } from "../../modules";
+
+const usePreload = (params) => {
+    const api = useApi();
+    const [data = [], err] = useFetcher({
+        api: api.fetchNotifyList,
+        autoRun: true,
+        params: params
+    });
+    return data;
+};
 
 function Header(props) {
+
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
@@ -22,17 +35,29 @@ function Header(props) {
     const { t } = useTranslation();
 
     const handleClickSetShow = () => {
-
         SetIsShow(!isShow);
         setShow(isShow);
     }
+    
+    const [showNotify, setShowNotify] = useState(false);
+    const handleCloseNotify = () => setShowNotify(false);
+    const handleShowNotify = () => setShowNotify(true);
 
-    const openTopNotification = () => {
-        alert('nguyen duc chien');
+    const user = guard.getCurentUser();
+    const pageIndex = 1;
+    const pageSize = 5;
+
+    const result = usePreload([user.email, pageIndex, pageSize]); 
+
+    var items = result.data;
+    /*Get top 5 elements*/
+    if (items && items.length > 5) {
+        items = items.slice(0,5);
     }
  
     return (
         isApp ? null :
+        <div>
             <Navbar expand="lg" className="navigation-top-bar-custom">
                 <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
                 <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
@@ -45,7 +70,7 @@ function Header(props) {
                 </Form>
                 <Dropdown>
                     <div className='mr-2 mt-3 small text-right username'>
-                        <span onClick={openTopNotification} >
+                        <span onClick={handleShowNotify} >
                             <i className="notification-custom far fa-bell"></i>
                             <span className="badge-notification mt-5" data-badge="4"></span> &nbsp; | &nbsp;
                         </span>
@@ -58,8 +83,34 @@ function Header(props) {
                     <Dropdown.Menu className='animated--grow-in'>
                         <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
                     </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown>                
             </Navbar>
+            <div>                
+                  <Modal show={showNotify} onHide={handleCloseNotify}>
+                    <Modal.Header>
+                      <Modal.Title> &nbsp; {t("Notification")} </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="model-body-notify">
+                        <div className="list-group">
+                          {    
+                            !items ? null :     
+                            items.map((item,index) =>                                                                 
+                               <NotifyItem onSelectItemDetail={ onSelectItemDetail } key={index} data={item}/>                                                
+                             )
+                          }
+
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className="model-footer-notify">                       
+                       <center>
+                           <a href="/notify" className="notify-show-all-items" onClick={ handleCloseNotify }>
+                              {t("ShowAll")}
+                          </a>
+                      </center>                      
+                    </Modal.Footer>
+                  </Modal>
+            </div>
+        </div>
     );
 }
 

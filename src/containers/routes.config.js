@@ -173,7 +173,7 @@ export default [
           key: "forbidden",
           routeProps: {
             exact: true,
-            path: '/access-denied'
+            path: "/access-denied"
           },
           component: lazy(() => import("./AccessDenied"))
         },
@@ -181,7 +181,7 @@ export default [
           key: "not-found",
           routeProps: {
             exact: true,
-            path: '/not-found'
+            path: "/not-found"
           },
           component: lazy(() => import("./NotFound"))
         }

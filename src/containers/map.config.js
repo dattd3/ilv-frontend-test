@@ -12,6 +12,7 @@ export default {
   TraniningKPI: "/training/kpi",
   PersonInfo: "/personinfo",
   Benefit: "/benefit",
+  Notify: "/notify",
 
   //Checklist
   CheckListCreate: "/checklist/create",
@@ -27,6 +28,6 @@ export default {
   Vinpearl: "/about-vinpearl",
 
   NotFound: "/not-found",
-  AccessDenied: "/access-denied"
-
+  AccessDenied: "/access-denied",
+  BenefitUpload: "/benefit/upload"
 };
