@@ -37,80 +37,34 @@ function Header(props) {
     const handleClickSetShow = () => {
         SetIsShow(!isShow);
         setShow(isShow);
-    }
-    
-    const [showNotify, setShowNotify] = useState(false);
-    const handleCloseNotify = () => setShowNotify(false);
-    const handleShowNotify = () => setShowNotify(true);
-
-    const user = guard.getCurentUser();
-    const pageIndex = 1;
-    const pageSize = 5;
-
-    const result = usePreload([user.email, pageIndex, pageSize]); 
-
-    var items = result.data;
-    /*Get top 5 elements*/
-    if (items && items.length > 5) {
-        items = items.slice(0,5);
-    }
- 
+    } 
     return (
         isApp ? null :
-        <div>
-            <Navbar expand="lg" className="navigation-top-bar-custom">
-                <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
-                <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
-                    <InputGroup className='d-none'>
-                        <InputGroup.Prepend>
-                            <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
-                        </InputGroup.Prepend>
-                        <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
-                    </InputGroup>
-                </Form>
-                <Dropdown>
-                    <div className='mr-2 mt-3 small text-right username'>
-                        <span onClick={handleShowNotify} >
-                            <i className="notification-custom far fa-bell"></i>
-                            <span className="badge-notification mt-5" data-badge="4"></span> &nbsp; | &nbsp;
-                        </span>
+            <div>
+                <Navbar expand="lg" className="navigation-top-bar-custom">
+                    <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
+                    <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
+                        <InputGroup className='d-none'>
+                            <InputGroup.Prepend>
+                                <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
+                            </InputGroup.Prepend>
+                            <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
+                        </InputGroup>
+                    </Form>
+                    <Dropdown>
+                        <div className='mr-2 mt-3 small text-right username'> 
 
-                        <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                            <span className="text-gray-600"> {fullName}</span>
-                            <img className="ml-2 img-profile rounded-circle" src={(avatar != null && avatar !== '' && avatar !== 'null') ? `data:image/png;base64, ${avatar}` : '/no-img.png'} alt={fullName} />
-                        </Dropdown.Toggle>
-                    </div>
-                    <Dropdown.Menu className='animated--grow-in'>
-                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>                
-            </Navbar>
-            <div>                
-                  <Modal show={showNotify} onHide={handleCloseNotify}>
-                    <Modal.Header>
-                      <Modal.Title> &nbsp; {t("Notification")} </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className="model-body-notify">
-                        <div className="list-group">
-                          {    
-                            !items ? null :     
-                            items.map((item,index) =>                                                                 
-                               <NotifyItem onSelectItemDetail={ onSelectItemDetail } key={index} data={item}/>                                                
-                             )
-                          }
-
+                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
+                                <span className="text-gray-600"> {fullName}</span>
+                                <img className="ml-2 img-profile rounded-circle" src={(avatar != null && avatar !== '' && avatar !== 'null') ? `data:image/png;base64, ${avatar}` : '/no-img.png'} alt={fullName} />
+                            </Dropdown.Toggle>
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer className="model-footer-notify">                       
-                       <center>
-                           <a href="/notify" className="notify-show-all-items" onClick={ handleCloseNotify }>
-                              {t("ShowAll")}
-                          </a>
-                      </center>                      
-                    </Modal.Footer>
-                  </Modal>
+                        <Dropdown.Menu className='animated--grow-in'>
+                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Navbar>
             </div>
-        </div>
     );
 }
 
