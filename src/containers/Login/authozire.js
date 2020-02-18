@@ -34,8 +34,8 @@ function Authorize(props) {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
                 SetEmail(currentAuthUser.attributes.email); 
-                let email = currentAuthUser.attributes.email.replace('v.', '');
-                let vgUsernameMatch = (/([^@]+)/gmi).exec(email);
+                let email = currentAuthUser.attributes.email;
+                let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
                 let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                 let user = api[0];
                 
