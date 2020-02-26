@@ -3,14 +3,11 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import Course from "../../components/Forms/CustomForm/Course"
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
-const useGetRoadmap = (params) => {
-  const guard = useGuardStore();
+const useGetRoadmap = () => {
   const api = useApi();
   const [roadmapList = undefined] = useFetcher({
     api: api.fetchRoadmapList,
-    autoRun: true,
-    params: params
-  }); 
+    autoRun: true   }); 
   return roadmapList;
 };
 
@@ -22,7 +19,7 @@ function Roadmap(props) {
     });
     const guard = useGuardStore();
     const user = guard.getCurentUser();
-    const roadmap = useGetRoadmap([user.email]);
+    const roadmap = useGetRoadmap();
     let elmCourses;
     if (roadmap &&  roadmap.data && roadmap.data.curriculums) {
        elmCourses = roadmap.data.curriculums.map((item, index) =>

@@ -26,7 +26,7 @@ function RejectClass(props) {
     document.title = `Learning`;
     const guard = useGuardStore();
     const user = guard.getCurentUser();
-    const sabaEnrollments = usePreload([user.email, 300, pageIndex, pageSize]);
+    const sabaEnrollments = usePreload([300, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
