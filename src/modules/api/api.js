@@ -67,33 +67,27 @@ export default class Api {
     return await this.request.get('user/me');
   };
 
-  fetchSabaUser = async (username) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
-      params: {
-        username: username,
-      }
-    });
+  fetchSabaUser = async () => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`);
   };
 
   // training
-  fetchSabaCredit = async (username) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits?username=${username}`);
+  fetchSabaCredit = async () => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`);
   }
 
-  fetchSabaLearning_OnGoing = async (username, pageIndex, pageSize) => {
+  fetchSabaLearning_OnGoing = async (pageIndex, pageSize) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
       params: {
-        username: username,
         page_no: pageIndex,
         page_size: pageSize
       }
     });
   }
 
-  fetchSabaLearning_Transcript = async (username, status, pageIndex, pageSize) => {
+  fetchSabaLearning_Transcript = async (status, pageIndex, pageSize) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`, {
       params: {
-        username: username,
         status: status,
         page_no: pageIndex,
         page_size: pageSize
@@ -112,35 +106,27 @@ export default class Api {
     });
   }
 
-  fetchRoadmapList = async (username) => {
+  fetchRoadmapList = async () => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
       params: {
-        username: username,
         startPage: 1,
         count: 1000
       }
     });
   }
 
-  fetchRoadmapDetails = async (id, username) => {
+  fetchRoadmapDetails = async (id) => {
     return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
       {
         params: {
-          username: username,
           id: id
         }
       }
     );
   }
 
-  fetchKPI = async (username) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`,
-      {
-        params: {
-          username: username
-        }
-      }
-    );
+  fetchKPI = async () => {
+    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`);
   }
 
   fetchPersonCommonInfo = async () => {
@@ -186,16 +172,5 @@ export default class Api {
       }
     });
   }
-
-
-  fetchNotifyList = async (email, pageIndex, pageSize) => {
-      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
-        params: {
-          email: email,
-          pageIndex: pageIndex,
-          pageSize: pageSize
-        }
-      });
-    }
 
 };

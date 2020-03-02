@@ -26,7 +26,7 @@ function OnGoingClass(props) {
     const [pageSize, SetPageSize] = useState(5);
     const guard = useGuardStore();
     const user = guard.getCurentUser();
-    let sabaEnrollments = usePreload([user.email, pageIndex, pageSize]);
+    let sabaEnrollments = usePreload([pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
