@@ -3,6 +3,7 @@ export default {
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
+  TermPolicy:  "/policy",
 
   // Training
   Roadmap: "/training/roadmap",
