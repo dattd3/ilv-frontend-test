@@ -45,7 +45,7 @@ export const Navigation = [
         icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
         label: "Menu_TrainingRoadmap",
         to: map.Roadmap,
-        role: 'U'
+        role: ['P', 'T']
     },
     // {
     //     id: 6,
