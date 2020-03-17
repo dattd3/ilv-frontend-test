@@ -110,6 +110,7 @@ class UploadBenefit extends Component {
               <input
                 type="file"
                 class="form-control"
+                accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 formEncType="multipart/form-data"
                 onChange={this.onChangeHandler}
               />
