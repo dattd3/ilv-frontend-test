@@ -202,4 +202,12 @@ export default class Api {
       }
     );
   };
+
+  uploadBenefit = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}benifit/file-upload`,
+      data,
+      config
+    );
+  };
 }
