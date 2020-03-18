@@ -14,11 +14,11 @@ export default class FileUtil {
 
   static checkFileSize = event => {
     let files = event.target.files;
-    let size = 2000000;
+    let size = 5 * 1024 * 1024;
     let err = [];
     for (var x = 0; x < files.length; x++) {
       if (files[x].size > size) {
-        err[x] = files[x].type + "is too large, please pick a smaller file\n";
+        err[x] = files[x].type + " is too large, please pick a smaller file\n";
       }
     }
     for (var z = 0; z < err.length; z++) {
