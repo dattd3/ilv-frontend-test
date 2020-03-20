@@ -210,4 +210,29 @@ export default class Api {
       config
     );
   };
+
+  uploadJobDescription = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/upload-description`,
+      data,
+      config
+    );
+  };
+
+  uploadJobIds = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/upload-ids`,
+      data,
+      config
+    );
+  };
+
+  fetchJobDescription = async jobCode => {
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobCode}`,
+      {
+        params: {}
+      }
+    );
+  };
 }
