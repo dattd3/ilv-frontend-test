@@ -196,7 +196,7 @@ export default class Api {
 
   fetchBenefit = async jobType => {
     return await this.request.get(
-      `${process.env.REACT_APP_REQUEST_URL}benifit/${jobType}`,
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/benefit/${jobType}`,
       {
         params: {}
       }
@@ -205,7 +205,7 @@ export default class Api {
 
   uploadBenefit = async (data, config) => {
     return await this.request.post(
-      `${process.env.REACT_APP_REQUEST_URL}benifit/file-upload`,
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/benefit/upload`,
       data,
       config
     );
