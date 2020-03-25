@@ -95,5 +95,6 @@
   "ShowAll" : "Hiển thị tất cả",
   "BenefitUpload" : "Upload benefit",
   "SpecificOperatingWork" : "Specific operating work",
-  "GeneralManagement" : "General management"
+  "GeneralManagement" : "General management",
+  "JobDescription":"Job description"
 }

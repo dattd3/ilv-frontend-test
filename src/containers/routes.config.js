@@ -137,14 +137,14 @@ export default [
         //   },
         //   component: lazy(() => import("./PersonInfo"))
         // },
-        // {
-        //   key: "benefit",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.Benefit
-        //   },
-        //   component: lazy(() => import("./Benefit"))
-        // },
+        {
+          key: "benefit",
+          routeProps: {
+            exact: true,
+            path: map.Benefit
+          },
+          component: lazy(() => import("./Benefit"))
+        },
         {
           key: "job",
           routeProps: {
