@@ -3,7 +3,7 @@ export default {
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
-  TermPolicy:  "/policy",
+  TermPolicy: "/policy",
 
   // Training
   Roadmap: "/training/roadmap",
@@ -23,12 +23,13 @@ export default {
   News: "/news",
   NewsDetail: "/news/:slug/:id",
 
-
   //about us
   Vingroup: "/about-vingroup",
   Vinpearl: "/about-vinpearl",
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
-  BenefitUpload: "/benefit/upload"
+  BenefitUpload: "/benefit/upload",
+  JobUpload: "/job/upload",
+  Job: "/job"
 };

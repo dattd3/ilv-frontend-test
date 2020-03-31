@@ -3,25 +3,25 @@ import { getPermissions } from "./mockCallApi";
 
 export default class Api {
   inject = {
-    request: (listener) => {
+    request: listener => {
       return this.request.interceptors.request.use(
-        function (config) {
+        function(config) {
           listener(null, config);
           return config;
         },
-        function (error) {
+        function(error) {
           listener(error);
           return Promise.reject(error);
         }
       );
     },
-    response: (listener) => {
+    response: listener => {
       return this.request.interceptors.response.use(
-        function (response) {
+        function(response) {
           listener(null, response);
           return response;
         },
-        function (error) {
+        function(error) {
           listener(error);
           return Promise.reject(error);
         }
@@ -30,10 +30,10 @@ export default class Api {
   };
 
   eject = {
-    request: (interceptorId) => {
+    request: interceptorId => {
       this.request.interceptors.request.eject(interceptorId);
     },
-    response: (interceptorId) => {
+    response: interceptorId => {
       this.request.interceptors.response.eject(interceptorId);
     }
   };
@@ -45,18 +45,17 @@ export default class Api {
     });
   }
 
-
   setAuthorization = ({ accessToken }) => {
-    this.request.defaults.headers.common['Authorization'] = `${accessToken}`;
-  }
+    this.request.defaults.headers.common["Authorization"] = `${accessToken}`;
+  };
 
-  setLanguage = (language) => {
-    this.request.defaults.headers.common['accept-language'] = language;
-  }
+  setLanguage = language => {
+    this.request.defaults.headers.common["accept-language"] = language;
+  };
 
   removeAuthorization = () => {
     delete this.request.defaults.headers.Authorization;
-  }
+  };
 
   getPermissions = async () => {
     return await getPermissions();
@@ -64,113 +63,176 @@ export default class Api {
 
   // user
   fetchUser = async () => {
-    return await this.request.get('user/me');
+    return await this.request.get("user/me");
   };
 
   fetchSabaUser = async () => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`);
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`
+    );
   };
 
   // training
   fetchSabaCredit = async () => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`);
-  }
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`
+    );
+  };
 
   fetchSabaLearning_OnGoing = async (pageIndex, pageSize) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`, {
-      params: {
-        page_no: pageIndex,
-        page_size: pageSize
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`,
+      {
+        params: {
+          page_no: pageIndex,
+          page_size: pageSize
+        }
       }
-    });
-  }
+    );
+  };
 
   fetchSabaLearning_Transcript = async (status, pageIndex, pageSize) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`, {
-      params: {
-        status: status,
-        page_no: pageIndex,
-        page_size: pageSize
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`,
+      {
+        params: {
+          status: status,
+          page_no: pageIndex,
+          page_size: pageSize
+        }
       }
-    });
-  }
+    );
+  };
 
   fetchSabaIntruction = async (user_id, status, pageIndex, pageSize) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`, {
-      params: {
-        user_id: user_id,
-        status: status,
-        page_no: pageIndex,
-        page_size: pageSize
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`,
+      {
+        params: {
+          user_id: user_id,
+          status: status,
+          page_no: pageIndex,
+          page_size: pageSize
+        }
       }
-    });
-  }
+    );
+  };
 
   fetchRoadmapList = async () => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`, {
-      params: {
-        startPage: 1,
-        count: 1000
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`,
+      {
+        params: {
+          startPage: 1,
+          count: 1000
+        }
       }
-    });
-  }
+    );
+  };
 
-  fetchRoadmapDetails = async (id) => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
+  fetchRoadmapDetails = async id => {
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
       {
         params: {
           id: id
         }
       }
     );
-  }
+  };
 
   fetchKPI = async () => {
-    return await this.request.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`);
-  }
+    return await this.request.get(
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`
+    );
+  };
 
   fetchPersonCommonInfo = async () => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}user/GetPersonCommonInfo`);
-  }
-
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}user/GetPersonCommonInfo`
+    );
+  };
 
   /* News  */
   fetchNewsOnHome = async () => {
     return await this.request.get(`/article/listhome`);
-  }
+  };
 
   fetchArticleList = async (pageIndex, pageSize) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/list`, {
-      params: {
-        domain: '',
-        pageIndex: pageIndex,
-        pageSize: pageSize
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}article/list`,
+      {
+        params: {
+          domain: "",
+          pageIndex: pageIndex,
+          pageSize: pageSize
+        }
       }
-    });
-  }
+    );
+  };
 
-  fetchArticleDetail = async (id) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {
-      params: {
-        id: id
+  fetchArticleDetail = async id => {
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}article/detail`,
+      {
+        params: {
+          id: id
+        }
       }
-    });
-  }
+    );
+  };
 
   fetchArticleOthers = async (id, count) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/listothers`, {
-      params: {
-        id: id,
-        count: count
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}article/listothers`,
+      {
+        params: {
+          id: id,
+          count: count
+        }
       }
-    });
-  }
+    );
+  };
 
-  fetchBenefit = async (jobType) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}benifit/${jobType}`, {
-      params: {
+  fetchBenefit = async jobType => {
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/benefit/${jobType}`,
+      {
+        params: {}
       }
-    });
-  }
+    );
+  };
 
-};
+  uploadBenefit = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/benefit/upload`,
+      data,
+      config
+    );
+  };
+
+  uploadJobDescription = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/upload-description`,
+      data,
+      config
+    );
+  };
+
+  uploadJobIds = async (data, config) => {
+    return await this.request.post(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/upload-ids`,
+      data,
+      config
+    );
+  };
+
+  fetchJobDescription = async jobCode => {
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobCode}`,
+      {
+        params: {}
+      }
+    );
+  };
+}

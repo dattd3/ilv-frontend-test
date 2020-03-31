@@ -93,5 +93,8 @@
   "NotConnectToSaba": "Invalid account. Please contact IT Department for assistance!" ,
   "Notification" : "Notification",
   "ShowAll" : "Hiển thị tất cả",
-  "BenefitUpload" : "Upload benefit"
+  "BenefitUpload" : "Upload benefit",
+  "SpecificOperatingWork" : "Specific operating work",
+  "GeneralManagement" : "General management",
+  "JobDescription":"Job description"
 }
