@@ -41,7 +41,7 @@ export default [
     },
     component: lazy(() => import("./Corporation/News/App/NewsDetailApp"))
   },
-   {
+  {
     key: "termpolicy",
     routeProps: {
       exact: true,
@@ -137,14 +137,30 @@ export default [
         //   },
         //   component: lazy(() => import("./PersonInfo"))
         // },
-        // {
-        //   key: "benefit",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.Benefit
-        //   },
-        //   component: lazy(() => import("./Benefit"))
-        // },
+        {
+          key: "benefit",
+          routeProps: {
+            exact: true,
+            path: map.Benefit
+          },
+          component: lazy(() => import("./Benefit"))
+        },
+        {
+          key: "job",
+          routeProps: {
+            exact: true,
+            path: map.Job
+          },
+          component: lazy(() => import("./job"))
+        },
+        {
+          key: "job-upload",
+          routeProps: {
+            exact: true,
+            path: map.JobUpload
+          },
+          component: lazy(() => import("./job/upload"))
+        },
         {
           key: "news",
           routeProps: {

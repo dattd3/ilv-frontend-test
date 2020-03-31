@@ -95,5 +95,8 @@
   "NotConnectToSaba": "Tài khoản không hợp lệ. Vui lòng liên hệ IT cơ sở để được trợ giúp!" ,
   "Notification" : "Thông báo",
   "ShowAll" : "Hiển thị tất cả",
-  "BenefitUpload" : "Cập nhật phúc lợi"
+  "BenefitUpload" : "Cập nhật phúc lợi",
+  "SpecificOperatingWork" : "Mô tả công việc vận hành đặc thù",
+  "GeneralManagement" : "Mô tả quản trị chung",
+  "JobDescription":"Mô tả công việc"
 }

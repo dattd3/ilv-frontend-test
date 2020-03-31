@@ -1,10 +1,24 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React from "react";
 import { Progress } from "reactstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ApiContext } from "../../modules";
+import FileUtil from "./file-util";
 
-class UploadBenefit extends Component {
+const types = [
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+];
+
+function UploadBenefitPage() {
+  return (
+    <ApiContext.Consumer>
+      {api => <UploadBenefit api={api} />}
+    </ApiContext.Consumer>
+  );
+}
+
+class UploadBenefit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,58 +27,12 @@ class UploadBenefit extends Component {
     };
   }
 
-  checkMimeType = event => {
-    let files = event.target.files;
-    let err = [];
-    const types = [
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ];
-    for (var x = 0; x < files.length; x++) {
-      if (types.every(type => files[x].type !== type)) {
-        err[x] = files[x].type + " is not a supported format\n";
-      }
-    }
-    for (var z = 0; z < err.length; z++) {
-      toast.error(err[z]);
-      event.target.value = null;
-    }
-    return true;
-  };
-
-  maxSelectFile = event => {
-    let files = event.target.files;
-    if (files.length > 1) {
-      const msg = "Only 1 file can be uploaded at a time";
-      event.target.value = null;
-      toast.warn(msg);
-      return false;
-    }
-    return true;
-  };
-
-  checkFileSize = event => {
-    let files = event.target.files;
-    let size = 2000000;
-    let err = [];
-    for (var x = 0; x < files.length; x++) {
-      if (files[x].size > size) {
-        err[x] = files[x].type + "is too large, please pick a smaller file\n";
-      }
-    }
-    for (var z = 0; z < err.length; z++) {
-      toast.error(err[z]);
-      event.target.value = null;
-    }
-    return true;
-  };
-
   onChangeHandler = event => {
     var files = event.target.files;
     if (
-      this.maxSelectFile(event) &&
-      this.checkMimeType(event) &&
-      this.checkFileSize(event)
+      FileUtil.maxSelectFile(event) &&
+      FileUtil.checkMimeType(event, types) &&
+      FileUtil.checkFileSize(event)
     ) {
       this.setState({
         selectedFile: files,
@@ -73,10 +41,11 @@ class UploadBenefit extends Component {
     }
   };
 
-  onClickHandler = () => {
+  onClickHandler = async () => {
     var selectedFile = this.state.selectedFile;
 
-    if (selectedFile == null) {
+    if (selectedFile == null || selectedFile.length === 0) {
+      toast.info("Plz, select file");
       return;
     }
 
@@ -84,37 +53,38 @@ class UploadBenefit extends Component {
     for (var x = 0; x < selectedFile.length; x++) {
       data.append("body", selectedFile[x]);
     }
-    axios
-      .post("https://localhost:5001/api/v1/benifit/file-upload", data, {
+
+    try {
+      await this.props.api.uploadBenefit(data, {
         onUploadProgress: ProgressEvent => {
           this.setState({
             loaded: (ProgressEvent.loaded / ProgressEvent.total) * 100
           });
         }
-      })
-      .then(res => {
-        toast.success("upload success");
-      })
-      .catch(err => {
-        toast.error("upload fail");
       });
+
+      toast.success("Upload success");
+    } catch (error) {
+      //toast.error("Upload fail");
+    }
   };
 
   render() {
     return (
-      <div class="container">
-        <div class="row">
-          <div class="offset-md-3 col-md-6">
-            <div class="form-group">
+      <div className="container">
+        <div className="row">
+          <div className="offset-md-3 col-md-6">
+            <div className="form-group">
               <label>Upload Your File </label>
               <input
                 type="file"
-                class="form-control"
+                className="form-control"
+                accept={types.join(",")}
                 formEncType="multipart/form-data"
                 onChange={this.onChangeHandler}
               />
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <ToastContainer />
               <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
@@ -123,7 +93,8 @@ class UploadBenefit extends Component {
 
             <button
               type="button"
-              class="btn btn-success btn-block"
+              disabled={this.state.loaded !== 0}
+              className="btn btn-success btn-block"
               onClick={this.onClickHandler}
             >
               Upload
@@ -135,4 +106,4 @@ class UploadBenefit extends Component {
   }
 }
 
-export default UploadBenefit;
+export default UploadBenefitPage;

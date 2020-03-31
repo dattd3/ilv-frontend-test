@@ -27,13 +27,18 @@ export default function BenefitItem(props) {
                   ></div>
                 </td>
                 <td>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: item.content
-                        ? item.content.replace("\n", "<br />")
-                        : ""
-                    }}
-                  ></div>
+                  <div>
+                    {item.content
+                      ? item.content.split("\n").map((item, key) => {
+                          return (
+                            <span key={key}>
+                              {item}
+                              <br />
+                            </span>
+                          );
+                        })
+                      : ""}
+                  </div>
                 </td>
               </tr>
             ))}
