@@ -35,12 +35,16 @@ export default function NewsItemGrid(props) {
     const { id, title, thumbnail, description, sourceSite, publishedDate } = props.article;
     const { col } = props;
     var column = 4;
-    if(col) column = col;
+    if (col) column = col;
     return (
         <div key={id} className={`col-xl-${column} content-margin-bottom`}>
             <div className="w3-quarter shadow-sm news-item">
                 <a href={`/news/${convertToSlug(title)}/${id}`}>
-                    <div className="news-thumbnail" style={{ backgroundImage: `url(${thumbnail})` }}></div>
+                    {thumbnail ?
+                        <div className="news-thumbnail" style={{ backgroundImage: `url(${thumbnail})` }}></div> :
+                        <div className="news-thumbnail" style={{ backgroundImage: `url('/noimage.png')`, backgroundSize: '250px 250px' }}></div>
+                    }
+
                 </a>
                 <div className="content-padding">
                     <a href={`/news/${convertToSlug(title)}/${id}`}><h5>{title}</h5> </a>

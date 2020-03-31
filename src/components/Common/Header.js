@@ -37,7 +37,7 @@ function Header(props) {
     const handleClickSetShow = () => {
         SetIsShow(!isShow);
         setShow(isShow);
-    } 
+    }
     return (
         isApp ? null :
             <div>
@@ -52,11 +52,16 @@ function Header(props) {
                         </InputGroup>
                     </Form>
                     <Dropdown>
-                        <div className='mr-2 mt-3 small text-right username'> 
+                        <div className='mr-2 mt-3 small text-right username'>
 
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                <span className="text-gray-600"> {fullName}</span>
-                                <img className="ml-2 img-profile rounded-circle" src={(avatar != null && avatar !== '' && avatar !== 'null') ? `data:image/png;base64, ${avatar}` : '/no-img.png'} alt={fullName} />
+                                <span className="text-gray-600">{fullName}</span>
+                                {
+                                    (avatar != null && avatar !== '' && avatar !== 'null') ?
+                                        <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                        :
+                                        <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
+                                }
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>

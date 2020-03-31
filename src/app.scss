@@ -250,6 +250,9 @@
   height: 2.5rem !important;
   width: 2.5rem !important;
 }
+.no-avt {
+  font-size: 24px;
+}
 .no-bg {
   background: none !important;
 }
@@ -691,7 +694,7 @@
     font-weight: 600;
     padding-top: 5px;
   }
-  .text-sm{
+  .text-sm {
     font-size: 14px;
   }
   .news-item {
@@ -759,8 +762,8 @@
   vertical-align: middle;
 }
 
-.news-home-item{
-  .nhome-thumbnail{
+.news-home-item {
+  .nhome-thumbnail {
     width: 150px;
     height: 100px;
     overflow: hidden;
@@ -771,21 +774,20 @@
     margin-right: 10px;
   }
 
-  a{
-    &:hover{
+  a {
+    &:hover {
       text-decoration: none;
     }
   }
-
 }
 
 /* news */
-.temp-class{
+.temp-class {
   font-style: italic;
   font-size: 13px;
 }
 
-.news-app{
+.news-app {
   padding: 1em;
 }
 
@@ -794,12 +796,12 @@
   font-size: 20px;
   font-weight: bold;
   text-transform: uppercase;
-  color: #2A377C;  
-  margin : 10px 0 20px 10px;
+  color: #2a377c;
+  margin: 10px 0 20px 10px;
 }
 
 .benefit-title-row {
-  color: #4D4D4D;
+  color: #4d4d4d;
 }
 
 .notification-custom {
@@ -834,7 +836,6 @@ span.badge-notification[data-badge]::after {
   right: -10px;
 }
 
-
 .avatar-custom {
   font-size: x-large;
 }
@@ -842,7 +843,7 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  height: 3rem;  
+  height: 3rem;
 }
 
 .user-info-margin {
@@ -850,11 +851,11 @@ span.badge-notification[data-badge]::after {
 }
 
 .model-body-notify {
-    border-bottom-left-radius: 0px !important;
-    border-bottom-right-radius: 0px !important;
-    background-color: white !important;
-    padding: 0px !important;
-    margin: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  background-color: white !important;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
 .model-footer-notify {
@@ -877,14 +878,17 @@ span.badge-notification[data-badge]::after {
 }
 
 .item-notify-group-datetime-info {
-  float:left;
+  float: left;
 }
 
 .notify-show-all-items {
   font-weight: 600;
 }
 
-.error-badge{font-size: 5em; color: #fff;}
+.error-badge {
+  font-size: 5em;
+  color: #fff;
+}
 
 .pop-over-notify-custom {
   max-width: 800px;
@@ -898,7 +902,7 @@ span.badge-notification[data-badge]::after {
 }
 
 .pop-over-body-notify-custom {
-  margin : 10px;
+  margin: 10px;
   font-size: 1rem;
   color: black;
 }
@@ -909,7 +913,7 @@ span.badge-notification[data-badge]::after {
   font-family: serif;
 }
 
-.list-item-notify-content {  
+.list-item-notify-content {
   color: gray !important;
   margin-left: 15px;
   color: darkslategray;
@@ -917,11 +921,184 @@ span.badge-notification[data-badge]::after {
 }
 
 .text-clip-2lines {
-   overflow: hidden;
-   text-overflow: ellipsis;
-   display: -webkit-box;
-   -webkit-line-clamp: 2; /* number of lines to show */
-   -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
+.about-vingroup {
+  .banner {
+    img {
+      max-width: 100%;
+      padding-bottom: 0.5em;
+    }
+  }
 
+  .title {
+    color: #424d54;
+    font-size: 30px;
+    text-transform: uppercase;
+    padding-bottom: 30px;
+  }
+
+  .introWrap {
+    .pdf {
+      img {
+        width: 18px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+      span {
+        font-size: 18px;
+        color: #a7a7a7;
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 10px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .itemPageWrap {
+    padding: 60px 0;
+    overflow: auto;
+    ul {
+      width: 100%;
+
+      li {
+        width: 30%;
+        float: left;
+        list-style: none;
+
+        &:nth-child(n) {
+          margin-bottom: 3%;
+          margin-right: 3%;
+        }
+        div {
+          padding: 2em 1em;
+          background: #fff;
+          border: 1px solid #dedede;
+          position: relative;
+          margin-bottom: 0 !important;
+          transition: 0.3s;
+          height: 310px;
+        }
+
+        h3 {
+          font-size: 24px;
+          color: #d13138;
+          padding-bottom: 25px;
+          display: block;
+          position: relative;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        p {
+          font-size: 16px;
+          padding-bottom: 40px;
+        }
+        a {
+          position: absolute;
+          bottom: 30px;
+        }
+        .btn-2 {
+          text-transform: uppercase;
+          font-size: 13px;
+          color: #a7a7a7;
+          transition: 0.3s;
+        }
+
+        &:hover {
+          div {
+            background: #d13138;
+          }
+          color: #fff;
+          h3 {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  .partnerWrap {
+    ul {
+      li {
+        list-style: none;
+        width: 20%;
+        float: left;
+        img {
+          max-width: 80%;
+          padding: 1em;
+        }
+      }
+    }
+  }
+}
+
+.about-vinpearl {
+  .position_relative {
+    position: relative !important;
+  }
+  .position_center {
+    position: absolute;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    top: 50%;
+    left: 50%;
+  }
+  .banner {
+    height: 611px;
+    overflow: hidden;
+    img {
+      -o-object-fit: cover;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+    .banner_text {
+      background-color: transparent;
+      line-height: 26px;
+      font-size: 18px;
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      width: 975px;
+      padding: 25px;
+    }
+    .title {
+      line-height: 26px;
+      font-size: 18px;
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: -0.05em;
+    }
+    .sub-title {
+      line-height: 60px;
+      font-size: 42px;
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  .about_content {
+    padding-top: 1rem;
+    .about_name {
+      line-height: 34px;
+      font-size: 24px;
+      letter-spacing: -0.05em;
+      color: #333333;
+    }
+  }
+}
