@@ -95,22 +95,22 @@ export const Navigation = [
     to: "/announcement",
     role: "U"
   },
-  // {
-  //     id: 14,
-  //     parentId: 13,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "Menu_GroupIntroduction",
-  //     to: map.Vingroup,
-  //     role: 'U'
-  // },
-  // {
-  //     id: 15,
-  //     parentId: 13,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "Menu_VinpearlIntroduction",
-  //     to: map.Vinpearl,
-  //     role: 'U'
-  // },
+  {
+      id: 14,
+      parentId: 13,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "Menu_GroupIntroduction",
+      to: map.Vingroup,
+      role: 'U'
+  },
+  {
+      id: 15,
+      parentId: 13,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "Menu_VinpearlIntroduction",
+      to: map.Vinpearl,
+      role: 'U'
+  },
   {
     id: 16,
     parentId: 13,
