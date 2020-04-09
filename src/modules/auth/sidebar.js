@@ -142,5 +142,13 @@ export const Navigation = [
     label: "JobDescription",
     to: map.Job,
     role: "U"
+  },
+  {
+    id: 20,
+    parentId: 0,
+    icon: "menu-notification",
+    label: "Notification",
+    to: map.Notify,
+    role: "U"
   }
 ];

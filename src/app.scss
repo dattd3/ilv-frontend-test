@@ -221,6 +221,13 @@
     content: "\e914";
   }
 }
+.icon-menu-notification {
+  &:before {    
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 100; 
+    content: "\f0f3";        
+  }
+}
 .upload-form {
   .file-upload {
     visibility: hidden;
