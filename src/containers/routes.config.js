@@ -194,6 +194,14 @@ export default [
           component: lazy(() => import("./Corporation/Vinpearl"))
         },
         {
+          key: "notify",
+          routeProps: {
+            exact: true,
+            path: map.Notify
+          },
+          component: lazy(() => import("./Notify"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,
