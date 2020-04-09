@@ -126,6 +126,15 @@
   font-size: 1.5em;
 }
 
+.icon-notification {        
+        height: 21px;
+        width: 21px;
+        background: url("./assets/img/icon-notification.svg");
+        background-repeat: no-repeat; 
+        margin-left: 23px;
+        margin-right: -24px;
+}
+
 .icon-no-icon {
   padding: 0 !important;
   width: 0 !important;
@@ -219,13 +228,6 @@
 .icon-kpi-teaching {
   &:before {
     content: "\e914";
-  }
-}
-.icon-menu-notification {
-  &:before {    
-    font-family: "Font Awesome 5 Free"; 
-    font-weight: 100; 
-    content: "\f0f3";        
   }
 }
 .upload-form {
