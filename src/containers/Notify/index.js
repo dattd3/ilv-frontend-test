@@ -26,14 +26,20 @@ function Notify() {
 
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(10);    
-    const totalRecord = 50; 
+    
 
     const guard = useGuardStore();
     const user = guard.getCurentUser();
 
     const result = usePreload([user.email, pageIndex, pageSize]); 
 
-    var items = result.data;
+    if (result == null || result.data == null) {
+      return null;
+    }
+
+    var items = result.data.notifications;
+
+    const totalRecord = result.data.total; 
     
     /*Get top pageSize elements*/
 
