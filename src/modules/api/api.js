@@ -3,45 +3,45 @@ import { getPermissions } from "./mockCallApi";
 
 export default class Api {
   inject = {
-    request: listener => {
+    request: (listener) => {
       return this.request.interceptors.request.use(
-        function(config) {
+        function (config) {
           listener(null, config);
           return config;
         },
-        function(error) {
+        function (error) {
           listener(error);
           return Promise.reject(error);
         }
       );
     },
-    response: listener => {
+    response: (listener) => {
       return this.request.interceptors.response.use(
-        function(response) {
+        function (response) {
           listener(null, response);
           return response;
         },
-        function(error) {
+        function (error) {
           listener(error);
           return Promise.reject(error);
         }
       );
-    }
+    },
   };
 
   eject = {
-    request: interceptorId => {
+    request: (interceptorId) => {
       this.request.interceptors.request.eject(interceptorId);
     },
-    response: interceptorId => {
+    response: (interceptorId) => {
       this.request.interceptors.response.eject(interceptorId);
-    }
+    },
   };
 
   constructor(url) {
     this.request = axios.create({
       baseURL: url,
-      timeout: 20000
+      timeout: 20000,
     });
   }
 
@@ -49,7 +49,7 @@ export default class Api {
     this.request.defaults.headers.common["Authorization"] = `${accessToken}`;
   };
 
-  setLanguage = language => {
+  setLanguage = (language) => {
     this.request.defaults.headers.common["accept-language"] = language;
   };
 
@@ -85,8 +85,8 @@ export default class Api {
       {
         params: {
           page_no: pageIndex,
-          page_size: pageSize
-        }
+          page_size: pageSize,
+        },
       }
     );
   };
@@ -98,8 +98,8 @@ export default class Api {
         params: {
           status: status,
           page_no: pageIndex,
-          page_size: pageSize
-        }
+          page_size: pageSize,
+        },
       }
     );
   };
@@ -112,8 +112,8 @@ export default class Api {
           user_id: user_id,
           status: status,
           page_no: pageIndex,
-          page_size: pageSize
-        }
+          page_size: pageSize,
+        },
       }
     );
   };
@@ -124,19 +124,19 @@ export default class Api {
       {
         params: {
           startPage: 1,
-          count: 1000
-        }
+          count: 1000,
+        },
       }
     );
   };
 
-  fetchRoadmapDetails = async id => {
+  fetchRoadmapDetails = async (id) => {
     return await this.request.get(
       `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
       {
         params: {
-          id: id
-        }
+          id: id,
+        },
       }
     );
   };
@@ -165,19 +165,19 @@ export default class Api {
         params: {
           domain: "",
           pageIndex: pageIndex,
-          pageSize: pageSize
-        }
+          pageSize: pageSize,
+        },
       }
     );
   };
 
-  fetchArticleDetail = async id => {
+  fetchArticleDetail = async (id) => {
     return await this.request.get(
       `${process.env.REACT_APP_REQUEST_URL}article/detail`,
       {
         params: {
-          id: id
-        }
+          id: id,
+        },
       }
     );
   };
@@ -188,17 +188,17 @@ export default class Api {
       {
         params: {
           id: id,
-          count: count
-        }
+          count: count,
+        },
       }
     );
   };
 
-  fetchBenefit = async jobType => {
+  fetchBenefit = async (jobType) => {
     return await this.request.get(
       `${process.env.REACT_APP_REQUEST_URL}basicinfo/benefit/${jobType}`,
       {
-        params: {}
+        params: {},
       }
     );
   };
@@ -227,11 +227,20 @@ export default class Api {
     );
   };
 
-  fetchJobDescription = async jobCode => {
+  fetchJobDescription = async (jobCode) => {
     return await this.request.get(
       `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobCode}`,
       {
-        params: {}
+        params: {},
+      }
+    );
+  };
+
+  fetchJobDescriptionByJobType = async (jobtype) => {
+    return await this.request.get(
+      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job`,
+      {
+        params: { jobtype },
       }
     );
   };

@@ -2,19 +2,19 @@ import React from "react";
 import { useApi, useFetcher } from "../../modules";
 import JobDescriptionContent from "./content";
 
-const usePreload = params => {
+const usePreload = (params) => {
   const api = useApi();
   const [data = []] = useFetcher({
-    api: api.fetchJobDescription,
+    api: api.fetchJobDescriptionByJobType,
     autoRun: true,
-    params: params
+    params: params,
   });
   return data;
 };
 
 function JobDescriptionPage() {
-  var jobCode = "95007240"; //Todo remove this
-  var result = usePreload([jobCode]);
+  var jobType = localStorage.getItem("jobTitle");
+  var result = usePreload([jobType]);
 
   console.log(`result ${JSON.stringify(result)}`);
 
