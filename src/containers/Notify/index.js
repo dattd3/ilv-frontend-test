@@ -4,6 +4,7 @@ import NotifyItem from "./NotifyListItem";
 import { useTranslation } from "react-i18next";
 import {Button, ButtonToolbar, OverlayTrigger, Overlay, Popover } from "react-bootstrap";
 import CustomPaging from '../../components/Common/CustomPaging';
+import { Row, Col, Form } from 'react-bootstrap';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -23,10 +24,10 @@ function Notify() {
     const [titlePopOver, setTitlePopOver] = useState(null);
     const [contentPopOver, setContentPopOver] = useState(null);
     const ref = useRef(null);
-
-    const [pageIndex, SetPageIndex] = useState(1);
-    const [pageSize, SetPageSize] = useState(10);    
     
+    const [pageIndex, SetPageIndex] = useState(1);
+    const [pageSize, SetPageSize] = useState(5);    
+    const [isOnGoing, SetIsOnGoing] = useState(false);
 
     const guard = useGuardStore();
     const user = guard.getCurentUser();
@@ -37,21 +38,27 @@ function Notify() {
       return null;
     }
 
-    var items = result.data.notifications;
+    try {
+        if (result && result.data.notifications.length > 0) {
+            SetIsOnGoing(true);
+        }
+    } catch { }
 
+
+    var items = result.data.notifications;
     const totalRecord = result.data.total; 
     
-    /*Get top pageSize elements*/
-
-    if (items && items.length > pageSize) {
-        items = items.slice(0, pageSize);
-    }
-
     function onChangePage(page) {
         SetPageIndex(page);
+        console.log("onChangePage:"+page);
     } 
+
+    function onChangePageSize(evt) {
+        SetPageSize(parseInt(evt.target.value));
+        SetPageIndex(1);
+    }
     
-    const handleClick = event => {
+    function handleClick(event) {
       setShow(!show);
       setTarget(event.target);
     };
@@ -78,8 +85,7 @@ function Notify() {
                   }
                  </div>
                 
-                 <ButtonToolbar ref={ref}>
-                    {/*<Button onClick={handleClick}>Holy guacamole!</Button>*/}
+                 <ButtonToolbar ref={ref}>                    
                     <Overlay
                       show={show}
                       target={target}
@@ -98,16 +104,25 @@ function Notify() {
                     </Overlay>
                   </ButtonToolbar>
                   <br/>
-                  <div className="row">
-                      <div className="col-sm"> </div>
-                      <div className="col-sm">                      
-                          <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={totalRecord} />
-                      </div>
-                      <div className="col-sm text-right">
-                          {t("Total")}: {totalRecord}
-                      </div>
-                  </div>
-
+                  {
+                       isOnGoing ?
+                          <Row>
+                                <Col className='total'>
+                                    {t("Total")}: {totalRecord} {t("Notification")}
+                                </Col>
+                                <Col className='paging'>
+                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={totalRecord} />
+                                </Col>
+                                <Col>
+                                    <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
+                                        <option value={5}>{t("Display5Classes")}</option>
+                                        <option value={10}>{t("Display10Classes")}</option>
+                                        <option value={15}>{t("Display15Classes")}</option>
+                                    </Form.Control>
+                                </Col>
+                          </Row> : null
+                  }
+                 
            </div>
            );
      

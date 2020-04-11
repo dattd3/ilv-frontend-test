@@ -236,14 +236,14 @@ export default class Api {
     );
   };
 
-  fetchNotifyList = async (email, pageIndex, pageSize) => {
-        return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
-          params: {
-            email: email,
-            pageIndex: pageIndex,
-            pageSize: pageSize
-          }
-        });
+  fetchNotifyList = async (email, page_no, page_size) => {
+     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
+        params: {
+          email: email,
+          page_no: page_no,
+          page_size: page_size
+        }
+      });
   }
 
 }
