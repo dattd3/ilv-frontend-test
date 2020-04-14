@@ -7,21 +7,21 @@ export const Navigation = [
     icon: "menu",
     label: "Menu",
     to: "/",
-    role: "U"
+    role: "U",
   },
   {
     id: 10,
     parentId: 0,
     icon: "hr",
     label: "Menu_HumanResource",
-    role: "U"
+    role: "U",
   },
   {
     id: 2,
     parentId: 0,
     icon: "training",
     label: "Menu_Training",
-    role: "U"
+    role: "U",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Learning",
     to: map.Learning,
-    role: "U"
+    role: "U",
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Intruction",
     to: map.Instruction,
-    role: "U"
+    role: "U",
   },
   {
     id: 5,
@@ -45,7 +45,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_TrainingRoadmap",
     to: map.Roadmap,
-    role: ["P", "T"]
+    role: ["P", "T"],
   },
   // {
   //     id: 6,
@@ -61,7 +61,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_TrainingKPI",
     to: map.TraniningKPI,
-    role: "U"
+    role: "U",
   },
   // {
   //     id: 9,
@@ -93,7 +93,7 @@ export const Navigation = [
     icon: "groupinfo",
     label: "Menu_GroupInformation",
     to: "/announcement",
-    role: "U"
+    role: "U",
   },
   {
       id: 14,
@@ -117,7 +117,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_News",
     to: map.News,
-    role: "U"
+    role: "U",
   },
   // {
   //     id: 17,
@@ -128,19 +128,11 @@ export const Navigation = [
   //     role: 'U'
   // },
   {
-    id: 18,
-    parentId: 10,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "BenefitRegime",
-    to: map.Benefit,
-    role: "U"
-  },
-  {
     id: 19,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: "U"
-  }
+    role: "U",
+  },
 ];
