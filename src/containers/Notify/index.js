@@ -1,134 +1,129 @@
-import React,{ useState, useRef } from 'react';
-import { useApi, useFetcher, useGuardStore } from "../../modules";
-import NotifyItem from "./NotifyListItem";
+import React, { useState } from "react";
+import { useApi, useFetcher } from "../../modules";
+import { Button, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import {Button, ButtonToolbar, OverlayTrigger, Overlay, Popover } from "react-bootstrap";
+import moment from 'moment';
 import CustomPaging from '../../components/Common/CustomPaging';
-import { Row, Col, Form } from 'react-bootstrap';
 
 const usePreload = (params) => {
-    const api = useApi();
-    const [data = [], err] = useFetcher({
-        api: api.fetchNotifyList,
-        autoRun: true,
-        params: params
-    });
-    return data;
+  const api = useApi();
+  const [data = [], err] = useFetcher({
+    api: api.fetchNotifyList,
+    autoRun: true,
+    params: params
+  });
+  return data;
 };
- 
-function Notify() {    
-    
-    const { t } = useTranslation();
-    const [show, setShow] = useState(false);
-    const [target, setTarget] = useState(null);
-    const [titlePopOver, setTitlePopOver] = useState(null);
-    const [contentPopOver, setContentPopOver] = useState(null);
-    const ref = useRef(null);
-    
-    const [pageIndex, SetPageIndex] = useState(1);
-    const [pageSize, SetPageSize] = useState(5);    
-    const [isOnGoing, SetIsOnGoing] = useState(false);
 
-    const guard = useGuardStore();
-    const user = guard.getCurentUser();
-
-    const result = usePreload([user.email, pageIndex, pageSize]); 
-
-    if (result == null || result.data == null) {
-      return null;
+function string_of_notification_type(typeId) {
+    switch(typeId) {
+    case 0:
+      return "General";
+      break;
+    case 1:
+      return "News";
+      break;
+      case 2:
+      return "Report";
+      break;
+      case 3:
+      return "Recommend";
+      break;
+    default:
+      return "";
     }
-
-    try {
-        if (result && result.data.notifications.length > 0) {
-            SetIsOnGoing(true);
-        }
-    } catch { }
-
-
-    var items = result.data.notifications;
-    const totalRecord = result.data.total; 
-    
-    function onChangePage(page) {
-        SetPageIndex(page);
-        console.log("onChangePage:"+page);
-    } 
-
-    function onChangePageSize(evt) {
-        SetPageSize(parseInt(evt.target.value));
-        SetPageIndex(1);
-    }
-    
-    function handleClick(event) {
-      setShow(!show);
-      setTarget(event.target);
-    };
-
-    const onSelectItemDetail = (event, title, content) => {        
-        console.log("click :",title);
-        handleClick(event);
-        setTitlePopOver(title);
-        setContentPopOver(content);
-    }
-
-    if(items) {        
-          return (     
-            <div>
-                <h1 className="h3 mb-0 text-gray-800"> {t("Notification").toUpperCase()}</h1>
-                <br/>
-
-                <div className="list-group">
-                  {    
-                     !items ? null :     
-                     items.map((item,index) =>                                                                 
-                               <NotifyItem onSelectItemDetail={ onSelectItemDetail } key={index} data={item}/>                                                
-                          )
-                  }
-                 </div>
-                
-                 <ButtonToolbar ref={ref}>                    
-                    <Overlay
-                      show={show}
-                      target={target}
-                      placement="bottom"
-                      container={ref.current}
-                      containerPadding={20}
-                    >
-                      <Popover id="popover-contained" className="pop-over-notify-custom">
-                        <Popover.Title as="h4" className="pop-over-header-notify-custom"> 
-                            <i className="fas icon-term_policy"></i> &nbsp; { titlePopOver } 
-                        </Popover.Title>
-                        <Popover.Content className="pop-over-body-notify-custom">
-                           { contentPopOver }                          
-                        </Popover.Content>
-                      </Popover>
-                    </Overlay>
-                  </ButtonToolbar>
-                  <br/>
-                  {
-                       isOnGoing ?
-                          <Row>
-                                <Col className='total'>
-                                    {t("Total")}: {totalRecord} {t("Notification")}
-                                </Col>
-                                <Col className='paging'>
-                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={totalRecord} />
-                                </Col>
-                                <Col>
-                                    <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
-                                        <option value={5}>{t("Display5Classes")}</option>
-                                        <option value={10}>{t("Display10Classes")}</option>
-                                        <option value={15}>{t("Display15Classes")}</option>
-                                    </Form.Control>
-                                </Col>
-                          </Row> : null
-                  }
-                 
-           </div>
-           );
-     
-    } else {
-      return null;
-    } 
 }
 
-export default Notify;
+function Notification(props) {
+  const { t } = useTranslation();
+  document.title = t("Menu_Notification");    
+  const [pageIndex, SetPageIndex] = useState(1);
+  const [pageSize, SetPageSize] = useState(10);
+  const result = usePreload([pageIndex, pageSize]);
+
+  const onChangePage = (page) => {
+    SetPageIndex(page);
+  }
+
+  const onChangePageSize = (evt) => {
+    SetPageSize(evt.target.value);
+    SetPageIndex(1);
+  }
+
+  var tableData;
+
+  if (result && result.data && result.data.notifications && result.data.total) {    
+    
+    const objDataRes = result.data.notifications;
+    const total = result.data.total;
+    
+    tableData = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
+    
+      <thead>
+        <tr>                
+          <th>{t("Notification_Title")}</th>
+          <th>{t("Notification_Content")}</th>   
+          <th>{t("Notification_Type")}</th>
+
+          {/* 
+            <th>{t("Notification_Created_By")}</th> 
+          */}
+          
+          <th>{t("Notification_Created_Date")}</th>          
+        </tr>
+      </thead>
+     
+      <tbody>
+        {
+          objDataRes.map((item, i) => {
+            return <tr key={i}>              
+              <td>{item.title}</td>              
+              {/* <td className="form-text text-muted" dangerouslySetInnerHTML={{ __html: item.content}}></td> */}
+              <td>{item.content}</td>
+              <td>{ string_of_notification_type(item.type)}</td>              
+              {/* 
+               <td>{item.userEmail}</td>  
+              */}            
+              <td>{moment(item.createdDate).format('DD/MM/YYYY')}</td>
+            </tr>;
+          })
+        }
+      </tbody>
+     
+      <tfoot>
+        <tr>
+          <td colSpan={4}>
+            <Row>
+              <Col className='total'>
+                {t("Total")}: {total}
+              </Col>
+              <Col className='paging'>
+                <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
+              </Col>
+              <Col></Col>
+            </Row>
+          </td>
+        </tr>
+
+      </tfoot>
+
+    </table>;
+  }
+
+  return (
+    <div>
+      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 className="h3 mb-0 text-gray-800">{t("Menu_Notification")} </h1>  
+      </div>
+      <div className="card shadow mb-4">
+        <div className="card-body">
+          <div className="table-responsive">
+            {tableData}
+          </div>
+        </div>
+      </div>          
+    </div>
+  );
+}
+
+export default Notification;
