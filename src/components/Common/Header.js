@@ -3,7 +3,6 @@ import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import NotifyItem from "../../containers/Notify/NotifyItem";
 import { useApi, useFetcher } from "../../modules";
 
 const usePreload = (params) => {

@@ -96,5 +96,12 @@
   "BenefitUpload" : "Upload benefit",
   "SpecificOperatingWork" : "Specific operating work",
   "GeneralManagement" : "General management",
-  "JobDescription":"Job description"
+  "JobDescription":"Job description",
+  "Menu_Notification": "Notification",
+  "Notification_Button_Add": "Add Notification",
+  "Notification_Type": "Type",
+  "Notification_Title": "Title",
+  "Notification_Content": "Content",
+  "Notification_Created_By": "Created By",
+  "Notification_Created_Date": "Created Date"
 }
