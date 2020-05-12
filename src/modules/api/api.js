@@ -245,10 +245,9 @@ export default class Api {
     );
   };
 
-  fetchNotifyList = async (email, page_no, page_size) => {
+  fetchListNotification = async (page_no, page_size) => {
      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
-        params: {
-          email: email,
+        params: {          
           page_no: page_no,
           page_size: page_size
         }
