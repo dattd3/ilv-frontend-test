@@ -142,5 +142,38 @@ export const Navigation = [
     label: "Notification",
     to: map.Notify,
     role: "U"
+  },
+  {
+    id: 21,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_KPI_Main",
+    to: map.Job,
+    role: "U"
+  },
+  {
+    id: 22,
+    parentId: 21,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_KPI_Target",
+    to: map.Job,
+    role: "U"
+  },
+  {
+    id: 23,
+    parentId: 21,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_KPI_Result_General",
+    to: map.Job,
+    role: "U"
+  },
+  {
+    id: 24,
+    parentId: 21,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_KPI_Result_Detail",
+    to: map.Job,
+    role: "U"
   }
+
 ];

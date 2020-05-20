@@ -104,5 +104,9 @@
   "Notification_Title": "Tiêu đề",
   "Notification_Content": "Nội dung",
   "Notification_Created_By": "Tạo bởi",
-  "Notification_Created_Date": "Ngày tạo"
+  "Notification_Created_Date": "Ngày tạo",
+  "Menu_KPI_Main" : "KPI",
+  "Menu_KPI_Target" : "Chỉ tiêu",
+  "Menu_KPI_Result_General" : "Kết quả tổng thể",
+  "Menu_KPI_Result_Detail" : "Kết quả chi tiết"
 }
