@@ -20,6 +20,11 @@ setupJob:
   only:
     refs:
       - develop
+  cache:
+    policy: push
+    paths:
+      - node_modules/
+
 
 buildJob:
   stage: build
@@ -29,13 +34,13 @@ buildJob:
     - echo "Building deploy package"
     - yarn build
     - echo "Build successful"
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - public
   only:
     refs:
       - develop
+  cache:
+    policy: pull
+    paths:
+      - node_modules/
 
 deployJob:
   stage: deploy
@@ -43,8 +48,18 @@ deployJob:
     - reactjs
   script:
     - echo "Deploying to server"
-    - cp -rv build/* /var/www/html/<destination_folder>/
+    - mv .env.staging .env.production.local
+    - yarn build
+    - mv .env.production.local .env.staging
     - echo "Deployed"
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - public
   only:
     refs:
       - develop
+  cache:
+    policy: pull
+    paths:
+      - node_modules/
