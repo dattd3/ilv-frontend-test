@@ -1,0 +1,50 @@
+before_script:
+
+cache:
+  untracked: true
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - node_modules/
+
+stages:
+  - setup
+  - build
+  - deploy
+
+setupJob:
+  stage: setup
+  script:
+    - yarn install
+  tags:
+    - reactjs
+  only:
+    refs:
+      - develop
+
+buildJob:
+  stage: build
+  tags:
+    - reactjs
+  script:
+    - echo "Building deploy package"
+    - yarn build
+    - echo "Build successful"
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - public
+  only:
+    refs:
+      - develop
+
+deployJob:
+  stage: deploy
+  tags:
+    - reactjs
+  script:
+    - echo "Deploying to server"
+    - cp -rv build/* /var/www/html/<destination_folder>/
+    - echo "Deployed"
+  only:
+    refs:
+      - develop
