@@ -67,12 +67,12 @@ function Notification(props) {
     
       <thead>
         <tr>                
-          <th>{t("Notification_Title")}</th>
-          <th>{t("Notification_Content")}</th>
-          <th>{t("TOPIC")}</th>   
-          <th>{t("Notification_Type")}</th>
-          <th>{t("Notification_Created_By")}</th>            
-          <th>{t("Notification_Created_Date")}</th>          
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0 w-25">{t("Notification_Title")}</th>
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Content")}</th>
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("TOPIC")}</th>   
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Type")}</th>
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Created_By")}</th>            
+          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Created_Date")}</th>          
         </tr>
       </thead>
 
@@ -93,15 +93,14 @@ function Notification(props) {
      
       <tfoot>
         <tr>
-          <td colSpan={4}>
+          <td colSpan={4} className="pb-0 pt-4">
             <Row>
               <Col className='total'>
                 {t("Total")}: {total}
               </Col>
               <Col className='paging'>
                 <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
-              </Col>
-              <Col></Col>
+              </Col>              
             </Row>
           </td>
         </tr>
@@ -112,17 +111,13 @@ function Notification(props) {
   }
 
   return (
-    <div>
-      <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">{t("Menu_Notification")} </h1> 
-      </div>
-      <div className="card shadow mb-4">
-        <div className="card-body">
-          <div className="table-responsive">
-            {tableData}
-          </div>
+    <div className="card border border-success shadow mb-4 mt-2">      
+        <div className="bg-success text-white p-3 h4">{t("Menu_Notification")}</div>
+        <div className="card-body pt-2 pb-0">
+            <div className="table-responsive">
+              {tableData}
+            </div>
         </div>
-      </div>
     </div>
   );
 }
