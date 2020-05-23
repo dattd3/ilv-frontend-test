@@ -148,7 +148,7 @@ export const Navigation = [
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI_Main",
-    to: map.Job,
+    to: "/",
     role: "U"
   },
   {
@@ -156,7 +156,7 @@ export const Navigation = [
     parentId: 21,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI_Target",
-    to: map.Job,
+    to: map.KpiTarget,
     role: "U"
   },
   {
@@ -164,7 +164,7 @@ export const Navigation = [
     parentId: 21,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI_Result_General",
-    to: map.Job,
+    to: map.KpiGeneral,
     role: "U"
   },
   {
@@ -172,7 +172,7 @@ export const Navigation = [
     parentId: 21,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI_Result_Detail",
-    to: map.Job,
+    to: map.KpiDetail,
     role: "U"
   }
 

@@ -194,6 +194,30 @@ export default [
           component: lazy(() => import("./Notify"))
         },
         {
+          key: "kpi_target",
+          routeProps: {
+            exact: true,
+            path: map.KpiTarget
+          },
+          component: lazy(() => import("./KPI/Target"))
+        },
+        {
+          key: "kpi_general",
+          routeProps: {
+            exact: true,
+            path: map.KpiGeneral
+          },
+          component: lazy(() => import("./KPI/General"))
+        },
+        {
+          key: "kpi_detail",
+          routeProps: {
+            exact: true,
+            path: map.KpiDetail
+          },
+          component: lazy(() => import("./KPI/Detail"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,

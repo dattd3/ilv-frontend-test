@@ -31,5 +31,8 @@ export default {
   AccessDenied: "/access-denied",
   BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
-  Job: "/job"
+  Job: "/job",
+  KpiTarget:  "/kpi/target",
+  KpiGeneral: "/kpi/general",
+  KpiDetail:  "/kpi/detail"
 };

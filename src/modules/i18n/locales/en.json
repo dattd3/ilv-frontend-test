@@ -107,5 +107,6 @@
   "Menu_KPI_Main" : "KPI",
   "Menu_KPI_Target" : "Target",
   "Menu_KPI_Result_General" : "Result general",
-  "Menu_KPI_Result_Detail" : "Result detail"
+  "Menu_KPI_Result_Detail" : "Result detail",
+  "SpiritualAttitude" : "Spiritual attitude"
 }
