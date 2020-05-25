@@ -22,6 +22,8 @@ const listKPI = [
     { no:8, weight:"10%", name:"Đảm bảo cảnh quan và mỹ quan, vệ sinh nơi làm việc" }    
   ];
 
+const linkSuccessFactor = "https://performancemanager10.successfactors.com/sf/pmreviews?bplte_company=vingroupjsP2&_s.crb=cCGlhxZRYUMgGtcEh7rKL3v7dsI%3d";
+
 const usePreload = (params) => {
   const api = useApi();
   const [data = [], err] = useFetcher({
@@ -35,7 +37,32 @@ const usePreload = (params) => {
 
 function Target(props) {
   const { t } = useTranslation();  
-  document.title = t("KPI Target");  
+  document.title = t("KPI Target"); 
+
+  const stylePersonTitle = {
+      'width': '250px',
+      'background': '#FFFFFF 0% 0% no-repeat padding-box',
+      'border': '1px solid #FF0000',
+      'border-radius': '20px',      
+      'text-align': 'left',
+      'font': 'Light 23px/27px Helvetica Neue',
+      'letter-spacing': '0px',
+      'color': '#FF0000',
+      'margin-top':'15px',
+      'margin-bottom':'5px'
+  };
+
+  const styleLink = {
+      'width': '300px',
+      'background': '#34C4F9 0% 0% no-repeat padding-box',
+      'border-radius': '20px',      
+      'text-align': 'left',
+      'font': 'Light 23px/27px Helvetica Neue',
+      'letter-spacing': '0px',
+      'color': '#FFFFFF',
+      'margin-top':'15px',
+      'margin-bottom':'5px'
+  };
   
   var tableTTTD;
   if (listTTTD) {   
@@ -86,9 +113,20 @@ function Target(props) {
   }
 
   return (
-    <div>              
+    <div>   
+
+      {/* HIỂN THỊ CHỨC DANH & ĐƯỜNG LINK TRUY CẬP SUCCESS FACTOR*/} 
+      <div>
+        <div className="float-left btn text-center" style={stylePersonTitle}> Chức danh: &nbsp;
+            <strong>Kỹ sư lập trình</strong>
+        </div> 
+        <div className="float-right btn text-center" style={styleLink}>
+           <a href={linkSuccessFactor} style={{'color':'white'}} target="_blank"> Đường link truy cập SuccessFactor</a>
+        </div>
+      </div>          
+
       {/* HIỂN THỊ THÔNG TIN TINH THẦN THÁI ĐỘ*/}
-      <div className="card shadow mb-4 mt-2">        
+      <div className="card shadow mb-4 mt-2 float-left w-100">        
         <div className="bg-success text-white p-3">        
            <h6>
              <span className="float-left"> {t("TINH THẦN THÁI ĐỘ")} </span>
@@ -103,7 +141,7 @@ function Target(props) {
       </div>
 
       {/* HIỂN THỊ THÔNG TIN KPI*/}
-      <div className="card shadow mb-4 mt-2">        
+      <div className="card shadow mb-4 mt-2 float-left w-100">        
         <div className="bg-warning text-white p-3">        
            <h6>
              <span className="float-left"> {t("KPI")} </span>
