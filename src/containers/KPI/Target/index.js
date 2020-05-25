@@ -35,7 +35,7 @@ const usePreload = (params) => {
 
 function Target(props) {
   const { t } = useTranslation();  
-  document.title = t("KPI Detail");  
+  document.title = t("KPI Target");  
   
   var tableTTTD;
   if (listTTTD) {   
