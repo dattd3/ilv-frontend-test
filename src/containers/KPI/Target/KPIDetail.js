@@ -6,8 +6,12 @@ function KPIDetail(props) {
   var list = props.Data;    
   var formColor = props.TypeKPI.color;
   var tableKPI;
+  var totalWeight = 0;
 
-  if (list && list.length > 0) {   
+  if (list && list.length > 0) {  
+   
+    totalWeight = list.reduce((total, next) => total + next.Weight, 0);
+
      tableKPI = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">    
       <thead>
         <tr>                
@@ -35,7 +39,7 @@ function KPIDetail(props) {
         <div className="text-white p-3" style={{'background':formColor}}>        
            <h6>
              <span className="float-left"> {props.TypeKPI.name} </span>
-             <span className="float-right">{t("TỶ TRỌNG: 80%")} </span>
+             <span className="float-right">{t("TỶ TRỌNG")}: &nbsp; {totalWeight} % </span>
            </h6>           
         </div>
         <div className="card-body" style={{'border':'1px solid','borderColor':formColor}}>

@@ -29,6 +29,7 @@ function Target(props) {
   var MNV="10020";
   var Period="Q1/2020"; 
   var listAll = usePreload([MNV,Period]); 
+  console.log("listAll:", listAll);
   
   const listTTTD = listAll.filter(function(item){ return item.Type == TypeKPI.TTTD.type });  
   const listNLLD = listAll.filter(function(item){ return item.Type == TypeKPI.NLLD.type });  
