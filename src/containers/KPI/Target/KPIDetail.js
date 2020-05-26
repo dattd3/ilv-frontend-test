@@ -1,46 +1,26 @@
 import React from "react";
-import { useApi, useFetcher } from "../../../modules";
 import { useTranslation } from "react-i18next";
 
-const usePreload = (params) => {
-  const api = useApi();
-  const [data = [], err] = useFetcher({
-    api: api.fetchListKpiTarget,
-    autoRun: true,
-    params: params
-  });
-  return data;
-};
-
-
-function KPIDetail(props) { 
-  console.log("*** DETAIL ***");
+function KPIDetail(props) {   
   const { t } = useTranslation();    
-
-  var MNV = props.MNV;
-  var Period = props.Period;
-  var TypeKPI = props.TypeKPI.type;
-
-  console.log("KPIDetail:",MNV,Period,TypeKPI);
-
-  var list = usePreload([MNV, Period]);
-  console.log("list:",list);
+  var list = props.Data;    
+  var formColor = props.TypeKPI.color;
   var tableKPI;
 
   if (list && list.length > 0) {   
      tableKPI = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">    
       <thead>
         <tr>                
-          <th className="text-warning h6 small font-weight-bold mt-0 pt-0">STT</th>
-          <th className="text-warning h6 small font-weight-bold mt-0 pt-0">Hạng mục đánh giá</th>
-          <th className="text-warning h6 small font-weight-bold mt-0 pt-0">Tỷ trọng</th>
+          <th className="h6 small font-weight-bold mt-0 pt-0"> STT </th>
+          <th className="h6 small font-weight-bold mt-0 pt-0"> Hạng mục đánh giá </th>
+          <th className="h6 small font-weight-bold mt-0 pt-0" style={{'width':'100px','color':formColor}}>Tỷ trọng</th>
         </tr>
       </thead>
       <tbody>
         {
           list.map((item, index) => {
             return <tr key={index}>              
-              <td>{index}</td>                            
+              <td>{ parseInt(index) + 1}</td>                            
               <td>{item.Name}</td>
               <td className="text-center">{item.Weight}</td>          
             </tr>;
@@ -52,13 +32,13 @@ function KPIDetail(props) {
 
   return (    
       <div className="card shadow mb-4 mt-2 float-left w-100">        
-        <div className="bg-warning text-white p-3">        
+        <div className="text-white p-3" style={{'background':formColor}}>        
            <h6>
              <span className="float-left"> {props.TypeKPI.name} </span>
              <span className="float-right">{t("TỶ TRỌNG: 80%")} </span>
            </h6>           
         </div>
-        <div className="card-body border border-warning">
+        <div className="card-body" style={{'border':'1px solid','borderColor':formColor}}>
           <div className="table-responsive">
             {tableKPI}
           </div>

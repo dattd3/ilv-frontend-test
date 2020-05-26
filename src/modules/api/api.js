@@ -254,12 +254,7 @@ export default class Api {
       });
   };
 
-  fetchListKpiTarget = async (MNV, Period) => {   
-     
-     console.log("*** fetchListKpiTarget ***");
-     console.log("Url:",`${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/detail`);
-
-
+  fetchListKpiTarget = async (MNV, Period) => {
      return await this.request.get(      
       `${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/detail`, {
         params: {          

@@ -1,20 +1,40 @@
 import React from "react";
+import { useApi, useFetcher } from "../../../modules";
 import { useTranslation } from "react-i18next";
 import KPIDetail from './KPIDetail'
 
+const LinkSuccessFactor = "https://performancemanager10.successfactors.com/sf/pmreviews?bplte_company=vingroupjsP2&_s.crb=cCGlhxZRYUMgGtcEh7rKL3v7dsI%3d";
+
+const TypeKPI = {
+  TTTD : {"type":"TTTĐ", "name":"TINH THẦN THÁI ĐỘ", "color":"#05BD29"},
+  NLLD : {"type":"NLLĐ", "name":"NĂNG LỰC LÃNH ĐẠO", "color":"#F9C20A"},
+  NLCM : {"type":"NLCM", "name":"NĂNG LỰC CHUYÊN MÔN", "color":"#FF0000"},
+  NDCV : {"type":"NDCV", "name":"NỘI DUNG CÔNG VIỆC", "color":"#347EF9"}
+};
+
+const usePreload = (params) => {
+  const api = useApi();
+  const [data = [], err] = useFetcher({
+    api: api.fetchListKpiTarget,
+    autoRun: true,
+    params: params
+  });
+  return data;
+};
+
 function Target(props) {
-  const { t } = useTranslation();  
+  const { t } = useTranslation();
   document.title = t("KPI Target"); 
-
-  const LinkSuccessFactor = "https://performancemanager10.successfactors.com/sf/pmreviews?bplte_company=vingroupjsP2&_s.crb=cCGlhxZRYUMgGtcEh7rKL3v7dsI%3d";
-
-  const TypeKPI = {
-    TTTD : {"type":"TTTĐ", "name":"TINH THẦN THÁI ĐỘ"},
-    NLLD : {"type":"NLLĐ", "name":"NĂNG LỰC LÃNH ĐẠO"},
-    NLCM : {"type":"NLCM", "name":"NĂNG LỰC CHUYÊN MÔN"},
-    NDCV : {"type":"NDCV", "name":"NỘI DUNG CÔNG VIỆC"}
-  };
-
+   
+  var MNV="10020";
+  var Period="Q1/2020"; 
+  var listAll = usePreload([MNV,Period]); 
+  
+  const listTTTD = listAll.filter(function(item){ return item.Type == TypeKPI.TTTD.type });  
+  const listNLLD = listAll.filter(function(item){ return item.Type == TypeKPI.NLLD.type });  
+  const listNLCM = listAll.filter(function(item){ return item.Type == TypeKPI.NLCM.type });  
+  const listNDCV = listAll.filter(function(item){ return item.Type == TypeKPI.NDCV.type });  
+  
   const stylePersonTitle = {
       'width': '250px',
       'background': '#FFFFFF 0% 0% no-repeat padding-box',
@@ -53,11 +73,20 @@ function Target(props) {
         </div>
       </div>          
 
-      {/* HIỂN THỊ THÔNG TIN TINH THẦN THÁI ĐỘ*/}
-      <KPIDetail TypeKPI={TypeKPI.TTTD} MNV="10020" Period="Q1/2020"></KPIDetail>
+      {/* TINH THẦN THÁI ĐỘ */}
+      <KPIDetail TypeKPI={TypeKPI.TTTD} Data={listTTTD}></KPIDetail>
       
 
-      {/* HIỂN THỊ THÔNG TIN KPI*/}
+      {/* NĂNG LỰC LÃNH ĐẠO */}
+      <KPIDetail TypeKPI={TypeKPI.NLLD} Data={listNLLD}></KPIDetail>
+
+
+      {/* NĂNG LỰC CHUYÊN MÔN */}
+      <KPIDetail TypeKPI={TypeKPI.NLCM} Data={listNLCM}></KPIDetail>
+
+
+      {/* NỘI DUNG CÔNG VIỆC */}
+      <KPIDetail TypeKPI={TypeKPI.NDCV} Data={listNDCV}></KPIDetail>
       
 
     </div>
