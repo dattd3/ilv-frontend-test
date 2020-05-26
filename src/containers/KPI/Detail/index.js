@@ -36,14 +36,14 @@ function Detail(props) {
   
   const style = {
       'border': '1px solid #B3B3B3',      
-      'text-align': 'center',
+      'textAlign': 'center',
       'color': 'black'
     };
 
   const styleHeader = {
       'text-align': 'left',
       'font': 'regular 23px/27px Helvetica Neue',
-      'letter-spacing': '0px',
+      'letterSpacing': '0px',
       'color': '#283280'
   };
 
@@ -51,23 +51,23 @@ function Detail(props) {
       'width': '150px',
       'height': '40px',
       'background': '#F9C20A 0% 0% no-repeat padding-box',
-      'border-radius': '30px'      
+      'borderRadius': '30px!important'      
   };
 
  const styleSearchColumn = {
-      'text-align': 'left',
+      'textAlign': 'left',
       'font': 'Light 21px/25px Helvetica Neue',
-      'letter-spacing': '0px',
+      'letterSpacing': '0px',
       'color': '#000000',
-      'border-top' : 'none'      
+      'borderTop' : 'none'      
   };
 
   const styleSearchDropDown = {
-      'text-align': 'left',
+      'textAlign': 'left',
       'font': 'Light 21px/25px Helvetica Neue',
-      'letter-spacing': '0px',
+      'letterSpacing': '0px',
       'color': '#B3B3B3',
-      'margin-bottom': '10px'
+      'marginBottom': '10px'
   };
 
   var tableTTTD;

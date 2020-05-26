@@ -252,6 +252,20 @@ export default class Api {
           page_size: page_size
         }
       });
-  }
+  };
 
+  fetchListKpiTarget = async (MNV, Period) => {   
+     
+     console.log("*** fetchListKpiTarget ***");
+     console.log("Url:",`${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/detail`);
+
+
+     return await this.request.get(      
+      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/detail`, {
+        params: {          
+          MNV: MNV,
+          Period: Period          
+        }
+      });
+  };
 }
