@@ -263,4 +263,14 @@ export default class Api {
         }
       });
   };
+
+  fetchListKpiGeneral = async (MNV, Period) => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/general`, {
+        params: {          
+          MNV: MNV,
+          Period: Period          
+        }
+      });
+  };
 }

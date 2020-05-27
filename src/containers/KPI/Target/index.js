@@ -70,7 +70,7 @@ function Target(props) {
       {/* HIỂN THỊ CHỨC DANH & ĐƯỜNG LINK TRUY CẬP SUCCESS FACTOR*/} 
       <div>
         <div className="float-left btn text-center" style={stylePersonTitle}> Chức danh: &nbsp;
-            <strong> { user.jobTitle }</strong>
+            <strong> {user.jobTitle} </strong>
         </div> 
         <div className="float-right btn text-center" style={styleLink}>
            <a href={LinkSuccessFactor} style={{'color':'white'}} target="_blank"> Đường link truy cập SuccessFactor</a>
