@@ -53,7 +53,7 @@ function General(props) {
 
   const styleTieuDeNhanVien = {
       'textAlign': 'left',
-      'font': 'Light 21px/25px Helvetica Neue',
+      'fontFamily': 'Light 21px/25px Helvetica Neue',
       'letterSpacing': '0px',
       'color': '#B3B3B3',
       'marginBottom': '10px'
@@ -61,7 +61,7 @@ function General(props) {
 
   const styleNoiDungNhanVien = {
       'textAlign': 'left',
-      'font': 'Light 21px/25px Helvetica Neue',
+      'fontFamily': 'Light 21px/25px Helvetica Neue',
       'letterSpacing': '0px',
       'color': '#000000',
       'borderTop' : 'none'      
@@ -75,16 +75,17 @@ function General(props) {
 
   const styleHeader = {
       'textAlign': 'left',
-      'font': 'regular 23px/27px Helvetica Neue',
+      'fontFamily': 'regular 23px/27px Helvetica Neue',
       'letterSpacing': '0px',
       'color': '#283280'
   };
 
   const styleTimKiem = {
-      'width': '150px',
-      'height': '40px',
+      'width': '270px',
+      'height': '45px',
       'background': '#F9C20A 0% 0% no-repeat padding-box',
-      'borderRadius': '30px'      
+      'borderRadius': '30px',
+      'fontFamily': 'Light 21px/25px Helvetica Neue'
   };
 
   var tableView;
@@ -92,10 +93,9 @@ function General(props) {
      tableView = <table className="table" style={style}> 
        <tbody>         
             <tr>                
-              <td style={style} className="text-left"><strong>Hạng mục</strong></td>
-              <td style={style}><strong>Tự đánh giá</strong></td>
-              <td style={style}><strong>CBQL đánh giá</strong></td>
-              <td style={style}><strong>Kết quả cuối cùng</strong></td>
+              <td style={style} className="text-left text-primary"><strong>Hạng mục đánh giá</strong></td>
+              <td style={style} className="text-center text-primary"><strong>CBNV tự đánh giá</strong></td>
+              <td style={style} className="text-center text-primary"><strong>CBQL đánh giá</strong></td>              
             </tr>               
             {
               listItems.map((item, i) => {
@@ -103,15 +103,13 @@ function General(props) {
                   <td style={style} className="text-left">{item.name}</td>
                   <td style={style}>{item.selfRate}</td>
                   <td style={style}>{item.managerRate}</td>
-                  <td style={style}>{item.Score}</td>          
                 </tr>;
               })
             }
             <tr>                
-              <td style={style} className="text-left text-danger"><strong>Tổng điểm</strong></td>
-              <td style={style} className="text-danger"><strong>66</strong></td>
-              <td style={style} className="text-danger"><strong>80</strong></td>
-              <td style={style} className="text-danger"><strong>70</strong></td>
+              <td style={style} className="text-left"><strong>Điểm tổng thể</strong></td>
+              <td style={style}><strong>66</strong></td>
+              <td style={style}><strong>80</strong></td>              
             </tr>
         </tbody>            
     </table>
@@ -154,14 +152,14 @@ function General(props) {
                     <tr>                
                         <td style={styleNoiDungNhanVien}> 
                             <div style={styleTieuDeNhanVien}> Lựa chọn năm (bắt buộc) </div>                      
-                               <select className="browser-default custom-select" style={{'color':'black'}}>                            
+                               <select className="browser-default custom-select" style={{'color':'black','height': '45px'}}>                            
                                   <option value="2020" defaultValue>2020</option>
                                   <option value="2019">2019</option>                            
                                 </select>
                         </td>                  
                         <td style={styleNoiDungNhanVien}> 
                             <div style={styleTieuDeNhanVien}> Lựa chọn quý (bắt buộc) </div>
-                            <select className="browser-default custom-select" style={{'color':'black'}}>                            
+                            <select className="browser-default custom-select" style={{'color':'black','height': '45px'}}>                            
                                   <option value="Q1" defaultValue>Quý 1</option>
                                   <option value="Q2">Quý 2</option>
                                   <option value="Q3">Quý 3</option>
@@ -183,7 +181,7 @@ function General(props) {
                 {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
                 <div className="col-8 panel" style={{'paddingLeft':'0px'}}>                                                      
                       <div className="card border border-primary shadow">        
-                          <div className="bg-primary text-white p-3 h6 text-uppercase">Quý 1 năm 2020</div>                      
+                          <div className="bg-primary text-white p-3 h6 text-uppercase text-center">Quý 1 năm 2020</div>                      
                           <div className="card-body">          
                               {tableView}          
                           </div>
@@ -193,19 +191,19 @@ function General(props) {
                 <div className="col-4 panel" style={{'paddingRight':'0px'}}>                    
                 {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
                       <div className="card border border-primary shadow" style={{'height':'100%'}}> 
-                           <div className="bg-primary text-white p-3 h6 text-uppercase">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
+                           <div className="bg-primary text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
                            <div className="card-body">
-                              <div>Kết qủa</div>
-                              <div>đánh giá tổng thể</div>
-                              <div>80</div>                                
+                              <div className="text-center" style={{'color':'#FF0000'}}>Kết qủa</div>
+                              <div className="text-center" style={{'color':'#FF0000'}}>đánh giá tổng thể</div>
+                              <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>80</div>                                
                            </div>
                           <div className="card-body">
-                              <div>CBQL đánh giá:</div>
-                              <div>{ManagerAtFormComplete}</div>
+                              <div className="text-center">CBQL đánh giá:</div>
+                              <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{ManagerAtFormComplete}</div>
                           </div>
                           <div className="card-body">
-                              <div>CBLĐ phê duyệt:</div>
-                              <div>{MatrixFullName}</div>
+                              <div className="text-center">CBLĐ phê duyệt:</div>
+                              <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{MatrixFullName}</div>
                           </div>                    
                       </div>                    
                  </div>
