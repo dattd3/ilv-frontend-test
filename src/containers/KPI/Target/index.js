@@ -1,5 +1,5 @@
 import React from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { useTranslation } from "react-i18next";
 import KPIDetail from './KPIDetail'
 
@@ -8,8 +8,8 @@ const LinkSuccessFactor = "https://performancemanager10.successfactors.com/sf/pm
 const TypeKPI = {
   TTTD : {"type":"TTTĐ", "name":"TINH THẦN THÁI ĐỘ", "color":"#05BD29"},
   NLLD : {"type":"NLLĐ", "name":"NĂNG LỰC LÃNH ĐẠO", "color":"#F9C20A"},
-  NLCM : {"type":"NLCM", "name":"NĂNG LỰC CHUYÊN MÔN", "color":"#FF0000"},
-  NDCV : {"type":"NDCV", "name":"NỘI DUNG CÔNG VIỆC", "color":"#347EF9"}
+  NLCM : {"type":"NLCM", "name":"NĂNG LỰC CHUYÊN MÔN", "color":"#FF7F00"},
+  NDCV : {"type":"NDCV", "name":"NỘI DUNG CÔNG VIỆC", "color":"#2231A3"}
 };
 
 const usePreload = (params) => {
@@ -25,9 +25,12 @@ const usePreload = (params) => {
 function Target(props) {
   const { t } = useTranslation();
   document.title = t("KPI Target"); 
+
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();  
    
   var MNV="10020";
-  var Period="Q1/2020"; 
+  var Period="Q1/2019"; 
   var listAll = usePreload([MNV,Period]); 
   console.log("listAll:", listAll);
   
@@ -37,7 +40,7 @@ function Target(props) {
   const listNDCV = listAll.filter(function(item){ return item.Type == TypeKPI.NDCV.type });  
   
   const stylePersonTitle = {
-      'width': '250px',
+      'min-width': '250px',
       'background': '#FFFFFF 0% 0% no-repeat padding-box',
       'border': '1px solid #FF0000',
       'borderRadius': '20px!important',      
@@ -67,7 +70,7 @@ function Target(props) {
       {/* HIỂN THỊ CHỨC DANH & ĐƯỜNG LINK TRUY CẬP SUCCESS FACTOR*/} 
       <div>
         <div className="float-left btn text-center" style={stylePersonTitle}> Chức danh: &nbsp;
-            <strong>Kỹ sư lập trình</strong>
+            <strong> { user.jobTitle }</strong>
         </div> 
         <div className="float-right btn text-center" style={styleLink}>
            <a href={LinkSuccessFactor} style={{'color':'white'}} target="_blank"> Đường link truy cập SuccessFactor</a>
