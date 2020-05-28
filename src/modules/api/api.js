@@ -273,4 +273,15 @@ export default class Api {
         }
       });
   };
+
+  getPeriodKpiGeneral = async (MNV) => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/period/general`, {
+        params: {          
+          MNV: MNV       
+        }
+      });
+  };
+
+
 }

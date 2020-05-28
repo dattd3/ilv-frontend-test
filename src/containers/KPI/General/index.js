@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { useTranslation } from "react-i18next";
-
-const listItems = [
-    {name:"Tinh thần thái độ", selfRate:16, managerRate:20, Score: 18},
-    {name:"Năng lực lãnh đạo", selfRate:12, managerRate:20, Score: 16},
-    {name:"Năng lực chuyên môn", selfRate:18, managerRate:20, Score: 19},
-    {name:"Nội dung công việc", selfRate:20, managerRate:20, Score: 20}    
-  ];
+import KPISearch from "../Common/KPISearch"
 
 const usePreload = (params) => {
   const api = useApi();
@@ -19,7 +13,6 @@ const usePreload = (params) => {
   return data;
 };
 
-
 function General(props) {
   const { t } = useTranslation();  
   document.title = t("KPI General"); 
@@ -30,7 +23,7 @@ function General(props) {
   var MNV="10020";
   var Period="Q1/2019"; 
   var listAll = usePreload([MNV,Period]);
-  console.log("listAll:", listAll);
+  var years = [];
   
   const style = {
       'border': '1px solid #B3B3B3',      
@@ -75,7 +68,7 @@ function General(props) {
       'fontFamily': 'Light 21px/25px Helvetica Neue'
   };
 
-  if (listItems && listAll.length > 0) {     
+  if (listAll.length > 0) {     
     return (
         <div>
           {/*THÔNG TIN NHÂN VIÊN*/}
@@ -104,36 +97,7 @@ function General(props) {
            </div>
 
           {/*LỰA CHỌN KỲ ĐÁNH GIÁ*/}
-          <div className="text-uppercase" style={styleHeader} >
-              LỰA CHỌN HIỂN THỊ KỲ ĐÁNH GIÁ
-          </div>
-          <div className="card border shadow mb-4 mt-2">
-              <table className="table" style={{'marginBottom':'4px'}}>  
-                  <tbody>         
-                        <tr>                
-                            <td style={styleNoiDungNhanVien}> 
-                                <div style={styleTieuDeNhanVien}> Lựa chọn năm (bắt buộc) </div>                      
-                                   <select className="browser-default custom-select" style={{'color':'black','height': '45px'}}>                            
-                                      <option value="2020" defaultValue>2020</option>
-                                      <option value="2019">2019</option>                            
-                                    </select>
-                            </td>                  
-                            <td style={styleNoiDungNhanVien}> 
-                                <div style={styleTieuDeNhanVien}> Lựa chọn quý (bắt buộc) </div>
-                                <select className="browser-default custom-select" style={{'color':'black','height': '45px'}}>                            
-                                      <option value="Q1" defaultValue>Quý 1</option>
-                                      <option value="Q2">Quý 2</option>
-                                      <option value="Q3">Quý 3</option>
-                                      <option value="Q4">Quý 4</option>
-                                </select>
-                            </td>
-                            <td style={{'verticalAlign': 'bottom'}}>                      
-                                <button type="button" className="btn btn-warning" style={styleTimKiem}>Tìm kiếm</button>
-                            </td>          
-                        </tr>
-                  </tbody>
-               </table>
-           </div>
+            <KPISearch MNV={MNV} />
 
             {/* THÔNG TIN CHI TIẾT CHIA LÀM 2 CỘT */}    
             
@@ -179,8 +143,8 @@ function General(props) {
                                           <tr>                
                                               <td style={style}><strong>05</strong></td>
                                               <td style={style} className="text-left"><strong>Điểm tổng thể</strong></td>
-                                              <td style={style}><strong>66</strong></td>
-                                              <td style={style}><strong>80</strong></td>              
+                                              <td style={style}><strong>0</strong></td>
+                                              <td style={style}><strong>{listAll[0].Score}</strong></td>              
                                           </tr>   
                                       </tbody>                                       
                                   </table>
