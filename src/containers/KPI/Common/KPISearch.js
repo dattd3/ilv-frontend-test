@@ -72,11 +72,14 @@ function KPISearch(props) {
     quarterSelected = listQuarter[0];
 
    const handleYearChange = selectedOption => {      
-      yearSelected = selectedOption.value;      
+      yearSelected = selectedOption.value;  
+      console.log(yearSelected);    
     };
 
    const handleQuarterChange = selectedOption => {
-      quarterSelected = selectedOption.value;      
+      console.log("quarterSelected:",selectedOption.value); 
+      quarterSelected = selectedOption.value;
+      console.log(quarterSelected);      
     };
 
     return (
@@ -91,17 +94,17 @@ function KPISearch(props) {
                             <td style={styleGroupTD}> 
                                 <div style={styleTieuDe}> Lựa chọn năm (bắt buộc) </div>                                    
                                 <Select style={{'color':'black','height': '45px'}}                                    
-                                    selectedValue={yearSelected}
-                                    value={yearSelected}
-                                    onChange={handleYearChange}                                    
+                                    selectedValue={years}
+                                    onChange={handleYearChange}
+                                    placeholder="Chọn năm ..."                                    
                                     options={years} />
                             </td>                  
                             <td style={styleGroupTD}> 
                                 <div style={styleTieuDe}> Lựa chọn quý (bắt buộc) </div>                                
                                 <Select style={{'color':'black','height': '45px'}}
-                                    value={quarterSelected}
-                                    onChange={handleQuarterChange} 
                                     selectedValue={quarterSelected}
+                                    onChange={handleQuarterChange}
+                                    placeholder="Chọn quý ..."
                                     options={listQuarter} />
                             </td>
                             <td style={{'verticalAlign': 'bottom'}}>                      
