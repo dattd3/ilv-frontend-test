@@ -10,7 +10,7 @@ function KPIDetail(props) {
 
   if (list && list.length > 0) {  
    
-    totalWeight = list.reduce((total, next) => total + next.Weight, 0);
+    totalWeight = list.reduce((total, next) => total + parseFloat(next.Weight), 0);    
 
      tableKPI = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">    
       <thead>

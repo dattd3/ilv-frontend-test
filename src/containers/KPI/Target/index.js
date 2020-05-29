@@ -30,7 +30,7 @@ function Target(props) {
   const user = guard.getCurentUser();  
    
   var MNV="10020";
-  var Period="Q1/2019"; 
+  var Period="Q1/2020"; 
   var listAll = usePreload([MNV,Period]); 
   console.log("listAll:", listAll);
   
