@@ -133,6 +133,14 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: "U",
+    role: "U"
   },
+  {
+    id: 20,
+    parentId: 0,    
+    icon: "notification",
+    label: "Notification",
+    to: map.Notify,
+    role: "U"
+  }
 ];
