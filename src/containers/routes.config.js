@@ -129,14 +129,14 @@ export default [
           },
           component: lazy(() => import("./CheckList/Workflow")),
         },
-        // {
-        //   key: "personinfo",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.PersonInfo
-        //   },
-        //   component: lazy(() => import("./PersonInfo"))
-        // },
+        {
+          key: "personinfo",
+          routeProps: {
+            exact: true,
+            path: map.PersonInfo
+          },
+          component: lazy(() => import("./PersonInfo"))
+        },
         {
           key: "job",
           routeProps: {
@@ -184,6 +184,14 @@ export default [
             path: map.Vinpearl,
           },
           component: lazy(() => import("./Corporation/Vinpearl")),
+        },
+        {
+          key: "notify",
+          routeProps: {
+            exact: true,
+            path: map.Notify
+          },
+          component: lazy(() => import("./Notify"))
         },
         {
           key: "forbidden",

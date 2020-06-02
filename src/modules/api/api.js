@@ -244,4 +244,14 @@ export default class Api {
       }
     );
   };
+
+  fetchListNotification = async (page_no, page_size) => {
+     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
+        params: {          
+          page_no: page_no,
+          page_size: page_size
+        }
+      });
+  }
+
 }

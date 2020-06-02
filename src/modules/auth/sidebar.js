@@ -119,20 +119,28 @@ export const Navigation = [
     to: map.News,
     role: "U",
   },
-  // {
-  //     id: 17,
-  //     parentId: 10,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "PersonalInformation",
-  //     to: map.PersonInfo,
-  //     role: 'U'
-  // },
+  {
+      id: 17,
+      parentId: 10,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "PersonalInformation",
+      to: map.PersonInfo,
+      role: 'U'
+  },
   {
     id: 19,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: "U",
+    role: "U"
   },
+  {
+    id: 20,
+    parentId: 0,    
+    icon: "notification",
+    label: "Notification",
+    to: map.Notify,
+    role: "U"
+  }
 ];

@@ -98,5 +98,11 @@
   "BenefitUpload" : "Cập nhật phúc lợi",
   "SpecificOperatingWork" : "Mô tả công việc vận hành đặc thù",
   "GeneralManagement" : "Mô tả quản trị chung",
-  "JobDescription":"Mô tả công việc"
+  "JobDescription":"Mô tả công việc",
+  "Menu_Notification": "Thông báo",
+  "Notification_Type": "Loại",
+  "Notification_Title": "Tiêu đề",
+  "Notification_Content": "Nội dung",
+  "Notification_Created_By": "Tạo bởi",
+  "Notification_Created_Date": "Ngày tạo"
 }
