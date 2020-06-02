@@ -119,14 +119,14 @@ export const Navigation = [
     to: map.News,
     role: "U",
   },
-  // {
-  //     id: 17,
-  //     parentId: 10,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "PersonalInformation",
-  //     to: map.PersonInfo,
-  //     role: 'U'
-  // },
+  {
+      id: 17,
+      parentId: 10,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "PersonalInformation",
+      to: map.PersonInfo,
+      role: 'U'
+  },
   {
     id: 19,
     parentId: 10,

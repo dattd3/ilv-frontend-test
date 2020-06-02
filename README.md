@@ -8,5 +8,5 @@ yarn build:staging
 or Production
 
 ```
-yarn build:production 
+yarn build:production  
 ```
