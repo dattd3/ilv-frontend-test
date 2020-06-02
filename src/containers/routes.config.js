@@ -129,14 +129,14 @@ export default [
           },
           component: lazy(() => import("./CheckList/Workflow")),
         },
-        // {
-        //   key: "personinfo",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.PersonInfo
-        //   },
-        //   component: lazy(() => import("./PersonInfo"))
-        // },
+        {
+          key: "personinfo",
+          routeProps: {
+            exact: true,
+            path: map.PersonInfo
+          },
+          component: lazy(() => import("./PersonInfo"))
+        },
         {
           key: "job",
           routeProps: {
