@@ -11,7 +11,8 @@ export default {
   Learning: "/training/learning",
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
-  PersonInfo: "/personinfo",
+  PersonalInfo: "/personal-info",
+  WorkingProcess: "/working-process",
   Benefit: "/benefit",
   Notify: "/notify",
 
