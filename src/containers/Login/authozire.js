@@ -62,6 +62,7 @@ function Authorize(props) {
                 avatar: '',
                 fullName: user.fullname,
                 jobTitle: user.job_name,
+                jobId: user.job_id,
                 benefitLevel: user.benefit_level,
                 company: user.pnl,
                 sabaId: 'sabId',
