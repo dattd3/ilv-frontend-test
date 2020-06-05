@@ -62,8 +62,9 @@ function Authorize(props) {
                 avatar: '',
                 fullName: user.fullname,
                 jobTitle: user.job_name,
+                benefitLevel: user.benefit_level,
                 company: user.pnl,
-                sabaId: '',
+                sabaId: 'sabId',
                 employeeNo: user.uid,
                 jobType: user.rank_name,
                 department: `${user.division} / ${user.department} / ${user.unit}`
