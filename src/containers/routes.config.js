@@ -130,12 +130,21 @@ export default [
           component: lazy(() => import("./CheckList/Workflow")),
         },
         {
-          key: "personinfo",
+          key: "personal-info",
           routeProps: {
             exact: true,
-            path: map.PersonInfo
+            path: map.PersonalInfo
           },
-          component: lazy(() => import("./PersonInfo"))
+          component: lazy(() => import("./PersonalInfo"))
+        },
+        
+        {
+          key: "working-process",
+          routeProps: {
+            exact: true,
+            path: map.WorkingProcess
+          },
+          component: lazy(() => import("./PersonalInfo/workingprocess"))
         },
         {
           key: "job",
