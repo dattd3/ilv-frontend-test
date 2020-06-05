@@ -17,8 +17,6 @@ class MyComponent extends React.Component {
   componentDidMount() {
     let config = {
       headers: {
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
@@ -96,7 +94,7 @@ class MyComponent extends React.Component {
                 <Col xs={6} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("Sex")}</label>
-                    <p className="info-value">{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '0') ? t("Male") : t("Female")}</p>
+                    <p className="info-value">{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p>
                   </Form.Group>
                 </Col>
                 <Col xs={6} md={6} lg={2} className="info-item mb-3">
@@ -108,7 +106,7 @@ class MyComponent extends React.Component {
                 <Col xs={6} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("Ethnic")}</label>
-                    <p className="info-value">{this.state.userDetail.ethnic}</p>
+                    <p className="info-value">{this.state.userDetail.ethinic}</p>
                   </Form.Group>
                 </Col>
                 <Col xs={6} md={6} lg={2} className="info-item mb-3">
@@ -212,18 +210,18 @@ class MyComponent extends React.Component {
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("LevelByTitle")}</label>
-                    <p className="info-value">{this.state.userProfile.group_title}</p>
+                    <p className="info-value">{this.state.userProfile.rank_name}</p>
                   </Form.Group>
                 </Col>
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("ActualLevel")}</label>
-                    <p className="info-value">{this.state.userProfile.employee_level}</p>
+                    <p className="info-value">{this.state.userProfile.rank_name}</p>
                   </Form.Group>
                 </Col>
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
-                    <label>{t("BenefitLevel")}</label>
+                    <label>{t("BenefitLevel")}</label> 
                     <p className="info-value">{this.state.userProfile.benefit_level}</p>
                   </Form.Group>
                 </Col>
@@ -251,7 +249,7 @@ class MyComponent extends React.Component {
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("DepartmentName")}</label>
-                    <p className="info-value">{this.state.userProfile.department}</p>
+                    <p className="info-value">{this.state.userProfile.unit}</p>
                   </Form.Group>
                 </Col>
               </Row>
