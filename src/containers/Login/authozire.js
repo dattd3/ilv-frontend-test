@@ -5,6 +5,7 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
+import axios from 'axios';
 
 
 function Authorize(props) {
@@ -12,75 +13,80 @@ function Authorize(props) {
     const { history } = props;
     const guard = useGuardStore();
 
-    /*
-    const usePreload = (params) => {
-        const api = useApi();
-        api.setAuthorization({ tokenType: 'Bearer', accessToken: params.token });
-        const [user = undefined, err] = useFetcher({
-            api: api.fetchUser,
-            autoRun: true,
-            params: [params.email]
-        });
-        return [user, err];
-    };
-    */
-    const usePreload = (params) => {
-        const api = useApi();
-        api.setAuthorization({ tokenType: 'Bearer', Authorization: 'Bearer '+ params.token });        
-        const [user = undefined, err] = useFetcher({
-            api: api.fetchSapUser,
-            autoRun: true,
-            params: []
-        });
-        return [user, err];
-    };
+    const getUser = (token, jwtToken, vgEmail) =>
+    {      
+        if(token == null) {
+            return;
+        }
 
-    const [email, SetEmail] = useState('');
+        let config = {
+          headers: {
+             'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+             'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
+             'Authorization': `Bearer ${token}`
+          }
+        }
+        
+        axios.get(process.env.REACT_APP_MULE_HOST + 'user/profile', config)
+          .then(res => {            
+            if (res && res.data && res.data.data) { 
+              let userProfile = res.data.data[0]; 
+              checkUser(userProfile, jwtToken, vgEmail);              
+            }
+          })
+          .catch(error => {
+              console.log("Call getUser error:", error);
+              SetNotifyContent(t("LoginError"));
+              SetIsloading(false);
+            }
+          );   
+    }
+
+    const checkUser = (user, jwtToken, vgEmail) =>
+    {
+        
+        if (user == null || user.uid == null) {
+            SetNotifyContent(t("LoginError"));
+            SetIsloading(false);
+        } else {
+            SetNotifyContent(t("WaitNotice"));
+            SetIsloading(true);
+        }
+                
+        if (user) {
+            SetNotifyContent(t("LoginSuccessful"));
+            guard.setIsAuth({
+                tokenType: 'Bearer',
+                accessToken: jwtToken,
+                tokenExpired: '',
+                email: vgEmail,
+                plEmail: user.company_email,
+                avatar: '',
+                fullName: user.fullname,
+                jobTitle: user.job_name,
+                company: user.pnl,
+                sabaId: '',
+                employeeNo: user.uid,
+                jobType: user.rank_name,
+                department: `${user.division} / ${user.department} / ${user.unit}`
+            });
+
+            history.push(map.Dashboard);
+        }
+    }
+
     const [token, SetToken] = useState('');
     const [isloading, SetIsloading] = useState(true);
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
-    
-    let api = usePreload({ token: token });
-    
-    console.log("api:",api);
-
+        
     function getUserData() {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {
             if (currentAuthUser.signInUserSession.isValid()) {
                 SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                SetEmail(currentAuthUser.attributes.family_name); 
                 let email = currentAuthUser.attributes.family_name;
                 let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
-                let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
-                let user = api[0];
-                
-                if (api[1] && api[1] !== undefined) {
-                    SetNotifyContent(t("LoginError"));
-                    SetIsloading(false);
-                } else {
-                    SetNotifyContent(t("WaitNotice"));
-                    SetIsloading(true);
-                }
-                
-                if (user) {
-                    SetNotifyContent(t("LoginSuccessful"));
-                    guard.setIsAuth({
-                        tokenType: 'Bearer',
-                        accessToken: currentAuthUser.signInUserSession.idToken.jwtToken,
-                        tokenExpired: '',
-                        email: vgEmail,
-                        plEmail: email,
-                        avatar: user.avatar,
-                        fullName: user.fullName,
-                        jobTitle: user.jobTitle,
-                        company: user.companyName,
-                        sabaId: user.sabaId,
-                        employeeNo: user.employeeNo,
-                        jobType: user.jobType,
-                        department: `${user.departmentName} / ${user.siteName}`
-                    });
-                    history.push(map.Dashboard);
-                }
+                let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;                
+                getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);                                
             }
             else {
                 SetNotifyContent(t("WaitNotice"));
