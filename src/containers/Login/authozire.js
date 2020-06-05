@@ -20,9 +20,7 @@ function Authorize(props) {
         }
 
         let config = {
-          headers: {
-             'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-             'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
+          headers: {             
              'Authorization': `Bearer ${token}`
           }
         }

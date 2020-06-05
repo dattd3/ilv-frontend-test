@@ -71,17 +71,14 @@ function Dashboard(props) {
   /* Lấy thông tin ngày phép */
   let config = {
       headers: {            
-        'client_id': '6ce6aa62b6c74f799ebbfd3397a3647a',
-        'client_secret': '6998281221B149E58e78543c08a7d7e5' 
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}` 
       }
     }
        
-
   var userAbsenceNumberUsed = 0;
   var userAbsenceNumberTotal = 12;
   var userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
-  console.log("default userAbsencePercentUsed: ", userAbsencePercentUsed);
-         
+           
   axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
     .then(res => {                        
       if (res && res.data && res.data.data) {  
