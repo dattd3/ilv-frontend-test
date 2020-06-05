@@ -41,7 +41,7 @@ function Notification(props) {
   const { t } = useTranslation();  
   document.title = t("Menu_Notification");  
   const [pageIndex, SetPageIndex] = useState(1);
-  const [pageSize, SetPageSize] = useState(5);
+  const [pageSize, SetPageSize] = useState(10);
   const result = usePreload([pageIndex, pageSize]);
   
   const onChangePage = (page) => {
@@ -69,7 +69,7 @@ function Notification(props) {
         <tr>                
           <th>{t("Notification_Title")}</th>
           <th>{t("Notification_Content")}</th>
-          <th>{t("TOPIC")}</th>   
+          <th>{t("TOPIC")} ({t("Notification_Facility")})</th>   
           <th>{t("Notification_Type")}</th>
           <th>{t("Notification_Created_By")}</th>            
           <th>{t("Notification_Created_Date")}</th>          
