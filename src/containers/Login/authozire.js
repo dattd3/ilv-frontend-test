@@ -12,7 +12,7 @@ function Authorize(props) {
     const { history } = props;
     const guard = useGuardStore();
 
-
+    /*
     const usePreload = (params) => {
         const api = useApi();
         api.setAuthorization({ tokenType: 'Bearer', accessToken: params.token });
@@ -23,11 +23,26 @@ function Authorize(props) {
         });
         return [user, err];
     };
+    */
+    const usePreload = (params) => {
+        const api = useApi();
+        api.setAuthorization({ tokenType: 'Bearer', Authorization: 'Bearer '+ params.token });        
+        const [user = undefined, err] = useFetcher({
+            api: api.fetchSapUser,
+            autoRun: true,
+            params: []
+        });
+        return [user, err];
+    };
+
     const [email, SetEmail] = useState('');
     const [token, SetToken] = useState('');
     const [isloading, SetIsloading] = useState(true);
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
-    let api = usePreload({ email: email, token: token });
+    
+    let api = usePreload({ token: token });
+    
+    console.log("api:",api);
 
     function getUserData() {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {

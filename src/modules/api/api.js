@@ -72,6 +72,11 @@ export default class Api {
     );
   };
 
+  fetchSapUser = async () => {
+    return await this.request.get(
+      `${process.env.REACT_APP_MULE_HOST}user/profile`
+    );
+  };
   // training
   fetchSabaCredit = async () => {
     return await this.request.get(
