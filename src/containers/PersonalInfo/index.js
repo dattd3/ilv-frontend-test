@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
+import moment from 'moment';
 
 class MyComponent extends React.Component {
 
@@ -88,7 +89,7 @@ class MyComponent extends React.Component {
                 <Col xs={12} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("PlaceOfBirth")}</label>
-                    <p className="info-value">{/* asd */}</p>
+                    <p className="info-value">{this.state.userDetail.birth_province}</p>
                   </Form.Group>
                 </Col>
                 <Col xs={6} md={6} lg={2} className="info-item mb-3">
@@ -120,19 +121,19 @@ class MyComponent extends React.Component {
                 <Col sm className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("IdentityPasportNo")}</label>
-                    <p className="info-value">{/* asd */}</p>
+                    <p className="info-value">{this.state.userDetail.passport_no}</p>
                   </Form.Group>
                 </Col>
                 <Col sm className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("DateIssue")}</label>
-                    <p className="info-value">{/* asd */}</p>
+                    <p className="info-value">{this.state.userDetail.date_of_issue}</p>
                   </Form.Group>
                 </Col>
                 <Col sm className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("PlaceIssue")}</label>
-                    <p className="info-value">{/* asd */}</p>
+                    <p className="info-value">{this.state.userDetail.place_of_issue}</p>
                   </Form.Group>
                 </Col>
                 <Col sm className="info-item mb-3">
@@ -149,28 +150,22 @@ class MyComponent extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={5} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("PermanentAddress")}</label>
                     <p className="info-value">{this.state.userDetail.wards}, {this.state.userDetail.district}, {this.state.userDetail.province}, {this.state.userDetail.nation}</p>
                   </Form.Group>
                 </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={5} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("TemporaryAddress")}</label>
                     <p className="info-value">{this.state.userDetail.tmp_wards}, {this.state.userDetail.tmp_district}, {this.state.userDetail.tmp_province}, {this.state.userDetail.tmp_nation}</p>
                   </Form.Group>
                 </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("MaritalStatus")}</label>
                     <p className="info-value">{this.state.userDetail.marital_status}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("WorkingAddress")}</label>
-                    <p className="info-value">{/* asd */}</p>
                   </Form.Group>
                 </Col>
               </Row>
@@ -221,7 +216,7 @@ class MyComponent extends React.Component {
                 </Col>
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
-                    <label>{t("BenefitLevel")}</label> 
+                    <label>{t("BenefitLevel")}</label>
                     <p className="info-value">{this.state.userProfile.benefit_level}</p>
                   </Form.Group>
                 </Col>
@@ -229,27 +224,26 @@ class MyComponent extends React.Component {
               <Row>
                 <Col xs={12} md={6} lg={3} className="info-item mb-3">
                   <Form.Group as={Col}>
-                    <label>{t("PAndL")}</label>
-                    <p className="info-value">{this.state.userProfile.pnl}</p>
+                    <label>{t("DepartmentName")}</label>
+                    <p className="info-value">{this.state.userProfile.unit}</p>
                   </Form.Group>
                 </Col>
-
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("RegionName")}</label>
                     <p className="info-value">{this.state.userProfile.division}</p>
                   </Form.Group>
                 </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={2} className="info-item mb-3">
                   <Form.Group as={Col}>
                     <label>{t("PropertyName")}</label>
                     <p className="info-value">{this.state.userProfile.department}</p>
                   </Form.Group>
                 </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                <Col xs={12} md={6} lg={5} className="info-item mb-3">
                   <Form.Group as={Col}>
-                    <label>{t("DepartmentName")}</label>
-                    <p className="info-value">{this.state.userProfile.unit}</p>
+                    <label>{t("WorkingAddress")}</label>
+                    <p className="info-value">{this.state.userProfile.wards}, {this.state.userProfile.district}, {this.state.userProfile.province}, {this.state.userProfile.nation}</p>
                   </Form.Group>
                 </Col>
               </Row>
@@ -281,60 +275,62 @@ class MyComponent extends React.Component {
               {
                 (this.state.userDetail.education !== undefined && this.state.userDetail.education.length > 0) ?
                   <><h4>{t("Diploma")}</h4>
-                    <Row>
-
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("SchoolName")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("DiplomaType")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("Specialty")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("LearningTime")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <h4>{t("Certificate")}</h4>
+                    {this.state.userDetail.education.map((item, i) => {
+                      return <Row>
+                        <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                          <Form.Group as={Col}>
+                            <label>{t("SchoolName")}</label>
+                            <p className="info-value">{item.university_name}</p>
+                          </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                          <Form.Group as={Col}>
+                            <label>{t("DiplomaType")}</label>
+                            <p className="info-value">{item.academic_level}</p>
+                          </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                          <Form.Group as={Col}>
+                            <label>{t("Specialty")}</label>
+                            <p className="info-value">{item.major}</p>
+                          </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6} lg={3} className="info-item mb-3">
+                          <Form.Group as={Col}>
+                            <label>{t("LearningTime")}</label>
+                            <p className="info-value"></p>
+                          </Form.Group>
+                        </Col>
+                      </Row>;
+                    })}
+                    {/* <h4>{t("Certificate")}</h4>
                     <Row>
                       <Col xs={12} md={6} lg={3} className="info-item mb-3">
                         <Form.Group as={Col}>
                           <label>{t("CertificateName")}</label>
-                          <p className="info-value">{/* asd */}</p>
+                          <p className="info-value"></p>
                         </Form.Group>
                       </Col>
                       <Col xs={12} md={6} lg={3} className="info-item mb-3">
                         <Form.Group as={Col}>
                           <label>{t("CertificateIssuesBy")}</label>
-                          <p className="info-value">{/* asd */}</p>
+                          <p className="info-value"></p>
                         </Form.Group>
                       </Col>
                       <Col xs={12} md={6} lg={3} className="info-item mb-3">
                         <Form.Group as={Col}>
                           <label>{t("CertificateIssuesDate")}</label>
-                          <p className="info-value">{/* asd */}</p>
+                          <p className="info-value"></p>
                         </Form.Group>
                       </Col>
                       <Col xs={12} md={6} lg={3} className="info-item mb-3">
                         <Form.Group as={Col}>
                           <label>{t("CertificateExpireDate")}</label>
-                          <p className="info-value">{/* asd */}</p>
+                          <p className="info-value"></p>
                         </Form.Group>
                       </Col>
-                    </Row></>
+                    </Row> */}
+                  </>
                   : t("NoDataFound")
               }
             </Container>
