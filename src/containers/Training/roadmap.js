@@ -4,22 +4,21 @@ import Course from "../../components/Forms/CustomForm/Course"
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
 const useGetRoadmap = () => {
-  const guard = useGuardStore();
   const api = useApi();
   const [roadmapList = undefined] = useFetcher({
     api: api.fetchRoadmapList,
-    autoRun: true
-  }); 
+    autoRun: true   }); 
   return roadmapList;
 };
 
-    
 
 function Roadmap(props) {
     
     useEffect(() => {
         document.title = `Lộ trình học tập`;
     });
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
     const roadmap = useGetRoadmap();
     let elmCourses;
     if (roadmap &&  roadmap.data && roadmap.data.curriculums) {

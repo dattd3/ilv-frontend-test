@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 const usePreload = (params) => {
     const api = useApi();
     const [sabaEnrollments = [], err] = useFetcher({
-        api: api.fetchSabaLearning_OnGoing,
+        api: api.fetchSabaLearning_Transcript,
         autoRun: true,
         params: params
     });
@@ -24,7 +24,9 @@ function RejectClass(props) {
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
     document.title = `Learning`;
-    const sabaEnrollments = usePreload([`trangdt28@vingroup.net`, pageIndex, pageSize]);
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
+    const sabaEnrollments = usePreload([300, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
@@ -65,7 +67,7 @@ function RejectClass(props) {
                                         sabaEnrollments.data.classes.map(function (obj, i) {
                                             return (
                                                 <tr key={obj.id}>
-                                                    <td>{i + 1}</td>
+                                                    <td>{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
                                                     <td>{obj.course_name}</td>
                                                     <td>{obj.start_date}</td>
                                                     <td>{obj.credits}</td>

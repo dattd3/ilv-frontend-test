@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
@@ -24,11 +24,15 @@ function OnGoingClass(props) {
     document.title = `Learning`;
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
-    const sabaEnrollments = usePreload([`quyennd9@vingroup.net`, pageIndex, pageSize]);
+    const guard = useGuardStore();
+    const user = guard.getCurentUser();
+    let sabaEnrollments = usePreload([pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
     function onChangePage(page) {
+        SetIsOnGoing(false);
+        sabaEnrollments = [];
         SetPageIndex(page);
     }
 
@@ -66,7 +70,7 @@ function OnGoingClass(props) {
                                         sabaEnrollments.data.classes.map(function (obj, i) {
                                             return (
                                                 <tr key={obj.id}>
-                                                    <td>{i + 1}</td>
+                                                    <td>{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
                                                     <td>{obj.name}</td>
                                                     <td>{obj.start_date}</td>
                                                     <td>{obj.credits}</td>
@@ -91,11 +95,12 @@ function OnGoingClass(props) {
                                     <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
                                 </Col>
                                 <Col>
-                                    <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
-                                        <option value={5}>{t("Display5Classes")}</option>
-                                        <option value={10}>{t("Display10Classes")}</option>
-                                        <option value={15}>{t("Display15Classes")}</option>
-                                    </Form.Control>
+                                    {sabaEnrollments.data.total > 5 ?
+                                        <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
+                                            <option value={5}>{t("Display5Classes")}</option>
+                                            <option value={10}>{t("Display10Classes")}</option>
+                                        </Form.Control>
+                                        : null}
                                 </Col>
                             </Row> : null
                     }

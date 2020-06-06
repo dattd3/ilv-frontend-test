@@ -3,15 +3,34 @@ export default {
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
-  
+  TermPolicy: "/policy",
+
   // Training
-  Certification: "/training/certification",
   Roadmap: "/training/roadmap",
-  RoadmapDetails: "/training/roadmapdetails",
+  RoadmapDetails: "/training/roadmap-detail/:id",
   Learning: "/training/learning",
   Instruction: "/training/instruction",
-  LearningKPI: "/training/learningKPI",
-  TeachingKPI: "/training/teachingKPI",
+  TraniningKPI: "/training/kpi",
+  PersonalInfo: "/personal-info",
+  WorkingProcess: "/working-process",
+  Benefit: "/benefit",
+  Notify: "/notify",
+
+  //Checklist
+  CheckListCreate: "/checklist/create",
+  CheckListWorkflow: "/checklist/workflow",
+
+  NewsDetailApp: "/news-app/:id",
+  News: "/news",
+  NewsDetail: "/news/:slug/:id",
+
+  //about us
+  Vingroup: "/about-vingroup",
+  Vinpearl: "/about-vinpearl",
+
   NotFound: "/not-found",
-  AccessDenied: "/access-denied"
+  AccessDenied: "/access-denied",
+  BenefitUpload: "/benefit/upload",
+  JobUpload: "/job/upload",
+  Job: "/job"
 };

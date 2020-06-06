@@ -42,8 +42,8 @@ function CustomPaging(props) {
 
     const changePage = (page) => {
         if (page < 1 || page > pager.totalPages) { return; }
-        SetCurrentPage(page);
         onChangePage(page);
+        SetCurrentPage(page);
     }
     return (
         (pager.totalPages === 1) ? null :
@@ -58,5 +58,4 @@ function CustomPaging(props) {
             </Pagination>
     );
 }
-
 export default CustomPaging;

@@ -4,16 +4,16 @@ import map from "./map.config";
 export const RouteSettings = {
   authorization: {
     defaultRoute: map.Root,
-    routes: [map.Root, map.Dashboard]
+    routes: [map.Root, map.Dashboard],
   },
   unauthorization: {
     defaultRoute: [],
-    routes: []
+    routes: [],
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth]
-  }
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy],
+  },
 };
 
 export default [
@@ -21,22 +21,38 @@ export default [
     key: "login",
     routeProps: {
       exact: true,
-      path: map.Login
+      path: map.Login,
     },
-    component: lazy(() => import("./Login"))
+    component: lazy(() => import("./Login")),
   },
   {
     key: "auth",
     routeProps: {
       exact: true,
-      path: map.Auth
+      path: map.Auth,
     },
-    component: lazy(() => import("./Login/authozire"))
+    component: lazy(() => import("./Login/authozire")),
+  },
+  {
+    key: "newsdetailapp",
+    routeProps: {
+      exact: true,
+      path: map.NewsDetailApp,
+    },
+    component: lazy(() => import("./Corporation/News/App/NewsDetailApp")),
+  },
+  {
+    key: "termpolicy",
+    routeProps: {
+      exact: true,
+      path: map.TermPolicy,
+    },
+    component: lazy(() => import("./Dashboard/Policy")),
   },
   {
     key: "main",
     routeProps: {
-      path: map.Root
+      path: map.Root,
     },
     component: lazy(() => import("./Main/Main")),
     contentProps: {
@@ -45,91 +61,171 @@ export default [
           key: "dashboard",
           routeProps: {
             exact: true,
-            path: map.Root
+            path: map.Root,
           },
-          component: lazy(() => import("./Dashboard"))
+          component: lazy(() => import("./Dashboard")),
         },
         {
           key: "dashboard-2",
           routeProps: {
             exact: true,
-            path: map.Dashboard
+            path: map.Dashboard,
           },
-          component: lazy(() => import("./Dashboard"))
-        },
-        {
-          key: "training-certification",
-          routeProps: {
-            exact: true,
-            path: map.Certification
-          },
-          component: lazy(() => import("./Training/certification"))
+          component: lazy(() => import("./Dashboard")),
         },
         {
           key: "training-roadmap",
           routeProps: {
             exact: true,
-            path: map.Roadmap
+            path: map.Roadmap,
           },
-          component: lazy(() => import("./Training/roadmap"))
+          component: lazy(() => import("./Training/roadmap")),
         },
         {
           key: "training-roadmap-details",
           routeProps: {
             exact: true,
-            path: map.roadmapdetails
+            path: map.RoadmapDetails,
           },
-          component: lazy(() => import("./Training/roadmapdetails"))
+          component: lazy(() => import("./Training/roadmapdetails")),
         },
         {
           key: "training-learning",
           routeProps: {
             exact: true,
-            path: map.Learning
+            path: map.Learning,
           },
-          component: lazy(() => import("./Training/Learning"))
+          component: lazy(() => import("./Training/Learning")),
         },
         {
           key: "training-instruction",
           routeProps: {
             exact: true,
-            path: map.Instruction
+            path: map.Instruction,
           },
-          component: lazy(() => import("./Training/Instruction"))
+          component: lazy(() => import("./Training/Instruction")),
         },
         {
-          key: "learning-KPI",
+          key: "training-kpi",
           routeProps: {
             exact: true,
-            path: map.LearningKPI
+            path: map.TraniningKPI,
           },
-          component: lazy(() => import("./Training/learningKPI"))
+          component: lazy(() => import("./Training/TrainingKPI")),
         },
         {
-          key: "teaching-KPI",
+          key: "checklist-create",
           routeProps: {
             exact: true,
-            path: map.TeachingKPI
+            path: map.CheckListCreate,
           },
-          component: lazy(() => import("./Training/teachingKPI"))
+          component: lazy(() => import("./CheckList/Create")),
         },
         {
-          key: "forbidden", 
+          key: "checklist-workflow",
           routeProps: {
             exact: true,
-            path: '/access-denied'
+            path: map.CheckListWorkflow,
           },
-          component: lazy(() => import("./AccessDenied"))
+          component: lazy(() => import("./CheckList/Workflow")),
         },
         {
-          key: "not-found", 
+          key: "personal-info",
           routeProps: {
             exact: true,
-            path: '/not-found'
+            path: map.PersonalInfo
           },
-          component: lazy(() => import("./NotFound"))
-        }
-      ]
-    }
-  }
+          component: lazy(() => import("./PersonalInfo"))
+        },
+        
+        {
+          key: "working-process",
+          routeProps: {
+            exact: true,
+            path: map.WorkingProcess
+          },
+          component: lazy(() => import("./PersonalInfo/workingprocess"))
+        },
+        {
+          key: "job",
+          routeProps: {
+            exact: true,
+            path: map.Job,
+          },
+          component: lazy(() => import("./job")),
+        },
+        {
+          key: "job-upload",
+          routeProps: {
+            exact: true,
+            path: map.JobUpload,
+          },
+          component: lazy(() => import("./job/upload")),
+        },
+        {
+          key: "news",
+          routeProps: {
+            exact: true,
+            path: map.News,
+          },
+          component: lazy(() => import("./Corporation/News/ListNews")),
+        },
+        {
+          key: "newsdetail",
+          routeProps: {
+            exact: true,
+            path: map.NewsDetail,
+          },
+          component: lazy(() => import("./Corporation/News/NewsDetail")),
+        },
+        {
+          key: "about-vingroup",
+          routeProps: {
+            exact: true,
+            path: map.Vingroup,
+          },
+          component: lazy(() => import("./Corporation/Vingroup")),
+        },
+        {
+          key: "about-vinpearl",
+          routeProps: {
+            exact: true,
+            path: map.Vinpearl,
+          },
+          component: lazy(() => import("./Corporation/Vinpearl")),
+        },
+        {
+          key: "notify",
+          routeProps: {
+            exact: true,
+            path: map.Notify
+          },
+          component: lazy(() => import("./Notify"))
+        }, {
+          key: "benefit",
+          routeProps: {
+            exact: true,
+            path: map.Benefit
+          },
+          component: lazy(() => import("./Benefit"))
+        },
+        {
+          key: "forbidden",
+          routeProps: {
+            exact: true,
+            path: "/access-denied",
+          },
+          component: lazy(() => import("./AccessDenied")),
+        },
+        {
+          key: "not-found",
+          routeProps: {
+            exact: true,
+            path: "/not-found",
+          },
+          component: lazy(() => import("./NotFound")),
+        },
+      ],
+    },
+  },
 ];

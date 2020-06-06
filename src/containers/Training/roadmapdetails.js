@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useApi, useFetcher } from "../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../modules";
 import CourseListTable from "../../components/Forms/CustomForm/CourseListTable"
 import Roadmap from "./roadmap.js"
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -8,12 +8,13 @@ import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
 
 const usePreload = (Id) => {
-  // const guard = useGuardStore();
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();
   const api = useApi();
   const [roadmapDetails = {}] = useFetcher({
     api: api.fetchRoadmapDetails,
     autoRun: true,
-    params: [Id, 'trangdt28@vingroup.net']
+    params: [Id, user.email]
   });
   if (roadmapDetails) {
     return roadmapDetails;
@@ -54,13 +55,12 @@ function RoadmapDetails(props) {
     document.title = `Lộ trình học tập`;
   });
 
-
   return (
     <div>
       <Router>
         <Switch>
           <Route exact path="/training/roadmapdetails" component={Roadmap} />
-          <Route path="/training/roadmapdetails/:Id" component={RoadmapDetailsElement} />
+          <Route path="/training/roadmap-detail/:Id" component={RoadmapDetailsElement} />
         </Switch>
       </Router>
     </div>

@@ -19,7 +19,7 @@ function createStore(currentAuthUser) {
     get isAuthenticated() {
       return !!this.currentAuthUser
     },
-    setIsAuth(currentAuthUser, isRemember = true) { 
+    setIsAuth(currentAuthUser, isRemember = true) {
       if (!currentAuthUser) return;
       this.currentAuthUser = deserialize(currentAuthUser);
       if (isRemember) Storage.save(this.currentAuthUser);
@@ -44,16 +44,18 @@ const Storage = {
     localStorage.setItem('tokenType', currentAuthUser.tokenType);
     localStorage.setItem('accessToken', currentAuthUser.accessToken);
     localStorage.setItem('tokenExpired', currentAuthUser.tokenExpired);
-    localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('email', currentAuthUser.email);
+    localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('jobType', currentAuthUser.jobType);
     localStorage.setItem('fullName', currentAuthUser.fullName);
     localStorage.setItem('jobTitle', currentAuthUser.jobTitle);
+    localStorage.setItem('jobId', currentAuthUser.jobId);
+    localStorage.setItem('benefitLevel', currentAuthUser.benefitLevel);
     localStorage.setItem('company', currentAuthUser.company);
     localStorage.setItem('sabaId', currentAuthUser.sabaId);
     localStorage.setItem('employeeNo', currentAuthUser.employeeNo);
     localStorage.setItem('department', currentAuthUser.department);
-    localStorage.setItem('location', currentAuthUser.location);
+    localStorage.setItem('avatar', currentAuthUser.avatar);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -62,15 +64,17 @@ const Storage = {
       tokenType: localStorage.getItem('tokenType'),
       accessToken: localStorage.getItem('accessToken'),
       tokenExpired: localStorage.getItem('tokenExpired'),
-      plEmail: localStorage.getItem('plEmail'),
       email: localStorage.getItem('email'),
+      plEmail: localStorage.getItem('plEmail'),
       jobType: localStorage.getItem('jobType'),
       fullName: localStorage.getItem('fullName'),
       jobTitle: localStorage.getItem('jobTitle'),
+      jobId: localStorage.getItem('jobId'),
+      benefitLevel: localStorage.getItem('benefitLevel'),
       company: localStorage.getItem('company'),
       sabaId: localStorage.getItem('sabaId'),
       department: localStorage.getItem('department'),
-      location: localStorage.getItem('location'),
+      avatar: localStorage.getItem('avatar'),
       employeeNo: localStorage.getItem('employeeNo')
     }
   },
@@ -78,16 +82,18 @@ const Storage = {
     localStorage.removeItem('tokenType');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('tokenExpired');
-    localStorage.removeItem('plEmail');
     localStorage.removeItem('email');
+    localStorage.removeItem('plEmail');
     localStorage.removeItem('fullName');
     localStorage.removeItem('jobTitle');
+    localStorage.removeItem('jobId');
+    localStorage.removeItem('benefitLevel');
     localStorage.removeItem('company');
     localStorage.removeItem('sabaId');
     localStorage.removeItem('employeeNo');
-    localStorage.removeItem('location');
     localStorage.removeItem('department');
     localStorage.removeItem('jobType');
+    localStorage.removeItem('avatar');
   }
 }
 
@@ -95,14 +101,16 @@ const deserialize = (currentAuthUser) => ({
   tokenType: 'Bearer',
   accessToken: currentAuthUser.accessToken,
   tokenExpired: currentAuthUser.tokenExpired,
-  plEmail: currentAuthUser.plEmail,
   email: currentAuthUser.email,
+  plEmail: currentAuthUser.plEmail,
   fullName: currentAuthUser.fullName,
   jobTitle: currentAuthUser.jobTitle,
+  jobId:currentAuthUser.jobId,
+  benefitLevel: currentAuthUser.benefitLevel,
   company: currentAuthUser.company,
   sabaId: currentAuthUser.sabaId,
   department: currentAuthUser.department,
-  location: currentAuthUser.location,
   jobType: currentAuthUser.jobType,
+  avatar: currentAuthUser.avatar,
   employeeNo: currentAuthUser.employeeNo
 })

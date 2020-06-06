@@ -4,7 +4,8 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
 import { useTranslation } from "react-i18next";
-
+import NewsOnHome from './NewsOnHome';
+import axios from 'axios';
 
 const usePreload = (params) => {
   const api = useApi();
@@ -15,19 +16,30 @@ const usePreload = (params) => {
   });
   return sabaCredit;
 };
+
 function Dashboard(props) {
+  
   const { t } = useTranslation();
   const guard = useGuardStore();
-  const sabaCredit = usePreload([`trangdt28@vingroup.net`]);
+  const user = guard.getCurentUser();
+  const sabaCredit = usePreload([user.email]);
   let sbCredit = {
     totalHours: 0,
     perLearned: 100
-  };  
+  };
   if (sabaCredit && sabaCredit.data) {
-    sbCredit = {
-      totalHours: sabaCredit.data.learning_target_credits,
-      perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
-    };
+    if (sabaCredit.data.learning_target_credits != 0) {
+      sbCredit = {
+        totalHours: sabaCredit.data.learning_target_credits,
+        perLearned: Math.round(sabaCredit.data.learning_earned_credits / sabaCredit.data.learning_target_credits)
+      };
+    } else {
+      sbCredit = {
+        totalHours: 0,
+        perLearned: 100
+      };
+    }
+
   }
   const sabaCreditData = (canvas) => {
     const ctx = canvas.getContext("2d")
@@ -56,6 +68,38 @@ function Dashboard(props) {
     }
   }
 
+  /* Lấy thông tin ngày phép */
+  let config = {
+      headers: {            
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}` 
+      }
+    }
+       
+  var userAbsenceNumberUsed = 0;
+  var userAbsenceNumberTotal = 12;
+  var userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
+           
+  axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
+    .then(res => {                        
+      if (res && res.data && res.data.data) {  
+        const userAbsence = res.data.data[0];
+        console.log("userAbsence",userAbsence);
+        if(userAbsence && userAbsence.number_used != null) {
+          userAbsenceNumberUsed = userAbsence.number_used 
+          console.log("userAbsenceNumberUsed:",userAbsenceNumberUsed);
+        }
+
+        if(userAbsence && userAbsence.number_available != null) {
+          const userAbsenceNumberAvailable = userAbsence.number_available 
+          console.log("userAbsenceNumberAvailable:",userAbsenceNumberAvailable);
+          userAbsenceNumberTotal = userAbsenceNumberUsed + userAbsenceNumberAvailable;          
+        }
+
+        userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
+        console.log("API userAbsencePercentUsed: ", userAbsencePercentUsed);
+      }                   
+    }).catch(error => console.log("Call API error:",error)); 
+
   const annualLeaveData = (canvas) => {
     const ctx = canvas.getContext("2d")
     const grdGreen = ctx.createLinearGradient(500, 0, 100, 0);
@@ -65,7 +109,7 @@ function Dashboard(props) {
     return {
       labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
-        data: [25, 75],
+        data: [userAbsencePercentUsed, 100],
         title: {
           display: true
         },
@@ -86,7 +130,7 @@ function Dashboard(props) {
     return {
       labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
-        data: [25, 75],
+        data: [0, 100],
         title: {
           display: true
         },
@@ -146,7 +190,7 @@ function Dashboard(props) {
               </div>
               <div className="text-center mt-3">
                 <p className="mb-2">{t("AnnualLeaveDateBeUsed")}</p>
-                <strong>7/12 {t("Day")}</strong>
+                <strong>{userAbsenceNumberUsed}/{userAbsenceNumberTotal} {t("Day")}</strong>
               </div>
             </Card.Body>
           </Card>
@@ -162,7 +206,7 @@ function Dashboard(props) {
               </div>
               <div className="text-center mt-3">
                 <p className="mb-2">{t("VPNightBenefitBeUsed")}</p>
-                <strong>1/3 {t("Night")}</strong>
+                <strong>N/A {t("Night")}</strong>
               </div>
             </Card.Body>
           </Card>
@@ -177,61 +221,26 @@ function Dashboard(props) {
                   <span className="db-card-header color-blue"><i className="fas icon-term_policy"></i> {t("TermPolicy")}</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Card.Title>What is Lorem Ipsum?</Card.Title>
-                  <Card.Text>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                  </Card.Text>
+                  <Card.Title>Thông báo quyết định về việc ban hành chính sách thưởng khoán cho Nhân viên buồng phòng và phụ cấp làm việc ca gãy cho Nhân viên phục vụ</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
+                  <span className="small"><i className="far fa-clock"></i> 1 days ago</span>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Card.Title>Thông báo quyết định về việc bố trí nghỉ Tết Dương lịch, Tết Nguyên Đán năm 2020 và thời hạn chi trả các loại lương, thưởng, phúc lợi năm 2019</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
                   <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Card.Title>Where does it come from?</Card.Title>
-                  <Card.Text>
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Why do we use it?</Card.Title>
-                  <Card.Text>
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
+                  <Card.Title>Thông báo quyết định khen thưởng “Gương người tốt việc tốt” cho Nhân viên Cứu hộ tại Vinpearl Condotel Empire Nha Trang</Card.Title>
+                  <Card.Text className="temp-class">Bộ phận phát hành Văn phòng Công ty Cổ phần Vinpearl</Card.Text>
+                  <span className="small"><i className="far fa-clock"></i> 5 days ago</span>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
           </Card>
         </Col>
         <Col xl={6}>
-          <Card className="mb-4 news-home">
-            <Card.Body className="card-body pd-0">
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i>  {t("CompanyAnnouncement")}</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Lorem Ipsum Generator</Card.Title>
-                  <Card.Text>
-                    Generate Lorem Ipsum placeholder text. Select the number of characters, words, sentences or paragraphs, and hit generate!
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Pellentesque sit amet porttitor eget dolor morbi non</Card.Title>
-                  <Card.Text>
-                    Duis convallis convallis tellus id. Nunc lobortis mattis aliquam faucibus purus in. Lacinia quis vel eros donec ac odio tempor. Posuere morbi leo urna molestie at elementum eu facilisis.
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Card.Title>Et ligula ullamcorper malesuada proin libero nunc consequat interdum varius</Card.Title>
-                  <Card.Text>
-                    Elementum facilisis leo vel fringilla. A iaculis at erat pellentesque adipiscing commodo. Rhoncus urna neque viverra justo nec ultrices dui. Arcu cursus vitae congue mauris rhoncus aenean vel elit
-                  </Card.Text>
-                  <span className="small"><i className="far fa-clock"></i> 2 days ago</span>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card.Body>
-          </Card>
+          <NewsOnHome />
         </Col>
       </Row>
     </div >
