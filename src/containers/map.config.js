@@ -14,7 +14,9 @@ export default {
   PersonalInfo: "/personal-info",
   WorkingProcess: "/working-process",
   Benefit: "/benefit",
+
   Notify: "/notify",
+  NotifyDetail: "/notify/:id",
 
   //Checklist
   CheckListCreate: "/checklist/create",
