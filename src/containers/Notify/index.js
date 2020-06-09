@@ -60,7 +60,7 @@ function Notification(props) {
     
     const objDataRes = result.data.notifications;
 
-    console.log(objDataRes);
+    //console.log(objDataRes);
 
     const total = result.data.total;
           
@@ -68,9 +68,8 @@ function Notification(props) {
     
       <thead>
         <tr>                          
-          <th style={{"width":"25%"}}>{t("Notification_Title")}</th>
-          <th>NỘI DUNG </th>                            
-          <th style={{"width":"20%"}}>{t("Notification_Created_Date")}</th>                 
+          <th style={{"width":"80%"}}> {t("Notification_Title")} </th>                                    
+          <th> {t("Notification_Created_Date")} </th>                 
         </tr>
       </thead>
 
@@ -79,14 +78,8 @@ function Notification(props) {
           objDataRes.map((item, i) => {
             return <tr key={i}>                            
               <td>                                     
-                  {item.title}
-                  
-                  {/*
-                      <Link to={`/notify/${item.id}`}> {item.title} </Link>
-                  */}                  
-
+                  <Link to={`/notify/${item.id}`}> {item.title} </Link>
               </td> 
-               <td>{item.content }</td>                                         
               <td>{item.created_date }</td>
             </tr>;
           })
