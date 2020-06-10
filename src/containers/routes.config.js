@@ -201,7 +201,16 @@ export default [
             path: map.Notify
           },
           component: lazy(() => import("./Notify"))
-        }, {
+        }, 
+        {
+          key: "notify-detail",
+          routeProps: {
+            exact: true,
+            path: map.NotifyDetail
+          },
+          component: lazy(() => import("./Notify/NotifyDetail"))
+        },
+        {
           key: "benefit",
           routeProps: {
             exact: true,
