@@ -5,7 +5,7 @@ import { Doughnut } from 'react-chartjs-2';
 import 'chart.piecelabel.js';
 import { useTranslation } from "react-i18next";
 import NewsOnHome from './NewsOnHome';
-
+import axios from 'axios';
 
 const usePreload = (params) => {
   const api = useApi();
@@ -18,6 +18,7 @@ const usePreload = (params) => {
 };
 
 function Dashboard(props) {
+  
   const { t } = useTranslation();
   const guard = useGuardStore();
   const user = guard.getCurentUser();
@@ -67,6 +68,38 @@ function Dashboard(props) {
     }
   }
 
+  /* Lấy thông tin ngày phép */
+  let config = {
+      headers: {            
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}` 
+      }
+    }
+       
+  var userAbsenceNumberUsed = 0;
+  var userAbsenceNumberTotal = 12;
+  var userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
+           
+  axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
+    .then(res => {                        
+      if (res && res.data && res.data.data) {  
+        const userAbsence = res.data.data[0];
+        console.log("userAbsence",userAbsence);
+        if(userAbsence && userAbsence.number_used != null) {
+          userAbsenceNumberUsed = userAbsence.number_used 
+          console.log("userAbsenceNumberUsed:",userAbsenceNumberUsed);
+        }
+
+        if(userAbsence && userAbsence.number_available != null) {
+          const userAbsenceNumberAvailable = userAbsence.number_available 
+          console.log("userAbsenceNumberAvailable:",userAbsenceNumberAvailable);
+          userAbsenceNumberTotal = userAbsenceNumberUsed + userAbsenceNumberAvailable;          
+        }
+
+        userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
+        console.log("API userAbsencePercentUsed: ", userAbsencePercentUsed);
+      }                   
+    }).catch(error => console.log("Call API error:",error)); 
+
   const annualLeaveData = (canvas) => {
     const ctx = canvas.getContext("2d")
     const grdGreen = ctx.createLinearGradient(500, 0, 100, 0);
@@ -76,7 +109,7 @@ function Dashboard(props) {
     return {
       labels: [t("Status_NotUsedYet"), t("Status_Used")],
       datasets: [{
-        data: [0, 100],
+        data: [userAbsencePercentUsed, 100],
         title: {
           display: true
         },
@@ -157,7 +190,7 @@ function Dashboard(props) {
               </div>
               <div className="text-center mt-3">
                 <p className="mb-2">{t("AnnualLeaveDateBeUsed")}</p>
-                <strong>N/A {t("Day")}</strong>
+                <strong>{userAbsenceNumberUsed}/{userAbsenceNumberTotal} {t("Day")}</strong>
               </div>
             </Card.Body>
           </Card>

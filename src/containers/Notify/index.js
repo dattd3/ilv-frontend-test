@@ -3,6 +3,7 @@ import { useApi, useFetcher } from "../../modules";
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import CustomPaging from '../../components/Common/CustomPaging';
+import { Link } from "react-router-dom";
 
 const usePreload = (params) => {
   const api = useApi();
@@ -41,7 +42,7 @@ function Notification(props) {
   const { t } = useTranslation();  
   document.title = t("Menu_Notification");  
   const [pageIndex, SetPageIndex] = useState(1);
-  const [pageSize, SetPageSize] = useState(5);
+  const [pageSize, SetPageSize] = useState(10);
   const result = usePreload([pageIndex, pageSize]);
   
   const onChangePage = (page) => {
@@ -58,32 +59,28 @@ function Notification(props) {
   if (result && result.data && result.data.notifications && result.data.total) {    
     
     const objDataRes = result.data.notifications;
-    
+
+    //console.log(objDataRes);
+
     const total = result.data.total;
-        
+          
     tableData = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
     
       <thead>
-        <tr>                
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0 w-25">{t("Notification_Title")}</th>
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Content")}</th>
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("TOPIC")}</th>   
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Type")}</th>
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Created_By")}</th>            
-          <th className="text-success h6 small font-weight-bold mt-0 pt-0">{t("Notification_Created_Date")}</th>          
+        <tr>                          
+          <th style={{"width":"80%"}}> {t("Notification_Title")} </th>                                    
+          <th> {t("Notification_Created_Date")} </th>                 
         </tr>
       </thead>
 
       <tbody>
         {
           objDataRes.map((item, i) => {
-            return <tr key={i}>              
-              <td>{item.title}</td>                            
-              <td>{item.content}</td>
-              <td>{item.topic_name}</td>
-              <td>{ string_of_notification_type(item.type)}</td>
-              <td>{item.created_by}</td>              
-              <td>{item.created_date }</td>              
+            return <tr key={i}>                            
+              <td>                                     
+                  <Link to={`/notify/${item.id}`}> {item.title} </Link>
+              </td> 
+              <td>{item.created_date }</td>
             </tr>;
           })
         }
@@ -91,14 +88,15 @@ function Notification(props) {
      
       <tfoot>
         <tr>
-          <td colSpan={4} className="pb-0 pt-4">
+          <td colSpan={3}>
             <Row>
               <Col className='total'>
                 {t("Total")}: {total}
               </Col>
               <Col className='paging'>
                 <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
-              </Col>              
+              </Col>
+              <Col></Col>
             </Row>
           </td>
         </tr>
@@ -109,13 +107,17 @@ function Notification(props) {
   }
 
   return (
-    <div className="card border border-success shadow mb-4 mt-2">      
-        <div className="bg-success text-white p-3 h4">{t("Menu_Notification")}</div>
-        <div className="card-body pt-2 pb-0">
-            <div className="table-responsive">
-              {tableData}
-            </div>
+    <div>
+      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 className="h3 mb-0 text-gray-800">{t("Menu_Notification")} </h1> 
+      </div>
+      <div className="card shadow mb-4">
+        <div className="card-body">
+          <div className="table-responsive">
+            {tableData}
+          </div>
         </div>
+      </div>
     </div>
   );
 }

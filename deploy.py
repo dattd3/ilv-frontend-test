@@ -19,10 +19,10 @@ def main():
         print_usage(valid_env)
         exit(1)
 
-    os.system("yarn build:%s" % env)
+    os.system("yarn build:%s:linux" % env)
     shutil.make_archive("build-web", 'zip', "build")
-    os.system("scp build-web.zip tpktcds@18.136.199.101:/home/tpktcds/")
-    os.system('ssh tpktcds@18.136.199.101 "cd script;sh publish-web-static.sh"')
+    os.system("scp build-web.zip tpktcds@54.251.171.54:/home/tpktcds/")
+    os.system('ssh tpktcds@54.251.171.54 "cd script;sh publish-web-static.sh"')
 
 if __name__ == '__main__':
     main()

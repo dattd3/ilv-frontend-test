@@ -129,14 +129,23 @@ export default [
           },
           component: lazy(() => import("./CheckList/Workflow")),
         },
-        // {
-        //   key: "personinfo",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.PersonInfo
-        //   },
-        //   component: lazy(() => import("./PersonInfo"))
-        // },
+        {
+          key: "personal-info",
+          routeProps: {
+            exact: true,
+            path: map.PersonalInfo
+          },
+          component: lazy(() => import("./PersonalInfo"))
+        },
+        
+        {
+          key: "working-process",
+          routeProps: {
+            exact: true,
+            path: map.WorkingProcess
+          },
+          component: lazy(() => import("./PersonalInfo/workingprocess"))
+        },
         {
           key: "job",
           routeProps: {
@@ -192,6 +201,22 @@ export default [
             path: map.Notify
           },
           component: lazy(() => import("./Notify"))
+        }, 
+        {
+          key: "notify-detail",
+          routeProps: {
+            exact: true,
+            path: map.NotifyDetail
+          },
+          component: lazy(() => import("./Notify/NotifyDetail"))
+        },
+        {
+          key: "benefit",
+          routeProps: {
+            exact: true,
+            path: map.Benefit
+          },
+          component: lazy(() => import("./Benefit"))
         },
         {
           key: "kpi_target",

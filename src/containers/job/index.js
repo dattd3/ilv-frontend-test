@@ -5,7 +5,7 @@ import JobDescriptionContent from "./content";
 const usePreload = (params) => {
   const api = useApi();
   const [data = []] = useFetcher({
-    api: api.fetchJobDescriptionByJobType,
+    api: api.fetchJobDescription,
     autoRun: true,
     params: params,
   });
@@ -13,7 +13,7 @@ const usePreload = (params) => {
 };
 
 function JobDescriptionPage() {
-  var jobType = localStorage.getItem("jobTitle");
+  var jobType = localStorage.getItem("jobId");
   var result = usePreload([jobType]);
 
   console.log(`result ${JSON.stringify(result)}`);

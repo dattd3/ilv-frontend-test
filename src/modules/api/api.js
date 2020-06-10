@@ -284,4 +284,12 @@ export default class Api {
   };
 
 
+  fetchNotificationDetail = async (notifyId) => {
+     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/detail`, {
+        params: {          
+          notifyId: notifyId          
+        }
+      });
+  }
+
 }

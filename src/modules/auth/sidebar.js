@@ -95,22 +95,22 @@ export const Navigation = [
     to: "/announcement",
     role: "U",
   },
-  // {
-  //     id: 14,
-  //     parentId: 13,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "Menu_GroupIntroduction",
-  //     to: map.Vingroup,
-  //     role: 'U'
-  // },
-  // {
-  //     id: 15,
-  //     parentId: 13,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "Menu_VinpearlIntroduction",
-  //     to: map.Vinpearl,
-  //     role: 'U'
-  // },
+  {
+    id: 14,
+    parentId: 13,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_GroupIntroduction",
+    to: map.Vingroup,
+    role: 'U'
+  },
+  {
+    id: 15,
+    parentId: 13,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_VinpearlIntroduction",
+    to: map.Vinpearl,
+    role: 'U'
+  },
   {
     id: 16,
     parentId: 13,
@@ -119,14 +119,36 @@ export const Navigation = [
     to: map.News,
     role: "U",
   },
-  // {
-  //     id: 17,
-  //     parentId: 10,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "PersonalInformation",
-  //     to: map.PersonInfo,
-  //     role: 'U'
-  // },
+  {
+    id: 17,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "PersonalInformation",
+    to: map.PersonalInfo,
+    role: 'U'
+  }, {
+    id: 30,
+    parentId: 17,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "BasicInformation",
+    to: map.PersonalInfo,
+    role: 'U'
+  }, {
+    id: 32,
+    parentId: 17,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "WorkingProcess",
+    to: map.WorkingProcess,
+    role: 'U'
+  },
+  {
+    id: 99,
+    parentId: 17,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Phúc lợi",
+    to: map.Benefit,
+    role: "U"
+  },
   {
     id: 19,
     parentId: 10,
@@ -137,7 +159,7 @@ export const Navigation = [
   },
   {
     id: 20,
-    parentId: 0,    
+    parentId: 0,
     icon: "notification",
     label: "Notification",
     to: map.Notify,
