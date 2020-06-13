@@ -20,9 +20,9 @@ function General(props) {
   const guard = useGuardStore();
   const user = guard.getCurentUser();
 
-  var MNV="10020";
-  var Period="Q1/2019"; 
-  var listAll = usePreload([MNV,Period]);
+  var Period="Q1/2020"; 
+  var listAll = usePreload([Period]);
+   
   var years = [];
   
   const style = {
@@ -68,7 +68,11 @@ function General(props) {
       'fontFamily': 'Light 21px/25px Helvetica Neue'
   };
 
-  if (listAll.length > 0) {     
+  if (listAll.data && listAll.data[0]) {  
+
+    const kpiInfo = listAll.data[0];
+    console.log("kpiInfo:",kpiInfo);
+
     return (
         <div>
           {/*THÔNG TIN NHÂN VIÊN*/}
@@ -89,7 +93,7 @@ function General(props) {
                         </td>
                         <td style={styleNoiDungNhanVien}> 
                             <div style={styleTieuDeNhanVien}> Cán bộ quản lý </div>
-                            <div style={styleNoiDungNhanVien2}> {listAll[0].ManagerFullName} </div>
+                            <div style={styleNoiDungNhanVien2}> {kpiInfo.ManagerFullName} </div>
                         </td>          
                     </tr>
                   </tbody>  
@@ -97,7 +101,7 @@ function General(props) {
            </div>
 
           {/*LỰA CHỌN KỲ ĐÁNH GIÁ*/}
-            <KPISearch MNV={MNV} />
+            <KPISearch />
 
             {/* THÔNG TIN CHI TIẾT CHIA LÀM 2 CỘT */}    
             
@@ -119,32 +123,32 @@ function General(props) {
                                           <tr>
                                               <td style={style}>01</td>   
                                               <td style={style} className="text-left">Tinh thần thái độ</td>
-                                              <td style={style}>{listAll[0].TTTDself}</td>
-                                              <td style={style}>{listAll[0].TTTDmanager}</td>
+                                              <td style={style}>{kpiInfo.TTTDself}</td>
+                                              <td style={style}>{kpiInfo.TTTDmanager}</td>
                                           </tr>
                                           <tr>
                                               <td style={style}>02</td>   
                                               <td style={style} className="text-left">Năng lực lãnh đạo</td>
-                                              <td style={style}>{listAll[0].NLLDself}</td>
-                                              <td style={style}>{listAll[0].NLLDmanager}</td>
+                                              <td style={style}>{kpiInfo.NLLDself}</td>
+                                              <td style={style}>{kpiInfo.NLLDmanager}</td>
                                           </tr>
                                           <tr>
                                               <td style={style}>03</td>   
                                               <td style={style} className="text-left">Năng lực chuyên môn</td>
-                                              <td style={style}>{listAll[0].NLCMself}</td>
-                                              <td style={style}>{listAll[0].NLCMmanager}</td>
+                                              <td style={style}>{kpiInfo.NLCMself}</td>
+                                              <td style={style}>{kpiInfo.NLCMmanager}</td>
                                           </tr> 
                                           <tr>
                                               <td style={style}>04</td>   
                                               <td style={style} className="text-left">Nội dung công việc</td>
-                                              <td style={style}>{listAll[0].NDCVself}</td>
-                                              <td style={style}>{listAll[0].NDCVmanager}</td>
+                                              <td style={style}>{kpiInfo.NDCVself}</td>
+                                              <td style={style}>{kpiInfo.NDCVmanager}</td>
                                           </tr>
                                           <tr>                
                                               <td style={style}><strong>05</strong></td>
                                               <td style={style} className="text-left"><strong>Điểm tổng thể</strong></td>
-                                              <td style={style}><strong>0</strong></td>
-                                              <td style={style}><strong>{listAll[0].Score}</strong></td>              
+                                              <td style={style}><strong>{kpiInfo.SelfOverAll}</strong></td>
+                                              <td style={style}><strong>{kpiInfo.Score}</strong></td>              
                                           </tr>   
                                       </tbody>                                       
                                   </table>
@@ -159,17 +163,17 @@ function General(props) {
                                <div className="card-body" style={{'padding':'0px'}}>
                                   <div className="text-center" style={{'color':'#FF0000'}}>Kết qủa</div>
                                   <div className="text-center" style={{'color':'#FF0000'}}>đánh giá tổng thể</div>
-                                  <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{listAll[0].Score}</div>   
+                                  <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{kpiInfo.Score}</div>   
                                   <hr></hr>                             
                                </div>
                               <div className="card-body" style={{'padding':'0px'}}>
                                   <div className="text-center">CBQL đánh giá:</div>
-                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{listAll[0].ManagerAtFormComplete}</div>
+                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{kpiInfo.ManagerAtFormComplete}</div>
                                   <hr></hr>
                               </div>
                               <div className="card-body" style={{'padding':'0px'}}>
                                   <div className="text-center">CBLĐ phê duyệt:</div>
-                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{listAll[0].MatrixFullName}</div>
+                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{kpiInfo.MatrixFullName}</div>
                               </div>                    
                           </div>                    
                      </div>

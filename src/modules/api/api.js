@@ -256,7 +256,7 @@ export default class Api {
 
   fetchListKpiTarget = async (MNV, Period) => {
      return await this.request.get(      
-      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/detail`, {
+      `${process.env.REACT_APP_MULE_HOST}api/kpi/detail`, {
         params: {          
           MNV: MNV,
           Period: Period          
@@ -264,21 +264,19 @@ export default class Api {
       });
   };
 
-  fetchListKpiGeneral = async (MNV, Period) => {
+  fetchListKpiGeneral = async (Period) => {
      return await this.request.get(      
-      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/kpi/general`, {
-        params: {          
-          MNV: MNV,
+      `${process.env.REACT_APP_MULE_HOST}kpi/general`, {
+        params: {                    
           Period: Period          
         }
       });
   };
 
-  getPeriodKpiGeneral = async (MNV) => {
+  getPeriodKpiGeneral = async () => {
      return await this.request.get(      
-      `${process.env.REACT_APP_SF_API_REQUEST_URL}api/period/general`, {
-        params: {          
-          MNV: MNV       
+      `${process.env.REACT_APP_MULE_HOST}period/general`, {
+        params: {                        
         }
       });
   };

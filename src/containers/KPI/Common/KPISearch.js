@@ -19,7 +19,7 @@ function KPISearch(props) {
   var yearSelected = "";
   var quarterSelected = "";
 
-  var periods = usePreload([props.MNV]);
+  var periods = usePreload([]);
   var years = [];
   if(periods && periods.length > 0){
       periods.forEach(function(item){

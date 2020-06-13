@@ -40,7 +40,7 @@ function Target(props) {
   const listNDCV = listAll.filter(function(item){ return item.Type == TypeKPI.NDCV.type });  
   
   const stylePersonTitle = {
-      'min-width': '250px',
+      'minWidth': '250px',
       'background': '#FFFFFF 0% 0% no-repeat padding-box',
       'border': '1px solid #FF0000',
       'borderRadius': '20px!important',      
