@@ -262,13 +262,9 @@ export default class Api {
       });
   };
   
-  fetchListKpiGeneral = async (Period) => {
+  fetchListKpiGeneralAll = async () => {
      return await this.request.get(      
-      `${process.env.REACT_APP_MULE_LOCAL}kpi/general`, {
-        params: {                    
-          Period: Period          
-        }
-      });
+      `${process.env.REACT_APP_MULE_LOCAL}kpi/general/all`);
   };
 
   fetchNotificationDetail = async (notifyId) => {

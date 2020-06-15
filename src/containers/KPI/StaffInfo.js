@@ -6,7 +6,8 @@ class StaffInfo extends React.Component {
     super(props);   
   }
 
-  componentDidMount() {    
+  componentDidMount() {  
+    
   }
 
   render() {    
@@ -19,8 +20,8 @@ class StaffInfo extends React.Component {
               <table className="table" style={{'marginBottom':'4px'}}>
                  <tbody>
                     <tr>                
-                        <td><div className="content-title"> Họ và tên </div></td>  
-                        <td><div className="content-bg"> 
+                        <td style={{'width': '200px'}}><div className="content-title"> Họ và tên </div></td>  
+                        <td ><div className="content-bg"> 
                               <span className="content-value"> {this.props.UserInfo.fullName} </span>
                             </div>
                         </td>

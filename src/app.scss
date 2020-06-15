@@ -1166,23 +1166,21 @@ span.badge-notification[data-badge]::after {
     .content-border {
       text-align: left;
       font-family: Light 21px/25px Helvetica Neue;
-      letter-spacing: 0px;
-      color: #000000;
-      border-top : none;
+      letter-spacing: 0px;      
+      border: none;
     }
 
-    .content-title {
-      width: 140px;
+    .content-title {      
       padding: 10px;       
       text-align: left;
       font: Light 21px/25px Helvetica Neue;
       letter-spacing: 0px;
-      color: #000000;
+      color: #B3B3B3;
       opacity: 1;
     }
 
     .content-bg {   
-      padding: 10px; 
+      padding: 10px;       
       text-align: left;  
       background: #F8F8F8;
       border-radius: 10px;      
@@ -1194,6 +1192,34 @@ span.badge-notification[data-badge]::after {
       letter-spacing: 0px;
       color: #000000;      
     }
+
+    .period-select {
+      width: 422px;
+      height: 65px;
+      background: #FFFFFF 0% 0% no-repeat padding-box;
+      border: 1px solid #B3B3B3;
+      border-radius: 4px;
+      opacity: 1;
+    }
+
+    .period-title {      
+      padding: 10px;       
+      text-align: left;
+      font: Light 21px/25px Helvetica Neue;
+      letter-spacing: 0px;
+      color: #B3B3B3;
+      opacity: 1;
+    }
+
+    .search-button {
+      width: 270px;
+      height: 45px;
+      background: #F9C20A 0% 0% no-repeat padding-box;
+      border-radius: 30px;
+      font-family: Light 21px/25px Helvetica Neue;
+      color: #FFFFFF;
+      border: none;
+  };
 
 }
 

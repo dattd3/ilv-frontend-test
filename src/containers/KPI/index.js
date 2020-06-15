@@ -4,12 +4,11 @@ import { useTranslation } from "react-i18next";
 import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
 
-const usePreload = (params) => {
+const usePreload = () => {
   const api = useApi();
   const [data = [], err] = useFetcher({
-    api: api.fetchListKpiGeneral,
-    autoRun: true,
-    params: params
+    api: api.fetchListKpiGeneralAll,
+    autoRun: true
   });
   return data;
 };
@@ -21,25 +20,14 @@ function General(props) {
   const guard = useGuardStore();
   const user = guard.getCurentUser();
 
-  var Period="2020"; 
-  var listAll = usePreload([Period]);
+  var listAll = usePreload();
   console.log("listAll",listAll);
    
-  var years = [];
-  
   const style = {
       'border': '1px solid #B3B3B3',      
       'textAlign': 'center',
       'color': 'black'
     };
-
-  const styleTimKiem = {
-      'width': '270px',
-      'height': '45px',
-      'background': '#F9C20A 0% 0% no-repeat padding-box',
-      'borderRadius': '30px',
-      'fontFamily': 'Light 21px/25px Helvetica Neue'
-  };
 
   if (listAll.data && listAll.data[0]) {  
 
@@ -49,7 +37,7 @@ function General(props) {
     return (
         <div>        
            {/* THÔNG TIN NHÂN VIÊN */}
-             <StaffInfo UserInfo={user} ManagerFullName="nguyen dinh thuc"/>
+             <StaffInfo UserInfo={user} ManagerFullName={kpiInfo.ManagerFullName}/>
 
            {/* LỰA CHỌN KỲ ĐÁNH GIÁ */}
              <KPISearch />
