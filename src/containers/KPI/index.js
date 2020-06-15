@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { useTranslation } from "react-i18next";
 import KPISearch from "./KPISearch"
+import StaffInfo from "./StaffInfo"
 
 const usePreload = (params) => {
   const api = useApi();
@@ -32,35 +33,6 @@ function General(props) {
       'color': 'black'
     };
 
-  const styleTieuDeNhanVien = {
-      'textAlign': 'left',
-      'fontFamily': 'Light 21px/25px Helvetica Neue',
-      'letterSpacing': '0px',
-      'color': '#B3B3B3',
-      'marginBottom': '10px'
-  };
-
-  const styleNoiDungNhanVien = {
-      'textAlign': 'left',
-      'fontFamily': 'Light 21px/25px Helvetica Neue',
-      'letterSpacing': '0px',
-      'color': '#000000',
-      'borderTop' : 'none'      
-  };
-
-  const styleNoiDungNhanVien2 = {
-      'border':'1px solid #B3B3B3',
-      'padding':'10px',
-      'marginRight':'10px'
-  };
-
-  const styleHeader = {
-      'textAlign': 'left',
-      'fontFamily': 'regular 23px/27px Helvetica Neue',
-      'letterSpacing': '0px',
-      'color': '#283280'
-  };
-
   const styleTimKiem = {
       'width': '270px',
       'height': '45px',
@@ -75,36 +47,14 @@ function General(props) {
     console.log("kpiInfo:",kpiInfo);
 
     return (
-        <div>
-          {/*THÔNG TIN NHÂN VIÊN*/}
-          <div className="text-uppercase" style={styleHeader} >
-              THÔNG TIN NHÂN VIÊN
-          </div>
-          <div className="card border shadow mb-4 mt-2">
-              <table className="table" style={{'marginBottom':'4px'}}>
-                 <tbody>
-                    <tr>                
-                        <td style={styleNoiDungNhanVien}> 
-                            <div style={styleTieuDeNhanVien}> Họ và tên </div>
-                            <div style={styleNoiDungNhanVien2}> {user.fullName}  </div>
-                        </td>                  
-                        <td style={styleNoiDungNhanVien}> 
-                            <div style={styleTieuDeNhanVien}> Chức danh </div>
-                            <div style={styleNoiDungNhanVien2}> {user.jobTitle} </div>
-                        </td>
-                        <td style={styleNoiDungNhanVien}> 
-                            <div style={styleTieuDeNhanVien}> Cán bộ quản lý </div>
-                            <div style={styleNoiDungNhanVien2}> {kpiInfo.ManagerFullName} </div>
-                        </td>          
-                    </tr>
-                  </tbody>  
-               </table>
-           </div>
+        <div>        
+           {/* THÔNG TIN NHÂN VIÊN */}
+             <StaffInfo UserInfo={user} ManagerFullName="nguyen dinh thuc"/>
 
-          {/*LỰA CHỌN KỲ ĐÁNH GIÁ*/}
-            <KPISearch />
+           {/* LỰA CHỌN KỲ ĐÁNH GIÁ */}
+             <KPISearch />
 
-            {/* THÔNG TIN CHI TIẾT CHIA LÀM 2 CỘT */}    
+           {/* THÔNG TIN CHI TIẾT CHIA LÀM 2 CỘT */}    
             
              <div className="container-fluid w-100 mb-4">
                 <div className="row">
