@@ -12,10 +12,19 @@ function Authorize(props) {
     const { t } = useTranslation();
     const { history } = props;
     const guard = useGuardStore();
+    const [token, SetToken] = useState('');
+    const [isloading, SetIsloading] = useState(true);
+    const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
+    const [isGetUser, SetIsGetUser] = useState(false);
+    const [isLoadingUser, SetIsLoadingUser] = useState(false);    
 
-    const getUser = (token, jwtToken, vgEmail) =>
-    {      
+    const getUser = (token, jwtToken, vgEmail) => { 
+
         if(token == null) {
+            return;
+        }
+
+        if(isGetUser == true) {
             return;
         }
 
@@ -36,13 +45,12 @@ function Authorize(props) {
               console.log("Call getUser error:", error);
               SetNotifyContent(t("LoginError"));
               SetIsloading(false);
+              SetIsLoadingUser(false);
             }
           );   
     }
 
-    const checkUser = (user, jwtToken, vgEmail) =>
-    {
-        
+    const checkUser = (user, jwtToken, vgEmail) => {        
         if (user == null || user.uid == null) {
             SetNotifyContent(t("LoginError"));
             SetIsloading(false);
@@ -53,6 +61,7 @@ function Authorize(props) {
                 
         if (user) {
             SetNotifyContent(t("LoginSuccessful"));
+            SetIsGetUser(true);
             guard.setIsAuth({
                 tokenType: 'Bearer',
                 accessToken: jwtToken,
@@ -74,19 +83,21 @@ function Authorize(props) {
             history.push(map.Dashboard);
         }
     }
-
-    const [token, SetToken] = useState('');
-    const [isloading, SetIsloading] = useState(true);
-    const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
         
     function getUserData() {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {
             if (currentAuthUser.signInUserSession.isValid()) {
-                SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                let email = currentAuthUser.attributes.family_name;
-                let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
-                let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;                
-                getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);                                
+
+                if(isLoadingUser == false) {
+                    SetIsLoadingUser(true);
+
+                    SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
+                    let email = currentAuthUser.attributes.family_name;
+                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;                
+                    getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail); 
+                }
+                               
             }
             else {
                 SetNotifyContent(t("WaitNotice"));
