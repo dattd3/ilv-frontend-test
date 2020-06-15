@@ -143,7 +143,7 @@ export const Navigation = [
   },
   {
     id: 99,
-    parentId: 17,
+    parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Phúc lợi",
     to: map.Benefit,

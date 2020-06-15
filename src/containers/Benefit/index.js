@@ -20,6 +20,7 @@ function Benefit() {
     var items = result.data;
       return (     
         <div> 
+          <div id="benefit-title"> Cấp Phúc Lợi: {jobType} </div>
           {      
             items.map((item,index) =>  
                <div key={index}>  
