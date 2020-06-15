@@ -217,31 +217,15 @@ export default [
             path: map.Benefit
           },
           component: lazy(() => import("./Benefit"))
-        },
+        },        
         {
-          key: "kpi_target",
+          key: "kpi",
           routeProps: {
             exact: true,
-            path: map.KpiTarget
+            path: map.Kpi
           },
-          component: lazy(() => import("./KPI/Target"))
-        },
-        {
-          key: "kpi_general",
-          routeProps: {
-            exact: true,
-            path: map.KpiGeneral
-          },
-          component: lazy(() => import("./KPI/General"))
-        },
-        {
-          key: "kpi_detail",
-          routeProps: {
-            exact: true,
-            path: map.KpiDetail
-          },
-          component: lazy(() => import("./KPI/Detail"))
-        },
+          component: lazy(() => import("./KPI"))
+        },        
         {
           key: "forbidden",
           routeProps: {

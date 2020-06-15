@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useApi, useFetcher, useGuardStore } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { useTranslation } from "react-i18next";
-import KPISearch from "../Common/KPISearch"
+import KPISearch from "./KPISearch"
 
 const usePreload = (params) => {
   const api = useApi();
@@ -20,8 +20,9 @@ function General(props) {
   const guard = useGuardStore();
   const user = guard.getCurentUser();
 
-  var Period="Q1/2020"; 
+  var Period="2020"; 
   var listAll = usePreload([Period]);
+  console.log("listAll",listAll);
    
   var years = [];
   

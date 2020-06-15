@@ -169,33 +169,8 @@ export const Navigation = [
     id: 21,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_KPI_Main",
-    to: "/",
+    label: "Menu_KPI",
+    to: map.Kpi,
     role: "U"
-  },
-  {
-    id: 22,
-    parentId: 21,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_KPI_Target",
-    to: map.KpiTarget,
-    role: "U"
-  },
-  {
-    id: 23,
-    parentId: 21,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_KPI_Result_General",
-    to: map.KpiGeneral,
-    role: "U"
-  },
-  {
-    id: 24,
-    parentId: 21,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_KPI_Result_Detail",
-    to: map.KpiDetail,
-    role: "U"
-  }
-
+  } 
 ];

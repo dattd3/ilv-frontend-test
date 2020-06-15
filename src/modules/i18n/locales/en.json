@@ -147,10 +147,7 @@
   "Notification_Content": "Content",
   "Notification_Created_By": "Created By",
   "Notification_Created_Date": "Created Date",
-  "Menu_KPI_Main" : "KPI",
-  "Menu_KPI_Target" : "Target",
-  "Menu_KPI_Result_General" : "Result general",
-  "Menu_KPI_Result_Detail" : "Result detail",
-  "SpiritualAttitude" : "Spiritual attitude",
+  "Menu_KPI": "KPI",  
+  "SpiritualAttitude": "Spiritual attitude",
   "Notification_Facility": "Tên cơ sở"
 }

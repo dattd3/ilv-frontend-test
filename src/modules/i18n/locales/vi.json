@@ -168,10 +168,7 @@
   "Notification_Content": "Nội dung",
   "Notification_Created_By": "Tạo bởi",
   "Notification_Created_Date": "Ngày tạo",
-  "Menu_KPI_Main" : "KPI",
-  "Menu_KPI_Target" : "Chỉ tiêu",
-  "Menu_KPI_Result_General" : "Kết quả tổng thể",
-  "Menu_KPI_Result_Detail" : "Kết quả chi tiết",
-  "SpiritualAttitude" : "Tinh thần thái độ",
+  "Menu_KPI": "KPI",  
+  "SpiritualAttitude": "Tinh thần thái độ",
   "Notification_Facility": "Tên cơ sở"
 }

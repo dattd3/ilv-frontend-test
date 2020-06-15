@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import Select from 'react-select';
 
