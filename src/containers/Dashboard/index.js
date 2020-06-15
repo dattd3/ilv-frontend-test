@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { Doughnut } from 'react-chartjs-2';
@@ -20,13 +20,16 @@ const usePreload = (params) => {
 function Dashboard(props) {
   
   const { t } = useTranslation();
+  const [isGetUserAbsence, SetIsGetUserAbsence] = useState(false);
   const guard = useGuardStore();
   const user = guard.getCurentUser();
   const sabaCredit = usePreload([user.email]);
+
   let sbCredit = {
     totalHours: 0,
     perLearned: 100
   };
+  
   if (sabaCredit && sabaCredit.data) {
     if (sabaCredit.data.learning_target_credits != 0) {
       sbCredit = {
@@ -68,37 +71,46 @@ function Dashboard(props) {
     }
   }
 
-  /* Lấy thông tin ngày phép */
-  let config = {
-      headers: {            
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}` 
-      }
-    }
+
        
   var userAbsenceNumberUsed = 0;
   var userAbsenceNumberTotal = 12;
   var userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
-           
-  axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
-    .then(res => {                        
-      if (res && res.data && res.data.data) {  
-        const userAbsence = res.data.data[0];
-        console.log("userAbsence",userAbsence);
-        if(userAbsence && userAbsence.number_used != null) {
-          userAbsenceNumberUsed = userAbsence.number_used 
-          console.log("userAbsenceNumberUsed:",userAbsenceNumberUsed);
-        }
+  
+  if(isGetUserAbsence == false) {
 
-        if(userAbsence && userAbsence.number_available != null) {
-          const userAbsenceNumberAvailable = userAbsence.number_available 
-          console.log("userAbsenceNumberAvailable:",userAbsenceNumberAvailable);
-          userAbsenceNumberTotal = userAbsenceNumberUsed + userAbsenceNumberAvailable;          
+    /* Lấy thông tin ngày phép */
+    let config = {
+        headers: {            
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}` 
         }
+      }
 
-        userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
-        console.log("API userAbsencePercentUsed: ", userAbsencePercentUsed);
-      }                   
-    }).catch(error => console.log("Call API error:",error)); 
+    axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
+      .then(res => {                        
+        if (res && res.data && res.data.data) {  
+          const userAbsence = res.data.data[0];          
+          
+          SetIsGetUserAbsence(true);
+          //console.log("userAbsence",userAbsence);
+
+          if(userAbsence && userAbsence.number_used != null) {
+            userAbsenceNumberUsed = userAbsence.number_used 
+            //console.log("userAbsenceNumberUsed:",userAbsenceNumberUsed);
+          }
+
+          if(userAbsence && userAbsence.number_available != null) {
+            const userAbsenceNumberAvailable = userAbsence.number_available 
+            //console.log("userAbsenceNumberAvailable:",userAbsenceNumberAvailable);
+            userAbsenceNumberTotal = userAbsenceNumberUsed + userAbsenceNumberAvailable;          
+          }
+
+          userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
+          //console.log("API userAbsencePercentUsed: ", userAbsencePercentUsed);
+        }                   
+      }).catch(error => console.log("Call API error:",error)); 
+    
+  }  
 
   const annualLeaveData = (canvas) => {
     const ctx = canvas.getContext("2d")
