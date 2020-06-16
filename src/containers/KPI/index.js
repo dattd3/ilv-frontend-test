@@ -40,11 +40,8 @@ function General(props) {
 
   if (listAll.data && listAll.data[0]) {      
     const items = listAll.data;
-    const kpiInfo = items[0];
-    console.log("kpiInfo:",kpiInfo);
-    var years = getPeriodYear(items);
-    console.log("years",years);
-
+    const kpiInfo = items[0];    
+    var years = getPeriodYear(items);    
     return (
         <div>        
            {/* THÔNG TIN NHÂN VIÊN */}
