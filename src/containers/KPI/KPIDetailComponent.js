@@ -3,7 +3,7 @@ import React from 'react';
 class KPIDetailComponent extends React.Component {
 
   constructor(props) {    
-    super(props);      
+    super(props);          
   }
 
   render() {    
@@ -58,7 +58,7 @@ class KPIDetailComponent extends React.Component {
                         </div>
                     </div>                      
               </div>
-
+          
               <div className="col-4 panel" style={{'paddingRight':'0px'}}>                    
               {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
                     <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}> 

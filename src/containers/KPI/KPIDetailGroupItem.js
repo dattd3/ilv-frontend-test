@@ -4,23 +4,34 @@ import KPIDetailComponent from './KPIDetailComponent';
 class KPIDetailGroupItem extends React.Component {
 
   constructor(props) {    
-    super(props);      
+    super(props); 
+    this.state = {
+      isShowDetail: false     
+    };      
+  }
+
+  showDetailClick() {    
+    this.setState({isShowDetail: !this.state.isShowDetail});
   }
 
   render() {    
     return (
       <div>
-        <div className="group-item">          
+        <div className="group-item" onClick={e => this.showDetailClick()}>          
             <span className="color-group-item" style={{'backgroundColor': this.props.Color}}/>              
             <span className="title-group-item">              
               THÔNG TIN KỲ ĐÁNH GIÁ QUÝ {this.props.Quarter} NĂM {this.props.Period}
-            </span>
+            </span>            
             <span className="icon-dropdown">
-               <i className="fas fa-caret-down"></i>
-            </span>               
-        </div>                        
-        <KPIDetailComponent kpiInfo={this.props.kpiInfo} Period={this.props.Period} 
-             Quarter={this.props.Quarter} Color={this.props.Color}/>        
+               {this.state.isShowDetail && <i className="fas fa-caret-up"></i>}
+               {!this.state.isShowDetail && <i className="fas fa-caret-down"></i>}
+            </span>         
+        </div>      
+
+        {this.state.isShowDetail && 
+          <KPIDetailComponent kpiInfo={this.props.kpiInfo} Period={this.props.Period} Quarter={this.props.Quarter} Color={this.props.Color}/> 
+        }
+        
       </div>
     )
   }
