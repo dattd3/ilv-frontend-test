@@ -2,31 +2,17 @@ import React,{ useState } from "react";
 import { useApi, useFetcher } from "../../modules";
 import Select from 'react-select';
 
-const usePreload = (params) => {
-  const api = useApi();
-  const [data = [], err] = useFetcher({
-    api: api.getPeriodKpiGeneral,
-    autoRun: true,
-    params: params
-  });
-  return data;
-};
+function KPISearch(props) {    
+  var yearSelected = "";    
+  var years = []; 
 
-function KPISearch(props) {
-    
-  var yearSelected = "";
-  
-  var periods = usePreload([]);
-  var years = [];
-  if(periods && periods.length > 0){
-      periods.forEach(function(item){          
-          var year = item.Period.split("/")[1];
-          var obj = {value:year, label:year};
-          years.push(obj);
-          
-        });      
-  };   
-  
+  console.log("KPISearch > props:", props); 
+
+  props.years.forEach(function(year){          
+      var obj = {value:year, label:year};
+      years.push(obj);          
+    });      
+      
    const handleYearChange = selectedOption => {      
       yearSelected = selectedOption.value;  
       console.log(yearSelected);    
