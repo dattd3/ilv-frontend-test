@@ -38,19 +38,14 @@ class KPIDetail extends React.Component {
               LỰA CHỌN KỲ ĐÁNH GIÁ
           </div>
           
-          <KPIDetailGroupItem title="THÔNG TIN KỲ ĐÁNH GIÁ QUÝ 1 NĂM 2020" backgroundColor="#347EF9" />
+          <KPIDetailGroupItem kpiInfo={this.state.kpiInfo} Period={this.state.Period} Quarter="1" Color="#347EF9" />
 
-          <KPIDetailGroupItem title="THÔNG TIN KỲ ĐÁNH GIÁ QUÝ 2 NĂM 2020" backgroundColor="#05BD29"/>
+          <KPIDetailGroupItem kpiInfo={this.state.kpiInfo} Period={this.state.Period} Quarter="2" Color="#05BD29"/>
 
-          <KPIDetailGroupItem title="THÔNG TIN KỲ ĐÁNH GIÁ QUÝ 3 NĂM 2020" backgroundColor="#FF7F00"/>
+          <KPIDetailGroupItem kpiInfo={this.state.kpiInfo} Period={this.state.Period} Quarter="3" Color="#FF7F00"/>
 
-          <KPIDetailGroupItem title="THÔNG TIN KỲ ĐÁNH GIÁ QUÝ 4 NĂM 2020" backgroundColor="#00999E"/>
-         
-          {/*
-         <KPIDetailComponent kpiInfo={this.state.kpiInfo} Period={this.state.Period}/>
-         <br/>             
-         */}
-            
+          <KPIDetailGroupItem kpiInfo={this.state.kpiInfo} Period={this.state.Period} Quarter="4" Color="#00999E"/>
+                            
        </div>
     )
   }

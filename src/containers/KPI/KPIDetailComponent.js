@@ -12,8 +12,8 @@ class KPIDetailComponent extends React.Component {
           <div className="row">
               {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
               <div className="col-8 panel" style={{'paddingLeft':'0px'}}>                                                      
-                    <div className="card border border-primary shadow">        
-                        <div className="bg-primary text-white p-3 h6 text-uppercase text-center">Quý 1 năm {this.props.Period}</div>                      
+                    <div className="card shadow" style={{'border': '1px solid '+ this.props.Color }}>        
+                        <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">Quý {this.props.Quarter} năm {this.props.Period}</div>                      
                         <div className="card-body">          
                             <table className="table table-bordered" >
                                <tbody>         
@@ -61,8 +61,8 @@ class KPIDetailComponent extends React.Component {
 
               <div className="col-4 panel" style={{'paddingRight':'0px'}}>                    
               {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
-                    <div className="card border border-primary shadow" style={{'height':'100%'}}> 
-                         <div className="bg-primary text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
+                    <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}> 
+                         <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
                          <div className="card-body" style={{'padding':'0px'}}>
                             <div className="text-center" style={{'color':'#FF0000'}}>Kết qủa</div>
                             <div className="text-center" style={{'color':'#FF0000'}}>đánh giá tổng thể</div>
