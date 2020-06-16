@@ -3,7 +3,16 @@ import React from 'react';
 class KPIDetailComponent extends React.Component {
 
   constructor(props) {    
-    super(props);          
+    super(props);    
+
+    var ManagerAtFormComplete = props.kpiInfo.ManagerAtFormComplete;
+    if(ManagerAtFormComplete == null || ManagerAtFormComplete.length == 0) {
+       ManagerAtFormComplete = props.kpiInfo.ManagerFullName;               
+    } 
+       
+    this.state = {
+      ManagerAtFormComplete: ManagerAtFormComplete    
+    };      
   }
 
   render() {    
@@ -71,7 +80,7 @@ class KPIDetailComponent extends React.Component {
                          </div>
                         <div className="card-body" style={{'padding':'0px'}}>
                             <div className="text-center">CBQL đánh giá:</div>
-                            <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.ManagerFullName}</div>
+                            <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.state.ManagerAtFormComplete}</div>
                             <hr></hr>
                         </div>
                         <div className="card-body" style={{'padding':'0px'}}>
