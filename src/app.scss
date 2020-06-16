@@ -1220,6 +1220,17 @@ span.badge-notification[data-badge]::after {
       color: #FFFFFF;
       border: none;
   }
+
+  .success-factor-link {
+      width: 300px;
+      background: #34C4F9 0% 0% no-repeat padding-box;
+      border-radius: 20px!important;
+      text-align: left;
+      font: Light 23px/27px Helvetica Neue;
+      letter-spacing: 0px;
+      color: #FFFFFF;      
+  }
+
 }
 
 .kpi-detail {

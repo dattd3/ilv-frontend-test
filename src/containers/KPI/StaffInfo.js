@@ -13,9 +13,16 @@ class StaffInfo extends React.Component {
   render() {    
     return (
       <div className="kpi-staff-info">            
-          <div className="text-uppercase title-group">
-              THÔNG TIN NHÂN VIÊN
+          <div className="float-left w-100">
+              <span className="float-left text-uppercase title-group">
+                  THÔNG TIN NHÂN VIÊN
+              </span>
+
+              <span className="success-factor-link float-right btn text-center">
+                <a href="https://performancemanager10.successfactors.com/sf/pmreviews?bplte_company=vingroupjsP2&_s.crb=cCGlhxZRYUMgGtcEh7rKL3v7dsI%3d" style={{'color':'white'}} target="_blank"> Đường link truy cập SuccessFactor</a>
+              </span>
           </div>
+          <br style={{'clear': 'both'}} />
           <div className="card border shadow mb-4 mt-2">
               <table className="table table-borderless" style={{'marginBottom':'4px'}}>
                  <tbody>
