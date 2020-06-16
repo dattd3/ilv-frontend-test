@@ -4,10 +4,8 @@ import Select from 'react-select';
 import { Link } from "react-router-dom";
 
 function KPISearch(props) {   
-
-  const [showAlert, setShowAlert] = useState(false); 
-
-  var yearSelected = "";    
+  const [showAlert, setShowAlert] = useState(false);
+  const [yearSelected, setYearSelected] = useState("");   
   var years = []; 
   
   props.years.forEach(function(year){          
@@ -15,23 +13,17 @@ function KPISearch(props) {
       years.push(obj);          
     });      
       
-   const handleYearChange = selectedOption => {      
-      yearSelected = selectedOption.value;  
-      console.log(yearSelected);  
+   const handleYearChange = selectedOption => {             
+      setYearSelected(selectedOption.value);      
       setShowAlert(false);  
     };
    
-  const searchOnClick = () => {
-     console.log("searchOnClick> yearSelected:",yearSelected);
-
-     setShowAlert(true);
-    if(yearSelected == null) {
-
-      console.log("### year select null");
+  const searchOnClick = () => {     
+    if(!yearSelected) {
+      setShowAlert(true);      
       return;
     }
-
-    //window.location.href=`/kpi/${yearSelected}`;
+    window.location.href=`/kpi/${yearSelected}`;
   }
 
     return (

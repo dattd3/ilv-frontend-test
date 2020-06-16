@@ -1221,6 +1221,15 @@ span.badge-notification[data-badge]::after {
       border: none;
   };
 
+.kpi-detail {
+  .item-row {
+      border: 1px solid #B3B3B3;      
+      text-align: center;
+      color: black;
+  }
+}
+
+
 }
 
 
