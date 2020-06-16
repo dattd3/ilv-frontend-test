@@ -35,5 +35,6 @@ export default {
   BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
   Job: "/job",  
-  Kpi: "/kpi"  
+  Kpi: "/kpi",
+  KpiDetail: "/kpi/:id"  
 };

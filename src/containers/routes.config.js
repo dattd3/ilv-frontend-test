@@ -227,6 +227,14 @@ export default [
           component: lazy(() => import("./KPI"))
         },        
         {
+          key: "kpi-detail",
+          routeProps: {
+            exact: true,
+            path: map.KpiDetail
+          },
+          component: lazy(() => import("./KPI/KPIDetail"))
+        },
+        {
           key: "forbidden",
           routeProps: {
             exact: true,

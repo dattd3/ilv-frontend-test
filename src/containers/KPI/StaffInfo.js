@@ -17,7 +17,7 @@ class StaffInfo extends React.Component {
               THÔNG TIN NHÂN VIÊN
           </div>
           <div className="card border shadow mb-4 mt-2">
-              <table className="table" style={{'marginBottom':'4px'}}>
+              <table className="table table-borderless" style={{'marginBottom':'4px'}}>
                  <tbody>
                     <tr>                
                         <td style={{'width': '200px'}}><div className="content-title"> Họ và tên </div></td>  

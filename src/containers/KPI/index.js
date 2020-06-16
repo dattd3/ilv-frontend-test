@@ -20,11 +20,9 @@ function General(props) {
 
   const guard = useGuardStore();
   const user = guard.getCurentUser();
-
   
   var listAll = usePreload();
-  console.log("listAll",listAll);
-   
+  
   const style = {
       'border': '1px solid #B3B3B3',      
       'textAlign': 'center',
