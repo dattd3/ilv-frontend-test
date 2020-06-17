@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import KPIDetailComponent from './KPIDetailComponent';
 import KPIDetailGroupItem from './KPIDetailGroupItem';
 import SuccessFactorInfo from "./SuccessFactorInfo"
 
@@ -12,7 +11,11 @@ class KPIDetail extends React.Component {
       KpiQuarter1: {},
       KpiQuarter2: {},
       KpiQuarter3: {},
-      KpiQuarter4: {},
+      KpiQuarter4: {},      
+      KpiIsLeader1: "false",
+      KpiIsLeader2: "false",
+      KpiIsLeader3: "false",
+      KpiIsLeader4: "false",
       Period: props.match.params.id
     };   
   }
@@ -27,10 +30,8 @@ class KPIDetail extends React.Component {
     axios.get(url, config)
       .then(res => {        
         if (res && res.data && res.data.data) {
-           if(res.data.data.length > 0) {
-              let kpiInfo = res.data.data[0];        
-              this.saveData(res.data.data);      
-              this.setState({ kpiInfo: kpiInfo});
+           if(res.data.data.length > 0) {              
+              this.saveData(res.data.data);                    
            }          
         }
       }).catch(error => console.log("Call API error:", error));
@@ -40,17 +41,30 @@ class KPIDetail extends React.Component {
 
     items.forEach(item => {          
           const quarter = item.Period.substring(0,2).toUpperCase(); // convert "Q1/2020" => "Q1"
-          if(quarter == "Q1") {
-            this.setState({ KpiQuarter1: item});            
 
+          if(quarter == "Q1") {
+              this.setState({ KpiQuarter1: item});  
+              if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+                this.setState({ KpiIsLeader1: "true"});               
+              }
+                     
           } else if(quarter == "Q2") {            
             this.setState({ KpiQuarter2: item});
+            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+                this.setState({ KpiIsLeader2: "true"});               
+              }
           
           } else if(quarter == "Q3") {            
-            this.setState({ KpiQuarter3: item});        
+            this.setState({ KpiQuarter3: item});
+            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+                this.setState({ KpiIsLeader3: "true"});               
+              }        
 
           } else if(quarter == "Q4") {            
-            this.setState({ KpiQuarter4: item});    
+            this.setState({ KpiQuarter4: item});
+            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+                this.setState({ KpiIsLeader4: "true"});               
+              }    
           }
        });
   }
@@ -62,17 +76,17 @@ class KPIDetail extends React.Component {
               LỰA CHỌN KỲ ĐÁNH GIÁ
           </div>
           
-          <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
+          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
 
-          <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter2} Period={this.state.Period} Quarter="2" Color="#05BD29"/>
+          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader2} kpiInfo={this.state.KpiQuarter2} Period={this.state.Period} Quarter="2" Color="#05BD29"/>
 
-          <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00"/>
+          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader3} kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00"/>
 
-          <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E"/>
+          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader4} kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E"/>
            
           {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
           <SuccessFactorInfo />                    
-          
+
        </div>
     )
   }

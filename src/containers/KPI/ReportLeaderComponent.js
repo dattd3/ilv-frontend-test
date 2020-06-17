@@ -1,9 +1,12 @@
 import React from 'react';
 
-class KPIDetailComponent extends React.Component {
+class ReportLeaderComponent extends React.Component {
 
   constructor(props) {    
     super(props);    
+
+    //console.log("***** ReportLeaderComponent ***");
+    //console.log("props:",props);
 
     var ManagerAtFormComplete = props.kpiInfo.ManagerAtFormComplete;
     if(ManagerAtFormComplete == null || ManagerAtFormComplete.length == 0) {
@@ -95,4 +98,4 @@ class KPIDetailComponent extends React.Component {
   }
 }
 
-export default KPIDetailComponent;
+export default ReportLeaderComponent;

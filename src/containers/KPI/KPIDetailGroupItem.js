@@ -1,5 +1,6 @@
 import React from 'react';
-import KPIDetailComponent from './KPIDetailComponent';
+import ReportLeaderComponent from './ReportLeaderComponent';
+import ReportStaffComponent from './ReportStaffComponent';
 
 class KPIDetailGroupItem extends React.Component {
 
@@ -7,13 +8,13 @@ class KPIDetailGroupItem extends React.Component {
     super(props); 
     this.state = {
       isShowDetail: false     
-    };      
+    };          
   }
-
+   
   showDetailClick() {    
     this.setState({isShowDetail: !this.state.isShowDetail});
   }
-
+  
   render() {    
     return (
       <div>
@@ -29,7 +30,10 @@ class KPIDetailGroupItem extends React.Component {
         </div>      
 
         {this.state.isShowDetail && 
-          <KPIDetailComponent kpiInfo={this.props.kpiInfo} Period={this.props.Period} Quarter={this.props.Quarter} Color={this.props.Color}/> 
+          (this.props.IsLeader == "true" ?
+               <ReportLeaderComponent kpiInfo={this.props.kpiInfo} Period={this.props.Period} Quarter={this.props.Quarter} Color={this.props.Color}/> 
+             : <ReportStaffComponent kpiInfo={this.props.kpiInfo} Period={this.props.Period} Quarter={this.props.Quarter} Color={this.props.Color}/> 
+          )
         }
         
       </div>
