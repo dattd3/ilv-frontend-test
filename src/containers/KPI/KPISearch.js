@@ -26,6 +26,16 @@ function KPISearch(props) {
     window.location.href=`/kpi/${yearSelected}`;
   }
 
+  const customStyles = {
+    control: base => ({
+      ...base,
+      height: 45,
+      minHeight: 45,
+      marginLeft: 10,
+      width:'100%'
+    })
+  };
+
     return (
         <div className="kpi-staff-info">
           <div className="text-uppercase title-group">
@@ -35,17 +45,21 @@ function KPISearch(props) {
               <table className="table table-borderless" >  
                   <tbody>     
                         <tr>
-                            <td> 
+                            <td>
+                               <br/>                                
                                <span className="kpi-staff-info period-title"> Lựa chọn năm (bắt buộc) </span>                                    
                             </td>                            
                         </tr>
                         <tr>
-                            <td style={{'width': '400px'}}>
-                              <Select style={{'color':'black','width':'200px'}}                                    
+                            <td style={{'width': '350px'}}>
+                              <Select style={{'color':'black'}}                                    
                                     selectedValue={years}
+                                    defaultValue={years[0]}
                                     onChange={handleYearChange}
                                     placeholder="Chọn năm ..."                                    
-                                    options={years} />
+                                    options={years} 
+                                    styles={customStyles}
+                                    />
                             </td>
                             <td>
                                <button type="button" className="search-button" onClick={searchOnClick}>Tìm kiếm</button>                                

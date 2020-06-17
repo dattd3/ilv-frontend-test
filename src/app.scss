@@ -1212,13 +1212,14 @@ span.badge-notification[data-badge]::after {
     }
 
     .search-button {
-      width: 270px;
+      width: 350px;
       height: 45px;
       background: #F9C20A 0% 0% no-repeat padding-box;
       border-radius: 30px;
       font-family: Light 21px/25px Helvetica Neue;
       color: #FFFFFF;
       border: none;
+      margin-left: 20px;
   }
 
   .success-factor-link {
