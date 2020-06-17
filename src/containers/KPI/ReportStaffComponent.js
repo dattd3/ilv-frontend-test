@@ -18,7 +18,7 @@ class ReportStaffComponent extends React.Component {
   render() {    
     return (      
        <div className="kpi-detail container-fluid w-100 mb-4">
-          <div className="row">
+          <div className="row" style={{'marginLeft':'-23px', 'marginRight':'-23px'}}>
               {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
               <div className="col-8 panel" style={{'paddingLeft':'0px'}}>                                                      
                     <div className="card shadow" style={{'border': '1px solid '+ this.props.Color }}>        
