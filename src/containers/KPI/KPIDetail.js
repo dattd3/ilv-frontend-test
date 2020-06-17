@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import KPIDetailComponent from './KPIDetailComponent';
 import KPIDetailGroupItem from './KPIDetailGroupItem';
+import SuccessFactorInfo from "./SuccessFactorInfo"
 
 class KPIDetail extends React.Component {
 
@@ -68,7 +69,10 @@ class KPIDetail extends React.Component {
           <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00"/>
 
           <KPIDetailGroupItem kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E"/>
-                            
+           
+          {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
+          <SuccessFactorInfo />                    
+          
        </div>
     )
   }

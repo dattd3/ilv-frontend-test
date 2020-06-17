@@ -3,6 +3,7 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { useTranslation } from "react-i18next";
 import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
+import SuccessFactorInfo from "./SuccessFactorInfo"
 
 const usePreload = () => {
   const api = useApi();
@@ -49,6 +50,10 @@ function General(props) {
 
            {/* LỰA CHỌN KỲ ĐÁNH GIÁ */}
              <KPISearch years={years}/>
+
+            {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
+             <SuccessFactorInfo />            
+
         </div>
       );
 
