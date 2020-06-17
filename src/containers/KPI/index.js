@@ -58,7 +58,14 @@ function General(props) {
       );
 
   } else {
-    return null
+    return (
+        <div>
+              <StaffInfo UserInfo={user} ManagerFullName=""/>                   
+              <div className="alert alert-warning text-center" role="alert">
+                    Không có dữ liệu về KPI
+              </div>       
+        </div>
+      );
   }
 }
 

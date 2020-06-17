@@ -4,26 +4,18 @@ import Select from 'react-select';
 import { Link } from "react-router-dom";
 
 function KPISearch(props) {   
-  const [showAlert, setShowAlert] = useState(false);
-  const [yearSelected, setYearSelected] = useState("");   
+  //const [showAlert, setShowAlert] = useState(false);  
+  const selectRef = React.createRef();
   var years = []; 
   
   props.years.forEach(function(year){          
       var obj = {value:year, label:year};
-      years.push(obj);          
+       years.push(obj);          
     });      
       
-   const handleYearChange = selectedOption => {             
-      setYearSelected(selectedOption.value);      
-      setShowAlert(false);  
-    };
-   
-  const searchOnClick = () => {     
-    if(!yearSelected) {
-      setShowAlert(true);      
-      return;
-    }
-    window.location.href=`/kpi/${yearSelected}`;
+  const searchOnClick = () => {             
+    const optionSelected = selectRef.current.state.value.value;    
+    window.location.href=`/kpi/${optionSelected}`;    
   }
 
   const customStyles = {
@@ -35,8 +27,8 @@ function KPISearch(props) {
       width:'100%'
     })
   };
-
-    return (
+          
+    return (    
         <div className="kpi-staff-info">
           <div className="text-uppercase title-group">
               LỰA CHỌN HIỂN THỊ KỲ ĐÁNH GIÁ
@@ -45,8 +37,7 @@ function KPISearch(props) {
               <table className="table table-borderless" >  
                   <tbody>     
                         <tr>
-                            <td>
-                               <br/>                                
+                            <td style={{'paddingTop':'20px', 'paddingBottom':'5px'}}>
                                <span className="kpi-staff-info period-title"> Lựa chọn năm (bắt buộc) </span>                                    
                             </td>                            
                         </tr>
@@ -54,18 +45,19 @@ function KPISearch(props) {
                             <td style={{'width': '350px'}}>
                               <Select style={{'color':'black'}}                                    
                                     selectedValue={years}
-                                    defaultValue={years[0]}
-                                    onChange={handleYearChange}
-                                    placeholder="Chọn năm ..."                                    
+                                    defaultValue={ years.length > 0 ? years[years.length-1] : "" }
                                     options={years} 
                                     styles={customStyles}
+                                    ref={selectRef}
                                     />
                             </td>
                             <td>
                                <button type="button" className="search-button" onClick={searchOnClick}>Tìm kiếm</button>                                
                             </td>
-                        </tr>                        
+                        </tr>            
+                        {/*
                         {showAlert && <tr><td><span className="alert alert-danger">Vui lòng lựa chọn năm đánh giá</span></td></tr>}  
+                       */}
                                                 
                   </tbody>
                </table>
