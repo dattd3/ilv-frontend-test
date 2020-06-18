@@ -23,11 +23,11 @@ function Header(props) {
     const guard = useGuardStore();
 
     const userLogOut = () => {
-        guard.setLogOut();
         try {
+            guard.setLogOut();
             Auth.signOut({ global: true });
         } catch  {
-
+            window.location.reload();
         }
     }
 

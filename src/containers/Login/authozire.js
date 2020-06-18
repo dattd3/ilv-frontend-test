@@ -65,12 +65,11 @@ function Authorize(props) {
                 jobId: user.job_id,
                 benefitLevel: user.benefit_level || user.employee_level,
                 company: user.pnl,
-                sabaId: 'sabId',
+                sabaId: `saba-${user.uid}`,
                 employeeNo: user.uid,
                 jobType: user.rank_name,
                 department: `${user.division} / ${user.department} / ${user.unit}`
             });
-
             history.push(map.Dashboard);
         }
     }

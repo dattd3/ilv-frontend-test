@@ -16,8 +16,6 @@ function JobDescriptionPage() {
   var jobType = localStorage.getItem("jobId");
   var result = usePreload([jobType]);
 
-  console.log(`result ${JSON.stringify(result)}`);
-
   if (result && result.data) {
     return <JobDescriptionContent data={result.data} />;
   } else {
