@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
+import moment from 'moment';
 
 class MyComponent extends React.Component {
 
@@ -17,7 +18,9 @@ class MyComponent extends React.Component {
   componentDidMount() {
     let config = {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
 
@@ -40,345 +43,289 @@ class MyComponent extends React.Component {
         console.log("Call API error:", error);
 
       });
+
   }
 
   render() {
+
+    function SummaryAddress(obj) {
+      let result = '';
+      if (typeof (obj) == 'object' && obj.length > 0) {
+        for (let i = 0; i < obj.length; i++) {
+          const element = obj[i];
+          if (isNotNull(element) !== '') {
+            result += element + ', '
+          }
+        }
+      }
+      result = result.trim();
+      if (result.length > 0) { result = result.substring(0, result.length - 1); }
+      return result;
+    }
+
+    function isNotNull(input) {
+      if (input !== undefined && input !== null && input !== 'null' && input !== '' && input !== '#') {
+        return input;
+      }
+      return '';
+    }
 
     const { t } = this.props;
 
     return (
       <div className="personal-info">
-        <h1 className="h3 mb-3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
+        <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
-            <Container fluid className="info-tab-content">
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("FirstAndLastName")}</label>
-                    <p className="info-value">{this.state.userDetail.fullname}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("EmployeeCode")}</label>
-                    <p className="info-value">{this.state.userDetail.uid}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("SocialInsuranceNumber")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("TaxCode")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("DateOfBirth")}</label>
-                    <p className="info-value">{this.state.userDetail.birthday}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("PlaceOfBirth")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={6} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("Sex")}</label>
-                    <p className="info-value">{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={6} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("Nationality")}</label>
-                    <p className="info-value">{this.state.userDetail.nationality}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={6} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("Ethnic")}</label>
-                    <p className="info-value">{this.state.userDetail.ethinic}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={6} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("Religion")}</label>
-                    <p className="info-value">{(this.state.userDetail.religion === undefined || this.state.userDetail.religion === null) ? t("None") : this.state.userDetail.religion}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col sm className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("IdentityPasportNo")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col sm className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("DateIssue")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col sm className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("PlaceIssue")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col sm className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("WorkPermitNo")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col sm className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("WorkPermitExpireDate")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("PermanentAddress")}</label>
-                    <p className="info-value">{this.state.userDetail.wards}, {this.state.userDetail.district}, {this.state.userDetail.province}, {this.state.userDetail.nation}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("TemporaryAddress")}</label>
-                    <p className="info-value">{this.state.userDetail.tmp_wards}, {this.state.userDetail.tmp_district}, {this.state.userDetail.tmp_province}, {this.state.userDetail.tmp_nation}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("MaritalStatus")}</label>
-                    <p className="info-value">{this.state.userDetail.marital_status}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("WorkingAddress")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("GroupJoinedDate")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("CompanyJoinedDate")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("CompanyEmail")}</label>
-                    <p className="info-value">{this.state.userProfile.company_email}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("MobilePhone")}</label>
-                    <p className="info-value">{this.state.userDetail.cell_phone_no}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("CurrentTitle")}</label>
-                    <p className="info-value">{this.state.userProfile.job_name}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("LevelByTitle")}</label>
-                    <p className="info-value">{this.state.userProfile.rank_name}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("ActualLevel")}</label>
-                    <p className="info-value">{this.state.userProfile.rank_name}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("BenefitLevel")}</label> 
-                    <p className="info-value">{this.state.userProfile.benefit_level}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("PAndL")}</label>
-                    <p className="info-value">{this.state.userProfile.pnl}</p>
-                  </Form.Group>
-                </Col>
-
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("RegionName")}</label>
-                    <p className="info-value">{this.state.userProfile.division}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("PropertyName")}</label>
-                    <p className="info-value">{this.state.userProfile.department}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("DepartmentName")}</label>
-                    <p className="info-value">{this.state.userProfile.unit}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12} md={6} lg={4} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("BankAccountNumber")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-
-                <Col xs={12} md={6} lg={4} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("BankName")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={4} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("BankBranch")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Container>
+            <Row >
+              <Col xs={12} md={12} lg={6}>
+                <h4>{t("PersonalInformation")}</h4>
+                <div className="info-tab-content">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td className="info-label">{t("FirstAndLastName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.fullname}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("EmployeeCode")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.uid}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("SocialInsuranceNumber")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("TaxCode")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("DateOfBirth")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birthday}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("PlaceOfBirth")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birth_province}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Sex")}</td>
+                        <td className="info-value"><p>&nbsp;{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Nationality")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.nationality}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Ethnic")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.ethinic}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Religion")}</td>
+                        <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? t("None") : this.state.userDetail.religion}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("IdentityPasportNo")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_no}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("DateIssue")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.date_of_issue}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("PlaceIssue")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.place_of_issue}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("WorkPermitNo")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("WorkPermitExpireDate")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("PermanentAddress")}</td>
+                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("TemporaryAddress")}</td>
+                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("MaritalStatus")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.marital_status_code === "1" ? t("MaritalMarried") : t("MaritalSingle")}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("PersonalEmail")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_email}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("MobilePhone")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("BankAccountNumber")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("BankName")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("BankBranch")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Col>
+              <Col xs={12} md={12} lg={6}>
+                <h4>{t("WorkingInformation")}</h4>
+                <div className="info-tab-content">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td className="info-label">{t("GroupJoinedDate")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("CompanyJoinedDate")}</td>
+                        <td className="info-value"><p>&nbsp;</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("CompanyEmail")}</td>
+                        <td className="info-value" style={{ textTransform: "lowercase" }}><p>&nbsp;{this.state.userProfile.company_email}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("CurrentTitle")}</td>
+                        <td className="info-value"><p>&nbsp; {this.state.userProfile.job_name}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("LevelByTitle")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.group_title_name}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("ActualLevel")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("BenefitLevel")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.benefit_level}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("DepartmentName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("RegionName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.division}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("PropertyName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.department}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("WorkingAddress")}</td>
+                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userProfile.wards, this.state.userProfile.district, this.state.userProfile.province])}</p></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Col>
+            </Row>
           </Tab>
           <Tab eventKey="Diploma" title={t("Diploma") + `/` + t("Certificate")}>
             <Container fluid className="info-tab-content">
               {
                 (this.state.userDetail.education !== undefined && this.state.userDetail.education.length > 0) ?
                   <><h4>{t("Diploma")}</h4>
+                    {this.state.userDetail.education.map((item, i) => {
+                      console.log(item.university_name);
+                      return <div key={i}>
+                        <Row className="info-label">
+                          <Col xs={12} md={6} lg={3}>
+                            {t("SchoolName")}
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            {t("DiplomaType")}
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            {t("Specialty")}
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            {t("LearningTime")}
+                          </Col>
+                        </Row>
+                        <Row className="info-value">
+                          <Col xs={12} md={6} lg={3}>
+                            <p>{isNotNull(item.university_name) ? item.university_name : item.other_uni_name}</p>
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            <p>{item.academic_level}</p>
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            <p>{item.major}</p>
+                          </Col>
+                          <Col xs={12} md={6} lg={3}>
+                            <p>{item.from_time} - {item.to_time}</p>
+                          </Col>
+                        </Row>
+                      </div>;
+                    })}
+                    {/* <h4>{t("Certificate")}</h4>
                     <Row>
-
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("SchoolName")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
+                      <Col xs={12} md={6} lg={3}>
+                          {t("CertificateName")}
+                          
                       </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("DiplomaType")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
+                      <Col xs={12} md={6} lg={3}>
+                          {t("CertificateIssuesBy")}
+                          
                       </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("Specialty")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
+                      <Col xs={12} md={6} lg={3}>
+                          {t("CertificateIssuesDate")}
+                          
                       </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("LearningTime")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
+                      <Col xs={12} md={6} lg={3}>
+                          {t("CertificateExpireDate")}
+                          
                       </Col>
-                    </Row>
-                    <h4>{t("Certificate")}</h4>
-                    <Row>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("CertificateName")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("CertificateIssuesBy")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("CertificateIssuesDate")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                      <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                        <Form.Group as={Col}>
-                          <label>{t("CertificateExpireDate")}</label>
-                          <p className="info-value">{/* asd */}</p>
-                        </Form.Group>
-                      </Col>
-                    </Row></>
+                    </Row> */}
+                  </>
                   : t("NoDataFound")
               }
             </Container>
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("PersonalRelations")}>
             <Container fluid className="info-tab-content">
-              <Row>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("FirstAndLastName")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={1} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("Relationship")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("DateOfBirth")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={2} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("AllowancesTaxNo")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={1} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("FamilyAllowances")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-                <Col xs={12} md={6} lg={3} className="info-item mb-3">
-                  <Form.Group as={Col}>
-                    <label>{t("AllowancesDate")}</label>
-                    <p className="info-value">{/* asd */}</p>
-                  </Form.Group>
-                </Col>
-              </Row>
+              {true ? t("NoDataFound") :
+                <Row>
+                  <Col xs={12} md={6} lg={3}>
+                    {t("FirstAndLastName")}
+                    {/* asd */}
+                  </Col>
+                  <Col xs={12} md={6} lg={1}>
+                    {t("Relationship")}
+                    {/* asd */}
+                  </Col>
+                  <Col xs={12} md={6} lg={2}>
+                    {t("DateOfBirth")}
+                    {/* asd */}
+                  </Col>
+                  <Col xs={12} md={6} lg={2}>
+                    {t("AllowancesTaxNo")}
+                    {/* asd */}
+                  </Col>
+                  <Col xs={12} md={6} lg={1}>
+                    {t("FamilyAllowances")}
+                    {/* asd */}
+                  </Col>
+                  <Col xs={12} md={6} lg={3}>
+                    {t("AllowancesDate")}
+                    {/* asd */}
+                  </Col>
+                </Row>
+              }
             </Container>
           </Tab>
         </Tabs>
@@ -386,7 +333,6 @@ class MyComponent extends React.Component {
     )
   }
 }
-
 
 const PersonInfo = withTranslation()(MyComponent)
 

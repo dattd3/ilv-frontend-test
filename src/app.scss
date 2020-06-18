@@ -1113,11 +1113,52 @@ span.badge-notification[data-badge]::after {
 }
 
 .personal-info {
-  h4{
-    color: #293281;
-    border-left: 3px solid #293281;
-    padding-left: 10px;
+  padding: 1em 0;
+  h4 {
+    color: #222;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0.5em 0;
   }
+  .info-tab-content {
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 0.5em;
+
+    table {
+      width: 100%;
+      tr {
+        td {
+          &:first-child {
+            width: 30%;
+          }
+        }
+      }
+      p {
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .info-label {
+       font-size: 15px;
+       div{
+         margin-bottom: 0.5em;
+       }
+    }
+    .info-value {
+      padding-bottom: 0.5em;
+      p {
+        font-size: 15px;
+        background-color: #ececec;
+        color: #353535;
+        padding: 0.8em;
+        border-radius: 0.3em;
+      }
+    }
+  }
+
   .nav-tabs {
     border: none;
     padding: 1em 0;
@@ -1134,23 +1175,8 @@ span.badge-notification[data-badge]::after {
       color: #293281;
     }
     .active {
-      background-color: #293281;
+      background-color: #ff7f00;
       color: #fff;
-    }
-  }
-
-  .info-tab-content {
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 0.5em;
-    .info-value {
-      background-color: #ececec;
-      border-radius: 0.3em;
-      padding: 0.5em;
-      color: #585858;
-      min-height: 2.5rem;
-      vertical-align: middle;
-      font-size: 16px;
     }
   }
 }
