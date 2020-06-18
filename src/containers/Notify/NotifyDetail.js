@@ -47,7 +47,11 @@ function NotifyDetail({ match }) {
                 <div className="form-group">
                     <label> Nội dung </label>                    
                      <div style={styleHtml} dangerouslySetInnerHTML={{__html: notify.content}} />
-                  </div>
+                </div>
+                <div className="form-group">
+                    <label> Cơ sở </label>                    
+                     <input type="text" className="form-control" value={ notify.topic_name } placeholder="" onChange={() => {}}/>  
+                </div>
                 <div className="form-group">
                     <label> Người tạo </label>
                     <input type="text" className="form-control" value={ notify.created_by } placeholder="" onChange={() => {}}/>

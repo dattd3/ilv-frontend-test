@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import axios from 'axios';
 function Dashboard(props) {
   
   const { t } = useTranslation();
+  const [isGetUserAbsence, SetIsGetUserAbsence] = useState(false);
   const guard = useGuardStore();
   const user = guard.getCurentUser();
   return (

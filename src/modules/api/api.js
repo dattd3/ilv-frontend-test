@@ -252,7 +252,20 @@ export default class Api {
           page_size: page_size
         }
       });
-  }
+  };
+
+  getPeriodKpiGeneral = async () => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_MULE_HOST}period/general`, {
+        params: {                        
+        }
+      });
+  };
+  
+  fetchListKpiGeneralAll = async () => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_MULE_HOST}kpi/general/all`);
+  };
 
   fetchNotificationDetail = async (notifyId) => {
      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/detail`, {
