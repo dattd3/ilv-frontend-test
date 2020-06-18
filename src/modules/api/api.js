@@ -256,7 +256,7 @@ export default class Api {
 
   getPeriodKpiGeneral = async () => {
      return await this.request.get(      
-      `${process.env.REACT_APP_MULE_HOST}period/general`, {
+      `${process.env.REACT_APP_MULE_HOST_SF}period/general`, {
         params: {                        
         }
       });
@@ -264,7 +264,7 @@ export default class Api {
   
   fetchListKpiGeneralAll = async () => {
      return await this.request.get(      
-      `${process.env.REACT_APP_MULE_HOST}kpi/general/all`);
+      `${process.env.REACT_APP_MULE_HOST_SF}kpi/general/all`);
   };
 
   fetchNotificationDetail = async (notifyId) => {

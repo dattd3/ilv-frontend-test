@@ -79,7 +79,7 @@ function Dashboard(props) {
   var userAbsenceNumberTotal = 12;
   var userAbsencePercentUsed = parseInt((userAbsenceNumberUsed/userAbsenceNumberTotal)*100);
            
-  axios.get(process.env.REACT_APP_MULE_HOST + 'user/absence', config)
+  axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/absence', config)
     .then(res => {                        
       if (res && res.data && res.data.data) {  
         const userAbsence = res.data.data[0];
