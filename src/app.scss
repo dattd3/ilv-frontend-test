@@ -1289,5 +1289,18 @@ span.badge-notification[data-badge]::after {
   height: 14px;  
 }
 
+.nodata-kpi {
+  background-color : white;  
+  color: black;
+  margin-bottom: 20px;
+  height: 45px;  
+  text-align: center;   
+  border-radius: 10px;
+  vertical-align: middle;
+}
 
+.hr-remove-margin {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
 

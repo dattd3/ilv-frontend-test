@@ -15,9 +15,18 @@ class ReportStaffComponent extends React.Component {
     };      
   }
 
-  render() {    
-    return (      
-       <div className="kpi-detail container-fluid w-100 mb-4">
+  render() {  
+     if(this.props.kpiInfo == null || this.props.kpiInfo.Score == null) {
+        return (              
+             <div className="nodata-kpi" style={{'border': '1px solid ' + this.props.Color}}>
+                <div style={{'marginTop':'10px'}}>
+                  Không có dữ liệu về kì đánh giá này
+                </div>                                  
+             </div>              
+           );
+      } else { 
+        return (      
+             <div className="kpi-detail container-fluid w-100 mb-4">
           <div className="row" style={{'marginLeft':'-23px', 'marginRight':'-23px'}}>
               {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
               <div className="col-8 panel" style={{'paddingLeft':'0px'}}>                                                      
@@ -65,9 +74,10 @@ class ReportStaffComponent extends React.Component {
                             <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{this.props.kpiInfo.Score}</div>                            
                          </div>
                         <div className="card-body" style={{'padding':'0px','marginTop':'-12px'}}>
+                            <hr className="hr-remove-margin"></hr>
                             <div className="text-center">CBQL đánh giá:</div>
                             <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.state.ManagerAtFormComplete}</div>
-                            <hr></hr>
+                            <hr className="hr-remove-margin"></hr>
                         </div>
                         <div className="card-body" style={{'padding':'0px','marginTop':'-12px'}}>
                             <div className="text-center">CBLĐ phê duyệt:</div>
@@ -76,8 +86,9 @@ class ReportStaffComponent extends React.Component {
                     </div>                    
                </div>
           </div> 
-       </div>
-    )
+             </div>
+          );
+      }    
   }
 }
 

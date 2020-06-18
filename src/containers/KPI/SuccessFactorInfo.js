@@ -13,6 +13,8 @@ function SuccessFactorInfo(props) {
                 &nbsp;
               <u><a className="success-factor-link" href={SuccessFactorLink} target="_blank">https://performancemanager10.successfactors.com/</a></u>
           </div>
+          <div className="mb-4">
+          </div>
       </div>      
     );
 }
