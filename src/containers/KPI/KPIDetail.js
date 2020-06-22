@@ -26,7 +26,7 @@ class KPIDetail extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }    
-    const url = process.env.REACT_APP_MULE_HOST + 'kpi/general?Period=' + this.state.Period;        
+    const url = process.env.REACT_APP_MULE_HOST_SF + 'kpi/general?Period=' + this.state.Period;        
     axios.get(url, config)
       .then(res => {        
         if (res && res.data && res.data.data) {

@@ -24,7 +24,7 @@ class MyComponent extends React.Component {
       }
     }
 
-    axios.get(process.env.REACT_APP_MULE_HOST + 'user/profile', config)
+    axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/profile', config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
@@ -33,7 +33,7 @@ class MyComponent extends React.Component {
       }).catch(error => console.log("Call API error:", error));
 
 
-    axios.get(process.env.REACT_APP_MULE_HOST + 'user/profile/details', config)
+    axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/profile/details', config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
