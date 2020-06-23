@@ -164,7 +164,9 @@ export const Navigation = [
     label: "Notification",
     to: map.Notify,
     role: "U"
-  },
+  }
+  /*
+  ,
   {
     id: 21,
     parentId: 10,
@@ -173,4 +175,6 @@ export const Navigation = [
     to: map.Kpi,
     role: "U"
   } 
+  */
+  
 ];
