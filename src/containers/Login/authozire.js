@@ -34,9 +34,7 @@ function Authorize(props) {
           }
         }
 
-        console.log("*** URL:",process.env.REACT_APP_MULE_HOST_HCM + 'user/profile');
-        
-        axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/profile', config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
           .then(res => {            
             if (res && res.data && res.data.data) { 
               let userProfile = res.data.data[0]; 

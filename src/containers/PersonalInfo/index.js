@@ -3,6 +3,8 @@ import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
+import map from '../map.config';
 
 class MyComponent extends React.Component {
 
@@ -11,7 +13,9 @@ class MyComponent extends React.Component {
 
     this.state = {
       userProfile: {},
-      userDetail: {}
+      userDetail: {},
+      userEducation: {},
+      userFamily: {}
     };
   }
 
@@ -24,26 +28,49 @@ class MyComponent extends React.Component {
       }
     }
 
-    axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/profile', config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
           this.setState({ userProfile: userProfile });
         }
-      }).catch(error => console.log("Call API error:", error));
+      }).catch(error => {
+        localStorage.clear();
+        window.location.href = map.Login;
+      });
 
-
-    axios.get(process.env.REACT_APP_MULE_HOST_HCM + 'user/profile/details', config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
           this.setState({ userDetail: userDetail });
         }
       }).catch(error => {
-        console.log("Call API error:", error);
-
+        localStorage.clear();
+        window.location.href = map.Login;
       });
 
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let userEducation = res.data.data[0];
+          this.setState({ userEducation: userEducation });
+        }
+      }).catch(error => {
+        localStorage.clear();
+        window.location.href = map.Login;
+      });
+
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let userFamily = res.data.data[0];
+          this.setState({ userFamily: userFamily });
+        }
+      }).catch(error => {
+        localStorage.clear();
+        window.location.href = map.Login;
+      });
   }
 
   render() {
@@ -237,10 +264,9 @@ class MyComponent extends React.Component {
           <Tab eventKey="Diploma" title={t("Diploma") + `/` + t("Certificate")}>
             <Container fluid className="info-tab-content">
               {
-                (this.state.userDetail.education !== undefined && this.state.userDetail.education.length > 0) ?
+                (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
                   <><h4>{t("Diploma")}</h4>
                     {this.state.userDetail.education.map((item, i) => {
-                      console.log(item.university_name);
                       return <div key={i}>
                         <Row className="info-label">
                           <Col xs={12} md={6} lg={3}>
@@ -298,38 +324,56 @@ class MyComponent extends React.Component {
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("PersonalRelations")}>
             <Container fluid className="info-tab-content">
-              {true ? t("NoDataFound") :
-                <Row>
-                  <Col xs={12} md={6} lg={3}>
-                    {t("FirstAndLastName")}
-                    {/* asd */}
-                  </Col>
-                  <Col xs={12} md={6} lg={1}>
-                    {t("Relationship")}
-                    {/* asd */}
-                  </Col>
-                  <Col xs={12} md={6} lg={2}>
-                    {t("DateOfBirth")}
-                    {/* asd */}
-                  </Col>
-                  <Col xs={12} md={6} lg={2}>
-                    {t("AllowancesTaxNo")}
-                    {/* asd */}
-                  </Col>
-                  <Col xs={12} md={6} lg={1}>
-                    {t("FamilyAllowances")}
-                    {/* asd */}
-                  </Col>
-                  <Col xs={12} md={6} lg={3}>
-                    {t("AllowancesDate")}
-                    {/* asd */}
-                  </Col>
-                </Row>
+              {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
+                this.state.userFamily.map((item, i) => {
+                  return <div key={i}>
+                    <Row className="info-label">
+                      <Col xs={12} md={6} lg={3}>
+                        {t("FirstAndLastName")}
+                      </Col>
+                      <Col xs={12} md={6} lg={1}>
+                        {t("Relationship")}
+                      </Col>
+                      <Col xs={12} md={6} lg={2}>
+                        {t("DateOfBirth")}
+                      </Col>
+                      <Col xs={12} md={6} lg={2}>
+                        {t("AllowancesTaxNo")}
+                      </Col>
+                      <Col xs={12} md={6} lg={1}>
+                        {t("FamilyAllowances")}
+                      </Col>
+                      <Col xs={12} md={6} lg={3}>
+                        {t("AllowancesDate")}
+                      </Col>
+                    </Row>
+                    <Row className="info-value">
+                      <Col xs={12} md={6} lg={3}>
+                        <p>{item.full_name}</p>
+                      </Col>
+                      <Col xs={12} md={6} lg={1}>
+                        <p>{item.relation}</p>
+                      </Col>
+                      <Col xs={12} md={6} lg={2}>
+                        <p>{item.dob}</p>
+                      </Col>
+                      <Col xs={12} md={6} lg={2}>
+                        <p>{item.tax_number}</p>
+                      </Col>
+                      <Col xs={12} md={6} lg={1}>
+                        <p>{item.is_reduceed}</p>
+                      </Col>
+                      <Col xs={12} md={6} lg={3}>
+                        <p>{item.from_date} - {item.to_date}</p>
+                      </Col>
+                    </Row>
+                  </div>;
+                }) : t("NoDataFound")
               }
             </Container>
           </Tab>
         </Tabs>
-      </div>
+      </div >
     )
   }
 }
