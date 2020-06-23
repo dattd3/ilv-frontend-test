@@ -27,6 +27,7 @@ function Header(props) {
             guard.setLogOut();
             Auth.signOut({ global: true });
         } catch  {
+            guard.setLogOut();
             window.location.reload();
         }
     }

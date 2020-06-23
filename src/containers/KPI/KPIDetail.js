@@ -5,89 +5,88 @@ import SuccessFactorInfo from "./SuccessFactorInfo"
 
 class KPIDetail extends React.Component {
 
-  constructor(props) {    
+  constructor(props) {
     super(props);
-    this.state = {      
+    this.state = {
       KpiQuarter1: {},
       KpiQuarter2: {},
       KpiQuarter3: {},
-      KpiQuarter4: {},      
+      KpiQuarter4: {},
       KpiIsLeader1: "false",
       KpiIsLeader2: "false",
       KpiIsLeader3: "false",
       KpiIsLeader4: "false",
       Period: props.match.params.id
-    };   
+    };
   }
 
-  componentDidMount() {    
+  componentDidMount() {
     let config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
-    }    
-    const url = process.env.REACT_APP_MULE_HOST_SF + 'kpi/general?Period=' + this.state.Period;        
-    axios.get(url, config)
-      .then(res => {        
+    }
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general?Period=${this.state.Period}`, config)
+      .then(res => {
         if (res && res.data && res.data.data) {
-           if(res.data.data.length > 0) {              
-              this.saveData(res.data.data);                    
-           }          
+          if (res.data.data.length > 0) {
+            this.saveData(res.data.data);
+          }
         }
       }).catch(error => console.log("Call API error:", error));
   }
 
   saveData(items) {
 
-    items.forEach(item => {          
-          const quarter = item.Period.substring(0,2).toUpperCase(); // convert "Q1/2020" => "Q1"
+    items.forEach(item => {
+      const quarter = item.Period.substring(0, 2).toUpperCase(); // convert "Q1/2020" => "Q1"
 
-          if(quarter == "Q1") {
-              this.setState({ KpiQuarter1: item});  
-              if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
-                this.setState({ KpiIsLeader1: "true"});               
-              }
-                     
-          } else if(quarter == "Q2") {            
-            this.setState({ KpiQuarter2: item});
-            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
-                this.setState({ KpiIsLeader2: "true"});               
-              }
-          
-          } else if(quarter == "Q3") {            
-            this.setState({ KpiQuarter3: item});
-            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
-                this.setState({ KpiIsLeader3: "true"});               
-              }        
+      if (quarter == "Q1") {
+        this.setState({ KpiQuarter1: item });
+        if (item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+          this.setState({ KpiIsLeader1: "true" });
+        }
 
-          } else if(quarter == "Q4") {            
-            this.setState({ KpiQuarter4: item});
-            if(item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
-                this.setState({ KpiIsLeader4: "true"});               
-              }    
-          }
-       });
+      } else if (quarter == "Q2") {
+        this.setState({ KpiQuarter2: item });
+        if (item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+          this.setState({ KpiIsLeader2: "true" });
+        }
+
+      } else if (quarter == "Q3") {
+        this.setState({ KpiQuarter3: item });
+        if (item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+          this.setState({ KpiIsLeader3: "true" });
+        }
+
+      } else if (quarter == "Q4") {
+        this.setState({ KpiQuarter4: item });
+        if (item.NLLDweight != null && item.NLLDweight != "" && item.NLLDweight != "0" && item.NLLDweight.length > 0) {
+          this.setState({ KpiIsLeader4: "true" });
+        }
+      }
+    });
   }
 
-  render() {    
-    return (      
-       <div className="kpi-detail">
-          <div className="title-group mb-4">
-              LỰA CHỌN KỲ ĐÁNH GIÁ
+  render() {
+    return (
+      <div className="kpi-detail">
+        <div className="title-group mb-4">
+          LỰA CHỌN KỲ ĐÁNH GIÁ
           </div>
-          
-          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
 
-          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader2} kpiInfo={this.state.KpiQuarter2} Period={this.state.Period} Quarter="2" Color="#05BD29"/>
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
 
-          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader3} kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00"/>
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader2} kpiInfo={this.state.KpiQuarter2} Period={this.state.Period} Quarter="2" Color="#05BD29" />
 
-          <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader4} kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E"/>
-           
-          {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
-          <SuccessFactorInfo />                    
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader3} kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00" />
 
-       </div>
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader4} kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E" />
+
+        {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
+        <SuccessFactorInfo />
+
+      </div>
     )
   }
 }
