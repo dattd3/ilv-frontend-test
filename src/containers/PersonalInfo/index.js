@@ -15,7 +15,8 @@ class MyComponent extends React.Component {
       userProfile: {},
       userDetail: {},
       userEducation: {},
-      userFamily: {}
+      userFamily: {},
+      userHealth: {}
     };
   }
 
@@ -71,6 +72,17 @@ class MyComponent extends React.Component {
         localStorage.clear();
         window.location.href = map.Login;
       });
+
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/health`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let userHealth = res.data.data[0]; console.log(userHealth.length);
+          this.setState({ userHealth: userHealth });
+        }
+      }).catch(error => {
+        localStorage.clear();
+        window.location.href = map.Login;
+      });
   }
 
   render() {
@@ -98,7 +110,7 @@ class MyComponent extends React.Component {
     }
 
     const { t } = this.props;
-
+    
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
@@ -192,15 +204,15 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("BankAccountNumber")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_number}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("BankName")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_name}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("BankBranch")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_branch}</p></td>
                       </tr>
                     </tbody>
                   </table>
@@ -258,6 +270,69 @@ class MyComponent extends React.Component {
                     </tbody>
                   </table>
                 </div>
+                {
+                  (this.state.userHealth !== undefined && this.state.userHealth !== null) ?
+                    <>
+                      <h4>{t("HealthCheckInfo")}</h4>
+                      <div className="info-tab-content">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td className="info-label">{t("HealthCheckDate")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.EXAMINED_DATE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("ClassificationOfHealthCheck")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.HEALTH_TYPE}</p></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <h4>{t("OccupationalDisease")}</h4>
+                      <div className="info-tab-content">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td className="info-label">{t("DateofOccupationalDiseaseDiagnosis")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.FOUND_DATE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("ClassificationOfOccupationalDisease")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.DISEASED_TYPE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("ReasonsOfOccupationalDisease")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.REASON}</p></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <h4>{t("AccidentsAtWork")}</h4>
+                      <div className="info-tab-content">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td className="info-label">{t("DateOfAccidentsIncurred")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.ACCIDENT_DATE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("LocationOfAccidentsIncurred")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.PLACE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("ClassificationOfAccidentsIncurred")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.ACCIDENT_TYPE}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">{t("ReasonsOfAccidentsIncurred")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.CAUSE_ACCIDENT}</p></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                    : null
+                }
               </Col>
             </Row>
           </Tab>
