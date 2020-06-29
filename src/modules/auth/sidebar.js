@@ -173,4 +173,5 @@ export const Navigation = [
     to: map.Kpi,
     role: "U"
   } 
+  
 ];

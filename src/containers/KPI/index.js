@@ -3,7 +3,7 @@ import { useApi, useFetcher, useGuardStore } from "../../modules";
 import { useTranslation } from "react-i18next";
 import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
-import SuccessFactorInfo from "./SuccessFactorInfo"
+import ShowKPIDetail from "./ShowKPIDetail"
 
 const usePreload = () => {
   const api = useApi();
@@ -18,6 +18,10 @@ const usePreload = () => {
 function General(props) {
   const { t } = useTranslation();  
   document.title = t("KPI General"); 
+
+  const [period, setPeriod] = useState("2020"); 
+  const [showResult, setShowResult] = useState(false); 
+  const resultRef = React.createRef();
 
   const guard = useGuardStore();
   const user = guard.getCurentUser();
@@ -39,21 +43,26 @@ function General(props) {
     return unique    
   }
 
+  function selectPeriodCompleted (value) {    
+    setPeriod(value);
+    resultRef.current.loadData(value);         
+    setShowResult(true);
+  }
+
   if (listAll.data && listAll.data[0]) {      
     const items = listAll.data;
     const kpiInfo = items[0];    
-    var years = getPeriodYear(items);    
+    var years = getPeriodYear(items); 
+    
     return (
         <div>        
            {/* THÔNG TIN NHÂN VIÊN */}
              <StaffInfo UserInfo={user} ManagerFullName={kpiInfo.ManagerFullName}/>
 
            {/* LỰA CHỌN KỲ ĐÁNH GIÁ */}
-             <KPISearch years={years}/>
-
-            {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
-             <SuccessFactorInfo />            
-
+             <KPISearch years={years} selectPeriodCompleted={selectPeriodCompleted}/>
+             
+             <ShowKPIDetail Period={period} ref={resultRef}/>             
         </div>
       );
 
