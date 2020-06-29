@@ -13,9 +13,12 @@ function KPISearch(props) {
        years.push(obj);          
     });      
       
+  
   const searchOnClick = () => {             
     const optionSelected = selectRef.current.state.value.value;    
-    window.location.href=`/kpi/${optionSelected}`;    
+    props.selectPeriodCompleted(optionSelected);
+
+    //window.location.href=`/kpi/${optionSelected}`;    
   }
 
   const customStyles = {

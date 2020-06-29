@@ -7,15 +7,15 @@ class KPIDetailGroupItem extends React.Component {
   constructor(props) {    
     super(props); 
     this.state = {
-      isShowDetail: false     
-    };          
+      isShowDetail: true   
+    };            
   }
-   
+     
   showDetailClick() {    
     this.setState({isShowDetail: !this.state.isShowDetail});
   }
   
-  render() {    
+  render() {      
     return (
       <div>
         <div className="group-item" onClick={e => this.showDetailClick()}>          
