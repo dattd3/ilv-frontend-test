@@ -14,8 +14,10 @@ const usePreload = (params) => {
  
 
 function Benefit() {
-  var jobType = localStorage.getItem('benefitLevel');
-  var result = usePreload([jobType.toLowerCase()]);
+  var benefitLevel = localStorage.getItem('benefitLevel');
+  var jobType = localStorage.getItem('jobType');
+
+  var result = usePreload([benefitLevel.toLowerCase()]);
   if(result && result.data) {
     var items = result.data;
       return (     
