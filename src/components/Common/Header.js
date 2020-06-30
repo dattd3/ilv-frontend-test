@@ -34,6 +34,14 @@ function Header(props) {
 
     const { t } = useTranslation();
 
+    Auth.currentUserInfo().then(currentAuthUser => {
+        if (currentAuthUser === undefined || currentAuthUser === null) {
+            Auth.signOut({ global: true });
+            guard.setLogOut();
+            window.location.reload();
+        }
+    });
+
     const handleClickSetShow = () => {
         SetIsShow(!isShow);
         setShow(isShow);

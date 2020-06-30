@@ -36,8 +36,8 @@ class MyComponent extends React.Component {
           this.setState({ userProfile: userProfile });
         }
       }).catch(error => {
-        localStorage.clear();
-        window.location.href = map.Login;
+        // localStorage.clear();
+        // window.location.href = map.Login;
       });
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
@@ -47,41 +47,41 @@ class MyComponent extends React.Component {
           this.setState({ userDetail: userDetail });
         }
       }).catch(error => {
-        localStorage.clear();
-        window.location.href = map.Login;
+        // localStorage.clear();
+        // window.location.href = map.Login;
       });
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          let userEducation = res.data.data[0];
+          let userEducation = res.data.data;
           this.setState({ userEducation: userEducation });
         }
       }).catch(error => {
-        localStorage.clear();
-        window.location.href = map.Login;
+        // localStorage.clear();
+        // window.location.href = map.Login;
       });
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          let userFamily = res.data.data[0];
+          let userFamily = res.data.data;
           this.setState({ userFamily: userFamily });
         }
       }).catch(error => {
-        localStorage.clear();
-        window.location.href = map.Login;
+        // localStorage.clear();
+        // window.location.href = map.Login;
       });
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/health`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          let userHealth = res.data.data[0]; console.log(userHealth.length);
+          let userHealth = res.data.data[0];
           this.setState({ userHealth: userHealth });
         }
       }).catch(error => {
-        localStorage.clear();
-        window.location.href = map.Login;
+        // localStorage.clear();
+        // window.location.href = map.Login;
       });
   }
 
@@ -92,7 +92,7 @@ class MyComponent extends React.Component {
       if (typeof (obj) == 'object' && obj.length > 0) {
         for (let i = 0; i < obj.length; i++) {
           const element = obj[i];
-          if (isNotNull(element) !== '') {
+          if (isNotNull(element)) {
             result += element + ', '
           }
         }
@@ -103,14 +103,14 @@ class MyComponent extends React.Component {
     }
 
     function isNotNull(input) {
-      if (input !== undefined && input !== null && input !== 'null' && input !== '' && input !== '#') {
-        return input;
+      if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
+        return true;
       }
-      return '';
+      return false;
     }
 
     const { t } = this.props;
-    
+
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
@@ -132,11 +132,11 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("SocialInsuranceNumber")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.insurance_number}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("TaxCode")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.tax_number}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("DateOfBirth")}</td>
@@ -160,7 +160,7 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("Religion")}</td>
-                        <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? t("None") : this.state.userDetail.religion}</p></td>
+                        <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? this.state.userDetail.religion : t("None")}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("IdentityPasportNo")}</td>
@@ -176,7 +176,7 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("WorkPermitNo")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.work_permit_no}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("WorkPermitExpireDate")}</td>
@@ -225,11 +225,11 @@ class MyComponent extends React.Component {
                     <tbody>
                       <tr>
                         <td className="info-label">{t("GroupJoinedDate")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_inc}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("CompanyJoinedDate")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_co}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("CompanyEmail")}</td>
@@ -279,11 +279,11 @@ class MyComponent extends React.Component {
                           <tbody>
                             <tr>
                               <td className="info-label">{t("HealthCheckDate")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.EXAMINED_DATE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.examined_date}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ClassificationOfHealthCheck")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.HEALTH_TYPE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.health_type}</p></td>
                             </tr>
                           </tbody>
                         </table>
@@ -294,15 +294,15 @@ class MyComponent extends React.Component {
                           <tbody>
                             <tr>
                               <td className="info-label">{t("DateofOccupationalDiseaseDiagnosis")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.FOUND_DATE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.found_date}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ClassificationOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.DISEASED_TYPE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.diseased_type}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ReasonsOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.REASON}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.reason}</p></td>
                             </tr>
                           </tbody>
                         </table>
@@ -313,19 +313,19 @@ class MyComponent extends React.Component {
                           <tbody>
                             <tr>
                               <td className="info-label">{t("DateOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.ACCIDENT_DATE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_date}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("LocationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.PLACE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.place}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ClassificationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.ACCIDENT_TYPE}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_type}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ReasonsOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.CAUSE_ACCIDENT}</p></td>
+                              <td className="info-value"><p>&nbsp;{this.state.userHealth.cause_accident}</p></td>
                             </tr>
                           </tbody>
                         </table>
@@ -341,7 +341,7 @@ class MyComponent extends React.Component {
               {
                 (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
                   <><h4>{t("Diploma")}</h4>
-                    {this.state.userDetail.education.map((item, i) => {
+                    {this.state.userEducation.map((item, i) => {
                       return <div key={i}>
                         <Row className="info-label">
                           <Col xs={12} md={6} lg={3}>
@@ -359,16 +359,16 @@ class MyComponent extends React.Component {
                         </Row>
                         <Row className="info-value">
                           <Col xs={12} md={6} lg={3}>
-                            <p>{isNotNull(item.university_name) ? item.university_name : item.other_uni_name}</p>
+                            <p>&nbsp;{isNotNull(item.university_name) ? item.university_name : item.other_uni_name}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            <p>{item.academic_level}</p>
+                            <p>&nbsp;{item.academic_level}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            <p>{item.major}</p>
+                            <p>&nbsp;{item.major}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            <p>{item.from_time} - {item.to_time}</p>
+                            <p>&nbsp;{item.from_time} - {item.to_time}</p>
                           </Col>
                         </Row>
                       </div>;
@@ -424,22 +424,22 @@ class MyComponent extends React.Component {
                     </Row>
                     <Row className="info-value">
                       <Col xs={12} md={6} lg={3}>
-                        <p>{item.full_name}</p>
+                        <p>&nbsp;{item.full_name}</p>
                       </Col>
                       <Col xs={12} md={6} lg={1}>
-                        <p>{item.relation}</p>
+                        <p>&nbsp;{item.relation}</p>
                       </Col>
                       <Col xs={12} md={6} lg={2}>
-                        <p>{item.dob}</p>
+                        <p>&nbsp;{item.dob}</p>
                       </Col>
                       <Col xs={12} md={6} lg={2}>
-                        <p>{item.tax_number}</p>
+                        <p>&nbsp;{item.tax_number}</p>
                       </Col>
                       <Col xs={12} md={6} lg={1}>
-                        <p>{item.is_reduceed}</p>
+                        <p>&nbsp;{item.is_reduceed}</p>
                       </Col>
                       <Col xs={12} md={6} lg={3}>
-                        <p>{item.from_date} - {item.to_date}</p>
+                        <p>&nbsp;{item.from_date} - {item.to_date}</p>
                       </Col>
                     </Row>
                   </div>;
