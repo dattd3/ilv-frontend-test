@@ -4,9 +4,9 @@ export default function NoteItem(props) {
   var title = props.title.toUpperCase();
   
   const style = {
-    'margin-left': '10px',
-    'margin-top': '10px',
-    'margin-bottom': '25px',
+    'marginLeft': '10px',
+    'marginTop': '10px',
+    'marginBottom': '25px',
     'font': 'Italic 16px/24px Helvetica Neue'    
   };
 

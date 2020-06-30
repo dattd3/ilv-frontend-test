@@ -14,20 +14,20 @@ const usePreload = (params) => {
     return data;
 };
  
-
 function Benefit() {
   var benefitLevel = localStorage.getItem('benefitLevel');
-  var jobType = localStorage.getItem('jobType');
- 
+  var jobType = localStorage.getItem('jobType');   
   var result = usePreload([benefitLevel.toLowerCase()]);
   if(result && result.data) {
     var items = result.data;
       return (     
         <div> 
-          <div className="level-job-title">                             
+          <span className="level-job-title">                             
               <img src={IconLevelUrl} alt="Icon Level" className="icon-level"/>
-              <span style={{'color':'red'}}> Cấp Phúc Lợi: <b>{jobType}</b> </span>
-          </div>
+              <span style={{'color':'red'}}> Cấp Phúc Lợi: <b>{jobType}</b> &nbsp; </span>
+          </span>
+          <br/>
+          <br/>
           {      
             items.map((item,index) =>  
                <div key={index}>  
