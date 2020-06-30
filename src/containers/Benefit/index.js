@@ -1,6 +1,7 @@
 import React from 'react';
 import BenefitItem from './BenefitItem'
 import { useApi, useFetcher } from "../../modules";
+import NoteItem from './NoteItem'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -26,8 +27,8 @@ function Benefit() {
           {      
             items.map((item,index) =>  
                <div key={index}>  
-                   <BenefitItem key={index} data={item}/>
-                   <br/>
+                   <BenefitItem key={index} data={item}/>                   
+                   <NoteItem title={item.title}/>
                </div>
             )
           }
