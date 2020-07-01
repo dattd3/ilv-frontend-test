@@ -7,7 +7,7 @@ class KPIDetailGroupItem extends React.Component {
   constructor(props) {    
     super(props); 
     this.state = {
-      isShowDetail: true   
+      isShowDetail: false   
     };            
   }
      
