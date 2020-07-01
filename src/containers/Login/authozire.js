@@ -62,6 +62,13 @@ function Authorize(props) {
         if (user) {
             SetNotifyContent(t("LoginSuccessful"));
             SetIsGetUser(true);
+
+            var benefitLevel = "";
+            if(user.benefit_level) {
+                benefitLevel = user.benefit_level;
+            } else {
+                benefitLevel = user.rank_name;
+            }
                                     
             guard.setIsAuth({
                 tokenType: 'Bearer',
@@ -73,7 +80,7 @@ function Authorize(props) {
                 fullName: user.fullname,
                 jobTitle: user.job_name,
                 jobId: user.job_id,
-                benefitLevel: user.benefit_level? user.benefit_level : user.rank_name,
+                benefitLevel: benefitLevel,
                 company: user.pnl,
                 sabaId: `saba-${user.uid}`,
                 employeeNo: user.uid,
