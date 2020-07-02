@@ -61,16 +61,16 @@ class MyComponent extends React.Component {
                                             <Col xs={12} md={6} lg={3}>
                                                 {t("LaborContractNo")}
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={3}>
                                                 {t("LaborContractType")}
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={1}>
                                                 {t("LaborContractStartDate")}
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={1}>
                                                 {t("LaborContractEndDate")}
                                             </Col>
-                                            <Col xs={12} md={6} lg={3}>
+                                            <Col xs={12} md={6} lg={4}>
                                                 {t("LaborContractIssuesBy")}
                                             </Col>
                                         </Row>
@@ -78,16 +78,16 @@ class MyComponent extends React.Component {
                                             <Col xs={12} md={6} lg={3}>
                                                 <p>&nbsp;{item.contract_number}</p>
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={3}>
                                                 <p>&nbsp;{item.contract_type}</p>
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={1}>
                                                 <p>&nbsp;{item.from_time}</p>
                                             </Col>
-                                            <Col xs={12} md={6} lg={2}>
+                                            <Col xs={12} md={6} lg={1}>
                                                 <p>&nbsp;{item.to_time}</p>
                                             </Col>
-                                            <Col xs={12} md={6} lg={3}>
+                                            <Col xs={12} md={6} lg={4}>
                                                 <p>&nbsp;{item.company_name}</p>
                                             </Col>
                                         </Row>
@@ -96,7 +96,7 @@ class MyComponent extends React.Component {
                             }
                         </Container>
                     </Tab>
-                    <Tab eventKey="CommendationViolation" title={t("CommendationViolation")}>
+                    {/* <Tab eventKey="CommendationViolation" title={t("CommendationViolation")}>
                         <Row>
                             <Col>
                                 <h4>{t("Felicitation")}</h4>
@@ -113,7 +113,7 @@ class MyComponent extends React.Component {
                                 </div>
                             </Col>
                         </Row>
-                    </Tab>
+                    </Tab> */}
                 </Tabs>
             </div>
         )

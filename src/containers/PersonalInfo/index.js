@@ -237,11 +237,11 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("CurrentTitle")}</td>
-                        <td className="info-value"><p>&nbsp; {this.state.userProfile.job_name}</p></td>
+                        <td className="info-value"><p>&nbsp; {this.state.userProfile.current_position}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("LevelByTitle")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.group_title_name}</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name_title}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("ActualLevel")}</td>
@@ -252,20 +252,32 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.benefit_level}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("DepartmentName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("RegionName")}</td>
+                        <td className="info-label">{t("DivisionName")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.division}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("PropertyName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("DepartmentName")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.part}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("RegionName")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.department}</p></td>
                       </tr>
                       <tr>
+                        <td className="info-label">{t("CompanyPhone")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.fix_phone}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("CompanyPhoneExtension")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.extension_no}</p></td>
+                      </tr>
+                      <tr>
                         <td className="info-label">{t("WorkingAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userProfile.wards, this.state.userProfile.district, this.state.userProfile.province])}</p></td>
+                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userProfile.building, this.state.userProfile.street_name, this.state.userProfile.wards, this.state.userProfile.district, this.state.userProfile.province])}</p></td>
                       </tr>
                     </tbody>
                   </table>
@@ -433,13 +445,13 @@ class MyComponent extends React.Component {
                         <p>&nbsp;{item.dob}</p>
                       </Col>
                       <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.tax_number}</p>
+                        <p>&nbsp;{isNotNull(item.tax_number) ? item.tax_number : ""}</p>
                       </Col>
                       <Col xs={12} md={6} lg={1}>
-                        <p>&nbsp;{item.is_reduceed}</p>
+                        <p style={{ background: "none" }}>&nbsp;{isNotNull(item.is_reduced) ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
                       </Col>
                       <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{item.from_date} - {item.to_date}</p>
+                        <p>&nbsp;{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</p>
                       </Col>
                     </Row>
                   </div>;
