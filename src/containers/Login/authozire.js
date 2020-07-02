@@ -62,6 +62,14 @@ function Authorize(props) {
         if (user) {
             SetNotifyContent(t("LoginSuccessful"));
             SetIsGetUser(true);
+
+            var benefitTitle = "";
+            if(user.benefit_level) {
+                benefitTitle = user.benefit_level;                
+            } else {
+                benefitTitle = user.rank_name;
+            }
+                                    
             guard.setIsAuth({
                 tokenType: 'Bearer',
                 accessToken: jwtToken,
@@ -73,10 +81,11 @@ function Authorize(props) {
                 jobTitle: user.job_name,
                 jobId: user.job_id,
                 benefitLevel: user.benefit_level || user.employee_level,
+                benefitTitle: benefitTitle,
                 company: user.pnl,
                 sabaId: `saba-${user.uid}`,
                 employeeNo: user.uid,
-                jobType: user.rank_name,
+                jobType: user.rank_name,                
                 department: `${user.division} / ${user.department} / ${user.unit}`
             });
             history.push(map.Dashboard);
