@@ -23,15 +23,24 @@ function Header(props) {
     const guard = useGuardStore();
 
     const userLogOut = () => {
-        guard.setLogOut();
         try {
+            guard.setLogOut();
             Auth.signOut({ global: true });
         } catch  {
-
+            guard.setLogOut();
+            window.location.reload();
         }
     }
 
     const { t } = useTranslation();
+
+    Auth.currentUserInfo().then(currentAuthUser => {
+        if (currentAuthUser === undefined || currentAuthUser === null) {
+            Auth.signOut({ global: true });
+            guard.setLogOut();
+            window.location.reload();
+        }
+    });
 
     const handleClickSetShow = () => {
         SetIsShow(!isShow);

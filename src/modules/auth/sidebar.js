@@ -143,7 +143,7 @@ export const Navigation = [
   },
   {
     id: 99,
-    parentId: 17,
+    parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Phúc lợi",
     to: map.Benefit,
@@ -164,5 +164,14 @@ export const Navigation = [
     label: "Notification",
     to: map.Notify,
     role: "U"
-  }
+  },
+  {
+    id: 21,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_KPI",
+    to: map.Kpi,
+    role: "U"
+  } 
+  
 ];

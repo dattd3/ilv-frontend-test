@@ -30,37 +30,20 @@ function MainLayout(props) {
   //   }
   // }
 
-  if (user.sabaId && user.sabaId !== undefined && user.sabaId !== '') {
-    return (
-      <>
-        <SideBar show={show} />
-        <div id="content-wrapper" className="d-flex flex-column">
-          <div id="content">
-            <Header user={user} setShow={setShow} isApp={isApp} />
-            <div className="container-fluid" id='main-content'>
-              <NestedRoute routes={props.routes} />
-            </div>
+  return (
+    <>
+      <SideBar show={show} />
+      <div id="content-wrapper" className="d-flex flex-column">
+        <div id="content">
+          <Header user={user} setShow={setShow} isApp={isApp} />
+          <div className="container-fluid" id='main-content'>
+            <NestedRoute routes={props.routes} />
           </div>
-          <Footer />
         </div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <SideBar show={show} />
-        <div id="content-wrapper" className="d-flex flex-column">
-          <div id="content">
-            <Header user={user} setShow={setShow} isApp={isApp} />
-            <div className="container-fluid" id='main-content'>
-              {t("NotConnectToSaba")}
-            </div>
-          </div>
-          <Footer />
-        </div>
-      </>
-    );
-  }
+        <Footer />
+      </div>
+    </>
+  );
 }
 
 export default observer(MainLayout);

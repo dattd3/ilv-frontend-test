@@ -34,8 +34,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:staging":"rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
-    "build:production":"npm run-script build",
+    "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
+    "build:staging:linux": "mv .env.staging .env.production.local && npm run-script build && mv .env.production.local .env.staging",
+    "build:production": "npm run-script build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

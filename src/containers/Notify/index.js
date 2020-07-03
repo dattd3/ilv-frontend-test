@@ -3,6 +3,7 @@ import { useApi, useFetcher } from "../../modules";
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import CustomPaging from '../../components/Common/CustomPaging';
+import { Link } from "react-router-dom";
 
 const usePreload = (params) => {
   const api = useApi();
@@ -59,33 +60,27 @@ function Notification(props) {
     
     const objDataRes = result.data.notifications;
 
-    console.log(objDataRes);
+    //console.log(objDataRes);
 
     const total = result.data.total;
-        
+          
     tableData = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
     
       <thead>
-        <tr>                
-          <th>{t("Notification_Title")}</th>
-          <th>{t("Notification_Content")}</th>
-          <th>{t("TOPIC")} ({t("Notification_Facility")})</th>   
-          <th>{t("Notification_Type")}</th>
-          <th>{t("Notification_Created_By")}</th>            
-          <th>{t("Notification_Created_Date")}</th>          
+        <tr>                          
+          <th style={{"width":"80%"}}> {t("Notification_Title")} </th>                                    
+          <th> {t("Notification_Created_Date")} </th>                 
         </tr>
       </thead>
 
       <tbody>
         {
           objDataRes.map((item, i) => {
-            return <tr key={i}>              
-              <td>{item.title}</td>                            
-              <td>{item.content}</td>
-              <td>{item.topic_name}</td>
-              <td>{ string_of_notification_type(item.type)}</td>
-              <td>{item.created_by}</td>              
-              <td>{item.created_date }</td>              
+            return <tr key={i}>                            
+              <td>                                     
+                  <Link to={`/notify/${item.id}`}> {item.title} </Link>
+              </td> 
+              <td>{item.created_date }</td>
             </tr>;
           })
         }
@@ -93,7 +88,7 @@ function Notification(props) {
      
       <tfoot>
         <tr>
-          <td colSpan={4}>
+          <td colSpan={3}>
             <Row>
               <Col className='total'>
                 {t("Total")}: {total}

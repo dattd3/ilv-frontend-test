@@ -14,7 +14,9 @@ export default {
   PersonalInfo: "/personal-info",
   WorkingProcess: "/working-process",
   Benefit: "/benefit",
+
   Notify: "/notify",
+  NotifyDetail: "/notify/:id",
 
   //Checklist
   CheckListCreate: "/checklist/create",
@@ -32,5 +34,7 @@ export default {
   AccessDenied: "/access-denied",
   BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
-  Job: "/job"
+  Job: "/job",  
+  Kpi: "/kpi",
+  KpiDetail: "/kpi/:id"  
 };

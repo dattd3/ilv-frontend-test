@@ -6,7 +6,6 @@ export default function JobDescriptionContent(props) {
 
   var { titleSAP, description, generalDescription } = props.data;
 
-  console.log(description);
 
   const descView = description
     ? description.split("\n").map((item, key) => {

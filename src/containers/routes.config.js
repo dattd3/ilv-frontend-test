@@ -201,13 +201,38 @@ export default [
             path: map.Notify
           },
           component: lazy(() => import("./Notify"))
-        }, {
+        }, 
+        {
+          key: "notify-detail",
+          routeProps: {
+            exact: true,
+            path: map.NotifyDetail
+          },
+          component: lazy(() => import("./Notify/NotifyDetail"))
+        },
+        {
           key: "benefit",
           routeProps: {
             exact: true,
             path: map.Benefit
           },
           component: lazy(() => import("./Benefit"))
+        },        
+        {
+          key: "kpi",
+          routeProps: {
+            exact: true,
+            path: map.Kpi
+          },
+          component: lazy(() => import("./KPI"))
+        },        
+        {
+          key: "kpi-detail",
+          routeProps: {
+            exact: true,
+            path: map.KpiDetail
+          },
+          component: lazy(() => import("./KPI/KPIDetail"))
         },
         {
           key: "forbidden",

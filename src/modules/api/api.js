@@ -252,6 +252,27 @@ export default class Api {
           page_size: page_size
         }
       });
+  };
+
+  getPeriodKpiGeneral = async () => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/period/general`, {
+        params: {                        
+        }
+      });
+  };
+  
+  fetchListKpiGeneralAll = async () => {
+     return await this.request.get(      
+      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`);
+  };
+
+  fetchNotificationDetail = async (notifyId) => {
+     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/detail`, {
+        params: {          
+          notifyId: notifyId          
+        }
+      });
   }
 
 }
