@@ -64,8 +64,8 @@ function Authorize(props) {
             SetIsGetUser(true);
 
             var benefitTitle = "";
-            if(user.benefit_level) {
-                benefitTitle = user.benefit_level;                
+            if(user.benefit_level && user.benefit_level !== '#') {
+                benefitTitle = user.benefit_level;
             } else {
                 benefitTitle = user.rank_name;
             }
