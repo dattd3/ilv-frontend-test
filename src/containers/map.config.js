@@ -12,6 +12,7 @@ export default {
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
   PersonalInfo: "/personal-info",
+  Timesheet: "/timesheet",
   WorkingProcess: "/working-process",
   Benefit: "/benefit",
 
@@ -36,5 +37,5 @@ export default {
   JobUpload: "/job/upload",
   Job: "/job",  
   Kpi: "/kpi",
-  KpiDetail: "/kpi/:id"  
+  KpiDetail: "/kpi/:id"
 };
