@@ -3,7 +3,7 @@ import React from "react"
 class TimesheetSummary extends React.Component {
     render() {
       return <div className="summary">
-        <div className="card">
+        <div className="card shadow">
           <div className="card-header bg-primary text-white">TỔNG HỢP NGÀY CÔNG</div>
           <div className="card-body">
           <div class="row">

@@ -1,3 +1,6 @@
+@import './assets/scss/job-description.scss';
+@import './assets/scss/timesheet.scss';
+
 @font-face {
   font-family: "icomoon";
   src: url("./assets/fonts/icomoon.eot?kpoxqk");
@@ -1342,4 +1345,9 @@ span.badge-notification[data-badge]::after {
     border: 1px solid #FF0000;
     border-radius: 20px;
     padding: 10px;       
+  }
+  .multiline
+  {
+     white-space: pre-wrap;
+     line-height: 2;
   }
