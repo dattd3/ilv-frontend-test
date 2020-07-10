@@ -1,7 +1,9 @@
 import React from "react"
 
 class TimesheetSummary extends React.Component {
+
     render() {
+
       return <div className="summary">
         <div className="card shadow">
           <div className="card-header bg-primary text-white">TỔNG HỢP NGÀY CÔNG</div>
@@ -33,32 +35,32 @@ class TimesheetSummary extends React.Component {
             </div>
           </div>
 
-          <div class="row">
+          {this.props.timsheetSummary ? <div class="row">
             <div class="col">
-              <div className="content text-center text-danger">24</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.working_day_plan}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">24</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.actual_working}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.paid_leave}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.attendance + this.props.timsheetSummary.trainning}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.working_deal}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.unpaid_leave}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.total_overtime}</div>
             </div>
             <div class="col">
-              <div className="content text-center text-danger">22</div>
+              <div className="content text-center text-danger">{this.props.timsheetSummary.salary_wh}</div>
             </div>
-          </div>
+          </div> : null}
           </div>
         </div>
       </div>

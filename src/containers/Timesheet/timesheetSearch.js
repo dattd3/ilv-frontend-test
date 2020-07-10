@@ -1,12 +1,13 @@
-import React from "react"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+import React from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import moment from 'moment'
 
 class TimesheetSearch extends React.Component {
   constructor() {
     super();
     this.state = {
-      startDate: new Date(),
+      startDate: moment().startOf('month').toDate(),
       endDate: new Date()
     }
 
@@ -39,7 +40,7 @@ class TimesheetSearch extends React.Component {
       <div className="row">
         <div className="col">
           <div className="title">Từ ngày</div>
-          <div className="content">
+          <div className="content input-container">
               <DatePicker 
                 name="startDate" 
                 selectsStart 
@@ -48,12 +49,14 @@ class TimesheetSearch extends React.Component {
                 endDate={this.state.endDate}
                 onChange={this.setStartDate}
                 dateFormat="dd/MM/yyyy"
-                className="form-control form-control-lg"/>
+                className="form-control form-control-lg input"/>
+                <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+                
           </div>
         </div>
         <div className="col">
           <div className="title">Đến ngày</div>
-          <div className="content">
+          <div className="content input-container">
             <DatePicker 
               name="endDate" 
               selectsEnd 
@@ -61,7 +64,8 @@ class TimesheetSearch extends React.Component {
               minDate={this.state.startDate} 
               onChange={this.setEndDate}
               dateFormat="dd/MM/yyyy"
-              className="form-control form-control-lg"/>
+              className="form-control form-control-lg input"/>
+            <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
           </div>
         </div>
         <div className="col">
