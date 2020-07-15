@@ -54,7 +54,7 @@ function Dashboard(props) {
     grdRed.addColorStop(1, "#FD5D11");
 
     return {
-      labels: [t("Status_NotDoneYet"), t("Status_Done")],
+      labels: ["DONE", "NOT DONE"],
       datasets: [{
         data: [100 - sbCredit.perLearned, sbCredit.perLearned],
         title: {
