@@ -137,6 +137,15 @@ export default [
           },
           component: lazy(() => import("./PersonalInfo"))
         },
+
+        {
+          key: "timesheet",
+          routeProps: {
+            exact: true,
+            path: map.Timesheet
+          },
+          component: lazy(() => import("./Timesheet"))
+        },
         
         {
           key: "working-process",

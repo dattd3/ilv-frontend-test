@@ -172,6 +172,15 @@ export const Navigation = [
     label: "Menu_KPI",
     to: map.Kpi,
     role: "U"
+  },
+
+  {
+    id: 22,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_Timesheet",
+    to: map.Timesheet,
+    role: "U"
   } 
   
 ];
