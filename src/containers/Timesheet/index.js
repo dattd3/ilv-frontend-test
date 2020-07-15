@@ -33,7 +33,6 @@ class Timesheet extends React.Component {
         .then(res => {
           if (res && res.data && res.data.data) {
             const timsheetSummary = res.data.data[0]
-            console.log(timsheetSummary)
             this.setState({ timsheetSummary: timsheetSummary, isSearch: true })
           }
         }).catch(error => {
@@ -45,7 +44,6 @@ class Timesheet extends React.Component {
         .then(res => {
           if (res && res.data && res.data.data) {
             const timesheets = res.data.data
-            console.log(timesheets)
             this.setState({ timesheets: timesheets, isSearch: true })
           }
         }).catch(error => {
@@ -66,7 +64,6 @@ class Timesheet extends React.Component {
         : this.state.isSearch ? 
           <div class="alert alert-warning shadow" role="alert">Không tìm thấy dữ liệu</div> 
         : null
-      
       }
       </div>)
     }

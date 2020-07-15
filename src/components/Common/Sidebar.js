@@ -32,7 +32,7 @@ function SideBar(props) {
     const content = getNavigation(user.jobType); 
 
     return (
-        <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block' : 'bg-vp-blue sidebar'}>
+        <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block shadow' : 'bg-vp-blue sidebar shadow'}>
             <a href="/">
                 <img className='vp-logo' src={logo} alt='My Vinpearl' />
             </a>

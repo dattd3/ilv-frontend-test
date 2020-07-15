@@ -146,6 +146,15 @@ export default [
           },
           component: lazy(() => import("./Timesheet"))
         },
+
+        {
+          key: "leaveTime",
+          routeProps: {
+            exact: true,
+            path: map.LeaveTime
+          },
+          component: lazy(() => import("./LeaveTime"))
+        },
         
         {
           key: "working-process",

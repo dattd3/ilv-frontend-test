@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 
-class TimesheetSearch extends React.Component {
+class LeaveTimeSearch extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -35,8 +35,8 @@ class TimesheetSearch extends React.Component {
 
   render() {
     return <>
-    <h5 className="searchTitle">LỰA CHỌN HIỂN THỊ NGÀY CÔNG</h5>
-    <div className="timesheet-box shadow">
+    <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ NGÀY NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
+    <div className="search-box shadow">
       <div className="row">
         <div className="col">
           <div className="title">Từ ngày</div>
@@ -81,4 +81,4 @@ class TimesheetSearch extends React.Component {
     </>
   }
 }
-export default TimesheetSearch;
+export default LeaveTimeSearch
