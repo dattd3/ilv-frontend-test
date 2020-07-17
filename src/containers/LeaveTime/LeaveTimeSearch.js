@@ -1,7 +1,9 @@
 import React from 'react'
-import DatePicker from 'react-datepicker'
+import DatePicker, {registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import vi from 'date-fns/locale/vi'
+registerLocale("vi", vi)
 
 class LeaveTimeSearch extends React.Component {
   constructor() {
@@ -39,8 +41,9 @@ class LeaveTimeSearch extends React.Component {
     <div className="search-box shadow">
       <div className="row">
         <div className="col">
-          <div className="title">Từ ngày</div>
+          <div className="title">Từ kỳ lương</div>
           <div className="content input-container">
+            <label>
               <DatePicker 
                 name="startDate" 
                 selectsStart 
@@ -48,15 +51,18 @@ class LeaveTimeSearch extends React.Component {
                 startDate={this.state.startDate}
                 endDate={this.state.endDate}
                 onChange={this.setStartDate}
-                dateFormat="dd/MM/yyyy"
+                dateFormat="MM/yyyy"
+                locale="vi"
+                showMonthYearPicker
                 className="form-control form-control-lg input"/>
                 <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
-                
+              </label> 
           </div>
         </div>
         <div className="col">
-          <div className="title">Đến ngày</div>
+          <div className="title">Đến kỳ lương</div>
           <div className="content input-container">
+          <label>
             <DatePicker 
               name="endDate" 
               selectsEnd 
@@ -65,9 +71,12 @@ class LeaveTimeSearch extends React.Component {
               startDate={this.state.startDate}
               endDate={this.state.endDate}
               onChange={this.setEndDate}
-              dateFormat="dd/MM/yyyy"
+              showMonthYearPicker
+              dateFormat="MM/yyyy"
+              locale="vi"
               className="form-control form-control-lg input"/>
             <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+            </label>
           </div>
         </div>
         <div className="col">
@@ -76,6 +85,9 @@ class LeaveTimeSearch extends React.Component {
           <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>Tìm kiếm</button>
           </div>
         </div>
+      </div>
+      <div className="note">
+        <i>* Chỉ được chọn trong 1 năm, không được chọn giữa 2 năm</i>
       </div>
     </div>
     </>
