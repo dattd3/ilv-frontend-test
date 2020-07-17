@@ -126,7 +126,16 @@ export const Navigation = [
     label: "PersonalInformation",
     to: map.PersonalInfo,
     role: 'U'
-  }, {
+  },
+  {
+    id: 18,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "MyJob",
+    to: map.Job,
+    role: 'U'
+  }
+  , {
     id: 30,
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
@@ -151,7 +160,7 @@ export const Navigation = [
   },
   {
     id: 19,
-    parentId: 10,
+    parentId: 18,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
@@ -167,7 +176,7 @@ export const Navigation = [
   },
   {
     id: 21,
-    parentId: 10,
+    parentId: 18,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI",
     to: map.Kpi,

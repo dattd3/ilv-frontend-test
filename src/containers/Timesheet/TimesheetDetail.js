@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Button from 'react-bootstrap/Button'
 import Fade from 'react-bootstrap/Fade'
 
@@ -14,10 +14,6 @@ function WorkingDay(props) {
 
 function Content(props) {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    console.log('1111')
-  })
 
   return (
     <>

@@ -1,7 +1,9 @@
 import React from 'react'
-import DatePicker from 'react-datepicker'
+import DatePicker, {registerLocale} from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import vi from 'date-fns/locale/vi'
+registerLocale("vi", vi)
 
 class TimesheetSearch extends React.Component {
   constructor() {
@@ -41,6 +43,7 @@ class TimesheetSearch extends React.Component {
         <div className="col">
           <div className="title">Từ ngày</div>
           <div className="content input-container">
+            <label>
               <DatePicker 
                 name="startDate" 
                 selectsStart 
@@ -49,25 +52,29 @@ class TimesheetSearch extends React.Component {
                 endDate={this.state.endDate}
                 onChange={this.setStartDate}
                 dateFormat="dd/MM/yyyy"
+                locale="vi"
                 className="form-control form-control-lg input"/>
                 <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
-                
+            </label>
           </div>
         </div>
         <div className="col">
           <div className="title">Đến ngày</div>
           <div className="content input-container">
-            <DatePicker 
-              name="endDate" 
-              selectsEnd 
-              selected={this.state.endDate} 
-              minDate={this.state.startDate}
-              startDate={this.state.startDate}
-              endDate={this.state.endDate}
-              onChange={this.setEndDate}
-              dateFormat="dd/MM/yyyy"
-              className="form-control form-control-lg input"/>
-            <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+          <label>
+              <DatePicker 
+                name="endDate" 
+                selectsEnd 
+                selected={this.state.endDate} 
+                minDate={this.state.startDate}
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+                onChange={this.setEndDate}
+                dateFormat="dd/MM/yyyy"
+                locale="vi"
+                className="form-control form-control-lg input"/>
+              <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+            </label>
           </div>
         </div>
         <div className="col">

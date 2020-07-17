@@ -1,4 +1,8 @@
 .leave-time-page {
+    .searchTitle {
+        font-weight: bold;
+        color: #2a377c;
+    }
     .summary {
         margin: 30px 10px;
         .box {
@@ -74,7 +78,7 @@
             }
             .input-img {
                 position: absolute;
-                bottom: 14px;
+                bottom: 22px;
                 left: 270px;
                 width: 24px;
                 height: 24px;
@@ -87,6 +91,11 @@
     
         .btnSearch {
             width: 100%;
+        }
+
+        .note {
+            display: block;
+            margin-left: 5px;
         }
     }
 

@@ -18,7 +18,6 @@ function JDOther(props) {
     <div className="content">
       {props.content}
     </div>
-    <br/>
   </>
 }
 
@@ -36,12 +35,12 @@ function displayOther(data) {
 
 function JobDescriptionPage() {
   var jobType = localStorage.getItem("jobId")
-  // var jobType = "95012727"
+  // var jobType = "95007240"
   var result = usePreload([jobType])
-  console.log(result.data)
 
   return (
     result.data ? <div className="jd-section">
+      <div id="benefit-title"> {result.data.titleSAP} </div>
       <JobDescriptionContent bg="primary" headerTitle="MÔ TẢ CÔNG VIỆC CHUNG" content={result.data.generalDescription} />
       <JobDescriptionContent bg="success" headerTitle="MÔ TẢ ĐẶC THÙ CÔNG VIỆC CHUYÊN MÔN" content={result.data.description} />
       <JobDescriptionContent bg="warning" headerTitle="NĂNG LỰC / KỸ NĂNG / TRÌNH ĐỘ / TIÊU CHUẨN" content={displayOther(result.data)} />
