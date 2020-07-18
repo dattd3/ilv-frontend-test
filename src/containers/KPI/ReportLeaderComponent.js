@@ -4,18 +4,7 @@ class ReportLeaderComponent extends React.Component {
 
   constructor(props) {    
     super(props);    
-
-    //console.log("***** ReportLeaderComponent ***");
-    //console.log("props:",props);
-
-    var ManagerAtFormComplete = props.kpiInfo.ManagerAtFormComplete;
-    if(ManagerAtFormComplete == null || ManagerAtFormComplete.length == 0) {
-       ManagerAtFormComplete = props.kpiInfo.ManagerFullName;               
-    } 
-       
-    this.state = {
-      ManagerAtFormComplete: ManagerAtFormComplete    
-    };      
+    
   }
 
   render() {        
@@ -93,7 +82,7 @@ class ReportLeaderComponent extends React.Component {
                               <div className="card-body" style={{'padding':'0px'}}>                                  
                                   <hr className="hr-remove-margin"></hr>
                                   <div className="text-center">CBQL đánh giá:</div>
-                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.state.ManagerAtFormComplete}</div>
+                                  <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.ManagerAtFormComplete}</div>
                                   <hr className="hr-remove-margin"></hr>
                               </div>
                               <div className="card-body" style={{'padding':'0px'}}>
