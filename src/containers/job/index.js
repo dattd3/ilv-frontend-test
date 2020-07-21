@@ -41,9 +41,9 @@ function JobDescriptionPage() {
   return (
     result.data ? <div className="jd-section">
       <div id="benefit-title"> {result.data.titleSAP} </div>
-      <JobDescriptionContent bg="primary" headerTitle="MÔ TẢ CÔNG VIỆC CHUNG" content={result.data.generalDescription} />
-      <JobDescriptionContent bg="success" headerTitle="MÔ TẢ ĐẶC THÙ CÔNG VIỆC CHUYÊN MÔN" content={result.data.description} />
-      <JobDescriptionContent bg="warning" headerTitle="NĂNG LỰC / KỸ NĂNG / TRÌNH ĐỘ / TIÊU CHUẨN" content={displayOther(result.data)} />
+      <JobDescriptionContent bg="primary" headerTitle="MÔ TẢ CÔNG VIỆC QUẢN TRỊ CHUNG" content={result.data.generalDescription} />
+      <JobDescriptionContent bg="success" headerTitle="MÔ TẢ CÔNG VIỆC CHUYÊN MÔN ĐẶC THÙ" content={result.data.description} />
+      <JobDescriptionContent bg="warning" headerTitle="KINH NGHIỆM, NĂNG LỰC, KỸ NĂNG CẦN THIẾT" content={displayOther(result.data)} />
     </div> : null
     )
 }

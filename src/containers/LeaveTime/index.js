@@ -54,6 +54,7 @@ class LeaveTimePage extends React.Component {
 
         const start = moment(startDate).format('YYYYMMDD').toString()
         const end = moment(endDate).format('YYYYMMDD').toString()
+        console.log(start)
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence/detail?from_time=${start}&to_time=${end}`, config)
         .then(res => {
@@ -91,13 +92,13 @@ class LeaveTimePage extends React.Component {
             <><LeaveTimeDetail 
                 bg="primary" 
                 headerTitle="NGÀY PHÉP NĂM"
-                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày phép phát sinh', expiryDate: 'Hạn sử dụng', usedAnnualLeave: 'Số ngày phép đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headers={{month: 'Kỳ lương', annualLeaveOfArising: 'Số ngày phép phát sinh', expiryDate: 'Hạn sử dụng', usedAnnualLeave: 'Số ngày phép đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
                 data={this.state.annualLeaves} 
             />
             <LeaveTimeDetail 
                 bg="success" 
                 headerTitle="NGÀY NGHỈ BÙ" 
-                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày bù phát sinh', expiryDate: 'Hạn sử dụng', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headers={{month: 'Kỳ lương', annualLeaveOfArising: 'Số ngày bù phát sinh', expiryDate: 'Hạn sử dụng', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
                 data={this.state.RosteredDayOffs} 
             /></> : null}
         </div>
