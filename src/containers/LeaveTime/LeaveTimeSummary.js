@@ -111,7 +111,7 @@ function LeaveTimeSummary(props) {
                     </div>
                     <hr/>
                     <div className="d-block text-center">
-                        TỔNG SỐ NGÀY PHÉP CÒN ĐƯỢC SỬ DỤNG
+                        <b>TỔNG SỐ NGÀY PHÉP CÒN ĐƯỢC SỬ DỤNG</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
                         {displayMeric((annualLeaveOfLastYear ? annualLeaveOfLastYear.unused_annual_leave : 0) + (annualLeaveOfThisYear ? annualLeaveOfThisYear.unused_annual_leave : 0))}
@@ -164,7 +164,7 @@ function LeaveTimeSummary(props) {
                     </div>
                     <hr/>
                     <div className="d-block text-center">
-                        TỔNG SỐ NGÀY BÙ CÒN ĐƯỢC SỬ DỤNG
+                        <b>TỔNG SỐ NGÀY BÙ CÒN ĐƯỢC SỬ DỤNG</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
                         {displayMeric((compensatoryLeaveOfThisYear ? compensatoryLeaveOfThisYear.unused_compensatory_leave : 0) + (compensatoryLeaveOfLastYear ? compensatoryLeaveOfLastYear.unused_compensatory_leave : 0))}
