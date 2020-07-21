@@ -74,12 +74,14 @@ class ReportLeaderComponent extends React.Component {
                     {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
                           <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}> 
                                <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
-                               <div className="card-body" style={{'padding':'0px'}}>
-                                  <div className="text-center" style={{'color':'#FF0000'}}>Kết qủa</div>
-                                  <div className="text-center" style={{'color':'#FF0000'}}>đánh giá tổng thể</div>
-                                  <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{this.props.kpiInfo.Score}</div>                                                                 
-                               </div>
-                              <div className="card-body" style={{'padding':'0px'}}>                                  
+                                <div className="card-body" style={{'padding':'0px'}}>
+                                    <br/>
+                                    <div className="text-center" style={{'color':'#FF0000'}}>Kết quả đánh giá tổng thể</div>   
+                                    <br/>                         
+                                    <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{this.props.kpiInfo.Score}</div>                            
+                                 </div>
+
+                              {/*<div className="card-body" style={{'padding':'0px'}}>                                  
                                   <hr className="hr-remove-margin"></hr>
                                   <div className="text-center">CBQL đánh giá:</div>
                                   <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.ManagerAtFormComplete}</div>
@@ -88,7 +90,8 @@ class ReportLeaderComponent extends React.Component {
                               <div className="card-body" style={{'padding':'0px'}}>
                                   <div className="text-center">CBLĐ phê duyệt:</div>
                                   <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.MatrixFullName}</div>
-                              </div>                    
+                              </div>  
+                                  */}              
                           </div>                    
                      </div>
                 </div> 
