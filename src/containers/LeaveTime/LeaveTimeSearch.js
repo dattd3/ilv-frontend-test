@@ -42,7 +42,7 @@ class LeaveTimeSearch extends React.Component {
     <div className="search-box shadow">
       <div className="row">
         <div className="col">
-          <div className="title">Từ kỳ lương</div>
+          <div className="title">Từ ngày</div>
           <div className="content input-container">
             <label>
               <DatePicker 
@@ -60,7 +60,7 @@ class LeaveTimeSearch extends React.Component {
           </div>
         </div>
         <div className="col">
-          <div className="title">Đến kỳ lương</div>
+          <div className="title">Đến ngày</div>
           <div className="content input-container">
           <label>
             <DatePicker 
