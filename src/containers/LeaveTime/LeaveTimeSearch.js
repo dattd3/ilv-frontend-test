@@ -36,6 +36,7 @@ class LeaveTimeSearch extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return <>
     <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ NGÀY NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
     <div className="search-box shadow">
@@ -51,9 +52,8 @@ class LeaveTimeSearch extends React.Component {
                 startDate={this.state.startDate}
                 endDate={this.state.endDate}
                 onChange={this.setStartDate}
-                dateFormat="MM/yyyy"
+                dateFormat="dd/MM/yyyy"
                 locale="vi"
-                showMonthYearPicker
                 className="form-control form-control-lg input"/>
                 <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
               </label> 
@@ -71,8 +71,7 @@ class LeaveTimeSearch extends React.Component {
               startDate={this.state.startDate}
               endDate={this.state.endDate}
               onChange={this.setEndDate}
-              showMonthYearPicker
-              dateFormat="MM/yyyy"
+              dateFormat="dd/MM/yyyy"
               locale="vi"
               className="form-control form-control-lg input"/>
             <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
@@ -89,6 +88,9 @@ class LeaveTimeSearch extends React.Component {
       <div className="note">
         <i>* Chỉ được chọn trong 1 năm, không được chọn giữa 2 năm</i>
       </div>
+      {this.props.errorMessage ? <div className="note text-danger">
+        <b>{this.props.errorMessage}</b>
+      </div> : null}
     </div>
     </>
   }

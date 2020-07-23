@@ -1,10 +1,14 @@
 import React, { useState } from "react"
 import Fade from 'react-bootstrap/Fade'
 
+function sumDays(days) {
+  return days.reduce((sum, day) => sum + day)
+}
+
 export default function LeaveTimeDetail(props) {
   const [open, setOpen] = useState(false);
-
   return (
+  
     <div className="leave-time-detail">
       <div className="card shadow">
           <div className={'card-header clearfix text-white ' + 'bg-' + props.bg } onClick={() => setOpen(!open)}>
@@ -14,15 +18,12 @@ export default function LeaveTimeDetail(props) {
           {open ? <Fade in={open}>
             <div className="content">
               <div className="card-body">
-                <div class="row header">
+                <div class="row header text-center">
                   <div class="col-md-2">
                     {props.headers.month}
                   </div>
                   <div class="col-md-3">
                     {props.headers.annualLeaveOfArising}
-                  </div>
-                  <div class="col-md-2">
-                    {props.headers.expiryDate}
                   </div>
                   <div class="col-md-3">
                     {props.headers.usedAnnualLeave}
@@ -32,26 +33,23 @@ export default function LeaveTimeDetail(props) {
                   </div>
                 </div>
                 <body>
-                  {props.data.map((value, key) => 
-                    <div class="row">
+                  {props.data.map((value, key) =>  
+                    {return value.arisingLeave.length > 0 || value.usedLeave.length> 0 ? <div class="row text-center">
                         <div class="col-md-2">
                           {value.month}
                         </div>
                         <div class="col-md-3">
-                          {value.annualLeaveOfArising}
-                        </div>
-                        <div class="col-md-2">
-                          {value.expiryDate}
+                          {value.arisingLeave.length > 0 ? sumDays(value.arisingLeave.map(al => al.days)) : 0}
                         </div>
                         <div class="col-md-3">
-                          {value.usedAnnualLeave}
+                          {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
                         <div class="col-md-2">
-                        {value.daysOfAnnualLeave.map((d, k) => 
-                          <p>{d}</p>
-                        )}
+                        {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
+                          <p>{d.date}</p>
+                        ) : ''}
                         </div>
-                      </div>
+                      </div> :  null}
                   )}
                 </body>
                 

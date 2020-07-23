@@ -57,17 +57,24 @@ function LeaveTimeGraph(props) {
         <div className="description">
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item1.color}}>&nbsp;</i>{props.data.item1.label}</span><span className="float-right" style={{color: props.data.item1.color}}><h5>{displayMeric(props.data.item1.total)}</h5></span></div>
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item2.color}}>&nbsp;</i>{props.data.item2.label}</span><span className="float-right" style={{color: props.data.item2.color}}><h5>{displayMeric(props.data.item2.total)}</h5></span></div>
+            <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item3.color}}>&nbsp;</i>{props.data.item3.label}:&nbsp;<b>{props.data.item3.expiredDate}</b></span></div>
         </div>
     </>
 }
 
 function LeaveTimeSummary(props) {
     const thisYear = new Date().getFullYear()
-    const annualLeaveOfThisYear =  props.data.annual_leave ? props.data.annual_leave.find(a => a.year == thisYear) : undefined
-    const annualLeaveOfLastYear =  props.data.annual_leave ? props.data.annual_leave.find(a => a.year == (thisYear - 1)) : undefined
+    const usedAnnualLeaveOfThisYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == thisYear) : undefined
+    const usedAnnualLeaveOfLastYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
 
-    const compensatoryLeaveOfThisYear =  props.data.compensatory_leave ? props.data.compensatory_leave.find(a => a.year == thisYear) : undefined
-    const compensatoryLeaveOfLastYear =  props.data.compensatory_leave ? props.data.compensatory_leave.find(a => a.year == (thisYear - 1)) : undefined
+    const unusedAnnualLeaveOfThisYear = props.data.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == thisYear) : undefined
+    const unusedAnnualLeaveOfLastYear = props.data.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
+
+    const usedCompensatoryLeaveOfThisYear = props.data.used_compensatory_leave ? props.data.used_compensatory_leave.find(a => a.year == thisYear) : undefined
+    const usedCompensatoryLeaveOfLastYear = props.data.used_compensatory_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
+
+    const unusedCompensatoryLeaveOfThisYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
+    const unusedCompensatoryLeaveOfLastYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
 
     return (
         <div class="summary">
@@ -79,9 +86,10 @@ function LeaveTimeSummary(props) {
                                 title="NGÀY PHÉP TỒN NĂM TRƯỚC"
                                 data={
                                     {
-                                        total: annualLeaveOfLastYear ? annualLeaveOfLastYear.used_annual_leave + annualLeaveOfLastYear.unused_annual_leave : 0,
-                                        item1: {label: 'Đã sử dụng', total: annualLeaveOfLastYear ? annualLeaveOfLastYear.used_annual_leave : 0, color: '#B9B8B8'},
-                                        item2: {label: 'Còn được sử dụng', total: annualLeaveOfLastYear ? annualLeaveOfLastYear.unused_annual_leave : 0, color: '#f6c23e'}
+                                        total:  usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0 + unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0,
+                                        item1: {label: 'Đã sử dụng', total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
+                                        item2: {label: 'Còn được sử dụng', total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
+                                        item3: {label: 'Hạn sử dụng', expiredDate: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
                                     }
                                 }
                             />
@@ -92,17 +100,18 @@ function LeaveTimeSummary(props) {
                                 title="NGÀY PHÉP NĂM NAY"
                                 data={
                                     {
-                                        total: annualLeaveOfThisYear ? annualLeaveOfThisYear.used_annual_leave + annualLeaveOfThisYear.unused_annual_leave : 0,
+                                        total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0 + unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0,
                                         item1: {
                                             label: 'Đã sử dụng',
-                                            total: annualLeaveOfThisYear ? annualLeaveOfThisYear.used_annual_leave : 0,
+                                            total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0,
                                             color: '#B9B8B8'
                                         },
                                         item2: {
                                             label: 'Còn được sử dụng',
-                                            total: annualLeaveOfThisYear ? annualLeaveOfThisYear.unused_annual_leave : 0,
+                                            total: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0,
                                             color: '#4e73df'
-                                        }
+                                        },
+                                        item3: {label: 'Hạn sử dụng', expiredDate: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.expire_date : '', color: '#28a745'},
                                     }
                                 }
                             />
@@ -114,7 +123,7 @@ function LeaveTimeSummary(props) {
                         <b>TỔNG SỐ NGÀY PHÉP CÒN ĐƯỢC SỬ DỤNG</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
-                        {displayMeric((annualLeaveOfLastYear ? annualLeaveOfLastYear.unused_annual_leave : 0) + (annualLeaveOfThisYear ? annualLeaveOfThisYear.unused_annual_leave : 0))}
+                        {displayMeric((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0))}
                         </h3></div>
                 </div>
                 <div className="col box shadow">
@@ -124,17 +133,18 @@ function LeaveTimeSummary(props) {
                                     title="SỐ NGÀY BÙ TỒN NĂM TRƯỚC"
                                     data={
                                         {
-                                            total: compensatoryLeaveOfLastYear ? compensatoryLeaveOfLastYear.used_compensatory_leave + compensatoryLeaveOfLastYear.unused_compensatory_leave : 0,
+                                            total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0 + unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0,
                                             item1: {
                                                 label: 'Đã sử dụng',
-                                                total: compensatoryLeaveOfLastYear ? compensatoryLeaveOfLastYear.used_compensatory_leave : 0,
+                                                total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0,
                                                 color: '#B9B8B8'
                                             },
                                             item2: {
                                                 label: 'Còn được sử dụng',
-                                                total: compensatoryLeaveOfLastYear ? compensatoryLeaveOfLastYear.unused_compensatory_leave : 0,
+                                                total: unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0,
                                                 color: '#f6c23e'
-                                            }
+                                            },
+                                            item3: {label: 'Hạn sử dụng', expiredDate: unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.expire_date : '', color: '#28a745'},
                                         }
                                     }
                                 />
@@ -145,17 +155,18 @@ function LeaveTimeSummary(props) {
                                     title="SỐ NGÀY BÙ NĂM NAY"
                                     data={
                                         {
-                                            total: compensatoryLeaveOfThisYear ? compensatoryLeaveOfThisYear.used_compensatory_leave + compensatoryLeaveOfThisYear.unused_compensatory_leave : 0,
+                                            total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0 + unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0,
                                             item1: {
                                                 label: 'Đã sử dụng',
-                                                total: compensatoryLeaveOfThisYear ? compensatoryLeaveOfThisYear.used_compensatory_leave : 0,
+                                                total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0,
                                                 color: '#B9B8B8'
                                             },
                                             item2: {
                                                 label: 'Còn được sử dụng',
-                                                total: compensatoryLeaveOfThisYear ? compensatoryLeaveOfThisYear.unused_compensatory_leave : 0,
+                                                total: unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0,
                                                 color: '#4e73df'
-                                            }
+                                            },
+                                            item3: {label: 'Hạn sử dụng', expiredDate: unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.expire_date : '', color: '#28a745'},
                                         }
                                     }
                                 />
@@ -167,7 +178,7 @@ function LeaveTimeSummary(props) {
                         <b>TỔNG SỐ NGÀY BÙ CÒN ĐƯỢC SỬ DỤNG</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
-                        {displayMeric((compensatoryLeaveOfThisYear ? compensatoryLeaveOfThisYear.unused_compensatory_leave : 0) + (compensatoryLeaveOfLastYear ? compensatoryLeaveOfLastYear.unused_compensatory_leave : 0))}
+                        {displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}
                         </h3></div>
                 </div>
             </div>
