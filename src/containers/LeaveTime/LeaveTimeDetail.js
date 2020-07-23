@@ -46,7 +46,7 @@ export default function LeaveTimeDetail(props) {
                         </div>
                         <div class="col-md-2">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
-                          <p>{d.date}</p>
+                          <p>{d.date.replace(/-/g, '/')}</p>
                         ) : ''}
                         </div>
                       </div> :  null}
