@@ -103,13 +103,13 @@ class LeaveTimePage extends React.Component {
             <><LeaveTimeDetail 
                 bg="primary" 
                 headerTitle="NGÀY PHÉP NĂM"
-                headers={{month: 'Kỳ lương', annualLeaveOfArising: 'Số ngày phép phát sinh', usedAnnualLeave: 'Số ngày phép đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày phép phát sinh', usedAnnualLeave: 'Số ngày phép đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
                 data={this.state.annualLeaves} 
             />
             <LeaveTimeDetail 
                 bg="success" 
                 headerTitle="NGÀY NGHỈ BÙ" 
-                headers={{month: 'Kỳ lương', annualLeaveOfArising: 'Số ngày bù phát sinh', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày bù phát sinh', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
                 data={this.state.compensatoryLeaves} 
             />
             </> : null}

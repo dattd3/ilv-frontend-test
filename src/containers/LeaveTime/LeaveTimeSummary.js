@@ -86,7 +86,7 @@ function LeaveTimeSummary(props) {
                                 title="NGÀY PHÉP TỒN NĂM TRƯỚC"
                                 data={
                                     {
-                                        total:  usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0 + unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0,
+                                        total:  (usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0),
                                         item1: {label: 'Đã sử dụng', total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
                                         item2: {label: 'Còn được sử dụng', total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
                                         item3: {label: 'Hạn sử dụng', expiredDate: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
@@ -100,7 +100,7 @@ function LeaveTimeSummary(props) {
                                 title="NGÀY PHÉP NĂM NAY"
                                 data={
                                     {
-                                        total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0 + unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0,
+                                        total: (usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0),
                                         item1: {
                                             label: 'Đã sử dụng',
                                             total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0,
@@ -133,7 +133,7 @@ function LeaveTimeSummary(props) {
                                     title="SỐ NGÀY BÙ TỒN NĂM TRƯỚC"
                                     data={
                                         {
-                                            total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0 + unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0,
+                                            total: (usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0),
                                             item1: {
                                                 label: 'Đã sử dụng',
                                                 total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0,
@@ -155,7 +155,7 @@ function LeaveTimeSummary(props) {
                                     title="SỐ NGÀY BÙ NĂM NAY"
                                     data={
                                         {
-                                            total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0 + unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0,
+                                            total: (usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0),
                                             item1: {
                                                 label: 'Đã sử dụng',
                                                 total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0,
