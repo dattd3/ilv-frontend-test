@@ -19,7 +19,6 @@ class LeaveTimePage extends React.Component {
         }
     }
     componentWillMount() {
-      console.log(moment('01-2019').format('YYYYMM'))
         const config = {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
