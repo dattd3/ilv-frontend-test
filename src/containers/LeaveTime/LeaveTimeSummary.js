@@ -44,7 +44,7 @@ function LeaveTimeGraph(props) {
 
     return <>
         <div className="title">{props.title}</div>
-        <div className="content relative">
+        {/* <div className="content relative">
             <Doughnut
                 data={leaveTimeData}
                 options={chartOption}
@@ -53,7 +53,7 @@ function LeaveTimeGraph(props) {
                 <div>Tổng số</div>
                 <div style={{color: props.data.item2.color}}>{displayMeric(props.data.total)} ngày</div>
             </div>
-        </div>
+        </div> */}
         <div className="description">
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item1.color}}>&nbsp;</i>{props.data.item1.label}</span><span className="float-right" style={{color: props.data.item1.color}}><h5>{displayMeric(props.data.item1.total)}</h5></span></div>
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item2.color}}>&nbsp;</i>{props.data.item2.label}</span><span className="float-right" style={{color: props.data.item2.color}}><h5>{displayMeric(props.data.item2.total)}</h5></span></div>
