@@ -57,7 +57,7 @@ function LeaveTimeGraph(props) {
         <div className="description">
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item1.color}}>&nbsp;</i>{props.data.item1.label}</span><span className="float-right" style={{color: props.data.item1.color}}><h5>{displayMeric(props.data.item1.total)}</h5></span></div>
             <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item2.color}}>&nbsp;</i>{props.data.item2.label}</span><span className="float-right" style={{color: props.data.item2.color}}><h5>{displayMeric(props.data.item2.total)}</h5></span></div>
-            <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item3.color}}>&nbsp;</i>{props.data.item3.label}:&nbsp;<b>{props.data.item3.expiredDate}</b></span></div>
+            <div className="d-block clearfix"><span className="float-left"><i class="fas fa-square" style={{color: props.data.item3.color}}>&nbsp;</i>{props.data.item3.label}</span><span className="float-right text-success">{props.data.item3.expiredDate.replace(/-/g, '/')}</span></div>
         </div>
     </>
 }
