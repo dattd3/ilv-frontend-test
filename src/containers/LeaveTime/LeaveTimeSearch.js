@@ -36,7 +36,6 @@ class LeaveTimeSearch extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     return <>
     <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ NGÀY NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
     <div className="search-box shadow">
@@ -85,12 +84,6 @@ class LeaveTimeSearch extends React.Component {
           </div>
         </div>
       </div>
-      <div className="note">
-        <i>* Chỉ được chọn trong 1 năm, không được chọn giữa 2 năm</i>
-      </div>
-      {this.props.errorMessage ? <div className="note text-danger">
-        <b>{this.props.errorMessage}</b>
-      </div> : null}
     </div>
     </>
   }
