@@ -28,7 +28,7 @@ export default function LeaveTimeDetail(props) {
                   <div class="col-md-3">
                     {props.headers.usedAnnualLeave}
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-4">
                     {props.headers.daysOfAnnualLeave}
                   </div>
                 </div>
@@ -44,7 +44,7 @@ export default function LeaveTimeDetail(props) {
                         <div class="col-md-3">
                           {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
                           <p>{d.date.replace(/-/g, '/')} - {d.days} Ngày</p>
                         ) : ''}
