@@ -66,7 +66,7 @@ class LeaveTimePage extends React.Component {
           months.push(arising_compensatory_leave_detail.month)
         }
       })
-      return months.sort()
+      return months.sort((a, b) => parseInt(a.split("-").reverse().join("")) - parseInt(b.split("-").reverse().join("")))
     }
 
     searchTimesheetByDate (startDate, endDate) {
