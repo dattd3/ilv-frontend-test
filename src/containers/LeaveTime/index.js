@@ -18,29 +18,28 @@ class LeaveTimePage extends React.Component {
           errorMessage: ''
         }
     }
+    // componentWillMount() {
+    //     const config = {
+    //         headers: {
+    //           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+    //           'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+    //           'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+    //         }
+    //     }
 
-    componentWillMount() {
-        const config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-              'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+    //     const thisYear = new Date().getFullYear()
 
-        const thisYear = new Date().getFullYear()
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const annualLeaveSummary = res.data.data
-            this.setState({ annualLeaveSummary: annualLeaveSummary})
-          }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
-    }
+    //     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
+    //     .then(res => {
+    //       if (res && res.data && res.data.data) {
+    //         const annualLeaveSummary = res.data.data
+    //         this.setState({ annualLeaveSummary: annualLeaveSummary})
+    //       }
+    //     }).catch(error => {
+    //         // localStorage.clear();
+    //         // window.location.href = map.Login;
+    //     })
+    // }
 
     getMonths(data) {
       let months = []
@@ -114,7 +113,7 @@ class LeaveTimePage extends React.Component {
 
     render() {
         return <div class="leave-time-page">
-            <LeaveTimeSummary data={this.state.annualLeaveSummary}/>
+            {/* <LeaveTimeSummary data={this.state.annualLeaveSummary}/> */}
             <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={this.state.errorMessage}/>
             {this.state.isSearch ? 
             <><LeaveTimeDetail 
