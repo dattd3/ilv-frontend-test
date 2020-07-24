@@ -19,6 +19,7 @@ class LeaveTimePage extends React.Component {
         }
     }
     componentWillMount() {
+      console.log(moment('01-2019').format('YYYYMM'))
         const config = {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -66,7 +67,7 @@ class LeaveTimePage extends React.Component {
           months.push(arising_compensatory_leave_detail.month)
         }
       })
-      return months.sort()
+      return months.sort((a, b) => parseInt(a.split("-").reverse().join("")) - parseInt(b.split("-").reverse().join("")))
     }
 
     searchTimesheetByDate (startDate, endDate) {
