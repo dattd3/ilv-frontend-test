@@ -33,7 +33,6 @@ class LeaveTimePage extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-            console.log(res.data.data)
             const annualLeaveSummary = res.data.data
             this.setState({ annualLeaveSummary: annualLeaveSummary})
           }
