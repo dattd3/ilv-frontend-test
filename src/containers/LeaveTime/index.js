@@ -18,7 +18,6 @@ class LeaveTimePage extends React.Component {
           errorMessage: ''
         }
     }
-
     componentWillMount() {
         const config = {
             headers: {
@@ -33,7 +32,6 @@ class LeaveTimePage extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-            console.log(res.data.data)
             const annualLeaveSummary = res.data.data
             this.setState({ annualLeaveSummary: annualLeaveSummary})
           }
@@ -43,15 +41,36 @@ class LeaveTimePage extends React.Component {
         })
     }
 
-    searchTimesheetByDate (startDate, endDate) {
-        const months = ['01', '02' ,'03' ,'04', '05', '06', '07', '08', '09', '10','11','12']
-        this.setState({ isSearch: false, errorMessage: '' })
+    getMonths(data) {
+      let months = []
+      data.used_annual_leave_detail.forEach(used_annual_leave => {
+          if (months.indexOf(used_annual_leave.month) === -1) {
+            months.push(used_annual_leave.month)
+          }
+        })
 
-        if (moment(startDate).format('YYYY') != moment(endDate).format('YYYY')) {
-            this.setState({ errorMessage: 'Năm của 2 kỳ lương khác nhau' })
-            return
+      data.used_compensatory_leave_detail.forEach(used_compensatory_leave_detail => {
+        if (months.indexOf(used_compensatory_leave_detail.month) === -1) {
+          months.push(used_compensatory_leave_detail.month)
         }
+      })
 
+      data.arising_annual_leave_detail.forEach(arising_annual_leave_detail => {
+        if (months.indexOf(arising_annual_leave_detail.month) === -1) {
+          months.push(arising_annual_leave_detail.month)
+        }
+      })
+
+      data.arising_compensatory_leave_detail.forEach(arising_compensatory_leave_detail => {
+        if (months.indexOf(arising_compensatory_leave_detail.month) === -1) {
+          months.push(arising_compensatory_leave_detail.month)
+        }
+      })
+      return months.sort((a, b) => parseInt(a.split("-").reverse().join("")) - parseInt(b.split("-").reverse().join("")))
+    }
+
+    searchTimesheetByDate (startDate, endDate) {
+        this.setState({ isSearch: false, errorMessage: '' })
 
         const config = {
             headers: {
@@ -60,28 +79,25 @@ class LeaveTimePage extends React.Component {
               'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
-        
 
         const start = moment(startDate).format('YYYYMMDD').toString()
         const end = moment(endDate).format('YYYYMMDD').toString()
-        const year = moment(endDate).format('YYYY').toString()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence/detail?from_time=${start}&to_time=${end}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-            const annualLeaves = months.map((m) => {
-                  const month = m + '-' + year
+            const months = this.getMonths(res.data.data)
+            const annualLeaves = months.map((month) => {
                   return {
-                    month: m + '/' + year,
+                    month: month.replace(/-/, '/'),
                     usedLeave: res.data.data.used_annual_leave_detail.filter((usedAnnualLeave) =>  usedAnnualLeave.month == month ),
                     arisingLeave: res.data.data.arising_annual_leave_detail.filter((arisingAnnualLeave) => arisingAnnualLeave.month == month ),
                   }
               })
 
-              const compensatoryLeaves = months.map((m) => {
-                const month = m + '-' + year
+              const compensatoryLeaves = months.map((month) => {
                 return {
-                  month: m + '/' + year,
+                  month: month.replace(/-/, '/'),
                   usedLeave: res.data.data.used_compensatory_leave_detail.filter((usedCompensatoryLeave) => usedCompensatoryLeave.month == month ),
                   arisingLeave: res.data.data.arising_compensatory_leave_detail.filter((arisingCompensatoryLeave) => arisingCompensatoryLeave.month == month ),
                 }

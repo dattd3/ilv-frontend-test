@@ -18,7 +18,7 @@ export default function LeaveTimeDetail(props) {
           {open ? <Fade in={open}>
             <div className="content">
               <div className="card-body">
-                <div class="row header text-center">
+                <div class="row header text-left">
                   <div class="col-md-2">
                     {props.headers.month}
                   </div>
@@ -28,13 +28,13 @@ export default function LeaveTimeDetail(props) {
                   <div class="col-md-3">
                     {props.headers.usedAnnualLeave}
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-4">
                     {props.headers.daysOfAnnualLeave}
                   </div>
                 </div>
                 <body>
                   {props.data.map((value, key) =>  
-                    {return value.arisingLeave.length > 0 || value.usedLeave.length> 0 ? <div class="row text-center">
+                    {return value.arisingLeave.length > 0 || value.usedLeave.length> 0 ? <div class="row text-left">
                         <div class="col-md-2">
                           {value.month}
                         </div>
@@ -44,9 +44,9 @@ export default function LeaveTimeDetail(props) {
                         <div class="col-md-3">
                           {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
-                          <p>{d.date.replace(/-/g, '/')}</p>
+                          <p>{d.date.replace(/-/g, '/')} - {d.days} Ngày</p>
                         ) : ''}
                         </div>
                       </div> :  null}
