@@ -29,6 +29,9 @@
   "Menu_CompanyAnnouncement": "Thông tin tập đoàn",
   "Menu_ContactAddress": "Danh bạ tập đoàn",
   "Menu_CheckList": "Check List",
+  "Menu_InternalRecruitment": "Tuyển dụng nội bộ",
+  "Menu_PositionRecruiting": "Vị trí đang tuyển dụng",
+  "Menu_PositionApplied": "Các vị trí đã ứng tuyển",
   "Status_Done": "Hoàn thành",
   "Status_NotDoneYet": "Chưa hoàn thành",
   "Status_Used": "Đã sử dụng",
@@ -188,5 +191,6 @@
   "DateOfAccidentsIncurred" : "Ngày tai nạn",
   "LocationOfAccidentsIncurred": "Địa điểm",
   "ClassificationOfAccidentsIncurred" : "Phân loại tai nạn",
-  "ReasonsOfAccidentsIncurred" : "Nguyên nhân tai nạn"
+  "ReasonsOfAccidentsIncurred" : "Nguyên nhân tai nạn",
+  "SearchLabel": "Tìm kiếm"
 }

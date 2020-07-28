@@ -58,3 +58,58 @@ a {
     font-weight: 800;
   }
 }
+
+.info-modal-common {
+  .modal-content {
+    .modal-header {
+      background: #FFFFFF;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      .modal-title {
+        font-size: 16px;
+        text-transform: uppercase;
+        color: #FFFFFF;
+      }
+      .close {
+        top: 18px;
+        right: 20px;
+        color: #707070;
+        width: 25px;
+        height: 25px;
+        font-size: 26px;
+        span {
+          top: 10px;
+          left: 0;
+        }
+      }
+      &.apply-position-modal {
+        background: #347EF9;
+        padding-left: 20px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        .close {
+          color: #FFFFFF;
+          background: none;
+        }
+      }
+    }
+    .modal-body {
+      padding: 1rem 2rem 2rem 2rem;
+    }
+  }
+  .description {
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 2rem;
+  }
+  .ic-status {
+    width: 70px;
+    height: 70px;
+  }
+  &.position-apply-modal {
+    .apply-option {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+  }
+}

@@ -38,5 +38,7 @@ export default {
   JobUpload: "/job/upload",
   Job: "/job",  
   Kpi: "/kpi",
-  KpiDetail: "/kpi/:id"
+  KpiDetail: "/kpi/:id",
+  PositionRecruiting: "/position-recruiting",
+  PositionApplied: "/position-applied",
 };

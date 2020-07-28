@@ -27,6 +27,9 @@
   "Menu_CompanyAnnouncement": "Announcement",
   "Menu_ContactAddress": "Contact",
   "Menu_CheckList": "Check List",
+  "Menu_InternalRecruitment": "Internal Recruitment",
+  "Menu_PositionRecruiting": "Recruiting Positions",
+  "Menu_PositionApplied": "Applied Positions",
   "Status_Done": "Completed",
   "Status_NotDoneYet": "In Progress",
   "Status_Used": "Used",
@@ -169,5 +172,6 @@
   "DateOfAccidentsIncurred" : "Date",
   "LocationOfAccidentsIncurred": "Location",
   "ClassificationOfAccidentsIncurred" : "Classification",
-  "ReasonsOfAccidentsIncurred" : "Reasons"
+  "ReasonsOfAccidentsIncurred" : "Reasons",
+  "SearchLabel": "Search"
 }

@@ -1,6 +1,7 @@
 @import './assets/scss/job-description.scss';
 @import './assets/scss/timesheet.scss';
 @import './assets//scss/leaveTime.scss';
+@import './assets/scss/internal-recruitment.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -143,7 +144,13 @@
   padding: 0 !important;
   width: 0 !important;
 }
-
+.icon-arrow_right {
+  padding: 7px 0;
+  margin-left: auto;
+  &:before {
+    content: "\203A";
+  }
+}
 .icon-arrow_collapse {
   padding: 7px 0;
   margin-left: auto;

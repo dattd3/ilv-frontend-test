@@ -137,7 +137,22 @@ export default [
           },
           component: lazy(() => import("./PersonalInfo"))
         },
-
+        {
+          key: "position-recruiting",
+          routeProps: {
+            exact: true,
+            path: map.PositionRecruiting
+          },
+          component: lazy(() => import("./InternalRecruitment/PositionRecruiting"))
+        },
+        {
+          key: "position-applied",
+          routeProps: {
+            exact: true,
+            path: map.PositionApplied
+          },
+          component: lazy(() => import("./InternalRecruitment/PositionApplied"))
+        },
         {
           key: "timesheet",
           routeProps: {
