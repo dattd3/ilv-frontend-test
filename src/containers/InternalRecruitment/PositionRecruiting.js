@@ -65,7 +65,6 @@ class MyComponent extends React.Component {
       <div className="position-recruiting-section">
         <PositionRecruitingSearch clickSearch={this.searchTimesheetByDate.bind(this)}/>
         <PositionRecruitingSearchResult />
-        <PositionRecruitingDetail />
       </div>
     )
   }

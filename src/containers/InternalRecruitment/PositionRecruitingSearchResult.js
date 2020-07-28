@@ -42,7 +42,7 @@ class PositionRecruitingSearchResult extends React.Component {
             <tbody role="rowgroup">
               <tr role="row">
                 <td role="cell" data-title="Vị trí">
-                  <a href="#" className="position">Project Manager</a>
+                  <a href="/position-recruiting-detail/1" className="position">Project Manager</a>
                 </td>
                 <td role="cell" data-title="Cấp bậc">
                   <p>Chuyên gia</p>
@@ -59,7 +59,7 @@ class PositionRecruitingSearchResult extends React.Component {
               </tr>
               <tr className="watched" role="row">
                 <td role="cell" data-title="Vị trí">
-                  <a href="#" className="position">Project Manager</a>
+                  <a href="/position-recruiting-detail/2" className="position">Project Manager</a>
                 </td>
                 <td role="cell" data-title="Cấp bậc">
                   <p>Chuyên gia</p>
@@ -76,7 +76,7 @@ class PositionRecruitingSearchResult extends React.Component {
               </tr>
               <tr className="" role="row">
                 <td role="cell" data-title="Vị trí">
-                  <a href="#" className="position">Project Manager</a>
+                  <a href="/position-recruiting-detail/3" className="position">Project Manager</a>
                 </td>
                 <td role="cell" data-title="Cấp bậc">
                   <p>Chuyên gia</p>

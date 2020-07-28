@@ -154,6 +154,14 @@ export default [
           component: lazy(() => import("./InternalRecruitment/PositionApplied"))
         },
         {
+          key: "position-recruiting-detail",
+          routeProps: {
+            exact: true,
+            path: map.PositionRecruitingDetail
+          },
+          component: lazy(() => import("./InternalRecruitment/PositionRecruitingDetail"))
+        },
+        {
           key: "timesheet",
           routeProps: {
             exact: true,

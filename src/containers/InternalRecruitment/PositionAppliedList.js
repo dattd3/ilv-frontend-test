@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useApi, useFetcher } from "../../modules";
 import CustomPaging from '../../components/Common/CustomPaging';
-import InfoModal from '../../components/Common/InfoModal'
+import StatusModal from '../../components/Common/StatusModal'
 
 class PositionAppliedList extends React.Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class PositionAppliedList extends React.Component {
     this.state = {
       show: false,
       content: "",
+      isSuccess: true,
       isLoading: false
     }
 
@@ -17,12 +18,9 @@ class PositionAppliedList extends React.Component {
   }
 
   showModal = event => {
+    event.preventDefault();
     const content = "Bạn đã nộp đơn giới thiệu thành công!";
     this.setState({show: true, content: content});
-    event.preventDefault();
-    return (
-      <InfoModal show={this.state.show} content={this.state.content} handleClose={this.hideModal} />
-    );
   };
 
   hideModal = () => {
@@ -53,7 +51,7 @@ class PositionAppliedList extends React.Component {
     
     return (
       <>
-      <InfoModal show={this.state.show} content={this.state.content} />
+      <StatusModal show={this.state.show} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideModal} />
       <div className="summary position-applied-block">
         <h5 className="result-label">các vị trí đã ứng tuyển</h5>
         <div className="card shadow">

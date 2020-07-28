@@ -1,53 +1,54 @@
 import React, { useState } from "react";
 import { useApi, useFetcher } from "../../modules";
 import CustomPaging from '../../components/Common/CustomPaging';
-import InfoModal from '../../components/Common/InfoModal'
+import StatusModal from '../../components/Common/StatusModal'
 import ApplyPositionModal from './ApplyPositionModal'
 
 class PositionRecruitingDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      isShowStatusModal: false,
       content: "",
       isLoading: false,
-      showApplyForm: false,
+      isShowApplyPositionModal: false,
       dataApplyForm: {},
       isLoadingApplyForm: false,
     }
 
-    this.hideModal = this.hideModal.bind(this);
+    // this.hideStatusModal = this.hideStatusModal.bind(this);
+    // this.showStatusModal = this.showStatusModal.bind(this);
+    // this.showApplyPositionModal = this.showApplyPositionModal.bind(this);
+    // this.hideApplyPositionModal = this.hideApplyPositionModal.bind(this);
   }
 
-  showModal = event => {
-    event.preventDefault();
-    const content = "Bạn đã nộp đơn giới thiệu thành công!";
-    this.setState({show: true, content: content});
-    // return (
-    //   <InfoModal show={this.state.show} content={this.state.content} isLoading={this.state.isloading} />
-    // );
+  showApplyPositionModal = () => {
+    this.setState({ isShowApplyPositionModal: true });
+  }
+
+  hideApplyPositionModal = () => {
+    this.setState({ isShowApplyPositionModal: false });
   };
 
-  applyPosition = () => {
-    this.setState({showApplyForm: true});
-    // return (
-    //   <ApplyPositionModal show={this.state.showApplyForm} data={this.state.dataApplyForm} isLoading={this.state.isLoadingApplyForm} />
-    // );
-  }
+  showStatusModal = () => {
+    const content = "Bạn đã nộp đơn giới thiệu thành công!";
+    this.setState({isShowStatusModal: true, content: content});
+  };
 
-  hideModal = () => {
-    this.setState({ show: false });
+  hideStatusModal = () => {
+    this.setState({ isShowStatusModal: false });
   };
 
   render() {
     return (
       <>
-      <InfoModal show={this.state.show} content={this.state.content} />
-      <ApplyPositionModal show={this.state.showApplyForm} data={this.state.dataApplyForm} isLoading={this.state.isLoadingApplyForm} />
+      <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+      <ApplyPositionModal show={this.state.isShowApplyPositionModal} data={this.state.dataApplyForm} 
+      onHide={this.hideApplyPositionModal} isLoading={this.state.isLoadingApplyForm} />
       <div className="summary position-recruiting-detail-block">
         <div className="header-block">
-          <h5 className="result-label" onClick={this.hideModal}>thông tin tuyển dụng</h5>
-          <span className="btn-apply-block" onClick={this.applyPosition}>
+          <h5 className="result-label">thông tin tuyển dụng</h5>
+          <span className="btn-apply-block" onClick={this.showApplyPositionModal}>
             <span className="btn-apply">Ứng tuyển <i className="metismenu-state-icon icon-arrow_right"></i></span>
           </span>
         </div>

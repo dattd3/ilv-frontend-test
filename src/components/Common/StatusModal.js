@@ -1,15 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 import IconSuccess from '../../assets/img/ic-success.svg';
 import IconFailed from '../../assets/img/ic-failed.svg';
 import { Modal, Image } from 'react-bootstrap';
 
-function InfoModal(props) {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-
+function StatusModal(props) {
     return (
         <>
-        <Modal className='info-modal-common' centered show={props.show} onHide={handleClose}>
+        <Modal className='info-modal-common' centered show={props.show} onHide={props.onHide}>
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body className='text-center'>
                 {props.content ? <p className='description'>{props.content}</p> : ''}
@@ -20,4 +17,4 @@ function InfoModal(props) {
     );
 }
 
-export default InfoModal;
+export default StatusModal;
