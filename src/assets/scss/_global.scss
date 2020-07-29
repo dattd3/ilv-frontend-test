@@ -58,3 +58,108 @@ a {
     font-weight: 800;
   }
 }
+
+.info-modal-common {
+  font-family: Arial, Helvetica, sans-serif;
+  .modal-content {
+    .modal-header {
+      background: #FFFFFF;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      .modal-title {
+        font-size: 16px;
+        text-transform: uppercase;
+        color: #FFFFFF;
+      }
+      .close {
+        top: 18px;
+        right: 20px;
+        color: #707070;
+        width: 25px;
+        height: 25px;
+        font-size: 26px;
+        span {
+          top: 10px;
+          left: 0;
+        }
+      }
+      &.apply-position-modal {
+        background: #347EF9;
+        padding-left: 20px;
+        padding: 1rem;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        .close {
+          color: #FFFFFF;
+          background: none;
+          top: 35px;
+        }
+      }
+    }
+    .modal-body {
+      padding: 1rem 2rem 2rem 2rem;
+    }
+  }
+  .description {
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 2rem;
+  }
+  .ic-status {
+    width: 70px;
+    height: 70px;
+  }
+  &.position-apply-modal {
+    .modal-body {
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+      &.file-block {
+        margin-bottom: 0;
+      }
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .custom-file-upload {
+      border: 1px solid #d1d3e2;
+      display: inline-block;
+      width: 100%;
+      max-width: 100%;
+      padding: 6px 12px;
+      border-radius: 0.35rem;
+      cursor: pointer;
+    }
+    .file-name-upload {
+      margin-left: 10px;
+    }
+    .option-apply {
+      label {
+        cursor: pointer;
+      }
+      &:first-child {
+        margin-right: 20px;
+      }
+    }
+    .apply-option {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .buttons-block {
+      text-align: right;
+      .btn {
+        width: 160px;
+        border-radius: 50px;
+        border-color: transparent;
+      }
+      .btn-close {
+        background: #BEBEBE;
+      }
+      .btn-send {
+        margin-left: 20px;
+      }
+    }
+  }
+}

@@ -142,12 +142,37 @@ export const Navigation = [
     label: "BasicInformation",
     to: map.PersonalInfo,
     role: 'U'
-  }, {
+  },
+  {
     id: 32,
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "WorkingProcess",
     to: map.WorkingProcess,
+    role: 'U'
+  },
+  {
+    id: 24,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_InternalRecruitment",
+    to: map.InternalRecruitment,
+    role: 'U'
+  },
+  {
+    id: 25,
+    parentId: 24,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_PositionRecruiting",
+    to: map.PositionRecruiting,
+    role: 'U'
+  },
+  {
+    id: 26,
+    parentId: 24,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_PositionApplied",
+    to: map.PositionApplied,
     role: 'U'
   },
   {
@@ -199,6 +224,5 @@ export const Navigation = [
     label: "Menu_LeaveTime",
     to: map.LeaveTime,
     role: "U"
-  } 
-  
+  }  
 ];
