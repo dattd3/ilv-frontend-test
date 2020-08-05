@@ -173,21 +173,20 @@ class PositionRecruiting extends React.Component {
 
   render() {
     debugger
-    const recordPerPage =  2
+    const recordPerPage =  1
     const jobs = this.filterByPlaceOfWork(this.filterByPosition(this.state.jobs))
-    const pageCount = Math.ceil(jobs.length / recordPerPage)
-    const pageNumber = TableUtil.displayPageNumber(this.state.pageNumber, pageCount)
 
     return (
       <div className="position-recruiting-section">
         <PositionRecruitingSearch clickSearch={this.search.bind(this)}/>
         <PositionRecruitingTable jobs={TableUtil.updateData(jobs, this.state.pageNumber - 1, recordPerPage)}/>
+
         <div className="row paging">
             <div className="col-sm"></div>
             <div className="col-sm">
-                <CustomPaging pageSize={pageNumber} onChangePage={this.onChangePage.bind(this)} totalRecords={pageCount} />
+                <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={jobs.length} />
             </div>
-            <div className="col-sm text-right">Total: {pageCount} pages</div>
+            <div className="col-sm text-right">Total: {jobs.length}</div>
           </div>
       </div>
     )

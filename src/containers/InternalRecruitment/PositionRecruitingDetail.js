@@ -135,7 +135,7 @@ class PositionRecruitingDetail extends React.Component {
         }
       }
     ]
-    debugger
+    
     const id = this.props.match.params.id
     const job = jobs.find(jb => jb.id == id)
     this.setState({job: job})
