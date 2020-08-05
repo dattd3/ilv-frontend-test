@@ -143,7 +143,7 @@ export default [
             exact: true,
             path: map.PositionRecruiting
           },
-          component: lazy(() => import("./InternalRecruitment/PositionRecruiting"))
+          component: lazy(() => import("./InternalRecruitment/Jobs"))
         },
         {
           key: "position-applied",

@@ -1,27 +1,40 @@
-import React, { useState } from "react";
-import StatusModal from '../../components/Common/StatusModal'
-import ApplyPositionModal from './ApplyPositionModal'
+import React from 'react';
+import axios from 'axios';
+import PositionRecruitingSearch from './PositionRecruitingSearch'
+import PositionRecruitingTable from './PositionRecruitingTable'
+import CustomPaging from '../../../components/Common/CustomPaging'
+import TableUtil from '../../../components/Common/table'
 
-class PositionRecruitingDetail extends React.Component {
+class PositionRecruiting extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isShowStatusModal: false,
-      content: "",
-      isLoading: false,
-      isShowApplyPositionModal: false,
-      dataApplyForm: {},
-      isLoadingApplyForm: false,
-      job: {}
-    }
 
-    // this.hideStatusModal = this.hideStatusModal.bind(this);
-    // this.showStatusModal = this.showStatusModal.bind(this);
-    // this.showApplyPositionModal = this.showApplyPositionModal.bind(this);
-    // this.hideApplyPositionModal = this.hideApplyPositionModal.bind(this);
+    this.state = {
+      jobs: [],
+      search: {
+        position: 0,
+        placeOfWork: 0
+      },
+      pageNumber: 1
+    }
   }
 
   componentWillMount() {
+    const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }
+
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vacancies`, config)
+    .then(res => {
+      if (res && res.data && res.data.data) {
+        console.log(res.data.data)
+      }
+    }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+    })
     const jobs =  [
       {
         "id": 2,
@@ -135,72 +148,50 @@ class PositionRecruitingDetail extends React.Component {
         }
       }
     ]
-    debugger
-    const id = this.props.match.params.id
-    const job = jobs.find(jb => jb.id == id)
-    this.setState({job: job})
+    this.setState({jobs: jobs})
   }
 
-  showApplyPositionModal = () => {
-    this.setState({ isShowApplyPositionModal: true });
+  search (position, placeOfWork) {
+    this.setState({pageNumber: 1,
+      search: {
+      position: position,
+      placeOfWork: placeOfWork
+    }})
   }
 
-  hideApplyPositionModal = () => {
-    this.setState({ isShowApplyPositionModal: false });
-  };
+  filterByPosition (jobs) {
+    return this.state.search.position > 0 ? jobs.filter(job => job.position.id == this.state.search.position) : jobs
+  }
 
-  showStatusModal = () => {
-    const content = "Bạn đã nộp đơn giới thiệu thành công!";
-    this.setState({isShowStatusModal: true, content: content});
-  };
+  filterByPlaceOfWork (jobs) {
+    return this.state.search.placeOfWork > 0 ? jobs.filter(job => job.placeOfWork.id == this.state.search.placeOfWork) : jobs
+  }
 
-  hideStatusModal = () => {
-    this.setState({ isShowStatusModal: false });
-  };
+  onChangePage (index) {
+    this.setState({ pageNumber: index})
+  }
 
   render() {
+    debugger
+    const recordPerPage =  2
+    const jobs = this.filterByPlaceOfWork(this.filterByPosition(this.state.jobs))
+    const pageCount = Math.ceil(jobs.length / recordPerPage)
+    const pageNumber = TableUtil.displayPageNumber(this.state.pageNumber, pageCount)
+
     return (
-      <>
-      <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-      <ApplyPositionModal show={this.state.isShowApplyPositionModal} data={this.state.dataApplyForm} 
-      onHide={this.hideApplyPositionModal} isLoading={this.state.isLoadingApplyForm} />
-      <div className="summary position-recruiting-detail-block">
-        <div className="header-block">
-          <h5 className="result-label">thông tin tuyển dụng</h5>
-          <span className="btn-apply-block" onClick={this.showApplyPositionModal}>
-            <span className="btn-apply">Ứng tuyển <i className="metismenu-state-icon icon-arrow_right"></i></span>
-          </span>
-        </div>
-        <div className="card shadow">
-          <div className="card-body">
-            <div className="content">
-              <div className="title position">{this.state.job.position.name}</div>
-              <div className="date">Ngày: {this.state.job.dateModified}</div>
-              <div className="address">Địa điểm: {this.state.job.placeOfWork.name}</div>
-              <div className="company">Công ty: Vinpearl</div>
-              <div className="cate description-position">
-                <div className="title">Mô tả công việc</div>
-                <div className="content multiline" dangerouslySetInnerHTML={{__html: this.state.job.jobDescription}} />
-              </div>
-              <div className="cate condition-position">
-                <div className="title">Yêu cầu công việc</div>
-                <div className="content multiline" dangerouslySetInnerHTML={{__html: this.state.job.jobRequirement}} />
-              </div>
-              <div className="cate benefit-position">
-                <div className="title">Quyền lợi</div>
-                <div className="content multiline" dangerouslySetInnerHTML={{__html: this.state.job.benefit}} />
-              </div>
-              <div className="cate contact-position">
-                <div className="title">Liên hệ</div>
-                <div className="content multiline" dangerouslySetInnerHTML={{__html: this.state.job.contactInfo}} />
-              </div>
+      <div className="position-recruiting-section">
+        <PositionRecruitingSearch clickSearch={this.search.bind(this)}/>
+        <PositionRecruitingTable jobs={TableUtil.updateData(jobs, this.state.pageNumber - 1, recordPerPage)}/>
+        <div className="row paging">
+            <div className="col-sm"></div>
+            <div className="col-sm">
+                <CustomPaging pageSize={pageNumber} onChangePage={this.onChangePage.bind(this)} totalRecords={pageCount} />
             </div>
+            <div className="col-sm text-right">Total: {pageCount} pages</div>
           </div>
-        </div>
       </div>
-      </>
     )
   }
 }
 
-export default PositionRecruitingDetail
+export default PositionRecruiting
