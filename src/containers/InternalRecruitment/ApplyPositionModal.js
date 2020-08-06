@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 import axios from 'axios'
+import _ from 'lodash'
 
 const getFileName = () => {
     var file = document.getElementById('file-upload');
@@ -18,7 +19,13 @@ class ApplyPositionModal extends React.Component {
             personal_email: '',
             cell_phone_no: '',
             note: '',
-            optionApply: 1
+            optionApply: 1,
+            errors: {
+                fullname: '',
+                personal_email: '',
+                cell_phone_no: '',
+                file: ''
+            }
         }
         this.fileInput = React.createRef()
       }
@@ -45,18 +52,77 @@ class ApplyPositionModal extends React.Component {
     }
 
     handleChange(event) {
-        debugger
         this.setState({[event.target.name]: event.target.value});
     }
 
+    validate () {
+        let errors = {
+            fullname: '',
+            personal_email: '',
+            cell_phone_no: '',
+            file: ''
+        }
+
+        if (_.isEmpty(this.state['fullname'])) {
+            errors['fullname'] = '(Bắt buộc)'
+        }
+
+        if (_.isEmpty(this.state['cell_phone_no'])) {
+            errors['cell_phone_no'] = '(Bắt buộc)'
+        }
+
+        if (!/^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i.test(this.state.personal_email)) {
+            errors['personal_email'] = '(Format email không đúng!)'
+        }
+           
+        if(!this.fileInput.current.files[0]) {
+            errors['file'] = '(Bắt buộc)'
+        }
+
+        if (!_.isEmpty(errors['fullname']) || !_.isEmpty(errors['personal_email']) || !_.isEmpty(errors['cell_phone_no']) || !_.isEmpty(errors['file']))
+        {
+            this.setState({errors: errors})
+            return false
+        }
+        return true
+    }
+
     handleSubmit(event) {
-        console.log(`Selected file - ${this.fileInput.current.files[0].name}`)
-        console.log(this.state)
-        event.preventDefault();
+        if (!this.validate()) return false
+
+        let formData = new FormData()
+        formData.append('file', this.fileInput.current.files[0])
+        formData.append('optionApply', this.state.optionApply)
+        formData.append('fullname', this.state.fullname)
+        formData.append('email', this.state.personal_email)
+        formData.append('phone', this.state.cell_phone_no)
+        formData.append('note', this.state.note)
+     
+        const config = {
+            headers: {
+              'Authorization': `${localStorage.getItem('accessToken')}`,
+              'content-type': 'multipart/form-data'
+            }
+        }
+    
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}Vacancy/list`, formData, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+              console.log(res.data.data)
+              this.props.showStatusModal("Bạn đã nộp đơn thành công!", true)
+          }
+        }).catch(error => {
+            this.props.showStatusModal('Lỗi xảy ra!')
+            // localStorage.clear();
+            // window.location.href = map.Login;
+        })
+    }
+
+    handleError(event) {
+        console.log(event)
     }
 
     render () {
-        console.log(this.state.profile)
         return (
             <>
             <Modal size="lg" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
@@ -64,7 +130,7 @@ class ApplyPositionModal extends React.Component {
                     <Modal.Title>Ứng tuyển</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form>
                         <div key={`inline-radio`} className="apply-option">
                             <Form.Check className="option-apply" inline label="Ứng tuyển" onChange={this.handleChange.bind(this)} value="1" type={`radio`} id={`inline-radio-1`}  name='optionApply' defaultChecked />
                             <Form.Check className="option-apply" inline label="Giới thiệu" onChange={this.handleChange.bind(this)} value="2" type={`radio`} id={`inline-radio-2`} name='optionApply' />
@@ -73,18 +139,21 @@ class ApplyPositionModal extends React.Component {
                             <Form.Label column sm={3}>Họ và tên</Form.Label>
                             <Col sm={9}>
                             <Form.Control type="text" placeholder="Họ và tên" name="fullname" onChange={this.handleChange.bind(this)} value={this.state.fullname} required />
+                            {!_.isEmpty(this.state.errors.fullname) ? <div className="text-danger">{this.state.errors.fullname}</div> : null}
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formHorizontalEmail">
                             <Form.Label column sm={3}>Email</Form.Label>
                             <Col sm={9}>
                             <Form.Control type="email" placeholder="Email" name="personal_email" onChange={this.handleChange.bind(this)} value={this.state.personal_email} required />
+                            {!_.isEmpty(this.state.errors.personal_email) ? <div className="text-danger">{this.state.errors.personal_email}</div> : null}
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formHorizontalPhone">
                             <Form.Label column sm={3}>Số điện thoại</Form.Label>
                             <Col sm={9}>
                             <Form.Control type="text" placeholder="Số điện thoại" name="cell_phone_no" onChange={this.handleChange.bind(this)} value={this.state.cell_phone_no} required />
+                            {!_.isEmpty(this.state.errors.cell_phone_no) ? <div className="text-danger">{this.state.errors.cell_phone_no}</div> : null}
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="file-block">
@@ -93,6 +162,7 @@ class ApplyPositionModal extends React.Component {
                             <Form.Label htmlFor="file-upload" className="custom-file-upload" column sm={9}>
                                 <i className="fa fa-cloud-upload"></i><span id="file-name-upload" className="file-name-upload">Chọn file ...</span>
                             </Form.Label>
+                            {!_.isEmpty(this.state.errors.file) ? <div className="text-danger">{this.state.errors.file}</div> : null}
                             </Col>
                             <Col sm={9}>
                                 <Form.File

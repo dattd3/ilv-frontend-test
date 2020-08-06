@@ -200,6 +200,7 @@
     }
     .detail {
         margin-top: 30px;
+        
         .btn-link {
             text-decoration: none;
             color: #858796;
@@ -222,6 +223,12 @@
 
 .position-recruiting-detail-block {
     margin-top: 1em;
+    margin-bottom: 30px;
+
+    .card {
+        margin-top: 10px;
+    }
+
     .header-block {
         display: flex;
         justify-content: space-between;
@@ -230,24 +237,26 @@
         .result-label {
             margin-bottom: 0;
         }
-        .btn-apply-block {
+        
+    }
+
+    .btn-apply-block {
+        display: inline-block;
+        background: #347EF9;
+        border-radius: 25px;
+        padding: 4px;
+        cursor: pointer;
+        .btn-apply {
             display: inline-block;
-            background: #347EF9;
-            border-radius: 25px;
-            padding: 4px;
-            cursor: pointer;
-            .btn-apply {
-                display: inline-block;
-                width: 170px;
-                color: #FFFFFF;
-                border-radius: 15px;
-                padding: 3px 4px 4px 4px;
-                font-size: 15px;
-                text-align: center;
-                border: 1.2px solid #FFFFFF;
-                i {
-                    // font-size: 26px;
-                }
+            width: 170px;
+            color: #FFFFFF;
+            border-radius: 15px;
+            padding: 3px 4px 4px 4px;
+            font-size: 15px;
+            text-align: center;
+            border: 1.2px solid #FFFFFF;
+            i {
+                // font-size: 26px;
             }
         }
     }
