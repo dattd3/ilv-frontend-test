@@ -89,7 +89,7 @@ class ApplyPositionModal extends React.Component {
 
     handleSubmit(event) {
         if (!this.validate()) return false
-
+        debugger
         let formData = new FormData()
         formData.append('file', this.fileInput.current.files[0])
         formData.append('optionApply', this.state.optionApply)
@@ -97,6 +97,8 @@ class ApplyPositionModal extends React.Component {
         formData.append('email', this.state.personal_email)
         formData.append('phone', this.state.cell_phone_no)
         formData.append('note', this.state.note)
+        formData.append('vacancyId ', this.props.id)
+        formData.append('userId ', localStorage.getItem('employeeNo'))
      
         const config = {
             headers: {
@@ -105,22 +107,19 @@ class ApplyPositionModal extends React.Component {
             }
         }
     
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}Vacancy/list`, formData, config)
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}Vacancy/apply`, formData, config)
         .then(res => {
           if (res && res.data && res.data.data) {
               console.log(res.data.data)
-              this.props.showStatusModal("Bạn đã nộp đơn thành công!", true)
+              this.props.showStatusModal(`Bạn đã nộp đơn ${this.state.optionApply == 1 ? 'ứng tuyển' : 'giới thiệu'} thành công!`, true)
           }
         }).catch(error => {
-            this.props.showStatusModal('Lỗi xảy ra!')
+            this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!')
             // localStorage.clear();
             // window.location.href = map.Login;
         })
     }
 
-    handleError(event) {
-        console.log(event)
-    }
 
     render () {
         return (

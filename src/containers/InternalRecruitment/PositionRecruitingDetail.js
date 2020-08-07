@@ -3,6 +3,7 @@ import StatusModal from '../../components/Common/StatusModal'
 import ApplyPositionModal from './ApplyPositionModal'
 import axios from 'axios'
 import unescape from 'lodash/unescape'
+import moment from 'moment'
 
 class PositionRecruitingDetail extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class PositionRecruitingDetail extends React.Component {
         }
     }
 
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}Vacancy/detail?id=${this.props.match.params.id}`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}Vacancy/detail/${this.props.match.params.id}`, config)
     .then(res => {
       if (res && res.data && res.data.data) {
         this.setState({job: res.data.data, isLoading: true})
@@ -62,7 +63,7 @@ class PositionRecruitingDetail extends React.Component {
     return (
       this.state.isLoading ? <>
       <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-      {this.state.isShowApplyPositionModal ? <ApplyPositionModal show={this.state.isShowApplyPositionModal} onHide={this.hideApplyPositionModal} showStatusModal={this.showStatusModal.bind(this)} /> : null }
+      {this.state.isShowApplyPositionModal ? <ApplyPositionModal id={this.props.match.params.id} show={this.state.isShowApplyPositionModal} onHide={this.hideApplyPositionModal} showStatusModal={this.showStatusModal.bind(this)} /> : null }
       <div className="summary position-recruiting-detail-block">
         <div className="header-block">
           <h5 className="result-label">thông tin tuyển dụng</h5>
@@ -82,7 +83,7 @@ class PositionRecruitingDetail extends React.Component {
           <div className="card-body">
             <div className="content">
               <div className="title position">{this.state.job.positionName}</div>
-              <div className="date">Ngày: {this.state.job.dateCreated}</div>
+              <div className="date">Ngày: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
               <div className="address">Địa điểm: {this.state.job.placeOfWorkName}</div>
               <div className="company">Công ty: Vinpearl</div>
               <div className="cate description-position">
