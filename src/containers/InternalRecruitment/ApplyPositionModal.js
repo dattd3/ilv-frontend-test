@@ -89,7 +89,6 @@ class ApplyPositionModal extends React.Component {
 
     handleSubmit(event) {
         if (!this.validate()) return false
-        debugger
         let formData = new FormData()
         formData.append('file', this.fileInput.current.files[0])
         formData.append('optionApply', this.state.optionApply)
@@ -97,8 +96,8 @@ class ApplyPositionModal extends React.Component {
         formData.append('email', this.state.personal_email)
         formData.append('phone', this.state.cell_phone_no)
         formData.append('note', this.state.note)
-        formData.append('vacancyId ', this.props.id)
-        formData.append('userId ', localStorage.getItem('employeeNo'))
+        formData.append('vacancyId', this.props.id)
+        formData.append('userId', localStorage.getItem('employeeNo'))
      
         const config = {
             headers: {

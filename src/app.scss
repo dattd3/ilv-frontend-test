@@ -241,6 +241,13 @@
     content: "\e914";
   }
 }
+
+.icon-recruitment {
+  &:before {
+    content: "\e915";
+  }
+}
+
 .upload-form {
   .file-upload {
     visibility: hidden;

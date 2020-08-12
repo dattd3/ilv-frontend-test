@@ -58,7 +58,7 @@ class PositionRecruiting extends React.Component {
   }
 
   render() {
-    const recordPerPage =  5
+    const recordPerPage =  25
     const jobs = this.filterByPlaceOfWork(this.filterByPosition(this.state.jobs))
 
     return (

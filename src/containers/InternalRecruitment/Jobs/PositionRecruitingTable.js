@@ -11,11 +11,11 @@ class PositionRecruitingTable extends React.Component {
           <table className="table" role="table">
             <thead className="search-result-title-row" role="rowgroup">
               <tr role="row">
-                <th role="columnheader">Vị trí</th>
-                <th role="columnheader">Cấp bậc</th>
-                <th role="columnheader">Ngành nghề</th>
-                <th role="columnheader">Bộ phận / Cơ sở</th>
-                <th role="columnheader">Địa điểm</th>
+                <th role="columnheader" className="position">Vị trí</th>
+                <th role="columnheader" className="rank">Cấp bậc</th>
+                <th role="columnheader" className="profession">Ngành nghề</th>
+                <th role="columnheader" className="department">Bộ phận / Cơ sở</th>
+                <th role="columnheader" className="placeOfWork">Địa điểm</th>
               </tr>
             </thead>
             <tbody role="rowgroup">
@@ -24,16 +24,16 @@ class PositionRecruitingTable extends React.Component {
                     <td role="cell" data-title="Vị trí">
               <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.positionName}</a>
                     </td>
-                    <td role="cell" data-title="Cấp bậc">
+                    <td role="cell" className="rank" data-title="Cấp bậc">
                       <p>{job.rankName}</p>
                     </td>
-                    <td role="cell" data-title="Ngành nghề">
+                    <td role="cell" className="profession" data-title="Ngành nghề">
                       <p>{job.professionName}</p>
                     </td>
-                    <td role="cell" data-title="Bộ phận / Cơ sở">
+                    <td role="cell" className="department" data-title="Bộ phận / Cơ sở">
                       <p>{job.departmentName}</p>
                     </td>
-                    <td role="cell" data-title="Địa điểm">
+                    <td role="cell" className="placeOfWork" data-title="Địa điểm">
                       <p>{job.placeOfWorkName}</p>
                     </td>
                   </tr>

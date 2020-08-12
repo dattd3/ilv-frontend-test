@@ -24,6 +24,14 @@ export const Navigation = [
     role: "U",
   },
   {
+    id: 11,
+    parentId: 0,
+    icon: 'recruitment',
+    label: "Menu_InternalRecruitment",
+    to: map.InternalRecruitment,
+    role: 'U'
+  },
+  {
     id: 3,
     parentId: 2,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
@@ -152,16 +160,8 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 24,
-    parentId: 10,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "Menu_InternalRecruitment",
-    to: map.InternalRecruitment,
-    role: 'U'
-  },
-  {
     id: 25,
-    parentId: 24,
+    parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_PositionRecruiting",
     to: map.PositionRecruiting,

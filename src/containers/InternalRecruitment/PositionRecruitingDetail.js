@@ -17,11 +17,6 @@ class PositionRecruitingDetail extends React.Component {
       isSuccess: false,
       job: {}
     }
-
-    // this.hideStatusModal = this.hideStatusModal.bind(this);
-    // this.showStatusModal = this.showStatusModal.bind(this);
-    // this.showApplyPositionModal = this.showApplyPositionModal.bind(this);
-    // this.hideApplyPositionModal = this.hideApplyPositionModal.bind(this);
   }
 
   componentWillMount() {
@@ -86,22 +81,22 @@ class PositionRecruitingDetail extends React.Component {
               <div className="date">Ngày: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
               <div className="address">Địa điểm: {this.state.job.placeOfWorkName}</div>
               <div className="company">Công ty: Vinpearl</div>
-              <div className="cate description-position">
-                <div className="title">Mô tả công việc</div>
+              {this.state.job.jobDescription && this.state.job.jobDescription != 'undefined' ? <div className="cate description-position">
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Mô tả công việc</div>}
                 <div  dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobDescription)}} />
-              </div>
-              <div className="cate condition-position">
-                <div className="title">Yêu cầu công việc</div>
+              </div> : null}
+              {this.state.job.jobRequirement && this.state.job.jobRequirement != 'undefined' ? <div className="cate condition-position">
+              {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Yêu cầu công việc</div>}
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobRequirement)}} />
-              </div>
-              <div className="cate benefit-position">
-                <div className="title">Quyền lợi</div>
+              </div> : null }
+              {this.state.job.benefit && this.state.job.benefit != 'undefined' ? <div className="cate benefit-position">
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Quyền lợi</div> }
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.benefit)}} />
-              </div>
-              <div className="cate contact-position">
-                <div className="title">Liên hệ</div>
+              </div> : null}
+              {this.state.job.contactInfo && this.state.job.contactInfo != 'undefined' ? <div className="cate contact-position">
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Liên hệ</div>}
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.contactInfo)}} />
-              </div>
+              </div> : null}
             </div>
           </div>
         </div>

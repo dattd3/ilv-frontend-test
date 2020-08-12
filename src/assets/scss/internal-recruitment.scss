@@ -6,6 +6,7 @@
     }
     .card-body {
         padding: 0;
+
         thead th {
             border: none;
             background-color: #F4F5F9;
@@ -120,6 +121,26 @@
         }
     }
 }
+
+
+.recruiting-search-result-block {
+    .placeOfWork {
+        min-width: 150px;
+    }
+
+    .department {
+        min-width: 200px;
+    }
+
+    .profession {
+        min-width: 180px;
+    }
+
+    .rank {
+        min-width: 130px;
+    }
+}
+
 
 .position-applied-block {
     .result-label {
