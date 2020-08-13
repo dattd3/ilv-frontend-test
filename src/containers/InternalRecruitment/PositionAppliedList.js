@@ -1,57 +1,60 @@
-import React, { useState } from "react";
-import { useApi, useFetcher } from "../../modules";
-import CustomPaging from '../../components/Common/CustomPaging';
-import StatusModal from '../../components/Common/StatusModal'
+import React from "react"
+import axios from 'axios'
+import moment from 'moment'
 
 class PositionAppliedList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
       content: "",
-      isSuccess: true,
-      isLoading: false
+      jobs: [],
+      applicantStatus: []
     }
-
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
   }
 
-  showModal = event => {
-    event.preventDefault();
-    const content = "Bạn đã nộp đơn giới thiệu thành công!";
-    this.setState({show: true, content: content});
-  };
+  componentWillMount() {
+    const config = {
+        headers: {
+          'Authorization': `${localStorage.getItem('accessToken')}`
+        }
+    }
 
-  hideModal = () => {
-    this.setState({ show: false });
-  };
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}Vacancy/list`, config)
+    .then(res => {
+      if (res && res.data && res.data.data) {
+        this.setState({jobs: res.data.data})
+      }
+    }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+    })
+
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ApplicantStatus/list`, config)
+    .then(res => {
+      if (res && res.data && res.data.data) {
+        this.setState({applicantStatus: res.data.data})
+      }
+    }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+    })
+  }
+
+  showStatus (statusId) {
+    const status = this.state.applicantStatus.find(s => s.id == statusId)
+    return status ? status.name : null
+  }
+
+  showColor (statusId) {
+    const color = {1: 'waiting-approve', 2: 'mapped-conditions', 3: 'not-map-conditions', 4: 'recruited', 5: 'not-recruited'}[statusId]
+    return color ? color : 'waiting-approve'
+  }
 
   render() {
-    // const usePreload = (params) => {
-    //   const api = useApi();
-    //   const [data = [], err] = useFetcher({
-    //       api: api.fetchArticleList,
-    //       autoRun: true,
-    //       params: params
-    //   });
-    //   return data;
-    // };
-    
-    // const [pageIndex, SetPageIndex] = useState(1);
-    // const [pageSize, SetPageSize] = useState(9);
-    
-    // const result = usePreload([pageIndex, pageSize]);
-    
-    // const objDataRes = result.data;
-    
-    // function onChangePage(page) {
-    //     SetPageIndex(page);
-    // }
+    const APPLICANT_TYPE = {1: 'Ứng Tuyển', 2: 'Giới thiệu'}
     
     return (
       <>
-      <StatusModal show={this.state.show} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideModal} />
       <div className="summary position-applied-block">
         <h5 className="result-label">các vị trí đã ứng tuyển</h5>
         <div className="card shadow">
@@ -64,151 +67,42 @@ class PositionAppliedList extends React.Component {
                   <th role="columnheader">Ngành nghề</th>
                   <th role="columnheader">Bộ phận / Cơ sở</th>
                   <th role="columnheader">Địa điểm</th>
-                  <th role="columnheader">Hình thức</th>
+                  <th role="columnheader" className="applicantType" >Hình thức</th>
                   <th role="columnheader">Thời gian</th>
-                  <th role="columnheader">Kết quả</th>
+                  <th role="columnheader" className="result">Kết quả</th>
                 </tr>
               </thead>
               <tbody role="rowgroup">
-                <tr role="row">
+              {this.state.jobs.map(job => {
+                return job.applicants.map(applicant => {
+                return <tr role="row">
                   <td role="cell" data-title="Vị trí">
-                    <a href="#" onClick={this.showModal} className="position">Project Manager</a>
+                    <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.positionName}</a>
                   </td>
-                  <td role="cell" data-title="Cấp bậc">
-                    <p>Chuyên gia</p>
+                  <td role="cell" className="rank" data-title="Cấp bậc">
+                    <p>{job.rankName}</p>
                   </td>
-                  <td role="cell" data-title="Ngành nghề">
-                    <p>Khối CNTT</p>
+                  <td role="cell" className="profession" data-title="Ngành nghề">
+                    <p>{job.professionName}</p>
                   </td>
-                  <td role="cell" data-title="Bộ phận / Cơ sở">
-                    <p>Công nghệ thông tin</p>
+                  <td role="cell" className="department" data-title="Bộ phận / Cơ sở">
+                    <p>{job.departmentName}</p>
                   </td>
-                  <td role="cell" data-title="Địa điểm">
-                    <p>Hà Nội</p>
+                  <td role="cell" className="placeOfWork" data-title="Địa điểm">
+                    <p>{job.placeOfWorkName}</p>
                   </td>
-                  <td role="cell" data-title="Hình thức">
-                    <p>Ứng tuyển</p>
+                  <td role="cell" data-title="Hình thức" className="applicantType">
+                  <p>{APPLICANT_TYPE[applicant.applicationFormId]}</p>
                   </td>
                   <td role="cell" data-title="Thời gian">
-                    <p>15/01/2020</p>
+                    <p>{moment(applicant.applicationDate).format('DD/MM/YYYY')}</p>
                   </td>
-                  <td role="cell" data-title="Kết quả">
-                    <p className="recruiting-status waiting-approve">Đang chờ duyệt</p>
+                  <td role="cell" className="result" data-title="Kết quả">
+                    <p className={'recruiting-status ' + this.showColor(applicant.applicantStatusId)}>{this.showStatus(applicant.applicantStatusId)}</p>
                   </td>
-                </tr>
-                <tr className="watched" role="row">
-                  <td role="cell" data-title="Vị trí">
-                    <a href="#" className="position">Project Manager</a>
-                  </td>
-                  <td role="cell" data-title="Cấp bậc">
-                    <p>Chuyên gia</p>
-                  </td>
-                  <td role="cell" data-title="Ngành nghề">
-                    <p>Khối CNTT</p>
-                  </td>
-                  <td role="cell" data-title="Bộ phận / Cơ sở">
-                    <p>Công nghệ thông tin</p>
-                  </td>
-                  <td role="cell" data-title="Địa điểm">
-                    <p>Hà Nội</p>
-                  </td>
-                  <td role="cell" data-title="Hình thức">
-                    <p>Giới thiệu</p>
-                  </td>
-                  <td role="cell" data-title="Thời gian">
-                    <p>20/02/2020</p>
-                  </td>
-                  <td role="cell" data-title="Kết quả">
-                    <p className="recruiting-status mapped-conditions">Đủ điều kiện</p>
-                  </td>
-                </tr>
-                <tr className="" role="row">
-                  <td role="cell" data-title="Vị trí">
-                    <a href="#" className="position">Project Manager</a>
-                  </td>
-                  <td role="cell" data-title="Cấp bậc">
-                    <p>Chuyên gia</p>
-                  </td>
-                  <td role="cell" data-title="Ngành nghề">
-                    <p>Khối CNTT</p>
-                  </td>
-                  <td role="cell" data-title="Bộ phận / Cơ sở">
-                    <p>Công nghệ thông tin</p>
-                  </td>
-                  <td role="cell" data-title="Địa điểm">
-                    <p>Hà Nội</p>
-                  </td>
-                  <td role="cell" data-title="Hình thức">
-                    <p>Giới thiệu</p>
-                  </td>
-                  <td role="cell" data-title="Thời gian">
-                    <p>20/02/2020</p>
-                  </td>
-                  <td role="cell" data-title="Kết quả">
-                    <p className="recruiting-status not-map-conditions">Không đủ điều kiện</p>
-                  </td>
-                </tr>
-                <tr className="" role="row">
-                  <td role="cell" data-title="Vị trí">
-                    <a href="#" className="position">Project Manager</a>
-                  </td>
-                  <td role="cell" data-title="Cấp bậc">
-                    <p>Chuyên gia</p>
-                  </td>
-                  <td role="cell" data-title="Ngành nghề">
-                    <p>Khối CNTT</p>
-                  </td>
-                  <td role="cell" data-title="Bộ phận / Cơ sở">
-                    <p>Công nghệ thông tin</p>
-                  </td>
-                  <td role="cell" data-title="Địa điểm">
-                    <p>Hà Nội</p>
-                  </td>
-                  <td role="cell" data-title="Hình thức">
-                    <p>Giới thiệu</p>
-                  </td>
-                  <td role="cell" data-title="Thời gian">
-                    <p>20/02/2020</p>
-                  </td>
-                  <td role="cell" data-title="Kết quả">
-                    <p className="recruiting-status not-recruited">Không tuyển dụng</p>
-                  </td>
-                </tr>
-                <tr className="" role="row">
-                  <td role="cell" data-title="Vị trí">
-                    <a href="#" className="position">Project Manager</a>
-                  </td>
-                  <td role="cell" data-title="Cấp bậc">
-                    <p>Chuyên gia</p>
-                  </td>
-                  <td role="cell" data-title="Ngành nghề">
-                    <p>Khối CNTT</p>
-                  </td>
-                  <td role="cell" data-title="Bộ phận / Cơ sở">
-                    <p>Công nghệ thông tin</p>
-                  </td>
-                  <td role="cell" data-title="Địa điểm">
-                    <p>Hà Nội</p>
-                  </td>
-                  <td role="cell" data-title="Hình thức">
-                    <p>Giới thiệu</p>
-                  </td>
-                  <td role="cell" data-title="Thời gian">
-                    <p>20/02/2020</p>
-                  </td>
-                  <td role="cell" data-title="Kết quả">
-                    <p className="recruiting-status recruited">Đã tuyển dụng</p>
-                  </td>
-                </tr>
+                </tr>})})}
               </tbody>
             </table>
-            {/* <div className="row">
-              <div className="col-sm"></div>
-              <div className="col-sm">
-                  <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={objDataRes.totalRecord} />
-              </div>
-              <div className="col-sm text-right">Total: {objDataRes.totalRecord}</div>
-            </div> */}
           </div>
         </div>
       </div>

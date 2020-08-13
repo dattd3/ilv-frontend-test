@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
-import CustomPaging from '../../../components/Common/CustomPaging';
 
 class PositionRecruitingTable extends React.Component {
   render() {

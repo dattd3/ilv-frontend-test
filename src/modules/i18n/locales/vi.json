@@ -10,7 +10,7 @@
   "Password": "Mật khẩu",
   "LoginGuide_Title": "Hướng dẫn đăng nhập",
   "LoginGuide_Description": "Bạn vui lòng chọn \"Tiếp theo\" sau đó nhập thông tin tên đăng nhập và mật khẩu để truy cập website.",
-  "LoginGuide_UserName": "sử dụng account AD",
+  "LoginGuide_UserName": "Sử dụng account AD (là account cá nhân đăng nhập hệ thống Saba & máy tính cá nhân), ví dụ: chiennd4@vingroup.net",
   "LoginGuide_Password": "sử dụng mật khẩu account AD",
   "LoginGuide_Note": "Trường hợp không rõ Account AD của mình hoặc không đăng nhập được, vui lòng liên hệ bộ phận IT của đơn vị để kiểm tra.",
   "LoginSuccessful": "Đăng nhập thành công...",

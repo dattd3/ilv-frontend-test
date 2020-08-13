@@ -123,13 +123,13 @@
 }
 
 
-.recruiting-search-result-block {
+.recruiting-search-result-block, .position-applied-block {
     .placeOfWork {
         min-width: 150px;
     }
 
     .department {
-        min-width: 200px;
+        min-width: 180px;
     }
 
     .profession {
@@ -137,6 +137,14 @@
     }
 
     .rank {
+        min-width: 130px;
+    }
+
+    .result {
+        min-width: 150px;
+    }
+
+    .applicantType {
         min-width: 130px;
     }
 }
