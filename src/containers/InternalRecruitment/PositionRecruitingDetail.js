@@ -4,8 +4,13 @@ import ApplyPositionModal from './ApplyPositionModal'
 import axios from 'axios'
 import unescape from 'lodash/unescape'
 import moment from 'moment'
+import { withRouter } from 'react-router-dom'
 
 class PositionRecruitingDetail extends React.Component {
+  static contextTypes = {
+    router: () => true, // replace with PropTypes.object if you use them
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -66,11 +71,11 @@ class PositionRecruitingDetail extends React.Component {
         </div>
         <div className="clearfix">
           <div className="float-left">
-            <a className="btn btn-outline-primary" href="/position-recruiting"><i className="fa fa-arrow-left"/> Back</a>
+            <button className="btn btn-outline-primary" onClick={this.props.history.goBack}><i className="fa fa-arrow-left"/> Back</button>
           </div>
           <div className="float-right">
             <span className="btn-apply-block" onClick={this.showApplyPositionModal}>
-              <span className="btn-apply" >Ứng tuyển <i className="metismenu-state-icon icon-arrow_right"></i></span>
+              <span className="btn-apply" >Ứng tuyển/Giới thiệu <i className="metismenu-state-icon icon-arrow_right"></i></span>
             </span>
           </div>
         </div>
@@ -106,4 +111,4 @@ class PositionRecruitingDetail extends React.Component {
   }
 }
 
-export default PositionRecruitingDetail
+export default withRouter(PositionRecruitingDetail)

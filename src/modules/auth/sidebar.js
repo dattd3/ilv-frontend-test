@@ -167,14 +167,14 @@ export const Navigation = [
     to: map.PositionRecruiting,
     role: 'U'
   },
-  // {
-  //   id: 26,
-  //   parentId: 24,
-  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //   label: "Menu_PositionApplied",
-  //   to: map.PositionApplied,
-  //   role: 'U'
-  // },
+  {
+    id: 26,
+    parentId: 11,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_PositionApplied",
+    to: map.PositionApplied,
+    role: 'U'
+  },
   {
     id: 99,
     parentId: 10,

@@ -8,7 +8,7 @@
   "Password": "Password",
   "LoginGuide_Title": "Login Instruction",
   "LoginGuide_Description": "Click \"Next\" and enter your login credential to access the website",
-  "LoginGuide_UserName": "AD account",
+  "LoginGuide_UserName": "AD account (as personal account to login Saba system), ex: chiend4@vingroup.net",
   "LoginGuide_Password": "AD password",
   "LoginGuide_Note": "Forget your password? Contact IT HelpDesk for assistance.",
   "LoginSuccessful": "Login successful...",

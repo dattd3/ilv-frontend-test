@@ -20,6 +20,7 @@ class ApplyPositionModal extends React.Component {
             cell_phone_no: '',
             note: '',
             optionApply: 1,
+            profile: {},
             errors: {
                 fullname: '',
                 personal_email: '',
@@ -43,6 +44,7 @@ class ApplyPositionModal extends React.Component {
             .then(res => {
                 if (res && res.data && res.data.data) {
                 let profile = res.data.data[0];
+                this.setState({profile: profile})
                 this.setState({ fullname: profile.fullname, personal_email: profile.personal_email, cell_phone_no: profile.cell_phone_no });
                 }
             }).catch(error => {
@@ -52,7 +54,18 @@ class ApplyPositionModal extends React.Component {
     }
 
     handleChange(event) {
+        if (event.target.name == 'optionApply') {
+            this.resetForm(event.target.value)
+        }
         this.setState({[event.target.name]: event.target.value});
+    }
+
+    resetForm (optionApply) {
+        if(optionApply == 1) {
+            this.setState({ fullname: this.state.profile.fullname, personal_email: this.state.profile.personal_email, cell_phone_no: this.state.profile.cell_phone_no })
+        } else {
+            this.setState({fullname: '', personal_email: '', cell_phone_no: ''})
+        }
     }
 
     validate () {
@@ -109,13 +122,14 @@ class ApplyPositionModal extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}Vacancy/apply`, formData, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-              console.log(res.data.data)
               this.props.showStatusModal(`Bạn đã nộp đơn ${this.state.optionApply == 1 ? 'ứng tuyển' : 'giới thiệu'} thành công!`, true)
           }
         }).catch(error => {
-            this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!')
-            // localStorage.clear();
-            // window.location.href = map.Login;
+            if (error.response.data.result.code == '1') {
+                this.props.showStatusModal(error.response.data.result.message)
+            } else {
+                this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!')
+            }
         })
     }
 
@@ -134,9 +148,9 @@ class ApplyPositionModal extends React.Component {
                             <Form.Check className="option-apply" inline label="Giới thiệu" onChange={this.handleChange.bind(this)} value="2" type={`radio`} id={`inline-radio-2`} name='optionApply' />
                         </div>
                         <Form.Group as={Row} controlId="formHorizontalName">
-                            <Form.Label column sm={3}>Họ và tên</Form.Label>
+                            <Form.Label column sm={3}>Họ và tên ứng viên</Form.Label>
                             <Col sm={9}>
-                            <Form.Control type="text" placeholder="Họ và tên" name="fullname" onChange={this.handleChange.bind(this)} value={this.state.fullname} required />
+                            <Form.Control type="text" placeholder="Họ và tên ứng viên" name="fullname" onChange={this.handleChange.bind(this)} value={this.state.fullname} required />
                             {!_.isEmpty(this.state.errors.fullname) ? <div className="text-danger">{this.state.errors.fullname}</div> : null}
                             </Col>
                         </Form.Group>
