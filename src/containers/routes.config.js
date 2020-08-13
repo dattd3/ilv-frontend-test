@@ -169,7 +169,6 @@ export default [
           },
           component: lazy(() => import("./Timesheet"))
         },
-
         {
           key: "leaveTime",
           routeProps: {
@@ -178,7 +177,14 @@ export default [
           },
           component: lazy(() => import("./LeaveTime"))
         },
-        
+        {
+          key: "payslips",
+          routeProps: {
+            exact: true,
+            path: map.PaySlips
+          },
+          component: lazy(() => import("./PaySlips"))
+        },
         {
           key: "working-process",
           routeProps: {

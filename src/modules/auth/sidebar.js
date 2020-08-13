@@ -142,8 +142,8 @@ export const Navigation = [
     label: "MyJob",
     to: map.Job,
     role: 'U'
-  }
-  , {
+  },
+  {
     id: 30,
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
@@ -207,7 +207,6 @@ export const Navigation = [
     to: map.Kpi,
     role: "U"
   },
-
   {
     id: 22,
     parentId: 10,
@@ -216,7 +215,6 @@ export const Navigation = [
     to: map.Timesheet,
     role: "U"
   },
-
   {
     id: 23,
     parentId: 10,
@@ -224,5 +222,13 @@ export const Navigation = [
     label: "Menu_LeaveTime",
     to: map.LeaveTime,
     role: "U"
-  }  
+  },
+  {
+    id: 27,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_PaySlip",
+    to: map.PaySlips,
+    role: "U"
+  }
 ];
