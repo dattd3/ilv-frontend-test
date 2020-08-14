@@ -41,5 +41,6 @@ export default {
   KpiDetail: "/kpi/:id",
   PositionRecruiting: "/position-recruiting",
   PositionApplied: "/position-applied",
+  PositionIntroduced: "/position-introduced",
   PositionRecruitingDetail: "/position-recruiting-detail/:id"
 };

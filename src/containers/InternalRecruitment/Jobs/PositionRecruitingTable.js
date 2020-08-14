@@ -20,7 +20,7 @@ class PositionRecruitingTable extends React.Component {
               {this.props.jobs.map(job => {
                  return <tr role="row">
                     <td role="cell" data-title="Vị trí">
-              <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.positionName}</a>
+              <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                     </td>
                     <td role="cell" className="rank" data-title="Cấp bậc">
                       <p>{job.rankName}</p>

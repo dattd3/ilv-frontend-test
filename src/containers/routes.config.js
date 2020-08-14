@@ -151,7 +151,15 @@ export default [
             exact: true,
             path: map.PositionApplied
           },
-          component: lazy(() => import("./InternalRecruitment/PositionApplied"))
+          component: lazy(() => import("./InternalRecruitment/history/PositionApplied"))
+        },
+        {
+          key: "position-applied",
+          routeProps: {
+            exact: true,
+            path: map.PositionIntroduced
+          },
+          component: lazy(() => import("./InternalRecruitment/history/IntroductedPositionList"))
         },
         {
           key: "position-recruiting-detail",
