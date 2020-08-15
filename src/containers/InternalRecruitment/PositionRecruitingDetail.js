@@ -82,7 +82,7 @@ class PositionRecruitingDetail extends React.Component {
         <div className="card shadow">
           <div className="card-body">
             <div className="content">
-              <div className="title position">{this.state.job.positionName}</div>
+              <div className="title position">{this.state.job.jobTitle}</div>
               <div className="date">Ngày: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
               <div className="address">Địa điểm: {this.state.job.placeOfWorkName}</div>
               <div className="company">Công ty: Vinpearl</div>

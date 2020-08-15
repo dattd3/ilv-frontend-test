@@ -42,5 +42,6 @@ export default {
   PositionRecruiting: "/position-recruiting",
   PositionApplied: "/position-applied",
   PositionIntroduced: "/position-introduced",
-  PositionRecruitingDetail: "/position-recruiting-detail/:id"
+  PositionRecruitingDetail: "/position-recruiting-detail/:id",
+  PaySlips: "/payslips"
 };

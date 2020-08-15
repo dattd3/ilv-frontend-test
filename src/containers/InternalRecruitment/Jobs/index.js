@@ -63,7 +63,6 @@ class PositionRecruiting extends React.Component {
   } 
 
   filterByPosition (jobs) {
-    debugger
     return this.state.search.position != '' ? jobs.filter(job => this.removeUnicode(job.jobTitle).includes(this.removeUnicode(this.state.search.position))) : jobs
   }
 

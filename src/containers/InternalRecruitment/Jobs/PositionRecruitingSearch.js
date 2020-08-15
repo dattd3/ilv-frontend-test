@@ -60,6 +60,12 @@ class PositionRecruitingSearch extends React.Component {
     this.props.clickSearch(this.state.position, parseInt(this.state.placeOfWork))
   }
 
+  keyPress(e){
+    if(e.key == 'Enter'){
+       this.search()
+    }
+ }
+
   render() {
     const all = { value: '0', label: 'Tất cả' }
 
@@ -85,7 +91,7 @@ class PositionRecruitingSearch extends React.Component {
         <div className="col">
           <div className="title">Vị trí</div>
           <div className="content input-container">
-            <input placeholder="Nhập vị trí tìm kiếm" class="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
+            <input placeholder="Nhập vị trí tìm kiếm" onKeyPress={this.keyPress.bind(this)} class="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
           </div>
         </div>
         <div className="col">

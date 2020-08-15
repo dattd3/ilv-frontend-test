@@ -74,7 +74,7 @@ class PositionAppliedList extends React.Component {
               </thead>
               <tbody role="rowgroup">
               {this.state.jobs.map(job => {
-                return job.applicants.filter(app => app.applicantStatusId == UNG_TUYEN).map(applicant => {
+                return job.applicants.filter(app => app.applicationFormId == UNG_TUYEN).map(applicant => {
                 return <tr role="row">
                   <td role="cell" data-title="Vị trí">
                     <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
