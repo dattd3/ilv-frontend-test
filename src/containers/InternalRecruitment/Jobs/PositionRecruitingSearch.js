@@ -6,9 +6,8 @@ class PositionRecruitingSearch extends React.Component {
   constructor() {
     super();
     this.state = {
-      position: '0',
+      position: '',
       placeOfWork: '0',
-      positions: [],
       placeOfWorks: []
     }
 
@@ -45,9 +44,9 @@ class PositionRecruitingSearch extends React.Component {
       })
   }
 
-  setPosition (position) {
+  setPosition (e) {
     this.setState({
-      position: position.value
+      position: e.currentTarget.value
     })
   }
 
@@ -58,17 +57,17 @@ class PositionRecruitingSearch extends React.Component {
   }
 
   search() {
-    this.props.clickSearch(parseInt(this.state.position), parseInt(this.state.placeOfWork))
+    this.props.clickSearch(this.state.position, parseInt(this.state.placeOfWork))
   }
+
+  keyPress(e){
+    if(e.key == 'Enter'){
+       this.search()
+    }
+ }
 
   render() {
     const all = { value: '0', label: 'Tất cả' }
-    const positions = [all].concat(this.state.positions.map(position => {
-      return {
-        value: position.id,
-        label: position.name
-      }
-    }))
 
     const placeOfWorks = [all].concat(this.state.placeOfWorks.map(placeOfWork => {
       return {
@@ -92,7 +91,7 @@ class PositionRecruitingSearch extends React.Component {
         <div className="col">
           <div className="title">Vị trí</div>
           <div className="content input-container">
-            <Select placeholder="Tất cả" options={positions} styles={customStyles} onChange={this.setPosition.bind(this)} />
+            <input placeholder="Nhập vị trí tìm kiếm" onKeyPress={this.keyPress.bind(this)} class="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
           </div>
         </div>
         <div className="col">

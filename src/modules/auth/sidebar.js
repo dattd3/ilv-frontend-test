@@ -160,7 +160,7 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 25,
+    id: 24,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_PositionRecruiting",
@@ -168,11 +168,19 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 26,
+    id: 25,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_PositionApplied",
     to: map.PositionApplied,
+    role: 'U'
+  },
+  {
+    id: 26,
+    parentId: 11,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Các vị trí đã giới thiệu",
+    to: map.PositionIntroduced,
     role: 'U'
   },
   {
@@ -222,13 +230,13 @@ export const Navigation = [
     label: "Menu_LeaveTime",
     to: map.LeaveTime,
     role: "U"
-  },
-  {
-    id: 27,
-    parentId: 10,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_PaySlip",
-    to: map.PaySlips,
-    role: "U"
   }
+  // {
+  //   id: 27,
+  //   parentId: 10,
+  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+  //   label: "Menu_PaySlip",
+  //   to: map.PaySlips,
+  //   role: "U"
+  // }
 ];

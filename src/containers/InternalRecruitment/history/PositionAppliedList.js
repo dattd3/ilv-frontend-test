@@ -1,6 +1,7 @@
 import React from "react"
 import axios from 'axios'
 import moment from 'moment'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 class PositionAppliedList extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class PositionAppliedList extends React.Component {
   }
 
   render() {
-    const APPLICANT_TYPE = {1: 'Ứng Tuyển', 2: 'Giới thiệu'}
+    const UNG_TUYEN = 1
     
     return (
       <>
@@ -63,27 +64,20 @@ class PositionAppliedList extends React.Component {
               <thead className="position-applied-title-row" role="rowgroup">
                 <tr role="row">
                   <th role="columnheader">Vị trí</th>
-                  <th role="columnheader">Cấp bậc</th>
-                  <th role="columnheader">Ngành nghề</th>
                   <th role="columnheader">Bộ phận / Cơ sở</th>
                   <th role="columnheader">Địa điểm</th>
-                  <th role="columnheader" className="applicantType" >Hình thức</th>
                   <th role="columnheader">Thời gian</th>
                   <th role="columnheader" className="result">Kết quả</th>
+                  <th role="columnheader" className="note" >Tải CV</th>
+                  <th role="columnheader" className="note" >Ghi chú</th>
                 </tr>
               </thead>
               <tbody role="rowgroup">
               {this.state.jobs.map(job => {
-                return job.applicants.map(applicant => {
+                return job.applicants.filter(app => app.applicationFormId == UNG_TUYEN).map(applicant => {
                 return <tr role="row">
                   <td role="cell" data-title="Vị trí">
-                    <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.positionName}</a>
-                  </td>
-                  <td role="cell" className="rank" data-title="Cấp bậc">
-                    <p>{job.rankName}</p>
-                  </td>
-                  <td role="cell" className="profession" data-title="Ngành nghề">
-                    <p>{job.professionName}</p>
+                    <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                   </td>
                   <td role="cell" className="department" data-title="Bộ phận / Cơ sở">
                     <p>{job.departmentName}</p>
@@ -91,14 +85,21 @@ class PositionAppliedList extends React.Component {
                   <td role="cell" className="placeOfWork" data-title="Địa điểm">
                     <p>{job.placeOfWorkName}</p>
                   </td>
-                  <td role="cell" data-title="Hình thức" className="applicantType">
-                  <p>{APPLICANT_TYPE[applicant.applicationFormId]}</p>
-                  </td>
                   <td role="cell" data-title="Thời gian">
                     <p>{moment(applicant.applicationDate).format('DD/MM/YYYY')}</p>
                   </td>
                   <td role="cell" className="result" data-title="Kết quả">
                     <p className={'recruiting-status ' + this.showColor(applicant.applicantStatusId)}>{this.showStatus(applicant.applicantStatusId)}</p>
+                  </td>
+                  <td role="cell" className="note">
+                    <p><a className="download text-success" title="Tải về CV" href={applicant.cvFileLink} target="_blank"><i class="fas fa-download" aria-hidden="true"></i></a></p>
+                  </td>
+                  <td role="cell" className="note">
+                  <p>
+                    {applicant.note ? <OverlayTrigger placement="left" overlay={<Tooltip className="recruiting-detail-tooltip" style={{ fontFamily: "Arial, Helvetica, sans-serif", fontSize: 11, whiteSpace: "normal" }}>{applicant.note}</Tooltip>}>
+                      <i className="fas fa-edit text-warning" aria-hidden="true"></i>
+                    </OverlayTrigger> : <i className="fas fa-edit text-secondary" aria-hidden="true"></i> }
+                      </p>
                   </td>
                 </tr>})})}
               </tbody>

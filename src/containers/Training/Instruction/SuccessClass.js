@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
@@ -24,7 +24,10 @@ function SuccessClass(props) {
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
     document.title = `Learning`;
-    const sabaEnrollments = usePreload([`emplo000000000008166`, 200, pageIndex, pageSize]);
+    const guard = useGuardStore();
+    const user = guard.getCurentUser()
+  
+    const sabaEnrollments = usePreload([user.sabaId, 200, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
@@ -37,7 +40,7 @@ function SuccessClass(props) {
         SetPageIndex(1);
     }
     try {
-        if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
+        if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
         }
     } catch { }

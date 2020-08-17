@@ -42,7 +42,7 @@ function OnGoingClass(props) {
     }
 
     try {
-        if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
+        if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
         }
     } catch { }
