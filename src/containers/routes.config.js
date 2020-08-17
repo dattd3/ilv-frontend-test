@@ -247,7 +247,7 @@ export default [
             exact: true,
             path: map.Notify
           },
-          component: lazy(() => import("./Notify"))
+          component: lazy(() => import("./Notifications"))
         }, 
         {
           key: "notify-detail",
@@ -255,7 +255,7 @@ export default [
             exact: true,
             path: map.NotifyDetail
           },
-          component: lazy(() => import("./Notify/NotifyDetail"))
+          component: lazy(() => import("./Notifications/detail"))
         },
         {
           key: "benefit",

@@ -59,9 +59,56 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
-                    <Dropdown>
-                        <div className='mr-2 mt-3 small text-right username'>
+                    <Dropdown id="notifications-block">
+                        <Dropdown.Toggle>
+                            <span className="notifications-block">
+                                <i className="far fa-bell ic-customize"></i>
+                                <span className="count">+99</span>
+                            </span>
+                        </Dropdown.Toggle>
 
+                        <Dropdown.Menu className="list-notification-popup">
+                            <div className="title-block">thông báo nội bộ</div>
+                            <div className="all-items">
+                                <div className="item">
+                                    <a className="title" href="#" title="Thống kê tình hình sử dụng điện thoại Vsmart">Thống kê tình hình sử dụng điện thoại Vsmart</a>
+                                    <p className="description">Thống kê tình hình sử dụng điện thoại Vsmart</p>
+                                    <div className="time-file">
+                                        <span className="time"><i className='far fa-clock ic-clock'></i><span>1 giờ trước</span></span>
+                                        <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span>
+                                    </div>
+                                </div>
+                                <div className="item">
+                                    <a className="title" href="#" title="Thống kê tình hình sử dụng điện thoại Vsmart">Thống kê tình hình sử dụng điện thoại Vsmart</a>
+                                    <p className="description">Thống kê tình hình sử dụng điện thoại Vsmart</p>
+                                    <div className="time-file">
+                                        <span className="time"><i className='far fa-clock ic-clock'></i><span>1 giờ trước</span></span>
+                                        <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span>
+                                    </div>
+                                </div>
+                                <div className="item">
+                                    <a className="title" href="#" title="Thống kê tình hình sử dụng điện thoại Vsmart">Thống kê tình hình sử dụng điện thoại Vsmart</a>
+                                    <p className="description">Thống kê tình hình sử dụng điện thoại Vsmart</p>
+                                    <div className="time-file">
+                                        <span className="time"><i className='far fa-clock ic-clock'></i><span>1 giờ trước</span></span>
+                                        <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span>
+                                    </div>
+                                </div>
+                                <div className="item">
+                                    <a className="title" href="#" title="Thống kê tình hình sử dụng điện thoại Vsmart">Thống kê tình hình sử dụng điện thoại Vsmart</a>
+                                    <p className="description">Thống kê tình hình sử dụng điện thoại Vsmart</p>
+                                    <div className="time-file">
+                                        <span className="time"><i className='far fa-clock ic-clock'></i><span>1 giờ trước</span></span>
+                                        <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" title="Xem tất cả" className="view-all">Xem tất cả</a>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Dropdown>
+                        <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
                                 <span className="text-gray-600">{fullName}</span>
                                 {
