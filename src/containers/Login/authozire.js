@@ -88,6 +88,38 @@ function Authorize(props) {
                 jobType: user.rank_name,                
                 department: `${user.division} / ${user.department} / ${user.unit}`
             });
+
+            axios.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
+                headers: {             
+                   'Authorization': `${token}`
+                }
+              })
+            .then(res => {            
+                if (res && res.data && res.data.data) { 
+                    guard.setIsAuth({
+                        tokenType: 'Bearer',
+                        accessToken: jwtToken,
+                        tokenExpired: '',
+                        email: vgEmail,
+                        plEmail: user.company_email,
+                        avatar: '',
+                        fullName: user.fullname,
+                        jobTitle: user.job_name,
+                        jobId: user.job_id,
+                        benefitLevel: user.benefit_level || user.employee_level,
+                        benefitTitle: benefitTitle,
+                        company: user.pnl,
+                        sabaId: res.data.data.saba_response.id,
+                        employeeNo: user.uid,
+                        jobType: user.rank_name,                
+                        department: `${user.division} / ${user.department} / ${user.unit}`
+                    })
+                }
+            })
+            .catch(error => {
+                console.log("Call getUser error:", error)
+            })
+
             history.push(map.Dashboard);
         }
     }

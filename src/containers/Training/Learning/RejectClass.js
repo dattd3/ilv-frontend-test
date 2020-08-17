@@ -39,7 +39,7 @@ function RejectClass(props) {
         SetPageIndex(1);
     }
     try {
-        if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
+        if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
         }
     } catch { }
