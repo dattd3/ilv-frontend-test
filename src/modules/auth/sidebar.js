@@ -204,7 +204,7 @@ export const Navigation = [
     parentId: 0,
     icon: "notification",
     label: "Notification",
-    to: map.Notify,
+    to: map.Notifications,
     role: "U"
   },
   {

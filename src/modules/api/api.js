@@ -245,13 +245,40 @@ export default class Api {
     );
   };
 
-  fetchListNotification = async (page_no, page_size) => {
-     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notification/list`, {
+  fetchListNotifications = async (page, pageSize, level3, level4, level5, keyword) => {
+     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications`, {
         params: {          
-          page_no: page_no,
-          page_size: page_size
+          page: page,
+          pageSize: pageSize,
+          level3: level3,
+          level4: level4,
+          level5: level5,
+          keyword: keyword
         }
       });
+  };
+
+  fetchNotificationsUnReadLimitation = async (level3, level4, level5) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
+      params: {          
+        level3: level3,
+        level4: level4,
+        level5: level5
+      }
+    });
+  };
+
+  fetchNotificationsUnRead = async (page, pageSize, level3, level4, level5, keyword) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread`, {
+      params: {
+        page: page,
+        pageSize: pageSize,
+        level3: level3,
+        level4: level4,
+        level5: level5,
+        keyword: keyword
+      }
+    });
   };
 
   getPeriodKpiGeneral = async () => {

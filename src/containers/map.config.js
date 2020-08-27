@@ -17,8 +17,9 @@ export default {
   WorkingProcess: "/working-process",
   Benefit: "/benefit",
 
-  Notify: "/notify",
-  NotifyDetail: "/notify/:id",
+  Notifications: "/notifications",
+  NotificationsUnRead: "/notifications-unread",
+  NotificationDetail: "/notifications/:id",
 
   //Checklist
   CheckListCreate: "/checklist/create",
