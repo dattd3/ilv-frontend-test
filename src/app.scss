@@ -2,6 +2,7 @@
 @import './assets/scss/timesheet.scss';
 @import './assets//scss/leaveTime.scss';
 @import './assets/scss/internal-recruitment.scss';
+@import './assets/scss/notifications.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -870,13 +871,11 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  height: 3rem;
+  padding: 1rem;
+  .user-infor-header {
+    padding: 0;
+  }
 }
-
-.user-info-margin {
-  margin-top: -8px !important;
-}
-
 .model-body-notify {
   border-bottom-left-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
@@ -1358,13 +1357,12 @@ span.badge-notification[data-badge]::after {
 }
 
 .level-job-title {
-    background: #FFFFFF;
-    border: 1px solid #FF0000;
-    border-radius: 20px;
-    padding: 10px;       
-  }
-  .multiline
-  {
-     white-space: pre-wrap;
-     line-height: 2;
-  }
+  background: #FFFFFF;
+  border: 1px solid #FF0000;
+  border-radius: 20px;
+  padding: 10px;       
+}
+.multiline {
+  white-space: pre-wrap;
+  line-height: 2;
+}
