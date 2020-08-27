@@ -38,7 +38,7 @@ function Authorize(props) {
           .then(res => {            
             if (res && res.data && res.data.data) { 
               let userProfile = res.data.data[0]; 
-              checkUser(userProfile, jwtToken, vgEmail);              
+              checkUser(userProfile, jwtToken, vgEmail);                
             }
           })
           .catch(error => {
@@ -86,7 +86,10 @@ function Authorize(props) {
                 sabaId: `saba-${user.uid}`,
                 employeeNo: user.uid,
                 jobType: user.rank_name,                
-                department: `${user.division} / ${user.department} / ${user.unit}`
+                department: `${user.division} / ${user.department} / ${user.unit}`,
+                organizationLv3: user.organization_lv3,
+                organizationLv4: user.organization_lv4,
+                organizationLv5: user.organization_lv5
             });
 
             axios.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {

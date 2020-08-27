@@ -1,17 +1,23 @@
-import React from "react";
-import { Form, Button, Col, Row } from 'react-bootstrap';
+import React, { useState, useRef } from "react";
+import _ from 'lodash';
 
 function FormSearchComponent(props) {
 
-    const handleSubmitSearch = (e) => {
+    const sendQuery = query => {
+        props.handler(query);
+    }
+  
+    const delayedQuery = useRef(_.debounce(q => sendQuery(q), 1000)).current;
 
+    const onChangeTextSearch = (e) => {
+        delayedQuery(e.target.value);
     }
 
     return (
         <div className="search-block">
             <div className="block-left">
                 <h4 className="h4 title-search-block">thông báo nội bộ</h4>
-                <input type="text" name="textSearch" className="text-search" placeholder="Tìm kiếm ..." />
+                <input type="text" name="textSearch" className="text-search" placeholder="Tìm kiếm ..." onChange={onChangeTextSearch} />
             </div>
             <div className="block-right">
                 <div className="contact-block">

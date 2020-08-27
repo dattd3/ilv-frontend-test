@@ -46,7 +46,7 @@ function CustomPaging(props) {
         SetCurrentPage(page);
     }
     return (
-        (pager.totalPages === 1) ? null :
+        (pager.totalPages == null || pager.totalPages === 1 || pager.totalPages === 0) ? null :
             <Pagination>
                 <Pagination.First onClick={() => changePage(1)} />
                 <Pagination.Prev onClick={() => changePage(pager.currentPage - 1)} />

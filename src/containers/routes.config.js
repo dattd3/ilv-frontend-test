@@ -154,7 +154,7 @@ export default [
           component: lazy(() => import("./InternalRecruitment/history/PositionApplied"))
         },
         {
-          key: "position-applied",
+          key: "position-introduced",
           routeProps: {
             exact: true,
             path: map.PositionIntroduced
@@ -250,20 +250,28 @@ export default [
           component: lazy(() => import("./Corporation/Vinpearl")),
         },
         {
-          key: "notify",
+          key: "notifications",
           routeProps: {
             exact: true,
-            path: map.Notify
+            path: map.Notifications
           },
-          component: lazy(() => import("./Notifications"))
+          component: lazy(() => import("./Notifications/index"))
+        },
+        {
+          key: "notifications-unread",
+          routeProps: {
+            exact: true,
+            path: map.NotificationsUnRead
+          },
+          component: lazy(() => import("./Notifications/ListNotificationsUnRead/ListNotificationsUnRead"))
         }, 
         {
-          key: "notify-detail",
+          key: "notification-detail",
           routeProps: {
             exact: true,
-            path: map.NotifyDetail
+            path: map.NotificationDetail
           },
-          component: lazy(() => import("./Notifications/detail"))
+          component: lazy(() => import("./Notifications/Detail/Detail"))
         },
         {
           key: "benefit",

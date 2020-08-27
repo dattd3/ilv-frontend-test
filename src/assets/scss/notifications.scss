@@ -247,14 +247,31 @@
             justify-content: space-between;
             align-items: center;
             font-size: 13px;
+            flex-wrap: wrap;
             .file {
                 display: inline-flex;
                 align-items: center;
                 justify-content: flex-start;
                 flex-wrap: wrap;
+                .file-name {
+                    text-decoration: none;
+                    color: #858796;
+                }
                 .ic-file {
-                    font-size: 16px;
+                    font-size: 18px;
                     margin-right: 5px;
+                    &.fa-file-pdf {
+                        color: #DC554A;
+                    }
+                    &.fa-file-word {
+                        color: #285293;
+                    }
+                    &.fa-file-excel {
+                        color: #1F6F43;
+                    }
+                    &.fa-file-archive {
+                        color: #691F26;
+                    }
                 }
             }
         }
