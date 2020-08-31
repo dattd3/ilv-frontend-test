@@ -144,20 +144,33 @@
                     justify-content: flex-start;
                     padding: 10px 15px;
                     color: #FF7F00;
-                    .ic-phone {
-                        display: inline-flex;
-                        border: 1px solid #FF7F00;
-                        width: 20px;
-                        height: 20px;
-                        justify-content: center;
-                        align-items: center;
-                        align-content: center;
-                        margin-right: 8px;
-                        font-size: 10px;
-                        border-radius: 10px;
-                    }
-                    .separate {
-                        margin: 0 5px;
+                    ul {
+                        margin: 0;
+                        list-style: none;
+                        padding: 0;
+                        li {
+                            padding: 5px;
+                            font-size: 13px;
+                            display: flex;
+                            align-items: center;
+                            font-weight: bold;
+                            .ic-phone {
+                                display: inline-flex;
+                                border: 1px solid #FF7F00;
+                                width: 20px;
+                                height: 20px;
+                                justify-content: center;
+                                align-items: center;
+                                align-content: center;
+                                margin-right: 8px;
+                                font-size: 10px;
+                                border-radius: 10px;
+                            }
+                            a {
+                                color: #FF7F00;
+                                text-decoration: none;
+                            }
+                        }
                     }
                 }
             }
