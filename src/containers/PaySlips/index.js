@@ -24,7 +24,7 @@ class PaySlipsComponent extends React.Component {
   }
 
   handleSubmitSearch = (month, year) => {
-      this.setState({isSearch: true})
+      this.setState({isSearch: false})
       const config = {
         headers: {
           'Authorization': `${localStorage.getItem('accessToken')}`,
@@ -40,10 +40,12 @@ class PaySlipsComponent extends React.Component {
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip`, bodyFormData, config)
     .then(res => {
-        if (res && res.data && res.data.data) {
-            this.setState({payslip: res.data.data.payslips[0]})
+        if (res && res.data && res.data.data && res.data.data.payslips) {
+            this.setState({payslip: res.data.data.payslips[0], isSearch: true})
+        } else if(res && res.data && res.data.data.error == 'Invalid token.') {
+          this.setState({acessToken: null, payslip: null, isSearch: false})
         } else {
-          this.setState({payslip: null})
+          this.setState({payslip: null, isSearch: true})
         }
     }).catch(error => {
     })
@@ -53,15 +55,10 @@ class PaySlipsComponent extends React.Component {
     this.setState({acessToken: acessToken})
   }
 
-  hideConfirmPasswordModal = () => {
-    this.setState({isShowConfirmPasswordModal: false});
-    // window.location.reload();
-  };
-
   render() {
     return (
       <>
-      <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} onHide={this.hideConfirmPasswordModal} />
+      <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
       <div className="payslips-section">
         <div className="card shadow mb-4">
           <div className="card-body">

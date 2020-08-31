@@ -42,13 +42,13 @@ function WorkingInformationComponent(props) {
                         <td className="same-width ttng">{parseInt(workingInformation.vp_proficiency_bonus).toLocaleString()}</td>
                         <td className="same-width">{parseInt(workingInformation.service_charge_bonus).toLocaleString()}</td>
                         <td className="same-width ttn">{(parseInt(workingInformation.base_salary) + parseInt(workingInformation.behaviour_bonus) + parseInt(workingInformation.vp_proficiency_bonus) + parseInt(workingInformation.service_charge_bonus)).toLocaleString()}</td>
-                        <td className="same-width cc">{workingInformation.standard_day}</td>
-                        <td className="same-width clvtt">{workingInformation.actual_day}</td>
-                        <td className="same-width snnchl">{workingInformation.leave_day}</td>
-                        <td className="same-width clvtt">{workingInformation.suspension_day}</td>
-                        <td className="same-width snnkhl">{workingInformation.unpaid_day}</td>
-                        <td className="same-width cnv">{workingInformation.total_paid_working_days}</td>
-                        <td className="same-width sgcd">{workingInformation.night_shift_hours}</td>
+                        <td className="same-width cc">{workingInformation.standard_day ? workingInformation.standard_day : 0}</td>
+                        <td className="same-width clvtt">{workingInformation.actual_day ? workingInformation.actual_day : 0}</td>
+                        <td className="same-width snnchl">{workingInformation.leave_day ? workingInformation.leave_day : 0}</td>
+                        <td className="same-width clvtt">{workingInformation.suspension_day ? workingInformation.suspension_day : 0}</td>
+                        <td className="same-width snnkhl">{workingInformation.unpaid_day ? workingInformation.unpaid_day : 0}</td>
+                        <td className="same-width cnv">{workingInformation.total_paid_working_days ? workingInformation.total_paid_working_days : 0}</td>
+                        <td className="same-width sgcd">{workingInformation.night_shift_hours ? workingInformation.night_shift_hours : 0}</td>
                     </tr>
                 </tbody>
             </table>
