@@ -268,6 +268,14 @@ export default class Api {
     });
   };
 
+  getPhoneSupportForRegion = async (region) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications/phones-support`, {
+      params: {          
+        regionLevel: region
+      }
+    });
+  };
+
   fetchNotificationsUnRead = async (page, pageSize, level3, level4, level5, keyword) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread`, {
       params: {

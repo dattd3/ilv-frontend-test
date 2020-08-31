@@ -14,6 +14,16 @@ const usePreload = (params) => {
     });
     return data;
 };
+
+const usePreloadGetPhoneSupport = (params) => {
+    const api = useApi();
+    const [data = [], err] = useFetcher({
+        api: api.getPhoneSupportForRegion,
+        autoRun: true,
+        params: params
+    });
+    return data;
+};
  
 function ListNotifications(props) {
     const [page, SetPage] = useState(Constants.NOTIFICATION_PAGE_INDEX_DEFAULT);
@@ -24,9 +34,17 @@ function ListNotifications(props) {
     const lv4 = localStorage.getItem('organizationLv4');
     const lv5 = localStorage.getItem('organizationLv5');
     const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
+    const phonesSupportForRegion = usePreloadGetPhoneSupport([parseInt(lv4)]);
     
     const onChangePage = (page) => {
         SetPage(page);
+    }
+
+    const preparePhoneSupport = () => {
+        if (phonesSupportForRegion && phonesSupportForRegion.data) {
+            return phonesSupportForRegion.data;
+        }
+        return [];
     }
 
     const getTimePost = (createdDateInput) => {
@@ -92,7 +110,7 @@ function ListNotifications(props) {
     return (
         <>
         <div className="list-notifications-section">
-            <FormSearchComponent handler={handler} />
+            <FormSearchComponent handler={handler} phones={preparePhoneSupport()} />
             <div className="card shadow mb-4">
             <div className="card-body">
                 <div className="list-notifications-block">

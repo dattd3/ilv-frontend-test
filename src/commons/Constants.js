@@ -9,6 +9,7 @@ const Constants = {
   IMAGE_FILE_TYPE: 'img',
   AUDIO_FILE_TYPE: 'audio',
   VIDEO_FILE_TYPE: 'video',
-  OTHER_FILE_TYPE: 'other'
+  OTHER_FILE_TYPE: 'other',
+  KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport'
 };
 export default Constants
