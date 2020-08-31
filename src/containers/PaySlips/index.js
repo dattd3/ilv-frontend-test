@@ -1,10 +1,11 @@
-import React from 'react';
-import axios from 'axios';
-import ConfirmPasswordModal from './ConfirmPasswordModal/ConfirmPasswordModal';
-import FormSearchComponent from './SearchBlock/FormSearchComponent';
-import MainResultComponent from './ResultBlock/MainResultComponent';
-import OtherResultComponent from './ResultBlock/OtherResultComponent';
-import './Css/Main.scss'
+import React from 'react'
+import axios from 'axios'
+import ConfirmPasswordModal from './ConfirmPasswordModal/ConfirmPasswordModal'
+import FormSearchComponent from './SearchBlock/FormSearchComponent'
+import MainResultComponent from './ResultBlock/MainResultComponent'
+import IncomeComponent from './ResultBlock/IncomeComponent'
+import WorkingInformationComponent from './ResultBlock/WorkingInformationComponent'
+import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
@@ -12,12 +13,9 @@ class PaySlipsComponent extends React.Component {
 
     this.state = {
       isShowConfirmPasswordModal: true,
-      jobs: [],
-      search: {
-        position: 0,
-        placeOfWork: 0
-      },
-      pageNumber: 1
+      acessToken: null,
+      payslip: null,
+      isSearch: false
     }
   }
 
@@ -25,8 +23,34 @@ class PaySlipsComponent extends React.Component {
     
   }
 
-  handleSubmitSearch = (e) => {
+  handleSubmitSearch = (month, year) => {
+      this.setState({isSearch: true})
+      const config = {
+        headers: {
+          'Authorization': `${localStorage.getItem('accessToken')}`,
+            'Content-Type':'multipart/form-data'
+        }
+    }
 
+    let bodyFormData = new FormData()
+    bodyFormData.append('month', month < 10 ? `0${month}` : `${month}`)
+    bodyFormData.append('year', `${year}`)
+    bodyFormData.append('PayslipAuth', this.state.acessToken)
+    bodyFormData.append('pernr', `${localStorage.getItem('employeeNo')}`)
+
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip`, bodyFormData, config)
+    .then(res => {
+        if (res && res.data && res.data.data) {
+            this.setState({payslip: res.data.data.payslips[0]})
+        } else {
+          this.setState({payslip: null})
+        }
+    }).catch(error => {
+    })
+  }
+
+  updateToken (acessToken) {
+    this.setState({acessToken: acessToken})
   }
 
   hideConfirmPasswordModal = () => {
@@ -37,15 +61,20 @@ class PaySlipsComponent extends React.Component {
   render() {
     return (
       <>
-      <ConfirmPasswordModal show={this.state.isShowConfirmPasswordModal} onHide={this.hideConfirmPasswordModal} />
+      <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} onHide={this.hideConfirmPasswordModal} />
       <div className="payslips-section">
         <div className="card shadow mb-4">
           <div className="card-body">
-            <FormSearchComponent />
-            <MainResultComponent />
+            <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
+            {this.state.isSearch && this.state.acessToken && this.state.payslip ? <MainResultComponent personalInformation={this.state.payslip.personal_information} /> : null }
+            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">Dữ liệu không tìm thấy!</p> : null}
           </div>
         </div>
-        <OtherResultComponent />
+        <div className="other-result-section">
+          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <WorkingInformationComponent payslip={this.state.payslip} /> : null }
+          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <LeaveInformationComponent payslip={this.state.payslip} /> : null }
+          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <IncomeComponent payslip={this.state.payslip} /> : null }
+        </div>
       </div>
       </>
     )

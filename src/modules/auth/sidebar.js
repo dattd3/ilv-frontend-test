@@ -230,13 +230,13 @@ export const Navigation = [
     label: "Menu_LeaveTime",
     to: map.LeaveTime,
     role: "U"
+  },
+  {
+    id: 27,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Menu_PaySlip",
+    to: map.PaySlips,
+    role: "U"
   }
-  // {
-  //   id: 27,
-  //   parentId: 10,
-  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-  //   label: "Menu_PaySlip",
-  //   to: map.PaySlips,
-  //   role: "U"
-  // }
 ];

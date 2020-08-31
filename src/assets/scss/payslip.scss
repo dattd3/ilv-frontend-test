@@ -1,5 +1,4 @@
 .confirm-password-modal {
-    font-family: Arial, Helvetica, sans-serif;
     .modal-content {
       .modal-header {
         background: #FFFFFF;
@@ -29,13 +28,9 @@
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
         .label {
-            font-size: 14px;
             font-weight: bold;
         }
         form {
-            input, button {
-                font-size: 14px;
-            }
             .btn-submit {
                 width: 100%;
             }
@@ -54,22 +49,19 @@
     .bold {
         font-weight: bold;
     }
-    font-size: 13px;
+
     .search-block {
         .title-search-block {
             text-transform: uppercase;
             color: #283280;
             font-weight: bold;
-            font-size: 14px;
         }
         .search-form {
             option {
                 padding-top: 5px;
                 padding-bottom: 5px;
             }
-            input, button, select {
-                font-size: 14px;
-            }
+    
             .btn-submit {
                 width: 100%;
                 background: #F9C20A;
@@ -79,12 +71,13 @@
             }
         }
     }
+    
     .main-result-section {
         .block-title {
             margin-bottom: 20px;
             .title {
                 text-align: center;
-                font-size: 14px;
+                font-size: 16px;
                 text-transform: uppercase;
                 &.special {
                     color: #283280;
@@ -100,84 +93,36 @@
             &.first-column {
                 .label {
                     display: inline-block;
-                    width: 120px;
+                    width: 200px;
                 }
             }
             &.second-column {
                 .label {
                     display: inline-block;
-                    width: 160px;
+                    width: 200px;
                 }
             }
         }
     }
+
     .other-result-section {
         overflow: hidden;
         .workday-information-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.5rem;
-            .title {
-                font-weight: bold;
-            }
+            background-color: #fff;
+   
             tbody {
                 border-spacing: 0; 
                 border: 1px solid #cccaca;
                 border-right: 2px solid #cccaca;
-                .title-second {
-                    font-size: 11px;
-                }
+          
                 .second-title {
                     td {
                         padding: 10px 0;
                     }
                 }
-                // .second-title {
-                //     td {
-                //         padding: 10px 0;
-                //         border-top: none;
-                //         border-bottom: none;
-                //     }
-                //     .kcc, .cc, .tchl {
-                //         border-left: none;
-                //         border-right: none;
-                //     }
-                //     .sgcd {
-                //         border-right: none;
-                //     }
-                //     .cc, .tchl, .sgcd {
-                //         padding: 10px 5px;
-                //         border-bottom: 1px solid #cccaca;
-                //     }
-                // }
-                // .three-title {
-                //     .tn, .ttn{
-                //         border-left: none;
-                //     }
-                //     .clvtt, .snnchl, .cnv, .lcb {
-                //         border-right: none;
-                //     }
-                //     .dn, .ttng {
-                //         border-left: none;
-                //         border-right: none;
-                //     }
-                // }
-                // .data-row {
-                //     .tn, .ttn {
-                //         border-left: none;
-                //     }
-                //     .sgcd, .clvtt, .lcb, .snnchl {
-                //         border-right: none;
-                //     }
-                //     .dn, .cc, .cnv, .ttng {
-                //         border-left: none;
-                //         border-right: none;
-                //     }
-                //     td {    
-                //         border-top: none;
-                //         border-bottom: none;
-                //     }
-                // }
                 td {
                     border: 1px solid #cccaca;
                 }
@@ -202,10 +147,13 @@
                 text-align: center;
             }
         }
+
         .leave-days-information-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.5rem;
+            background-color: #fff;
+
             .title {
                 font-weight: bold;
             }
@@ -241,6 +189,7 @@
                 text-align: left;
             }
         }
+
         .income-information-table {
             width: 100%;
             border-collapse: collapse;
