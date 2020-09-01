@@ -1,7 +1,5 @@
 import React from "react"
 import { Col, Row } from 'react-bootstrap'
-import moment from 'moment'
-
 
 function MainResultComponent(props) {
     return (
@@ -23,7 +21,7 @@ function MainResultComponent(props) {
                 </Col>
                 <Col sm={7} className="column">
                     <ul className="column-item second-column">
-                        <li><span className="label">Ngày bắt đầu làm việc:</span><span>{moment(props.personalInformation.hiring_date).format('DD/MM/YYYY')}</span></li>
+                        <li><span className="label">Ngày bắt đầu làm việc:</span><span>{props.personalInformation.hiring_date ? props.personalInformation.hiring_date : null}</span></li>
                         <li><span className="label">Cấp bậc chức danh:</span><span>{props.personalInformation.position_level}</span></li>
                         <li><span className="label">Cấp hàm:</span><span>{props.personalInformation.c_and_b_level}</span></li>
                         <li><span className="label">Ban/Phòng/Bộ phận:</span><span>{props.personalInformation.division_department}</span></li>

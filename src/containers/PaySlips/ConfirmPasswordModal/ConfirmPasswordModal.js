@@ -46,8 +46,10 @@ class ConfirmPasswordModal extends React.Component {
     }
 
     keyPress(e){
+        debugger
         if(e.key == 'Enter'){
            this.checkPassword()
+           e.preventDefault()
         }
      }
 
@@ -65,7 +67,7 @@ class ConfirmPasswordModal extends React.Component {
                             <Col xs={12}><Form.Label className="label">Nhập mật khẩu để xem bảng lương</Form.Label></Col>
                         </Form.Row>
                         <Form.Row>
-                            <Col xs={9}><Form.Control placeholder="Nhập mật khẩu" type="password"  onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)}/></Col>
+                            <Col xs={9}><Form.Control placeholder="Nhập mật khẩu" type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)}/></Col>
                             <Col xs={3}><Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)}>Xác nhận</Button></Col>
                         </Form.Row>
                         {this.state.error.length > 0 ? <Form.Row><Col xs={12} className="text-danger">{this.state.error}</Col></Form.Row> : null}
