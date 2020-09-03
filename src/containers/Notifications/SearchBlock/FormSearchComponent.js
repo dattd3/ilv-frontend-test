@@ -34,9 +34,9 @@ function FormSearchComponent(props) {
         <div className="search-block">
             <div className="block-left">
                 <h4 className="h4 title-search-block">thông báo nội bộ</h4>
-                <input type="text" name="textSearch" className="text-search" placeholder="Tìm kiếm ..." onChange={onChangeTextSearch} />
+                <input type="text" name="textSearch" className="text-search shadow" placeholder="Tìm kiếm ..." onChange={onChangeTextSearch} />
             </div>
-            <div className="block-right">
+            <div className="block-right shadow">
                 <div className="contact-block">
                     <p className="title">Thắc mắc vui lòng liên hệ</p>
                     <div className="phone">
