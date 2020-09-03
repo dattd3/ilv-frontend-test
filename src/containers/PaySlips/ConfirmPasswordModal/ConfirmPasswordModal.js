@@ -46,7 +46,6 @@ class ConfirmPasswordModal extends React.Component {
     }
 
     keyPress(e){
-        debugger
         if(e.key == 'Enter'){
            this.checkPassword()
            e.preventDefault()
