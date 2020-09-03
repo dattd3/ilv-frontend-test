@@ -35,8 +35,8 @@ function WorkingInformationComponent(props) {
                         <td className="title same-width title-second snnkhl">Số ngày nghỉ không hưởng lương</td>
                     </tr>
                     <tr className="data-row">
-                        <td className="same-width tn">{moment(workingInformation.start_date).format('DD/MM/YYYY')}</td>
-                        <td className="same-width dn">{moment(workingInformation.end_date).format('DD/MM/YYYY')}</td>
+                        <td className="same-width tn">{workingInformation.start_date}</td>
+                        <td className="same-width dn">{workingInformation.end_date}</td>
                         <td className="same-width lcb">{parseInt(workingInformation.base_salary).toLocaleString()}</td>
                         <td className="same-width">{parseInt(workingInformation.behaviour_bonus).toLocaleString()}</td>
                         <td className="same-width ttng">{parseInt(workingInformation.vp_proficiency_bonus).toLocaleString()}</td>
