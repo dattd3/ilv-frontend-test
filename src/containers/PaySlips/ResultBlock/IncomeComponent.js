@@ -91,7 +91,7 @@ function IncomeComponent(props) {
                                 {label: 'Hỗ trợ công việc đặc thù VP', field: 'specific_work_allowance'},
                                 {label: 'Hỗ trợ làm việc trên đảo tại Nha Trang', field: 'work_on_island_allowance'},
                                 {label: 'Tiền làm thêm ngoài giờ', field: 'overtime_payment'},
-                                {label: 'Trợ cấp làm đêm', field: 'night_shift_allowance'},
+                                {label: 'Tiền lương làm đêm', field: 'night_shift_allowance'},
                                 {label: 'Tiền thanh toán phép năm/nghỉ bù (nếu có)', field: 'annual_leave_payment'},
                                 {label: 'Hỗ trợ/Thỏa thuận nghỉ việc', field: 'resignation_agreement_allowance'},
                                 {label: 'Trợ cấp thôi việc', field: 'severance_allowance'},
@@ -138,6 +138,7 @@ function IncomeComponent(props) {
                         {
                             label: 'Mức lương đóng Bảo hiểm bắt buộc',
                             field: 'compulsary_insurance_amount_in_salary',
+                            isSkipSumLabel: true,
                             level4: [
                                 {label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary'},
                                 {label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary'}
@@ -253,7 +254,7 @@ function IncomeComponent(props) {
                                         />
                                     {row2.level3.map((row3, index3) => {
                                         const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[rw4.field] || payslipCalculate[rw4.field + '_tax_included'] || payslipCalculate[rw4.field + '_without_tax'])).length : 0
-                                        const lv3Label = lv4Number > 0 ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
+                                        const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
                                         return <>
                                             { row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']) ? <TrTable 
                                                 row={row3} 
