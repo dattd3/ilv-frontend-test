@@ -4,9 +4,9 @@ function TrTable(props) {
     return (
         <tr className={props.clsName}>
             <td className={props.tdclsName}><span className={props.spanclsName}>{props.rowIndex}</span></td>
-            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field]) ||  props.payslipCalculate[props.row.field] === 0 ? parseInt(props.payslipCalculate[props.row.field]).toLocaleString() : null}</td>
-            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field + '_tax_included']) ||  props.payslipCalculate[props.row.field + '_tax_included'] === 0 ? parseInt(props.payslipCalculate[props.row.field + '_tax_included']).toLocaleString() : null}</td>
-            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field + '_without_tax']) ||  props.payslipCalculate[props.row.field + '_without_tax'] === 0? parseInt(props.payslipCalculate[props.row.field + '_without_tax']).toLocaleString() : null}</td>
+            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field]) ? parseInt(props.payslipCalculate[props.row.field]).toLocaleString() : null}</td>
+            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field + '_tax_included']) ? parseInt(props.payslipCalculate[props.row.field + '_tax_included']).toLocaleString() : null}</td>
+            <td className="same-width">{(props.row.field && props.payslipCalculate[props.row.field + '_without_tax']) ? parseInt(props.payslipCalculate[props.row.field + '_without_tax']).toLocaleString() : null}</td>
         </tr>
     )
 }
@@ -20,11 +20,11 @@ function IncomeComponent(props) {
             field: 'income_accrued_amount',
             level2: [
                 {
-                    label: 'THU NHẬP CƠ BẢN = Sum (I.1.1 : I.1.3)',
+                    label: 'THU NHẬP CƠ BẢN',
                     field: 'base_income_amount',
                     level3: [
                         {
-                            label: 'Lương cơ bản  + Thưởng YTCLCV = Sum (I.1.1.1 : I.1.1.4)',
+                            label: 'Lương cơ bản  + Thưởng YTCLCV',
                             field: 'base_salary_and_quality_of_work_bonus',
                             level4: [
                                 {label: 'Lương cơ bản', field: 'base_salary'},
@@ -34,7 +34,7 @@ function IncomeComponent(props) {
                             ]
                         },
                         {
-                            label: 'Các loại phụ cấp lương (nếu có) = Sum (I.1.2.1 : I.1.2.4)',
+                            label: 'Các loại phụ cấp lương (nếu có)',
                             field: 'allowance_amount',
                             level4: [
                                 {label: 'Phụ cấp chuyên môn/tay nghề', field: 'professional_allowance'},
@@ -51,11 +51,11 @@ function IncomeComponent(props) {
                     ]
                 },
                 {
-                    label: 'CÁC KHOẢN THU NHẬP KHÁC = Sum (I.2.1 : I.2.2)',
+                    label: 'CÁC KHOẢN THU NHẬP KHÁC',
                     field: 'other_income_amount',
                     level3: [
                         {
-                            label: 'Tiền thưởng = Sum (I.2.1.1 : I.2.1.15)',
+                            label: 'Tiền thưởng',
                             field: 'bonus_amount',
                             level4: [
                                 {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
@@ -76,7 +76,7 @@ function IncomeComponent(props) {
                             ]
                         },
                         {
-                            label: 'Các khoản chi trả khác = Sum (I.2.2.1 : I.2.2.23)',
+                            label: 'Các khoản chi trả khác',
                             field: 'other_payment_amount',
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
@@ -115,8 +115,9 @@ function IncomeComponent(props) {
             field: 'income_reduction_incurred_amount',
             level2: [
                 {
-                    label: 'CÁC KHOẢN KHẤU TRỪ = Sum (II.1.1: II.1.10)',
+                    label: 'CÁC KHOẢN KHẤU TRỪ',
                     field: 'other_reduction',
+                    isSkipLevel4: true,
                     level3: [
                         {label: 'Truy thu', field: 'arrears'},
                         {label: 'Trừ thưởng YTCLCV', field: 'quality_of_work_reduction'},
@@ -131,11 +132,11 @@ function IncomeComponent(props) {
                     ]
                 },
                 {
-                    label: 'TRÍCH NỘP BẢO HIỂM - CÔNG ĐOÀN = Sum (II.2.2 : II.2.3)',
+                    label: 'TRÍCH NỘP BẢO HIỂM - CÔNG ĐOÀN',
                     field: 'insurance_union_payment_amount',
                     level3: [
                         {
-                            label: 'Mức lương đóng Bảo hiểm bắt buộc = Sum (II.2.1.1 : II.2.1.2)',
+                            label: 'Mức lương đóng Bảo hiểm bắt buộc',
                             field: 'compulsary_insurance_amount_in_salary',
                             level4: [
                                 {label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary'},
@@ -143,7 +144,7 @@ function IncomeComponent(props) {
                             ]
                         },
                         {
-                            label: 'Trích nộp Bảo hiểm bắt buộc = Sum (II.2.2.1: II.2.2.3)',
+                            label: 'Trích nộp Bảo hiểm bắt buộc',
                             field: 'compulsary_insurance_amount_fee',
                             level4: [
                                 {label: 'Bảo hiểm xã hội (8%)', field: 'social_insurance_fee'},
@@ -160,11 +161,11 @@ function IncomeComponent(props) {
                 },
 
                 {
-                    label: 'THUẾ TNCN = Sum (II.3.3)',
+                    label: 'THUẾ TNCN',
                     field: 'personal_income_tax_amount',
                     level3: [
                         {
-                            label: 'Tổng giảm trừ gia cảnh và các khoản giảm trừ khác = Sum (II.3.1.1: II.3.1.3)',
+                            label: 'Tổng giảm trừ gia cảnh và các khoản giảm trừ khác',
                             field: 'family_allowances_amount',
                             level4: [
                                 {label: 'Giảm trừ bản thân', field: 'personal_allowance'},
@@ -178,7 +179,7 @@ function IncomeComponent(props) {
                             level4: []
                         },
                         {
-                            label: 'Thuế TNCN phải nộp trong kỳ  = Sum (II.3.3.1: II.3.3.2)',
+                            label: 'Thuế TNCN phải nộp trong kỳ',
                             field: 'personal_income_tax_in_period_amount',
                             level4: [
                                 {label: 'Thuế TNCN do NLĐ chi trả', field: 'personal_income_tax_is_paid_by_employee'},
@@ -224,7 +225,7 @@ function IncomeComponent(props) {
                 <tbody>
                     <tr>
                         <td className="same-width title special color-black">Tên mục</td>
-                        <td className="same-width title color-black">Tổng</td>
+                        <td className="same-width title color-black">Tổng thu nhập tháng</td>
                         <td className="same-width title color-black">Chịu thuế</td>
                         <td className="same-width title color-black">Không chịu thuế</td>
                     </tr>
@@ -239,34 +240,38 @@ function IncomeComponent(props) {
                                     payslipCalculate={payslipCalculate}
                                 />
                                 {row.level2.map((row2, index2) => {
+                                    const lv3Number = row2.isSkipLevel4 ? row2.level3.filter(rw3 => rw3.field && (payslipCalculate[rw3.field] || payslipCalculate[rw3.field + '_tax_included'] || payslipCalculate[rw3.field + '_without_tax'])).length : row2.level3.length
+                                    const lv2Label = lv3Number > 0 ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
                                     return <>
                                         <TrTable 
                                             row={row2} 
-                                            rowIndex={row.index + '.' + (index2 + 1) + '. ' + row2.label} 
+                                            rowIndex={row.index + '.' + (index2 + 1) + '. ' + lv2Label} 
                                             tdclsName="special bold color-black" 
                                             spanclsName="child-first" 
                                             clsName="first" 
                                             payslipCalculate={payslipCalculate}
                                         />
                                     {row2.level3.map((row3, index3) => {
+                                        const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[rw4.field] || payslipCalculate[rw4.field + '_tax_included'] || payslipCalculate[rw4.field + '_without_tax'])).length : 0
+                                        const lv3Label = lv4Number > 0 ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
                                         return <>
-                                            <TrTable 
+                                            { row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']) ? <TrTable 
                                                 row={row3} 
-                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '. ' + row3.label} 
+                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '. ' + lv3Label} 
                                                 tdclsName={row3.level4 ? 'special bold color-black' : 'special'} 
                                                 spanclsName="child-third"
                                                 clsName={row3.level4 ? 'second' : null} 
                                                 payslipCalculate={payslipCalculate}
-                                            />
+                                            /> : null }
                                         {row3.level4 ? row3.level4.map((row4, index4) => {
-                                            return <TrTable 
+                                            return row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax']) ? <TrTable 
                                                 row={row4} 
                                                 rowIndex={row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + (index4 + 1) + '. ' + row4.label} 
                                                 tdclsName={'special'} 
                                                 spanclsName="child-fourth"
                                                 clsName={null} 
                                                 payslipCalculate={payslipCalculate}
-                                            />
+                                            /> : null
                                         }) : null}
                                         </>
                                     })}
