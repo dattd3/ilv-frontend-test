@@ -115,7 +115,10 @@ function Authorize(props) {
                         sabaId: res.data.data.saba_response.id,
                         employeeNo: user.uid,
                         jobType: user.rank_name,                
-                        department: `${user.division} / ${user.department} / ${user.unit}`
+                        department: `${user.division} / ${user.department} / ${user.unit}`,
+                        organizationLv3: user.organization_lv3,
+                        organizationLv4: user.organization_lv4,
+                        organizationLv5: user.organization_lv5
                     })
                 }
             })
