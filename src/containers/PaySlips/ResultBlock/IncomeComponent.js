@@ -61,7 +61,7 @@ function IncomeComponent(props) {
                                 {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
                                 {label: 'Thưởng ngoại hình', field: 'good_looking_bonus'},
                                 {label: 'Thưởng khoán/KPI', field: 'kpi_bonus'},
-                                {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus '},
+                                {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus'},
                                 {label: 'Thưởng cuối năm Âm lịch (chỉ áp dụng tại thời điểm chi trả)', field: 'lunar_new_year_bonus'},
                                 {label: 'Thưởng thành tích', field: 'performance_bonus'},
                                 {label: 'Thưởng chiến dịch/dự án', field: 'project_campaign_bonus'},
@@ -80,9 +80,9 @@ function IncomeComponent(props) {
                             field: 'other_payment_amount',
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
-                                {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance '},
+                                {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
                                 {label: 'Hỗ trợ hiếu hỉ', field: 'funeral_wedding_allowance'},
-                                {label: 'Hỗ trợ nhà ở', field: 'housing_allowance '},
+                                {label: 'Hỗ trợ nhà ở', field: 'housing_allowance'},
                                 {label: 'Hỗ trợ đi lại, phương tiện di chuyển', field: 'transfer_allowance'},
                                 {label: 'Hỗ trợ điện thoại', field: 'phone_allowance'},
                                 {label: 'Hỗ trợ điều kiện sinh hoạt Vùng Phú Quốc', field: 'phu_quoc_region_allowance'},
@@ -132,8 +132,9 @@ function IncomeComponent(props) {
                     ]
                 },
                 {
-                    label: 'TRÍCH NỘP BẢO HIỂM - CÔNG ĐOÀN',
+                    label: 'TRÍCH NỘP BẢO HIỂM - CÔNG ĐOÀN = Sum (II.2.2 : II.2.3)',
                     field: 'insurance_union_payment_amount',
+                    isSkipSumLabel: true,
                     level3: [
                         {
                             label: 'Mức lương đóng Bảo hiểm bắt buộc',
@@ -242,7 +243,7 @@ function IncomeComponent(props) {
                                 />
                                 {row.level2.map((row2, index2) => {
                                     const lv3Number = row2.isSkipLevel4 ? row2.level3.filter(rw3 => rw3.field && (payslipCalculate[rw3.field] || payslipCalculate[rw3.field + '_tax_included'] || payslipCalculate[rw3.field + '_without_tax'])).length : row2.level3.length
-                                    const lv2Label = lv3Number > 0 ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
+                                    const lv2Label = lv3Number > 0 && !row2.isSkipSumLabel ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
                                     return <>
                                         <TrTable 
                                             row={row2} 

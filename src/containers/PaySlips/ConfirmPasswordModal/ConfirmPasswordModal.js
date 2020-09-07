@@ -1,6 +1,7 @@
 import React from "react"
 import axios from 'axios'
 import { Form, Button, Col, Modal } from 'react-bootstrap'
+import qs from 'qs'
 
 class ConfirmPasswordModal extends React.Component {
 
@@ -26,12 +27,12 @@ class ConfirmPasswordModal extends React.Component {
                 'Content-Type':'multipart/form-data'
             }
         }
-
         let bodyFormData = new FormData()
         bodyFormData.append('pwd', this.state.password)
 
         axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip/getaccesstoken`, bodyFormData, config)
         .then(res => {
+            console.log(res)
             if (res && res.data && res.data.data) {
                 if (res.data.data.access_token && res.data.data.access_token != '') {
                     this.props.onUpdateToken(res.data.data.access_token)
@@ -41,6 +42,7 @@ class ConfirmPasswordModal extends React.Component {
                 }
             }
         }).catch(error => {
+            debugger
             this.setState({error: 'Mật khẩu nhập không chính xác'})
         })
     }
