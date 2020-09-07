@@ -12,21 +12,21 @@ function FormSearchComponent(props) {
         delayedQuery(e.target.value);
     }
 
-    const getPhone = () => {
-        const phonesData = props.phones;
-        phonesData.forEach(element => {
-            
-        });
-    }
-
     let dataBlock = null;
-    if (props && props.phones) {
+    if (props && props.phones && props.phones.length > 0) {
         dataBlock = <>
-        {
-            props.phones.map((item, idex) => {
-                return <li key={idex}><span className="ic-phone"><i className='fas fa-phone'></i></span><a href="tel:5551234567">{item}</a></li>
-            })
-        }
+        <div className="contact-block">
+            <p className="title">Thắc mắc vui lòng liên hệ</p>
+            <div className="phone">
+                <ul>
+                {
+                    props.phones.map((item, idex) => {
+                        return <li key={idex}><span className="ic-phone"><i className='fas fa-phone'></i></span><a href="tel:5551234567">{item}</a></li>
+                    })
+                }
+                </ul>
+            </div>
+        </div>
         </>
     }
    
@@ -37,14 +37,7 @@ function FormSearchComponent(props) {
                 <input type="text" name="textSearch" className="text-search shadow" placeholder="Tìm kiếm ..." onChange={onChangeTextSearch} />
             </div>
             <div className="block-right shadow">
-                <div className="contact-block">
-                    <p className="title">Thắc mắc vui lòng liên hệ</p>
-                    <div className="phone">
-                        <ul>
-                        {dataBlock}
-                        </ul>
-                    </div>
-                </div>
+                {dataBlock}
             </div>
         </div>
     );
