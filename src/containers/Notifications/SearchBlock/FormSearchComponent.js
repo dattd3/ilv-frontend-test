@@ -21,7 +21,7 @@ function FormSearchComponent(props) {
                 <ul>
                 {
                     props.phones.map((item, idex) => {
-                        return <li key={idex}><span className="ic-phone"><i className='fas fa-phone'></i></span><a href="tel:5551234567">{item}</a></li>
+                    return <li key={idex}><span className="ic-phone"><i className='fas fa-phone'></i></span><a href={`tel:${item.phoneNumber}`}>{item.supporterName}: {item.phoneNumber}</a></li>
                     })
                 }
                 </ul>

@@ -33,16 +33,17 @@ function ListNotifications(props) {
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = localStorage.getItem('organizationLv4');
     const lv5 = localStorage.getItem('organizationLv5');
+    const region = localStorage.getItem('region');
     const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
-    const phonesSupportForRegion = usePreloadGetPhoneSupport([parseInt(lv4)]);
+    const phonesSupportForRegion = usePreloadGetPhoneSupport([region]);
     
     const onChangePage = (page) => {
         SetPage(page);
     }
 
     const preparePhoneSupport = () => {
-        if (phonesSupportForRegion && phonesSupportForRegion.data) {
-            return phonesSupportForRegion.data;
+        if (phonesSupportForRegion && phonesSupportForRegion.length > 0) {
+            return phonesSupportForRegion;
         }
         return [];
     }

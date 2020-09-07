@@ -89,7 +89,8 @@ function Authorize(props) {
                 department: `${user.division} / ${user.department} / ${user.unit}`,
                 organizationLv3: user.organization_lv3,
                 organizationLv4: user.organization_lv4,
-                organizationLv5: user.organization_lv5
+                organizationLv5: user.organization_lv5,
+                region: user.department
             });
 
             axios.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
@@ -118,7 +119,8 @@ function Authorize(props) {
                         department: `${user.division} / ${user.department} / ${user.unit}`,
                         organizationLv3: user.organization_lv3,
                         organizationLv4: user.organization_lv4,
-                        organizationLv5: user.organization_lv5
+                        organizationLv5: user.organization_lv5,
+                        region: user.department
                     })
                 }
             })

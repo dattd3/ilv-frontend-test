@@ -269,10 +269,8 @@ export default class Api {
   };
 
   getPhoneSupportForRegion = async (region) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications/phones-support`, {
-      params: {          
-        regionLevel: region
-      }
+    return await this.request.post(`${process.env.REACT_APP_REQUEST_URL}hotline/list?regionName=${region}`, {
+      params: {}
     });
   };
 
