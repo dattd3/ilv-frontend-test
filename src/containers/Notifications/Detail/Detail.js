@@ -76,7 +76,7 @@ class NotificationDetailComponent extends React.Component {
                 this.state.notificationInfo.notificationDocuments.map((item, i) => {
                   return <span key={i} className="file">
                     {this.getFileIcon(item.type)}
-                    <a href={item.link} className="file-name">{item.name}</a>
+                    <a href={item.link} target="_blank" className="file-name">{item.name}</a>
                     <span className="size">{this.getFileSize(item.size)}</span>
                   </span>
                 })
