@@ -255,6 +255,9 @@
             border-bottom: 1px solid #cccaca;
             padding-bottom: 15px;
             margin-bottom: 20px;
+            img {
+                width: 100%;
+            }
         }
         .list-attachment-files {
             display: flex;
