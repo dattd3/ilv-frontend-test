@@ -114,6 +114,10 @@ class MyComponent extends React.Component {
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
+          <div className="clearfix edit-button">
+            <a href="/personal-info/edit" class="btn btn-primary btn-lg float-right"><i class="fas fa-user-edit"></i> Sửa thông tin</a>
+            <a href="#" class="btn btn-info btn-lg float-right"><i class="far fa-address-card"></i> Xem lịch sử</a>
+          </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
             <Row >

@@ -12,6 +12,7 @@ export default {
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
   PersonalInfo: "/personal-info",
+  EditPersonalInfo: "/personal-info/edit",
   Timesheet: "/timesheet",
   LeaveTime: "/leaveTime",
   WorkingProcess: "/working-process",
