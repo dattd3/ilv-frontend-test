@@ -18,33 +18,33 @@ export default function LeaveTimeDetail(props) {
           {open ? <Fade in={open}>
             <div className="content">
               <div className="card-body">
-                <div class="row header text-left">
-                  <div class="col-md-2">
+                <div className="row header text-left">
+                  <div className="col-md-2">
                     {props.headers.month}
                   </div>
-                  <div class="col-md-3">
+                  <div className="col-md-3">
                     {props.headers.annualLeaveOfArising}
                   </div>
-                  <div class="col-md-3">
+                  <div className="col-md-3">
                     {props.headers.usedAnnualLeave}
                   </div>
-                  <div class="col-md-4">
+                  <div className="col-md-4">
                     {props.headers.daysOfAnnualLeave}
                   </div>
                 </div>
                 <body>
                   {props.data.map((value, key) =>  
-                    {return value.arisingLeave.length > 0 || value.usedLeave.length> 0 ? <div class="row text-left">
-                        <div class="col-md-2">
+                    {return value.arisingLeave.length > 0 || value.usedLeave.length> 0 ? <div className="row text-left">
+                        <div className="col-md-2">
                           {value.month}
                         </div>
-                        <div class="col-md-3">
+                        <div className="col-md-3">
                           {value.arisingLeave.length > 0 ? sumDays(value.arisingLeave.map(al => al.days)) : 0}
                         </div>
-                        <div class="col-md-3">
+                        <div className="col-md-3">
                           {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
-                        <div class="col-md-4">
+                        <div className="col-md-4">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
                           <p>{d.date.replace(/-/g, '/')} - {d.days} Ngày</p>
                         ) : ''}

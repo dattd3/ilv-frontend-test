@@ -112,7 +112,7 @@ class LeaveTimePage extends React.Component {
     }
 
     render() {
-        return <div class="leave-time-page">
+        return <div className="leave-time-page">
             <LeaveTimeSummary data={this.state.annualLeaveSummary}/>
             <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={this.state.errorMessage}/>
             {this.state.isSearch ? 

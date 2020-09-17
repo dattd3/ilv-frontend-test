@@ -96,7 +96,7 @@ class PositionAppliedList extends React.Component {
                     <p className={'recruiting-status ' + this.showColor(applicant.applicantStatusId)}>{this.showStatus(applicant.applicantStatusId)}</p>
                   </td>
                   <td role="cell" className="note">
-                    <p><a className="download text-success" title="Tải về CV" href={applicant.cvFileLink} target="_blank"><i class="fas fa-download" aria-hidden="true"></i></a></p>
+                    <p><a className="download text-success" title="Tải về CV" href={applicant.cvFileLink} target="_blank"><i className="fas fa-download" aria-hidden="true"></i></a></p>
                   </td>
                   <td role="cell" className="note">
                     <p>
