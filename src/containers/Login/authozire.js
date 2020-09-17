@@ -20,7 +20,7 @@ function Authorize(props) {
 
     const getUser = (token, jwtToken, vgEmail) => { 
 
-        if(token == null) {
+        if(jwtToken == null || jwtToken == "") {
             return;
         }
 
@@ -30,7 +30,7 @@ function Authorize(props) {
 
         let config = {
           headers: {             
-             'Authorization': `Bearer ${token}`
+             'Authorization': `Bearer ${jwtToken}`
           }
         }
 
