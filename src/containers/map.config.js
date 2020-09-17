@@ -45,5 +45,10 @@ export default {
   PositionApplied: "/position-applied",
   PositionIntroduced: "/position-introduced",
   PositionRecruitingDetail: "/position-recruiting-detail/:id",
-  PaySlips: "/payslips"
+  PaySlips: "/payslips",
+
+  //Task
+  Task: "/tasks",
+  RequestTask: "/tasks/request",
+  ApprovalTask: "/tasks/approval"
 };
