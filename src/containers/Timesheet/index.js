@@ -62,7 +62,7 @@ class Timesheet extends React.Component {
           <TimesheetDetail timesheets={this.state.timesheets}/>
         </>
         : this.state.isSearch ? 
-          <div class="alert alert-warning shadow" role="alert">Không tìm thấy dữ liệu</div> 
+          <div className="alert alert-warning shadow" role="alert">Không tìm thấy dữ liệu</div> 
         : null
       }
       </div>)

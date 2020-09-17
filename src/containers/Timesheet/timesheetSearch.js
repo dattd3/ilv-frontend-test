@@ -54,7 +54,7 @@ class TimesheetSearch extends React.Component {
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
                 className="form-control form-control-lg input"/>
-                <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
             </label>
           </div>
         </div>
@@ -73,7 +73,7 @@ class TimesheetSearch extends React.Component {
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
                 className="form-control form-control-lg input"/>
-              <span class="input-group-addon input-img"><i class="fas fa-calendar-alt"></i></span>
+              <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
             </label>
           </div>
         </div>
