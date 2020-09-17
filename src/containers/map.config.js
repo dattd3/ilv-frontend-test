@@ -12,6 +12,7 @@ export default {
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
   PersonalInfo: "/personal-info",
+  EditPersonalInfo: "/personal-info/edit",
   Timesheet: "/timesheet",
   LeaveTime: "/leaveTime",
   WorkingProcess: "/working-process",
@@ -44,5 +45,10 @@ export default {
   PositionApplied: "/position-applied",
   PositionIntroduced: "/position-introduced",
   PositionRecruitingDetail: "/position-recruiting-detail/:id",
-  PaySlips: "/payslips"
+  PaySlips: "/payslips",
+
+  //Task
+  Task: "/tasks",
+  RequestTask: "/tasks/request",
+  ApprovalTask: "/tasks/approval"
 };

@@ -31,6 +31,14 @@ export const Navigation = [
     to: map.InternalRecruitment,
     role: 'U'
   },
+
+   {
+    id: 12,
+    parentId: 0,
+    icon: 'task',
+    label: "Menu_Task",
+    role: 'U'
+  },
   {
     id: 3,
     parentId: 2,
@@ -39,6 +47,7 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+ 
   {
     id: 4,
     parentId: 2,
@@ -55,14 +64,6 @@ export const Navigation = [
     to: map.Roadmap,
     role: ["P", "T"],
   },
-  // {
-  //     id: 6,
-  //     parentId: 2,
-  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //     label: "Menu_ExeTest",
-  //     to: "#",
-  //     role: 'U'
-  // },
   {
     id: 7,
     parentId: 2,
@@ -71,30 +72,6 @@ export const Navigation = [
     to: map.TraniningKPI,
     role: "U",
   },
-  // {
-  //     id: 9,
-  //     parentId: 0,
-  //     icon: 'menu',
-  //     label: "Menu_CheckList",
-  //     to: '/checklist/workflow',
-  //     role: 'U'
-  // },
-  // {
-  //     id: 11,
-  //     parentId: 0,
-  //     icon: 'contact',
-  //     label: "Menu_ContactAddress",
-  //     to: '/contact',
-  //     role: 'U'
-  // },
-  // {
-  //     id: 12,
-  //     parentId: 0,
-  //     icon: 'term_policy',
-  //     label: "Menu_TermPolicy",
-  //     to: '/term-policy',
-  //     role: 'U'
-  // },
   {
     id: 13,
     parentId: 0,
@@ -181,6 +158,22 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Các vị trí đã giới thiệu",
     to: map.PositionIntroduced,
+    role: 'U'
+  },
+  {
+    id: 27,
+    parentId: 12,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_Task_Request",
+    to: map.RequestTask,
+    role: 'U'
+  },
+  {
+    id: 28,
+    parentId: 12,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_Task_Approval",
+    to: map.ApprovalTask,
     role: 'U'
   },
   {

@@ -1,0 +1,65 @@
+.personal-info {
+    .edit-button {
+        .btn {
+            margin: 5px;
+        }
+    }
+}
+
+.edit-personal {
+    .title {
+        font-weight: 700;
+        color: #2a377c;
+    }
+
+    .box {
+        width: 100%;
+        padding: 15px;
+        border: 0;
+        background-color: #fff;
+        border-radius: 10px;
+        margin-bottom: 20px;
+
+        .note-old {
+            padding: 2px 10px;
+            background-color: #ececec;
+            border: 1px solid #fff;
+            margin-right: 5px;
+        }
+
+        .note-new {
+            padding: 2px 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-right: 5px;
+        }
+
+        hr {
+            border-color: 1px solid #ddd;
+        }
+
+        .detail {
+            background-color: #ececec;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            padding: 6px 10px;
+            min-height: 40px;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+    }
+
+    .education {
+        .item {
+            border: 1px solid #aaa;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .add {
+            margin: 10px 0;
+        }
+    }
+}

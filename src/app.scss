@@ -4,6 +4,8 @@
 @import './assets/scss/internal-recruitment.scss';
 @import './assets/scss/payslip.scss';
 @import './assets/scss/notifications.scss';
+@import './assets/scss/profile.scss';
+@import './assets/scss/task.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -247,6 +249,12 @@
 .icon-recruitment {
   &:before {
     content: "\e915";
+  }
+}
+
+.icon-task {
+  &:before {
+    content: "\e916";
   }
 }
 
