@@ -17,8 +17,8 @@ class PositionRecruitingTable extends React.Component {
               </tr>
             </thead>
             <tbody role="rowgroup">
-              {this.props.jobs.map(job => {
-                 return <tr role="row">
+              {this.props.jobs.map((job, index) => {
+                 return <tr role="row" key={index}>
                     <td role="cell" data-title="Vị trí">
               <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                     </td>
