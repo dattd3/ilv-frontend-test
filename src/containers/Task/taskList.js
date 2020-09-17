@@ -111,7 +111,7 @@ class TaskList extends React.Component {
                                         </Popover.Content>
                                     </Popover>}>
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
-                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Ý kiến của CBNV"/>}
+                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
 
                                 <a href="/tasks/request/1"><img alt="Edit task" src={editButton} title="Chỉnh sửa thông tin"/></a>
                             </td>

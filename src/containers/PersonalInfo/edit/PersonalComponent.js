@@ -1,6 +1,42 @@
 import React from 'react'
+import axios from 'axios'
 
 class PersonalComponent extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            userDetail: {}
+        }
+    }
+
+    componentDidMount() {
+        let config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+          }
+        }
+    
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
+          .then(res => {
+            if (res && res.data && res.data.data) {
+              let userProfile = res.data.data[0];
+              this.setState({ userDetail: {insurance_number: userProfile.insurance_number} });
+            }
+          }).catch(error => {
+          });
+    
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
+          .then(res => {
+            if (res && res.data && res.data.data) {
+              let userDetail = res.data.data[0];
+              this.setState({ userDetail: userDetail });
+            }
+          }).catch(error => {
+          });
+    }
 
     isNotNull(input) {
         if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
@@ -22,6 +58,22 @@ class PersonalComponent extends React.Component {
         result = result.trim();
         if (result.length > 0) { result = result.substring(0, result.length - 1); }
         return result;
+    }
+
+    handleInputChange(event) {
+        const target = event.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        const name = target.name
+
+        if(value !== this.props.userDetail[name]) {
+            this.props.updateInfo(name, this.props.userDetail[name], value)
+            
+        } else {
+            this.props.removeInfo(name)
+        }
+        this.setState({
+            userDetail: {[name]: value}
+        })
     }
     
     render() {
@@ -50,7 +102,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.fullname}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" type="text" name="fullname" value={userDetail.fullname}/>
+                    <input class="form-control" type="text" name="fullname" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.fullname}/>
                 </div>
             </div>
             <div class="row">
@@ -61,7 +113,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userProfile.insurance_number}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" type="text" name="insurance_number" value={userProfile.insurance_number} />
+                    <input class="form-control" type="text" name="insurance_number" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.insurance_number} />
                 </div>
             </div>
 
@@ -73,7 +125,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.tax_number}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" type="text" name="tax_number" value={userDetail.tax_number}/>
+                    <input class="form-control" type="text" name="tax_number" value={this.state.userDetail.tax_number} onChange={this.handleInputChange.bind(this)}/>
                 </div>
             </div>
 
@@ -85,7 +137,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.birthday}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="birthday" type="text" value={userDetail.birthday}/>
+                    <input class="form-control" name="birthday" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.birthday}/>
                 </div>
             </div>
 
@@ -97,7 +149,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.birth_province}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="birth_province" type="text" value={userDetail.birth_province}/>
+                    <input class="form-control" name="birth_province" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.birth_province}/>
                 </div>
             </div>
 
@@ -109,7 +161,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Male' : 'Female'}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="gender" type="text" value={userDetail.gender}/>
+                    <input class="form-control" name="gender" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.gender}/>
                 </div>
             </div>
 
@@ -121,7 +173,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.ethinic}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="ethinic" type="text" value={userDetail.ethinic}/>
+                    <input class="form-control" name="ethinic" type="text" value={this.state.userDetail.ethinic}/>
                 </div>
             </div>
 
@@ -133,7 +185,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.religion ? userDetail.religion : 'Không'}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="religion" type="text" value={userDetail.religion}/>
+                    <input class="form-control" name="religion" type="text" value={this.state.userDetail.religion}/>
                 </div>
             </div>
 
@@ -145,7 +197,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.passport_no}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="passport_no" type="text" value={userDetail.passport_no}/>
+                    <input class="form-control" name="passport_no" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.passport_no}/>
                 </div>
             </div>
 
@@ -157,7 +209,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.date_of_issue}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="date_of_issue" type="text" value={userDetail.date_of_issue}/>
+                    <input class="form-control" name="date_of_issue" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.date_of_issue}/>
                 </div>
             </div>
 
@@ -169,7 +221,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.place_of_issue}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="place_of_issue" type="text" value={userDetail.place_of_issue}/>
+                    <input class="form-control" name="place_of_issue" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.place_of_issue}/>
                 </div>
             </div>
 
@@ -181,7 +233,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.nationality}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="nationality" type="text" value={userDetail.nationality}/>
+                    <input class="form-control" name="nationality" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.nationality}/>
                 </div>
             </div>
 
@@ -193,7 +245,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{this.SummaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="street_name" type="text" value={this.SummaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}/>
+                    <input class="form-control" name="street_name" type="text" value={this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}/>
                 </div>
             </div>
 
@@ -205,7 +257,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="tmp_street_name" type="text" value={this.SummaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}/>
+                    <input class="form-control" name="tmp_street_name" type="text" value={this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}/>
                 </div>
             </div>
 
@@ -217,7 +269,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.marital_status_code === "1" ? 'Đã kết hôn' : 'Độc thân'}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="marital_status_code" type="text" value={userDetail.marital_status_code}/>
+                    <input class="form-control" name="marital_status_code" type="text" value={this.state.userDetail.marital_status_code}/>
                 </div>
             </div>
 
@@ -229,7 +281,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.work_permit_no}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="work_permit_no" type="text" value={userDetail.work_permit_no}/>
+                    <input class="form-control" name="work_permit_no" type="text" value={this.state.userDetail.work_permit_no}/>
                 </div>
             </div>
 
@@ -241,7 +293,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.expiry_date}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="expiry_date" type="text" value={userDetail.expiry_date}/>
+                    <input class="form-control" name="expiry_date" type="text" value={this.state.userDetail.expiry_date}/>
                 </div>
             </div>
 
@@ -253,7 +305,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.personal_email}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="personal_email" type="text" value={userDetail.personal_email}/>
+                    <input class="form-control" name="personal_email" type="text" value={this.state.userDetail.personal_email}/>
                 </div>
             </div>
 
@@ -265,7 +317,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.cell_phone_no}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="cell_phone_no" type="text" value={userDetail.cell_phone_no}/>
+                    <input class="form-control" name="cell_phone_no" type="text" value={this.state.userDetail.cell_phone_no}/>
                 </div>
             </div>
 
@@ -277,7 +329,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.urgent_contact_no}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="urgent_contact_no" type="text" value={userDetail.urgent_contact_no}/>
+                    <input class="form-control" name="urgent_contact_no" type="text" value={this.state.userDetail.urgent_contact_no}/>
                 </div>
             </div>
 
@@ -289,7 +341,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.bank_number}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="bank_number" type="text" value={userDetail.bank_number}/>
+                    <input class="form-control" name="bank_number" type="text" value={this.state.userDetail.bank_number}/>
                 </div>
             </div>
 
@@ -301,7 +353,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.bank_name}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="bank_name" type="text" value={userDetail.bank_name}/>
+                    <input class="form-control" name="bank_name" type="text" value={this.state.userDetail.bank_name}/>
                 </div>
             </div>
 
@@ -313,7 +365,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.bank_branch}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="bank_branch" type="text" value={userDetail.bank_branch}/>
+                    <input class="form-control" name="bank_branch" type="text" value={this.state.userDetail.bank_branch}/>
                 </div>
             </div>
         </div>

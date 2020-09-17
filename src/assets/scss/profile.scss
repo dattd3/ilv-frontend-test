@@ -61,5 +61,24 @@
         .add {
             margin: 10px 0;
         }
+
+        .new-item {
+            width: 100%;
+        }
+
+        .input-table {
+            width: 98%;
+        }
+
+        .remove {
+            width: 15px;
+            padding-top: 40px;
+            padding-left: 20px;
+            text-align: center;
+        }
+
+        .close {
+            opacity: 1;
+        }
     }
 }

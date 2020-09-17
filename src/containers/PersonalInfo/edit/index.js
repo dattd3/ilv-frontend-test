@@ -12,7 +12,8 @@ class PersonalInfoEdit extends React.Component {
             userProfile: {},
             userDetail: {},
             userEducation: [],
-            userFamily: []
+            userFamily: [],
+            personalUpdating: {}
         }
     }
 
@@ -32,8 +33,6 @@ class PersonalInfoEdit extends React.Component {
               this.setState({ userProfile: userProfile });
             }
           }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
           });
     
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
@@ -43,8 +42,6 @@ class PersonalInfoEdit extends React.Component {
               this.setState({ userDetail: userDetail });
             }
           }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
           });
     
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
@@ -54,8 +51,6 @@ class PersonalInfoEdit extends React.Component {
               this.setState({ userEducation: userEducation });
             }
           }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
           });
     
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
@@ -67,24 +62,27 @@ class PersonalInfoEdit extends React.Component {
           }).catch(error => {
             // localStorage.clear();
             // window.location.href = map.Login;
-          });
-    
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/health`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              let userHealth = res.data.data[0];
-              this.setState({ userHealth: userHealth });
-            }
-          }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-          });
+          })
+      }
+
+      updatePersonalInfo(name, old, value) {
+        let personalUpdating = Object.assign(this.state.personalUpdating, {[name]: {old: old, value: value}})
+        this.setState({ personalUpdating: personalUpdating })
+      }
+
+      removePersonalInfo(name) {
+        if (this.state.personalUpdating[name]) {
+          let personalUpdating = Object.assign({}, this.state.personalUpdating)
+          delete personalUpdating[name]
+          this.setState({personalUpdating: Object.assign({}, personalUpdating)})
+        }
       }
     
     render() {
+      console.log(this.state.personalUpdating)
       return (
       <div className="edit-personal">
-        <PersonalComponent userDetail={this.state.userDetail} userProfile={this.state.userProfile}/>
+        <PersonalComponent userDetail={this.state.userDetail} userProfile={this.state.userProfile} removeInfo={this.removePersonalInfo.bind(this)} updateInfo={this.updatePersonalInfo.bind(this)}/>
         <EducationComponent userEducation={this.state.userEducation}/>
         <FamilyComponent userFamily={this.state.userFamily}/>
         
