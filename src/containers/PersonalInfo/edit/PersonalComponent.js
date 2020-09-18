@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 
+
 class PersonalComponent extends React.Component {
 
     constructor() {
@@ -23,7 +24,8 @@ class PersonalComponent extends React.Component {
           .then(res => {
             if (res && res.data && res.data.data) {
               let userProfile = res.data.data[0];
-              this.setState({ userDetail: {insurance_number: userProfile.insurance_number} });
+              this.props.setState({ userProfile: userProfile })
+              this.setState({ userDetail: {insurance_number: userProfile.insurance_number} })
             }
           }).catch(error => {
           });
@@ -31,8 +33,9 @@ class PersonalComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
-              let userDetail = res.data.data[0];
-              this.setState({ userDetail: userDetail });
+              let userDetail = res.data.data[0]
+              this.setState({ userDetail: userDetail })
+              this.props.setState({ userDetail: userDetail })
             }
           }).catch(error => {
           });

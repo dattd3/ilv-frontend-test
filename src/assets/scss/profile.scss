@@ -81,4 +81,24 @@
             opacity: 1;
         }
     }
+
+    .file-name {
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        border-radius: 5px;
+
+        .remove {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            opacity: 0.6;
+        }
+    }
+
+    .list-inline-item {
+        margin-bottom: 30px;
+    }
 }

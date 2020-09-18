@@ -24,7 +24,8 @@ class FamilyComponent extends React.Component {
           .then(res => {
             if (res && res.data && res.data.data) {
               let userFamily = res.data.data;
-              this.setState({ userFamily: userFamily });
+              this.props.setState({ userFamily: userFamily })
+              this.setState({ userFamily: userFamily })
             }
           }).catch(error => {
           })
