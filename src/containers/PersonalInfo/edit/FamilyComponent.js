@@ -48,7 +48,6 @@ class FamilyComponent extends React.Component {
 
     render() {
         const userFamily = this.props.userFamily
-        console.log(userFamily)
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Quan hệ nhân thân</h4>

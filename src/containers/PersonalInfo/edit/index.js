@@ -2,8 +2,8 @@ import React from 'react'
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
-import { Form, Button, Modal, Row, Col } from 'react-bootstrap'
 import ConfirmationModal from './ConfirmationModal'
+import axios from 'axios'
 
 class PersonalInfoEdit extends React.Component {
 
@@ -16,10 +16,57 @@ class PersonalInfoEdit extends React.Component {
             userFamily: [],
             personalUpdating: {},
             educationUpdating: [],
-            isConfirm: false, 
-            files: []
+            isConfirm: false,
+            files: [],
+            banks: [],
+            nations: [],
+            races: [],
+            certificates: [],
+            countries: [],
+            educationLevels: [],
+            genders: [],
+            majors: [],
+            marriages: []
         }
         this.inputReference = React.createRef()
+    }
+
+    componentDidMount() {
+      let config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+      }
+  
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/profileinfobase`, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+            const data = res.data.data
+            const banks = data.filter(d => d.TYPE === 'BANK')
+            const nations = data.filter(d => d.TYPE === 'NATION')
+            const countries = data.filter(d => d.TYPE === 'COUNTRY')
+            const educationLevels = data.filter(d => d.TYPE === 'EDUCATION_LEVEL')
+            const races = data.filter(d => d.TYPE === 'RACE')
+            const certificates = data.filter(d => d.TYPE === 'CERTIFICATE')
+            const genders = data.filter(d => d.TYPE === 'GENDER')
+            const majors = data.filter(d => d.TYPE === 'MAJOR')
+            const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
+            this.setState({
+              banks: banks, 
+              nations: nations, 
+              races: races, 
+              certificates: certificates, 
+              countries: countries, 
+              educationLevels: educationLevels, 
+              genders: genders, 
+              majors: majors,
+              marriages: marriages
+             })
+          }
+        }).catch(error => {
+        })
     }
 
     updatePersonalInfo(name, old, value) {
@@ -35,12 +82,12 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    showConfirm() {
-      this.setState({isConfirm: true})
+    showConfirm(name) {
+      this.setState({[name]: true})
     }
 
-    hideConfirm() {
-      this.setState({isConfirm: false})
+    hideConfirm(name) {
+      this.setState({[name]: false})
     }
 
     fileUploadAction() {
@@ -49,37 +96,50 @@ class PersonalInfoEdit extends React.Component {
 
     fileUploadInputChange() {
       const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-      this.setState({files: files})
-      // console.log(this.inputReference.current.files[0].name)
+      this.setState({files: this.state.files.concat(files) })
+    }
+
+    removeFile(index) {
+      this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1) ] })
     }
     
     render() {
-      console.log(this.state.personalUpdating)
       return (
       <div className="edit-personal">
-        <ConfirmationModal show={this.state.isConfirm} onHide={this.hideConfirm.bind(this)}/>
+        <ConfirmationModal show={this.state.isConfirm} onHide={this.hideConfirm.bind(this, 'isConfirm')}/>
         <PersonalComponent userDetail={this.state.userDetail} 
           userProfile={this.state.userProfile} 
           removeInfo={this.removePersonalInfo.bind(this)} 
           updateInfo={this.updatePersonalInfo.bind(this)}
           setState={this.setState.bind(this)}
+          genders={this.state.genders}
+          races={this.state.races}
+          marriages={this.state.marriages}
+          nations={this.state.nations}
+          banks={this.state.banks}
+          countries={this.state.countries}
         />
-        <EducationComponent userEducation={this.state.userEducation} setState={this.setState.bind(this)}/>
+        <EducationComponent 
+          userEducation={this.state.userEducation} 
+          setState={this.setState.bind(this)}
+          certificates={this.state.certificates}
+          educationLevels={this.state.educationLevels}
+          majors={this.state.majors}
+        />
         <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/>
 
         <ul class="list-inline">
-          {this.state.files.map(file => {
+          {this.state.files.map((file, index) => {
             return <li class="list-inline-item">
-                <span className="file-name">{file.name} <i class="fa fa-times remove" aria-hidden="true"></i></span>
+                <span className="file-name">{file.name} <i class="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
               </li>
           })}
         </ul>
         
         <div className="clearfix mb-5">
-          <button type="button" class="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this)}><i class="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+          <button type="button" class="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i class="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
           <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
           <button type="button" class="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i class="fas fa-paperclip"></i> Đính kèm tệp tin</button>
-          
         </div>
       </div>)
     }

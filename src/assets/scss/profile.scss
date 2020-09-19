@@ -46,6 +46,15 @@
             min-height: 40px;
         }
 
+        .edit {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 6px 10px;
+            min-height: 40px;
+            cursor: pointer;
+        }
+
         .row {
             margin-bottom: 10px;
         }
@@ -100,5 +109,26 @@
 
     .list-inline-item {
         margin-bottom: 30px;
+    }
+
+    .input-container {
+        position:relative;
+
+        .input {
+            margin:0;
+            padding-right: 50px;
+            width: 300px;
+        }
+        .input-img {
+            position: absolute;
+            bottom: 15px;
+            left: 285px;
+            width: 24px;
+            height: 24px;
+        }
+        i {
+            font-size: 24px;
+            font-weight: 100;
+        }
     }
 }
