@@ -42,8 +42,8 @@ class PersonalInfoEdit extends React.Component {
           <EducationComponent userEducation={this.state.userEducation} />
           <FamilyComponent userFamily={this.state.userFamily} />
           <div className="clearfix mb-5">
-            <button type="button" class="btn btn-success float-right ml-3 shadow"><i class="fa fa-paper-plane" aria-hidden="true"></i> Phê duyệt</button>
-            <button type="button" class="btn btn-light float-right shadow"><i class="fas fa-paperclip"></i> Không duyệt</button>
+            <button type="button" className="btn btn-success float-right ml-3 shadow"><i className="fa fa-paper-plane" aria-hidden="true"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-light float-right shadow"><i className="fas fa-paperclip"></i> Không duyệt</button>
           </div>
         </div>
       )
