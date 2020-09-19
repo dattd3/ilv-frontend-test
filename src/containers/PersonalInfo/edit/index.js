@@ -128,18 +128,18 @@ class PersonalInfoEdit extends React.Component {
         />
         <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/>
 
-        <ul class="list-inline">
+        <ul className="list-inline">
           {this.state.files.map((file, index) => {
-            return <li class="list-inline-item">
-                <span className="file-name">{file.name} <i class="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+            return <li className="list-inline-item">
+                <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
               </li>
           })}
         </ul>
         
         <div className="clearfix mb-5">
-          <button type="button" class="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i class="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+          <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
           <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
-          <button type="button" class="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i class="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+          <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
         </div>
       </div>)
     }

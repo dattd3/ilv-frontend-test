@@ -66,24 +66,24 @@ class EducationComponent extends React.Component {
             <Col xs={12} md={6} lg={3}>
                 <p>
                   <Select placeholder="Lựa chọn chứng chỉ" options={certificates} />
-                    {/* <input class="form-control" name="bank_name" type="text" value={this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}/> */}
+                    {/* <input className="form-control" name="bank_name" type="text" value={this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
                   <Select placeholder="Lựa chọn chứng chỉ" options={educationLevels} />
-                    {/* <input class="form-control" name="bank_name" type="text" value={item.academic_level}/> */}
+                    {/* <input className="form-control" name="bank_name" type="text" value={item.academic_level}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
                   <Select placeholder="Lựa chọn chứng chỉ" options={majors} />
-                    {/* <input class="form-control" name="bank_name" type="text" value={item.major}/> */}
+                    {/* <input className="form-control" name="bank_name" type="text" value={item.major}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
-                    <input class="form-control" name="bank_name" type="text" value={`${item.from_time} - ${item.to_time}`}/>
+                    <input className="form-control" name="bank_name" type="text" value={`${item.from_time} - ${item.to_time}`}/>
                 </p>
             </Col>
         </Row>
@@ -139,17 +139,17 @@ class EducationComponent extends React.Component {
                       </div>
                     })}
 
-                    <button type="button" class="btn btn-primary add" onClick={this.addEducation.bind(this)}><i class="fas fa-plus"></i> Thêm mới</button>
+                    <button type="button" className="btn btn-primary add" onClick={this.addEducation.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
 
                     {this.state.newUserEducation.map((item, i) => {
-                      return <div class="clearfix new-item">
-                        <div class="float-left input-table">
+                      return <div className="clearfix new-item">
+                        <div className="float-left input-table">
                             <div key={i}>
                                 {this.itemHeader()}
                                 {this.educationInput(item)}
                             </div>
                         </div>
-                        <div class="float-left remove">
+                        <div className="float-left remove">
                             <button type="button" onClick={this.removeEducation.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
                                 <span className="text-danger" aria-hidden="true">&times;</span>
                             </button>

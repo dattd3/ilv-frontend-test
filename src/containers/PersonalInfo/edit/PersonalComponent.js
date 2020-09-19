@@ -437,7 +437,7 @@ class PersonalComponent extends React.Component {
                 <div className="col-2">
                    <div className="label">Chi nhánh</div> 
                 </div>
-                <div class="col-4 old">
+                <div className="col-4 old">
                     <div className="detail">{userDetail.bank_branch}</div>
                 </div>
                 <div className="col-6">

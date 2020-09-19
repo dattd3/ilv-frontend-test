@@ -105,22 +105,22 @@ class FamilyComponent extends React.Component {
                                 <Row className="info-value">
                                     <Col xs={12} md={6} lg={3}>
                                         <p>
-                                            <input class="form-control" name="full_name" type="text" value={item.full_name}/>
+                                            <input className="form-control" name="full_name" type="text" value={item.full_name}/>
                                         </p>
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
                                         <p>
-                                            <input class="form-control" name="relation" type="text" value={item.relation}/>
+                                            <input className="form-control" name="relation" type="text" value={item.relation}/>
                                         </p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
                                         <p>
-                                            <input class="form-control" name="dob" type="text" value={item.dob}/>
+                                            <input className="form-control" name="dob" type="text" value={item.dob}/>
                                         </p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
                                         <p>
-                                            <input class="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
+                                            <input className="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
                                         </p>
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
@@ -134,11 +134,11 @@ class FamilyComponent extends React.Component {
                         })
                     }
 
-                    <button type="button" class="btn btn-primary add" onClick={this.addFamily.bind(this)}><i class="fas fa-plus"></i> Thêm mới</button>
+                    <button type="button" className="btn btn-primary add" onClick={this.addFamily.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
 
                     { this.state.newuserFamily.map((item, i) => {
-                            return <div class="clearfix new-item" key={i}>
-                            <div class="float-left input-table">
+                            return <div className="clearfix new-item" key={i}>
+                            <div className="float-left input-table">
                                     <Row className="info-label">
                                         <Col xs={12} md={6} lg={3}>
                                             Họ và tên
@@ -157,27 +157,27 @@ class FamilyComponent extends React.Component {
                                     <Row className="info-value">
                                         <Col xs={12} md={6} lg={3}>
                                             <p>
-                                                <input class="form-control" name="full_name" type="text" value={item.full_name}/>
+                                                <input className="form-control" name="full_name" type="text" value={item.full_name}/>
                                             </p>
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
                                             <p>
-                                                <input class="form-control" name="relation" type="text" value={item.relation}/>
+                                                <input className="form-control" name="relation" type="text" value={item.relation}/>
                                             </p>
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
                                             <p>
-                                                <input class="form-control" name="dob" type="text" value={item.dob}/>
+                                                <input className="form-control" name="dob" type="text" value={item.dob}/>
                                             </p>
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
                                             <p>
-                                                <input class="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
+                                                <input className="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
                                             </p>
                                         </Col>
                                     </Row>
                             </div>
-                            <div class="float-left remove">
+                            <div className="float-left remove">
                                 <button type="button" onClick={this.removeFamily.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
                                     <span className="text-danger" aria-hidden="true">&times;</span>
                                 </button>
