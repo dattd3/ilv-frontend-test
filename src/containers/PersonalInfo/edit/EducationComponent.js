@@ -4,7 +4,6 @@ import axios from 'axios'
 import Select from 'react-select'
 
 class EducationComponent extends React.Component {
-
     constructor() {
         super();
         this.state = {
@@ -64,22 +63,22 @@ class EducationComponent extends React.Component {
 
         return <Row className="info-value">
             <Col xs={12} md={6} lg={3}>
-                <p>
+                <div>
                   <Select placeholder="Lựa chọn chứng chỉ" options={certificates} />
                     {/* <input className="form-control" name="bank_name" type="text" value={this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}/> */}
-                </p>
+                </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
-                <p>
+                <div>
                   <Select placeholder="Lựa chọn chứng chỉ" options={educationLevels} />
                     {/* <input className="form-control" name="bank_name" type="text" value={item.academic_level}/> */}
-                </p>
+                </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
-                <p>
+                <div>
                   <Select placeholder="Lựa chọn chứng chỉ" options={majors} />
                     {/* <input className="form-control" name="bank_name" type="text" value={item.major}/> */}
-                </p>
+                </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
@@ -94,19 +93,19 @@ class EducationComponent extends React.Component {
         
         return <Row className="info-value">
           <Col xs={12} md={6} lg={3}>
-            <p><div className="detail">
+            <div className="detail">
             <Select placeholder="Lựa chọn chứng chỉ" options={certificates} />
                 {this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}
-            </div></p>
+            </div>
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <p><div className="detail">{item.academic_level}</div></p>
+            <div className="detail">{item.academic_level}</div>
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <p><div className="detail">{item.major}</div></p>
+            <div className="detail">{item.major}</div>
           </Col>
           <Col xs={12} md={6} lg={3}>
-            <p><div className="detail">{item.from_time} - {item.to_time}</div></p>
+            <div className="detail">{item.from_time} - {item.to_time}</div>
           </Col>
         </Row>
     }
@@ -124,11 +123,9 @@ class EducationComponent extends React.Component {
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
-
                 <div className="box shadow">
-                    <span className="mr-5"><i className="note-old"> </i> Thông tin cũ </span>
-                    <span><i className="note-new"> </i> Nhập thông tin điều chỉnh</span>
-
+                    <span className="mr-5"><i className="note note-old"></i> Thông tin cũ </span>
+                    <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
                     <hr/>
 
                     {this.state.userEducation.map((item, i) => {
@@ -143,24 +140,23 @@ class EducationComponent extends React.Component {
 
                     {this.state.newUserEducation.map((item, i) => {
                       return <div className="clearfix new-item">
-                        <div className="float-left input-table">
-                            <div key={i}>
-                                {this.itemHeader()}
-                                {this.educationInput(item)}
+                            <div className="float-left input-table">
+                                <div key={i}>
+                                    {this.itemHeader()}
+                                    {this.educationInput(item)}
+                                </div>
                             </div>
-                        </div>
-                        <div className="float-left remove">
-                            <button type="button" onClick={this.removeEducation.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
-                                <span className="text-danger" aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                   </div> 
+                            <div className="float-left remove">
+                                <button type="button" onClick={this.removeEducation.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
+                                    <span className="text-danger" aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                      </div>
                     })}
-
                 </div>
-
             </div>
         )
     }
 }
+
 export default EducationComponent

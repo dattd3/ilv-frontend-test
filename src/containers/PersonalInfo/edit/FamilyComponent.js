@@ -51,11 +51,9 @@ class FamilyComponent extends React.Component {
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Quan hệ nhân thân</h4>
-
                 <div className="box shadow">
-                    <span className="mr-5"><i className="note-old"> </i> Thông tin cũ </span>
-                    <span><i className="note-new"> </i> Nhập thông tin điều chỉnh</span>
-
+                    <span className="mr-5"><i className="note note-old"></i> Thông tin cũ </span>
+                    <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
                     <hr/>
 
                        { this.state.userFamily.map((item, i) => {
@@ -182,8 +180,7 @@ class FamilyComponent extends React.Component {
                                     <span className="text-danger" aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                       </div>  
-                            
+                       </div>
                         })
                     }
                 </div>

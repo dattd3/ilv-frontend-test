@@ -114,10 +114,10 @@ class PersonalComponent extends React.Component {
         <div className="box shadow">
             <div className="row">
                 <div className="col">
-                    <i className="note-old"> </i> Thông tin cũ
+                    <i className="note note-old"></i> Thông tin cũ
                 </div>
                 <div className="col">
-                <i className="note-new"> </i> Nhập thông tin điều chỉnh
+                <i className="note note-new"></i> Nhập thông tin điều chỉnh
                 </div>
             </div>
 
@@ -166,7 +166,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.birthday}</div>
                 </div>
                 <div className="col-6 input-container">
-                    <label>
+                    {/* <label>
                         <DatePicker 
                             name="birthday" 
                             selectsStart 
@@ -176,7 +176,7 @@ class PersonalComponent extends React.Component {
                             locale="vi"
                             className="form-control input"/>
                             <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label>
+                    </label> */}
                 </div>
             </div>
 
@@ -248,7 +248,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.date_of_issue}</div>
                 </div>
                 <div className="col-6 input-container">
-                    <label>
+                    {/* <label>
                     <DatePicker 
                         name="date_of_issue" 
                         selectsStart 
@@ -258,7 +258,7 @@ class PersonalComponent extends React.Component {
                         locale="vi"
                         className="form-control input"/>
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label>
+                    </label> */}
                 </div>
             </div>
 
@@ -360,7 +360,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.expiry_date}</div>
                 </div>
                 <div className="col-6 input-container">
-                <label>
+                {/* <label>
                     <DatePicker 
                         name="expiry_date" 
                         selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.expiry_date, 'DD-MM-YYYY').toDate() : null}
@@ -369,7 +369,7 @@ class PersonalComponent extends React.Component {
                         locale="vi"
                         className="form-control input"/>
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label>
+                    </label> */}
                 </div>
             </div>
 

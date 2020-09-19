@@ -11,13 +11,13 @@
         font-weight: 700;
         color: #2a377c;
     }
-    // &.detail-page {
-    //     .box {
-    //         .note-new {
-    //             background-color:#D4D6E5;
-    //         }
-    //     }
-    // }
+    &.detail-page {
+        .box {
+            .note-new {
+                background-color:#D4D6E5;
+            }
+        }
+    }
     .box {
         width: 100%;
         padding: 15px;
@@ -33,6 +33,7 @@
             background-color: #ececec;
         }
         .note-new {
+            border: 1px solid #858796;
             background-color: #FFFFFF;
         }
         .note-create {
@@ -107,7 +108,7 @@
 
         .new-item {
             width: 100%;
-            border: 1px solid #aaa;
+            // border: 1px solid #aaa;
             padding: 15px;
             .info-value {
                 &.create {
