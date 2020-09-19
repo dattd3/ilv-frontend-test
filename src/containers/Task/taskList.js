@@ -79,6 +79,13 @@ class TaskList extends React.Component {
         // : <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value)} styles={customStylesStatus} />
     }
 
+    getLinkUserProfileHistory = (id, name) => {
+        if (this.props.page === "approval") {
+            return <a href={`/tasks-approval/${id}`} title={name}>{name}</a>
+        }
+        return <a href={`/tasks-request/${id}`} title={name}>{name}</a>
+    }
+
     getTaskCode = code => {
         if (code > 0 && code < 10) {
             return "0000" + code;
@@ -116,7 +123,7 @@ class TaskList extends React.Component {
                     const isShowEditButton = task.status == 1 ? false : true;
                     return (
                         <tr key={index}>
-                            <th>{task.name}</th>
+                            <th>{this.getLinkUserProfileHistory(task.id, task.name)}</th>
                             <td>{this.getTaskCode(task.id)}</td>
                             <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>

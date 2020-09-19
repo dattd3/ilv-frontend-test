@@ -194,6 +194,22 @@ export default [
           component: lazy(() => import("./Task/Approval"))
         },
         {
+          key: "request-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.RequestTaskDetail
+          },
+          component: lazy(() => import("./Task/RequestDetail"))
+        },
+        {
+          key: "approval-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.ApprovalTaskDetail
+          },
+          component: lazy(() => import("./Task/ApprovalDetail"))
+        },
+        {
           key: "timesheet",
           routeProps: {
             exact: true,
