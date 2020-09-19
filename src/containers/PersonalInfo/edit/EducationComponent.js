@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import axios from 'axios'
+import Select from 'react-select'
 
 class EducationComponent extends React.Component {
 
@@ -57,20 +58,27 @@ class EducationComponent extends React.Component {
     }
 
     educationInput(item) {
+        const certificates = this.props.certificates.map(certificate =>  { return { value: certificate.ID, label: certificate.TEXT } } )
+        const educationLevels = this.props.educationLevels.map(educationLevel =>  { return { value: educationLevel.ID, label: educationLevel.TEXT } } )
+        const majors = this.props.majors.map(major =>  { return { value: major.ID, label: major.TEXT } } )
+
         return <Row className="info-value">
             <Col xs={12} md={6} lg={3}>
                 <p>
-                    <input class="form-control" name="bank_name" type="text" value={this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}/>
+                  <Select placeholder="Lựa chọn chứng chỉ" options={certificates} />
+                    {/* <input class="form-control" name="bank_name" type="text" value={this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
-                    <input class="form-control" name="bank_name" type="text" value={item.academic_level}/>
+                  <Select placeholder="Lựa chọn chứng chỉ" options={educationLevels} />
+                    {/* <input class="form-control" name="bank_name" type="text" value={item.academic_level}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p>
-                    <input class="form-control" name="bank_name" type="text" value={item.major}/>
+                  <Select placeholder="Lựa chọn chứng chỉ" options={majors} />
+                    {/* <input class="form-control" name="bank_name" type="text" value={item.major}/> */}
                 </p>
             </Col>
             <Col xs={12} md={6} lg={3}>
@@ -82,9 +90,12 @@ class EducationComponent extends React.Component {
     }
 
     educationItem(item) {
+        const certificates = this.props.certificates.map(certificate =>  { return { value: certificate.ID, label: certificate.TEXT } } )
+        
         return <Row className="info-value">
           <Col xs={12} md={6} lg={3}>
             <p><div className="detail">
+            <Select placeholder="Lựa chọn chứng chỉ" options={certificates} />
                 {this.isNotNull(item.university_name) ? item.university_name : item.other_uni_name}
             </div></p>
           </Col>

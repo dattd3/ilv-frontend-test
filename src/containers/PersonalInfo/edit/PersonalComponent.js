@@ -114,10 +114,10 @@ class PersonalComponent extends React.Component {
         <div className="box shadow">
             <div class="row">
                 <div class="col">
-                    <i className="note-old"> </i> Thông tin cũ
+                    <i className="note note-old"> </i> Thông tin cũ
                 </div>
                 <div class="col">
-                <i className="note-new"> </i> Nhập thông tin điều chỉnh
+                <i className="note note-new"> </i> Nhập thông tin điều chỉnh
                 </div>
             </div>
 
@@ -127,7 +127,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Họ và tên</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.fullname}</div>
                 </div>
                 <div class="col-6">
@@ -138,7 +138,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Số sổ bảo hiểm</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userProfile.insurance_number}</div>
                 </div>
                 <div class="col-6">
@@ -150,7 +150,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Mã số thuế</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.tax_number}</div>
                 </div>
                 <div class="col-6">
@@ -162,7 +162,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Ngày sinh</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.birthday}</div>
                 </div>
                 <div class="col-6 input-container">
@@ -184,7 +184,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Nơi sinh</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.birth_province}</div>
                 </div>
                 <div class="col-6">
@@ -196,7 +196,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Giới tính</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
                 </div>
                 <div class="col-6">
@@ -208,7 +208,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Dân tộc</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.ethinic}</div>
                 </div>
                 <div class="col-6">
@@ -220,7 +220,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Tôn giáo</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.religion ? userDetail.religion : 'Không'}</div>
                 </div>
                 <div class="col-6">
@@ -232,7 +232,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Số CMND/CCCD/Hộ chiếu</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.passport_no}</div>
                 </div>
                 <div class="col-6">
@@ -244,7 +244,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Ngày cấp</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.date_of_issue}</div>
                 </div>
                 <div class="col-6 input-container">
@@ -266,7 +266,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Nơi cấp</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.place_of_issue}</div>
                 </div>
                 <div class="col-6">
@@ -278,7 +278,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Quốc tịch</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.nationality}</div>
                 </div>
                 <div class="col-6">
@@ -290,7 +290,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Địa chỉ thường trú</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{this.SummaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}</div>
                 </div>
                 <div class="col-6">
@@ -311,7 +311,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Địa chỉ tạm trú</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}</div>
                 </div>
                 <div class="col-6">
@@ -332,7 +332,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Tình trạng hôn nhân</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{marriage ? marriage.TEXT : null}</div>
                 </div>
                 <div class="col-6">
@@ -344,7 +344,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Giấy phép lao động</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.work_permit_no}</div>
                 </div>
                 <div class="col-6">
@@ -356,7 +356,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Ngày hết hạn</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.expiry_date}</div>
                 </div>
                 <div class="col-6 input-container">
@@ -377,7 +377,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Email cá nhân</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.personal_email}</div>
                 </div>
                 <div class="col-6">
@@ -389,7 +389,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Điện thoại di động</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.cell_phone_no}</div>
                 </div>
                 <div class="col-6">
@@ -401,7 +401,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Điện thoại khẩn cấp</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{ this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : null }</div>
                 </div>
                 <div class="col-6">
@@ -413,7 +413,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Số TK ngân hàng</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.bank_number}</div>
                 </div>
                 <div class="col-6">
@@ -425,7 +425,7 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Ngân hàng</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.bank_name}</div>
                 </div>
                 <div class="col-6">
@@ -437,11 +437,11 @@ class PersonalComponent extends React.Component {
                 <div class="col-2">
                    <div className="label">Chi nhánh</div> 
                 </div>
-                <div class="col-4">
+                <div class="col-4 old">
                     <div className="detail">{userDetail.bank_branch}</div>
                 </div>
-                <div class="col-6">
-                    <input class="form-control" name="bank_branch" type="text" value={this.state.userDetail.bank_branch}/>
+                <div className="col-6">
+                    <input className="form-control" name="bank_branch" type="text" value={this.state.userDetail.bank_branch}/>
                 </div>
             </div>
         </div>
