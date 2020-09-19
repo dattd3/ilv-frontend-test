@@ -63,6 +63,17 @@
                 background-color: #D4D6E5;
             }
         }
+        .edit {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 6px 10px;
+            min-height: 40px;
+            cursor: pointer;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
     }
 
     .education {
@@ -126,6 +137,47 @@
 
         .close {
             opacity: 1;
+        }
+    }
+
+    .file-name {
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        border-radius: 5px;
+
+        .remove {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            opacity: 0.6;
+        }
+    }
+
+    .list-inline-item {
+        margin-bottom: 30px;
+    }
+
+    .input-container {
+        position:relative;
+
+        .input {
+            margin:0;
+            padding-right: 50px;
+            width: 300px;
+        }
+        .input-img {
+            position: absolute;
+            bottom: 15px;
+            left: 285px;
+            width: 24px;
+            height: 24px;
+        }
+        i {
+            font-size: 24px;
+            font-weight: 100;
         }
     }
 }

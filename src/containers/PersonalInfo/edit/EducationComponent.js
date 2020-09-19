@@ -25,6 +25,7 @@ class EducationComponent extends React.Component {
           .then(res => {
             if (res && res.data && res.data.data) {
               let userEducation = res.data.data;
+              this.props.setState({ userEducation: userEducation })
               this.setState({ userEducation: userEducation });
             }
           }).catch(error => {

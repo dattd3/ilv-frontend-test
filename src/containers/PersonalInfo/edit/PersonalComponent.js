@@ -1,12 +1,23 @@
 import React from 'react'
 import axios from 'axios'
+import AddressModal from './AddressModal'
+import Select from 'react-select'
+import DatePicker, {registerLocale} from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import moment from 'moment'
+import vi from 'date-fns/locale/vi'
+registerLocale("vi", vi)
+
 
 class PersonalComponent extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            userDetail: {}
+            userDetail: {},
+            insurance_number: '',
+            isAddressEdit: false,
+            isTmpAddressEdit: false
         }
     }
 
@@ -23,19 +34,21 @@ class PersonalComponent extends React.Component {
           .then(res => {
             if (res && res.data && res.data.data) {
               let userProfile = res.data.data[0];
-              this.setState({ userDetail: {insurance_number: userProfile.insurance_number} });
+              this.props.setState({ userProfile: userProfile })
+              this.setState({insurance_number: userProfile.insurance_number })
             }
           }).catch(error => {
-          });
+          })
     
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
-              let userDetail = res.data.data[0];
-              this.setState({ userDetail: userDetail });
+              let userDetail = res.data.data[0]
+              this.setState({ userDetail: userDetail })
+              this.props.setState({ userDetail: userDetail })
             }
           }).catch(error => {
-          });
+          })
     }
 
     isNotNull(input) {
@@ -75,10 +88,26 @@ class PersonalComponent extends React.Component {
             userDetail: {[name]: value}
         })
     }
+
+    showModal(name) {
+        this.setState({[name]: true})
+    }
+  
+    hideModal(name) {
+        this.setState({[name]: false})
+    }
     
     render() {
         const userDetail = this.props.userDetail
         const userProfile = this.props.userProfile
+        const genders = this.props.genders.map(gender =>  { return { value: gender.ID, label: gender.TEXT } } )
+        const races = this.props.races.map(race =>  { return { value: race.ID, label: race.TEXT } } )
+        const marriages = this.props.marriages.map(marriage =>  { return { value: marriage.ID, label: marriage.TEXT } } )
+        const nations = this.props.nations.map(nation =>  { return { value: nation.ID, label: nation.TEXT } } )
+        const banks = this.props.banks.map(bank =>  { return { value: bank.ID, label: bank.TEXT } } )
+
+        const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
+
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -113,7 +142,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userProfile.insurance_number}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" type="text" name="insurance_number" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.insurance_number} />
+                    <input class="form-control" type="text" name="insurance_number" onChange={this.handleInputChange.bind(this)} value={this.state.insurance_number} />
                 </div>
             </div>
 
@@ -136,8 +165,18 @@ class PersonalComponent extends React.Component {
                 <div class="col-4">
                     <div className="detail">{userDetail.birthday}</div>
                 </div>
-                <div class="col-6">
-                    <input class="form-control" name="birthday" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.birthday}/>
+                <div class="col-6 input-container">
+                    <label>
+                        <DatePicker 
+                            name="birthday" 
+                            selectsStart 
+                            selected={this.state.userDetail.birthday ? moment(this.state.userDetail.birthday, 'DD-MM-YYYY').toDate() : null}
+                            // onChange={this.setStartDate}
+                            dateFormat="dd-MM-yyyy"
+                            locale="vi"
+                            className="form-control input"/>
+                            <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                    </label>
                 </div>
             </div>
 
@@ -158,10 +197,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Giới tính</div> 
                 </div>
                 <div class="col-4">
-                    <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Male' : 'Female'}</div>
+                    <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="gender" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.gender}/>
+                    <Select placeholder="Lựa chọn giới tính" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)} onChange={this.handleInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -173,7 +212,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.ethinic}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="ethinic" type="text" value={this.state.userDetail.ethinic}/>
+                    <Select placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} onChange={this.handleInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -208,8 +247,18 @@ class PersonalComponent extends React.Component {
                 <div class="col-4">
                     <div className="detail">{userDetail.date_of_issue}</div>
                 </div>
-                <div class="col-6">
-                    <input class="form-control" name="date_of_issue" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.date_of_issue}/>
+                <div class="col-6 input-container">
+                    <label>
+                    <DatePicker 
+                        name="date_of_issue" 
+                        selectsStart 
+                        selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                        // onChange={this.setStartDate}
+                        dateFormat="dd-MM-yyyy"
+                        locale="vi"
+                        className="form-control input"/>
+                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                    </label>
                 </div>
             </div>
 
@@ -233,7 +282,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.nationality}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="nationality" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.nationality}/>
+                    <Select placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.country_id)} onChange={this.handleInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -245,7 +294,16 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{this.SummaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="street_name" type="text" value={this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}/>
+                    {this.state.isAddressEdit ? <AddressModal
+                        title="Địa chỉ thường trú"
+                        show={this.state.isAddressEdit} 
+                        onHide={this.hideModal.bind(this, 'isAddressEdit')}
+                        street_name={this.state.userDetail.street_name}
+                        ward_id={this.state.userDetail.ward_id}
+                        district_id={this.state.userDetail.district_id}
+                        province_id={this.state.userDetail.province_id}
+                    /> : null}
+                    <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
                 </div>
             </div>
 
@@ -257,7 +315,16 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="tmp_street_name" type="text" value={this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}/>
+                    {this.state.isTmpAddressEdit ? <AddressModal
+                        title="Địa chỉ tạm trú"
+                        show={this.state.isTmpAddressEdit} 
+                        onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
+                        street_name={this.state.userDetail.street_name}
+                        ward_id={this.state.userDetail.tmp_ward_id}
+                        district_id={this.state.userDetail.tmp_district_id}
+                        province_id={this.state.userDetail.tmp_province_id}
+                    /> : null}  
+                    <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
                 </div>
             </div>
 
@@ -266,10 +333,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Tình trạng hôn nhân</div> 
                 </div>
                 <div class="col-4">
-                    <div className="detail">{userDetail.marital_status_code === "1" ? 'Đã kết hôn' : 'Độc thân'}</div>
+                    <div className="detail">{marriage ? marriage.TEXT : null}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="marital_status_code" type="text" value={this.state.userDetail.marital_status_code}/>
+                    <Select placeholder="Lựa chọn tình trạng hôn nhân" options={marriages} value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={this.handleInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -292,8 +359,17 @@ class PersonalComponent extends React.Component {
                 <div class="col-4">
                     <div className="detail">{userDetail.expiry_date}</div>
                 </div>
-                <div class="col-6">
-                    <input class="form-control" name="expiry_date" type="text" value={this.state.userDetail.expiry_date}/>
+                <div class="col-6 input-container">
+                <label>
+                    <DatePicker 
+                        name="expiry_date" 
+                        selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.expiry_date, 'DD-MM-YYYY').toDate() : null}
+                        // onChange={this.setStartDate}
+                        dateFormat="dd-MM-yyyy"
+                        locale="vi"
+                        className="form-control input"/>
+                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                    </label>
                 </div>
             </div>
 
@@ -326,10 +402,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Điện thoại khẩn cấp</div> 
                 </div>
                 <div class="col-4">
-                    <div className="detail">{userDetail.urgent_contact_no}</div>
+                    <div className="detail">{ this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : null }</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="urgent_contact_no" type="text" value={this.state.userDetail.urgent_contact_no}/>
+                    <input class="form-control" name="urgent_contact_no" type="text" value={this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : null}/>
                 </div>
             </div>
 
@@ -353,7 +429,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.bank_name}</div>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" name="bank_name" type="text" value={this.state.userDetail.bank_name}/>
+                    <Select placeholder="Lựa chọn ngân hàng" name="bank_name" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} onChange={this.handleInputChange.bind(this)} />
                 </div>
             </div>
 
