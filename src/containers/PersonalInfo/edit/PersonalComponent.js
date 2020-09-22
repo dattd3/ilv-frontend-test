@@ -8,20 +8,20 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
-
 class PersonalComponent extends React.Component {
-
     constructor() {
         super();
         this.state = {
             userDetail: {},
             insurance_number: '',
             isAddressEdit: false,
-            isTmpAddressEdit: false
+            isTmpAddressEdit: false,
+            countryId: '',
+            provinces: []
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         let config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -29,26 +29,54 @@ class PersonalComponent extends React.Component {
             'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
           }
         }
-    
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              let userProfile = res.data.data[0];
-              this.props.setState({ userProfile: userProfile })
-              this.setState({insurance_number: userProfile.insurance_number })
-            }
-          }).catch(error => {
-          })
-    
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              let userDetail = res.data.data[0]
-              this.setState({ userDetail: userDetail })
-              this.props.setState({ userDetail: userDetail })
-            }
-          }).catch(error => {
-          })
+        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
+        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
+        const requestProfile = axios.get(profileEndpoint, config);
+        const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
+
+        await axios.all([requestProfile, requestPersonalInfo]).then(axios.spread((...responses) => {
+            this.processProfile(responses[0]);
+            this.processPersonalInfo(responses[1]);
+        })).catch( errors => {
+            console.log(errors);
+        })
+
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.state.countryId}`, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+            const data = res.data.data;
+            this.setState({
+                provinces: data,
+             })
+          }
+        }).catch(error => {
+
+        })
+    }
+
+    processProfile = (res) => {
+        if (res && res.data && res.data.data) {
+            let userProfile = res.data.data[0];
+            this.props.setState({ userProfile: userProfile })
+            this.setState({insurance_number: userProfile.insurance_number })
+        }
+    }
+
+    processPersonalInfo = (res) => {
+        if (res && res.data && res.data.data) {
+            let userDetail = res.data.data[0];
+            this.setState({countryId: userDetail.country_id});
+            this.setState({ userDetail: userDetail }, () => {
+              this.setState({
+                  userDetail : {
+                    ...this.state.userDetail,
+                    insurance_number: this.state.insurance_number
+                  }
+                })
+            })
+            userDetail.insurance_number = this.state.insurance_number;
+            this.props.setState({ userDetail: userDetail });
+        }
     }
 
     isNotNull(input) {
@@ -73,20 +101,77 @@ class PersonalComponent extends React.Component {
         return result;
     }
 
-    handleInputChange(event) {
+    handleTextInputChange(event) {
         const target = event.target
         const value = target.type === 'checkbox' ? target.checked : target.value
-        const name = target.name
+        const name = target.name;
 
-        if(value !== this.props.userDetail[name]) {
-            this.props.updateInfo(name, this.props.userDetail[name], value)
-            
+        if(value !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
         } else {
             this.props.removeInfo(name)
         }
         this.setState({
-            userDetail: {[name]: value}
+            userDetail : {
+                ...this.state.userDetail,
+                [this.mappingFields(name)]: value
+            }
         })
+    }
+
+    handleSelectInputs = (e, name) => {
+        let val;
+        if (e != null) {
+          val = e.value;
+        } else {
+          val = "";
+        }
+        this.setState({
+            userDetail : {
+                ...this.state.userDetail,
+                [this.mappingFields(name)]: val
+            }
+        })
+
+        if (val !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], val)
+        } else {
+            this.props.removeInfo(name)
+        }
+    }
+
+    handleDatePickerInputChange(dateInput, name) {
+        const date = moment(dateInput).format('DD-MM-YYYY');
+        if(date !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], date)
+        } else {
+            this.props.removeInfo(name)
+        }
+        this.setState({
+            userDetail : {
+                ...this.state.userDetail,
+                [this.mappingFields(name)]: date
+            }
+        })
+    }
+
+    mappingFields = key => {
+        switch (key) {
+            case "FullName":
+                return "fullname";
+            case "InsuranceNumber":
+                return "insurance_number";
+            case "TaxNumber":
+                return "tax_number";
+            case "Birthday":
+                return "birthday";
+            case "DateOfIssue":
+                return "date_of_issue";
+            case "ExpiryDate":
+                return "expiry_date";
+            case "Gender":
+                return "gender";
+        }
     }
 
     showModal(name) {
@@ -99,14 +184,14 @@ class PersonalComponent extends React.Component {
     
     render() {
         const userDetail = this.props.userDetail
-        const userProfile = this.props.userProfile
         const genders = this.props.genders.map(gender =>  { return { value: gender.ID, label: gender.TEXT } } )
         const races = this.props.races.map(race =>  { return { value: race.ID, label: race.TEXT } } )
         const marriages = this.props.marriages.map(marriage =>  { return { value: marriage.ID, label: marriage.TEXT } } )
         const nations = this.props.nations.map(nation =>  { return { value: nation.ID, label: nation.TEXT } } )
         const banks = this.props.banks.map(bank =>  { return { value: bank.ID, label: bank.TEXT } } )
-
         const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
+        const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
+        const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
 
       return (
       <div className="info">
@@ -128,10 +213,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Họ và tên</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.fullname}</div>
+                    <div className="detail">{userDetail.fullname || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" type="text" name="fullname" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.fullname}/>
+                    <input className="form-control" type="text" name="FullName" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.fullname || ""}/>
                 </div>
             </div>
             <div className="row">
@@ -139,10 +224,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Số sổ bảo hiểm</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userProfile.insurance_number}</div>
+                    <div className="detail">{userDetail.insurance_number || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" type="text" name="insurance_number" onChange={this.handleInputChange.bind(this)} value={this.state.insurance_number} />
+                    <input className="form-control" type="text" name="InsuranceNumber" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.insurance_number || ""} />
                 </div>
             </div>
 
@@ -151,10 +236,10 @@ class PersonalComponent extends React.Component {
                    <div className="label">Mã số thuế</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.tax_number}</div>
+                    <div className="detail">{userDetail.tax_number || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" type="text" name="tax_number" value={this.state.userDetail.tax_number} onChange={this.handleInputChange.bind(this)}/>
+                    <input className="form-control" type="text" name="TaxNumber" value={this.state.userDetail.tax_number || ""} onChange={this.handleTextInputChange.bind(this)}/>
                 </div>
             </div>
 
@@ -163,20 +248,22 @@ class PersonalComponent extends React.Component {
                    <div className="label">Ngày sinh</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.birthday}</div>
+                    <div className="detail">{userDetail.birthday || ""}</div>
                 </div>
                 <div className="col-6 input-container">
-                    {/* <label>
+                    <label>
                         <DatePicker 
-                            name="birthday" 
-                            selectsStart 
+                            name="Birthday" 
+                            key="Birthday"
                             selected={this.state.userDetail.birthday ? moment(this.state.userDetail.birthday, 'DD-MM-YYYY').toDate() : null}
-                            // onChange={this.setStartDate}
+                            onChange={birthday => this.handleDatePickerInputChange(birthday, "Birthday")}
                             dateFormat="dd-MM-yyyy"
+                            showMonthDropdown={true}
+                            showYearDropdown={true}
                             locale="vi"
                             className="form-control input"/>
                             <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label> */}
+                    </label>
                 </div>
             </div>
 
@@ -185,10 +272,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Nơi sinh</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.birth_province}</div>
+                    <div className="detail">{userDetail.birth_province || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="birth_province" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.birth_province}/>
+                    <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={provinces} 
+                    value={provinces.filter(p => p.value == this.state.userDetail.province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince')} />
                 </div>
             </div>
 
@@ -200,7 +288,8 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn giới tính" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)} onChange={this.handleInputChange.bind(this)} />
+                    <Select name="Gender" placeholder="Lựa chọn giới tính" key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
+                    onChange={e => this.handleSelectInputs(e, 'Gender')} />
                 </div>
             </div>
 
@@ -209,10 +298,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Dân tộc</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.ethinic}</div>
+                    <div className="detail">{userDetail.ethinic || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} onChange={this.handleInputChange.bind(this)} />
+                    <Select name="Ethinic" placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -221,10 +311,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Tôn giáo</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.religion ? userDetail.religion : 'Không'}</div>
+                    <div className="detail">{userDetail.religion || 'Không'}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="religion" type="text" value={this.state.userDetail.religion}/>
+                    <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
+                    value={religions.filter(r => r.value == (this.state.userDetail.religion || '0'))} onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -233,10 +324,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Số CMND/CCCD/Hộ chiếu</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.passport_no}</div>
+                    <div className="detail">{userDetail.passport_no || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="passport_no" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.passport_no}/>
+                    <input className="form-control" name="PassportNo" type="text" onChange={this.handleTextInputChange.bind(this)} 
+                    value={this.state.userDetail.passport_no || ""} />
                 </div>
             </div>
 
@@ -248,17 +340,19 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.date_of_issue}</div>
                 </div>
                 <div className="col-6 input-container">
-                    {/* <label>
+                    <label>
                     <DatePicker 
-                        name="date_of_issue" 
-                        selectsStart 
+                        name="DateOfIssue" 
+                        key="DateOfIssue"
                         selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.date_of_issue, 'DD-MM-YYYY').toDate() : null}
-                        // onChange={this.setStartDate}
+                        onChange={dateOfIssue => this.handleDatePickerInputChange(dateOfIssue, "DateOfIssue")}
                         dateFormat="dd-MM-yyyy"
+                        showMonthDropdown={true}
+                        showYearDropdown={true}
                         locale="vi"
                         className="form-control input"/>
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label> */}
+                    </label>
                 </div>
             </div>
 
@@ -267,10 +361,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Nơi cấp</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.place_of_issue}</div>
+                    <div className="detail">{userDetail.place_of_issue || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="place_of_issue" type="text" onChange={this.handleInputChange.bind(this)} value={this.state.userDetail.place_of_issue}/>
+                    <input className="form-control" name="PlaceOfIssue" type="text" onChange={this.handleTextInputChange.bind(this)} 
+                    value={this.state.userDetail.place_of_issue || ""} />
                 </div>
             </div>
 
@@ -279,10 +374,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Quốc tịch</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.nationality}</div>
+                    <div className="detail">{userDetail.nationality || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.country_id)} onChange={this.handleInputChange.bind(this)} />
+                    <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.country_id)} 
+                    onChange={e => this.handleSelectInputs(e, 'Nationality')} />
                 </div>
             </div>
 
@@ -291,7 +387,7 @@ class PersonalComponent extends React.Component {
                    <div className="label">Địa chỉ thường trú</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{this.SummaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}</div>
+                    <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || ""])}</div>
                 </div>
                 <div className="col-6">
                     {this.state.isAddressEdit ? <AddressModal
@@ -312,7 +408,7 @@ class PersonalComponent extends React.Component {
                    <div className="label">Địa chỉ tạm trú</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}</div>
+                    <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || ""])}</div>
                 </div>
                 <div className="col-6">
                     {this.state.isTmpAddressEdit ? <AddressModal
@@ -336,7 +432,8 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{marriage ? marriage.TEXT : null}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn tình trạng hôn nhân" options={marriages} value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={this.handleInputChange.bind(this)} />
+                    <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" options={marriages} 
+                    value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus')} />
                 </div>
             </div>
 
@@ -345,10 +442,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Giấy phép lao động</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.work_permit_no}</div>
+                    <div className="detail">{userDetail.work_permit_no || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="work_permit_no" type="text" value={this.state.userDetail.work_permit_no}/>
+                    <input className="form-control" name="WorkPermitNo" type="text" 
+                    value={this.state.userDetail.work_permit_no || ""} onChange={this.handleTextInputChange.bind(this)}  />
                 </div>
             </div>
 
@@ -357,19 +455,22 @@ class PersonalComponent extends React.Component {
                    <div className="label">Ngày hết hạn</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.expiry_date}</div>
+                    <div className="detail">{userDetail.expiry_date || ""}</div>
                 </div>
                 <div className="col-6 input-container">
-                {/* <label>
-                    <DatePicker 
-                        name="expiry_date" 
-                        selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.expiry_date, 'DD-MM-YYYY').toDate() : null}
-                        // onChange={this.setStartDate}
-                        dateFormat="dd-MM-yyyy"
-                        locale="vi"
-                        className="form-control input"/>
+                    <label>
+                        <DatePicker 
+                            name="ExpiryDate" 
+                            key="ExpiryDate"
+                            selected={this.state.userDetail.expiry_date ? moment(this.state.userDetail.expiry_date, 'DD-MM-YYYY').toDate() : null}
+                            onChange={expiryDate => this.handleDatePickerInputChange(expiryDate, "ExpiryDate")}
+                            dateFormat="dd-MM-yyyy"
+                            showMonthDropdown={true}
+                            showYearDropdown={true}
+                            locale="vi"
+                            className="form-control input"/>
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label> */}
+                    </label>
                 </div>
             </div>
 
@@ -378,10 +479,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Email cá nhân</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.personal_email}</div>
+                    <div className="detail">{userDetail.personal_email || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="personal_email" type="text" value={this.state.userDetail.personal_email}/>
+                    <input className="form-control" name="PersonalEmail" type="text" value={this.state.userDetail.personal_email || ""} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -390,10 +492,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Điện thoại di động</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.cell_phone_no}</div>
+                    <div className="detail">{userDetail.cell_phone_no || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="cell_phone_no" type="text" value={this.state.userDetail.cell_phone_no}/>
+                    <input className="form-control" name="CellPhoneNo" type="text" value={this.state.userDetail.cell_phone_no || ""} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -402,10 +505,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Điện thoại khẩn cấp</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{ this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : null }</div>
+                    <div className="detail">{ this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="urgent_contact_no" type="text" value={this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : null}/>
+                    <input className="form-control" name="UrgentContactNo" type="text" 
+                    value={this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -414,10 +518,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Số TK ngân hàng</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.bank_number}</div>
+                    <div className="detail">{userDetail.bank_number || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="bank_number" type="text" value={this.state.userDetail.bank_number}/>
+                    <input className="form-control" name="BankAccountNumber" type="text" value={this.state.userDetail.bank_number || ""} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -426,26 +531,28 @@ class PersonalComponent extends React.Component {
                    <div className="label">Ngân hàng</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.bank_name}</div>
+                    <div className="detail">{userDetail.bank_name || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn ngân hàng" name="bank_name" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} onChange={this.handleInputChange.bind(this)} />
+                    <Select placeholder="Lựa chọn ngân hàng" name="BankName" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
+                    onChange={e => this.handleSelectInputs(e, 'BankName')} />
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
                    <div className="label">Chi nhánh</div> 
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.bank_branch}</div>
+                    <div className="detail">{userDetail.bank_branch || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="bank_branch" type="text" value={this.state.userDetail.bank_branch}/>
+                    <input className="form-control" name="BankBranch" type="text" value={this.state.userDetail.bank_branch || ""} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
         </div>
       </div>)
     }
   }
+
 export default PersonalComponent

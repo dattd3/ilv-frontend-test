@@ -1,15 +1,13 @@
 import React from "react";
-import { Modal, Row, Col } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
-        super(props);
-    
+        super();
         this.state = {
-            
-        }
-      }
 
+        }
+    }
 
     render () {
         return (
@@ -20,17 +18,18 @@ class ConfirmationModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Thêm ghi chú (không bắt buộc)</p>
-                    <p>
+                    <div>
                         <textarea className="form-control" id="note" rows="4"></textarea>
-                    </p>
-                    <p className="clearfix">
+                    </div>
+                    <div className="clearfix">
                         <button type="button" className="btn btn-primary w-25 float-right">Có</button>
                         <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>Không</button>
-                    </p>
+                    </div>
                 </Modal.Body>
             </Modal>
             </>
         )
     }
 }
+
 export default ConfirmationModal

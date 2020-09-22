@@ -4,6 +4,7 @@ import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import ConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
+import _ from 'lodash'
 
 class PersonalInfoEdit extends React.Component {
 
@@ -26,7 +27,13 @@ class PersonalInfoEdit extends React.Component {
             educationLevels: [],
             genders: [],
             majors: [],
-            marriages: []
+            marriages: [],
+            religions: [],
+            update: {},
+            userProfileHistoryMainInfo: {},
+            OldMainInfo: {},
+            NewMainInfo: {},
+            data: {}
         }
         this.inputReference = React.createRef()
     }
@@ -53,6 +60,7 @@ class PersonalInfoEdit extends React.Component {
             const genders = data.filter(d => d.TYPE === 'GENDER')
             const majors = data.filter(d => d.TYPE === 'MAJOR')
             const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
+            const religions = data.filter(d => d.TYPE === 'RELIGION')
             this.setState({
               banks: banks, 
               nations: nations, 
@@ -62,7 +70,8 @@ class PersonalInfoEdit extends React.Component {
               educationLevels: educationLevels, 
               genders: genders, 
               majors: majors,
-              marriages: marriages
+              marriages: marriages,
+              religions: religions
              })
           }
         }).catch(error => {
@@ -70,15 +79,50 @@ class PersonalInfoEdit extends React.Component {
     }
 
     updatePersonalInfo(name, old, value) {
-      let personalUpdating = Object.assign(this.state.personalUpdating, {[name]: {old: old, value: value}})
-      this.setState({ personalUpdating: personalUpdating })
+      this.setState({
+        OldMainInfo: {
+          ...this.state.OldMainInfo,
+          [name]: old
+        },
+        NewMainInfo: {
+          ...this.state.NewMainInfo,
+          [name]: value
+        }
+      }, () => {
+        this.setState({
+          userProfileHistoryMainInfo : {
+            ...this.state.userProfileHistoryMainInfo,
+            OldMainInfo: this.state.OldMainInfo,
+            NewMainInfo: this.state.NewMainInfo
+        }}, () => {
+          this.setState({
+            update : {
+              ...this.state.update,
+              userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo
+            }
+          }, () => {
+            this.setState({data : {
+              ...this.state.data,
+              update: this.state.update
+            }});
+            let personalUpdating = Object.assign(this.state.personalUpdating, this.state.userProfileHistoryMainInfo)
+            this.setState({ personalUpdating: personalUpdating })
+          })
+        });
+      });
     }
 
     removePersonalInfo(name) {
-      if (this.state.personalUpdating[name]) {
+      if (this.state.personalUpdating.NewMainInfo[name] && this.state.personalUpdating.OldMainInfo[name]) {
         let personalUpdating = Object.assign({}, this.state.personalUpdating)
-        delete personalUpdating[name]
+        delete personalUpdating.NewMainInfo[name];
+        delete personalUpdating.OldMainInfo[name];
         this.setState({personalUpdating: Object.assign({}, personalUpdating)})
+        // if (_.isEmpty(personalUpdating.NewMainInfo) && _.isEmpty(personalUpdating.OldMainInfo)) {
+
+        // } else {
+          
+        // }
       }
     }
 
@@ -102,6 +146,36 @@ class PersonalInfoEdit extends React.Component {
     removeFile(index) {
       this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1) ] })
     }
+
+    sendRequest = (e) => {
+      console.log("===========================================");
+      console.log(this.state.data);
+      console.log("===========================================");
+
+      let bodyFormData = new FormData();
+      bodyFormData.append('Name', "Họ tên");
+      bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
+      bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
+      bodyFormData.append('CreateField', "");
+      bodyFormData.append('UpdateField', "FullName");
+      // const fileSelected = this.state.selectedFile;
+      // for(let key in fileSelected) {
+      //   bodyFormData.append('Files', fileSelected[key]);
+      // }
+
+      axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`,
+        data: bodyFormData,
+        headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+      })
+      .then(response => {
+        // window.location.replace("/notifications");
+      })
+      .catch(response => {
+        // window.location.replace("/notifications");
+      });
+    }
     
     render() {
       return (
@@ -118,6 +192,7 @@ class PersonalInfoEdit extends React.Component {
           nations={this.state.nations}
           banks={this.state.banks}
           countries={this.state.countries}
+          religions={this.state.religions}
         />
         <EducationComponent 
           userEducation={this.state.userEducation} 
@@ -137,7 +212,8 @@ class PersonalInfoEdit extends React.Component {
         </ul>
         
         <div className="clearfix mb-5">
-          <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+          {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
+          <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
           <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
           <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
         </div>

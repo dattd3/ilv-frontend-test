@@ -32,13 +32,13 @@ class PersonalInfoEdit extends React.Component {
       const data = response.data;
       const code = response.result.code;
       if (code != Constants.API_ERROR_CODE) {
-        if (data.create.educations.length > 0 || data.update.userProfileHistoryEducation.NewEducation != null) {
+        if ((data.create && data.create.educations && data.create.educations.length > 0) || (data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.NewEducation)) {
           this.setState({isShowEducationComponent : true});
         }
-        if (data.create.families.length > 0 || data.update.userProfileHistoryFamily.NewFamily != null) {
+        if ((data.create && data.create.families && data.create.families.length > 0) || (data.update && data.update.userProfileHistoryFamily && data.update.userProfileHistoryFamily.NewFamily)) {
           this.setState({isShowFamilyComponent : true});
         }
-        if (data.update.userProfileHistoryMainInfo.NewMainInfo != null) {
+        if (data.update && data.update.userProfileHistoryMainInfo && data.update.userProfileHistoryMainInfo.NewMainInfo != null) {
           this.setState({isShowPersonalComponent : true});
         }
       }
@@ -48,7 +48,7 @@ class PersonalInfoEdit extends React.Component {
   processEducationInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.create && data.create.educations.length > 0) {
+      if (data && data.create && data.create.educations && data.create.educations.length > 0) {
         this.setState({userEducationCreate : response.data.create.educations});
       }
       if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
@@ -60,7 +60,7 @@ class PersonalInfoEdit extends React.Component {
   processFamilyInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.create && data.create.families.length > 0) {
+      if (data && data.create && data.create.families && data.create.families.length > 0) {
         this.setState({userFamilyCreate : response.data.create.families});
       }
       if (data && data.update && data.update.userProfileHistoryFamily && data.update.userProfileHistoryFamily.length > 0) {
