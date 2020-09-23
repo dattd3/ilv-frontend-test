@@ -17,7 +17,7 @@ class ApprovalComponent extends React.Component {
           'Authorization': `${localStorage.getItem('accessToken')}`
         }
       }
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories`, config)
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/approval`, config)
       .then(res => {
         if (res && res.data && res.data.data && res.data.result) {
           const result = res.data.result;

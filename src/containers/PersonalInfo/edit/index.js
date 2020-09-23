@@ -155,7 +155,10 @@ class PersonalInfoEdit extends React.Component {
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
       bodyFormData.append('CreateField', "");
       bodyFormData.append('UpdateField', "FullName");
-      bodyFormData.append('Files', this.state.files);
+      const fileSelected = this.state.files;
+      for(let key in fileSelected) {
+        bodyFormData.append('Files', fileSelected[key]);
+      }
 
       axios({
         method: 'POST',

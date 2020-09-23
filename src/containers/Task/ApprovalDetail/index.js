@@ -2,6 +2,7 @@ import React from 'react'
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
+import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import _ from 'lodash'
@@ -15,9 +16,12 @@ class PersonalInfoEdit extends React.Component {
       userFamilyUpdate: [],
       userEducationCreate: [],
       userEducationUpdate: [],
+      documents: [],
       isShowPersonalComponent: false,
       isShowEducationComponent: false,
-      isShowFamilyComponent: false
+      isShowFamilyComponent: false,
+      isShowDocumentComponent: false,
+      isShowModalConfirm: false
     }
   }
 
@@ -32,14 +36,18 @@ class PersonalInfoEdit extends React.Component {
       const data = response.data;
       const code = response.result.code;
       if (code != Constants.API_ERROR_CODE) {
-        if ((data.create && data.create.educations && data.create.educations.length > 0) || (data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.NewEducation)) {
+        if ((data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) 
+        || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.NewEducation)) {
           this.setState({isShowEducationComponent : true});
         }
-        if ((data.create && data.create.families && data.create.families.length > 0) || (data.update && data.update.userProfileHistoryFamily && data.update.userProfileHistoryFamily.NewFamily)) {
+        if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.NewFamily)) {
           this.setState({isShowFamilyComponent : true});
         }
-        if (data.update && data.update.userProfileHistoryMainInfo && data.update.userProfileHistoryMainInfo.NewMainInfo != null) {
+        if (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null) {
           this.setState({isShowPersonalComponent : true});
+        }
+        if (data.userProfileInfoDocuments && data.userProfileInfoDocuments.length > 0) {
+          this.setState({isShowDocumentComponent : true});
         }
       }
     }
@@ -48,11 +56,11 @@ class PersonalInfoEdit extends React.Component {
   processEducationInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.create && data.create.educations && data.create.educations.length > 0) {
-        this.setState({userEducationCreate : response.data.create.educations});
+      if (data && data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) {
+        this.setState({userEducationCreate : response.data.userProfileInfo.create.educations});
       }
-      if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
-        this.setState({userEducationUpdate : data.update.userProfileHistoryEducation});
+      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.length > 0) {
+        this.setState({userEducationUpdate : data.userProfileInfo.update.userProfileHistoryEducation});
       }
     }
   }
@@ -60,11 +68,11 @@ class PersonalInfoEdit extends React.Component {
   processFamilyInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.create && data.create.families && data.create.families.length > 0) {
-        this.setState({userFamilyCreate : response.data.create.families});
+      if (data && data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) {
+        this.setState({userFamilyCreate : response.data.userProfileInfo.create.families});
       }
-      if (data && data.update && data.update.userProfileHistoryFamily && data.update.userProfileHistoryFamily.length > 0) {
-        this.setState({userFamilyUpdate : data.update.userProfileHistoryFamily});
+      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.length > 0) {
+        this.setState({userFamilyUpdate : data.userProfileInfo.update.userProfileHistoryFamily});
       }
     }
   }
@@ -72,9 +80,18 @@ class PersonalInfoEdit extends React.Component {
   processMainInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.update && data.update.userProfileHistoryMainInfo && data.update.userProfileHistoryMainInfo.NewMainInfo != null) {
-        const mainInfos = this.prepareMainInfo(data.update.userProfileHistoryMainInfo);
+      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null) {
+        const mainInfos = this.prepareMainInfo(data.userProfileInfo.update.userProfileHistoryMainInfo);
         this.setState({userMainInfo : mainInfos});
+      }
+    }
+  }
+
+  processDocumentInfo = response => {
+    if (response && response.data) {
+      const data = response.data;
+      if (data && data.userProfileInfoDocuments) {
+        this.setState({documents : data.userProfileInfoDocuments});
       }
     }
   }
@@ -92,6 +109,10 @@ class PersonalInfoEdit extends React.Component {
     }
   }
 
+  onHideModalConfirm = () => {
+    this.setState({isShowModalConfirm: false});
+  }
+
   componentDidMount() {
     let config = {
       headers: {
@@ -107,6 +128,7 @@ class PersonalInfoEdit extends React.Component {
           this.processEducationInfo(response);
           this.processFamilyInfo(response);
           this.processMainInfo(response);
+          this.processDocumentInfo(response);
         }
       }).catch(error => {
         console.log(error);
@@ -119,8 +141,10 @@ class PersonalInfoEdit extends React.Component {
           {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
           {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
           {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
+          {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
           <div className="clearfix mb-5">
-            <button type="button" className="btn btn-danger float-right ml-3 shadow"><i className="fa fa-close" aria-hidden="true"></i> Không duyệt</button>
+            <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}>
+              <i className="fa fa-close" aria-hidden="true"></i> Không duyệt</button>
             <button type="button" className="btn btn-success float-right shadow"><i className="fas fa-check"></i> Phê duyệt</button>
           </div>
         </div>
