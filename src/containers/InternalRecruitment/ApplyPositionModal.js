@@ -3,13 +3,6 @@ import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 import axios from 'axios'
 import _ from 'lodash'
 
-const getFileName = () => {
-    var file = document.getElementById('file-upload');
-    const fileName = file.files[0].name;
-    document.getElementById('file-name-upload').innerHTML = fileName;
-}
-
-
 class ApplyPositionModal extends React.Component {
     constructor(props) {
         super(props);
@@ -29,7 +22,13 @@ class ApplyPositionModal extends React.Component {
             }
         }
         this.fileInput = React.createRef()
-      }
+    }
+
+    getFileName = () => {
+        var file = document.getElementById('file-upload');
+        const fileName = file.files[0].name;
+        document.getElementById('file-name-upload').innerHTML = fileName;
+    }
 
     componentWillMount () {
         let config = {
@@ -184,7 +183,7 @@ class ApplyPositionModal extends React.Component {
                                 label=""
                                 id="file-upload"
                                 ref={this.fileInput}
-                                onChange={getFileName}
+                                onChange={this.getFileName}
                                 />
                             </Col>
                         </Form.Group>
