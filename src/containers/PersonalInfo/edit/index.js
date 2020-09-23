@@ -1,4 +1,5 @@
 import React from 'react'
+import { Form } from 'react-bootstrap'
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
@@ -148,20 +149,13 @@ class PersonalInfoEdit extends React.Component {
     }
 
     sendRequest = (e) => {
-      console.log("===========================================");
-      console.log(this.state.data);
-      console.log("===========================================");
-
       let bodyFormData = new FormData();
       bodyFormData.append('Name', "Họ tên");
       bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
       bodyFormData.append('CreateField', "");
       bodyFormData.append('UpdateField', "FullName");
-      // const fileSelected = this.state.selectedFile;
-      // for(let key in fileSelected) {
-      //   bodyFormData.append('Files', fileSelected[key]);
-      // }
+      bodyFormData.append('Files', this.state.files);
 
       axios({
         method: 'POST',
@@ -181,42 +175,44 @@ class PersonalInfoEdit extends React.Component {
       return (
       <div className="edit-personal">
         <ConfirmationModal show={this.state.isConfirm} onHide={this.hideConfirm.bind(this, 'isConfirm')}/>
-        <PersonalComponent userDetail={this.state.userDetail} 
-          userProfile={this.state.userProfile} 
-          removeInfo={this.removePersonalInfo.bind(this)} 
-          updateInfo={this.updatePersonalInfo.bind(this)}
-          setState={this.setState.bind(this)}
-          genders={this.state.genders}
-          races={this.state.races}
-          marriages={this.state.marriages}
-          nations={this.state.nations}
-          banks={this.state.banks}
-          countries={this.state.countries}
-          religions={this.state.religions}
-        />
-        <EducationComponent 
-          userEducation={this.state.userEducation} 
-          setState={this.setState.bind(this)}
-          certificates={this.state.certificates}
-          educationLevels={this.state.educationLevels}
-          majors={this.state.majors}
-        />
-        <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/>
+        <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
+          <PersonalComponent userDetail={this.state.userDetail} 
+            userProfile={this.state.userProfile} 
+            removeInfo={this.removePersonalInfo.bind(this)} 
+            updateInfo={this.updatePersonalInfo.bind(this)}
+            setState={this.setState.bind(this)}
+            genders={this.state.genders}
+            races={this.state.races}
+            marriages={this.state.marriages}
+            nations={this.state.nations}
+            banks={this.state.banks}
+            countries={this.state.countries}
+            religions={this.state.religions}
+          />
+          <EducationComponent 
+            userEducation={this.state.userEducation} 
+            setState={this.setState.bind(this)}
+            certificates={this.state.certificates}
+            educationLevels={this.state.educationLevels}
+            majors={this.state.majors}
+          />
+          {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
-        <ul className="list-inline">
-          {this.state.files.map((file, index) => {
-            return <li className="list-inline-item">
-                <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
-              </li>
-          })}
-        </ul>
-        
-        <div className="clearfix mb-5">
-          {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-          <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
-          <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
-          <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
-        </div>
+          <ul className="list-inline">
+            {this.state.files.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                  <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+                </li>
+            })}
+          </ul>
+          
+          <div className="clearfix mb-5">
+            {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
+            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+            <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
+            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+          </div>
+        </Form>
       </div>)
     }
   }
