@@ -53,7 +53,6 @@ class PersonalInfoEdit extends React.Component {
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data
-            console.log(data)
             const banks = data.filter(d => d.TYPE === 'BANK')
             const nations = data.filter(d => d.TYPE === 'NATION')
             const countries = data.filter(d => d.TYPE === 'COUNTRY')
@@ -177,6 +176,16 @@ class PersonalInfoEdit extends React.Component {
         // window.location.replace("/notifications");
       });
     }
+
+    updateEducation(value) {
+      console.log('update')
+      console.log(value)
+    }
+
+    addEducation(value) {
+      console.log('new')
+      console.log(value)
+    }
     
     render() {
       return (
@@ -203,6 +212,8 @@ class PersonalInfoEdit extends React.Component {
             educationLevels={this.state.educationLevels}
             majors={this.state.majors}
             schools={this.state.schools}
+            updateEducation={this.updateEducation.bind(this)}
+            addEducation={this.addEducation.bind(this)}
           />
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
