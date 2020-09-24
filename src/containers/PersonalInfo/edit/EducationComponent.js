@@ -63,10 +63,7 @@ class EducationComponent extends React.Component {
     }
 
     isNotNull(input) {
-        if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-          return true;
-        }
-        return false;
+        return input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== ''
     }
 
     educationLevelChange (index, name, level) {
@@ -100,10 +97,16 @@ class EducationComponent extends React.Component {
       this.updateParrent(name, newUserEducation)
     }
 
+    otherUniInputChange(index, name, e) {
+      let newUserEducation = [...this.state[name]]
+      newUserEducation[index].other_uni_name = e.target.value
+      this.setState({ [name]: [...newUserEducation] })
+      this.updateParrent(name, newUserEducation)
+    }
+
     updateParrent (name, newUserEducation) {
       if (name == 'userEducation') {
         this.props.updateEducation(newUserEducation)
-        // do something()
       } else {
         this.props.addEducation(newUserEducation)
       }
@@ -138,8 +141,12 @@ class EducationComponent extends React.Component {
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
-                <div>
+                <div className="mb-3">
                   <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.education_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)}/>
+                </div>
+                <div className="form-inline float-right">
+                  <label className="mr-3">Khác: </label>
+                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''}/>
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
@@ -149,7 +156,7 @@ class EducationComponent extends React.Component {
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <p className="input-container">
-                <label>
+                  <label>
                       <DatePicker 
                           name="from_time" 
                           key="from_time"
@@ -192,7 +199,7 @@ class EducationComponent extends React.Component {
     }
 
     addEducation() {
-        this.setState({newUserEducation: [...this.state.newUserEducation, { university_name: '', education_id: '' , academic_level: '', academic_level_id: '', major: '', major_id: '', from_time:'', to_time: '' } ] })
+        this.setState({newUserEducation: [...this.state.newUserEducation, { university_name: '', other_uni_name: '', education_id: '' , academic_level: '', academic_level_id: '', major: '', major_id: '', from_time:'', to_time: '' } ] })
     }
 
     removeEducation(index) {
