@@ -8,6 +8,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
+import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 
 class TaskList extends React.Component {
     constructor() {
@@ -16,27 +17,46 @@ class TaskList extends React.Component {
           tasks: [],
           dataToModalConfirm: null,
           isShowModalConfirm: false,
+          modalTitle: "",
+          modalMessage: "",
+          typeRequest: 1,
           messageModalConfirm: "",
-          pageNumber: 1
+          pageNumber: 1,
+          userProfileHistoryId: 0
         }
+        
+        this.disapproval = 1;
+        this.approval = 2;
     }
 
     onChangePage = index => {
         this.setState({ pageNumber: index})
     }
 
-    onChangeStatus = (userProfileId, selectedOption) => {
-        const data = {
-          keyUserProfileId: userProfileId,
-          value: selectedOption.value
-        };
+    onChangeStatus = (option, userProfileHistoryId) => {
+        const value = option.value;
+        const label = option.label;
+        this.setState({userProfileHistoryId: userProfileHistoryId});
 
-        const message = "Bạn có thật sự muốn chuyển sang trạng thái '" + selectedOption.label + "' ?";
-        this.setState({
-            dataToModalConfirm: data,
-            isShowModalConfirm: true,
-            messageModalConfirm: message
-        });
+        if (value == this.disapproval) {
+            this.setState({
+                modalTitle: "Xác nhận không duyệt",
+                modalMessage: "Thêm ghi chú (Không bắt buộc)",
+                isShowModalConfirm: true,
+                typeRequest: 1
+            });
+        } else if (value == this.approval) {
+            this.setState({
+                modalTitle: "Xác nhận phê duyệt",
+                modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+                isShowModalConfirm: true,
+                typeRequest: 2
+            });
+        }
+    }
+
+    onHideModalConfirm = () => {
+        this.setState({isShowModalConfirm: false});
     }
 
     showStatus = (userProfileHistoryId, value) => {
@@ -56,27 +76,23 @@ class TaskList extends React.Component {
 
         const status = {
             0: {label: 'Đang chờ xử lý', className: 'request-status'},
-            1: {label: 'Đã phê duyệt', className: 'request-status success'},
-            2: {label: 'Từ chối', className: 'request-status fail'}
+            1: {label: 'Từ chối', className: 'request-status fail'},
+            2: {label: 'Đã phê duyệt', className: 'request-status success'}
         }
 
         const options = [
            { value: 0, label: 'Đang chờ xử lý'},
-           { value: 1, label: 'Đã phê duyệt'},
-           { value: 2, label: 'Từ chối'}
+           { value: 1, label: 'Từ chối'},
+           { value: 2, label: 'Đã phê duyệt'}
         ]
 
         if (this.props.page === "approval") {
             if (value == 0) {
-                return <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value)} styles={customStylesStatus} />
+                return <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value, userProfileHistoryId)} styles={customStylesStatus} />
             }
             return <span className={status[value].className}>{status[value].label}</span>
         }
         return <span className={status[value].className}>{status[value].label}</span>
-        
-        // return status[value] && this.props.page === "approval"
-        // ? <span className={status[value].className}>{status[value].label}</span> 
-        // : <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value)} styles={customStylesStatus} />
     }
 
     getLinkUserProfileHistory = (id, name) => {
@@ -104,9 +120,12 @@ class TaskList extends React.Component {
         const recordPerPage =  25
         const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         
-      return (
-      <div className="task-list ">
-          <table className="table table-borderless table-hover table-striped shadow">
+    return (
+        <>
+        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+        userProfileHistoryId={this.state.userProfileHistoryId} onHide={this.onHideModalConfirm} />
+        <div className="task-list ">
+            <table className="table table-borderless table-hover table-striped shadow">
             <thead>
                 <tr>
                     <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
@@ -169,8 +188,10 @@ class TaskList extends React.Component {
                 <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
             </div>
             <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
-          </div>: null }
-      </div>)
+            </div>: null }
+        </div>
+      </>)
     }
-  }
+}
+
 export default TaskList

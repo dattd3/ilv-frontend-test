@@ -21,7 +21,6 @@ class ApprovalComponent extends React.Component {
       .then(res => {
         if (res && res.data && res.data.data && res.data.result) {
           const result = res.data.result;
-          console.log(res.data.data);
           if (result.code != Constants.API_ERROR_CODE) {
             this.setState({tasks : res.data.data.listUserProfileHistories});
           }

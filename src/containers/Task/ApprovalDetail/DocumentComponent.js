@@ -3,7 +3,6 @@ import React from 'react'
 class DocumentComponent extends React.Component {
     render() {
         const documents = this.props.documents
-        console.log(documents);
         return (
             <div className="document-block">
             {

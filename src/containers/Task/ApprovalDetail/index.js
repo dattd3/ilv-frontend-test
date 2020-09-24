@@ -5,6 +5,7 @@ import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
+import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import _ from 'lodash'
 
 class PersonalInfoEdit extends React.Component {
@@ -21,7 +22,10 @@ class PersonalInfoEdit extends React.Component {
       isShowEducationComponent: false,
       isShowFamilyComponent: false,
       isShowDocumentComponent: false,
-      isShowModalConfirm: false
+      isShowModalConfirm: false,
+      modalTitle: "",
+      modalMessage: "",
+      typeRequest: 1
     }
   }
 
@@ -109,6 +113,28 @@ class PersonalInfoEdit extends React.Component {
     }
   }
 
+  disApproval = () => {
+    this.setState({
+      modalTitle: "Xác nhận không duyệt",
+      modalMessage: "Thêm ghi chú (Không bắt buộc)",
+      typeRequest: 1
+    });
+    this.onShowModalConfirm();
+  }
+
+  approval = () => {
+    this.setState({
+      modalTitle: "Xác nhận phê duyệt",
+      modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+      typeRequest: 2
+    });
+    this.onShowModalConfirm();
+  }
+
+  onShowModalConfirm = () => {
+    this.setState({isShowModalConfirm: true});
+  }
+
   onHideModalConfirm = () => {
     this.setState({isShowModalConfirm: false});
   }
@@ -137,17 +163,21 @@ class PersonalInfoEdit extends React.Component {
     
     render() {
       return (
+        <>
+        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+        userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
         <div className="edit-personal detail-page">
           {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
           {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
           {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
           {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
           <div className="clearfix mb-5">
-            <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}>
+            <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.disApproval}>
               <i className="fa fa-close" aria-hidden="true"></i> Không duyệt</button>
-            <button type="button" className="btn btn-success float-right shadow"><i className="fas fa-check"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-success float-right shadow" onClick={this.approval}><i className="fas fa-check"></i> Phê duyệt</button>
           </div>
         </div>
+        </>
       )
     }
   }
