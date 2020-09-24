@@ -30,6 +30,7 @@ class PersonalInfoEdit extends React.Component {
             majors: [],
             marriages: [],
             religions: [],
+            schools: [],
             update: {},
             userProfileHistoryMainInfo: {},
             OldMainInfo: {},
@@ -52,6 +53,7 @@ class PersonalInfoEdit extends React.Component {
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data
+            console.log(data)
             const banks = data.filter(d => d.TYPE === 'BANK')
             const nations = data.filter(d => d.TYPE === 'NATION')
             const countries = data.filter(d => d.TYPE === 'COUNTRY')
@@ -62,6 +64,7 @@ class PersonalInfoEdit extends React.Component {
             const majors = data.filter(d => d.TYPE === 'MAJOR')
             const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
             const religions = data.filter(d => d.TYPE === 'RELIGION')
+            const schools = data.filter(d => d.TYPE === 'SCHOOL')
             this.setState({
               banks: banks, 
               nations: nations, 
@@ -72,7 +75,8 @@ class PersonalInfoEdit extends React.Component {
               genders: genders, 
               majors: majors,
               marriages: marriages,
-              religions: religions
+              religions: religions,
+              schools: schools
              })
           }
         }).catch(error => {
@@ -198,6 +202,7 @@ class PersonalInfoEdit extends React.Component {
             certificates={this.state.certificates}
             educationLevels={this.state.educationLevels}
             majors={this.state.majors}
+            schools={this.state.schools}
           />
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
