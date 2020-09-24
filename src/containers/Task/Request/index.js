@@ -31,29 +31,6 @@ class RequestComponent extends React.Component {
       });
     }
 
-    // saveData = () => {
-    //   const config = {
-    //     headers: {
-    //       'Authorization': `${localStorage.getItem('accessToken')}`
-    //     }
-    //   }
-
-    //   let formData = new FormData()
-    //     formData.append('Code', 1)
-    //     formData.append('Name', 'Họ tên - Bằng cấp - Gia đình')
-    //     formData.append('Comment', 'Tôi muốn update Họ tên, Bằng cấp, Gia đình')
-    //     formData.append('HRComment', '')
-    //     formData.append('UserProfileInfo', '')
-    //     formData.append('UserProfileDocuments', null)
-
-    //   axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories`, formData, config)
-    //   .then(res => {
-        
-    //   }).catch(error => {
-
-    //   });
-    // }
-
     render() {
       return (
       <div className="task-section">
