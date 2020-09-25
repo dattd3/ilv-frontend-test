@@ -30,6 +30,7 @@ class PersonalInfoEdit extends React.Component {
             marriages: [],
             religions: [],
             schools: [],
+            documentTypes: [],
             update: {},
             userProfileHistoryMainInfo: {},
             OldMainInfo: {},
@@ -67,6 +68,8 @@ class PersonalInfoEdit extends React.Component {
             const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
             const religions = data.filter(d => d.TYPE === 'RELIGION')
             const schools = data.filter(d => d.TYPE === 'SCHOOL')
+            const documentTypes = data.filter(d => d.TYPE === 'PERSONALDOCUMENT')
+
             this.setState({
               banks: banks, 
               nations: nations, 
@@ -78,7 +81,8 @@ class PersonalInfoEdit extends React.Component {
               majors: majors,
               marriages: marriages,
               religions: religions,
-              schools: schools
+              schools: schools,
+              documentTypes: documentTypes
              })
           }
         }).catch(error => {
@@ -233,9 +237,10 @@ class PersonalInfoEdit extends React.Component {
       return { UpdateField: mainInfoKeys.concat(educationKeys, familyKeys) };
     }
 
-    updateEducation(value) {
+    updateEducation(educationNew) {
       console.log('update')
-      console.log(value)
+      console.log(educationNew)
+     
     }
 
     addEducation(value) {
@@ -297,6 +302,7 @@ class PersonalInfoEdit extends React.Component {
             banks={this.state.banks}
             countries={this.state.countries}
             religions={this.state.religions}
+            documentTypes={this.state.documentTypes}
           />
           <EducationComponent 
             userEducation={this.state.userEducation} 

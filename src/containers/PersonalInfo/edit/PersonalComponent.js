@@ -230,6 +230,7 @@ class PersonalComponent extends React.Component {
         const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
+        const documentTypes = this.props.documentTypes.map(d =>  { return { value: d.ID, label: d.TEXT } } )
 
       return (
       <div className="info">
@@ -364,8 +365,10 @@ class PersonalComponent extends React.Component {
                 <div className="col-4 old">
                     <div className="detail">{userDetail.passport_no || ""}</div>
                 </div>
-                <div className="col-6">
-                    <input className="form-control" name="PassportNo" type="text" value={this.state.userDetail.passport_no || ""} 
+                <div className="col-6 form-inline">
+                    <Select name="document_type_id" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
+                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "document_type_id")} /> 
+                    <input className="form-control w-50" name="PassportNo" type="text" value={this.state.userDetail.passport_no || ""} 
                     onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
