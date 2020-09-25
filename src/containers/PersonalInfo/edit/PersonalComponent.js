@@ -246,10 +246,8 @@ class PersonalComponent extends React.Component {
                 <i className="note note-new"></i> Nhập thông tin điều chỉnh
                 </div>
             </div>
-
             <hr/>
-
-            <div className="row">
+            {/* <div className="row">
                 <div className="col-2">
                    <div className="label">Họ và tên</div> 
                 </div>
@@ -259,8 +257,8 @@ class PersonalComponent extends React.Component {
                 <div className="col-6">
                     <input className="form-control" type="text" name="FullName" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.fullname || ""}/>
                 </div>
-            </div>
-            <div className="row">
+            </div> */}
+            {/* <div className="row">
                 <div className="col-2">
                    <div className="label">Số sổ bảo hiểm</div> 
                 </div>
@@ -271,7 +269,6 @@ class PersonalComponent extends React.Component {
                     <input className="form-control" type="text" name="InsuranceNumber" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.insurance_number || ""} />
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
                    <div className="label">Mã số thuế</div> 
@@ -282,8 +279,7 @@ class PersonalComponent extends React.Component {
                 <div className="col-6">
                     <input className="form-control" type="text" name="TaxNumber" value={this.state.userDetail.tax_number || ""} onChange={this.handleTextInputChange.bind(this)}/>
                 </div>
-            </div>
-
+            </div> */}
             <div className="row">
                 <div className="col-2">
                    <div className="label">Ngày sinh</div> 

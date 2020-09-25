@@ -25,8 +25,11 @@ class PersonalInfoEdit extends React.Component {
       isShowModalConfirm: false,
       modalTitle: "",
       modalMessage: "",
-      typeRequest: 1
+      typeRequest: 1,
+      files: [],
     }
+
+    this.inputReference = React.createRef()
   }
 
   getUserProfileHistoryId = () => {
@@ -160,6 +163,19 @@ class PersonalInfoEdit extends React.Component {
         console.log(error);
       });
     }
+
+    sendRequest = () => {
+
+    }
+
+    fileUploadInputChange() {
+      const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
+      this.setState({files: this.state.files.concat(files) })
+    }
+
+    fileUploadAction() {
+      this.inputReference.current.click()
+    }
     
     render() {
       return (
@@ -167,14 +183,19 @@ class PersonalInfoEdit extends React.Component {
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
         userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
         <div className="edit-personal detail-page">
-          {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
+          {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} page="request" /> : null }
           {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
           {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
           {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
           <div className="clearfix mb-5">
-            <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.disApproval}>
+            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+            <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple/>
+            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+
+
+            {/* <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.disApproval}>
               <i className="fa fa-close" aria-hidden="true"></i> Không duyệt</button>
-            <button type="button" className="btn btn-success float-right shadow" onClick={this.approval}><i className="fas fa-check"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-success float-right shadow" onClick={this.approval}><i className="fas fa-check"></i> Phê duyệt</button> */}
           </div>
         </div>
         </>

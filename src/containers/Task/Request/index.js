@@ -35,7 +35,7 @@ class ApprovalComponent extends React.Component {
       return (
       <div className="task-section">
           <h4 className="title text-uppercase">Quản lý thông tin phê duyệt</h4>
-          <TaskList tasks={this.state.tasks} page="approval" />
+          <TaskList tasks={this.state.tasks} page="request" />
       </div>
       )
     }

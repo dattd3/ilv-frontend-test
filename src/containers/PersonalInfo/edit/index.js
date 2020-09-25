@@ -274,6 +274,19 @@ class PersonalInfoEdit extends React.Component {
     onHideModalConfirm = () => {
       this.setState({isShowModalConfirm: false});
     }
+
+    approval = () => {
+      this.setState({
+        modalTitle: "Xác nhận gửi yêu cầu",
+        modalMessage: "Thêm ghi chú (Không bắt buộc)",
+        typeRequest: 2
+      });
+      this.onShowModalConfirm();
+    }
+  
+    onShowModalConfirm = () => {
+      this.setState({isShowModalConfirm: true});
+    }
     
     render() {
       return (

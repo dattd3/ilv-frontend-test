@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 
 class PersonalComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         // this.state = {
         //     userDetail: {}
@@ -65,6 +65,24 @@ class PersonalComponent extends React.Component {
         }
     }
 
+    handleTextInputChange(event) {
+        const target = event.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        const name = target.name;
+
+        // if(value !== this.props.userDetail[this.mappingFields(name)]) {
+        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
+        // } else {
+        //     this.props.removeInfo(name)
+        // }
+        // this.setState({
+        //     userDetail : {
+        //         ...this.state.userDetail,
+        //         [this.mappingFields(name)]: value
+        //     }
+        // })
+    }
+
     render() {
         const userMainInfo = this.props.userMainInfo
         return (
@@ -87,7 +105,11 @@ class PersonalComponent extends React.Component {
                                     <div className="detail">{item[key][0][0]}</div>
                                 </div>
                                 <div className="col-6 new">
-                                    <div className="detail">{item[key][0][1]}</div>
+                                    {
+                                        this.props.page == "request" ? 
+                                        <input className="form-control" type="text" name="FullName" value={item[key][0][1] || ""} onChange={this.handleTextInputChange.bind(this)} />
+                                        : <div className="detail">{item[key][0][1]}</div>
+                                    }
                                 </div>
                             </div>
                         })

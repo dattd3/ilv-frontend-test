@@ -172,9 +172,9 @@ class PersonalInfoEdit extends React.Component {
           {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
           {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
           <div className="clearfix mb-5">
-            <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={this.disApproval}>
-              <i className="fa fa-close" aria-hidden="true"></i> Không duyệt</button>
-            <button type="button" className="btn btn-success float-right shadow" onClick={this.approval}><i className="fas fa-check"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
+              <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
           </div>
         </div>
         </>
