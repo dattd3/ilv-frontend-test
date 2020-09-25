@@ -153,11 +153,12 @@ class PersonalInfoEdit extends React.Component {
 
     sendRequest = (e) => {
       let bodyFormData = new FormData();
-      bodyFormData.append('Name', "Họ tên");
+      bodyFormData.append('Name', this.getNameFromData(this.state.data));
       bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
       bodyFormData.append('CreateField', "");
       bodyFormData.append('UpdateField', "FullName");
+      bodyFormData.append('Region', localStorage.getItem('region'));
       const fileSelected = this.state.files;
       for(let key in fileSelected) {
         bodyFormData.append('Files', fileSelected[key]);
@@ -170,10 +171,10 @@ class PersonalInfoEdit extends React.Component {
         headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
       })
       .then(response => {
-        // window.location.replace("/notifications");
+        window.location.href = "/tasks/request";
       })
       .catch(response => {
-        // window.location.replace("/notifications");
+        window.location.href = "/tasks/request";
       });
     }
 
@@ -185,6 +186,38 @@ class PersonalInfoEdit extends React.Component {
     addEducation(value) {
       console.log('new')
       console.log(value)
+    }
+    
+    getNameFromData = (data) => {
+      const nameArray = {
+        FullName: "Họ và tên",
+        InsuranceNumber: "Số sổ bảo hiểm",
+        TaxNumber: "Mã số thuế",
+        Birthday: "Ngày sinh",
+        Gender: "Giới tính",
+        Ethinic: "Dân tộc",
+        Religion: "Tôn giáo",
+        PassportNo: "Số CMND/CCCD/Hộ chiếu",
+        DateOfIssue: "Ngày cấp",
+        PlaceOfIssue: "Nơi cấp",
+        Nationality: "Quốc tịch",
+        MaritalStatus: "Tình trạng hôn nhân",
+        WorkPermitNo: "Số giấy phép lao động",
+        ExpiryDate: "Ngày hết hạn",
+        PersonalEmail: "Email cá nhân",
+        CellPhoneNo: "Điện thoại di động",
+        UrgentContactNo: "Điện thoại khẩn cấp",
+        BankAccountNumber: "Số tài khoản ngân hàng"
+      }
+      const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo || {};
+      const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
+      let labelArray = [];
+
+      Object.keys(newItems).forEach(function(key) {
+        labelArray.push(nameArray[key]);
+      });
+
+      return labelArray.join(" - ");
     }
     
     render() {
