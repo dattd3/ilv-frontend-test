@@ -26,7 +26,7 @@ class AddressModal extends React.Component {
     
       componentDidMount() {
         this.getProvices(this.props.country_id)
-        this.getDistricts(this.props.provice_id)
+        this.getDistricts(this.props.province_id)
         this.getWards(this.props.district_id)
     }
 
@@ -60,11 +60,37 @@ class AddressModal extends React.Component {
         }).catch(error => {})
     }
 
-    handleChange(name, value) {
-        this.props.updateAddress(name, value)
+    handleChange(name, item) {
+        const resetList = {
+            country_id: ['province_id', 'district_id', 'ward_id', 'street_name'],
+            province_id: ['district_id', 'ward_id', 'street_name'],
+            district_id: ['ward_id', 'street_name'],
+            ward_id: ['street_name'],
+        }
+
+        resetList[name].forEach(name => {
+            this.props.updateAddress(name, '')
+        })
+
+        if (name === 'country_id') {
+            this.setState({districts: [], wards: []})
+            this.getProvices(item.value)
+        }
+
+        if (name === 'province_id') {
+            this.setState({districts: [], wards: []})
+            this.getDistricts(item.value)
+        }
+
+        if (name === 'district_id') {
+            this.getWards(item.value)
+        }
+
+        this.props.updateAddress(name, item)
     }
 
     render () {
+        console.log(this.props)
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const districts = this.state.districts.map(district =>  { return { value: district.ID, label: district.TEXT } } )
         const wards = this.state.wards.map(ward =>  { return { value: ward.ID, label: ward.TEXT } } )
@@ -90,7 +116,7 @@ class AddressModal extends React.Component {
                             Tỉnh / thành phố
                         </div>
                         <div className="col-7">
-                        <Select options={provinces} value={provinces.filter(p => p.value == this.props.province_id)}/>
+                        <Select options={provinces} onChange={this.handleChange.bind(this, 'province_id')} value={provinces.filter(p => p.value == this.props.province_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -98,7 +124,7 @@ class AddressModal extends React.Component {
                             Quận/Huyện
                         </div>
                         <div className="col-7">
-                            <Select options={districts} value={districts.filter(d => d.value == this.props.district_id)}/>
+                            <Select options={districts} onChange={this.handleChange.bind(this, 'district_id')} value={districts.filter(d => d.value == this.props.district_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -106,7 +132,7 @@ class AddressModal extends React.Component {
                             Phường
                         </div>
                         <div className="col-7">
-                            <Select options={wards} value={wards.filter(w => w.value == this.props.ward_id)}/>
+                            <Select options={wards} onChange={this.handleChange.bind(this, 'ward_id')} value={wards.filter(w => w.value == this.props.ward_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">

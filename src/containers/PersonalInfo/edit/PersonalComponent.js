@@ -182,12 +182,16 @@ class PersonalComponent extends React.Component {
         this.setState({[name]: false})
     }
 
-    updateAddress(name, value) {
-        this.setState({ userDetail: { [name]: value } })
+    updateAddress(name, item) {
+        let userDetail = Object.assign({}, this.state.userDetail)
+        userDetail[name] = item.value
+        this.setState({ userDetail: userDetail })
     }
 
-    updateTmpAddress(name, value) {
-        this.setState({ userDetail: { ['tmp_' +  name]: value } })
+    updateTmpAddress(name, item) {
+        let userDetail = Object.assign({}, this.state.userDetail)
+        userDetail['tmp_' +  name] = item.value
+        this.setState({ userDetail: userDetail })
     }
     
     render() {
