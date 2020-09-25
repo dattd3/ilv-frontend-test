@@ -15,30 +15,38 @@ class ConfirmationModal extends React.Component {
 
     ok = (e) => {
         const type = e.currentTarget.dataset.type;
-        if (type === "yes") {
-            if (this.props.type == this.disapproval) {
-                let formData = new FormData()
-                formData.append('HRComment', this.state.message)
-
-                axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
-                    headers: { Authorization: localStorage.getItem('accessToken') }
-                })
-                .then(response => {
-                    window.location.href = "/tasks/approval";
-                })
-                .catch(error => {
-                    window.location.href = "/tasks/approval";
-                });
-            } else if (this.props.type == this.approval) {
-                axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
-                    headers: { Authorization: localStorage.getItem('accessToken') }
-                })
-                .then(response => {
-                    window.location.href = "/tasks/approval";
-                })
-                .catch(error => {
-                    window.location.href = "/tasks/approval";
-                });
+        if (this.props.type == null || this.props.type == undefined) {
+            if (this.props.confirmStatus == "error") {
+                window.location.reload();
+            } else {
+                window.location.href = "/tasks";
+            }
+        } else {
+            if (type === "yes") {
+                if (this.props.type == this.disapproval) {
+                    let formData = new FormData()
+                    formData.append('HRComment', this.state.message)
+    
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
+                        headers: { Authorization: localStorage.getItem('accessToken') }
+                    })
+                    .then(response => {
+                        window.location.href = "/tasks/approval";
+                    })
+                    .catch(error => {
+                        window.location.href = "/tasks/approval";
+                    });
+                } else if (this.props.type == this.approval) {
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
+                        headers: { Authorization: localStorage.getItem('accessToken') }
+                    })
+                    .then(response => {
+                        window.location.href = "/tasks/approval";
+                    })
+                    .catch(error => {
+                        window.location.href = "/tasks/approval";
+                    });
+                }
             }
         }
     }

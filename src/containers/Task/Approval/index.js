@@ -4,7 +4,7 @@ import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 
 class ApprovalComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
           tasks: []
@@ -26,6 +26,7 @@ class ApprovalComponent extends React.Component {
           }
         }
       }).catch(error => {
+        this.props.sendData(null);
         this.setState({tasks : []});
       });
     }
