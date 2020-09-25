@@ -13,33 +13,45 @@ class AddressModal extends React.Component {
             wards: []
         }
       }
+
+      config () {
+          return {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+              }
+          }
+      }
     
       componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-          }
-        }
-    
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=vn`, config)
+        this.getProvices(this.props.country_id)
+        this.getDistricts(this.props.provice_id)
+        this.getWards(this.props.district_id)
+    }
+
+    getProvices (country_id) {
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${country_id}`, this.config())
           .then(res => {
             if (res && res.data && res.data.data) {
               let provinces = res.data.data;
               this.setState({ provinces: provinces })
             }
           }).catch(error => {})
-        
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/districts?province_id=${this.props.province_id}`, config)
+    }
+
+    getDistricts (province_id) {
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/districts?province_id=${province_id}`, this.config())
         .then(res => {
             if (res && res.data && res.data.data) {
                 let districts = res.data.data;
                 this.setState({ districts: districts })
             }
         }).catch(error => {})
+    }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/wards?district_id=${this.props.district_id}`, config)
+    getWards (district_id) {
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/wards?district_id=${district_id}`, this.config())
         .then(res => {
             if (res && res.data && res.data.data) {
                 let wards = res.data.data;
@@ -48,10 +60,15 @@ class AddressModal extends React.Component {
         }).catch(error => {})
     }
 
+    handleChange(name, value) {
+        this.props.updateAddress(name, value)
+    }
+
     render () {
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const districts = this.state.districts.map(district =>  { return { value: district.ID, label: district.TEXT } } )
         const wards = this.state.wards.map(ward =>  { return { value: ward.ID, label: ward.TEXT } } )
+        const countries = this.props.countries.map(country =>  { return { value: country.ID, label: country.TEXT } } )
   
         return (
             <>
@@ -60,6 +77,14 @@ class AddressModal extends React.Component {
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <div className="row mb-2">
+                            <div className="col-5">
+                                Quốc gia
+                            </div>
+                            <div className="col-7">
+                            <Select options={countries} onChange={this.handleChange.bind(this, 'country_id')} value={countries.filter(c => c.value == this.props.country_id)}/>
+                            </div>
+                    </div>
                     <div className="row mb-2">
                         <div className="col-5">
                             Tỉnh / thành phố
@@ -78,7 +103,7 @@ class AddressModal extends React.Component {
                     </div>
                     <div className="row mb-2">
                         <div className="col-5">
-                            Khu vực
+                            Phường
                         </div>
                         <div className="col-7">
                             <Select options={wards} value={wards.filter(w => w.value == this.props.ward_id)}/>
@@ -94,7 +119,6 @@ class AddressModal extends React.Component {
                     </div>
                     <hr/>
                     <div className="clearfix">
-                        <button type="button" className="btn btn-primary float-right w-25">Cập nhập</button>
                         <button type="button" className="btn btn-secondary float-right mr-2 w-25" onClick={this.props.onHide}>Thoát</button>
                     </div>
                 </Modal.Body>
