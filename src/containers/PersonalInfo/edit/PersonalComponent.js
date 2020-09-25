@@ -183,6 +183,20 @@ class PersonalComponent extends React.Component {
                 return "urgent_contact_no";
             case "BankAccountNumber":
                 return "bank_number";
+            case "PlaceOfIssue":
+                return "place_of_issue";
+            case "Ethinic":
+                return "race_id";
+            case "Religion":
+                return "religion";
+            case "BirthProvince":
+                return "province_id";
+            case "Nationality":
+                return "country_id";
+            case "MaritalStatus":
+                return "marital_status_code";
+            case "BankName":
+                return "bank_name_id";
         }
     }
 
@@ -322,7 +336,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Ethinic" placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} 
-                    onChange={this.handleTextInputChange.bind(this)} />
+                    onChange={e => this.handleSelectInputs(e, "Ethinic")} />
                 </div>
             </div>
 
@@ -335,7 +349,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
-                    value={religions.filter(r => r.value == (this.state.userDetail.religion || '0'))} onChange={this.handleTextInputChange.bind(this)} />
+                    value={religions.filter(r => r.value == (this.state.userDetail.religion || '0'))} onChange={e => this.handleSelectInputs(e, "Religion")} />
                 </div>
             </div>
 
@@ -347,8 +361,8 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.passport_no || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="PassportNo" type="text" onChange={this.handleTextInputChange.bind(this)} 
-                    value={this.state.userDetail.passport_no || ""} />
+                    <input className="form-control" name="PassportNo" type="text" value={this.state.userDetail.passport_no || ""} 
+                    onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -535,7 +549,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <input className="form-control" name="UrgentContactNo" type="text" 
-                    value={this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
+                    value={this.isNotNull(this.state.userDetail.urgent_contact_no) ? this.state.userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
@@ -564,7 +578,7 @@ class PersonalComponent extends React.Component {
                     onChange={e => this.handleSelectInputs(e, 'BankName')} />
                 </div>
             </div>
-            <div className="row">
+            {/* <div className="row">
                 <div className="col-2">
                    <div className="label">Chi nhánh</div> 
                 </div>
@@ -575,7 +589,7 @@ class PersonalComponent extends React.Component {
                     <input className="form-control" name="BankBranch" type="text" value={this.state.userDetail.bank_branch || ""} 
                     onChange={this.handleTextInputChange.bind(this)} />
                 </div>
-            </div>
+            </div> */}
         </div>
       </div>)
     }

@@ -155,7 +155,7 @@ class EducationComponent extends React.Component {
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
-                <p className="input-container">
+                <div className="input-container">
                   <label>
                       <DatePicker 
                           name="from_time" 
@@ -174,7 +174,7 @@ class EducationComponent extends React.Component {
                           locale="vi"
                           className="form-control date"/>
                   </label>
-                </p>
+                </div>
             </Col>
         </Row>
     }
