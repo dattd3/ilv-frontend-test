@@ -171,6 +171,18 @@ class PersonalComponent extends React.Component {
                 return "expiry_date";
             case "Gender":
                 return "gender";
+            case "PassportNo":
+                return "passport_no";
+            case "WorkPermitNo":
+                return "work_permit_no";
+            case "PersonalEmail":
+                return "personal_email";
+            case "CellPhoneNo":
+                return "cell_phone_no";
+            case "UrgentContactNo":
+                return "urgent_contact_no";
+            case "BankAccountNumber":
+                return "bank_number";
         }
     }
 

@@ -8,7 +8,6 @@ import axios from 'axios'
 import _ from 'lodash'
 
 class PersonalInfoEdit extends React.Component {
-
     constructor() {
         super();
         this.state = {
@@ -35,7 +34,11 @@ class PersonalInfoEdit extends React.Component {
             userProfileHistoryMainInfo: {},
             OldMainInfo: {},
             NewMainInfo: {},
-            data: {}
+            data: {},
+            isShowModalConfirm: false,
+            modalTitle: "",
+            modalMessage: "",
+            confirmStatus: ""
         }
         this.inputReference = React.createRef()
     }
@@ -152,12 +155,13 @@ class PersonalInfoEdit extends React.Component {
     }
 
     sendRequest = (e) => {
+      const updateFields = this.getFieldUpdates();
       let bodyFormData = new FormData();
       bodyFormData.append('Name', this.getNameFromData(this.state.data));
       bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
-      bodyFormData.append('CreateField', "");
-      bodyFormData.append('UpdateField', "FullName");
+      // bodyFormData.append('CreateField', "");
+      bodyFormData.append('UpdateField', JSON.stringify(updateFields));
       bodyFormData.append('Region', localStorage.getItem('region'));
       const fileSelected = this.state.files;
       for(let key in fileSelected) {
@@ -171,11 +175,62 @@ class PersonalInfoEdit extends React.Component {
         headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
       })
       .then(response => {
-        window.location.href = "/tasks/request";
+        console.log(response);
+        if (response && response.data && response.data.result) {
+          const code = response.data.result.code;
+          if (code == "999") {
+            this.setState({
+              isShowModalConfirm: true,
+              modalTitle: "Lỗi",
+              modalMessage: "Thông tin đang trong quá trình xử lý !",
+              confirmStatus: "error"
+            });
+          } else {
+            this.setState({
+              isShowModalConfirm: true,
+              modalTitle: "Thành công",
+              modalMessage: "Cập nhật thông tin đã được lưu !",
+              confirmStatus: "success"
+            });
+          }
+        }
       })
       .catch(response => {
-        window.location.href = "/tasks/request";
+        this.setState({
+          isShowModalConfirm: true,
+          modalTitle: "Lỗi",
+          modalMessage: "Có lỗi xảy ra trong quá trình cập nhật thông tin !",
+          confirmStatus: "error"
+        });
       });
+    }
+
+    getFieldUpdates = () => {
+      const fieldsUpdate = this.state.data.update;
+      const mainInfos = fieldsUpdate.userProfileHistoryMainInfo.NewMainInfo || {};
+      let mainInfoKeys = [];
+      let educationKeys = [];
+      let familyKeys = [];
+      let educations = {};
+      if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.NewEducation) {
+        educations = fieldsUpdate.userProfileHistoryEducation.NewEducation;
+      }
+      let families = {}
+      if (fieldsUpdate.userProfileHistoryFamily && fieldsUpdate.userProfileHistoryFamily.NewFamily) {
+        families = fieldsUpdate.userProfileHistoryFamily.NewFamily;
+      }
+
+      if (Object.keys(mainInfos).length > 0) {
+        mainInfoKeys = Object.keys(mainInfos);
+      }
+      if (Object.keys(educations).length > 0) {
+        educationKeys = Object.keys(educations);
+      }
+      if (Object.keys(families).length > 0) {
+        familyKeys = Object.keys(families);
+      }
+
+      return { UpdateField: mainInfoKeys.concat(educationKeys, familyKeys) };
     }
 
     updateEducation(value) {
@@ -219,11 +274,16 @@ class PersonalInfoEdit extends React.Component {
 
       return labelArray.join(" - ");
     }
+
+    onHideModalConfirm = () => {
+      this.setState({isShowModalConfirm: false});
+    }
     
     render() {
       return (
       <div className="edit-personal">
-        <ConfirmationModal show={this.state.isConfirm} onHide={this.hideConfirm.bind(this, 'isConfirm')}/>
+        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+        confirmStatus={this.state.confirmStatus} onHide={this.onHideModalConfirm} />
         <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
           <PersonalComponent userDetail={this.state.userDetail} 
             userProfile={this.state.userProfile} 
