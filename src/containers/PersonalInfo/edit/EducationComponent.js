@@ -70,14 +70,15 @@ class EducationComponent extends React.Component {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].education_level_id = level.value
       newUserEducation[index].major_id = ''
-      newUserEducation[index].education_id = ''
+      newUserEducation[index].school_id = ''
+      this.updateParrent(name, [...newUserEducation])
+      console.log(newUserEducation)
       this.setState({ [name]: [...newUserEducation] })
-      this.updateParrent(name, newUserEducation)
     }
 
     schoolChange (index, name, education) {
       let newUserEducation = [...this.state[name]]
-      newUserEducation[index].education_id = education.value
+      newUserEducation[index].school_id = education.value
       this.setState({ [name]: [...newUserEducation] })
       this.updateParrent(name, newUserEducation)
     }
@@ -142,7 +143,7 @@ class EducationComponent extends React.Component {
             </Col>
             <Col xs={12} md={6} lg={3}>
                 <div className="mb-3">
-                  <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.education_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)}/>
+                  <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)}/>
                 </div>
                 <div className="form-inline float-right">
                   <label className="mr-3">Khác: </label>
