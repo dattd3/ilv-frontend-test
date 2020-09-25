@@ -97,9 +97,9 @@ class TaskList extends React.Component {
 
     getLinkUserProfileHistory = (id, name) => {
         if (this.props.page === "approval") {
-            return <a href={`/tasks-approval/${id}`} title={name}>{name}</a>
+            return `/tasks-approval/${id}`;
         }
-        return <a href={`/tasks-request/${id}`} title={name}>{name}</a>
+        return `/tasks-request/${id}`;
     }
 
     getTaskCode = code => {
@@ -142,7 +142,7 @@ class TaskList extends React.Component {
                     const isShowEditButton = task.status == 1 ? false : true;
                     return (
                         <tr key={index}>
-                            <th>{this.getLinkUserProfileHistory(task.id, task.name)}</th>
+                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>
                             <td>{this.getTaskCode(task.id)}</td>
                             <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
@@ -172,7 +172,7 @@ class TaskList extends React.Component {
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                                 { isShowEditButton ?
-                                <a href="/tasks/request/1"><img alt="Edit task" src={editButton} title="Chỉnh sửa thông tin"/></a>
+                                <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
                                 }
                             </td>

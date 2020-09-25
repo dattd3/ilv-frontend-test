@@ -5,182 +5,153 @@ import axios from 'axios'
 class FamilyComponent extends React.Component {
     constructor() {
         super();
-        this.state = {
-            userFamily: [],
-            newuserFamily: []
-        }
     }
 
     componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-          }
-        }
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              let userFamily = res.data.data;
-              this.setState({ userFamily: userFamily });
-            }
-          }).catch(error => {
-          })
-    }
-
-    isNotNull(input) {
-        if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-          return true;
-        }
-        return false;
-    }
-
-    addFamily() {
-        this.setState({newuserFamily: [...this.state.newuserFamily, { university_name: '', academic_level: '', major: '', from_time:'', to_time: '' } ] })
-    }
-
-    removeFamily(index) {
-        this.setState({ newuserFamily: [...this.state.newuserFamily.slice(0, index), ...this.state.newuserFamily.slice(index + 1) ] })
+        // let config = {
+        //   headers: {
+        //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        //     'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        //     'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        //   }
+        // }
     }
 
     render() {
-        const userFamily = this.props.userFamily
-        // console.log(userFamily)
+        const userFamilyUpdate = this.props.userFamilyUpdate
+        const userFamilyCreate = this.props.userFamilyCreate
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Quan hệ nhân thân</h4>
-
                 <div className="box shadow">
-                    <span className="mr-5"><i className="note-old"> </i> Thông tin cũ </span>
-                    <span><i className="note-new"> </i> Nhập thông tin điều chỉnh</span>
-
+                    <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
+                    <span className="mr-5"><i className="note note-new"></i> Thông tin điều chỉnh</span>
+                    <span><i className="note note-create"></i> Thông tin mới</span>
                     <hr/>
-
-                       { this.state.userFamily.map((item, i) => {
+                       { (userFamilyUpdate || []).map((item, i) => {
                             return <div className="item" key={i}>
                                 <Row className="info-label">
-                                    <Col xs={12} md={6} lg={3}>
+                                    <Col xs={12} md={6} lg={2}>
                                         Họ và tên
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Mối QH
+                                        Mối quan hệ
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        Ngày sinh
+                                        Ngày tháng năm sinh
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
                                         Mã số thuế NPT
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Giảm / Trừ
+                                        Có tính giảm trừ gia cảnh (Tích x)
                                     </Col>
-                                    <Col xs={12} md={6} lg={3}>
-                                        Hiệu lực giảm trừ
+                                    <Col xs={12} md={6} lg={2}>
+                                        Thời gian bắt đầu
+                                    </Col>
+                                    <Col xs={12} md={6} lg={2}>
+                                        Thời gian kết thúc
                                     </Col>
                                 </Row>
 
-                                {userFamily[i] ? <Row className="info-value">
-                                    <Col xs={12} md={6} lg={3}>
-                                        <p className="detail">{userFamily[i].full_name}</p>
+                                {item.OldFamily ? <Row className="info-value old">
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.OldFamily.Name}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        <p className="detail">{userFamily[i].relation}</p>
+                                        <p className="detail">{item.OldFamily.RelationshipName}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        <p className="detail">{userFamily[i].dob}</p>
+                                        <p className="detail">{item.OldFamily.Birthday}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        <p className="detail">{this.isNotNull(userFamily[i].tax_number) ? userFamily[i].tax_number : ""}</p>
+                                        <p className="detail">{item.OldFamily.TaxCode ? item.OldFamily.TaxCode : ""}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        <p className="detail" style={{ background: "none" }}>{this.isNotNull(userFamily[i].is_reduced) ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
-                                    </Col>
-                                    <Col xs={12} md={6} lg={3}>
-                                        <p className="detail">{this.isNotNull(userFamily[i].is_reduced) ? (userFamily[i].from_date + ` - ` + userFamily[i].to_date) : ""}</p>
-                                    </Col>
-                                </Row> : null } 
-
-                                <Row className="info-value">
-                                    <Col xs={12} md={6} lg={3}>
-                                        <p>
-                                            <input className="form-control" name="full_name" type="text" value={item.full_name}/>
-                                        </p>
-                                    </Col>
-                                    <Col xs={12} md={6} lg={1}>
-                                        <p>
-                                            <input className="form-control" name="relation" type="text" value={item.relation}/>
-                                        </p>
+                                        <p className="detail" style={{textAlign: "center"}}>{item.OldFamily.IsFamilyDeduction == 1 ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        <p>
-                                            <input className="form-control" name="dob" type="text" value={item.dob}/>
-                                        </p>
+                                        <p className="detail">{item.OldFamily.IsFamilyDeduction == 1 ? item.OldFamily.StartTime : ""}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        <p>
-                                            <input className="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
-                                        </p>
+                                        <p className="detail">{item.OldFamily.IsFamilyDeduction == 1 ? item.OldFamily.EndTime : ""}</p>
+                                    </Col>
+                                </Row> : null }
+                                <Row className="info-value new">
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.NewFamily.Name}</p>
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        <p></p>
+                                        <p className="detail">{item.NewFamily.RelationshipName}</p>
                                     </Col>
-                                    <Col xs={12} md={6} lg={3}>
-                                        <p></p>
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.NewFamily.Birthday}</p>
+                                    </Col>
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.NewFamily.TaxCode ? item.NewFamily.TaxCode : ""}</p>
+                                    </Col>
+                                    <Col xs={12} md={6} lg={1}>
+                                        <p className="detail" style={{textAlign: "center"}}>{item.NewFamily.IsFamilyDeduction == 1 ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
+                                    </Col>
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.NewFamily.IsFamilyDeduction == 1 ? item.NewFamily.StartTime : ""}</p>
+                                    </Col>
+                                    <Col xs={12} md={6} lg={2}>
+                                        <p className="detail">{item.NewFamily.IsFamilyDeduction == 1 ? item.NewFamily.EndTime : ""}</p>
                                     </Col>
                                 </Row>
                             </div>
                         })
                     }
-
-                    <button type="button" className="btn btn-primary add" onClick={this.addFamily.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
-
-                    { this.state.newuserFamily.map((item, i) => {
+                    { (userFamilyCreate || []).map((item, i) => {
                             return <div className="clearfix new-item" key={i}>
-                            <div className="float-left input-table">
+                            <div>
                                     <Row className="info-label">
-                                        <Col xs={12} md={6} lg={3}>
+                                        <Col xs={12} md={6} lg={2}>
                                             Họ và tên
                                         </Col>
-                                        <Col xs={12} md={6} lg={3}>
-                                            Mối QH
+                                        <Col xs={12} md={6} lg={1}>
+                                            Mối quan hệ
                                         </Col>
-                                        <Col xs={12} md={6} lg={3}>
-                                            Ngày sinh
+                                        <Col xs={12} md={6} lg={2}>
+                                            Ngày tháng năm sinh
                                         </Col>
-                                        <Col xs={12} md={6} lg={3}>
+                                        <Col xs={12} md={6} lg={2}>
                                             Mã số thuế NPT
                                         </Col>
-                                    </Row>
-
-                                    <Row className="info-value">
-                                        <Col xs={12} md={6} lg={3}>
-                                            <p>
-                                                <input className="form-control" name="full_name" type="text" value={item.full_name}/>
-                                            </p>
+                                        <Col xs={12} md={6} lg={1}>
+                                            Có tính giảm trừ gia cảnh (Tích x)
                                         </Col>
-                                        <Col xs={12} md={6} lg={3}>
-                                            <p>
-                                                <input className="form-control" name="relation" type="text" value={item.relation}/>
-                                            </p>
+                                        <Col xs={12} md={6} lg={2}>
+                                            Thời gian bắt đầu
                                         </Col>
-                                        <Col xs={12} md={6} lg={3}>
-                                            <p>
-                                                <input className="form-control" name="dob" type="text" value={item.dob}/>
-                                            </p>
-                                        </Col>
-                                        <Col xs={12} md={6} lg={3}>
-                                            <p>
-                                                <input className="form-control" name="tax_number" type="text" value={this.isNotNull(item.tax_number) ? item.tax_number : ""}/>
-                                            </p>
+                                        <Col xs={12} md={6} lg={2}>
+                                            Thời gian kết thúc
                                         </Col>
                                     </Row>
-                            </div>
-                            <div className="float-left remove">
-                                <button type="button" onClick={this.removeFamily.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
-                                    <span className="text-danger" aria-hidden="true">&times;</span>
-                                </button>
+                                    <Row className="info-value create">
+                                        <Col xs={12} md={6} lg={2}>
+                                            <p className="detail">{item.Name}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={1}>
+                                            <p className="detail">{item.RelationshipName}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={2}>
+                                            <p className="detail">{item.Birthday}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={2}>
+                                            <p className="detail">{item.TaxCode ? item.TaxCode : ""}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={1}>
+                                            <p className="detail" style={{textAlign: "center"}}>{item.IsFamilyDeduction == 1 ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={2}>
+                                            <p className="detail">{item.IsFamilyDeduction == 1 ? item.StartTime : ""}</p>
+                                        </Col>
+                                        <Col xs={12} md={6} lg={2}>
+                                            <p className="detail">{item.IsFamilyDeduction == 1 ? item.EndTime : ""}</p>
+                                        </Col>
+                                    </Row>
                             </div>
                        </div>  
                             

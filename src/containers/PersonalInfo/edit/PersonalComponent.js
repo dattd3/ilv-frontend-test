@@ -197,6 +197,8 @@ class PersonalComponent extends React.Component {
                 return "marital_status_code";
             case "BankName":
                 return "bank_name_id";
+            case "DocumentTyypeId":
+                return "document_type_id"
         }
     }
 
@@ -360,14 +362,14 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Số CMND/CCCD/Hộ chiếu</div> 
+                   <div className="label">Số CMND/CCCD/Hộ chiếu</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.passport_no || ""}</div>
                 </div>
                 <div className="col-6 form-inline">
-                    <Select name="document_type_id" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
-                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "document_type_id")} /> 
+                    <Select name="DocumentTyypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
+                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTyypeId")} /> 
                     <input className="form-control w-50" name="PassportNo" type="text" value={this.state.userDetail.passport_no || ""} 
                     onChange={this.handleTextInputChange.bind(this)} />
                 </div>
