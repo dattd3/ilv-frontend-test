@@ -233,6 +233,16 @@ class PersonalInfoEdit extends React.Component {
       return { UpdateField: mainInfoKeys.concat(educationKeys, familyKeys) };
     }
 
+    updateEducation(value) {
+      console.log('update')
+      console.log(value)
+    }
+
+    addEducation(value) {
+      console.log('new')
+      console.log(value)
+    }
+    
     getNameFromData = (data) => {
       const nameArray = {
         FullName: "Họ và tên",
@@ -295,6 +305,8 @@ class PersonalInfoEdit extends React.Component {
             educationLevels={this.state.educationLevels}
             majors={this.state.majors}
             schools={this.state.schools}
+            updateEducation={this.updateEducation.bind(this)}
+            addEducation={this.addEducation.bind(this)}
           />
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 

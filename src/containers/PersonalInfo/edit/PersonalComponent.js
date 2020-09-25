@@ -193,6 +193,14 @@ class PersonalComponent extends React.Component {
     hideModal(name) {
         this.setState({[name]: false})
     }
+
+    updateAddress(name, value) {
+        this.setState({ userDetail: { [name]: value } })
+    }
+
+    updateTmpAddress(name, value) {
+        this.setState({ userDetail: { ['tmp_' +  name]: value } })
+    }
     
     render() {
         const userDetail = this.props.userDetail
@@ -410,6 +418,9 @@ class PersonalComponent extends React.Component {
                         ward_id={this.state.userDetail.ward_id}
                         district_id={this.state.userDetail.district_id}
                         province_id={this.state.userDetail.province_id}
+                        country_id={this.state.userDetail.country_id}
+                        countries={this.props.countries}
+                        updateAddress={this.updateAddress.bind(this)}
                     /> : null}
                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
                 </div>
@@ -431,6 +442,9 @@ class PersonalComponent extends React.Component {
                         ward_id={this.state.userDetail.tmp_ward_id}
                         district_id={this.state.userDetail.tmp_district_id}
                         province_id={this.state.userDetail.tmp_province_id}
+                        country_id={this.state.userDetail.tmp_country_id}
+                        countries={this.props.countries}
+                        updateAddress={this.updateTmpAddress.bind(this)}
                     /> : null}  
                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
                 </div>
