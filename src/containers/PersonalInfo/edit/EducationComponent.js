@@ -73,7 +73,6 @@ class EducationComponent extends React.Component {
       newUserEducation[index].major_id = ''
       newUserEducation[index].school_id = ''
       this.updateParrent(name, [...newUserEducation])
-      console.log(newUserEducation)
       this.setState({ [name]: [...newUserEducation] })
     }
 
@@ -132,8 +131,8 @@ class EducationComponent extends React.Component {
     }
 
     educationInput(item, index, name) {
-        const educationLevels = this.props.educationLevels.map(educationLevel =>  { return { value: educationLevel.ID, label: educationLevel.TEXT } } )
-        const majors = this.props.majors.map(major =>  { return { value: major.ID, label: major.TEXT } } )
+        const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } } )
+        const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } } )
         const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school =>  { return { value: school.ID, label: school.TEXT } } )
 
         return <Row className="info-value">

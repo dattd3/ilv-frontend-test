@@ -158,13 +158,12 @@ class PersonalInfoEdit extends React.Component {
       this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1) ] })
     }
 
-    sendRequest = (e) => {
+    sendRequest = () => {
       const updateFields = this.getFieldUpdates();
       let bodyFormData = new FormData();
       bodyFormData.append('Name', this.getNameFromData(this.state.data));
       bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
-      // bodyFormData.append('CreateField', "");
       bodyFormData.append('UpdateField', JSON.stringify(updateFields));
       bodyFormData.append('Region', localStorage.getItem('region'));
       const fileSelected = this.state.files;
@@ -183,38 +182,29 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.setState({
-              isShowModalConfirm: true,
-              modalTitle: "Lỗi",
-              modalMessage: "Thông tin đang trong quá trình xử lý !",
-              confirmStatus: "error"
-            });
+            this.handleShowModal("Lỗi", "Thông tin đang trong quá trình xử lý !", "error");
           } else {
-            this.setState({
-              isShowModalConfirm: true,
-              modalTitle: "Thành công",
-              modalMessage: "Cập nhật thông tin đã được lưu !",
-              confirmStatus: "success"
-            });
+            this.handleShowModal("Thành công", "Cập nhật thông tin đã được lưu !", "success");
           }
         }
       })
       .catch(response => {
-        this.setState({
-          isShowModalConfirm: true,
-          modalTitle: "Lỗi",
-          modalMessage: "Có lỗi xảy ra trong quá trình cập nhật thông tin !",
-          confirmStatus: "error"
-        });
+        this.handleShowModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+      });
+    }
+
+    handleShowModal = (title, message, status) => {
+      this.setState({
+        isShowModalConfirm: true,
+        modalTitle: title,
+        modalMessage: message,
+        confirmStatus: status
       });
     }
 
     getFieldUpdates = () => {
       const fieldsUpdate = this.state.data.update;
       const mainInfos = fieldsUpdate.userProfileHistoryMainInfo.NewMainInfo || {};
-      let mainInfoKeys = [];
-      let educationKeys = [];
-      let familyKeys = [];
       let educations = {};
       if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.NewEducation) {
         educations = fieldsUpdate.userProfileHistoryEducation.NewEducation;
@@ -223,24 +213,25 @@ class PersonalInfoEdit extends React.Component {
       if (fieldsUpdate.userProfileHistoryFamily && fieldsUpdate.userProfileHistoryFamily.NewFamily) {
         families = fieldsUpdate.userProfileHistoryFamily.NewFamily;
       }
-
-      if (Object.keys(mainInfos).length > 0) {
-        mainInfoKeys = Object.keys(mainInfos);
-      }
-      if (Object.keys(educations).length > 0) {
-        educationKeys = Object.keys(educations);
-      }
-      if (Object.keys(families).length > 0) {
-        familyKeys = Object.keys(families);
-      }
+      const mainInfoKeys = this.convertObjectKeyToArray(mainInfos);
+      const educationKeys = this.convertObjectKeyToArray(educations);
+      const familyKeys = this.convertObjectKeyToArray(families);
 
       return { UpdateField: mainInfoKeys.concat(educationKeys, familyKeys) };
     }
 
+    convertObjectKeyToArray = (obj) => {
+      if (Object.keys(obj).length > 0) {
+        return Object.keys(obj);
+      }
+      return [];
+    }
+
     updateEducation(educationNew) {
-      console.log('update')
+      console.log('new ======================')
       console.log(educationNew)
-     
+      console.log('old ======================')
+      console.log(this.state.userEducation);
     }
 
     addEducation(value) {
@@ -282,6 +273,19 @@ class PersonalInfoEdit extends React.Component {
 
     onHideModalConfirm = () => {
       this.setState({isShowModalConfirm: false});
+    }
+
+    approval = () => {
+      this.setState({
+        modalTitle: "Xác nhận gửi yêu cầu",
+        modalMessage: "Thêm ghi chú (Không bắt buộc)",
+        typeRequest: 2
+      });
+      this.onShowModalConfirm();
+    }
+  
+    onShowModalConfirm = () => {
+      this.setState({isShowModalConfirm: true});
     }
     
     render() {
