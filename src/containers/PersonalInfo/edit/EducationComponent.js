@@ -31,7 +31,7 @@ class EducationComponent extends React.Component {
           .then(res => {
             if (res && res.data && res.data.data) {
               // let userEducation = res.data.data;
-              let userEducation = [
+              const userEducation = [
                 {
                   "certificate_id": "#",
                   "other_uni_name": "ĐH Bách Khoa Hà Nội",
@@ -46,8 +46,9 @@ class EducationComponent extends React.Component {
                   "major_id": 0
                 }
               ]
-              this.props.setState({ userEducation: userEducation })
-              this.setState({ userEducation: userEducation });
+              this.setState({ userEducation: userEducation.slice() })
+              this.props.setState({ userEducation: userEducation.slice() })
+
             }
           }).catch(error => {
           })
@@ -106,7 +107,7 @@ class EducationComponent extends React.Component {
     }
 
     updateParrent (name, newUserEducation) {
-      if (name == 'userEducation') {
+      if (name === 'userEducation') {
         this.props.updateEducation(newUserEducation)
       } else {
         this.props.addEducation(newUserEducation)
