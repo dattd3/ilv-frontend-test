@@ -30,15 +30,27 @@ class EducationComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
-              // let userEducation = res.data.data;
               let userEducation = [
                 {
-                  "certificate_id": "#",
+                  // "certificate_id": "#",
                   "other_uni_name": "ĐH Bách Khoa Hà Nội",
                   "school_id": 0,
                   "major": "Khác",
                   "academic_level": "Đại học",
-                  "ranked_academic": "#",
+                  // "ranked_academic": "#",
+                  "university_name": null,
+                  "education_level_id": "VF",
+                  "to_time": "31-12-2009",
+                  "from_time": "01-01-2004",
+                  "major_id": 0
+                },
+                {
+                  // "certificate_id": "#",
+                  "other_uni_name": "Học viện kỹ thuật quân sự",
+                  "school_id": 0,
+                  "major": "Khác",
+                  "academic_level": "Đại học",
+                  // "ranked_academic": "#",
                   "university_name": null,
                   "education_level_id": "VF",
                   "to_time": "31-12-2009",
@@ -46,7 +58,6 @@ class EducationComponent extends React.Component {
                   "major_id": 0
                 }
               ]
-              this.props.setState({ userEducation: userEducation })
               this.setState({ userEducation: userEducation });
             }
           }).catch(error => {
@@ -227,7 +238,7 @@ class EducationComponent extends React.Component {
                     <button type="button" className="btn btn-primary add" onClick={this.addEducation.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
 
                     {this.state.newUserEducation.map((item, i) => {
-                      return <div className="clearfix new-item">
+                      return <div className="clearfix new-item" key={i}>
                             <div className="float-left input-table">
                                 <div key={i}>
                                     {this.itemHeader()}

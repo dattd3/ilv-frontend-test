@@ -11,6 +11,7 @@ class ConfirmationModal extends React.Component {
 
         this.disapproval = 1;
         this.approval = 2;
+        this.sendRequest = 3;
     }
 
     ok = (e) => {
@@ -46,6 +47,8 @@ class ConfirmationModal extends React.Component {
                     .catch(error => {
                         window.location.href = "/tasks/approval";
                     });
+                } else if (this.props.type == this.sendRequest) {
+                    this.props.sendData(this.state.message);
                 }
             }
         }
@@ -65,7 +68,7 @@ class ConfirmationModal extends React.Component {
                 <Modal.Body>
                     <p>{this.props.message}</p>
                     {
-                        this.props.type == this.disapproval ?
+                        this.props.type == this.disapproval || this.props.type == this.sendRequest ?
                         <div className="message">
                             <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                         </div>
