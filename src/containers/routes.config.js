@@ -178,6 +178,14 @@ export default [
           component: lazy(() => import("./InternalRecruitment/PositionRecruitingDetail"))
         },
         {
+          key: "task",
+          routeProps: {
+            exact: true,
+            path: map.Task
+          },
+          component: lazy(() => import("./Task/"))
+        },
+        {
           key: "request-task",
           routeProps: {
             exact: true,
@@ -192,6 +200,22 @@ export default [
             path: map.ApprovalTask
           },
           component: lazy(() => import("./Task/Approval"))
+        },
+        {
+          key: "request-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.RequestTaskDetail
+          },
+          component: lazy(() => import("./Task/RequestDetail"))
+        },
+        {
+          key: "approval-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.ApprovalTaskDetail
+          },
+          component: lazy(() => import("./Task/ApprovalDetail"))
         },
         {
           key: "timesheet",

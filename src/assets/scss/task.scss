@@ -1,3 +1,22 @@
+.task-tabs {
+    &.nav-tabs {
+        border: none;
+        padding: 0 0 4em 0;
+        margin: 0 auto;
+        .nav-item {
+            border: 1px solid #ccc;
+            border-radius: 0.5em;
+            padding: 0.8em 5em;
+            margin-right: 2em;
+            background-color: #fff;
+            color: #858796;
+        }
+        .active {
+            background-color: #ff7f00;
+            color: #fff;
+        }
+    }
+}
 .task-section {
     .title {
         color: #2a377c;
@@ -51,17 +70,17 @@
             .status {
                 [class$="-control"] {
                     border-radius: 30px;
-                  }
-                  [class$="-singleValue"] {
+                }
+                [class$="-singleValue"] {
                     top: 45%;
                     color: #aaa;
-                  }
-                  [class$="-placeholder"] {
+                }
+                [class$="-placeholder"] {
                     top: 44%;
-                  }
-                  [class$="-indicatorContainer"] {
+                }
+                [class$="-indicatorContainer"] {
                     padding: 4px;
-                  }
+                }
             }
 
             .request-status {
@@ -74,10 +93,12 @@
                 &.success {
                   border-color: #05BD29;
                   color: #05BD29;
+                  background: #FFFFFF;
                 }
                 &.fail {
                   border-color: #FF0000;
                   color: #FF0000;
+                  background: #FFFFFF;
                 }
               }
         }

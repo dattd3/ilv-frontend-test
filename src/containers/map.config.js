@@ -50,5 +50,7 @@ export default {
   //Task
   Task: "/tasks",
   RequestTask: "/tasks/request",
-  ApprovalTask: "/tasks/approval"
+  ApprovalTask: "/tasks/approval",
+  RequestTaskDetail: "/tasks-request/:id",
+  ApprovalTaskDetail: "/tasks-approval/:id"
 };

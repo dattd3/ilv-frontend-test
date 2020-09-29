@@ -7,29 +7,59 @@ import TableUtil from '../../components/Common/table'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
+import Moment from 'react-moment'
+import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 
 class TaskList extends React.Component {
-
     constructor() {
         super();
         this.state = {
           tasks: [],
+          dataToModalConfirm: null,
+          isShowModalConfirm: false,
+          modalTitle: "",
+          modalMessage: "",
+          typeRequest: 1,
+          messageModalConfirm: "",
           pageNumber: 1,
-          requestTypes: {
-              1: 'Chỉnh sửa hồ sơ cơ bản'
-          }
+          userProfileHistoryId: 0
         }
+        
+        this.disapproval = 1;
+        this.approval = 2;
     }
 
-    onChangePage (index) {
+    onChangePage = index => {
         this.setState({ pageNumber: index})
     }
 
-    onChangeStatus (value) {
+    onChangeStatus = (option, userProfileHistoryId) => {
+        const value = option.value;
+        const label = option.label;
+        this.setState({userProfileHistoryId: userProfileHistoryId});
 
+        if (value == this.disapproval) {
+            this.setState({
+                modalTitle: "Xác nhận không duyệt",
+                modalMessage: "Thêm ghi chú (Không bắt buộc)",
+                isShowModalConfirm: true,
+                typeRequest: 1
+            });
+        } else if (value == this.approval) {
+            this.setState({
+                modalTitle: "Xác nhận phê duyệt",
+                modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+                isShowModalConfirm: true,
+                typeRequest: 2
+            });
+        }
     }
 
-    showStatus (value) {
+    onHideModalConfirm = () => {
+        this.setState({isShowModalConfirm: false});
+    }
+
+    showStatus = (userProfileHistoryId, value) => {
         const customStylesStatus = {
             control: base => ({
               ...base,
@@ -45,28 +75,57 @@ class TaskList extends React.Component {
           }
 
         const status = {
-            2: {label: 'Đã phê duyệt', className: 'request-status success' } , 3: {label: 'Từ chối', className: 'request-status fail'}
+            0: {label: 'Đang chờ xử lý', className: 'request-status'},
+            1: {label: 'Từ chối', className: 'request-status fail'},
+            2: {label: 'Đã phê duyệt', className: 'request-status success'}
         }
 
         const options = [
-           { value: 1, label: 'Đang chờ xử lý'},
-           { value: 2, label: 'Đã phê duyệt'},
-           { value: 3, label: 'Từ chối'}
+           { value: 0, label: 'Đang chờ xử lý'},
+           { value: 1, label: 'Từ chối'},
+           { value: 2, label: 'Đã phê duyệt'}
         ]
 
-        
-        return status[value] 
-        ? <span className={status[value].className}>{status[value].label}</span> 
-        : <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value)} styles={customStylesStatus}/>
+        if (this.props.page === "approval") {
+            if (value == 0) {
+                return <Select defaultValue={options[0]} options={options} onChange={value => this.onChangeStatus(value, userProfileHistoryId)} styles={customStylesStatus} />
+            }
+            return <span className={status[value].className}>{status[value].label}</span>
+        }
+        return <span className={status[value].className}>{status[value].label}</span>
+    }
+
+    getLinkUserProfileHistory = (id, name) => {
+        if (this.props.page === "approval") {
+            return `/tasks-approval/${id}`;
+        }
+        return `/tasks-request/${id}`;
+    }
+
+    getTaskCode = code => {
+        if (code > 0 && code < 10) {
+            return "0000" + code;
+        } else if (code >= 10 && code < 100) {
+            return "000" + code;
+        } else if (code >= 100 && code < 1000) {
+            return "00" + code;
+        } else if (code >= 1000 && code < 10000) {
+            return "0" + code;
+        } else {
+            return code;
+        }
     }
 
     render() {
         const recordPerPage =  25
         const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         
-      return (
-      <div className="task-list ">
-          <table class="table table-borderless table-hover table-striped shadow">
+    return (
+        <>
+        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+        userProfileHistoryId={this.state.userProfileHistoryId} onHide={this.onHideModalConfirm} />
+        <div className="task-list ">
+            <table className="table table-borderless table-hover table-striped shadow">
             <thead>
                 <tr>
                     <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
@@ -80,45 +139,46 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
+                    const isShowEditButton = task.status == 1 ? false : true;
                     return (
-                        <tr>
-                            <th>{task.content}</th>
-                            <td>{task.code}</td>
-                            <td>{this.state.requestTypes[task.requestType]}</td>
-                            <td>{task.requestDate}</td>
-                            <td>{task.approvalDate}</td>
-                            <td className="status">{this.showStatus(task.status)}</td>
+                        <tr key={index}>
+                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>
+                            <td>{this.getTaskCode(task.id)}</td>
+                            <td>{task.requestType.name}</td>
+                            <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                            <td><Moment format="DD/MM/YYYY">{task.approvalDate}</Moment></td>
+                            <td className="status">{this.showStatus(task.id, task.status)}</td>
                             <td>
-                            {task.requestNote ? <OverlayTrigger 
+                            {task.comment ? <OverlayTrigger 
                                 trigger="click"
                                 placement="left" 
                                 overlay={<Popover id={'note-task-' + index}>
                                         <Popover.Title as="h3">Ý kiến của cán bộ nhân viên</Popover.Title>
                                         <Popover.Content>
-                                            {task.requestNote}
+                                            {task.comment}
                                         </Popover.Content>
                                     </Popover>}>
                                 <img alt="Note task" src={notetButton} title="Ý kiến của CBNV"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled"/>}
-
-                            {task.hrNote ? <OverlayTrigger 
+                            {task.hrComment ? <OverlayTrigger 
                                 trigger="click"
                                 placement="left" 
                                 overlay={<Popover id={'comment-task-' + index}>
                                         <Popover.Title as="h3">Phản hồi của nhân sự</Popover.Title>
                                         <Popover.Content>
-                                            {task.hrNote}
+                                            {task.hrComment}
                                         </Popover.Content>
                                     </Popover>}>
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
-                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Ý kiến của CBNV"/>}
-
-                                <a href="/tasks/request/1"><img alt="Edit task" src={editButton} title="Chỉnh sửa thông tin"/></a>
+                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
+                                { isShowEditButton ?
+                                <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                : null
+                                }
                             </td>
                         </tr>
                     )
-                } )}
-                
+                })}
             </tbody>
         </table>
 
@@ -128,8 +188,10 @@ class TaskList extends React.Component {
                 <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
             </div>
             <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
-          </div>: null }
-      </div>)
+            </div>: null }
+        </div>
+      </>)
     }
-  }
+}
+
 export default TaskList
