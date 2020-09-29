@@ -32,25 +32,10 @@ class EducationComponent extends React.Component {
             if (res && res.data && res.data.data) {
               let userEducation = [
                 {
-                  // "certificate_id": "#",
                   "other_uni_name": "ĐH Bách Khoa Hà Nội",
                   "school_id": 0,
                   "major": "Khác",
                   "academic_level": "Đại học",
-                  // "ranked_academic": "#",
-                  "university_name": null,
-                  "education_level_id": "VF",
-                  "to_time": "31-12-2009",
-                  "from_time": "01-01-2004",
-                  "major_id": 0
-                },
-                {
-                  // "certificate_id": "#",
-                  "other_uni_name": "Học viện kỹ thuật quân sự",
-                  "school_id": 0,
-                  "major": "Khác",
-                  "academic_level": "Đại học",
-                  // "ranked_academic": "#",
                   "university_name": null,
                   "education_level_id": "VF",
                   "to_time": "31-12-2009",

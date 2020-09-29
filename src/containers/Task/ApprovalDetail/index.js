@@ -41,7 +41,7 @@ class PersonalInfoEdit extends React.Component {
       const code = response.result.code;
       if (code != Constants.API_ERROR_CODE) {
         if ((data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) 
-        || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.NewEducation)) {
+        || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.length > 0)) {
           this.setState({isShowEducationComponent : true});
         }
         if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.NewFamily)) {
@@ -63,23 +63,23 @@ class PersonalInfoEdit extends React.Component {
       if (data && data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) {
         this.setState({userEducationCreate : response.data.userProfileInfo.create.educations});
       }
-      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.length > 0) {
+      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation) {
         this.setState({userEducationUpdate : data.userProfileInfo.update.userProfileHistoryEducation});
       }
     }
   }
 
-  processFamilyInfo = response => {
-    if (response && response.data) {
-      const data = response.data;
-      if (data && data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) {
-        this.setState({userFamilyCreate : response.data.userProfileInfo.create.families});
-      }
-      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.length > 0) {
-        this.setState({userFamilyUpdate : data.userProfileInfo.update.userProfileHistoryFamily});
-      }
-    }
-  }
+  // processFamilyInfo = response => {
+  //   if (response && response.data) {
+  //     const data = response.data;
+  //     if (data && data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) {
+  //       this.setState({userFamilyCreate : response.data.userProfileInfo.create.families});
+  //     }
+  //     if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.length > 0) {
+  //       this.setState({userFamilyUpdate : data.userProfileInfo.update.userProfileHistoryFamily});
+  //     }
+  //   }
+  // }
 
   processMainInfo = response => {
     if (response && response.data) {
@@ -152,7 +152,7 @@ class PersonalInfoEdit extends React.Component {
           const response = res.data;
           this.processBlockStatuses(response);
           this.processEducationInfo(response);
-          this.processFamilyInfo(response);
+          // this.processFamilyInfo(response);
           this.processMainInfo(response);
           this.processDocumentInfo(response);
         }

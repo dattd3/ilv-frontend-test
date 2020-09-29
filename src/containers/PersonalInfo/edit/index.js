@@ -108,17 +108,6 @@ class PersonalInfoEdit extends React.Component {
                   "to_time": "31-12-2009",
                   "from_time": "01-01-2004",
                   "major_id": 0
-                },
-                {
-                  "other_uni_name": "Học viện kỹ thuật quân sự",
-                  "school_id": 0,
-                  "major": "Khác",
-                  "academic_level": "Đại học",
-                  "university_name": null,
-                  "education_level_id": "VF",
-                  "to_time": "31-12-2009",
-                  "from_time": "01-01-2004",
-                  "major_id": 0
                 }
               ]
               this.setState({ userEducation: userEducation });
@@ -162,7 +151,7 @@ class PersonalInfoEdit extends React.Component {
     }
 
     removePersonalInfo(name) {
-      if (this.state.personalUpdating.NewMainInfo[name] && this.state.personalUpdating.OldMainInfo[name]) {
+      if (this.state.personalUpdating && this.state.personalUpdating.NewMainInfo && this.state.personalUpdating.NewMainInfo[name] && this.state.personalUpdating.OldMainInfo[name]) {
         let personalUpdating = Object.assign({}, this.state.personalUpdating)
         delete personalUpdating.NewMainInfo[name];
         delete personalUpdating.OldMainInfo[name];
@@ -228,10 +217,10 @@ class PersonalInfoEdit extends React.Component {
       });
     }
 
-    prepareInformationToSap = (data) => {
+    prepareInformationToSap = (data, dateSendRequest) => {
       let obj = {};
       obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = null; // Ngày approved từ server
+      obj.kdate = dateSendRequest; // Ngày approved từ server. Currently get dateSendRequest
       obj.actio = "MOD";
       obj.pernr = localStorage.getItem('employeeNo');
       if (data && data.update) {
@@ -262,14 +251,10 @@ class PersonalInfoEdit extends React.Component {
       return [obj];
     }
 
-    prepareAddressToSap = (data) => {
-      console.log("****************************************");
-      console.log(data);
-      console.log("****************************************");
-
+    prepareAddressToSap = (data, dateSendRequest) => {
       let obj = {};
       obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = null; // Ngày approved từ server
+      obj.kdate = dateSendRequest; // Ngày approved từ server
       return [
             {
               "user_name": "vuongvt2",
@@ -286,10 +271,10 @@ class PersonalInfoEdit extends React.Component {
           ]
     }
 
-    prepareBankToSap = (data) => {
+    prepareBankToSap = (data, dateSendRequest) => {
       let obj = {};
       obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = null; // Ngày approved từ server
+      obj.kdate = dateSendRequest; // Ngày approved từ server
       obj.actio = "MOD";
       obj.pernr = localStorage.getItem('employeeNo');
 
@@ -308,7 +293,7 @@ class PersonalInfoEdit extends React.Component {
       return [obj]
     }
 
-    prepareEducationToSap = (data) => {
+    prepareEducationToSap = (data, dateSendRequest) => {
       return [
             {
               "myvp_id": null,
@@ -334,7 +319,7 @@ class PersonalInfoEdit extends React.Component {
           ]
     }
 
-    prepareRaceToSap = data => {
+    prepareRaceToSap = (data, dateSendRequest) => {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
@@ -345,7 +330,7 @@ class PersonalInfoEdit extends React.Component {
 
           let obj = {};
           obj.user_name = localStorage.getItem('email').split("@")[0];
-          obj.kdate = null; // Ngày approved từ server
+          obj.kdate = dateSendRequest; // Ngày approved từ server
           obj.actio = "MOD";
           obj.pernr = localStorage.getItem('employeeNo');
           obj.racky = newMainInfo.Ethinic;
@@ -354,10 +339,7 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    prepareContactToSap = data => {
-      console.log("****************************************");
-      console.log(data);
-      console.log("****************************************");
+    prepareContactToSap = (data, dateSendRequest) => {
       return [
             {
               "myvp_id": null,
@@ -371,19 +353,20 @@ class PersonalInfoEdit extends React.Component {
           ]
     }
 
-    prepareDocumentToSap = data => {
+    prepareDocumentToSap = (data, dateSendRequest) => {
 
     }
 
     getDataPostToSap = (data) => {
       let model = {};
-      const info = this.prepareInformationToSap(data);
-      const addr = this.prepareAddressToSap(data);
-      const bank = this.prepareBankToSap(data);
-      const educ = this.prepareEducationToSap(data);
-      const race = this.prepareRaceToSap(data);
-      const cont = this.prepareContactToSap(data);
-      const docu = this.prepareDocumentToSap(data);
+      const dateSendRequest = moment().format('YYYYMMDD')
+      const info = this.prepareInformationToSap(data, dateSendRequest);
+      const addr = this.prepareAddressToSap(data, dateSendRequest);
+      const bank = this.prepareBankToSap(data, dateSendRequest);
+      const educ = this.prepareEducationToSap(data, dateSendRequest);
+      const race = this.prepareRaceToSap(data, dateSendRequest);
+      const cont = this.prepareContactToSap(data, dateSendRequest);
+      const docu = this.prepareDocumentToSap(data, dateSendRequest);
 
       if (info != null) {
         model.information = info;
@@ -423,14 +406,13 @@ class PersonalInfoEdit extends React.Component {
         const fieldsUpdate = this.state.data.update;
         const mainInfos = (fieldsUpdate && fieldsUpdate.userProfileHistoryMainInfo) ? fieldsUpdate.userProfileHistoryMainInfo.NewMainInfo : {};
         let educations = {};
-        if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.NewEducation) {
-          educations = fieldsUpdate.userProfileHistoryEducation.NewEducation;
+        if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.length > 0) {
+          educations = {Education: "Education"}
         }
         const mainInfoKeys = this.convertObjectKeyToArray(mainInfos);
         const educationKeys = this.convertObjectKeyToArray(educations);
         return { UpdateField: [].concat(mainInfoKeys, educationKeys) };
       }
-      
     }
 
     convertObjectKeyToArray = (obj) => {
@@ -466,11 +448,8 @@ class PersonalInfoEdit extends React.Component {
           }
           userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
           this.setState({
-            userProfileHistoryEducation : {
-              ...this.state.userProfileHistoryEducation,
-              OldEducation: oldObj,
-              NewEducation: newObj
-          }}, () => {
+            userProfileHistoryEducation : userProfileHistoryEducation
+          }, () => {
             this.setState({
               update : {
                 ...this.state.update,
@@ -520,20 +499,28 @@ class PersonalInfoEdit extends React.Component {
         UrgentContactNo: "Điện thoại khẩn cấp",
         BankAccountNumber: "Số tài khoản ngân hàng",
         Bank: "Tên ngân hàng",
-        Education: "Bằng cấp/Chứng chỉ chuyên môn"
+        Education: "Bằng cấp/Chứng chỉ chuyên môn",
+        Province: "Tỉnh/TP - Địa chỉ thường trú",
+        District: "Quận/Huyện - Địa chỉ thường trú",
+        Wards: "Xã/Phường - Địa chỉ thường trú",
+        StreetName: "Tên đường - Địa chỉ thường trú",
+        TempProvince: "Tỉnh/TP - Địa chỉ tạm trú",
+        TempDistrict: "Quận/Huyện - Địa chỉ tạm trú",
+        TempWards: "Xã/Phường - Địa chỉ tạm trú",
+        TempStreetName: "Tên đường - Địa chỉ tạm trú"
       }
-
+      let labelArray = [];
+      if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
+        labelArray.push(nameArray.Education);
+      }
       if (data && data.update && data.update.userProfileHistoryMainInfo) {
         const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo;
         const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
-        let labelArray = [];
-
         Object.keys(newItems).forEach(function(key) {
           labelArray.push(nameArray[key]);
         });
-        return labelArray.join(" - ");
       }
-      return "";
+      return labelArray.join(" - ");
     }
 
     onHideModalConfirm = () => {

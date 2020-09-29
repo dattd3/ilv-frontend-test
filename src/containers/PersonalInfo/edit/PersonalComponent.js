@@ -13,7 +13,6 @@ class PersonalComponent extends React.Component {
         super();
         this.state = {
             userDetail: {},
-            insurance_number: '',
             isAddressEdit: false,
             isTmpAddressEdit: false,
             countryId: '',
@@ -58,23 +57,13 @@ class PersonalComponent extends React.Component {
         if (res && res.data && res.data.data) {
             let userProfile = res.data.data[0];
             this.props.setState({ userProfile: userProfile })
-            this.setState({insurance_number: userProfile.insurance_number })
         }
     }
 
     processPersonalInfo = (res) => {
         if (res && res.data && res.data.data) {
             let userDetail = res.data.data[0];
-            this.setState({countryId: userDetail.country_id});
-            this.setState({ userDetail: userDetail }, () => {
-              this.setState({
-                  userDetail : {
-                    ...this.state.userDetail,
-                    insurance_number: this.state.insurance_number
-                  }
-                })
-            })
-            userDetail.insurance_number = this.state.insurance_number;
+            this.setState({countryId: userDetail.country_id, userDetail: userDetail});
             this.props.setState({ userDetail: userDetail });
         }
     }
@@ -121,11 +110,15 @@ class PersonalComponent extends React.Component {
 
     handleSelectInputs = (e, name) => {
         let val;
+        let label;
         if (e != null) {
           val = e.value;
+          label = e.label;
         } else {
           val = "";
+          label = "";
         }
+
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
@@ -189,6 +182,18 @@ class PersonalComponent extends React.Component {
                 return "document_type_id";
             case "DocumentTypeValue":
                 return "passport_no";
+            case "Province":
+                return "province_id";
+            case "District":
+                return "district_id";
+            case "Wards":
+                return "ward_id";
+            case "TempProvince":
+                return "tmp_province_id";
+            case "TempDistrict":
+                return "tmp_district_id";
+            case "TempWards":
+                return "tmp_ward_id";
         }
     }
 
@@ -201,15 +206,33 @@ class PersonalComponent extends React.Component {
     }
 
     updateAddress(name, item) {
-        let userDetail = Object.assign({}, this.state.userDetail)
-        userDetail[name] = item.value
-        this.setState({ userDetail: userDetail })
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, ""); // For input text tag
+        }
+    }
+
+    handleUpdateAddressForInput = (name, value, prefix) => {
+        if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
+            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value)
+        } else {
+            this.props.removeInfo(prefix + name)
+        }
+        this.setState({
+            userDetail : {
+                ...this.state.userDetail,
+                [this.mappingFields(prefix + name)]: value
+            }
+        })
     }
 
     updateTmpAddress(name, item) {
-        let userDetail = Object.assign({}, this.state.userDetail)
-        userDetail['tmp_' +  name] = item.value
-        this.setState({ userDetail: userDetail })
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, "Temp"); // For input text tag
+        }
     }
 
     getDocumentType = (code) => {
