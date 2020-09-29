@@ -22,12 +22,6 @@ class PersonalComponent extends React.Component {
 
     getLabel = (key) => {
         switch (key) {
-            case "FullName":
-                return "Họ và tên";
-            case "InsuranceNumber":
-                return "Số sổ bảo hiểm";
-            case "TaxNumber":
-                return "Mã số thuế";
             case "Birthday":
                 return "Ngày sinh";
             case "BirthProvince":
@@ -48,10 +42,6 @@ class PersonalComponent extends React.Component {
                 return "Quốc tịch";
             case "MaritalStatus":
                 return "Tình trạng hôn nhân";
-            case "WorkPermitNo":
-                return "Số giấy phép lao động";
-            case "ExpiryDate":
-                return "Ngày hết hạn";
             case "PersonalEmail":
                 return "Email cá nhân";
             case "CellPhoneNo":
@@ -60,7 +50,7 @@ class PersonalComponent extends React.Component {
                 return "Điện thoại khẩn cấp";
             case "BankAccountNumber":
                 return "Số tài khoản ngân hàng";
-            case "BankName":
+            case "Bank":
                 return "Tên ngân hàng";
         }
     }

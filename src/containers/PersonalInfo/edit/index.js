@@ -4,6 +4,7 @@ import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import ConfirmationModal from './ConfirmationModal'
+import ResultModal from './ResultModal'
 import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
@@ -41,6 +42,7 @@ class PersonalInfoEdit extends React.Component {
             NewMainInfo: {},
             data: {},
             isShowModalConfirm: false,
+            isShowResultConfirm: false,
             modalTitle: "",
             modalMessage: "",
             confirmStatus: ""
@@ -215,14 +217,14 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowModal("Lỗi", "Thông tin đang trong quá trình xử lý !", "error");
+            this.handleShowResultModal("Lỗi", "Thông tin đang trong quá trình xử lý !");
           } else {
-            this.handleShowModal("Thành công", "Cập nhật thông tin đã được lưu !", "success");
+            this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
           }
         }
       })
       .catch(response => {
-        this.handleShowModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+        this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
       });
     }
 
@@ -407,12 +409,11 @@ class PersonalInfoEdit extends React.Component {
       return model;
     }
 
-    handleShowModal = (title, message, status) => {
+    handleShowResultModal = (title, message) => {
       this.setState({
-        isShowModalConfirm: true,
+        isShowResultConfirm: true,
         modalTitle: title,
-        modalMessage: message,
-        confirmStatus: status
+        modalMessage: message
       });
     }
 
@@ -539,6 +540,10 @@ class PersonalInfoEdit extends React.Component {
       this.setState({isShowModalConfirm: false});
     }
 
+    onHideResultModal = () => {
+      this.setState({isShowResultConfirm: false});
+    }
+
     sendRequest = () => {
       this.setState({
         modalTitle: "Xác nhận gửi yêu cầu",
@@ -561,6 +566,7 @@ class PersonalInfoEdit extends React.Component {
       <div className="edit-personal">
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} confirmStatus={this.state.confirmStatus}
         sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
+        <ResultModal show={this.state.isShowResultConfirm} title={this.state.modalTitle} message={this.state.modalMessage} onHide={this.onHideResultModal} />
         <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
           <PersonalComponent userDetail={this.state.userDetail} 
             userProfile={this.state.userProfile} 
