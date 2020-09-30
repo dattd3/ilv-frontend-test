@@ -3,7 +3,7 @@ import { Row, Col } from 'react-bootstrap'
 import _ from 'lodash'
 
 class EducationComponent extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
   }
 

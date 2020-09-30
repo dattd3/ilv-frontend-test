@@ -1,20 +1,9 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
-import axios from 'axios'
 
 class FamilyComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
-    }
-
-    componentDidMount() {
-        // let config = {
-        //   headers: {
-        //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        //     'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        //     'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        //   }
-        // }
     }
 
     render() {
