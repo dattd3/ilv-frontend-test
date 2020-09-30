@@ -92,40 +92,23 @@ class PersonalInfoEdit extends React.Component {
              })
           }
         }).catch(error => {
+          
         })
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
-              let userEducation = [
-                {
-                  "other_uni_name": "ĐH Bách Khoa Hà Nội",
-                  "school_id": 0,
-                  "major": "Khác",
-                  "academic_level": "Đại học",
-                  "university_name": null,
-                  "education_level_id": "VF",
-                  "to_time": "31-12-2009",
-                  "from_time": "01-01-2004",
-                  "major_id": 0
-                }
-              ]
-              this.setState({ userEducation: userEducation });
+              this.setState({ userEducation: res.data.data });
             }
           }).catch(error => {
+
           })
     }
 
     updatePersonalInfo(name, old, value) {
       this.setState({
-        OldMainInfo: {
-          ...this.state.OldMainInfo,
-          [name]: old
-        },
-        NewMainInfo: {
-          ...this.state.NewMainInfo,
-          [name]: value
-        }
+        OldMainInfo: { ...this.state.OldMainInfo, [name]: old },
+        NewMainInfo: { ...this.state.NewMainInfo, [name]: value }
       }, () => {
         this.setState({
           userProfileHistoryMainInfo : {
@@ -133,16 +116,8 @@ class PersonalInfoEdit extends React.Component {
             OldMainInfo: this.state.OldMainInfo,
             NewMainInfo: this.state.NewMainInfo
         }}, () => {
-          this.setState({
-            update : {
-              ...this.state.update,
-              userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo
-            }
-          }, () => {
-            this.setState({data : {
-              ...this.state.data,
-              update: this.state.update
-            }});
+          this.setState({ update : { ...this.state.update, userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo }}, () => {
+            this.setState({data : { ...this.state.data, update: this.state.update }});
             let personalUpdating = Object.assign(this.state.personalUpdating, this.state.userProfileHistoryMainInfo)
             this.setState({ personalUpdating: personalUpdating })
           })
@@ -217,156 +192,335 @@ class PersonalInfoEdit extends React.Component {
       });
     }
 
-    prepareInformationToSap = (data, dateSendRequest) => {
-      let obj = {};
-      obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = dateSendRequest; // Ngày approved từ server. Currently get dateSendRequest
-      obj.actio = "MOD";
-      obj.pernr = localStorage.getItem('employeeNo');
+    prepareInformationToSap = (data) => {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.Birthday) {
-            obj.gbdat = moment(newMainInfo.Birthday).format('YYYYMMDD')
-          }
-          if (newMainInfo.Nationality) {
-            obj.natio = newMainInfo.Nationality;
-            obj.gblnd = newMainInfo.Nationality;
-          }
-          if (newMainInfo.BirthProvince) {
-            obj.gbdep = newMainInfo.BirthProvince;
-          }
-          if (newMainInfo.MaritalStatus) {
-            obj.famst = newMainInfo.MaritalStatus;
-          }
-          if (newMainInfo.Religion) {
-            obj.konfe = newMainInfo.Religion;
-          }
-          if (newMainInfo.Gender) {
-            obj.gesch = newMainInfo.Gender;
-          }
-        }
-      }
-      return [obj];
-    }
+          if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || newMainInfo.BirthProvince 
+          || newMainInfo.MaritalStatus || newMainInfo.Religion 
+          || newMainInfo.Gender) {
+            const userDetail = this.state.userDetail;
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
 
-    prepareAddressToSap = (data, dateSendRequest) => {
-      let obj = {};
-      obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = dateSendRequest; // Ngày approved từ server
-      return [
-            {
-              "user_name": "vuongvt2",
-              "kdate": "20200921",
-              "actio": "INS",
-              "pernr": "03593060",
-              "anssa": 1,
-              "stras": "tesst",
-              "zwards_id": "370707",
-              "zdistrict_id": "3707",
-              "state": "37",
-              "land1": "vn"
+            if (newMainInfo.Birthday) {
+              obj.gbdat = moment(newMainInfo.Birthday, 'DD-MM-YYYY').format('YYYYMMDD')
+            } else {
+              obj.gbdat = moment(userDetail.birthday, 'DD-MM-YYYY').format('YYYYMMDD')
             }
-          ]
-    }
-
-    prepareBankToSap = (data, dateSendRequest) => {
-      let obj = {};
-      obj.user_name = localStorage.getItem('email').split("@")[0];
-      obj.kdate = dateSendRequest; // Ngày approved từ server
-      obj.actio = "MOD";
-      obj.pernr = localStorage.getItem('employeeNo');
-
-      if (data && data.update) {
-        const update = data.update;
-        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
-          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.BankAccountNumber) {
-            obj.bankn = newMainInfo.BankAccountNumber;
-          }
-          if (newMainInfo.Bank) {
-            obj.bankl = newMainInfo.Bank;
-          }
-        }
-      }
-      return [obj]
-    }
-
-    prepareEducationToSap = (data, dateSendRequest) => {
-      return [
-            {
-              "myvp_id": null,
-              "user_name": null,
-              "kdate": null,
-              "actio": "INS/MOD",
-              "pernr": null,
-              "pre_begda": null,
-              "pre_endda": null,
-              "pre_seqnr": null,
-              "pre_slart": null,
-              "begda": null,
-              "endda": null,
-              "slart": null,
-              "slabs": null,
-              "zausbi": null,
-              "zzotherausbi": null,
-              "zinstitute": null,
-              "zortherinst": null,
-              "zgrade": null,
-              "zznote": null
+            if (newMainInfo.Nationality) {
+              obj.natio = newMainInfo.Nationality;
+              obj.gblnd = newMainInfo.Nationality;
+            } else {
+              obj.natio = userDetail.country_id;
+              obj.gblnd = userDetail.country_id;
             }
-          ]
+            if (newMainInfo.BirthProvince) {
+              obj.gbdep = newMainInfo.BirthProvince;
+            } else {
+              obj.gbdep = userDetail.province_id;
+            }
+            if (newMainInfo.MaritalStatus) {
+              obj.famst = newMainInfo.MaritalStatus;
+            } else {
+              obj.famst = userDetail.marital_status_code;
+            }
+            if (newMainInfo.Religion) {
+              obj.konfe = newMainInfo.Religion;
+            } else {
+              obj.konfe = userDetail.religion_id;
+            }
+            if (newMainInfo.Gender) {
+              obj.gesch = newMainInfo.Gender;
+            } else {
+              obj.gesch = userDetail.gender;
+            }
+            return [obj];
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
     }
 
-    prepareRaceToSap = (data, dateSendRequest) => {
+    prepareBankToSap = (data) => {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.Ethinic == null || newMainInfo.Ethinic == undefined || newMainInfo.Ethinic == "") {
-            return null;
+          if (newMainInfo.BankAccountNumber || newMainInfo.Bank) {
+            const userDetail = this.state.userDetail;
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
+            if (newMainInfo.BankAccountNumber) {
+              obj.bankn = newMainInfo.BankAccountNumber;
+            } else {
+              obj.bankn = userDetail.bank_number;
+            }
+            if (newMainInfo.Bank) {
+              obj.bankl = newMainInfo.Bank;
+            } else {
+              obj.bankl = newMainInfo.bank_name_id;
+            }
+            return [obj]
           }
-
-          let obj = {};
-          obj.user_name = localStorage.getItem('email').split("@")[0];
-          obj.kdate = dateSendRequest; // Ngày approved từ server
-          obj.actio = "MOD";
-          obj.pernr = localStorage.getItem('employeeNo');
-          obj.racky = newMainInfo.Ethinic;
-          return [obj];
+          return null;
         }
+        return null;
       }
+      return null;
+    }
+
+    prepareRaceToSap = (data) => {
+      if (data && data.update) {
+        const update = data.update;
+        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
+          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
+          if (newMainInfo.Ethinic) {
+            const userDetail = this.state.userDetail;
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
+            if (newMainInfo.Ethinic) {
+              obj.racky = newMainInfo.Ethinic;
+            } else {
+              obj.racky = userDetail.race_id;
+            }
+            return [obj];
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
     }
 
     prepareContactToSap = (data, dateSendRequest) => {
-      return [
-            {
-              "myvp_id": null,
-              "user_name": null,
-              "kdate": null,
-              "actio": "INS/MOD",
-              "pernr": null,
-              "subty": null,
-              "usrid_long": null
+      if (data && data.update) {
+        const update = data.update;
+        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
+          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
+          if (newMainInfo.PersonalEmail || newMainInfo.CellPhoneNo || newMainInfo.UrgentContactNo) {
+            let listObj = [];
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
+
+            if (newMainInfo.PersonalEmail) {
+              obj.subty = "0030";
+              obj.usrid_long = newMainInfo.PersonalEmail;
+              listObj = listObj.concat(obj);
             }
-          ]
+            if (newMainInfo.CellPhoneNo) {
+              obj.subty = "CELL";
+              obj.usrid_long = newMainInfo.CellPhoneNo;
+              listObj = listObj.concat(obj);
+            }
+            if (newMainInfo.UrgentContactNo) {
+              obj.subty = "V002";
+              obj.usrid_long = newMainInfo.UrgentContactNo;
+              listObj = listObj.concat(obj);
+            }
+            return listObj;
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
     }
 
-    prepareDocumentToSap = (data, dateSendRequest) => {
+    prepareAddressToSap = (data) => {
+      if (data && data.update) {
+        const update = data.update;
+        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
+          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
+          if ((newMainInfo.Province || newMainInfo.District || newMainInfo.Wards || newMainInfo.StreetName) 
+          || (newMainInfo.TempProvince || newMainInfo.TempDistrict || newMainInfo.TempWards || newMainInfo.TempStreetName)) {
+            let listObj = [];
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
 
+            if (newMainInfo.Province || newMainInfo.District || newMainInfo.Wards || newMainInfo.StreetName) {
+              obj.anssa = "1";
+              obj.land1 = "VN";
+              obj.state = newMainInfo.Province;
+              obj.zdistrict_id = newMainInfo.District;
+              obj.zwards_id = newMainInfo.Wards;
+              obj.stras = newMainInfo.StreetName;
+              listObj = listObj.concat(obj);
+            }
+            if (newMainInfo.TempProvince || newMainInfo.TempDistrict || newMainInfo.TempWards || newMainInfo.TempStreetName) {
+              obj.anssa = "1";
+              obj.land1 = "VN";
+              obj.state = newMainInfo.TempProvince;
+              obj.zdistrict_id = newMainInfo.TempDistrict;
+              obj.zwards_id = newMainInfo.TempWards;
+              obj.stras = newMainInfo.TempStreetName;
+              listObj = listObj.concat(obj);
+            }
+            return listObj;
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
+    }
+
+    prepareEducationToSap = (data) => {
+      if (data && data.update) {
+        const update = data.update;
+        if (update && update.userProfileHistoryEducation && update.userProfileHistoryEducation[0].NewEducation) {
+          const newEducation = update.userProfileHistoryEducation[0].NewEducation;
+          if ((newEducation.SchoolCode || newEducation.DegreeType || newEducation.MajorCode || newEducation.FromTime || newEducation.ToTime)) {
+            const userEducation = this.state.userEducation;
+            let listObj = [];
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
+            if (userEducation && userEducation.length > 0) {
+              obj.pre_begda = moment(userEducation[0].from_time, 'DD-MM-YYYY').format('YYYYMMDD');
+              obj.pre_endda = moment(userEducation[0].to_time, 'DD-MM-YYYY').format('YYYYMMDD');
+              obj.pre_slart = userEducation[0].education_level_id;
+            }
+            obj.begda = moment(newEducation.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
+            obj.endda = moment(newEducation.ToTime, 'DD-MM-YYYY').format('YYYYMMDD');
+            obj.slart = newEducation.DegreeType;
+            obj.zausbi = newEducation.MajorCode;
+            obj.zinstitute = newEducation.SchoolCode;
+            listObj = listObj.concat(obj);
+            return listObj;
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
+    }
+
+    prepareDocumentToSap = (data) => {
+      if (data && data.update) {
+        const update = data.update;
+        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
+          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
+          if ((newMainInfo.DocumentType != null && newMainInfo.DocumentType != undefined) || (newMainInfo.DocumentTypeValue != null && newMainInfo.DocumentTypeValue != undefined) 
+          || (newMainInfo.DateOfIssue != null && newMainInfo.DateOfIssue != undefined) || (newMainInfo.PlaceOfIssue != null && newMainInfo.PlaceOfIssue != undefined)) {
+            const userDetail = this.state.userDetail;
+            let obj = {};
+            obj.myvp_id = "";
+            obj.user_name = localStorage.getItem('email').split("@")[0];
+            obj.kdate = "";
+            obj.actio = "MOD";
+            obj.pernr = localStorage.getItem('employeeNo');
+            if (newMainInfo.DocumentType) {
+              obj.ictyp = newMainInfo.DocumentType;
+              if (newMainInfo.DocumentTypeValue) {
+                obj.icnum = newMainInfo.DocumentTypeValue;
+              } else {
+                obj.icnum = userDetail.passport_no;
+              }
+              if (newMainInfo.DateOfIssue) {
+                obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
+              } else {
+                obj.fpdat = moment(userDetail.passport_no, 'DD-MM-YYYY').format('YYYYMMDD')
+              }
+              if (newMainInfo.PlaceOfIssue) {
+                obj.isspl = newMainInfo.PlaceOfIssue;
+              } else {
+                obj.isspl = userDetail.place_of_issue;
+              }
+            }
+            if (newMainInfo.DocumentTypeValue) {
+              obj.icnum = newMainInfo.DocumentTypeValue;
+              if (newMainInfo.DocumentType) {
+                obj.ictyp = newMainInfo.DocumentType;
+              } else {
+                obj.ictyp = userDetail.document_type_id;
+              }
+              if (newMainInfo.DateOfIssue) {
+                obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
+              } else {
+                obj.fpdat = moment(userDetail.passport_no, 'DD-MM-YYYY').format('YYYYMMDD')
+              }
+              if (newMainInfo.PlaceOfIssue) {
+                obj.isspl = newMainInfo.PlaceOfIssue;
+              } else {
+                obj.isspl = userDetail.place_of_issue;
+              }
+            }
+            if (newMainInfo.DateOfIssue) {
+              obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD');
+              if (newMainInfo.DocumentType) {
+                obj.ictyp = newMainInfo.DocumentType;
+              } else {
+                obj.ictyp = userDetail.document_type_id;
+              }
+              if (newMainInfo.DocumentTypeValue) {
+                obj.icnum = newMainInfo.DocumentTypeValue;
+              } else {
+                obj.icnum = userDetail.passport_no;
+              }
+              if (newMainInfo.PlaceOfIssue) {
+                obj.isspl = newMainInfo.PlaceOfIssue;
+              } else {
+                obj.isspl = userDetail.place_of_issue;
+              }
+            }
+            if (newMainInfo.PlaceOfIssue) {
+              obj.isspl = newMainInfo.PlaceOfIssue;
+              if (newMainInfo.DocumentType) {
+                obj.ictyp = newMainInfo.DocumentType;
+              } else {
+                obj.ictyp = userDetail.document_type_id;
+              }
+              if (newMainInfo.DocumentTypeValue) {
+                obj.icnum = newMainInfo.DocumentTypeValue;
+              } else {
+                obj.icnum = userDetail.passport_no;
+              }
+            }
+            return [obj];
+          }
+          return null;
+        }
+        return null;
+      }
+      return null;
     }
 
     getDataPostToSap = (data) => {
       let model = {};
-      const dateSendRequest = moment().format('YYYYMMDD')
-      const info = this.prepareInformationToSap(data, dateSendRequest);
-      const addr = this.prepareAddressToSap(data, dateSendRequest);
-      const bank = this.prepareBankToSap(data, dateSendRequest);
-      const educ = this.prepareEducationToSap(data, dateSendRequest);
-      const race = this.prepareRaceToSap(data, dateSendRequest);
-      const cont = this.prepareContactToSap(data, dateSendRequest);
-      const docu = this.prepareDocumentToSap(data, dateSendRequest);
+      const info = this.prepareInformationToSap(data);
+      const addr = this.prepareAddressToSap(data);
+      const bank = this.prepareBankToSap(data);
+      const educ = this.prepareEducationToSap(data);
+      const race = this.prepareRaceToSap(data);
+      const cont = this.prepareContactToSap(data);
+      const docu = this.prepareDocumentToSap(data);
 
       if (info != null) {
         model.information = info;

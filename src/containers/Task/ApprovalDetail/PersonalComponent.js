@@ -4,9 +4,6 @@ import axios from 'axios'
 class PersonalComponent extends React.Component {
     constructor() {
         super();
-        // this.state = {
-        //     userDetail: {}
-        // }
     }
 
     componentDidMount() {
@@ -32,7 +29,7 @@ class PersonalComponent extends React.Component {
                 return "Dân tộc";
             case "Religion":
                 return "Tôn giáo";
-            case "PassportNo":
+            case "DocumentType":
                 return "Số CMND/CCCD/Hộ chiếu";
             case "DateOfIssue":
                 return "Ngày cấp";
@@ -52,6 +49,24 @@ class PersonalComponent extends React.Component {
                 return "Số tài khoản ngân hàng";
             case "Bank":
                 return "Tên ngân hàng";
+            case "Education":
+                return "Bằng cấp/Chứng chỉ chuyên môn";
+            case "Province":
+                return "Tỉnh/TP - Địa chỉ thường trú";
+            case "District":
+                return "Quận/Huyện - Địa chỉ thường trú";
+            case "Wards":
+                return "Xã/Phường - Địa chỉ thường trú";
+            case "StreetName":
+                return "Tên đường - Địa chỉ thường trú";
+            case "TempProvince":
+                return "Tỉnh/TP - Địa chỉ tạm trú";
+            case "TempDistrict":
+                return "Quận/Huyện - Địa chỉ tạm trú";
+            case "TempWards":
+                return "Xã/Phường - Địa chỉ tạm trú";
+            case "TempStreetName":
+                return "Tên đường - Địa chỉ tạm trú";
         }
     }
 

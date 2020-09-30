@@ -22,12 +22,6 @@ class PersonalComponent extends React.Component {
 
     getLabel = (key) => {
         switch (key) {
-            case "FullName":
-                return "Họ và tên";
-            case "InsuranceNumber":
-                return "Số sổ bảo hiểm";
-            case "TaxNumber":
-                return "Mã số thuế";
             case "Birthday":
                 return "Ngày sinh";
             case "BirthProvince":
