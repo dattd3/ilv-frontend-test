@@ -139,7 +139,7 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
-                    const isShowEditButton = task.status == 1 ? false : true;
+                    const isShowEditButton = task.status == 2 ? false : true;
                     return (
                         <tr key={index}>
                             <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>
