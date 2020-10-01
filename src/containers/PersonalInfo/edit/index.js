@@ -308,35 +308,32 @@ class PersonalInfoEdit extends React.Component {
       return null;
     }
 
-    prepareContactToSap = (data, dateSendRequest) => {
+    prepareContactToSap = (data) => {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.PersonalEmail || newMainInfo.CellPhoneNo || newMainInfo.UrgentContactNo) {
-            let listObj = [];
-            let obj = {};
-            obj.myvp_id = "";
-            obj.user_name = localStorage.getItem('email').split("@")[0];
-            obj.kdate = "";
-            obj.actio = "MOD";
-            obj.pernr = localStorage.getItem('employeeNo');
-
-            if (newMainInfo.PersonalEmail) {
-              obj.subty = "0030";
-              obj.usrid_long = newMainInfo.PersonalEmail;
-              listObj = listObj.concat(obj);
+          let listObj = [];
+          Object.keys(newMainInfo).forEach(function(key) {
+            if (key == "PersonalEmail" || key == "CellPhoneNo" || key == "UrgentContactNo") {
+              let obj = {};
+              obj.myvp_id = "";
+              obj.user_name = localStorage.getItem('email').split("@")[0];
+              obj.kdate = "";
+              obj.actio = "MOD";
+              obj.pernr = localStorage.getItem('employeeNo');
+              obj.usrid_long = newMainInfo[key];
+              if (key == "PersonalEmail") {
+                obj.subty = "0030";
+              }else if (key == "CellPhoneNo") {
+                obj.subty = "CELL";
+              } else if (key == "UrgentContactNo") {
+                obj.subty = "V002";
+              }
+              listObj = [...listObj, obj];
             }
-            if (newMainInfo.CellPhoneNo) {
-              obj.subty = "CELL";
-              obj.usrid_long = newMainInfo.CellPhoneNo;
-              listObj = listObj.concat(obj);
-            }
-            if (newMainInfo.UrgentContactNo) {
-              obj.subty = "V002";
-              obj.usrid_long = newMainInfo.UrgentContactNo;
-              listObj = listObj.concat(obj);
-            }
+          });
+          if (listObj.length > 0) {
             return listObj;
           }
           return null;
@@ -521,6 +518,9 @@ class PersonalInfoEdit extends React.Component {
       const race = this.prepareRaceToSap(data);
       const cont = this.prepareContactToSap(data);
       const docu = this.prepareDocumentToSap(data);
+
+      console.log("====================");
+      console.log(cont);
 
       if (info != null) {
         model.information = info;
