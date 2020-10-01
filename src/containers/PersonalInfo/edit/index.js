@@ -541,7 +541,7 @@ class PersonalInfoEdit extends React.Component {
         model.contact = cont;
       }
       if (docu != null) {
-        model.contact = docu;
+        model.document = docu;
       }
       return model;
     }
@@ -654,14 +654,8 @@ class PersonalInfoEdit extends React.Component {
         BankAccountNumber: "Số tài khoản ngân hàng",
         Bank: "Tên ngân hàng",
         Education: "Bằng cấp/Chứng chỉ chuyên môn",
-        Province: "Tỉnh/TP - Địa chỉ thường trú",
-        District: "Quận/Huyện - Địa chỉ thường trú",
-        Wards: "Xã/Phường - Địa chỉ thường trú",
-        StreetName: "Tên đường - Địa chỉ thường trú",
-        TempProvince: "Tỉnh/TP - Địa chỉ tạm trú",
-        TempDistrict: "Quận/Huyện - Địa chỉ tạm trú",
-        TempWards: "Xã/Phường - Địa chỉ tạm trú",
-        TempStreetName: "Tên đường - Địa chỉ tạm trú"
+        PermanentAddress: "Địa chỉ thường trú",
+        TempAddress: "Địa chỉ tạm trú"
       }
       let labelArray = [];
       if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
@@ -671,10 +665,18 @@ class PersonalInfoEdit extends React.Component {
         const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo;
         const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
         Object.keys(newItems).forEach(function(key) {
-          labelArray.push(nameArray[key]);
+          if (key == "DocumentTypeId" || key == "DocumentTypeValue") {
+            labelArray.push(nameArray.DocumentType);
+          } else if (key == "Province" || key == "District" || key == "Wards" || key == "StreetName") {
+            labelArray.push(nameArray.PermanentAddress);
+          }else if (key == "TempProvince" || key == "TempDistrict" || key == "TempWards" || key == "TempStreetName") {
+            labelArray.push(nameArray.TempAddress);
+          } else {
+            labelArray.push(nameArray[key]);
+          }
         });
       }
-      return labelArray.join(" - ");
+      return _.uniq(labelArray).join(" - ");
     }
 
     onHideModalConfirm = () => {
