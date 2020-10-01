@@ -83,7 +83,7 @@ class TaskList extends React.Component {
         const options = [
            { value: 0, label: 'Đang chờ xử lý'},
            { value: 1, label: 'Từ chối'},
-           { value: 2, label: 'Đã phê duyệt'}
+           { value: 2, label: 'Phê duyệt'}
         ]
 
         if (this.props.page === "approval") {

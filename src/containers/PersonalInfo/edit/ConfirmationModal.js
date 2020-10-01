@@ -32,20 +32,20 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     })
                     .catch(error => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     });
                 } else if (this.props.type == this.approval) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     })
                     .catch(error => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     });
                 } else if (this.props.type == this.sendRequest) {
                     this.props.sendData(this.state.message);

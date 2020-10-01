@@ -29,8 +29,10 @@ class PersonalComponent extends React.Component {
                 return "Dân tộc";
             case "Religion":
                 return "Tôn giáo";
-            case "DocumentType":
-                return "Số CMND/CCCD/Hộ chiếu";
+            case "DocumentTypeId":
+                return "Mã loại giấy tờ";
+            case "DocumentTypeValue":
+                return "Mã số giấy tờ";
             case "DateOfIssue":
                 return "Ngày cấp";
             case "PlaceOfIssue":
@@ -71,7 +73,7 @@ class PersonalComponent extends React.Component {
     }
 
     render() {
-        const userMainInfo = this.props.userMainInfo
+        const userMainInfo = this.props.userMainInfo;
         return (
             <div className="info">
                 <h4 className="title text-uppercase">Thông tin cá nhân</h4>

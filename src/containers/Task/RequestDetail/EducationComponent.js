@@ -7,16 +7,6 @@ class EducationComponent extends React.Component {
     super();
   }
 
-  componentDidMount() {
-    // let config = {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-    //     'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-    //     'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-    //   }
-    // }
-  }
-
   itemHeader = () => {
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>Trường đào tạo</Col>
