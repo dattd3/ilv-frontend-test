@@ -6,6 +6,7 @@ import DatePicker, {registerLocale} from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import _ from 'lodash'
 registerLocale("vi", vi)
 
 class PersonalComponent extends React.Component {
@@ -16,7 +17,9 @@ class PersonalComponent extends React.Component {
             isAddressEdit: false,
             isTmpAddressEdit: false,
             countryId: '',
-            provinces: []
+            provinces: [],
+            mainAddress: {},
+            tempAddress: {}
         }
     }
 
@@ -205,7 +208,8 @@ class PersonalComponent extends React.Component {
         this.setState({[name]: false})
     }
 
-    updateAddress(name, item) {
+    updateAddress(name, item, mainAddress) {
+        this.setState({mainAddress: mainAddress});
         if (name !== "StreetName") {
             this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
         } else {
@@ -227,7 +231,8 @@ class PersonalComponent extends React.Component {
         })
     }
 
-    updateTmpAddress(name, item) {
+    updateTmpAddress(name, item, tempAddress) {
+        this.setState({tempAddress: tempAddress});
         if (name !== "StreetName") {
             this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
         } else {
@@ -252,7 +257,6 @@ class PersonalComponent extends React.Component {
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
         const documentTypes = this.props.documentTypes.map(d =>  { return { value: d.ID, label: d.TEXT } } )
-
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -427,7 +431,13 @@ class PersonalComponent extends React.Component {
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
                     /> : null}
-                    <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
+                    {
+                        _.size(this.state.mainAddress) > 0 ?
+                        <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
+                            {this.SummaryAddress([this.state.mainAddress.streetName, this.state.mainAddress.wardName, this.state.mainAddress.districtName, this.state.mainAddress.provinceName])}
+                        </div>
+                        : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
+                    }
                 </div>
             </div>
 
@@ -450,8 +460,14 @@ class PersonalComponent extends React.Component {
                         country_id={this.state.userDetail.tmp_country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
-                    /> : null}  
-                    <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
+                    /> : null}
+                    {
+                        _.size(this.state.tempAddress) > 0 ?
+                        <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
+                            {this.SummaryAddress([this.state.tempAddress.streetName, this.state.tempAddress.wardName, this.state.tempAddress.districtName, this.state.tempAddress.provinceName])}
+                        </div>
+                        : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
+                    }
                 </div>
             </div>
 
