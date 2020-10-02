@@ -4,9 +4,6 @@ import axios from 'axios'
 class PersonalComponent extends React.Component {
     constructor() {
         super();
-        // this.state = {
-        //     userDetail: {}
-        // }
     }
 
     componentDidMount() {
@@ -22,12 +19,6 @@ class PersonalComponent extends React.Component {
 
     getLabel = (key) => {
         switch (key) {
-            case "FullName":
-                return "Họ và tên";
-            case "InsuranceNumber":
-                return "Số sổ bảo hiểm";
-            case "TaxNumber":
-                return "Mã số thuế";
             case "Birthday":
                 return "Ngày sinh";
             case "BirthProvince":
@@ -38,8 +29,10 @@ class PersonalComponent extends React.Component {
                 return "Dân tộc";
             case "Religion":
                 return "Tôn giáo";
-            case "PassportNo":
-                return "Số CMND/CCCD/Hộ chiếu";
+            case "DocumentTypeId":
+                return "Mã loại giấy tờ";
+            case "DocumentTypeValue":
+                return "Mã số giấy tờ";
             case "DateOfIssue":
                 return "Ngày cấp";
             case "PlaceOfIssue":
@@ -48,10 +41,6 @@ class PersonalComponent extends React.Component {
                 return "Quốc tịch";
             case "MaritalStatus":
                 return "Tình trạng hôn nhân";
-            case "WorkPermitNo":
-                return "Số giấy phép lao động";
-            case "ExpiryDate":
-                return "Ngày hết hạn";
             case "PersonalEmail":
                 return "Email cá nhân";
             case "CellPhoneNo":
@@ -60,13 +49,31 @@ class PersonalComponent extends React.Component {
                 return "Điện thoại khẩn cấp";
             case "BankAccountNumber":
                 return "Số tài khoản ngân hàng";
-            case "BankName":
+            case "Bank":
                 return "Tên ngân hàng";
+            case "Education":
+                return "Bằng cấp/Chứng chỉ chuyên môn";
+            case "Province":
+                return "Tỉnh/TP - Địa chỉ thường trú";
+            case "District":
+                return "Quận/Huyện - Địa chỉ thường trú";
+            case "Wards":
+                return "Xã/Phường - Địa chỉ thường trú";
+            case "StreetName":
+                return "Tên đường - Địa chỉ thường trú";
+            case "TempProvince":
+                return "Tỉnh/TP - Địa chỉ tạm trú";
+            case "TempDistrict":
+                return "Quận/Huyện - Địa chỉ tạm trú";
+            case "TempWards":
+                return "Xã/Phường - Địa chỉ tạm trú";
+            case "TempStreetName":
+                return "Tên đường - Địa chỉ tạm trú";
         }
     }
 
     render() {
-        const userMainInfo = this.props.userMainInfo
+        const userMainInfo = this.props.userMainInfo;
         return (
             <div className="info">
                 <h4 className="title text-uppercase">Thông tin cá nhân</h4>

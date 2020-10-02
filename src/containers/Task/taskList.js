@@ -83,7 +83,7 @@ class TaskList extends React.Component {
         const options = [
            { value: 0, label: 'Đang chờ xử lý'},
            { value: 1, label: 'Từ chối'},
-           { value: 2, label: 'Đã phê duyệt'}
+           { value: 2, label: 'Phê duyệt'}
         ]
 
         if (this.props.page === "approval") {
@@ -139,7 +139,7 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
-                    const isShowEditButton = task.status == 1 ? false : true;
+                    const isShowEditButton = task.status == 2 ? false : true;
                     return (
                         <tr key={index}>
                             <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>

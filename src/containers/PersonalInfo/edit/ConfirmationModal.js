@@ -11,6 +11,7 @@ class ConfirmationModal extends React.Component {
 
         this.disapproval = 1;
         this.approval = 2;
+        this.sendRequest = 3;
     }
 
     ok = (e) => {
@@ -31,21 +32,23 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     })
                     .catch(error => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     });
                 } else if (this.props.type == this.approval) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     })
                     .catch(error => {
-                        window.location.href = "/tasks/approval";
+                        window.location.href = "/tasks";
                     });
+                } else if (this.props.type == this.sendRequest) {
+                    this.props.sendData(this.state.message);
                 }
             }
         }
@@ -65,7 +68,7 @@ class ConfirmationModal extends React.Component {
                 <Modal.Body>
                     <p>{this.props.message}</p>
                     {
-                        this.props.type == this.disapproval ?
+                        this.props.type == this.disapproval || this.props.type == this.sendRequest ?
                         <div className="message">
                             <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                         </div>

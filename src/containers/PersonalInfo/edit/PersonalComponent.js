@@ -6,6 +6,7 @@ import DatePicker, {registerLocale} from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import _ from 'lodash'
 registerLocale("vi", vi)
 
 class PersonalComponent extends React.Component {
@@ -13,11 +14,12 @@ class PersonalComponent extends React.Component {
         super();
         this.state = {
             userDetail: {},
-            insurance_number: '',
             isAddressEdit: false,
             isTmpAddressEdit: false,
             countryId: '',
-            provinces: []
+            provinces: [],
+            mainAddress: {},
+            tempAddress: {}
         }
     }
 
@@ -58,23 +60,13 @@ class PersonalComponent extends React.Component {
         if (res && res.data && res.data.data) {
             let userProfile = res.data.data[0];
             this.props.setState({ userProfile: userProfile })
-            this.setState({insurance_number: userProfile.insurance_number })
         }
     }
 
     processPersonalInfo = (res) => {
         if (res && res.data && res.data.data) {
             let userDetail = res.data.data[0];
-            this.setState({countryId: userDetail.country_id});
-            this.setState({ userDetail: userDetail }, () => {
-              this.setState({
-                  userDetail : {
-                    ...this.state.userDetail,
-                    insurance_number: this.state.insurance_number
-                  }
-                })
-            })
-            userDetail.insurance_number = this.state.insurance_number;
+            this.setState({countryId: userDetail.country_id, userDetail: userDetail});
             this.props.setState({ userDetail: userDetail });
         }
     }
@@ -121,11 +113,15 @@ class PersonalComponent extends React.Component {
 
     handleSelectInputs = (e, name) => {
         let val;
+        let label;
         if (e != null) {
           val = e.value;
+          label = e.label;
         } else {
           val = "";
+          label = "";
         }
+
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
@@ -157,24 +153,12 @@ class PersonalComponent extends React.Component {
 
     mappingFields = key => {
         switch (key) {
-            case "FullName":
-                return "fullname";
-            case "InsuranceNumber":
-                return "insurance_number";
-            case "TaxNumber":
-                return "tax_number";
             case "Birthday":
                 return "birthday";
             case "DateOfIssue":
                 return "date_of_issue";
-            case "ExpiryDate":
-                return "expiry_date";
             case "Gender":
                 return "gender";
-            case "PassportNo":
-                return "passport_no";
-            case "WorkPermitNo":
-                return "work_permit_no";
             case "PersonalEmail":
                 return "personal_email";
             case "CellPhoneNo":
@@ -195,10 +179,24 @@ class PersonalComponent extends React.Component {
                 return "country_id";
             case "MaritalStatus":
                 return "marital_status_code";
-            case "BankName":
+            case "Bank":
                 return "bank_name_id";
-            case "DocumentTyypeId":
-                return "document_type_id"
+            case "DocumentTypeId":
+                return "document_type_id";
+            case "DocumentTypeValue":
+                return "passport_no";
+            case "Province":
+                return "province_id";
+            case "District":
+                return "district_id";
+            case "Wards":
+                return "ward_id";
+            case "TempProvince":
+                return "tmp_province_id";
+            case "TempDistrict":
+                return "tmp_district_id";
+            case "TempWards":
+                return "tmp_ward_id";
         }
     }
 
@@ -210,16 +208,42 @@ class PersonalComponent extends React.Component {
         this.setState({[name]: false})
     }
 
-    updateAddress(name, item) {
-        let userDetail = Object.assign({}, this.state.userDetail)
-        userDetail[name] = item.value
-        this.setState({ userDetail: userDetail })
+    updateAddress(name, item, mainAddress) {
+        this.setState({mainAddress: mainAddress});
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, ""); // For input text tag
+        }
     }
 
-    updateTmpAddress(name, item) {
-        let userDetail = Object.assign({}, this.state.userDetail)
-        userDetail['tmp_' +  name] = item.value
-        this.setState({ userDetail: userDetail })
+    handleUpdateAddressForInput = (name, value, prefix) => {
+        if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
+            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value)
+        } else {
+            this.props.removeInfo(prefix + name)
+        }
+        this.setState({
+            userDetail : {
+                ...this.state.userDetail,
+                [this.mappingFields(prefix + name)]: value
+            }
+        })
+    }
+
+    updateTmpAddress(name, item, tempAddress) {
+        this.setState({tempAddress: tempAddress});
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, "Temp"); // For input text tag
+        }
+    }
+
+    getDocumentType = (code) => {
+        return this.props.documentTypes.filter(e => {
+            return e.ID == code;
+        })
     }
     
     render() {
@@ -233,7 +257,6 @@ class PersonalComponent extends React.Component {
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
         const documentTypes = this.props.documentTypes.map(d =>  { return { value: d.ID, label: d.TEXT } } )
-
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -247,42 +270,9 @@ class PersonalComponent extends React.Component {
                 </div>
             </div>
             <hr/>
-            {/* <div className="row">
-                <div className="col-2">
-                   <div className="label">Họ và tên</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.fullname || ""}</div>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" type="text" name="FullName" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.fullname || ""}/>
-                </div>
-            </div> */}
-            {/* <div className="row">
-                <div className="col-2">
-                   <div className="label">Số sổ bảo hiểm</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.insurance_number || ""}</div>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" type="text" name="InsuranceNumber" onChange={this.handleTextInputChange.bind(this)} value={this.state.userDetail.insurance_number || ""} />
-                </div>
-            </div>
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Mã số thuế</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.tax_number || ""}</div>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" type="text" name="TaxNumber" value={this.state.userDetail.tax_number || ""} onChange={this.handleTextInputChange.bind(this)}/>
-                </div>
-            </div> */}
-            <div className="row">
-                <div className="col-2">
-                   <div className="label">Ngày sinh</div> 
+                   <div className="label">Ngày sinh</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.birthday || ""}</div>
@@ -306,7 +296,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Nơi sinh</div> 
+                   <div className="label">Nơi sinh</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.birth_province || ""}</div>
@@ -319,7 +309,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Giới tính</div> 
+                   <div className="label">Giới tính</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
@@ -332,7 +322,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Dân tộc</div> 
+                   <div className="label">Dân tộc</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.ethinic || ""}</div>
@@ -345,7 +335,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Tôn giáo</div> 
+                   <div className="label">Tôn giáo</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.religion || 'Không'}</div>
@@ -358,22 +348,22 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Số CMND/CCCD/Hộ chiếu</div>
+                   <div className="label">Số CMND/CCCD/Hộ chiếu/Giấy phép lao động</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.passport_no || ""}</div>
                 </div>
                 <div className="col-6 form-inline">
-                    <Select name="DocumentTyypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
-                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTyypeId")} /> 
-                    <input className="form-control w-50" name="PassportNo" type="text" value={this.state.userDetail.passport_no || ""} 
+                    <Select name="DocumentTypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
+                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTypeId")} /> 
+                    <input className="form-control w-50" name="DocumentTypeValue" type="text" value={this.state.userDetail.passport_no || ""} 
                     onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Ngày cấp</div> 
+                   <div className="label">Ngày cấp</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.date_of_issue}</div>
@@ -397,7 +387,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Nơi cấp</div> 
+                   <div className="label">Nơi cấp</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.place_of_issue || ""}</div>
@@ -410,7 +400,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Quốc tịch</div> 
+                   <div className="label">Quốc tịch</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.nationality || ""}</div>
@@ -423,7 +413,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Địa chỉ thường trú</div> 
+                   <div className="label">Địa chỉ thường trú</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || ""])}</div>
@@ -441,13 +431,19 @@ class PersonalComponent extends React.Component {
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
                     /> : null}
-                    <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
+                    {
+                        _.size(this.state.mainAddress) > 0 ?
+                        <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
+                            {this.SummaryAddress([this.state.mainAddress.streetName, this.state.mainAddress.wardName, this.state.mainAddress.districtName, this.state.mainAddress.provinceName])}
+                        </div>
+                        : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
+                    }
                 </div>
             </div>
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Địa chỉ tạm trú</div> 
+                   <div className="label">Địa chỉ tạm trú</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || ""])}</div>
@@ -464,14 +460,20 @@ class PersonalComponent extends React.Component {
                         country_id={this.state.userDetail.tmp_country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
-                    /> : null}  
-                    <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
+                    /> : null}
+                    {
+                        _.size(this.state.tempAddress) > 0 ?
+                        <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
+                            {this.SummaryAddress([this.state.tempAddress.streetName, this.state.tempAddress.wardName, this.state.tempAddress.districtName, this.state.tempAddress.provinceName])}
+                        </div>
+                        : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
+                    }
                 </div>
             </div>
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Tình trạng hôn nhân</div> 
+                   <div className="label">Tình trạng hôn nhân</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{marriage ? marriage.TEXT : null}</div>
@@ -481,47 +483,9 @@ class PersonalComponent extends React.Component {
                     value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus')} />
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Giấy phép lao động</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.work_permit_no || ""}</div>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" name="WorkPermitNo" type="text" 
-                    value={this.state.userDetail.work_permit_no || ""} onChange={this.handleTextInputChange.bind(this)}  />
-                </div>
-            </div>
-
-            <div className="row">
-                <div className="col-2">
-                   <div className="label">Ngày hết hạn</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.expiry_date || ""}</div>
-                </div>
-                <div className="col-6 input-container">
-                    <label>
-                        <DatePicker 
-                            name="ExpiryDate" 
-                            key="ExpiryDate"
-                            selected={this.state.userDetail.expiry_date ? moment(this.state.userDetail.expiry_date, 'DD-MM-YYYY').toDate() : null}
-                            onChange={expiryDate => this.handleDatePickerInputChange(expiryDate, "ExpiryDate")}
-                            dateFormat="dd-MM-yyyy"
-                            showMonthDropdown={true}
-                            showYearDropdown={true}
-                            locale="vi"
-                            className="form-control input"/>
-                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
-                    </label>
-                </div>
-            </div>
-
-            <div className="row">
-                <div className="col-2">
-                   <div className="label">Email cá nhân</div> 
+                   <div className="label">Email cá nhân</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.personal_email || ""}</div>
@@ -534,7 +498,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Điện thoại di động</div> 
+                   <div className="label">Điện thoại di động</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.cell_phone_no || ""}</div>
@@ -547,7 +511,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Điện thoại khẩn cấp</div> 
+                   <div className="label">Điện thoại khẩn cấp</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{ this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""}</div>
@@ -560,7 +524,7 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Số TK ngân hàng</div> 
+                   <div className="label">Số TK ngân hàng</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.bank_number || ""}</div>
@@ -573,28 +537,16 @@ class PersonalComponent extends React.Component {
 
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Ngân hàng</div> 
+                   <div className="label">Ngân hàng</div>
                 </div>
                 <div className="col-4 old">
                     <div className="detail">{userDetail.bank_name || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn ngân hàng" name="BankName" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
-                    onChange={e => this.handleSelectInputs(e, 'BankName')} />
+                    <Select placeholder="Lựa chọn ngân hàng" name="Bank" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
+                    onChange={e => this.handleSelectInputs(e, 'Bank')} />
                 </div>
             </div>
-            {/* <div className="row">
-                <div className="col-2">
-                   <div className="label">Chi nhánh</div> 
-                </div>
-                <div className="col-4 old">
-                    <div className="detail">{userDetail.bank_branch || ""}</div>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" name="BankBranch" type="text" value={this.state.userDetail.bank_branch || ""} 
-                    onChange={this.handleTextInputChange.bind(this)} />
-                </div>
-            </div> */}
         </div>
       </div>)
     }
