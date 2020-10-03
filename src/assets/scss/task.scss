@@ -1,7 +1,7 @@
 .task-tabs {
     &.nav-tabs {
         border: none;
-        padding: 0 0 4em 0;
+        padding: 0 0 50px 0;
         margin: 0 auto;
         .nav-item {
             border: 1px solid #ccc;
@@ -22,51 +22,39 @@
         color: #2a377c;
         font-weight: bold;
     }
-
     .task-list {
         border-radius: 5px;
-
         .table {
             width: 100%;
             margin-bottom: 1rem;
             color: #858796;
             border-radius: 5px;
-            
             thead {
                 color: #347EF9;
                 background-color: #eaecf4;
-
                 th {
                     vertical-align: middle;
-                    
                 }
-
                 th:first-child {
                     border-top-left-radius: 5px;
                 }
-
                 th:last-child {
                     text-align: center;
                     border-top-right-radius: 5px;
                 }
-
                 .tool {
                     width: 150px;
                 }
-
                 .request-date, .approval-date {
                     width: 120px;
                 }
-
                 .code {
                     width: 120px;
                 }
             }
-
             td:last-child {
                 text-align: center;
             }
-
             .status {
                 [class$="-control"] {
                     border-radius: 30px;
@@ -82,7 +70,6 @@
                     padding: 4px;
                 }
             }
-
             .request-status {
                 display: inline-block;
                 padding: 2px;
@@ -91,32 +78,35 @@
                 border-radius: 20px;
                 border: 1px solid;
                 &.success {
-                  border-color: #05BD29;
-                  color: #05BD29;
-                  background: #FFFFFF;
+                    border-color: #05BD29;
+                    color: #05BD29;
+                    background: #FFFFFF;
                 }
                 &.fail {
-                  border-color: #FF0000;
-                  color: #FF0000;
-                  background: #FFFFFF;
+                    border-color: #FF0000;
+                    color: #FF0000;
+                    background: #FFFFFF;
                 }
-              }
+            }
+            .task-title {
+                font-weight: normal;
+                color: #858796;
+                &:hover {
+                    color: #347EF9;
+                }
+            }
         }
-
         img {
             height: 25px;
             margin: 0 5px;
         }
-
         img:hover {
             opacity: 0.5;
             cursor: pointer;
         }
-
-        .disabled
-        {
+        .disabled {
             cursor: none;
-            opacity:0.2;
+            opacity: 0.2;
         }
     }
 }

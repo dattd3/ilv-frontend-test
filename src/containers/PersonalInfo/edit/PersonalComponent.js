@@ -172,7 +172,7 @@ class PersonalComponent extends React.Component {
             case "Ethinic":
                 return "race_id";
             case "Religion":
-                return "religion";
+                return "religion_id";
             case "BirthProvince":
                 return "province_id";
             case "Nationality":
@@ -342,7 +342,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
-                    value={religions.filter(r => r.value == (this.state.userDetail.religion || '0'))} onChange={e => this.handleSelectInputs(e, "Religion")} />
+                    value={religions.filter(r => r.value == (this.state.userDetail.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion")} />
                 </div>
             </div>
 
@@ -423,10 +423,10 @@ class PersonalComponent extends React.Component {
                         title="Địa chỉ thường trú"
                         show={this.state.isAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isAddressEdit')}
-                        street_name={this.state.userDetail.street_name}
-                        ward_id={this.state.userDetail.ward_id}
-                        district_id={this.state.userDetail.district_id}
-                        province_id={this.state.userDetail.province_id}
+                        street_name={this.state.mainAddress.streetName ? this.state.mainAddress.streetName : this.state.userDetail.street_name}
+                        ward_id={this.state.mainAddress.wardId ? this.state.mainAddress.wardId : this.state.userDetail.ward_id}
+                        district_id={this.state.mainAddress.districtId ? this.state.mainAddress.districtId : this.state.userDetail.district_id}
+                        province_id={this.state.mainAddress.provinceId ? this.state.mainAddress.provinceId : this.state.userDetail.province_id}
                         country_id={this.state.userDetail.country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
@@ -453,10 +453,10 @@ class PersonalComponent extends React.Component {
                         title="Địa chỉ tạm trú"
                         show={this.state.isTmpAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
-                        street_name={this.state.userDetail.street_name}
-                        ward_id={this.state.userDetail.tmp_ward_id}
-                        district_id={this.state.userDetail.tmp_district_id}
-                        province_id={this.state.userDetail.tmp_province_id}
+                        street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.street_name}
+                        ward_id={this.state.tempAddress.wardId ? this.state.tempAddress.wardId : this.state.userDetail.tmp_ward_id}
+                        district_id={this.state.tempAddress.districtId ? this.state.tempAddress.districtId : this.state.userDetail.tmp_district_id}
+                        province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
                         country_id={this.state.userDetail.tmp_country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}

@@ -89,7 +89,7 @@ class EducationComponent extends React.Component {
 
     updateParrent (name, newUserEducation) {
       if (name == 'userEducation') {
-        this.props.updateEducation(newUserEducation)
+        this.props.addEducation(newUserEducation)
       } else {
         this.props.addEducation(newUserEducation)
       }

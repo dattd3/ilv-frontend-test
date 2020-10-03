@@ -14,16 +14,22 @@ class AddressModal extends React.Component {
             street_name: "",
             address: {
                 main: {
-                    streetName: "",
+                    streetName: props.street_name,
                     wardName: "",
                     districtName: "",
-                    provinceName: ""
+                    provinceName: "",
+                    wardId: "",
+                    districtId: "",
+                    provinceId: ""
                 },
                 temp: {
-                    streetName: "",
+                    streetName: props.street_name,
                     wardName: "",
                     districtName: "",
-                    provinceName: ""
+                    provinceName: "",
+                    wardId: "",
+                    districtId: "",
+                    provinceId: ""
                 }
             }
         }
@@ -38,17 +44,17 @@ class AddressModal extends React.Component {
             }
         }
     }
-    
-    componentDidMount() {
-        this.getProvices(this.props.country_id)
-        this.getDistricts(this.props.province_id)
-        this.getWards(this.props.district_id)
-    }
 
     componentWillReceiveProps(nextProps){
         if (nextProps.street_name !== this.props.street_name) {
             this.setState({ street_name: nextProps.street_name })
         }
+    }
+
+    componentDidMount() {
+        this.getProvices(this.props.country_id)
+        this.getDistricts(this.props.province_id)
+        this.getWards(this.props.district_id)
     }
 
     getProvices (country_id) {
@@ -84,7 +90,7 @@ class AddressModal extends React.Component {
     getLocationName = (name, locationId) => {
         const locations = this.state[name];
         const location = locations.filter(item => item.ID == locationId);
-        return location[0].TEXT || "";
+        return location[0];
     }
 
     setMainAddress = (field, locationName) => {
@@ -94,18 +100,18 @@ class AddressModal extends React.Component {
     }
 
     handleChange(name, item) {
-        let provinceName = "";
-        let districtName = "";
-        let wardName = "";
         if (name === "Province" || name === "TempProvince") {
-            provinceName = this.getLocationName("provinces", item.value);
-            this.setMainAddress("provinceName", provinceName);
+            const province = this.getLocationName("provinces", item.value);
+            this.setMainAddress("provinceId", province.ID);
+            this.setMainAddress("provinceName", province.TEXT);
         } else if (name === "District" || name === "TempDistrict") {
-            districtName = this.getLocationName("districts", item.value);
-            this.setMainAddress("districtName", districtName);
+            const district = this.getLocationName("districts", item.value);
+            this.setMainAddress("districtId", district.ID);
+            this.setMainAddress("districtName", district.TEXT);
         } else if (name === "Wards" || name === "Wards") {
-            wardName = this.getLocationName("wards", item.value);
-            this.setMainAddress("wardName", wardName);
+            const ward = this.getLocationName("wards", item.value);
+            this.setMainAddress("wardId", ward.ID);
+            this.setMainAddress("wardName", ward.TEXT);
         }
         const resetList = {
             country_id: ['province_id', 'district_id', 'ward_id', 'street_name'],
