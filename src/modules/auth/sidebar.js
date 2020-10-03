@@ -160,22 +160,6 @@ export const Navigation = [
     to: map.PositionIntroduced,
     role: 'U'
   },
-  // {
-  //   id: 27,
-  //   parentId: 12,
-  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //   label: "Menu_Task_Request",
-  //   to: map.RequestTask,
-  //   role: 'U'
-  // },
-  // {
-  //   id: 28,
-  //   parentId: 12,
-  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-  //   label: "Menu_Task_Approval",
-  //   to: map.ApprovalTask,
-  //   role: 'U'
-  // },
   {
     id: 99,
     parentId: 10,
@@ -231,5 +215,13 @@ export const Navigation = [
     label: "Menu_PaySlip",
     to: map.PaySlips,
     role: "U"
-  }
+  },
+  {
+    id: 12,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Registration",
+    to: map.Registration,
+    role: 'U'
+  },
 ];

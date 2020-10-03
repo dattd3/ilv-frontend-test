@@ -1,0 +1,45 @@
+.registration-section {
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .leave-of-absence {
+        .summary {
+            .item {
+                background-color: #dedede;
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+                box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            }
+        }
+
+        .input-container {
+            position:relative;
+
+            label, .react-datepicker-wrapper {
+                width: 100%;
+            }
+
+            .input {
+                margin:0;
+                padding-right: 50px;
+                width: 100%;
+            }
+            .input-img {
+                position: absolute;
+                bottom: 15px;
+                right: 0;
+                width: 24px;
+                height: 24px;
+            }
+            i {
+                font-size: 20px;
+                font-weight: 100;
+            }
+        }
+    }
+}

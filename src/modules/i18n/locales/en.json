@@ -177,5 +177,6 @@
   "LocationOfAccidentsIncurred": "Location",
   "ClassificationOfAccidentsIncurred" : "Classification",
   "ReasonsOfAccidentsIncurred" : "Reasons",
-  "SearchLabel": "Search"
+  "SearchLabel": "Search",
+  "Registration": "Đăng ký nghỉ phép, công tác, thay đổi phân ca, sửa giờ vào-ra"
 }

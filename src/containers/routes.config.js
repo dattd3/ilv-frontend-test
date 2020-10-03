@@ -361,6 +361,14 @@ export default [
           },
           component: lazy(() => import("./NotFound")),
         },
+        {
+          key: "registration",
+          routeProps: {
+            exact: true,
+            path: map.Registration
+          },
+          component: lazy(() => import("./Registration"))
+        },
       ],
     },
   },

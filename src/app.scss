@@ -6,6 +6,7 @@
 @import './assets/scss/notifications.scss';
 @import './assets/scss/profile.scss';
 @import './assets/scss/task.scss';
+@import './assets/scss/registration.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -483,7 +484,8 @@
 }
 .metismenu-link {
   padding-left: none !important;
-  line-height: 3.5 !important;
+  height: 2.8em;
+  line-height: 1.4 !important;
   font-size: 14px !important;
   display: flex !important;
   align-items: center !important;
@@ -1195,13 +1197,12 @@ span.badge-notification[data-badge]::after {
     .nav-item {
       border: 1px solid #ccc;
       border-radius: 0.5em;
-      padding: 0.8em 3em;
       margin-right: 2em;
       background-color: #fff;
       color: #293281;
     }
     .active {
-      background-color: #ff7f00;
+      background-color: #347ef9;
       color: #fff;
     }
   }
