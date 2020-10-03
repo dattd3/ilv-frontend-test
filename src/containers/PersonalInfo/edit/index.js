@@ -181,7 +181,7 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowResultModal("Lỗi", "Thông tin đang trong quá trình xử lý !");
+            this.handleShowResultModal("Lỗi", response.data.result.message);
           } else {
             this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
           }
@@ -190,6 +190,20 @@ class PersonalInfoEdit extends React.Component {
       .catch(response => {
         this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
       });
+    }
+
+    resetValueInValid = value => {
+      if (value == undefined || value == null || value == 'null' || value == '#') {
+        return "";
+      }
+      return value;
+    }
+
+    isNullCustomize = value => {
+      if (value == undefined || value == null || value == 'null' || value == '#' || value == "") {
+        return true;
+      }
+      return false;
     }
 
     prepareInformationToSap = (data) => {
@@ -207,38 +221,37 @@ class PersonalInfoEdit extends React.Component {
             obj.kdate = "";
             obj.actio = "MOD";
             obj.pernr = localStorage.getItem('employeeNo');
-
             if (newMainInfo.Birthday) {
               obj.gbdat = moment(newMainInfo.Birthday, 'DD-MM-YYYY').format('YYYYMMDD')
             } else {
-              obj.gbdat = moment(userDetail.birthday, 'DD-MM-YYYY').format('YYYYMMDD')
+              obj.gbdat = moment(this.resetValueInValid(userDetail.birthday), 'DD-MM-YYYY').format('YYYYMMDD')
             }
             if (newMainInfo.Nationality) {
               obj.natio = newMainInfo.Nationality;
               obj.gblnd = newMainInfo.Nationality;
             } else {
-              obj.natio = userDetail.country_id;
-              obj.gblnd = userDetail.country_id;
+              obj.natio = this.resetValueInValid(userDetail.country_id);
+              obj.gblnd = this.resetValueInValid(userDetail.country_id);
             }
             if (newMainInfo.BirthProvince) {
               obj.gbdep = newMainInfo.BirthProvince;
             } else {
-              obj.gbdep = userDetail.province_id;
+              obj.gbdep = this.resetValueInValid(userDetail.province_id);
             }
             if (newMainInfo.MaritalStatus) {
               obj.famst = newMainInfo.MaritalStatus;
             } else {
-              obj.famst = userDetail.marital_status_code;
+              obj.famst = this.resetValueInValid(userDetail.marital_status_code);
             }
             if (newMainInfo.Religion) {
               obj.konfe = newMainInfo.Religion;
             } else {
-              obj.konfe = userDetail.religion_id;
+              obj.konfe = this.resetValueInValid(userDetail.religion_id);
             }
             if (newMainInfo.Gender) {
               obj.gesch = newMainInfo.Gender;
             } else {
-              obj.gesch = userDetail.gender;
+              obj.gesch = this.resetValueInValid(userDetail.gender);
             }
             return [obj];
           }
@@ -265,12 +278,12 @@ class PersonalInfoEdit extends React.Component {
             if (newMainInfo.BankAccountNumber) {
               obj.bankn = newMainInfo.BankAccountNumber;
             } else {
-              obj.bankn = userDetail.bank_number;
+              obj.bankn = this.resetValueInValid(userDetail.bank_number);
             }
             if (newMainInfo.Bank) {
               obj.bankl = newMainInfo.Bank;
             } else {
-              obj.bankl = newMainInfo.bank_name_id;
+              obj.bankl = this.resetValueInValid(newMainInfo.bank_name_id);
             }
             return [obj]
           }
@@ -297,7 +310,7 @@ class PersonalInfoEdit extends React.Component {
             if (newMainInfo.Ethinic) {
               obj.racky = newMainInfo.Ethinic;
             } else {
-              obj.racky = userDetail.race_id;
+              obj.racky = this.resetValueInValid(userDetail.race_id);
             }
             return [obj];
           }
@@ -314,20 +327,36 @@ class PersonalInfoEdit extends React.Component {
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
           let listObj = [];
+          const userDetail = this.state.userDetail;
+          const that = this;
           Object.keys(newMainInfo).forEach(function(key) {
             if (key == "PersonalEmail" || key == "CellPhoneNo" || key == "UrgentContactNo") {
               let obj = {};
               obj.myvp_id = "";
               obj.user_name = localStorage.getItem('email').split("@")[0];
               obj.kdate = "";
-              obj.actio = "MOD";
               obj.pernr = localStorage.getItem('employeeNo');
               obj.usrid_long = newMainInfo[key];
               if (key == "PersonalEmail") {
+                if (that.isNullCustomize(userDetail.personal_email)) {
+                  obj.actio = "INS";
+                } else {
+                  obj.actio = "MOD";
+                }
                 obj.subty = "0030";
               }else if (key == "CellPhoneNo") {
+                if (that.isNullCustomize(userDetail.cell_phone_no)) {
+                  obj.actio = "INS";
+                } else {
+                  obj.actio = "MOD";
+                }
                 obj.subty = "CELL";
               } else if (key == "UrgentContactNo") {
+                if (that.isNullCustomize(userDetail.urgent_contact_no)) {
+                  obj.actio = "INS";
+                } else {
+                  obj.actio = "MOD";
+                }
                 obj.subty = "V002";
               }
               listObj = [...listObj, obj];
@@ -348,35 +377,39 @@ class PersonalInfoEdit extends React.Component {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if ((newMainInfo.Province || newMainInfo.District || newMainInfo.Wards || newMainInfo.StreetName) 
-          || (newMainInfo.TempProvince || newMainInfo.TempDistrict || newMainInfo.TempWards || newMainInfo.TempStreetName)) {
+          if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName) {
+            let addressArr = _.values(newMainInfo);
+            addressArr = _.chunk(addressArr, 4);
             let listObj = [];
-            let obj = {};
-            obj.myvp_id = "";
-            obj.user_name = localStorage.getItem('email').split("@")[0];
-            obj.kdate = "";
-            obj.actio = "MOD";
-            obj.pernr = localStorage.getItem('employeeNo');
-
-            if (newMainInfo.Province || newMainInfo.District || newMainInfo.Wards || newMainInfo.StreetName) {
-              obj.anssa = "1";
-              obj.land1 = "VN";
-              obj.state = newMainInfo.Province;
-              obj.zdistrict_id = newMainInfo.District;
-              obj.zwards_id = newMainInfo.Wards;
-              obj.stras = newMainInfo.StreetName;
-              listObj = listObj.concat(obj);
+            addressArr.forEach((item, index) => {
+              let obj = {};
+              obj.myvp_id = "";
+              obj.user_name = localStorage.getItem('email').split("@")[0];
+              obj.kdate = "";
+              obj.actio = "MOD";
+              obj.pernr = localStorage.getItem('employeeNo');
+              if (index == 0) {
+                obj.anssa = "1";
+                obj.land1 = "VN";
+                obj.state = item[0];
+                obj.zdistrict_id = item[1];
+                obj.zwards_id = item[2];
+                obj.stras = item[3];
+                listObj = [...listObj, obj];
+              } else {
+                obj.anssa = "2";
+                obj.land1 = "VN";
+                obj.state = item[0];
+                obj.zdistrict_id = item[1];
+                obj.zwards_id = item[2];
+                obj.stras = item[3];
+                listObj = [...listObj, obj];
+              }
+            })
+            if (listObj.length > 0) {
+              return listObj;
             }
-            if (newMainInfo.TempProvince || newMainInfo.TempDistrict || newMainInfo.TempWards || newMainInfo.TempStreetName) {
-              obj.anssa = "1";
-              obj.land1 = "VN";
-              obj.state = newMainInfo.TempProvince;
-              obj.zdistrict_id = newMainInfo.TempDistrict;
-              obj.zwards_id = newMainInfo.TempWards;
-              obj.stras = newMainInfo.TempStreetName;
-              listObj = listObj.concat(obj);
-            }
-            return listObj;
+            return null;
           }
           return null;
         }
@@ -386,13 +419,13 @@ class PersonalInfoEdit extends React.Component {
     }
 
     prepareEducationToSap = (data) => {
+      let listObj = [];
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryEducation && update.userProfileHistoryEducation[0].NewEducation) {
           const newEducation = update.userProfileHistoryEducation[0].NewEducation;
           if ((newEducation.SchoolCode || newEducation.DegreeType || newEducation.MajorCode || newEducation.FromTime || newEducation.ToTime)) {
             const userEducation = this.state.userEducation;
-            let listObj = [];
             let obj = {};
             obj.myvp_id = "";
             obj.user_name = localStorage.getItem('email').split("@")[0];
@@ -409,12 +442,27 @@ class PersonalInfoEdit extends React.Component {
             obj.slart = newEducation.DegreeType;
             obj.zausbi = newEducation.MajorCode;
             obj.zinstitute = newEducation.SchoolCode;
-            listObj = listObj.concat(obj);
-            return listObj;
+            listObj = [...listObj, obj];
           }
-          return null;
         }
-        return null;
+      }
+      if (data && data.create && data.create.educations) {
+        let educations = data.create.educations;
+        let obj = {};
+        obj.myvp_id = "";
+        obj.user_name = localStorage.getItem('email').split("@")[0];
+        obj.kdate = "";
+        obj.actio = "INS";
+        obj.pernr = localStorage.getItem('employeeNo');
+        obj.begda = moment(educations.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
+        obj.endda = moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD');
+        obj.slart = educations.DegreeType;
+        obj.zausbi = educations.MajorCode;
+        obj.zinstitute = educations.SchoolCode;
+        listObj = [...listObj, obj];
+      }
+      if (listObj.length > 0) {
+        return listObj;
       }
       return null;
     }
@@ -438,17 +486,17 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DocumentTypeValue) {
                 obj.icnum = newMainInfo.DocumentTypeValue;
               } else {
-                obj.icnum = userDetail.passport_no;
+                obj.icnum = this.resetValueInValid(userDetail.passport_no);
               }
               if (newMainInfo.DateOfIssue) {
                 obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
               } else {
-                obj.fpdat = moment(userDetail.passport_no, 'DD-MM-YYYY').format('YYYYMMDD')
+                obj.fpdat = moment(this.resetValueInValid(userDetail.passport_no), 'DD-MM-YYYY').format('YYYYMMDD')
               }
               if (newMainInfo.PlaceOfIssue) {
                 obj.isspl = newMainInfo.PlaceOfIssue;
               } else {
-                obj.isspl = userDetail.place_of_issue;
+                obj.isspl = this.resetValueInValid(userDetail.place_of_issue);
               }
             }
             if (newMainInfo.DocumentTypeValue) {
@@ -456,17 +504,17 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DocumentType) {
                 obj.ictyp = newMainInfo.DocumentType;
               } else {
-                obj.ictyp = userDetail.document_type_id;
+                obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
               if (newMainInfo.DateOfIssue) {
                 obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
               } else {
-                obj.fpdat = moment(userDetail.passport_no, 'DD-MM-YYYY').format('YYYYMMDD')
+                obj.fpdat = moment(this.resetValueInValid(userDetail.passport_no), 'DD-MM-YYYY').format('YYYYMMDD')
               }
               if (newMainInfo.PlaceOfIssue) {
                 obj.isspl = newMainInfo.PlaceOfIssue;
               } else {
-                obj.isspl = userDetail.place_of_issue;
+                obj.isspl = this.resetValueInValid(userDetail.place_of_issue);
               }
             }
             if (newMainInfo.DateOfIssue) {
@@ -474,17 +522,17 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DocumentType) {
                 obj.ictyp = newMainInfo.DocumentType;
               } else {
-                obj.ictyp = userDetail.document_type_id;
+                obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
               if (newMainInfo.DocumentTypeValue) {
                 obj.icnum = newMainInfo.DocumentTypeValue;
               } else {
-                obj.icnum = userDetail.passport_no;
+                obj.icnum = this.resetValueInValid(userDetail.passport_no);
               }
               if (newMainInfo.PlaceOfIssue) {
                 obj.isspl = newMainInfo.PlaceOfIssue;
               } else {
-                obj.isspl = userDetail.place_of_issue;
+                obj.isspl = this.resetValueInValid(userDetail.place_of_issue);
               }
             }
             if (newMainInfo.PlaceOfIssue) {
@@ -492,12 +540,12 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DocumentType) {
                 obj.ictyp = newMainInfo.DocumentType;
               } else {
-                obj.ictyp = userDetail.document_type_id;
+                obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
               if (newMainInfo.DocumentTypeValue) {
                 obj.icnum = newMainInfo.DocumentTypeValue;
               } else {
-                obj.icnum = userDetail.passport_no;
+                obj.icnum = this.resetValueInValid(userDetail.passport_no);
               }
             }
             return [obj];
@@ -518,9 +566,6 @@ class PersonalInfoEdit extends React.Component {
       const race = this.prepareRaceToSap(data);
       const cont = this.prepareContactToSap(data);
       const docu = this.prepareDocumentToSap(data);
-
-      console.log("====================");
-      console.log(cont);
 
       if (info != null) {
         model.information = info;

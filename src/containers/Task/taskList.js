@@ -139,10 +139,10 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
-                    const isShowEditButton = task.status == 2 ? false : true;
+                    const isShowEditButton = (task.status == 2 && this.props.page == "approval") ? false : true;
                     return (
                         <tr key={index}>
-                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>
+                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name} className="task-title">{task.name}</a></th>
                             <td>{this.getTaskCode(task.id)}</td>
                             <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
