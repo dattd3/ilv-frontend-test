@@ -170,26 +170,26 @@ class PersonalInfoEdit extends React.Component {
         bodyFormData.append('Files', fileSelected[key]);
       }
 
-      // axios({
-      //   method: 'POST',
-      //   url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`,
-      //   data: bodyFormData,
-      //   headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
-      // })
-      // .then(response => {
-      //   this.setState({isShowModalConfirm: false});
-      //   if (response && response.data && response.data.result) {
-      //     const code = response.data.result.code;
-      //     if (code == "999") {
-      //       this.handleShowResultModal("Lỗi", response.data.result.message);
-      //     } else {
-      //       this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
-      //     }
-      //   }
-      // })
-      // .catch(response => {
-      //   this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
-      // });
+      axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`,
+        data: bodyFormData,
+        headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+      })
+      .then(response => {
+        this.setState({isShowModalConfirm: false});
+        if (response && response.data && response.data.result) {
+          const code = response.data.result.code;
+          if (code == "999") {
+            this.handleShowResultModal("Lỗi", response.data.result.message);
+          } else {
+            this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
+          }
+        }
+      })
+      .catch(response => {
+        this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
+      });
     }
 
     resetValueInValid = value => {
