@@ -45,7 +45,7 @@ class RegistrationComponent extends React.Component {
             <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
                 <BusinessTrip/>
             </Tab>
-            <Tab eventKey="ShiftWorkRegistration" title={'Đăng ký phân ca'}>
+            <Tab eventKey="ShiftWorkRegistration" title={'Thay đổi phân ca'}>
                 <ShiftWork/>
             </Tab>
             <Tab eventKey="InOutTimeUpdate" title={'Sửa giờ vào-ra'}>

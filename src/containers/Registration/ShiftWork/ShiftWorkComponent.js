@@ -32,7 +32,9 @@ class ShiftWorkComponent extends React.Component {
     render() {
       return (
       <div className="shift-work">
-        Đăng ký phân ca
+        <div className="box">
+          Thay đổi phân ca
+        </div>
       </div>
       )
     }
