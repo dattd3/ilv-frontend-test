@@ -4,41 +4,84 @@
         border-radius: 10px;
         padding: 20px;
         background-color: #fff;
+        margin: 15px 0;
+
+        p {
+            margin: 10px 0;
+        }
+
+        .box-time {
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+
+            .row {
+                line-height: 40px;
+            }
+        }
+    }
+
+    .input-container {
+        position:relative;
+
+        label, .react-datepicker-wrapper {
+            width: 100%;
+        }
+
+        .input {
+            margin:0;
+            padding-right: 50px;
+            width: 100%;
+        }
+        .input-img {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+        i {
+            font-size: 20px;
+            font-weight: 100;
+        }
+    }
+
+    .nav {
+        a {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+    }
+
+    .file-name {
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        border-radius: 5px;
+
+        .remove {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            opacity: 0.6;
+        }
+    }
+
+    .list-inline-item {
+        margin: 15px 15px 15px 0;
     }
 
     .leave-of-absence {
         .summary {
             .item {
-                background-color: #dedede;
+                border: 1px solid #ddd;
+                background-color: #fff;
                 border-radius: 10px;
                 padding: 10px;
                 text-align: center;
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            }
-        }
-
-        .input-container {
-            position:relative;
-
-            label, .react-datepicker-wrapper {
-                width: 100%;
-            }
-
-            .input {
-                margin:0;
-                padding-right: 50px;
-                width: 100%;
-            }
-            .input-img {
-                position: absolute;
-                bottom: 15px;
-                right: 0;
-                width: 24px;
-                height: 24px;
-            }
-            i {
-                font-size: 20px;
-                font-weight: 100;
             }
         }
     }
