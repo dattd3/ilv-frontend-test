@@ -130,6 +130,9 @@ class TaskList extends React.Component {
                 <tr>
                     <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
                     <th scope="col" className="code">Mã yêu cầu</th>
+                    {
+                        this.props.page == "approval" ? <th scope="col" className="user-request">Người yêu cầu</th> : null
+                    }
                     <th scope="col" className="request-type">Loại yêu cầu</th>
                     <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
                     <th scope="col" className="approval-date">Thời gian phê duyệt</th>
@@ -139,11 +142,27 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
-                    const isShowEditButton = (task.status == 2 && this.props.page == "approval") ? false : true;
+                    let isShowEditButton = true;
+                    if (this.props.page == "approval") {
+                        isShowEditButton = false;
+                    } else {
+                        if (task.status == 2) {
+                            isShowEditButton = false;
+                        } else {
+                            isShowEditButton = true;
+                        }
+                    }
+                    let userId = "";
+                    if (task.userId) {
+                        userId = task.userId.split("@")[0];
+                    }
                     return (
                         <tr key={index}>
                             <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name} className="task-title">{task.name}</a></th>
                             <td>{this.getTaskCode(task.id)}</td>
+                            {
+                                this.props.page == "approval" ? <th>{userId}</th> : null
+                            }
                             <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
                             <td><Moment format="DD/MM/YYYY">{task.approvalDate}</Moment></td>

@@ -89,7 +89,12 @@ class EducationComponent extends React.Component {
 
     updateParrent (name, newUserEducation) {
       if (name == 'userEducation') {
-        this.props.addEducation(newUserEducation)
+        let tempNewUserEducation = [...newUserEducation];
+        [tempNewUserEducation || []].forEach((element, index) => {
+          tempNewUserEducation[index].university_name = "";
+          // tempNewUserEducation[index].school_id = "";
+        });
+        this.props.updateEducation(tempNewUserEducation)
       } else {
         this.props.addEducation(newUserEducation)
       }
@@ -116,7 +121,6 @@ class EducationComponent extends React.Component {
         const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } } )
         const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } } )
         const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school =>  { return { value: school.ID, label: school.TEXT } } )
-
         return <Row className="info-value">
             <Col xs={12} md={6} lg={3}>
                 <div>
