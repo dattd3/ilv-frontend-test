@@ -9,6 +9,10 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 
+const fullName = localStorage.getItem('fullName');
+const position = localStorage.getItem('jobTitle');
+const department = localStorage.getItem('department');
+
 class PersonalInfoEdit extends React.Component {
     constructor() {
         super();
@@ -40,7 +44,11 @@ class PersonalInfoEdit extends React.Component {
             educations: [],
             OldMainInfo: {},
             NewMainInfo: {},
-            data: {},
+            data: {
+              fullName: fullName || "",
+              position: position || "",
+              department: department || ""
+            },
             isShowModalConfirm: false,
             isShowResultConfirm: false,
             modalTitle: "",
@@ -105,24 +113,58 @@ class PersonalInfoEdit extends React.Component {
       })
     }
 
-    updatePersonalInfo(name, old, value) {
+    updatePersonalInfo(name, old, value, textOld, textNew) {
+      const textForSelectOption = name + "Text";
+      let oldMainInfo = {};
+      let newMainInfo = {};
+      if (textOld != null && textOld != "" && textNew != null && textNew != "") {
+        oldMainInfo = { ...this.state.OldMainInfo, [name]: old, [textForSelectOption]: textOld };
+        newMainInfo = { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: textNew };
+      } else {
+        oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+        newMainInfo = { ...this.state.NewMainInfo, [name]: value };
+      }
+      let userProfileHistoryMainInfo = {
+        ...this.state.userProfileHistoryMainInfo,
+        OldMainInfo: oldMainInfo,
+        NewMainInfo: newMainInfo
+      };
+
+      let updatedData = {
+        ...this.state.update,
+        userProfileHistoryMainInfo: userProfileHistoryMainInfo
+      };
       this.setState({
-        OldMainInfo: { ...this.state.OldMainInfo, [name]: old },
-        NewMainInfo: { ...this.state.NewMainInfo, [name]: value }
-      }, () => {
-        this.setState({
-          userProfileHistoryMainInfo : {
-            ...this.state.userProfileHistoryMainInfo,
-            OldMainInfo: this.state.OldMainInfo,
-            NewMainInfo: this.state.NewMainInfo
-        }}, () => {
-          this.setState({ update : { ...this.state.update, userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo }}, () => {
-            this.setState({data : { ...this.state.data, update: this.state.update }});
-            let personalUpdating = Object.assign(this.state.personalUpdating, this.state.userProfileHistoryMainInfo)
-            this.setState({ personalUpdating: personalUpdating })
-          })
-        });
+        data: {
+          ...this.state.data,
+          update: updatedData
+        },
+        update: updatedData,
+        userProfileHistoryMainInfo: userProfileHistoryMainInfo,
+        NewMainInfo: newMainInfo,
+        OldMainInfo: oldMainInfo
       });
+      let personalUpdating = Object.assign(this.state.personalUpdating, userProfileHistoryMainInfo);
+      this.setState({ personalUpdating: personalUpdating });
+
+      // const textForSelectOption = name + "Text";
+      // this.setState({
+      //   OldMainInfo: { ...this.state.OldMainInfo, [name]: old, text != "" ? [textForSelectOption]: "111" : null },
+      //   NewMainInfo: { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: "111" }
+      // }, () => {
+      //   this.setState({
+      //     userProfileHistoryMainInfo : {
+      //       ...this.state.userProfileHistoryMainInfo,
+      //       OldMainInfo: this.state.OldMainInfo,
+      //       NewMainInfo: this.state.NewMainInfo
+      //   }}, () => {
+      //     this.setState({ update : { ...this.state.update, userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo }}, () => {
+      //       this.setState({data : { ...this.state.data, update: this.state.update }});
+      //       let personalUpdating = Object.assign(this.state.personalUpdating, this.state.userProfileHistoryMainInfo)
+      //       this.setState({ personalUpdating: personalUpdating })
+      //     })
+      //   });
+      // });
     }
 
     removePersonalInfo(name) {

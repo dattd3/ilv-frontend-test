@@ -25,7 +25,8 @@ class PersonalInfoEdit extends React.Component {
       isShowModalConfirm: false,
       modalTitle: "",
       modalMessage: "",
-      typeRequest: 1
+      typeRequest: 1,
+      userInfo: {}
     }
   }
 
@@ -139,6 +140,18 @@ class PersonalInfoEdit extends React.Component {
     this.setState({isShowModalConfirm: false});
   }
 
+  processUserInfo = (response) => {
+    if (response && response.data && response.data.userProfileInfo) {
+      const info = response.data.userProfileInfo;
+      const obj = {
+        fullName: info.fullName,
+        position: info.position,
+        department: info.department
+      }
+      this.setState({userInfo : obj});
+    }
+  }
+
   componentDidMount() {
     let config = {
       headers: {
@@ -155,6 +168,7 @@ class PersonalInfoEdit extends React.Component {
           // this.processFamilyInfo(response);
           this.processMainInfo(response);
           this.processDocumentInfo(response);
+          this.processUserInfo(response);
         }
       }).catch(error => {
         console.log(error);
@@ -166,7 +180,34 @@ class PersonalInfoEdit extends React.Component {
         <>
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
         userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
+        <div className="edit-personal"><h4 className="title text-uppercase">Thông tin cá nhân</h4></div>
         <div className="edit-personal detail-page">
+          <div className="box shadow">
+              <div className="row item-info">
+                <div className="col-2">
+                    <div className="label">Họ và tên</div>
+                </div>
+                <div className="col-10">
+                  <div className="detail">{this.state.userInfo.fullName}</div>
+                </div>
+              </div>
+              <div className="row item-info">
+                <div className="col-2">
+                    <div className="label">Chức danh</div>
+                </div>
+                <div className="col-10">
+                  <div className="detail">{this.state.userInfo.position}</div>
+                </div>
+              </div>
+              <div className="row item-info">
+                <div className="col-2">
+                    <div className="label">Bộ phận</div>
+                </div>
+                <div className="col-10">
+                    <div className="detail">{this.state.userInfo.department}</div>
+                </div>
+              </div>
+            </div>
           {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
           {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
           {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
