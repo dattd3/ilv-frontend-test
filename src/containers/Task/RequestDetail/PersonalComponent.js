@@ -24,55 +24,12 @@ class PersonalComponent extends React.Component {
     }
 
     async componentDidMount() {
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
-        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
-        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
-        const requestProfile = axios.get(profileEndpoint, config);
-        const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
-
-        await axios.all([requestProfile, requestPersonalInfo]).then(axios.spread((...responses) => {
-            this.processProfile(responses[0]);
-            this.processPersonalInfo(responses[1]);
-        })).catch(errors => {
-            console.log(errors);
-        })
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.props.countryId}`, config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                    const data = res.data.data;
-                    this.props.dispatch(actions.updateProvinceAction({
-                        provinces: data
-                    }));
-                }
-            }).catch(error => {
-
-            })
+       
     }
 
     //#region ======== private function  ================
 
-    processProfile = (res) => {
-        if (res && res.data && res.data.data) {
-            let userProfile = res.data.data[0];
-            this.props.setState({ userProfile: userProfile })
-        }
-    }
-
-    processPersonalInfo = (res) => {
-        if (res && res.data && res.data.data) {
-            let userDetail = res.data.data[0];
-            this.props.dispatch(actions.updateInformationDataAction(userDetail));
-            this.props.setState({ userDetail: userDetail });
-        }
-    }
-
+   
     isNotNull(input) {
         if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
             return true;
@@ -164,7 +121,7 @@ class PersonalComponent extends React.Component {
             case "Ethinic":
                 return "race_id";
             case "Religion":
-                return "religion";
+                return "religion_id";
             case "BirthProvince":
                 return "province_id";
             case "Nationality":
@@ -533,7 +490,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         userDetailEdited : state.requestDetail.information, 
         provinces: state.requestDetail.provinces,
-        countryId: state.requestDetail.information.country_id,
+        //countryId: state.requestDetail.information.country_id,
         isAddressEdit: state.requestDetail.information.isAddressEdit,
         isTmpAddressEdit: state.requestDetail.information.isTmpAddressEdit
     };
