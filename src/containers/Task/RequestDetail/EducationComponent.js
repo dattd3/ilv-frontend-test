@@ -20,16 +20,6 @@ class EducationComponent extends React.Component {
   }
 
   componentDidMount() {
-    // let config = {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-    //     'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-    //     'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-    //   }
-    // }
-  }
-
-  componentDidMount() {
     let config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -70,7 +60,6 @@ class EducationComponent extends React.Component {
       });
   }
 
-  itemHeader = () => {
   isNotNull(input) {
     return input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== ''
   }
@@ -143,65 +132,54 @@ class EducationComponent extends React.Component {
     </Row>
   }
 
-  educationItem = (item, type) => {
-    return <Row className={`info-value ${type}`}>
   educationInput(item, index, name) {
     const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.props.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
 
     return <Row className="info-value">
-      <Col xs={12} md={6} lg={3}>
-        <div className="detail">
-          {item.SchoolName ? item.SchoolName : ""}
-        <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
-        </div>
-      </Col>
-      <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.DegreeName}</div>
-      <Col xs={12} md={6} lg={3}>
-        <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
-        </div>
-        <div className="form-inline float-right">
-          <label className="mr-3">Khác: </label>
-          <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''} />
-        </div>
-      </Col>
-      <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.Major}</div>
-        <div>
-          <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
-        </div>
-      </Col>
-      <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.FromTime}</div>
-      <Col xs={12} md={6} lg={3}>
-        <div className="input-container">
-          <label>
-            <DatePicker
-              name="from_time"
-              key="from_time"
-              selected={item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
-              onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
-              dateFormat="dd-MM-yyyy"
-              locale="vi"
-              className="form-control date" />&nbsp;-&nbsp;
-                          <DatePicker
-              name="to_time"
-              key="to_time"
-              selected={item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
-              onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
-              dateFormat="dd-MM-yyyy"
-              locale="vi"
-              className="form-control date" />
-          </label>
-        </div>
-      </Col>
-      <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.ToTime}</div>
-    </Row>
+            <Col xs={12} md={6} lg={3}>
+                <div>
+                  <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)}/>
+                </div>
+            </Col>
+            <Col xs={12} md={6} lg={3}>
+                <div className="mb-3">
+                  <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)}/>
+                </div>
+                <div className="form-inline float-right">
+                  <label className="mr-3">Khác: </label>
+                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''}/>
+                </div>
+            </Col>
+            <Col xs={12} md={6} lg={3}>
+                <div>
+                  <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)}/>
+                </div>
+            </Col>
+            <Col xs={12} md={6} lg={3}>
+                <div className="input-container">
+                  <label>
+                      <DatePicker 
+                          name="from_time" 
+                          key="from_time"
+                          selected={item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+                          onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
+                          dateFormat="dd-MM-yyyy"
+                          locale="vi"
+                          className="form-control date"/>&nbsp;-&nbsp;
+                          <DatePicker 
+                          name="to_time" 
+                          key="to_time"
+                          selected={item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+                          onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
+                          dateFormat="dd-MM-yyyy"
+                          locale="vi"
+                          className="form-control date"/>
+                  </label>
+                </div>
+            </Col>
+        </Row>
   }
 
   educationItem(item) {
@@ -240,21 +218,8 @@ class EducationComponent extends React.Component {
         <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
         <div className="box shadow">
             <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
-            <span className="mr-5"><i className="note note-new"></i> Thông tin điều chỉnh</span>
-            <span><i className="note note-create"></i> Thông tin mới</span>
+            <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
             <hr/>
-            {(userEducationUpdate || []).map((item, i) => {
-              return <div className="item" key={i}>
-                {this.itemHeader()}
-                {item.OldEducation ? this.educationItem(item.OldEducation, "old") : null}
-                {item.NewEducation ? this.educationItem(item.NewEducation, "new") : null}
-              </div>
-            })}
-            {(userEducationCreate || []).map((item, i) => {
-              return <div className="clearfix new-item" key={i}>
-          <span className="mr-5"><i className="note note-old"></i> Thông tin cũ </span>
-          <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
-          <hr />
 
           {this.props.education.map((item, i) => {
             return <div className="item" key={i}>
@@ -271,12 +236,8 @@ class EducationComponent extends React.Component {
               <div className="float-left input-table">
                 <div key={i}>
                     {this.itemHeader()}
-                    {this.educationItem(item, 'create')}
-                  {this.itemHeader()}
                   {this.educationInput(item, i, 'newEducation')}
                 </div>
-            </div> 
-            })}
               </div>
               <div className="float-left remove">
                 <button type="button" onClick={this.removeEducation.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
@@ -290,8 +251,6 @@ class EducationComponent extends React.Component {
     )
   }
 }
-export default EducationComponent
-
 const mapStateToProps = (state, ownProps) => {
   return {
     ...state.requestDetail,
