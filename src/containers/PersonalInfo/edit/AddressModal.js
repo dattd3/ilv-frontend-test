@@ -11,25 +11,25 @@ class AddressModal extends React.Component {
             provinces: [],
             districts: [],
             wards: [],
-            street_name: "",
+            street_name: props.street_name,
             address: {
                 main: {
-                    streetName: props.street_name,
+                    streetName: "",
                     wardName: "",
                     districtName: "",
                     provinceName: "",
-                    wardId: "",
-                    districtId: "",
-                    provinceId: ""
+                    wardId: props.ward_id,
+                    districtId: props.district_id,
+                    provinceId: props.province_id
                 },
                 temp: {
-                    streetName: props.street_name,
+                    streetName: "",
                     wardName: "",
                     districtName: "",
                     provinceName: "",
-                    wardId: "",
-                    districtId: "",
-                    provinceId: ""
+                    wardId: props.ward_id,
+                    districtId: props.district_id,
+                    provinceId: props.province_id
                 }
             }
         }
@@ -45,7 +45,7 @@ class AddressModal extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (nextProps.street_name !== this.props.street_name) {
             this.setState({ street_name: nextProps.street_name })
         }
@@ -158,12 +158,12 @@ class AddressModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="row mb-2">
-                            <div className="col-5">
-                                Quốc gia
-                            </div>
-                            <div className="col-7">
+                        <div className="col-5">
+                            Quốc gia
+                        </div>
+                        <div className="col-7">
                             <Select options={countries} onChange={this.handleChange.bind(this, 'country_id')} value={countries.filter(c => c.value == this.props.country_id)}/>
-                            </div>
+                        </div>
                     </div>
                     <div className="row mb-2">
                         <div className="col-5">

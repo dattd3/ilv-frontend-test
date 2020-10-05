@@ -60,49 +60,49 @@ class PersonalInfoEdit extends React.Component {
       }
   
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/profileinfobase`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const data = res.data.data
-            const banks = data.filter(d => d.TYPE === 'BANK')
-            const nations = data.filter(d => d.TYPE === 'NATION')
-            const countries = data.filter(d => d.TYPE === 'COUNTRY')
-            const educationLevels = data.filter(d => d.TYPE === 'EDUCATION_LEVEL')
-            const races = data.filter(d => d.TYPE === 'RACE')
-            const certificates = data.filter(d => d.TYPE === 'CERTIFICATE')
-            const genders = data.filter(d => d.TYPE === 'GENDER')
-            const majors = data.filter(d => d.TYPE === 'MAJOR')
-            const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
-            const religions = data.filter(d => d.TYPE === 'RELIGION')
-            const schools = data.filter(d => d.TYPE === 'SCHOOL')
-            const documentTypes = data.filter(d => d.TYPE === 'PERSONALDOCUMENT')
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const data = res.data.data
+          const banks = data.filter(d => d.TYPE === 'BANK')
+          const nations = data.filter(d => d.TYPE === 'NATION')
+          const countries = data.filter(d => d.TYPE === 'COUNTRY')
+          const educationLevels = data.filter(d => d.TYPE === 'EDUCATION_LEVEL')
+          const races = data.filter(d => d.TYPE === 'RACE')
+          const certificates = data.filter(d => d.TYPE === 'CERTIFICATE')
+          const genders = data.filter(d => d.TYPE === 'GENDER')
+          const majors = data.filter(d => d.TYPE === 'MAJOR')
+          const marriages = data.filter(d => d.TYPE === 'MARRIAGE')
+          const religions = data.filter(d => d.TYPE === 'RELIGION')
+          const schools = data.filter(d => d.TYPE === 'SCHOOL')
+          const documentTypes = data.filter(d => d.TYPE === 'PERSONALDOCUMENT')
 
-            this.setState({
-              banks: banks, 
-              nations: nations, 
-              races: races, 
-              certificates: certificates, 
-              countries: countries, 
-              educationLevels: educationLevels, 
-              genders: genders, 
-              majors: majors,
-              marriages: marriages,
-              religions: religions,
-              schools: schools,
-              documentTypes: documentTypes
-             })
-          }
-        }).catch(error => {
-          
-        })
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              this.setState({ userEducation: res.data.data });
-            }
-          }).catch(error => {
-
+          this.setState({
+            banks: banks, 
+            nations: nations, 
+            races: races, 
+            certificates: certificates, 
+            countries: countries, 
+            educationLevels: educationLevels, 
+            genders: genders, 
+            majors: majors,
+            marriages: marriages,
+            religions: religions,
+            schools: schools,
+            documentTypes: documentTypes
           })
+        }
+      }).catch(error => {
+        
+      })
+
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          this.setState({ userEducation: res.data.data });
+        }
+      }).catch(error => {
+
+      })
     }
 
     updatePersonalInfo(name, old, value) {
@@ -170,26 +170,26 @@ class PersonalInfoEdit extends React.Component {
         bodyFormData.append('Files', fileSelected[key]);
       }
 
-      axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`,
-        data: bodyFormData,
-        headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
-      })
-      .then(response => {
-        this.setState({isShowModalConfirm: false});
-        if (response && response.data && response.data.result) {
-          const code = response.data.result.code;
-          if (code == "999") {
-            this.handleShowResultModal("Lỗi", response.data.result.message);
-          } else {
-            this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
-          }
-        }
-      })
-      .catch(response => {
-        this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
-      });
+      // axios({
+      //   method: 'POST',
+      //   url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`,
+      //   data: bodyFormData,
+      //   headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+      // })
+      // .then(response => {
+      //   this.setState({isShowModalConfirm: false});
+      //   if (response && response.data && response.data.result) {
+      //     const code = response.data.result.code;
+      //     if (code == "999") {
+      //       this.handleShowResultModal("Lỗi", response.data.result.message);
+      //     } else {
+      //       this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
+      //     }
+      //   }
+      // })
+      // .catch(response => {
+      //   this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
+      // });
     }
 
     resetValueInValid = value => {
@@ -442,6 +442,7 @@ class PersonalInfoEdit extends React.Component {
             obj.slart = newEducation.DegreeType;
             obj.zausbi = newEducation.MajorCode;
             obj.zinstitute = newEducation.SchoolCode;
+            obj.zortherinst = newEducation.SchoolName;
             listObj = [...listObj, obj];
           }
         }
@@ -455,7 +456,7 @@ class PersonalInfoEdit extends React.Component {
         obj.actio = "INS";
         obj.pernr = localStorage.getItem('employeeNo');
         obj.begda = moment(educations.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
-        obj.endda = moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD');
+        obj.endda = educations.ToTime ? moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
         obj.slart = educations.DegreeType;
         obj.zausbi = educations.MajorCode;
         obj.zinstitute = educations.SchoolCode;
@@ -622,15 +623,17 @@ class PersonalInfoEdit extends React.Component {
     }
 
     prepareEducationModel = (data) => {
+      const fromTime = data.from_time;
+      const toTime = data.to_time;
       return {
         SchoolCode: data.school_id,
         SchoolName: data.university_name || data.other_uni_name,
         DegreeType: data.education_level_id,
         MajorCode: data.major_id,
         MajorName: data.major,
-        FromTime: data.from_time,
-        ToTime: data.to_time
-      }      
+        FromTime: fromTime,
+        ToTime: toTime
+      }
     }
 
     updateEducation(educationNew) {

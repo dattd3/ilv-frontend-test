@@ -453,7 +453,7 @@ class PersonalComponent extends React.Component {
                         title="Địa chỉ tạm trú"
                         show={this.state.isTmpAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
-                        street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.street_name}
+                        street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.tmp_street_name}
                         ward_id={this.state.tempAddress.wardId ? this.state.tempAddress.wardId : this.state.userDetail.tmp_ward_id}
                         district_id={this.state.tempAddress.districtId ? this.state.tempAddress.districtId : this.state.userDetail.tmp_district_id}
                         province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
