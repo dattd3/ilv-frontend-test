@@ -111,7 +111,7 @@ class PersonalComponent extends React.Component {
         })
     }
 
-    handleSelectInputs = (e, name) => {
+    handleSelectInputs = (e, name, textOld) => {
         let val;
         let label;
         if (e != null) {
@@ -130,7 +130,7 @@ class PersonalComponent extends React.Component {
         })
 
         if (val !== this.props.userDetail[this.mappingFields(name)]) {
-            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], val)
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], val, textOld, label)
         } else {
             this.props.removeInfo(name)
         }
@@ -211,15 +211,40 @@ class PersonalComponent extends React.Component {
     updateAddress(name, item, mainAddress) {
         this.setState({mainAddress: mainAddress});
         if (name !== "StreetName") {
-            this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
+            if (name == "Province") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldProvinceName, mainAddress.provinceName); // For select tag
+            }
+            if (name == "District") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldDistrictName, mainAddress.districtName); // For select tag
+            }
+            if (name == "Wards") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldWardName, mainAddress.wardName); // For select tag
+            }
         } else {
-            this.handleUpdateAddressForInput(name, item.target.value, ""); // For input text tag
+            this.handleUpdateAddressForInput(name, item.target.value, "", mainAddress.oldStreetName, mainAddress.streetName); // For input text tag
         }
     }
 
-    handleUpdateAddressForInput = (name, value, prefix) => {
+    updateTmpAddress(name, item, tempAddress) {
+        this.setState({tempAddress: tempAddress});
+        if (name !== "StreetName") {
+            if (name == "Province") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldProvinceName, tempAddress.provinceName); // For select tag
+            }
+            if (name == "District") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldDistrictName, tempAddress.districtName); // For select tag
+            }
+            if (name == "Wards") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldWardName, tempAddress.wardName); // For select tag
+            }
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, "Temp", tempAddress.oldStreetName, tempAddress.streetName); // For input text tag
+        }
+    }
+
+    handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
         if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
-            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value)
+            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
         } else {
             this.props.removeInfo(prefix + name)
         }
@@ -229,15 +254,6 @@ class PersonalComponent extends React.Component {
                 [this.mappingFields(prefix + name)]: value
             }
         })
-    }
-
-    updateTmpAddress(name, item, tempAddress) {
-        this.setState({tempAddress: tempAddress});
-        if (name !== "StreetName") {
-            this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
-        } else {
-            this.handleUpdateAddressForInput(name, item.target.value, "Temp"); // For input text tag
-        }
     }
 
     getDocumentType = (code) => {
@@ -257,6 +273,12 @@ class PersonalComponent extends React.Component {
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
         const documentTypes = this.props.documentTypes.map(d =>  { return { value: d.ID, label: d.TEXT } } )
+        const documentTypeLabel = this.props.documentTypes.filter(item => { return item.ID == this.state.userDetail.document_type_id})
+        let tempDocumentTypeLabel = "";
+        if (documentTypeLabel && documentTypeLabel.length > 0) {
+            tempDocumentTypeLabel = documentTypeLabel[0].TEXT;
+        }
+
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -303,7 +325,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={provinces} 
-                    value={provinces.filter(p => p.value == this.state.userDetail.province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince')} />
+                    value={provinces.filter(p => p.value == this.state.userDetail.province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                 </div>
             </div>
 
@@ -316,7 +338,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Gender" placeholder="Lựa chọn giới tính" key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
-                    onChange={e => this.handleSelectInputs(e, 'Gender')} />
+                    onChange={e => this.handleSelectInputs(e, 'Gender', (userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ')} />
                 </div>
             </div>
 
@@ -329,7 +351,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Ethinic" placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} 
-                    onChange={e => this.handleSelectInputs(e, "Ethinic")} />
+                    onChange={e => this.handleSelectInputs(e, "Ethinic", userDetail.ethinic || "")} />
                 </div>
             </div>
 
@@ -342,7 +364,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
-                    value={religions.filter(r => r.value == (this.state.userDetail.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion")} />
+                    value={religions.filter(r => r.value == (this.state.userDetail.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion || 'Không')} />
                 </div>
             </div>
 
@@ -355,7 +377,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6 form-inline">
                     <Select name="DocumentTypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
-                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTypeId")} /> 
+                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTypeId", tempDocumentTypeLabel)} /> 
                     <input className="form-control w-50" name="DocumentTypeValue" type="text" value={this.state.userDetail.passport_no || ""} 
                     onChange={this.handleTextInputChange.bind(this)} />
                 </div>
@@ -407,7 +429,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.country_id)} 
-                    onChange={e => this.handleSelectInputs(e, 'Nationality')} />
+                    onChange={e => this.handleSelectInputs(e, 'Nationality', userDetail.nationality || "")} />
                 </div>
             </div>
 
@@ -424,9 +446,13 @@ class PersonalComponent extends React.Component {
                         show={this.state.isAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isAddressEdit')}
                         street_name={this.state.mainAddress.streetName ? this.state.mainAddress.streetName : this.state.userDetail.street_name}
+                        street_name_old={this.state.userDetail.street_name}
                         ward_id={this.state.mainAddress.wardId ? this.state.mainAddress.wardId : this.state.userDetail.ward_id}
+                        ward_name={this.state.userDetail.wards}
                         district_id={this.state.mainAddress.districtId ? this.state.mainAddress.districtId : this.state.userDetail.district_id}
+                        district_name={this.state.userDetail.district}
                         province_id={this.state.mainAddress.provinceId ? this.state.mainAddress.provinceId : this.state.userDetail.province_id}
+                        province_name={this.state.userDetail.province}
                         country_id={this.state.userDetail.country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
@@ -454,9 +480,13 @@ class PersonalComponent extends React.Component {
                         show={this.state.isTmpAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                         street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.tmp_street_name}
+                        street_name_old={this.state.userDetail.tmp_street_name}
                         ward_id={this.state.tempAddress.wardId ? this.state.tempAddress.wardId : this.state.userDetail.tmp_ward_id}
+                        ward_name={this.state.userDetail.tmp_wards}
                         district_id={this.state.tempAddress.districtId ? this.state.tempAddress.districtId : this.state.userDetail.tmp_district_id}
+                        district_name={this.state.userDetail.tmp_district}
                         province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
+                        province_name={this.state.userDetail.tmp_province}
                         country_id={this.state.userDetail.tmp_country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
@@ -480,7 +510,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" options={marriages} 
-                    value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus')} />
+                    value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage ? marriage.TEXT : null)} />
                 </div>
             </div>
             <div className="row">
@@ -544,7 +574,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select placeholder="Lựa chọn ngân hàng" name="Bank" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
-                    onChange={e => this.handleSelectInputs(e, 'Bank')} />
+                    onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
                 </div>
             </div>
         </div>

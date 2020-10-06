@@ -128,12 +128,12 @@ class TaskList extends React.Component {
             <table className="table table-borderless table-hover table-striped shadow">
             <thead>
                 <tr>
-                    <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
                     <th scope="col" className="code">Mã yêu cầu</th>
+                    <th scope="col" className="request-type">Loại yêu cầu</th>
+                    <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
                     {
                         this.props.page == "approval" ? <th scope="col" className="user-request">Người yêu cầu</th> : null
                     }
-                    <th scope="col" className="request-type">Loại yêu cầu</th>
                     <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
                     <th scope="col" className="approval-date">Thời gian phê duyệt</th>
                     <th scope="col" className="status">Trạng thái</th>
@@ -158,12 +158,12 @@ class TaskList extends React.Component {
                     }
                     return (
                         <tr key={index}>
-                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name} className="task-title">{task.name}</a></th>
-                            <td>{this.getTaskCode(task.id)}</td>
+                            <td><a href={this.getLinkUserProfileHistory(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                            <td>{task.requestType.name}</td>
+                            <th>{task.name}</th>
                             {
                                 this.props.page == "approval" ? <th>{userId}</th> : null
                             }
-                            <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
                             <td><Moment format="DD/MM/YYYY">{task.approvalDate}</Moment></td>
                             <td className="status">{this.showStatus(task.id, task.status)}</td>

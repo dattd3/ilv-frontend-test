@@ -1,62 +1,55 @@
 import React from 'react'
 import axios from 'axios'
+import AddressModal from '../../PersonalInfo/edit/AddressModal'
+import Select from 'react-select'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import moment from 'moment'
+import vi from 'date-fns/locale/vi'
+import { connect } from 'react-redux'
+import * as actions from '../../../actions'
+
+registerLocale("vi", vi)
 
 class PersonalComponent extends React.Component {
-    constructor(props) {
+    constructor() {
         super();
-        // this.state = {
-        //     userDetail: {}
-        // }
-    }
-
-    componentDidMount() {
-        
-    }
-
-    // isNotNull(input) {
-    //     if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-    //       return true;
-    //     }
-    //     return false;
-    // }
-
-    getLabel = (key) => {
-        switch (key) {
-            case "Birthday":
-                return "Ngày sinh";
-            case "BirthProvince":
-                return "Nơi sinh";
-            case "Gender":
-                return "Giới tính";
-            case "Ethinic":
-                return "Dân tộc";
-            case "Religion":
-                return "Tôn giáo";
-            case "PassportNo":
-                return "Số CMND/CCCD/Hộ chiếu";
-            case "DateOfIssue":
-                return "Ngày cấp";
-            case "PlaceOfIssue":
-                return "Nơi cấp";
-            case "Nationality":
-                return "Quốc tịch";
-            case "MaritalStatus":
-                return "Tình trạng hôn nhân";
-            case "WorkPermitNo":
-                return "Số giấy phép lao động";
-            case "ExpiryDate":
-                return "Ngày hết hạn";
-            case "PersonalEmail":
-                return "Email cá nhân";
-            case "CellPhoneNo":
-                return "Điện thoại di động";
-            case "UrgentContactNo":
-                return "Điện thoại khẩn cấp";
-            case "BankAccountNumber":
-                return "Số tài khoản ngân hàng";
-            case "BankName":
-                return "Tên ngân hàng";
+        this.state = {
+            userDetail: {},
+            isAddressEdit: false,
+            isTmpAddressEdit: false,
+            countryId: '',
+            provinces: []
         }
+    }
+
+    async componentDidMount() {
+       
+    }
+
+    //#region ======== private function  ================
+
+   
+    isNotNull(input) {
+        if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
+            return true;
+        }
+        return false;
+    }
+
+    SummaryAddress(obj) {
+        let result = '';
+        if (typeof (obj) == 'object' && obj.length > 0) {
+            for (let i = 0; i < obj.length; i++) {
+                const element = obj[i];
+                if (this.isNotNull(element)) {
+                    result += element + ', '
+                }
+            }
+        }
+        result = result.trim();
+        if (result.length > 0) { result = result.substring(0, result.length - 1); }
+        return result;
     }
 
     handleTextInputChange(event) {
@@ -64,54 +57,442 @@ class PersonalComponent extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name;
 
-        // if(value !== this.props.userDetail[this.mappingFields(name)]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
-        // this.setState({
-        //     userDetail : {
-        //         ...this.state.userDetail,
-        //         [this.mappingFields(name)]: value
-        //     }
-        // })
+        if (value !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
+        } else {
+            this.props.removeInfo(name)
+        }
+        this.props.dispatch(actions.updateInformationDataAction({
+            [this.mappingFields(name)]: value
+        }));
     }
 
+    handleSelectInputs = (e, name) => {
+        let val;
+        let label;
+        if (e != null) {
+            val = e.value;
+            label = e.label;
+        } else {
+            val = "";
+            label = "";
+        }
+        this.props.dispatch(actions.updateInformationDataAction({
+            [this.mappingFields(name)]: val
+        }));
+
+        if (val !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], val)
+        } else {
+            this.props.removeInfo(name)
+        }
+    }
+
+    handleDatePickerInputChange(dateInput, name) {
+        const date = moment(dateInput).format('DD-MM-YYYY');
+        if (date !== this.props.userDetail[this.mappingFields(name)]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], date)
+        } else {
+            this.props.removeInfo(name)
+        }
+        this.props.dispatch(actions.updateInformationDataAction({
+            [this.mappingFields(name)]: date
+        }));
+    }
+
+    mappingFields = key => {
+        switch (key) {
+            case "Birthday":
+                return "birthday";
+            case "DateOfIssue":
+                return "date_of_issue";
+            case "Gender":
+                return "gender";
+            case "PersonalEmail":
+                return "personal_email";
+            case "CellPhoneNo":
+                return "cell_phone_no";
+            case "UrgentContactNo":
+                return "urgent_contact_no";
+            case "BankAccountNumber":
+                return "bank_number";
+            case "PlaceOfIssue":
+                return "place_of_issue";
+            case "Ethinic":
+                return "race_id";
+            case "Religion":
+                return "religion_id";
+            case "BirthProvince":
+                return "province_id";
+            case "Nationality":
+                return "country_id";
+            case "MaritalStatus":
+                return "marital_status_code";
+            case "Bank":
+                return "bank_name_id";
+            case "DocumentTypeId":
+                return "document_type_id";
+            case "DocumentTypeValue":
+                return "passport_no";
+            case "Province":
+                return "province_id";
+            case "District":
+                return "district_id";
+            case "Wards":
+                return "ward_id";
+            case "TempProvince":
+                return "tmp_province_id";
+            case "TempDistrict":
+                return "tmp_district_id";
+            case "TempWards":
+                return "tmp_ward_id";
+            default: return "";
+        }
+    }
+
+    showModal(name) {
+        this.props.dispatch(actions.updateInformationDataAction({ [name]: true }));
+    }
+
+    hideModal(name) {
+        this.props.dispatch(actions.updateInformationDataAction({ [name]: false }));
+    }
+
+    updateAddress(name, item) {
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, ""); // For input text tag
+        }
+
+    }
+
+    handleUpdateAddressForInput = (name, value, prefix) => {
+        if (value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
+            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value)
+        } else {
+            this.props.removeInfo(prefix + name)
+        }
+        this.props.dispatch(actions.updateInformationDataAction({
+            [this.mappingFields(prefix + name)]: value
+        }));
+    }
+
+    updateTmpAddress(name, item) {
+        if (name !== "StreetName") {
+            this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, "Temp"); // For input text tag
+        }
+    }
+
+    getDocumentType = (code) => {
+        return this.props.documentTypes.filter(e => {
+            return e.ID == code;
+        })
+    }
+    //#endregion
     render() {
-        const userMainInfo = this.props.userMainInfo
+        const userDetail = this.props.userDetail
+        const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.TEXT } })
+        const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
+        const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriage.TEXT } })
+        const nations = this.props.nations.map(nation => { return { value: nation.ID, label: nation.TEXT } })
+        const banks = this.props.banks.map(bank => { return { value: bank.ID, label: bank.TEXT } })
+        const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
+        const provinces = this.props.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
+        const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
+        const documentTypes = this.props.documentTypes.map(d => { return { value: d.ID, label: d.TEXT } })
         return (
             <div className="info">
                 <h4 className="title text-uppercase">Thông tin cá nhân</h4>
                 <div className="box shadow">
                     <div className="row">
-                        <div className="col"><i className="note note-old"></i> Thông tin cũ</div>
-                        <div className="col"><i className="note note-new"></i> Thông tin điều chỉnh</div>
-                    </div>
-                    <hr/>
-                    {
-                        (userMainInfo || []).map((item, i) => {
-                            const key = Object.keys(item)[0];
-                            return <div className="row" key={i}>
-                                <div className="col-2">
-                                    <div className="label">{this.getLabel(key)}</div> 
-                                </div>
-                                <div className="col-4 old">
-                                    <div className="detail">{item[key][0][0]}</div>
-                                </div>
-                                <div className="col-6 new">
-                                    {
-                                        this.props.page == "request" ? 
-                                        <input className="form-control" type="text" name="FullName" value={item[key][0][1] || ""} onChange={this.handleTextInputChange.bind(this)} />
-                                        : <div className="detail">{item[key][0][1]}</div>
-                                    }
-                                </div>
-                            </div>
-                        })
-                    }
+                        <div className="col">
+                            <i className="note note-old"></i> Thông tin cũ
                 </div>
-            </div>
-        )
+                        <div className="col">
+                            <i className="note note-new"></i> Nhập thông tin điều chỉnh
+                </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Ngày sinh</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.birthday || ""}</div>
+                        </div>
+                        <div className="col-6 input-container">
+                            <label>
+                                <DatePicker
+                                    name="Birthday"
+                                    key="Birthday"
+                                    selected={this.props.userDetailEdited.birthday ? moment(this.props.userDetailEdited.birthday, 'DD-MM-YYYY').toDate() : null}
+                                    onChange={birthday => this.handleDatePickerInputChange(birthday, "Birthday")}
+                                    dateFormat="dd-MM-yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Nơi sinh</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.birth_province || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={provinces}
+                                value={provinces.filter(p => p.value == this.props.userDetailEdited.province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince')} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Giới tính</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="Gender" placeholder="Lựa chọn giới tính" key="gender" options={genders} value={genders.filter(g => g.value == this.props.userDetailEdited.gender)}
+                                onChange={e => this.handleSelectInputs(e, 'Gender')} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Dân tộc</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.ethinic || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="Ethinic" placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.props.userDetailEdited.race_id)}
+                                onChange={e => this.handleSelectInputs(e, "Ethinic")} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Tôn giáo</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.religion || 'Không'}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions}
+                                value={religions.filter(r => r.value == (this.props.userDetailEdited.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion")} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Số CMND/CCCD/Hộ chiếu/Giấy phép lao động</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.passport_no || ""}</div>
+                        </div>
+                        <div className="col-6 form-inline">
+                            <Select name="DocumentTypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes}
+                                value={documentTypes.filter(d => d.value == this.props.userDetailEdited.document_type_id)} onChange={e => this.handleSelectInputs(e, "DocumentTypeId")} />
+                            <input className="form-control w-50" name="DocumentTypeValue" type="text" value={this.props.userDetailEdited.passport_no || ""}
+                                onChange={this.handleTextInputChange.bind(this)} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Ngày cấp</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.date_of_issue}</div>
+                        </div>
+                        <div className="col-6 input-container">
+                            <label>
+                                <DatePicker
+                                    name="DateOfIssue"
+                                    key="DateOfIssue"
+                                    selected={this.props.userDetailEdited.date_of_issue ? moment(this.props.userDetailEdited.date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                                    onChange={dateOfIssue => this.handleDatePickerInputChange(dateOfIssue, "DateOfIssue")}
+                                    dateFormat="dd-MM-yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Nơi cấp</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.place_of_issue || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <input className="form-control" name="PlaceOfIssue" type="text" onChange={this.handleTextInputChange.bind(this)}
+                                value={this.props.userDetailEdited.place_of_issue || ""} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Quốc tịch</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.nationality || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.props.userDetailEdited.country_id)}
+                                onChange={e => this.handleSelectInputs(e, 'Nationality')} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Địa chỉ thường trú</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || ""])}</div>
+                        </div>
+                        <div className="col-6">
+                            {this.props.isAddressEdit ? <AddressModal
+                                title="Địa chỉ thường trú"
+                                show={this.props.isAddressEdit}
+                                onHide={this.hideModal.bind(this, 'isAddressEdit')}
+                                street_name={this.props.userDetailEdited.street_name}
+                                ward_id={this.props.userDetailEdited.ward_id}
+                                district_id={this.props.userDetailEdited.district_id}
+                                province_id={this.props.userDetailEdited.province_id}
+                                country_id={this.props.userDetailEdited.country_id}
+                                countries={this.props.countries}
+                                updateAddress={this.updateAddress.bind(this)}
+                            /> : null}
+                            <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.props.userDetailEdited.street_name, this.props.userDetailEdited.wards, this.props.userDetailEdited.district, this.props.userDetailEdited.province])}</div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Địa chỉ tạm trú</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || ""])}</div>
+                        </div>
+                        <div className="col-6">
+                            {this.props.isTmpAddressEdit ? <AddressModal
+                                title="Địa chỉ tạm trú"
+                                show={this.props.isTmpAddressEdit}
+                                onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
+                                street_name={this.props.userDetailEdited.tmp_street_name}
+                                ward_id={this.props.userDetailEdited.tmp_ward_id}
+                                district_id={this.props.userDetailEdited.tmp_district_id}
+                                province_id={this.props.userDetailEdited.tmp_province_id}
+                                country_id={this.props.userDetailEdited.tmp_country_id}
+                                countries={this.props.countries}
+                                updateAddress={this.updateTmpAddress.bind(this)}
+                            /> : null}
+                            <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.props.userDetailEdited.tmp_street_name, this.props.userDetailEdited.tmp_wards, this.props.userDetailEdited.tmp_district, this.props.userDetailEdited.tmp_province])}</div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Tình trạng hôn nhân</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{marriage ? marriage.TEXT : null}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" options={marriages}
+                                value={marriages.filter(m => m.value == this.props.userDetailEdited.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus')} />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Email cá nhân</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.personal_email || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <input className="form-control" name="PersonalEmail" type="text" value={this.props.userDetailEdited.personal_email || ""}
+                                onChange={this.handleTextInputChange.bind(this)} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Điện thoại di động</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.cell_phone_no || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <input className="form-control" name="CellPhoneNo" type="text" value={this.props.userDetailEdited.cell_phone_no || ""}
+                                onChange={this.handleTextInputChange.bind(this)} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Điện thoại khẩn cấp</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <input className="form-control" name="UrgentContactNo" type="text"
+                                value={this.isNotNull(this.props.userDetailEdited.urgent_contact_no) ? this.props.userDetailEdited.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Số TK ngân hàng</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.bank_number || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <input className="form-control" name="BankAccountNumber" type="text" value={this.props.userDetailEdited.bank_number || ""}
+                                onChange={this.handleTextInputChange.bind(this)} />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-2">
+                            <div className="label">Ngân hàng</div>
+                        </div>
+                        <div className="col-4 old">
+                            <div className="detail">{userDetail.bank_name || ""}</div>
+                        </div>
+                        <div className="col-6">
+                            <Select placeholder="Lựa chọn ngân hàng" name="Bank" options={banks} value={banks.filter(b => b.value == this.props.userDetailEdited.bank_name_id)}
+                                onChange={e => this.handleSelectInputs(e, 'Bank')} />
+                        </div>
+                    </div>
+                </div>
+            </div>)
     }
 }
 
-export default PersonalComponent
+const mapStateToProps = (state, ownProps) => {
+    return {
+        userDetailEdited : state.requestDetail.information, 
+        provinces: state.requestDetail.provinces,
+        //countryId: state.requestDetail.information.country_id,
+        isAddressEdit: state.requestDetail.information.isAddressEdit,
+        isTmpAddressEdit: state.requestDetail.information.isTmpAddressEdit
+    };
+  }
+export default connect(mapStateToProps)(PersonalComponent);
