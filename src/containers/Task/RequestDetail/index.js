@@ -166,7 +166,12 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value) {
-    let oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+    debugger;
+    let oldMainInfo = this.state.OldMainInfo;
+    if(this.state.OldMainInfo[name] === undefined){
+      oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+    }
+    
     let newMainInfo = { ...this.state.NewMainInfo, [name]: value };
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
@@ -384,7 +389,6 @@ class PersonalInfoEdit extends React.Component {
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
       .then(response => {
-        console.log(response);
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
@@ -454,10 +458,6 @@ class PersonalInfoEdit extends React.Component {
     //       educations: [...educationNew]
     //     }
     // });
-    console.log('new ======================');
-    console.log(educationNew);
-    console.log('old ======================');
-    console.log(this.state.userEducation);
   }
 
   addEducation = (value) => {
@@ -469,8 +469,6 @@ class PersonalInfoEdit extends React.Component {
         }
       }
     });
-    console.log('new')
-    console.log(value)
   }
 
   getNameFromData = (data) => {
@@ -687,7 +685,7 @@ class PersonalInfoEdit extends React.Component {
       this.processProfile(responses[0]);
       this.processPersonalInfo(responses[1]);
     })).catch(errors => {
-      console.log(errors);
+
     })
 
     let config = {
@@ -747,9 +745,24 @@ class PersonalInfoEdit extends React.Component {
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) {
           dt.information = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
         }
+        let updatedData = {};
+        let newMainInfo = {};
+        let oldMainInfo = {};
         if (changingData.data.data.userProfileInfo) {
+          if (changingData.data.data.userProfileInfo.update) {
+            updatedData = changingData.data.data.userProfileInfo.update;
+            if (changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo) {
+              oldMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo;
+            }
+            if (changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) {
+              newMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
+            }
+          }
           this.setState({
-            data: changingData.data.data.userProfileInfo
+            data: changingData.data.data.userProfileInfo,
+            update: updatedData,
+            OldMainInfo: oldMainInfo,
+            NewMainInfo: newMainInfo
           });
         }
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation.NewEducation) {

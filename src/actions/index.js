@@ -24,34 +24,6 @@ export function updateProvinceAction(payload) {
     return actionCreator(actionNames.UPDATE_PROVINCE, payload);
 }
 
-export function updateSapDataAddressAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_ADDRESS, payload);
-}
-
-export function updateSapDataInformationAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_INFORMATION, payload);
-}
-
-export function updateSapDataBankAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_BANK, payload);
-}
-
-export function updateSapDataContactAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_CONTACT, payload);
-}
-
-export function updateSapDataDocumentAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_DOCUMENT, payload);
-}
-
-export function updateSapDataRaceAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_RACE, payload);
-}
-
-export function updateSapDataEducationAction(payload) {
-    return actionCreator(actionNames.UPDATE_SAPDATA_EDUCATION, payload);
-}
-
 function actionCreator(type, payload) {
     return {
         type: type,
