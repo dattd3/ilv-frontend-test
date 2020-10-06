@@ -254,10 +254,8 @@ class PersonalInfoEdit extends React.Component {
             }
             if (newMainInfo.Nationality) {
               obj.natio = newMainInfo.Nationality;
-              obj.gblnd = newMainInfo.Nationality;
             } else {
-              obj.natio = this.resetValueInValid(userDetail.country_id);
-              obj.gblnd = this.resetValueInValid(userDetail.country_id);
+              obj.natio = this.resetValueInValid(userDetail.nationality_id);
             }
             if (newMainInfo.BirthProvince) {
               obj.gbdep = newMainInfo.BirthProvince;
@@ -475,6 +473,7 @@ class PersonalInfoEdit extends React.Component {
       }
       if (data && data.create && data.create.educations) {
         let educations = data.create.educations;
+        const schoolCode = educations.SchoolCode;
         let obj = {};
         obj.myvp_id = "";
         obj.user_name = localStorage.getItem('email').split("@")[0];
@@ -484,8 +483,12 @@ class PersonalInfoEdit extends React.Component {
         obj.begda = moment(educations.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
         obj.endda = educations.ToTime ? moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
         obj.slart = educations.DegreeType;
-        obj.zausbi = educations.MajorCode;
-        obj.zinstitute = educations.SchoolCode;
+        obj.zausbi = educations.MajorCode || "";
+        if (this.isNullCustomize(schoolCode)) {
+          obj.zortherinst = educations.SchoolName || "";
+        } else {
+          obj.zinstitute = schoolCode;
+        }
         listObj = [...listObj, obj];
       }
       if (listObj.length > 0) {
@@ -518,7 +521,7 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DateOfIssue) {
                 obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
               } else {
-                obj.fpdat = moment(this.resetValueInValid(userDetail.passport_no), 'DD-MM-YYYY').format('YYYYMMDD')
+                obj.fpdat = moment(this.resetValueInValid(userDetail.date_of_issue), 'DD-MM-YYYY').format('YYYYMMDD')
               }
               if (newMainInfo.PlaceOfIssue) {
                 obj.isspl = newMainInfo.PlaceOfIssue;

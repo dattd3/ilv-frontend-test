@@ -176,6 +176,8 @@ class PersonalComponent extends React.Component {
             case "BirthProvince":
                 return "province_id";
             case "Nationality":
+                return "nationality_id";
+            case "Country":
                 return "country_id";
             case "MaritalStatus":
                 return "marital_status_code";
@@ -428,7 +430,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.nationality || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.country_id)} 
+                    <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)} 
                     onChange={e => this.handleSelectInputs(e, 'Nationality', userDetail.nationality || "")} />
                 </div>
             </div>
