@@ -60,19 +60,33 @@ class PersonalComponent extends React.Component {
             case "Education":
                 return "Bằng cấp/Chứng chỉ chuyên môn";
             case "Province":
+                return "Mã Tỉnh/TP - Địa chỉ thường trú";
+            case "ProvinceText":
                 return "Tỉnh/TP - Địa chỉ thường trú";
             case "District":
+                return "Mã Quận/Huyện - Địa chỉ thường trú";
+            case "DistrictText":
                 return "Quận/Huyện - Địa chỉ thường trú";
             case "Wards":
+                return "Mã Xã/Phường - Địa chỉ thường trú";
+            case "WardsText":
                 return "Xã/Phường - Địa chỉ thường trú";
             case "StreetName":
                 return "Tên đường - Địa chỉ thường trú";
             case "TempProvince":
+                return "Mã Tỉnh/TP - Địa chỉ tạm trú";
+            case "TempProvinceText":
                 return "Tỉnh/TP - Địa chỉ tạm trú";
             case "TempDistrict":
+                return "Mã Quận/Huyện - Địa chỉ tạm trú";
+            case "TempDistrictText":
                 return "Quận/Huyện - Địa chỉ tạm trú";
             case "TempWards":
+                return "Mã Xã/Phường - Địa chỉ tạm trú";
+            case "TempWardsText":
                 return "Xã/Phường - Địa chỉ tạm trú";
+            case "StreetName":
+                return "Tên đường - Địa chỉ thường trú";
             case "TempStreetName":
                 return "Tên đường - Địa chỉ tạm trú";
         }
@@ -80,6 +94,7 @@ class PersonalComponent extends React.Component {
 
     render() {
         const userMainInfo = this.props.userMainInfo;
+
         return (
             <div className="info">
                 <div className="box shadow">
@@ -95,7 +110,7 @@ class PersonalComponent extends React.Component {
                             if (label && !label.includes("Mã")) {
                                 return <div className="row" key={i}>
                                     <div className="col-2">
-                                        <div className="label">{label}</div> 
+                                        <div className="label">{label}</div>
                                     </div>
                                     <div className="col-4 old">
                                         <div className="detail">{item[key][0][0]}</div>

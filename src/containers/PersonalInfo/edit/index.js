@@ -114,7 +114,10 @@ class PersonalInfoEdit extends React.Component {
     }
 
     updatePersonalInfo(name, old, value, textOld, textNew) {
-      const textForSelectOption = name + "Text";
+      let textForSelectOption = name + "Text";
+      if (name == "StreetName" || name == "TempStreetName") {
+        textForSelectOption = name;
+      }
       let oldMainInfo = {};
       let newMainInfo = {};
       if (textOld != null && textOld != "" && textNew != null && textNew != "") {
@@ -146,25 +149,6 @@ class PersonalInfoEdit extends React.Component {
       });
       let personalUpdating = Object.assign(this.state.personalUpdating, userProfileHistoryMainInfo);
       this.setState({ personalUpdating: personalUpdating });
-
-      // const textForSelectOption = name + "Text";
-      // this.setState({
-      //   OldMainInfo: { ...this.state.OldMainInfo, [name]: old, text != "" ? [textForSelectOption]: "111" : null },
-      //   NewMainInfo: { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: "111" }
-      // }, () => {
-      //   this.setState({
-      //     userProfileHistoryMainInfo : {
-      //       ...this.state.userProfileHistoryMainInfo,
-      //       OldMainInfo: this.state.OldMainInfo,
-      //       NewMainInfo: this.state.NewMainInfo
-      //   }}, () => {
-      //     this.setState({ update : { ...this.state.update, userProfileHistoryMainInfo: this.state.userProfileHistoryMainInfo }}, () => {
-      //       this.setState({data : { ...this.state.data, update: this.state.update }});
-      //       let personalUpdating = Object.assign(this.state.personalUpdating, this.state.userProfileHistoryMainInfo)
-      //       this.setState({ personalUpdating: personalUpdating })
-      //     })
-      //   });
-      // });
     }
 
     removePersonalInfo(name) {

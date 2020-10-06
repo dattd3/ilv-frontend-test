@@ -211,15 +211,40 @@ class PersonalComponent extends React.Component {
     updateAddress(name, item, mainAddress) {
         this.setState({mainAddress: mainAddress});
         if (name !== "StreetName") {
-            this.handleUpdateAddressForInput(name, item.value, ""); // For select tag
+            if (name == "Province") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldProvinceName, mainAddress.provinceName); // For select tag
+            }
+            if (name == "District") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldDistrictName, mainAddress.districtName); // For select tag
+            }
+            if (name == "Wards") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldWardName, mainAddress.wardName); // For select tag
+            }
         } else {
-            this.handleUpdateAddressForInput(name, item.target.value, ""); // For input text tag
+            this.handleUpdateAddressForInput(name, item.target.value, "", mainAddress.oldStreetName, mainAddress.streetName); // For input text tag
         }
     }
 
-    handleUpdateAddressForInput = (name, value, prefix) => {
+    updateTmpAddress(name, item, tempAddress) {
+        this.setState({tempAddress: tempAddress});
+        if (name !== "StreetName") {
+            if (name == "Province") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldProvinceName, tempAddress.provinceName); // For select tag
+            }
+            if (name == "District") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldDistrictName, tempAddress.districtName); // For select tag
+            }
+            if (name == "Wards") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldWardName, tempAddress.wardName); // For select tag
+            }
+        } else {
+            this.handleUpdateAddressForInput(name, item.target.value, "Temp", tempAddress.oldStreetName, tempAddress.streetName); // For input text tag
+        }
+    }
+
+    handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
         if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
-            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value)
+            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
         } else {
             this.props.removeInfo(prefix + name)
         }
@@ -229,15 +254,6 @@ class PersonalComponent extends React.Component {
                 [this.mappingFields(prefix + name)]: value
             }
         })
-    }
-
-    updateTmpAddress(name, item, tempAddress) {
-        this.setState({tempAddress: tempAddress});
-        if (name !== "StreetName") {
-            this.handleUpdateAddressForInput(name, item.value, "Temp"); // For select tag
-        } else {
-            this.handleUpdateAddressForInput(name, item.target.value, "Temp"); // For input text tag
-        }
     }
 
     getDocumentType = (code) => {
@@ -262,6 +278,7 @@ class PersonalComponent extends React.Component {
         if (documentTypeLabel && documentTypeLabel.length > 0) {
             tempDocumentTypeLabel = documentTypeLabel[0].TEXT;
         }
+
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -429,9 +446,13 @@ class PersonalComponent extends React.Component {
                         show={this.state.isAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isAddressEdit')}
                         street_name={this.state.mainAddress.streetName ? this.state.mainAddress.streetName : this.state.userDetail.street_name}
+                        street_name_old={this.state.userDetail.street_name}
                         ward_id={this.state.mainAddress.wardId ? this.state.mainAddress.wardId : this.state.userDetail.ward_id}
+                        ward_name={this.state.userDetail.wards}
                         district_id={this.state.mainAddress.districtId ? this.state.mainAddress.districtId : this.state.userDetail.district_id}
+                        district_name={this.state.userDetail.district}
                         province_id={this.state.mainAddress.provinceId ? this.state.mainAddress.provinceId : this.state.userDetail.province_id}
+                        province_name={this.state.userDetail.province}
                         country_id={this.state.userDetail.country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
@@ -459,9 +480,13 @@ class PersonalComponent extends React.Component {
                         show={this.state.isTmpAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                         street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.tmp_street_name}
+                        street_name_old={this.state.userDetail.tmp_street_name}
                         ward_id={this.state.tempAddress.wardId ? this.state.tempAddress.wardId : this.state.userDetail.tmp_ward_id}
+                        ward_name={this.state.userDetail.tmp_wards}
                         district_id={this.state.tempAddress.districtId ? this.state.tempAddress.districtId : this.state.userDetail.tmp_district_id}
+                        district_name={this.state.userDetail.tmp_district}
                         province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
+                        province_name={this.state.userDetail.tmp_province}
                         country_id={this.state.userDetail.tmp_country_id}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
