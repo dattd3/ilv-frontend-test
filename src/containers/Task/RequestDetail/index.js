@@ -166,7 +166,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value) {
-    debugger;
     let oldMainInfo = this.state.OldMainInfo;
     if(this.state.OldMainInfo[name] === undefined){
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
@@ -363,7 +362,6 @@ class PersonalInfoEdit extends React.Component {
     return sapData;
   }
   sendRequest = () => {
-    debugger;
     const updateFields = this.getFieldUpdates();
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));

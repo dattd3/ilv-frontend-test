@@ -9,6 +9,10 @@ class PersonalComponent extends React.Component {
         switch (key) {
             case "Birthday":
                 return "Ngày sinh";
+            case "BirthCountry":
+                return "Mã quốc gia sinh";
+            case "BirthCountryText":
+                return "Quốc gia sinh";
             case "BirthProvince":
                 return "Mã nơi sinh";
             case "BirthProvinceText":
