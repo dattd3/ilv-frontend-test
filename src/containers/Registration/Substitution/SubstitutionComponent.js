@@ -10,15 +10,13 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
-class InOutTimeUpdateComponent extends React.Component {
+class SubstitutionComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: null,
-      endDate: null,
-      timesheets: [
+      substitutions: [
         {
-          date: null,
+          startDate: null,
           startTime: null,
           endTime: null,
           endDate: null,
@@ -53,30 +51,24 @@ class InOutTimeUpdateComponent extends React.Component {
     //   });
   }
 
-  setStartDate(startDate) {
+  setDate(index, startDate) {
+    this.state.substitutions[index].startDate = startDate
     this.setState({
-      startDate: startDate,
-      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? startDate : this.state.endDate
-    })
-  }
-
-  setEndDate(endDate) {
-    this.setState({
-      endDate: endDate
+      substitutions: [ ...this.state.substitutions ]
     })
   }
 
   setStartTime(index, startTime) {
-    this.state.timesheets[index].startTime = startTime
+    this.state.substitutions[index].startTime = startTime
     this.setState({
-      timesheets: [...this.state.timesheets]
+      substitutions: [ ...this.state.substitutions ]
     })
   }
 
   setEndTime(index, endTime) {
-    this.state.timesheets[index].endTime = endTime
+    this.state.substitutions[index].endTime = endTime
     this.setState({
-      timesheets: [...this.state.timesheets]
+      substitutions: [ ...this.state.substitutions ]
     })
   }
 
@@ -93,30 +85,46 @@ class InOutTimeUpdateComponent extends React.Component {
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
 
-    this.state.timesheets[index][name] = value
+    this.state.substitutions[index][name] = value
     this.setState({
-      timesheets: [...this.state.timesheets]
+      substitutions: [ ...this.state.substitutions ]
     })
   }
 
   handleSelectChange(index, name, value) {
-    this.state.timesheets[index][name] = value
+    this.state.substitutions[index][name] = value
     this.setState({
-      timesheets: [...this.state.timesheets]
+      substitutions: [ ...this.state.substitutions ]
     })
+  }
+
+  addSubstitution() {
+    this.setState({substitutions: [...this.state.substitutions, {
+      startDate: null,
+      startTime: null,
+      endTime: null,
+      endDate: null,
+      substitutionType: null,
+      note: null,
+      errors: {}
+    } ] })
+  }
+
+  removeSubstitution(index) {
+      this.setState({ substitutions: [...this.state.substitutions.slice(0, index), ...this.state.substitutions.slice(index + 1) ] })
   }
 
   verifyInput() {
     let errors = {}
     const RequiredFields = ['note', 'startDate', 'startTime', 'endTime', 'substitutionType']
-    this.state.timesheets.forEach((timesheet, index) => {
+    this.state.substitutions.forEach((substitution, index) => {
       RequiredFields.forEach(name => {
-        if (_.isNull(timesheet[name])) {
+        if (_.isNull(substitution[name])) {
           errors[name + index] = '(Bắt buộc)'
         }
       })
     })
-
+    
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
@@ -137,26 +145,30 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const options = [
-      { value: '1', label: '01 ngày' },
-      { value: '2', label: '02 ngày' },
-      { value: '3', label: '03 ngày' }
+    const substitutionTypes = [
+      { value: '01', label: 'Phân ca làm việc' },
+      { value: '02', label: 'Phân ca gãy' },
+      { value: '03', label: 'Phân ca bờ đảo full ngày' }
     ]
     return (
-      <div className="in-out-time-update">
-        <div className="box shadow">
-          <div className="row">
-            <div className="col-4">
-              <p className="title">Từ ngày</p>
-              <div className="content input-container">
+      <div className="shift-work">
+        {this.state.substitutions.map((substitution, index) => {
+          return <div className="box shadow">
+            {this.state.substitutions.length > 1 ? <div className="clearfix">
+              <button type="button" className="close text-danger" data-dismiss="alert" aria-label="Close" onClick={this.removeSubstitution.bind(this, index)}>
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+              </button>
+            </div> : null }
+            <div className="row">
+              <div className="col-6">
+                <p className="title">Ngày thay đổi phân ca</p>
+                <div className="content input-container">
                   <label>
                     <DatePicker
                       name="startDate"
-                      selectsStart
-                      selected={this.state.startDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      onChange={this.setStartDate.bind(this)}
+                      selected={substitution.startDate}
+                      startDate={substitution.startDate}
+                      onChange={this.setDate.bind(this, index)}
                       dateFormat="dd/MM/yyyy"
                       placeholderText="Lựa chọn"
                       locale="vi"
@@ -164,46 +176,22 @@ class InOutTimeUpdateComponent extends React.Component {
                     <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                   </label>
                 </div>
-                {this.error('startDate')}
-            </div>
+                {this.error(index, 'startDate')}
+              </div>
 
-            <div className="col-4">
-              <p className="title">Đến ngày</p>
-              <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="endDate"
-                      selectsEnd
-                      selected={this.state.endDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      minDate={this.state.startDate}
-                      onChange={this.setEndDate.bind(this)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Lựa chọn"
-                      locale="vi"
-                      className="form-control input" />
-                    <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
-                  </label>
+              <div className="col-6">
+                <p className="title">Loại phân ca</p>
+                <div>
+                  <Select name="substitutionType" value={substitution.substitutionType} onChange={substitutionType => this.handleSelectChange(index, 'substitutionType', substitutionType)} placeholder="Lựa chọn" key="timeTotal" options={substitutionTypes} />
                 </div>
-                {this.error('endDate')}
-            </div>
-
-            <div className="col-4">
-              <p className="title">Tìm kiếm ngày</p>
-              <div>
-                <button type="button" class="btn btn-warning w-100">Tìm kiếm</button>
+                {this.error(index, 'substitutionType')}
               </div>
             </div>
-          </div>
-        </div>
-        {this.state.timesheets.map((timesheet, index) => {
-          return <div className="box shadow">
-            <p><i className="fa fa-clock-o"></i> <b>Ngày 25/09/2020</b></p>
-            <div className="row">
+
+            {substitution.startDate ? <div className="row">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thực tế</p>
+                  <p className="text-center">Giờ kế hoạch</p>
                   <div className="row">
                     <div className="col-6">
                       Bắt đầu: <b>09:00:00</b>
@@ -218,7 +206,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Sửa giờ vào ra</p>
+                  <p className="text-center">Giờ phân ca thay đổi</p>
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
@@ -227,7 +215,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime}
+                                selected={substitution.startTime}
                                 onChange={this.setStartTime.bind(this, index)}
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -248,10 +236,10 @@ class InOutTimeUpdateComponent extends React.Component {
                       <div className="row">
                         <div className="col-4">Kết thúc:</div>
                         <div className="col-8">
-                        <div className="content input-container">
+                          <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime}
+                                selected={substitution.endTime}
                                 onChange={this.setEndTime.bind(this, index)}
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -271,26 +259,26 @@ class InOutTimeUpdateComponent extends React.Component {
                   </div>
                 </div>
               </div>
+            </div> : null }
 
-            </div>
-
-            <div className="row">
+            {substitution.startDate ? <div className="row">
               <div className="col-12">
-                <p className="title">Lý do sửa giờ vào - ra</p>
+                <p className="title">Lý do thay đổi phân ca</p>
                 <div>
-                  <textarea class="form-control" value={timesheet.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea class="form-control" value={substitution.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>
-            </div>
-
-          </div>
+            </div> : null }
+          </div> 
         })}
 
-        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors}  updateApprover={this.updateApprover.bind(this)} /> : null }
-        {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null }
-      </div>
+        <button className="btn btn-info shadow" onClick={this.addSubstitution.bind(this)}><i className="fa fa-plus-circle"></i> Thêm</button>
+
+        <ApproverComponent errors={this.state.errors}  updateApprover={this.updateApprover.bind(this)} />
+        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+      </div >
     )
   }
 }
-export default InOutTimeUpdateComponent
+export default SubstitutionComponent

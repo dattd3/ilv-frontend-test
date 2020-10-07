@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
-import ShiftWork from './ShiftWork/ShiftWorkComponent'
+import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
 // import axios from 'axios'
 // import Constants from '../../../commons/Constants'
@@ -45,8 +45,8 @@ class RegistrationComponent extends React.Component {
             <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
                 <BusinessTrip/>
             </Tab>
-            <Tab eventKey="ShiftWorkRegistration" title={'Thay đổi phân ca'}>
-                <ShiftWork/>
+            <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
+                <SubstitutionComponent/>
             </Tab>
             <Tab eventKey="InOutTimeUpdate" title={'Sửa giờ vào-ra'}>
                 <InOutTimeUpdate/>

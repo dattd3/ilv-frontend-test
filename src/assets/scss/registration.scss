@@ -20,6 +20,10 @@
                 line-height: 40px;
             }
         }
+
+        .close {
+            opacity: 1;
+        }
     }
 
     .input-container {
@@ -36,10 +40,22 @@
         }
         .input-img {
             position: absolute;
+            bottom: 5px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .input-clock {
+            position: absolute;
             bottom: 15px;
             right: 0;
             width: 24px;
             height: 24px;
+        }
+
+        label {
+            margin-bottom: 0;
         }
         i {
             font-size: 20px;

@@ -1,5 +1,5 @@
 import React from 'react'
-// import axios from 'axios'
+import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
@@ -21,29 +21,33 @@ class LeaveOfAbsenceComponent extends React.Component {
             absenceType: null,
             note: null,
             approver: null,
+            annualLeaveSummary: null,
             files: [],
             errors: {}
         }
     }
 
     componentDidMount() {
-        //   const config = {
-        //     headers: {
-        //       'Authorization': `${localStorage.getItem('accessToken')}`
-        //     }
-        //   }
-        //   axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/approval`, config)
-        //   .then(res => {
-        //     if (res && res.data && res.data.data && res.data.result) {
-        //       const result = res.data.result;
-        //       if (result.code != Constants.API_ERROR_CODE) {
-        //         this.setState({tasks : res.data.data.listUserProfileHistories});
-        //       }
-        //     }
-        //   }).catch(error => {
-        //     this.props.sendData(null);
-        //     this.setState({tasks : []});
-        //   });
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+            }
+        }
+
+        const thisYear = new Date().getFullYear()
+
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
+            .then(res => {
+                if (res && res.data && res.data.data) {
+                    const annualLeaveSummary = res.data.data
+                    this.setState({ annualLeaveSummary: annualLeaveSummary })
+                }
+            }).catch(error => {
+                // localStorage.clear();
+                // window.location.href = map.Login;
+            })
     }
 
     setStartDate(startDate) {
@@ -81,24 +85,50 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ [name]: value })
     }
 
-    verifyInput () {
+    verifyInput() {
         let errors = {}
         const RequiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
         RequiredFields.forEach(name => {
-            if (_.isNull(this.state[name]) ) {
+            if (_.isNull(this.state[name])) {
                 errors[name] = '(Bắt buộc)'
             }
         })
 
-        this.setState({errors: errors})
+        this.setState({ errors: errors })
         return errors
     }
 
     submit() {
-        const errors = this.verifyInput()
-        if (errors) {
-            return
-        }
+        // const errors = this.verifyInput()
+        // if (errors) {
+        //     return
+        // }
+
+        let bodyFormData = new FormData();
+        bodyFormData.append('Name', 'Đăng ký nghỉ phép')
+        bodyFormData.append('RequestTypeId', '2')
+        bodyFormData.append('Comment', this.state.note)
+        bodyFormData.append('UserProfileInfo', {})
+        bodyFormData.append('UpdateField', {})
+        bodyFormData.append('Region', localStorage.getItem('region'))
+        bodyFormData.append('UserProfileInfoToSap', {})
+        this.state.files.forEach(file => {
+            bodyFormData.append('Files', file)
+        })
+
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+            // data: bodyFormData,
+            headers: {'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+          })
+          .then(response => {
+            if (response && response.data && response.data.result) {
+              console.log(response.data)
+            }
+          })
+          .catch(response => {
+          })
     }
 
     error(name) {
@@ -106,6 +136,18 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
+        const thisYear = new Date().getFullYear()
+        // const usedAnnualLeaveOfThisYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.used_annual_leave ? this.state.annualLeaveSummary.used_annual_leave.find(a => a.year == thisYear) : undefined
+        // const usedAnnualLeaveOfLastYear = this.state.annualLeaveSummary.used_annual_leave ? this.state.annualLeaveSummary.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
+
+        const unusedAnnualLeaveOfThisYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_annual_leave ? this.state.annualLeaveSummary.unused_annual_leave.find(a => a.year == thisYear) : undefined
+        const unusedAnnualLeaveOfLastYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_annual_leave ? this.state.annualLeaveSummary.unused_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
+
+        // const usedCompensatoryLeaveOfThisYear = this.state.annualLeaveSummary.used_compensatory_leave ? this.state.annualLeaveSummary.used_compensatory_leave.find(a => a.year == thisYear) : undefined
+        // const usedCompensatoryLeaveOfLastYear = this.state.annualLeaveSummary.used_compensatory_leave ? this.state.annualLeaveSummary.unused_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
+
+        const unusedCompensatoryLeaveOfThisYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_compensatory_leave ? this.state.annualLeaveSummary.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
+        const unusedCompensatoryLeaveOfLastYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_compensatory_leave ? this.state.annualLeaveSummary.unused_compensatory_leave.find(a => a.year == (thisYear - 1)) : undefined
         const absenceTypes = [
             { value: 'IN01', label: 'Nghỉ ốm' },
             { value: 'IN02', label: 'Nghỉ thai sản' },
@@ -117,31 +159,31 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tồn</div>
-                            <div className="result text-danger">1</div>
+                            <div className="result text-danger">{unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép năm</div>
-                            <div className="result text-danger">2</div>
+                            <div className="result text-danger">{unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tạm ứng</div>
-                            <div className="result text-danger">4</div>
+                            <div className="result text-danger">0</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ bù tồn</div>
-                            <div className="result text-danger">3</div>
+                            <div className="result text-danger">{unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days*8 : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ nghỉ bù</div>
-                            <div className="result text-danger">2</div>
+                            <div className="result text-danger">{unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days*8 : 0}</div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +207,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             locale="vi"
                                             showTimeSelect
                                             className="form-control input" />
-                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                     </label>
                                 </div>
                                 {this.error('startDate')}
@@ -188,7 +230,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             locale="vi"
                                             showTimeSelect
                                             className="form-control input" />
-                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                     </label>
                                 </div>
                                 {this.error('endDate')}
@@ -206,7 +248,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-4">
                                 <p className="title">Loại nghỉ</p>
                                 <div>
-                                    <Select name="absenceType" value={this.state.absenceType}  onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
+                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
                                 </div>
                                 {this.error('absenceType')}
                             </div>
@@ -223,8 +265,8 @@ class LeaveOfAbsenceComponent extends React.Component {
 
                 </div>
 
-                <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)}/>
-                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)}/>
+                <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} />
+                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
             </div>
         )
     }
