@@ -166,7 +166,11 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value) {
-    let oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+    let oldMainInfo = this.state.OldMainInfo;
+    if(this.state.OldMainInfo[name] === undefined){
+      oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+    }
+    
     let newMainInfo = { ...this.state.NewMainInfo, [name]: value };
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
@@ -208,9 +212,9 @@ class PersonalInfoEdit extends React.Component {
   }
 
   formatSapData(dt, updatedFieldName_arr) {
-    debugger;
     let sapData = {};
     let pernr = localStorage.getItem('employeeNo');
+    let usernamelc = localStorage.getItem('email').split("@")[0];
     let addressKeyNames = ['Nationality', 'Province', 'District', 'Wards', 'StreetName'];
     let addressKeyNameTemps = ['TempProvince', 'TempDistrict', 'TempWards', 'TempStreetName'];
     let informationKeyNames = ['Birthday', 'BirthProvince', 'Gender', 'Religion', 'PassportNo', 'DateOfIssue', 'PlaceOfIssue', 'Nationality'];
@@ -230,8 +234,10 @@ class PersonalInfoEdit extends React.Component {
           stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.StreetName : dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName,
           zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.District == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.District : dt.update.userProfileHistoryMainInfo.NewMainInfo.District,
           zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Wards : dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards,
-          kdate: moment().format('YYYYMMDD'),
-          pernr: pernr
+          kdate: '',
+          pernr: pernr,
+          user_name: usernamelc,
+          myvp_id: ''
         });
       }
       if (shouldUpdateAddressTemp) {
@@ -242,8 +248,10 @@ class PersonalInfoEdit extends React.Component {
           stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempStreetName : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName,
           zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempDistrict : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict,
           zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempWards : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards,
-          kdate: moment().format('YYYYMMDD'),
-          pernr: pernr
+          kdate: '',
+          pernr: pernr,
+          user_name: usernamelc,
+          myvp_id: ''
         });
       }
     }
@@ -252,8 +260,10 @@ class PersonalInfoEdit extends React.Component {
       sapData.race = [{
         actio: 'MOD',
         racky: dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Ethinic : dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic,
-        kdate: moment().format('YYYYMMDD'),
-        pernr: pernr
+        kdate: '',
+        pernr: pernr,
+        user_name: usernamelc,
+        myvp_id: ''
       }];
     }
 
@@ -264,26 +274,32 @@ class PersonalInfoEdit extends React.Component {
         sapData.contact.push({
           actio: 'MOD',
           subty: '0030',
-          kdate: moment().format('YYYYMMDD'),
+          kdate: '',
           pernr: pernr,
-          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalEmail : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail
+          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalEmail : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail,
+          user_name: usernamelc,
+          myvp_id: ''
         });
       }
       if (updatedFieldName_arr.some(u => u === 'CellPhoneNo')) {
         sapData.contact.push({
           actio: 'MOD',
           subty: 'CELL',
-          kdate: moment().format('YYYYMMDD'),
+          kdate: '',
           pernr: pernr,
-          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.CellPhoneNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo
+          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.CellPhoneNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo,
+          user_name: usernamelc,
+          myvp_id: ''
         });
         if (updatedFieldName_arr.some(u => u === 'UrgentContactNo')) {
           sapData.contact.push({
             actio: 'MOD',
             subty: 'V002',
-            kdate: moment().format('YYYYMMDD'),
+            kdate: '',
             pernr: pernr,
-            usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.UrgentContactNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo
+            usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.UrgentContactNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo,
+            user_name: usernamelc,
+            myvp_id: ''
           });
         }
       }
@@ -299,7 +315,9 @@ class PersonalInfoEdit extends React.Component {
         gbdep: dt.update.userProfileHistoryMainInfo.NewMainInfo.Province == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Province : dt.update.userProfileHistoryMainInfo.NewMainInfo.Province,
         famst: dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.MaritalStatus : dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus,
         gesch: dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Gender : dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender,
-        kdate: moment().format('YYYYMMDD')
+        kdate: '',
+        user_name: usernamelc,
+        myvp_id: ''
       }];
     }
 
@@ -317,7 +335,9 @@ class PersonalInfoEdit extends React.Component {
             zortherinst: item.newMainInfo.SchoolName == undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
             begda: item.newMainInfo.FromTime == undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
             endda: item.newMainInfo.ToTime == undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
-            kdate: moment().format('YYYYMMDD')
+            kdate: '',
+            user_name: usernamelc,
+            myvp_id: ''
           });
         });
       }
@@ -332,7 +352,9 @@ class PersonalInfoEdit extends React.Component {
             begda: item.FromTime,
             endda: item.ToTime,
             pernr: pernr,
-            kdate: moment().format('YYYYMMDD')
+            kdate: '',
+            user_name: usernamelc,
+            myvp_id: ''
           });
         });
       }
@@ -340,7 +362,6 @@ class PersonalInfoEdit extends React.Component {
     return sapData;
   }
   sendRequest = () => {
-    debugger;
     const updateFields = this.getFieldUpdates();
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
@@ -366,7 +387,6 @@ class PersonalInfoEdit extends React.Component {
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
       .then(response => {
-        console.log(response);
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
@@ -436,10 +456,6 @@ class PersonalInfoEdit extends React.Component {
     //       educations: [...educationNew]
     //     }
     // });
-    console.log('new ======================');
-    console.log(educationNew);
-    console.log('old ======================');
-    console.log(this.state.userEducation);
   }
 
   addEducation = (value) => {
@@ -451,8 +467,6 @@ class PersonalInfoEdit extends React.Component {
         }
       }
     });
-    console.log('new')
-    console.log(value)
   }
 
   getNameFromData = (data) => {
@@ -669,7 +683,7 @@ class PersonalInfoEdit extends React.Component {
       this.processProfile(responses[0]);
       this.processPersonalInfo(responses[1]);
     })).catch(errors => {
-      console.log(errors);
+
     })
 
     let config = {
@@ -729,9 +743,24 @@ class PersonalInfoEdit extends React.Component {
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) {
           dt.information = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
         }
+        let updatedData = {};
+        let newMainInfo = {};
+        let oldMainInfo = {};
         if (changingData.data.data.userProfileInfo) {
+          if (changingData.data.data.userProfileInfo.update) {
+            updatedData = changingData.data.data.userProfileInfo.update;
+            if (changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo) {
+              oldMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo;
+            }
+            if (changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) {
+              newMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
+            }
+          }
           this.setState({
-            data: changingData.data.data.userProfileInfo
+            data: changingData.data.data.userProfileInfo,
+            update: updatedData,
+            OldMainInfo: oldMainInfo,
+            NewMainInfo: newMainInfo
           });
         }
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation.NewEducation) {

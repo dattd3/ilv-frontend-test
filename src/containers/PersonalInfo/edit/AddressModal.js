@@ -11,6 +11,7 @@ class AddressModal extends React.Component {
             provinces: [],
             districts: [],
             wards: [],
+            country: props.country_id,
             street_name: props.street_name,
             address: {
                 main: {
@@ -56,11 +57,12 @@ class AddressModal extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.street_name !== this.props.street_name) {
             this.setState({ street_name: nextProps.street_name })
+            this.setState({ country: nextProps.country_id })
         }
     }
 
     componentDidMount() {
-        this.getProvices(this.props.country_id)
+        this.getProvices(this.state.country)
         this.getDistricts(this.props.province_id)
         this.getWards(this.props.district_id)
     }
@@ -118,11 +120,13 @@ class AddressModal extends React.Component {
             this.setMainAddress("districtId", district.ID);
             this.setMainAddress("districtName", district.TEXT);
             this.setMainAddress("oldDistrictName", oldLabel);
-        } else if (name === "Wards" || name === "Wards") {
+        } else if (name === "Wards" || name === "TempWards") {
             const ward = this.getLocationName("wards", item.value);
             this.setMainAddress("wardId", ward.ID);
             this.setMainAddress("wardName", ward.TEXT);
             this.setMainAddress("oldWardName", oldLabel);
+        } else {
+            this.setState({country : item.value});
         }
         this.setMainAddress("oldStreetName", oldLabel);
         const resetList = {
@@ -174,7 +178,7 @@ class AddressModal extends React.Component {
                             Quốc gia
                         </div>
                         <div className="col-7">
-                            <Select options={countries} onChange={this.handleChange.bind(this, 'country_id')} value={countries.filter(c => c.value == this.props.country_id)}/>
+                            <Select options={countries} onChange={this.handleChange.bind(this, 'country_id', "")} value={countries.filter(c => c.value == this.state.country)}/>
                         </div>
                     </div>
                     <div className="row mb-2">

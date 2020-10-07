@@ -125,7 +125,7 @@ class PersonalComponent extends React.Component {
             case "BirthProvince":
                 return "province_id";
             case "Nationality":
-                return "country_id";
+                return "nationality_id";
             case "MaritalStatus":
                 return "marital_status_code";
             case "Bank":

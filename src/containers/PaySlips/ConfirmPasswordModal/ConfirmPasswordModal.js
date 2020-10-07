@@ -42,7 +42,6 @@ class ConfirmPasswordModal extends React.Component {
                 }
             }
         }).catch(error => {
-            debugger
             this.setState({error: 'Mật khẩu nhập không chính xác'})
         })
     }

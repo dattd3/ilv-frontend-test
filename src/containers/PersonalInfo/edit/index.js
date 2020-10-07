@@ -38,7 +38,7 @@ class PersonalInfoEdit extends React.Component {
             schools: [],
             documentTypes: [],
             update: {},
-            create: {},
+            create: [],
             userProfileHistoryMainInfo: {},
             userProfileHistoryEducation: [],
             educations: [],
@@ -252,12 +252,12 @@ class PersonalInfoEdit extends React.Component {
             } else {
               obj.gbdat = moment(this.resetValueInValid(userDetail.birthday), 'DD-MM-YYYY').format('YYYYMMDD')
             }
-            if (newMainInfo.Nationality) {
+            if (newMainInfo.Nationality && newMainInfo.BirthCountry) {
               obj.natio = newMainInfo.Nationality;
-              obj.gblnd = newMainInfo.Nationality;
+              obj.gblnd = newMainInfo.BirthCountry; // Need update
             } else {
-              obj.natio = this.resetValueInValid(userDetail.country_id);
-              obj.gblnd = this.resetValueInValid(userDetail.country_id);
+              obj.natio = this.resetValueInValid(userDetail.nationality_id);
+              obj.gblnd = this.resetValueInValid(userDetail.country_id); // Need update
             }
             if (newMainInfo.BirthProvince) {
               obj.gbdep = newMainInfo.BirthProvince;
@@ -266,8 +266,18 @@ class PersonalInfoEdit extends React.Component {
             }
             if (newMainInfo.MaritalStatus) {
               obj.famst = newMainInfo.MaritalStatus;
+              if (newMainInfo.MaritalStatus == 2 || newMainInfo.MaritalStatus == 0) {
+                obj.famdt = "";
+              } else {
+                if (newMainInfo.MaritalStatus) {
+                  obj.famdt = newMainInfo.MarriageDate;
+                } else {
+                  obj.famdt = "";
+                }
+              }
             } else {
               obj.famst = this.resetValueInValid(userDetail.marital_status_code);
+              obj.famdt = "";
             }
             if (newMainInfo.Religion) {
               obj.konfe = newMainInfo.Religion;
@@ -398,13 +408,26 @@ class PersonalInfoEdit extends React.Component {
       return null;
     }
 
+    getOnlyAddress = (newMainInfo) => {
+      return [
+        newMainInfo.Province || "",
+        newMainInfo.District || "",
+        newMainInfo.Wards || "",
+        newMainInfo.StreetName || "",
+        newMainInfo.TempProvince || "",
+        newMainInfo.TempDistrict || "",
+        newMainInfo.TempWards || "",
+        newMainInfo.TempStreetName || ""
+      ]
+    }
+
     prepareAddressToSap = (data) => {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName) {
-            let addressArr = _.values(newMainInfo);
+            let addressArr = this.getOnlyAddress(newMainInfo);
             addressArr = _.chunk(addressArr, 4);
             let listObj = [];
             addressArr.forEach((item, index) => {
@@ -475,6 +498,7 @@ class PersonalInfoEdit extends React.Component {
       }
       if (data && data.create && data.create.educations) {
         let educations = data.create.educations;
+        const schoolCode = educations.SchoolCode;
         let obj = {};
         obj.myvp_id = "";
         obj.user_name = localStorage.getItem('email').split("@")[0];
@@ -484,8 +508,12 @@ class PersonalInfoEdit extends React.Component {
         obj.begda = moment(educations.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
         obj.endda = educations.ToTime ? moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
         obj.slart = educations.DegreeType;
-        obj.zausbi = educations.MajorCode;
-        obj.zinstitute = educations.SchoolCode;
+        obj.zausbi = educations.MajorCode || "";
+        if (this.isNullCustomize(schoolCode)) {
+          obj.zortherinst = educations.SchoolName || "";
+        } else {
+          obj.zinstitute = schoolCode;
+        }
         listObj = [...listObj, obj];
       }
       if (listObj.length > 0) {
@@ -518,7 +546,7 @@ class PersonalInfoEdit extends React.Component {
               if (newMainInfo.DateOfIssue) {
                 obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
               } else {
-                obj.fpdat = moment(this.resetValueInValid(userDetail.passport_no), 'DD-MM-YYYY').format('YYYYMMDD')
+                obj.fpdat = moment(this.resetValueInValid(userDetail.date_of_issue), 'DD-MM-YYYY').format('YYYYMMDD')
               }
               if (newMainInfo.PlaceOfIssue) {
                 obj.isspl = newMainInfo.PlaceOfIssue;
@@ -649,22 +677,25 @@ class PersonalInfoEdit extends React.Component {
     }
 
     prepareEducationModel = (data) => {
-      const fromTime = data.from_time;
-      const toTime = data.to_time;
       return {
         SchoolCode: data.school_id,
         SchoolName: data.university_name || data.other_uni_name,
         DegreeType: data.education_level_id,
+        DegreeTypeText: data.degree_text,
         MajorCode: data.major_id,
         MajorName: data.major,
-        FromTime: fromTime,
-        ToTime: toTime
+        FromTime: data.from_time,
+        ToTime: data.to_time
       }
     }
 
     updateEducation(educationNew) {
+      // console.log("ooooooooooooooooooooooooooooooooooo");
+      // console.log(educationNew.length); // => Sau khi sửa
       const educationOriginal = this.state.userEducation;
+      // console.log(educationOriginal); // => Nguyên bản
       let userProfileHistoryEducation = [];
+      let same = [];
       educationNew.forEach((element, index) => {
         if (!_.isEqual(element, educationOriginal[index])) {
           const oldObj = this.prepareEducationModel(educationOriginal[index]);
@@ -690,24 +721,32 @@ class PersonalInfoEdit extends React.Component {
               }});
             })
           });
+        } else {
+          same = same.concat(educationNew);
         }
       });
+      // console.log("LLLLL");
+      // console.log(same);
+      // console.log(educationOriginal);
     }
 
     addEducation(value) {
+      let tempEducationArr = [];
       value.forEach(element => {
         const educations = this.prepareEducationModel(element);
-        this.setState({
-          create : {
-            ...this.state.create,
-            educations
-        }})
+        tempEducationArr = tempEducationArr.concat(educations);
       });
-
-      this.setState({data : {
-        ...this.state.data,
-        create: this.state.create
-      }});
+      const educations = {
+        educations: tempEducationArr
+      }
+      this.setState(state => ({
+        create: educations
+      }), () => {
+        this.setState({data : {
+          ...this.state.data,
+          create: this.state.create
+        }});
+      });
     }
     
     getNameFromData = (data) => {
