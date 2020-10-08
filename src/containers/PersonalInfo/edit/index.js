@@ -527,8 +527,7 @@ class PersonalInfoEdit extends React.Component {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if ((newMainInfo.DocumentType != null && newMainInfo.DocumentType != undefined) || (newMainInfo.DocumentTypeValue != null && newMainInfo.DocumentTypeValue != undefined) 
-          || (newMainInfo.DateOfIssue != null && newMainInfo.DateOfIssue != undefined) || (newMainInfo.PlaceOfIssue != null && newMainInfo.PlaceOfIssue != undefined)) {
+          if (newMainInfo.DocumentTypeId || newMainInfo.DocumentTypeValue || newMainInfo.DateOfIssue || newMainInfo.PlaceOfIssue) {
             const userDetail = this.state.userDetail;
             let obj = {};
             obj.myvp_id = "";
@@ -536,8 +535,8 @@ class PersonalInfoEdit extends React.Component {
             obj.kdate = "";
             obj.actio = "MOD";
             obj.pernr = localStorage.getItem('employeeNo');
-            if (newMainInfo.DocumentType) {
-              obj.ictyp = newMainInfo.DocumentType;
+            if (newMainInfo.DocumentTypeId) {
+              obj.ictyp = newMainInfo.DocumentTypeId;
               if (newMainInfo.DocumentTypeValue) {
                 obj.icnum = newMainInfo.DocumentTypeValue;
               } else {
@@ -556,8 +555,8 @@ class PersonalInfoEdit extends React.Component {
             }
             if (newMainInfo.DocumentTypeValue) {
               obj.icnum = newMainInfo.DocumentTypeValue;
-              if (newMainInfo.DocumentType) {
-                obj.ictyp = newMainInfo.DocumentType;
+              if (newMainInfo.DocumentTypeId) {
+                obj.ictyp = newMainInfo.DocumentTypeId;
               } else {
                 obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
@@ -574,8 +573,8 @@ class PersonalInfoEdit extends React.Component {
             }
             if (newMainInfo.DateOfIssue) {
               obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD');
-              if (newMainInfo.DocumentType) {
-                obj.ictyp = newMainInfo.DocumentType;
+              if (newMainInfo.DocumentTypeId) {
+                obj.ictyp = newMainInfo.DocumentTypeId;
               } else {
                 obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
@@ -592,8 +591,8 @@ class PersonalInfoEdit extends React.Component {
             }
             if (newMainInfo.PlaceOfIssue) {
               obj.isspl = newMainInfo.PlaceOfIssue;
-              if (newMainInfo.DocumentType) {
-                obj.ictyp = newMainInfo.DocumentType;
+              if (newMainInfo.DocumentTypeId) {
+                obj.ictyp = newMainInfo.DocumentTypeId;
               } else {
                 obj.ictyp = this.resetValueInValid(userDetail.document_type_id);
               }
@@ -676,30 +675,44 @@ class PersonalInfoEdit extends React.Component {
       return [];
     }
 
-    prepareEducationModel = (data) => {
+    prepareEducationModel = (data, action, type) => {
+      // console.log("child ooooooooooo");
+      // console.log(data); // => Sau khi sửa
+      if (action === "insert" || (action === "update" && type === "new")) {
+        return {
+          SchoolCode: data.school_id || "",
+          SchoolName: data.school_name || data.other_uni_name,
+          DegreeType: data.education_level_id || "",
+          DegreeTypeText: data.degree_text || "",
+          MajorCode: data.major_id || "",
+          MajorName: data.major_name || "",
+          FromTime: data.from_time || "",
+          ToTime: data.to_time || ""
+        }
+      }
       return {
-        SchoolCode: data.school_id,
+        SchoolCode: data.school_id || "",
         SchoolName: data.university_name || data.other_uni_name,
-        DegreeType: data.education_level_id,
-        DegreeTypeText: data.degree_text,
-        MajorCode: data.major_id,
-        MajorName: data.major,
-        FromTime: data.from_time,
-        ToTime: data.to_time
+        DegreeType: data.education_level_id || "",
+        DegreeTypeText: data.degree_text || "",
+        MajorCode: data.major_id || "",
+        MajorName: data.major || "",
+        FromTime: data.from_time || "",
+        ToTime: data.to_time || ""
       }
     }
 
     updateEducation(educationNew) {
-      // console.log("ooooooooooooooooooooooooooooooooooo");
-      // console.log(educationNew.length); // => Sau khi sửa
+      // console.log("parent ooooooooooooooo");
+      // console.log(educationNew); // => Sau khi sửa
       const educationOriginal = this.state.userEducation;
       // console.log(educationOriginal); // => Nguyên bản
       let userProfileHistoryEducation = [];
-      let same = [];
+
       educationNew.forEach((element, index) => {
         if (!_.isEqual(element, educationOriginal[index])) {
-          const oldObj = this.prepareEducationModel(educationOriginal[index]);
-          const newObj = this.prepareEducationModel(element);
+          const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "new");
+          const newObj = this.prepareEducationModel(element, "update", "old");
           const obj =
           {
             OldEducation: oldObj,
@@ -721,19 +734,14 @@ class PersonalInfoEdit extends React.Component {
               }});
             })
           });
-        } else {
-          same = same.concat(educationNew);
         }
       });
-      // console.log("LLLLL");
-      // console.log(same);
-      // console.log(educationOriginal);
     }
 
     addEducation(value) {
       let tempEducationArr = [];
       value.forEach(element => {
-        const educations = this.prepareEducationModel(element);
+        const educations = this.prepareEducationModel(element, "insert", "");
         tempEducationArr = tempEducationArr.concat(educations);
       });
       const educations = {

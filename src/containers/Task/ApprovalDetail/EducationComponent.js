@@ -21,14 +21,14 @@ class EducationComponent extends React.Component {
     return <Row className={`info-value ${type}`}>
       <Col xs={12} md={6} lg={3}>
         <div className="detail">
-          {item.SchoolCode ? item.SchoolCode : ""}
+          {item.SchoolName}
         </div>
       </Col>
       <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.DegreeType}</div>
+        <div className="detail">{item.DegreeTypeText}</div>
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.MajorCode}</div>
+        <div className="detail">{item.MajorName}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
         <div className="detail">{item.FromTime}</div>
