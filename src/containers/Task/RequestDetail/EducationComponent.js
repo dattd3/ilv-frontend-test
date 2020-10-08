@@ -69,7 +69,7 @@ class EducationComponent extends React.Component {
     newUserEducation[index].education_level_id = level.value;
     newUserEducation[index].major_id = '';
     newUserEducation[index].school_id = '';
-    this.updateParrent(name, [...newUserEducation]);
+    this.updateParrent(name, [...newUserEducation], index);
     this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
   }
 
@@ -77,14 +77,14 @@ class EducationComponent extends React.Component {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].school_id = education.value
     this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
-    this.updateParrent(name, newUserEducation)
+    this.updateParrent(name, newUserEducation, index)
   }
 
   majorChange(index, name, major) {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].major_id = major.value
     this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
-    this.updateParrent(name, newUserEducation)
+    this.updateParrent(name, newUserEducation, index)
   }
 
   handleDatePickerInputChange(index, dateInput, field, name) {
@@ -92,31 +92,26 @@ class EducationComponent extends React.Component {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index][field] = date
     this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
-    this.updateParrent(name, newUserEducation)
+    this.updateParrent(name, newUserEducation, index)
   }
 
   otherUniInputChange(index, name, e) {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].other_uni_name = e.target.value
     this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
-    this.updateParrent(name, newUserEducation)
+    this.updateParrent(name, newUserEducation, index)
   }
 
-  updateParrent(name, newUserEducation) {
+  updateParrent(name, newUserEducation, index) {
     if (name == 'education') {
       this.props.updateEducation(newUserEducation)
     } else {
-      this.props.addEducation(newUserEducation)
+      this.props.updateNewEducation(newUserEducation, index)
     }
   }
   
   itemHeader() {
     return <Row className="info-label">
-      <Col xs={12} md={6} lg={3}>Trường đào tạo</Col>
-      <Col xs={12} md={6} lg={2}>Loại bằng cấp</Col>
-      <Col xs={12} md={6} lg={3}>Chuyên ngành</Col>
-      <Col xs={12} md={6} lg={2}>Từ thời gian</Col>
-      <Col xs={12} md={6} lg={2}>Đến thời gian</Col>
       <Col xs={12} md={6} lg={3}>
         Loại bằng cấp
         </Col>
@@ -210,8 +205,6 @@ class EducationComponent extends React.Component {
   }
 
   render() {
-    const userEducationUpdate = this.props.userEducationUpdate;
-    const userEducationCreate = this.props.userEducationCreate;
     const userEducation = this.props.userEducation
     return (
       <div className="education">

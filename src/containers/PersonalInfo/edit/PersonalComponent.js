@@ -55,6 +55,9 @@ class PersonalComponent extends React.Component {
         }).catch(error => {
 
         })
+
+        const birthCountryId = this.props.userDetail.birth_country_id;
+        this.getBirthProvinces(birthCountryId);
     }
 
     processProfile = (res) => {
@@ -122,6 +125,7 @@ class PersonalComponent extends React.Component {
           val = "";
           label = "";
         }
+
         if (name == "BirthCountry") {
             this.getBirthProvinces(val);
         }
@@ -182,7 +186,7 @@ class PersonalComponent extends React.Component {
             case "DateOfIssue":
                 return "date_of_issue";
             case "MarriageDate":
-                return "marriage_date";
+                return "marital_date";
             case "Gender":
                 return "gender";
             case "PersonalEmail":
@@ -200,7 +204,7 @@ class PersonalComponent extends React.Component {
             case "Religion":
                 return "religion_id";
             case "BirthProvince":
-                return "province_id";
+                return "birth_province_id";
             case "Nationality":
                 return "nationality_id";
             case "BirthCountry":
@@ -298,6 +302,7 @@ class PersonalComponent extends React.Component {
         const races = this.props.races.map(race =>  { return { value: race.ID, label: race.TEXT } } )
         const marriages = this.props.marriages.map(marriage =>  { return { value: marriage.ID, label: marriage.TEXT } } )
         const nations = this.props.nations.map(nation =>  { return { value: nation.ID, label: nation.TEXT } } )
+        const countries = this.props.countries.map(country =>  { return { value: country.ID, label: country.TEXT } } )
         const banks = this.props.banks.map(bank =>  { return { value: bank.ID, label: bank.TEXT } } )
         const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
@@ -309,7 +314,6 @@ class PersonalComponent extends React.Component {
             tempDocumentTypeLabel = documentTypeLabel[0].TEXT;
         }
         const birthProvinces = this.state.birthProvinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
-
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>
@@ -352,11 +356,11 @@ class PersonalComponent extends React.Component {
                    <div className="label">Quốc gia sinh</div>
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.nationality || ""}</div>
+                    <div className="detail">{userDetail.birth_country_name || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry" options={nations} value={nations.filter(n => n.value == this.state.userDetail.birth_country_id)} 
-                    onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.nationality || "")} />
+                    <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry" options={countries} value={countries.filter(n => n.value == this.state.userDetail.birth_country_id)} 
+                    onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                 </div>
             </div>
 
@@ -369,7 +373,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={birthProvinces} 
-                    value={birthProvinces.filter(p => p.value == this.state.userDetail.province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
+                    value={birthProvinces.filter(p => p.value == this.state.userDetail.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                 </div>
             </div>
 
@@ -559,18 +563,18 @@ class PersonalComponent extends React.Component {
             </div>
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Ngày kết hôn | Wedding day</div>
+                   <div className="label">Ngày của TT hôn nhân</div>
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.marriage_date}</div>
+                    <div className="detail">{userDetail.marital_date}</div>
                 </div>
                 <div className="col-6 input-container">
                     <label>
                     <DatePicker 
                         name="MarriageDate" 
                         key="MarriageDate"
-                        selected={(this.state.userDetail.marriage_date && this.state.userDetail.marriage_date != "00000000") ? moment(this.state.userDetail.marriage_date, 'DD-MM-YYYY').toDate() : null}
-                        onChange={marriageDate => this.handleDatePickerInputChange(marriageDate, "MarriageDate")}
+                        selected={this.state.userDetail.marital_date ? moment(this.state.userDetail.marital_date, 'DD-MM-YYYY').toDate() : null}
+                        onChange={maritalDate => this.handleDatePickerInputChange(maritalDate, "MarriageDate")}
                         dateFormat="dd-MM-yyyy"
                         showMonthDropdown={true}
                         showYearDropdown={true}

@@ -44,7 +44,16 @@ class PersonalInfoEdit extends React.Component {
       OldMainInfo: {},
       NewMainInfo: {},
       data: {
-        update: null
+        update: {
+          userProfileHistoryMainInfo: {
+            OldMainInfo: {},
+            NewMainInfo: {}
+          },
+          userProfileHistoryEducation: []
+        },
+        create: {
+          educations: []
+        }
       },
       isShowModalConfirm: false,
       modalTitle: "",
@@ -167,10 +176,10 @@ class PersonalInfoEdit extends React.Component {
 
   updatePersonalInfo(name, old, value) {
     let oldMainInfo = this.state.OldMainInfo;
-    if(this.state.OldMainInfo[name] === undefined){
+    if (this.state.OldMainInfo[name] === undefined) {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
     }
-    
+
     let newMainInfo = { ...this.state.NewMainInfo, [name]: value };
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
@@ -448,23 +457,72 @@ class PersonalInfoEdit extends React.Component {
     return [];
   }
 
-  updateEducation = (educationNew) => {
-    // this.setState({
-    //   data: {
-    //     ...this.state.data,
-    //     create: {
-    //       educations: [...educationNew]
-    //     }
-    // });
+  populateEducation = (data) => {
+    const fromTime = data.from_time;
+    const toTime = data.to_time;
+    return {
+      SchoolCode: data.school_id,
+      SchoolName: data.university_name || data.other_uni_name,
+      DegreeType: data.education_level_id,
+      MajorCode: data.major_id,
+      MajorName: data.major,
+      FromTime: fromTime,
+      ToTime: toTime
+    }
   }
 
-  addEducation = (value) => {
+  updateEducation = (educationNew) => {
+    const educationOriginal = this.state.userEducation;
+      let userProfileHistoryEducation = [];
+      educationNew.forEach((element, index) => {
+        if (!_.isEqual(element, educationOriginal[index])) {
+          const oldObj = this.populateEducation(educationOriginal[index]);
+          const newObj = this.populateEducation(element);
+          const obj =
+          {
+            OldEducation: oldObj,
+            NewEducation: newObj
+          }
+          userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
+          this.setState({
+            userProfileHistoryEducation : userProfileHistoryEducation
+          }, () => {
+            this.setState({
+              update : {
+                ...this.state.update,
+                userProfileHistoryEducation: this.state.userProfileHistoryEducation
+              }
+            }, () => {
+              this.setState({data : {
+                ...this.state.data,
+                update: this.state.update
+              }});
+            })
+          });
+        }
+      });
+  }
+
+  updateNewEducation = (value, index) => {
+    let educationData = {
+      SchoolCode: "",
+      SchoolName: "",
+      DegreeType: "",
+      MajorCode: "",
+      MajorName: "",
+      FromTime: "",
+      ToTime: ""
+    };
+    let educations = this.state.data.create.educations;
+    value.forEach(element => {
+      educationData = this.populateEducation(element);
+      educations[index] = educationData;
+    });
+
     this.setState({
       data: {
         ...this.state.data,
-        create: {
-          educations: [...value]
-        }
+        create: { educations: educations }
       }
     });
   }
@@ -810,7 +868,7 @@ class PersonalInfoEdit extends React.Component {
               majors={this.state.majors}
               schools={this.state.schools}
               updateEducation={this.updateEducation.bind(this)}
-              addEducation={this.addEducation.bind(this)}
+              updateNewEducation={this.updateNewEducation.bind(this)}
               mappingFieldsToGetSapKey={this.mappingFieldsToGetSapKey}
             />
 
