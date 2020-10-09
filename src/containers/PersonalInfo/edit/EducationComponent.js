@@ -50,7 +50,7 @@ class EducationComponent extends React.Component {
     }
 
     // name is : userEducation  or  newUserEducation
-    educationLevelChange (index, name, level) {
+    educationLevelChange(index, name, level) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].education_level_id = level.value
       newUserEducation[index].major_id = ''
@@ -60,7 +60,7 @@ class EducationComponent extends React.Component {
       this.setState({ [name]: [...newUserEducation] })
     }
 
-    schoolChange (index, name, education) {
+    schoolChange(index, name, education) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].school_id = education.value
       newUserEducation[index].school_name = education.label
@@ -68,7 +68,7 @@ class EducationComponent extends React.Component {
       this.updateParrent(name, newUserEducation)
     }
 
-    majorChange (index, name, major) {
+    majorChange(index, name, major) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].major_id = major.value
       newUserEducation[index].major_name = major.label
@@ -91,14 +91,9 @@ class EducationComponent extends React.Component {
       this.updateParrent(name, newUserEducation)
     }
 
-    updateParrent (name, newUserEducation) {
+    updateParrent(name, newUserEducation) {
       if (name == 'userEducation') {
-        let tempNewUserEducation = [...newUserEducation];
-        // [tempNewUserEducation || []].forEach((element, index) => {
-        //   // tempNewUserEducation[index].university_name = "";
-        //   // tempNewUserEducation[index].school_id = "";
-        // });
-        this.props.updateEducation(tempNewUserEducation)
+        this.props.updateEducation(newUserEducation);
       } else {
         this.props.addEducation(newUserEducation)
       }

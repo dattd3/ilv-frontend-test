@@ -215,10 +215,18 @@ class PersonalComponent extends React.Component {
                 return "marital_status_code";
             case "Bank":
                 return "bank_name_id";
-            case "DocumentTypeId":
-                return "document_type_id";
-            case "DocumentTypeValue":
-                return "passport_no";
+            case "PersonalIdentifyNumber":
+                return "personal_id_no";
+            case "PersonalIdentifyDate":
+                return "pid_date_of_issue";
+            case "PersonalIdentifyPlace":
+                return "pid_place_of_issue";
+            case "PassportNumber":
+                return "passport_id_no";
+            case "PassportDate":
+                return "passport_date_of_issue";
+            case "PassportPlace":
+                return "passport_place_of_issue";
             case "Province":
                 return "province_id";
             case "District":
@@ -415,36 +423,32 @@ class PersonalComponent extends React.Component {
                     value={religions.filter(r => r.value == (this.state.userDetail.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion || 'Không')} />
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Số CMND/CCCD/Hộ chiếu/Giấy phép lao động</div>
+                   <div className="label">Số CMND/CCCD</div>
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.passport_no || ""}</div>
+                    <div className="detail">{userDetail.personal_id_no || ""}</div>
                 </div>
                 <div className="col-6 form-inline">
-                    <Select name="DocumentTypeId" className="w-25 mr-3" placeholder="Lựa chọn..." options={documentTypes} 
-                    value={documentTypes.filter(d => d.value == this.state.userDetail.document_type_id )} onChange={e => this.handleSelectInputs(e, "DocumentTypeId", tempDocumentTypeLabel)} /> 
-                    <input className="form-control w-50" name="DocumentTypeValue" type="text" value={this.state.userDetail.passport_no || ""} 
-                    onChange={this.handleTextInputChange.bind(this)} />
+                    <input className="form-control" name="PersonalIdentifyNumber" type="text" 
+                    value={this.state.userDetail.personal_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Ngày cấp</div>
+                   <div className="label">Ngày cấp CMND/CCCD</div>
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.date_of_issue}</div>
+                    <div className="detail">{userDetail.pid_date_of_issue}</div>
                 </div>
                 <div className="col-6 input-container">
                     <label>
                     <DatePicker 
-                        name="DateOfIssue" 
-                        key="DateOfIssue"
-                        selected={this.state.userDetail.date_of_issue ? moment(this.state.userDetail.date_of_issue, 'DD-MM-YYYY').toDate() : null}
-                        onChange={dateOfIssue => this.handleDatePickerInputChange(dateOfIssue, "DateOfIssue")}
+                        name="PersonalIdentifyDate" 
+                        key="PersonalIdentifyDate"
+                        selected={this.state.userDetail.pid_date_of_issue ? moment(this.state.userDetail.pid_date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                        onChange={pidDateOfIssue => this.handleDatePickerInputChange(pidDateOfIssue, "PersonalIdentifyDate")}
                         dateFormat="dd-MM-yyyy"
                         showMonthDropdown={true}
                         showYearDropdown={true}
@@ -454,20 +458,68 @@ class PersonalComponent extends React.Component {
                     </label>
                 </div>
             </div>
-
             <div className="row">
                 <div className="col-2">
-                   <div className="label">Nơi cấp</div>
+                   <div className="label">Nơi cấp CMND/CCCD</div>
                 </div>
                 <div className="col-4 old">
-                    <div className="detail">{userDetail.place_of_issue || ""}</div>
+                    <div className="detail">{userDetail.pid_place_of_issue || ""}</div>
                 </div>
                 <div className="col-6">
-                    <input className="form-control" name="PlaceOfIssue" type="text" onChange={this.handleTextInputChange.bind(this)} 
-                    value={this.state.userDetail.place_of_issue || ""} />
+                    <input className="form-control" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)} 
+                    value={this.state.userDetail.pid_place_of_issue || ""} />
                 </div>
             </div>
 
+
+            <div className="row">
+                <div className="col-2">
+                   <div className="label">Số Hộ chiếu</div>
+                </div>
+                <div className="col-4 old">
+                    <div className="detail">{userDetail.passport_id_no || ""}</div>
+                </div>
+                <div className="col-6 form-inline">
+                    <input className="form-control" name="PassportNumber" type="text" 
+                    value={this.state.userDetail.passport_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-2">
+                   <div className="label">Ngày cấp Hộ chiếu</div>
+                </div>
+                <div className="col-4 old">
+                    <div className="detail">{userDetail.passport_date_of_issue}</div>
+                </div>
+                <div className="col-6 input-container">
+                    <label>
+                    <DatePicker 
+                        name="PassportDate" 
+                        key="PassportDate"
+                        selected={this.state.userDetail.passport_date_of_issue ? moment(this.state.userDetail.passport_date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                        onChange={passportDateOfIssue => this.handleDatePickerInputChange(passportDateOfIssue, "PassportDate")}
+                        dateFormat="dd-MM-yyyy"
+                        showMonthDropdown={true}
+                        showYearDropdown={true}
+                        locale="vi"
+                        className="form-control input"/>
+                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                    </label>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-2">
+                   <div className="label">Nơi cấp Hộ chiếu</div>
+                </div>
+                <div className="col-4 old">
+                    <div className="detail">{userDetail.passport_place_of_issue || ""}</div>
+                </div>
+                <div className="col-6">
+                    <input className="form-control" name="PassportPlace" type="text" onChange={this.handleTextInputChange.bind(this)} 
+                    value={this.state.userDetail.passport_place_of_issue || ""} />
+                </div>
+            </div>
+            
             <div className="row">
                 <div className="col-2">
                    <div className="label">Quốc tịch</div>
