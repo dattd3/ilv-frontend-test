@@ -239,6 +239,22 @@ class InOutTimeUpdateComponent extends React.Component {
                       Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
                     </div>
                   </div> : null }
+                  {timesheet.start_time2_plan ? <div className="row">
+                    <div className="col-6">
+                      Bắt đầu: <b>{timesheet.start_time2_fact ? timesheet.start_time2_fact : null}</b>
+                    </div>
+                    <div className="col-6 text-right">
+                      Kết thúc: <b>{timesheet.end_time2_fact ? timesheet.end_time2_fact : null}</b>
+                    </div>
+                  </div> : null }
+                  {timesheet.start_time3_plan ? <div className="row">
+                    <div className="col-6">
+                      Bắt đầu: <b>{timesheet.start_time3_fact ? timesheet.start_time3_fact : null}</b>
+                    </div>
+                    <div className="col-6 text-right">
+                      Kết thúc: <b>{timesheet.end_time3_fact ? timesheet.end_time3_fact : null}</b>
+                    </div>
+                  </div> : null }
                 </div>
 
               </div>
