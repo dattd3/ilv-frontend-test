@@ -209,8 +209,6 @@ class PersonalComponent extends React.Component {
                 return "nationality_id";
             case "BirthCountry":
                 return "birth_country_id";
-            case "Country":
-                return "country_id";
             case "MaritalStatus":
                 return "marital_status_code";
             case "Bank":
@@ -227,12 +225,16 @@ class PersonalComponent extends React.Component {
                 return "passport_date_of_issue";
             case "PassportPlace":
                 return "passport_place_of_issue";
+            case "Country":
+                return "country_id";
             case "Province":
                 return "province_id";
             case "District":
                 return "district_id";
             case "Wards":
                 return "ward_id";
+            case "TempCountry":
+                return "tmp_country_id";
             case "TempProvince":
                 return "tmp_province_id";
             case "TempDistrict":
@@ -253,6 +255,9 @@ class PersonalComponent extends React.Component {
     updateAddress(name, item, mainAddress) {
         this.setState({mainAddress: mainAddress});
         if (name !== "StreetName") {
+            if (name == "Country") {
+                this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldCountryName, mainAddress.countryName); // For select tag
+            }
             if (name == "Province") {
                 this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldProvinceName, mainAddress.provinceName); // For select tag
             }
@@ -270,6 +275,9 @@ class PersonalComponent extends React.Component {
     updateTmpAddress(name, item, tempAddress) {
         this.setState({tempAddress: tempAddress});
         if (name !== "StreetName") {
+            if (name == "Country") {
+                this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldCountryName, tempAddress.countryName); // For select tag
+            }
             if (name == "Province") {
                 this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldProvinceName, tempAddress.provinceName); // For select tag
             }

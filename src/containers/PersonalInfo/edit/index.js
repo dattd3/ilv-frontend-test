@@ -244,7 +244,7 @@ class PersonalInfoEdit extends React.Component {
       if (newMainInfo.BirthCountry) {
         data[0] = newMainInfo.BirthCountry;
       } else {
-        data[0] = this.resetValueInValid(userDetail.country_id)
+        data[0] = this.resetValueInValid(userDetail.birth_country_id)
       }
       if (newMainInfo.Nationality) {
         data[1] = newMainInfo.Nationality;
@@ -530,56 +530,72 @@ class PersonalInfoEdit extends React.Component {
       return null;
     }
 
+    // ahihihihihihi
     prepareDocumentToSap = (data) => {
       if (data && data.update) {
         const update = data.update;
-        if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
-          const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.DocumentTypeId || newMainInfo.DocumentTypeValue || newMainInfo.DateOfIssue || newMainInfo.PlaceOfIssue) {
-            const userDetail = this.state.userDetail;
-            let obj = {...this.objectToSap};
-            obj.actio = "MOD";
-            if (newMainInfo.DocumentTypeId) {
-              obj.ictyp = newMainInfo.DocumentTypeId;
-              obj.icnum = this.getDataSpecificFields(newMainInfo.DocumentTypeValue, userDetail.passport_no);
-              if (newMainInfo.DateOfIssue) {
-                obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
-              } else {
-                obj.fpdat = moment(this.resetValueInValid(userDetail.date_of_issue), 'DD-MM-YYYY').format('YYYYMMDD')
-              }
-              obj.isspl = this.getDataSpecificFields(newMainInfo.PlaceOfIssue, userDetail.place_of_issue);
-            }
-            if (newMainInfo.DocumentTypeValue) {
-              obj.icnum = newMainInfo.DocumentTypeValue;
-              obj.ictyp = this.getDataSpecificFields(newMainInfo.DocumentTypeId, userDetail.document_type_id);
-              if (newMainInfo.DateOfIssue) {
-                obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
-              } else {
-                obj.fpdat = moment(this.resetValueInValid(userDetail.passport_no), 'DD-MM-YYYY').format('YYYYMMDD')
-              }
-              obj.isspl = this.getDataSpecificFields(newMainInfo.PlaceOfIssue, userDetail.place_of_issue);
-            }
-            if (newMainInfo.DateOfIssue) {
-              obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD');
-              obj.ictyp = this.getDataSpecificFields(newMainInfo.DocumentTypeId, userDetail.document_type_id);
-              obj.icnum = this.getDataSpecificFields(newMainInfo.DocumentTypeValue, userDetail.passport_no);
-              obj.isspl = this.getDataSpecificFields(newMainInfo.PlaceOfIssue, userDetail.place_of_issue);
-            }
-            if (newMainInfo.PlaceOfIssue) {
-              if (newMainInfo.DateOfIssue) {
-                obj.fpdat = moment(newMainInfo.DateOfIssue, 'DD-MM-YYYY').format('YYYYMMDD')
-              } else {
-                obj.fpdat = moment(this.resetValueInValid(userDetail.date_of_issue), 'DD-MM-YYYY').format('YYYYMMDD')
-              }
-              obj.isspl = newMainInfo.PlaceOfIssue;
-              obj.ictyp = this.getDataSpecificFields(newMainInfo.DocumentTypeId, userDetail.document_type_id);
-              obj.icnum = this.getDataSpecificFields(newMainInfo.DocumentTypeValue, userDetail.passport_no);
-            }
-            return [obj];
+        if (update && update.userProfileHistoryMainInfo) {
+          const userProfileHistoryMainInfo = update.userProfileHistoryMainInfo;
+          const passportInfo = this.preparePassportInfo(userProfileHistoryMainInfo);
+          const personalIdentifyInfo = this.preparePersonalIdentifyInfo(userProfileHistoryMainInfo);
+          if (passportInfo == null && personalIdentifyInfo == null) {
+            return null;
+          }
+          let listObjDocuments = [passportInfo, personalIdentifyInfo];
+          if (listObjDocuments && listObjDocuments.length > 0) {
+            return listObjDocuments;
           }
           return null;
         }
         return null;
+      }
+      return null;
+    }
+
+    
+
+    preparePassportInfo = (data) => {
+      const newMainInfo = data.NewMainInfo;
+      if (newMainInfo.PassportNumber || newMainInfo.PassportDate || newMainInfo.PassportPlace) {
+        const userDetail = this.state.userDetail;
+        const passportIdNo = userDetail.passport_id_no;
+        let obj = {...this.objectToSap};
+        obj.ictyp = "02";
+        if (this.isNullCustomize(passportIdNo)) {
+          obj.actio = "INS";
+          obj.icnum = this.resetValueInValid(newMainInfo.PassportNumber) || "";
+          obj.fpdat = newMainInfo.PassportDate ? moment(newMainInfo.PassportDate, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
+          obj.isspl = this.resetValueInValid(newMainInfo.PassportPlace) || "";
+        } else {
+          obj.actio = "MOD";
+          obj.icnum = this.resetValueInValid(newMainInfo.PassportNumber) || passportIdNo;
+          obj.fpdat = newMainInfo.PassportDate ? moment(newMainInfo.PassportDate, 'DD-MM-YYYY').format('YYYYMMDD') : moment(userDetail.passport_date_of_issue, 'DD-MM-YYYY').format('YYYYMMDD');
+          obj.isspl = this.resetValueInValid(newMainInfo.PassportPlace) || this.resetValueInValid(userDetail.passport_place_of_issue);
+        }
+        return obj;
+      }
+      return null;
+    }
+
+    preparePersonalIdentifyInfo = (data) => {
+      const newMainInfo = data.NewMainInfo;
+      if (newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) {
+        const userDetail = this.state.userDetail;
+        const personalIdNo = userDetail.personal_id_no;
+        let obj = {...this.objectToSap};
+        obj.ictyp = "01";
+        if (this.isNullCustomize(personalIdNo)) {
+          obj.actio = "INS";
+          obj.icnum = this.resetValueInValid(newMainInfo.PersonalIdentifyNumber) || "";
+          obj.fpdat = newMainInfo.PersonalIdentifyDate ? moment(newMainInfo.PersonalIdentifyDate, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
+          obj.isspl = this.resetValueInValid(newMainInfo.PersonalIdentifyPlace) || "";
+        } else {
+          obj.actio = "MOD";
+          obj.icnum = this.resetValueInValid(newMainInfo.PersonalIdentifyNumber) || personalIdNo;
+          obj.fpdat = newMainInfo.PersonalIdentifyDate ? moment(newMainInfo.PersonalIdentifyDate, 'DD-MM-YYYY').format('YYYYMMDD') : moment(userDetail.pid_date_of_issue, 'DD-MM-YYYY').format('YYYYMMDD');
+          obj.isspl = this.resetValueInValid(newMainInfo.PersonalIdentifyPlace) || this.resetValueInValid(userDetail.pid_place_of_issue);
+        }
+        return obj;
       }
       return null;
     }

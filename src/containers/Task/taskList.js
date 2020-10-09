@@ -142,6 +142,7 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
+                    const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
                     let isShowEditButton = true;
                     if (this.props.page == "approval") {
                         isShowEditButton = false;
@@ -165,7 +166,7 @@ class TaskList extends React.Component {
                                 this.props.page == "approval" ? <th>{userId}</th> : null
                             }
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                            <td><Moment format="DD/MM/YYYY">{task.approvalDate}</Moment></td>
+                            <td>{approvalDate}</td>
                             <td className="status">{this.showStatus(task.id, task.status)}</td>
                             <td>
                             {task.comment ? <OverlayTrigger 

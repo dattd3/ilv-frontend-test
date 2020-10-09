@@ -29,18 +29,18 @@ class PersonalComponent extends React.Component {
                 return "Mã tôn giáo";
             case "ReligionText":
                 return "Tôn giáo";
-            case "DocumentTypeId":
-                return "Mã loại giấy tờ";
-            case "DocumentTypeIdText":
-                return "Loại giấy tờ";
-            case "DocumentTypeValue":
-                return "Số giấy tờ";
-            case "DateOfIssue":
-                return "Ngày cấp";
-            case "PlaceOfIssue":
-                return "Mã nơi cấp";
-            case "PlaceOfIssueText":
-                return "Nơi cấp";
+            case "PersonalIdentifyNumber":
+                return "Số CMND/CCCD";
+            case "PersonalIdentifyDate":
+                return "Ngày cấp CMND/CCCD";
+            case "PersonalIdentifyPlace":
+                return "Nơi cấp CMND/CCCD";
+            case "PassportNumber":
+                return "Số Hộ chiếu";
+            case "PassportDate":
+                return "Ngày cấp Hộ chiếu";
+            case "PassportPlace":
+                return "Nơi cấp Hộ chiếu";
             case "Nationality":
                 return "Mã quốc tịch";
             case "NationalityText":
@@ -98,7 +98,8 @@ class PersonalComponent extends React.Component {
 
     render() {
         const userMainInfo = this.props.userMainInfo;
-
+        console.log(22222222);
+        console.log(userMainInfo);
         return (
             <div className="info">
                 <div className="box shadow">

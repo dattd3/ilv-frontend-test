@@ -8,6 +8,7 @@ class AddressModal extends React.Component {
         super();
     
         this.state = {
+            countries: props.countries,
             provinces: [],
             districts: [],
             wards: [],
@@ -19,26 +20,32 @@ class AddressModal extends React.Component {
                     wardName: "",
                     districtName: "",
                     provinceName: "",
+                    countryName: "",
                     oldStreetName: "",
                     oldWardName: "",
                     oldDistrictName: "",
                     oldProvinceName: "",
+                    oldCountryName: "",
                     wardId: props.ward_id,
                     districtId: props.district_id,
-                    provinceId: props.province_id
+                    provinceId: props.province_id,
+                    countryId: props.country_id
                 },
                 temp: {
                     streetName: "",
                     wardName: "",
                     districtName: "",
                     provinceName: "",
+                    countryName: "",
                     oldStreetName: "",
                     oldWardName: "",
                     oldDistrictName: "",
                     oldProvinceName: "",
+                    oldCountryName: "",
                     wardId: props.ward_id,
                     districtId: props.district_id,
-                    provinceId: props.province_id
+                    provinceId: props.province_id,
+                    countryId: props.country_id
                 }
             }
         }
@@ -110,7 +117,12 @@ class AddressModal extends React.Component {
     }
 
     handleChange(name, oldLabel, item) {
-        if (name === "Province" || name === "TempProvince") {
+        if (name === "Country" || name === "TempCountry") {
+            const country = this.getLocationName("countries", item.value);
+            this.setMainAddress("countryId", country.ID);
+            this.setMainAddress("countryName", country.TEXT);
+            this.setMainAddress("oldCountryName", oldLabel);
+        }else if (name === "Province" || name === "TempProvince") {
             const province = this.getLocationName("provinces", item.value);
             this.setMainAddress("provinceId", province.ID);
             this.setMainAddress("provinceName", province.TEXT);
@@ -130,7 +142,7 @@ class AddressModal extends React.Component {
         }
         this.setMainAddress("oldStreetName", oldLabel);
         const resetList = {
-            country_id: ['province_id', 'district_id', 'ward_id', 'street_name'],
+            Country: ['province_id', 'district_id', 'ward_id', 'street_name'],
             Province: ['district_id', 'ward_id', 'street_name'],
             District: ['ward_id', 'street_name'],
             Wards: ['street_name'],
@@ -140,7 +152,7 @@ class AddressModal extends React.Component {
                 this.props.updateAddress(name, '', this.state.address.main)
             })
         }
-        if (name === 'country_id') {
+        if (name === 'Country') {
             this.setState({districts: [], wards: []})
             this.getProvices(item.value)
         }
@@ -178,7 +190,7 @@ class AddressModal extends React.Component {
                             Quốc gia
                         </div>
                         <div className="col-7">
-                            <Select options={countries} onChange={this.handleChange.bind(this, 'country_id', "")} value={countries.filter(c => c.value == this.state.country)}/>
+                            <Select options={countries} onChange={this.handleChange.bind(this, 'Country', "")} value={countries.filter(c => c.value == this.props.country_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
