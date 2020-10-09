@@ -40,15 +40,15 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
-  setStartTime(index, startTime) {
-    this.state.timesheets[index].startTime = startTime
+  setStartTime(index, name, startTime) {
+    this.state.timesheets[index][name] = startTime
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
-  setEndTime(index, endTime) {
-    this.state.timesheets[index].endTime = endTime
+  setEndTime(index, name, endTime) {
+    this.state.timesheets[index][name] = endTime
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -100,10 +100,46 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
-    const errors = this.verifyInput()
-    if (errors) {
-      return
+    // const errors = this.verifyInput()
+    // if (!_.isEmpty(errors)) {
+    //   return
+    // }
+
+    const data = {
+      timesheets: this.state.timesheets,
+      user: {
+        fullname: localStorage.getItem('fullName'),
+        jobTitle: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+        employeeNo: localStorage.getItem('employeeNo')
+      }
     }
+
+    let bodyFormData = new FormData();
+    bodyFormData.append('Name', 'Sửa giờ vào-ra')
+    bodyFormData.append('RequestTypeId', '5')
+    bodyFormData.append('Comment', '')
+    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
+    bodyFormData.append('UpdateField', {})
+    bodyFormData.append('Region', localStorage.getItem('region'))
+    bodyFormData.append('UserProfileInfoToSap', {})
+    this.state.files.forEach(file => {
+      bodyFormData.append('Files', file)
+    })
+
+    axios({
+      method: 'POST',
+      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      data: bodyFormData,
+      headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+    })
+      .then(response => {
+        if (response && response.data && response.data.result) {
+          console.log(response.data)
+        }
+      })
+      .catch(response => {
+      })
   }
 
   error(index, name) {
@@ -130,28 +166,28 @@ class InOutTimeUpdateComponent extends React.Component {
     const end = moment(this.state.endDate).format('YYYYMMDD').toString()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const timesheets = res.data.data.map(ts => {
-              return Object.assign({
-                isEdit: false,
-                note: null,
-                error: {},
-                startTime1Fact: ts.start_time1_fact ? ts.start_time1_fact : null,
-                startTime2Fact: ts.start_time2_fact ? ts.start_time2_fact : null,
-                startTime3Fact: ts.start_time3_fact ? ts.start_time3_fact : null,
-                endTime1Fact: ts.end_time1_fact ? ts.end_time1_fact : null,
-                endTime2Fact: ts.end_time2_fact ? ts.end_time2_fact : null,
-                endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
-              }, ts)
-            })
-            console.log(timesheets)
-            this.setState({ timesheets: timesheets})
-          }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const timesheets = res.data.data.map(ts => {
+            return Object.assign({
+              isEdit: false,
+              note: null,
+              error: {},
+              startTime1Fact: ts.start_time1_fact ? ts.start_time1_fact : null,
+              startTime2Fact: ts.start_time2_fact ? ts.start_time2_fact : null,
+              startTime3Fact: ts.start_time3_fact ? ts.start_time3_fact : null,
+              endTime1Fact: ts.end_time1_fact ? ts.end_time1_fact : null,
+              endTime2Fact: ts.end_time2_fact ? ts.end_time2_fact : null,
+              endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
+            }, ts)
+          })
+          console.log(timesheets)
+          this.setState({ timesheets: timesheets })
+        }
+      }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+      })
   }
 
   render() {
@@ -238,7 +274,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="col-6 text-right">
                       Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
                     </div>
-                  </div> : null }
+                  </div> : null}
                   {timesheet.start_time2_plan ? <div className="row">
                     <div className="col-6">
                       Bắt đầu: <b>{timesheet.start_time2_fact ? timesheet.start_time2_fact : null}</b>
@@ -246,7 +282,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="col-6 text-right">
                       Kết thúc: <b>{timesheet.end_time2_fact ? timesheet.end_time2_fact : null}</b>
                     </div>
-                  </div> : null }
+                  </div> : null}
                   {timesheet.start_time3_plan ? <div className="row">
                     <div className="col-6">
                       Bắt đầu: <b>{timesheet.start_time3_fact ? timesheet.start_time3_fact : null}</b>
@@ -254,7 +290,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="col-6 text-right">
                       Kết thúc: <b>{timesheet.end_time3_fact ? timesheet.end_time3_fact : null}</b>
                     </div>
-                  </div> : null }
+                  </div> : null}
                 </div>
 
               </div>
@@ -262,7 +298,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Sửa giờ vào ra</p>
-                  <div className="row">
+                  {timesheet.start_time1_plan ? <div className="row">
                     <div className="col-6">
                       <div className="row">
                         <div className="col-4">Bắt đầu:</div>
@@ -270,8 +306,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime}
-                                onChange={this.setStartTime.bind(this, index)}
+                                selected={timesheet.startTime1Fact}
+                                onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -294,8 +330,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime}
-                                onChange={this.setEndTime.bind(this, index)}
+                                selected={timesheet.endTime1Fact}
+                                onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -311,7 +347,7 @@ class InOutTimeUpdateComponent extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> : null}
                 </div>
               </div>
 

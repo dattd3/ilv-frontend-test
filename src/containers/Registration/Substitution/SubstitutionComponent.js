@@ -5,7 +5,7 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import moment from 'moment'
+
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
