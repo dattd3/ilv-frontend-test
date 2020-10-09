@@ -4,8 +4,6 @@ import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
-// import axios from 'axios'
-// import Constants from '../../../commons/Constants'
 
 class RegistrationComponent extends React.Component {
     constructor(props) {
@@ -15,30 +13,10 @@ class RegistrationComponent extends React.Component {
         }
     }
 
-    componentDidMount() {
-    //   const config = {
-    //     headers: {
-    //       'Authorization': `${localStorage.getItem('accessToken')}`
-    //     }
-    //   }
-    //   axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/approval`, config)
-    //   .then(res => {
-    //     if (res && res.data && res.data.data && res.data.result) {
-    //       const result = res.data.result;
-    //       if (result.code != Constants.API_ERROR_CODE) {
-    //         this.setState({tasks : res.data.data.listUserProfileHistories});
-    //       }
-    //     }
-    //   }).catch(error => {
-    //     this.props.sendData(null);
-    //     this.setState({tasks : []});
-    //   });
-    }
-
     render() {
       return (
       <div className="registration-section personal-info">
-        <Tabs defaultActiveKey="LeaveOfAbsenceRegistration" id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey="InOutTimeUpdate" id="uncontrolled-tab-example">
             <Tab eventKey="LeaveOfAbsenceRegistration" title={'Đăng ký nghỉ phép'}>
                 <LeaveOfAbsence/>
             </Tab>

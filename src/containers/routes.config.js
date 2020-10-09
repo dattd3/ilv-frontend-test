@@ -369,6 +369,22 @@ export default [
           },
           component: lazy(() => import("./Registration"))
         },
+        {
+          key: "registration-detail",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationDetail
+          },
+          component: lazy(() => import("./Registration/RegistrationDetailComponent"))
+        },
+        {
+          key: "edit-registration",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationEdit
+          },
+          component: lazy(() => import("./Registration/RegistrationEditComponent"))
+        },
       ],
     },
   },

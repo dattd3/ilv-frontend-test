@@ -95,11 +95,12 @@ class TaskList extends React.Component {
         return <span className={status[value].className}>{status[value].label}</span>
     }
 
-    getLinkUserProfileHistory = (id, name) => {
-        if (this.props.page === "approval") {
-            return `/tasks-approval/${id}`;
-        }
-        return `/tasks-request/${id}`;
+    getLinkUserProfileHistory = (id) => {
+        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+    }
+
+    getLinkRegistration (id) {
+        return this.props.page === "approval" ? `/registration/${id}` : `/registration/${id}/edit`
     }
 
     getTaskCode = code => {
@@ -140,9 +141,10 @@ class TaskList extends React.Component {
             <tbody>
                 {tasks.map((task, index) => {
                     const isShowEditButton = task.status == 2 ? false : true;
+                    console.log(task)
                     return (
                         <tr key={index}>
-                            <th><a href={this.getLinkUserProfileHistory(task.id)} title={task.name}>{task.name}</a></th>
+                            <th><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name}>{task.name}</a></th>
                             <td>{this.getTaskCode(task.id)}</td>
                             <td>{task.requestType.name}</td>
                             <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
@@ -172,7 +174,7 @@ class TaskList extends React.Component {
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                                 { isShowEditButton ?
-                                <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                <a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
                                 }
                             </td>

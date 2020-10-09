@@ -1,5 +1,5 @@
 import React from 'react'
-// import axios from 'axios'
+import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
@@ -14,19 +14,9 @@ class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: null,
-      endDate: null,
-      timesheets: [
-        {
-          date: null,
-          startTime: null,
-          endTime: null,
-          endDate: null,
-          substitutionType: null,
-          note: null,
-          errors: {}
-        }
-      ],
+      startDate: moment().startOf('month').toDate(),
+      endDate: new Date(),
+      timesheets: [],
       approver: null,
       files: [],
       errors: {}
@@ -34,23 +24,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   componentDidMount() {
-    //   const config = {
-    //     headers: {
-    //       'Authorization': `${localStorage.getItem('accessToken')}`
-    //     }
-    //   }
-    //   axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/approval`, config)
-    //   .then(res => {
-    //     if (res && res.data && res.data.data && res.data.result) {
-    //       const result = res.data.result;
-    //       if (result.code != Constants.API_ERROR_CODE) {
-    //         this.setState({tasks : res.data.data.listUserProfileHistories});
-    //       }
-    //     }
-    //   }).catch(error => {
-    //     this.props.sendData(null);
-    //     this.setState({tasks : []});
-    //   });
+
   }
 
   setStartDate(startDate) {
@@ -136,12 +110,51 @@ class InOutTimeUpdateComponent extends React.Component {
     return this.state.errors[name + index] ? <div className="text-danger">{this.state.errors[name + index]}</div> : null
   }
 
+  updateEditMode(index) {
+    this.state.timesheets[index].isEdit = !this.state.timesheets[index].isEdit
+    this.setState({
+      timesheets: [...this.state.timesheets]
+    })
+  }
+
+  search() {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
+
+    const start = moment(this.state.startDate).format('YYYYMMDD').toString()
+    const end = moment(this.state.endDate).format('YYYYMMDD').toString()
+
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+            const timesheets = res.data.data.map(ts => {
+              return Object.assign({
+                isEdit: false,
+                note: null,
+                error: {},
+                startTime1Fact: ts.start_time1_fact ? ts.start_time1_fact : null,
+                startTime2Fact: ts.start_time2_fact ? ts.start_time2_fact : null,
+                startTime3Fact: ts.start_time3_fact ? ts.start_time3_fact : null,
+                endTime1Fact: ts.end_time1_fact ? ts.end_time1_fact : null,
+                endTime2Fact: ts.end_time2_fact ? ts.end_time2_fact : null,
+                endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
+              }, ts)
+            })
+            console.log(timesheets)
+            this.setState({ timesheets: timesheets})
+          }
+        }).catch(error => {
+            // localStorage.clear();
+            // window.location.href = map.Login;
+        })
+  }
+
   render() {
-    const options = [
-      { value: '1', label: '01 ngày' },
-      { value: '2', label: '02 ngày' },
-      { value: '3', label: '03 ngày' }
-    ]
     return (
       <div className="in-out-time-update">
         <div className="box shadow">
@@ -149,69 +162,83 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">Từ ngày</p>
               <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="startDate"
-                      selectsStart
-                      selected={this.state.startDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      onChange={this.setStartDate.bind(this)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Lựa chọn"
-                      locale="vi"
-                      className="form-control input" />
-                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                  </label>
-                </div>
-                {this.error('startDate')}
+                <label>
+                  <DatePicker
+                    name="startDate"
+                    selectsStart
+                    selected={this.state.startDate}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onChange={this.setStartDate.bind(this)}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Lựa chọn"
+                    locale="vi"
+                    className="form-control input" />
+                  <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                </label>
+              </div>
+              {this.error('startDate')}
             </div>
 
             <div className="col-4">
               <p className="title">Đến ngày</p>
               <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="endDate"
-                      selectsEnd
-                      selected={this.state.endDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      minDate={this.state.startDate}
-                      onChange={this.setEndDate.bind(this)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Lựa chọn"
-                      locale="vi"
-                      className="form-control input" />
-                    <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
-                  </label>
-                </div>
-                {this.error('endDate')}
+                <label>
+                  <DatePicker
+                    name="endDate"
+                    selectsEnd
+                    selected={this.state.endDate}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    minDate={this.state.startDate}
+                    onChange={this.setEndDate.bind(this)}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Lựa chọn"
+                    locale="vi"
+                    className="form-control input" />
+                  <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
+                </label>
+              </div>
+              {this.error('endDate')}
             </div>
 
             <div className="col-4">
-              <p className="title">Tìm kiếm ngày</p>
+              <p className="title">&nbsp;</p>
               <div>
-                <button type="button" class="btn btn-warning w-100">Tìm kiếm</button>
+                <button type="button" class="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
               </div>
             </div>
           </div>
         </div>
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow">
-            <p><i className="fa fa-clock-o"></i> <b>Ngày 25/09/2020</b></p>
             <div className="row">
+              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4">
+                {!timesheet.isEdit && timesheet.start_time1_fact ? <p>Bắt đầu 1: <b>{timesheet.start_time1_fact}</b> | Kết thúc 1: <b>{timesheet.end_time1_fact}</b></p> : null}
+                {!timesheet.isEdit && timesheet.start_time3_fact ? <p>Bắt đầu 3: <b>{timesheet.start_time3_fact}</b> | Kết thúc 3: <b>{timesheet.end_time3_fact}</b></p> : null}
+              </div>
+              <div className="col-4">
+                {!timesheet.isEdit && timesheet.start_time2_fact ? <p>Bắt đầu 2: <b>{timesheet.start_time2_fact}</b> | Kết thúc 2: <b>{timesheet.end_time2_fact}</b></p> : null}
+              </div>
+              <div className="col-2 ">
+                {!timesheet.isEdit
+                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i class="fas fa-times-circle"></i> Hủy</p>}
+              </div>
+            </div>
+            {timesheet.isEdit ? <div className="row">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ thực tế</p>
-                  <div className="row">
+                  {timesheet.start_time1_plan ? <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>09:00:00</b>
+                      Bắt đầu: <b>{timesheet.start_time1_fact ? timesheet.start_time1_fact : null}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>09:00:00</b>
+                      Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
                     </div>
-                  </div>
+                  </div> : null }
                 </div>
 
               </div>
@@ -248,7 +275,7 @@ class InOutTimeUpdateComponent extends React.Component {
                       <div className="row">
                         <div className="col-4">Kết thúc:</div>
                         <div className="col-8">
-                        <div className="content input-container">
+                          <div className="content input-container">
                             <label>
                               <DatePicker
                                 selected={timesheet.endTime}
@@ -272,9 +299,9 @@ class InOutTimeUpdateComponent extends React.Component {
                 </div>
               </div>
 
-            </div>
+            </div> : null}
 
-            <div className="row">
+            {timesheet.isEdit ? <div className="row">
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>
@@ -282,13 +309,13 @@ class InOutTimeUpdateComponent extends React.Component {
                 </div>
                 {this.error(index, 'note')}
               </div>
-            </div>
+            </div> : null}
 
           </div>
         })}
 
-        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors}  updateApprover={this.updateApprover.bind(this)} /> : null }
-        {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null }
+        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} /> : null}
+        {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
       </div>
     )
   }

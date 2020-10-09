@@ -1,12 +1,14 @@
 import React from 'react'
-// import axios from 'axios'
+import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import moment from 'moment'
 
 registerLocale("vi", vi)
 
@@ -15,8 +17,10 @@ class BusinessTripComponent extends React.Component {
     super();
     this.state = {
       startDate: null,
+      startTime: null,
+      endTime: null,
       endDate: null,
-      totalTime: null,
+      totalTime: 2,
       attendanceQuotaType: null,
       vehicle: null,
       place: null,
@@ -28,29 +32,41 @@ class BusinessTripComponent extends React.Component {
   }
 
   componentDidMount() {
-    //   const config = {
-    //     headers: {
-    //       'Authorization': `${localStorage.getItem('accessToken')}`
-    //     }
-    //   }
-    //   axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/approval`, config)
-    //   .then(res => {
-    //     if (res && res.data && res.data.data && res.data.result) {
-    //       const result = res.data.result;
-    //       if (result.code != Constants.API_ERROR_CODE) {
-    //         this.setState({tasks : res.data.data.listUserProfileHistories});
-    //       }
-    //     }
-    //   }).catch(error => {
-    //     this.props.sendData(null);
-    //     this.setState({tasks : []});
-    //   });
+    if (this.props.businessTrip) {
+      this.setState({
+        isEdit: true,
+        id: this.props.businessTrip.id,
+        startDate: moment(this.props.businessTrip.userProfileInfo.startDate).toDate(),
+        startTime: moment(this.props.businessTrip.userProfileInfo.startTime).toDate(),
+        endDate: moment(this.props.businessTrip.userProfileInfo.endDate).toDate(),
+        endTime: moment(this.props.businessTrip.userProfileInfo.endTime).toDate(),
+        totalTime: this.props.businessTrip.userProfileInfo.totalTime,
+        attendanceQuotaType: this.props.businessTrip.userProfileInfo.attendanceQuotaType,
+        place: this.props.businessTrip.userProfileInfo.place,
+        vehicle: this.props.businessTrip.userProfileInfo.vehicle,
+        note: this.props.businessTrip.comment,
+        approver: this.props.businessTrip.userProfileInfo.approver
+      })
+    }
   }
 
   setStartDate(startDate) {
     this.setState({
       startDate: startDate,
       endDate: this.state.endDate === undefined || startDate > this.state.endDate ? startDate : this.state.endDate
+    })
+  }
+
+  setStartTime(startTime) {
+    this.setState({
+      startTime: startTime,
+      endTime: this.state.endTime === undefined || startTime > this.state.endTime ? startTime : this.state.endTime
+    })
+  }
+
+  setEndTime(endTime) {
+    this.setState({
+      endTime: endTime
     })
   }
 
@@ -97,9 +113,53 @@ class BusinessTripComponent extends React.Component {
 
   submit() {
     const errors = this.verifyInput()
-    if (errors) {
+    if (!_.isEmpty(errors)) {
       return
     }
+
+    const data = {
+      startDate: this.state.startDate,
+      startTime: this.state.startTime,
+      endDate: this.state.startDate,
+      endTime: this.state.endTime,
+      attendanceQuotaType: this.state.attendanceQuotaType,
+      approver: this.state.approver,
+      totalTime: this.state.totalTime,
+      vehicle: this.state.vehicle,
+      place: this.state.place,
+      user: {
+        fullname: localStorage.getItem('fullName'),
+        jobTitle: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+        employeeNo: localStorage.getItem('employeeNo')
+      }
+    }
+
+    let bodyFormData = new FormData();
+    bodyFormData.append('Name', 'Đăng ký Công tác/Đào tạo')
+    bodyFormData.append('RequestTypeId', Constants.BUSINESS_TRIP)
+    bodyFormData.append('Comment', this.state.note)
+    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
+    bodyFormData.append('UpdateField', JSON.stringify({}))
+    bodyFormData.append('Region', localStorage.getItem('region'))
+    bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
+    this.state.files.forEach(file => {
+      bodyFormData.append('Files', file)
+    })
+
+    axios({
+      method: 'POST',
+      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      data: bodyFormData,
+      headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+    })
+      .then(response => {
+        if (response && response.data && response.data.result) {
+          console.log(response.data)
+        }
+      })
+      .catch(response => {
+      })
   }
 
   error(name) {
@@ -132,53 +192,100 @@ class BusinessTripComponent extends React.Component {
         <div className="box shadow">
           <div className="form">
             <div className="row">
-              <div className="col-4">
-                <p className="title">Từ ngày/giờ</p>
-                <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="startDate"
-                      selectsStart
-                      selected={this.state.startDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      onChange={this.setStartDate.bind(this)}
-                      dateFormat="dd/MM/yyyy h:mm aa"
-                      placeholderText="Lựa chọn"
-                      locale="vi"
-                      showTimeSelect
-                      className="form-control input" />
-                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                  </label>
+              <div className="col-5">
+                <p className="title">Ngày/giờ bắt đầu</p>
+                <div className="row">
+                  <div className="col">
+                    <div className="content input-container">
+                      <label>
+                        <DatePicker
+                          name="startDate"
+                          selectsStart
+                          selected={this.state.startDate}
+                          startDate={this.state.startDate}
+                          endDate={this.state.endDate}
+                          onChange={this.setStartDate.bind(this)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText="Lựa chọn"
+                          locale="vi"
+                          className="form-control input" />
+                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                      </label>
+                    </div>
+                    {this.error('startDate')}
+                  </div>
+                  <div className="col">
+                    <div className="content input-container">
+                      <label>
+                        <DatePicker
+                          selected={this.state.startTime}
+                          onChange={this.setStartTime.bind(this)}
+                          showTimeSelect
+                          showTimeSelectOnly
+                          timeIntervals={15}
+                          timeCaption="Giờ"
+                          dateFormat="h:mm aa"
+                          placeholderText="Lựa chọn"
+                          className="form-control input"
+                        />
+                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
+                      </label>
+                    </div>
+                    {this.error('startTime')}
+                  </div>
+
                 </div>
-                {this.error('startDate')}
+
               </div>
 
-              <div className="col-4">
-                <p className="title">Đến ngày/giờ</p>
-                <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="endDate"
-                      selectsEnd
-                      selected={this.state.endDate}
-                      startDate={this.state.startDate}
-                      endDate={this.state.endDate}
-                      minDate={this.state.startDate}
-                      onChange={this.setEndDate.bind(this)}
-                      dateFormat="dd/MM/yyyy h:mm aa"
-                      placeholderText="Lựa chọn"
-                      locale="vi"
-                      showTimeSelect
-                      className="form-control input" />
-                    <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
-                  </label>
+              <div className="col-5">
+                <p className="title">Ngày/giờ kết thúc</p>
+                <div className="row">
+                  <div className="col">
+                    <div className="content input-container">
+                      <label>
+                        <DatePicker
+                          name="endDate"
+                          selectsEnd
+                          selected={this.state.endDate}
+                          startDate={this.state.startDate}
+                          endDate={this.state.endDate}
+                          minDate={this.state.startDate}
+                          onChange={this.setEndDate.bind(this)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText="Lựa chọn"
+                          locale="vi"
+                          className="form-control input" />
+                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                      </label>
+                    </div>
+                    {this.error('endDate')}
+                  </div>
+                  <div className="col">
+                    <div className="content input-container">
+                      <label>
+                        <DatePicker
+                          selected={this.state.endTime}
+                          onChange={this.setEndTime.bind(this)}
+                          showTimeSelect
+                          showTimeSelectOnly
+                          timeIntervals={15}
+                          timeCaption="Giờ"
+                          dateFormat="h:mm aa"
+                          placeholderText="Lựa chọn"
+                          className="form-control input"
+                        />
+                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
+                      </label>
+                    </div>
+                    {this.error('startTime')}
+                  </div>
                 </div>
-                {this.error('endDate')}
+
               </div>
 
-              <div className="col-4">
-                <p className="title">Tổng thời gian Công tác/Đào tạo</p>
+              <div className="col-2">
+                <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
                   <input type="text" class="form-control" value="2 ngày" readOnly />
                 </div>
@@ -186,26 +293,26 @@ class BusinessTripComponent extends React.Component {
             </div>
 
             <div className="row">
-              <div className="col-4">
+              <div className="col-5">
                 <p className="title">Loại chuyến Công tác/Đào tạo</p>
                 <div>
-                  <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType}  onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
+                  <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>
                 {this.error('attendanceQuotaType')}
               </div>
 
-              <div className="col-4">
+              <div className="col-5">
                 <p className="title">Địa điểm</p>
                 <div>
-                  <Select name="place" value={this.state.place}  onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+                  <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
                 </div>
                 {this.error('place')}
               </div>
 
-              <div className="col-4">
+              <div className="col-2">
                 <p className="title">Phương tiện</p>
                 <div>
-                  <Select name="vehicle" value={this.state.vehicle}  onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                  <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
                 </div>
                 {this.error('vehicle')}
               </div>
@@ -215,7 +322,7 @@ class BusinessTripComponent extends React.Component {
               <div className="col-12">
                 <p className="title">Lý do đăng ký Công tác/Đào tạo</p>
                 <div>
-                  <textarea class="form-control" name="note" onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
+                  <textarea class="form-control" name="note" value={this.state.note} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
                 </div>
                 {this.error('note')}
               </div>
@@ -223,7 +330,7 @@ class BusinessTripComponent extends React.Component {
           </div>
         </div>
 
-        <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} />
+        <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
         <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
       </div>
     )

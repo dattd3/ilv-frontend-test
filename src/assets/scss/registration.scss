@@ -1,4 +1,9 @@
 .registration-section {
+    h5 {
+        color: #2a377c;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
     .box {
         border: 1px solid #ddd;
         border-radius: 10px;
@@ -13,7 +18,7 @@
         .box-time {
             border: 1px solid #aaa;
             border-radius: 10px;
-            padding: 20px;
+            padding: 20px 10px;
             margin: 10px 0;
 
             .row {
@@ -89,6 +94,16 @@
         margin: 15px 15px 15px 0;
     }
 
+    .detail {
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        background-color: #eee;
+        padding: 7px;
+        border-radius: 5px;
+        width: 100%;
+        min-height: 40px;
+    }
+
     .leave-of-absence {
         .summary {
             .item {
@@ -100,5 +115,13 @@
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             }
         }
+    }
+
+    .in-out-time-update {
+        .edit {
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
     }
 }

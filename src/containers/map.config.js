@@ -55,5 +55,7 @@ export default {
   ApprovalTaskDetail: "/tasks-approval/:id",
 
   //Registration
-  Registration: "/registration"
-};
+  Registration: "/registration",
+  RegistrationDetail: "/registration/:id",
+  RegistrationEdit: "/registration/:id/edit"
+}

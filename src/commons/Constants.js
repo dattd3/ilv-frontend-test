@@ -10,6 +10,8 @@ const Constants = {
   AUDIO_FILE_TYPE: 'audio',
   VIDEO_FILE_TYPE: 'video',
   OTHER_FILE_TYPE: 'other',
-  KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport'
+  KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport',
+  LEAVE_OF_ABSENCE: 2,
+  BUSINESS_TRIP: 3,
 };
 export default Constants

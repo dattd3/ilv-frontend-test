@@ -9,6 +9,12 @@ class ApproverComponent extends React.Component {
         }
     }
 
+    componentDidMount() {
+      if (this.props.approver) {
+        this.setState({approver: this.props.approver})
+      }
+     }
+
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
         this.props.updateApprover(value)
