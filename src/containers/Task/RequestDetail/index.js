@@ -175,6 +175,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value, displayText) {
+    debugger;
     let oldMainInfo = this.state.OldMainInfo;
     if (this.state.OldMainInfo[name] === undefined) {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
@@ -227,7 +228,8 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ [name]: false })
   }
 
-  formatSapData(dt, updatedFieldName_arr) {
+  formatSapData(st, updatedFieldName_arr) {
+    let dt = st.data;
     let sapData = {};
     let pernr = localStorage.getItem('employeeNo');
     let usernamelc = localStorage.getItem('email').split("@")[0];
@@ -241,30 +243,37 @@ class PersonalInfoEdit extends React.Component {
 
     let shouldUpdateAddress = updatedFieldName_arr.some(u => addressKeyNames.indexOf(u) >= 0);
     let shouldUpdateAddressTemp = updatedFieldName_arr.some(u => addressKeyNameTemps.indexOf(u) >= 0);
+    let actio = 'MOD';
     if (shouldUpdateAddress || shouldUpdateAddressTemp) {
       sapData.address = [];
       if (shouldUpdateAddress) {
+        if(!st.userDetail.province_id || !st.userDetail.street_name || !st.userDetail.district_id || !st.userDetail.ward_id){
+          actio = 'INS';
+        }
         sapData.address.push({
-          actio: 'MOD',
+          actio: actio,
           anssa: 1,
-          state: dt.update.userProfileHistoryMainInfo.NewMainInfo.Province == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Province : dt.update.userProfileHistoryMainInfo.NewMainInfo.Province,
-          stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.StreetName : dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName,
-          zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.District == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.District : dt.update.userProfileHistoryMainInfo.NewMainInfo.District,
-          zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Wards : dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards,
+          state: dt.update.userProfileHistoryMainInfo.NewMainInfo.Province === undefined ? st.userDetail.province_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Province,
+          stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName === undefined ? st.userDetail.street_name : dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName,
+          zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.District === undefined ? st.userDetail.district_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.District,
+          zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards === undefined ? st.userDetail.ward_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards,
           kdate: '',
           pernr: pernr,
           user_name: usernamelc,
           myvp_id: ''
         });
       }
+      if(!st.userDetail.tmp_province_id || !st.userDetail.tmp_street_name || !st.userDetail.temp_district_id || !st.userDetail.tmp_ward_id){
+        actio = 'INS';
+      }
       if (shouldUpdateAddressTemp) {
         sapData.address.push({
-          actio: 'MOD',
+          actio: actio,
           anssa: 2,
-          state: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempProvince == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempProvince : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempProvince,
-          stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempStreetName : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName,
-          zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempDistrict : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict,
-          zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.TempWards : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards,
+          state: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempProvince === undefined ? st.userDetail.tmp_province_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempProvince,
+          stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName === undefined ? st.userDetail.tmp_street_name : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName,
+          zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict === undefined ? st.userDetail.temp_district_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict,
+          zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards === undefined ? st.userDetail.tmp_ward_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards,
           kdate: '',
           pernr: pernr,
           user_name: usernamelc,
@@ -274,84 +283,106 @@ class PersonalInfoEdit extends React.Component {
     }
     let shouldUpdateRace = updatedFieldName_arr.some(u => raceKeyNames.indexOf(u) >= 0);
     if (shouldUpdateRace) {
+      if(!st.userDetail.race_id){
+        actio = 'INS';
+      }
       sapData.race = [{
-        actio: 'MOD',
-        racky: dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Ethinic : dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic,
+        actio: actio,
+        racky: dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic === undefined ? st.userDetail.race_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic,
         kdate: '',
         pernr: pernr,
         user_name: usernamelc,
         myvp_id: ''
       }];
     }
-
+    
     let shouldUpdateContact = updatedFieldName_arr.some(u => contactKeyNames.indexOf(u) >= 0);
     if (shouldUpdateContact) {
       sapData.contact = [];
+      if(!st.userDetail.personal_email){
+        actio = 'INS';
+      }
       if (updatedFieldName_arr.some(u => u === 'PersonalEmail')) {
         sapData.contact.push({
-          actio: 'MOD',
+          actio: actio,
           subty: '0030',
           kdate: '',
           pernr: pernr,
-          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalEmail : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail,
+          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail === undefined ? st.userDetail.personal_email : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalEmail,
           user_name: usernamelc,
           myvp_id: ''
         });
       }
       if (updatedFieldName_arr.some(u => u === 'CellPhoneNo')) {
+        if(!st.userDetail.cell_phone_no){
+          actio = 'INS';
+        }
         sapData.contact.push({
-          actio: 'MOD',
+          actio: actio,
           subty: 'CELL',
           kdate: '',
           pernr: pernr,
-          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.CellPhoneNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo,
+          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo === undefined ? st.userDetail.cell_phone_no : dt.update.userProfileHistoryMainInfo.NewMainInfo.CellPhoneNo,
           user_name: usernamelc,
           myvp_id: ''
         });
-        if (updatedFieldName_arr.some(u => u === 'UrgentContactNo')) {
-          sapData.contact.push({
-            actio: 'MOD',
-            subty: 'V002',
-            kdate: '',
-            pernr: pernr,
-            usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.UrgentContactNo : dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo,
-            user_name: usernamelc,
-            myvp_id: ''
-          });
+      }
+      if (updatedFieldName_arr.some(u => u === 'UrgentContactNo')) {
+        if(!st.userDetail.urgent_contact_no){
+          actio = 'INS';
         }
+        sapData.contact.push({
+          actio: actio,
+          subty: 'V002',
+          kdate: '',
+          pernr: pernr,
+          usrid_long: dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo === undefined ? st.userDetail.urgent_contact_no : dt.update.userProfileHistoryMainInfo.NewMainInfo.UrgentContactNo,
+          user_name: usernamelc,
+          myvp_id: ''
+        });
       }
     }
     let shouldUpdateInformation = updatedFieldName_arr.some(u => informationKeyNames.indexOf(u) >= 0);
     if (shouldUpdateInformation) {
+      if(!st.userDetail.nationality_id || !st.userDetail.birth_country_id || !st.userDetail.race_id || !st.userDetail.birth_province_id || !st.userDetail.marital_status_code || !st.userDetail.gender){
+        actio = 'INS';
+      }
       sapData.information = [{
-        actio: 'MOD',
+        actio: actio,
         pernr: pernr,
-        natio: dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Nationality : dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality,
-        gblnd: dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Nationality : dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality,
-        konfe: dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Religion : dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion,
-        gbdep: dt.update.userProfileHistoryMainInfo.NewMainInfo.Province == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Province : dt.update.userProfileHistoryMainInfo.NewMainInfo.Province,
-        famst: dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.MaritalStatus : dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus,
-        gesch: dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender == undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.Gender : dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender,
+        natio: dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality === undefined ? st.userDetail.nationality_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality,
+        gblnd: dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthCountry === undefined ? st.userDetail.birth_country_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthCountry,
+        konfe: dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion === undefined ? st.userDetail.race_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion,
+        gbdep: dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthProvince === undefined ? st.userDetail.birth_province_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthProvince,
+        famst: dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus === undefined ? st.userDetail.marital_status_code : dt.update.userProfileHistoryMainInfo.NewMainInfo.MaritalStatus,
+        gesch: dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender === undefined ? st.userDetail.gender : dt.update.userProfileHistoryMainInfo.NewMainInfo.Gender,
         kdate: '',
         user_name: usernamelc,
-        myvp_id: ''
+        myvp_id: '',
+        famdt: ''
       }];
+      if(sapData.information[0].famst == '1' || sapData.information[0].famst == '2'){
+        sapData.information[0].famdt = dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate === undefined ? st.userDetail.marital_date : dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate;
+      }
     }
 
     let shouldUpdateEducation = updatedFieldName_arr.some(u => educationKeyNames.indexOf(u) >= 0);
     if (shouldUpdateEducation) {
       sapData.education = [];
+      if(!st.userDetail.DegreeType || !st.userDetail.MajorCode || !st.userDetail.race_id || !st.userDetail.birth_province_id || !st.userDetail.marital_status_code || !st.userDetail.gender){
+        actio = 'INS';
+      }
       if (dt.update.userProfileHistoryEducation.length > 0) {
         dt.update.userProfileHistoryEducation.map((item, index) => {
           sapData.education.push({
             actio: 'MOD',
             pernr: pernr,
-            slart: item.newMainInfo.DegreeType == undefined ? item.OldMainInfo.DegreeType : item.NewMainInfo.DegreeType,
-            zausbi: item.newMainInfo.MajorCode == undefined ? dt.item.OldMainInfo.MajorCode : dt.NewMainInfo.MajorCode,
-            zinstitute: item.newMainInfo.SchoolCode == undefined ? dt.item.OldMainInfo.SchoolCode : dt.NewMainInfo.SchoolCode,
-            zortherinst: item.newMainInfo.SchoolName == undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
-            begda: item.newMainInfo.FromTime == undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
-            endda: item.newMainInfo.ToTime == undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
+            slart: item.newMainInfo.DegreeType === undefined ? item.OldMainInfo.DegreeType : item.NewMainInfo.DegreeType,
+            zausbi: item.newMainInfo.MajorCode === undefined ? dt.item.OldMainInfo.MajorCode : dt.NewMainInfo.MajorCode,
+            zinstitute: item.newMainInfo.SchoolCode === undefined ? dt.item.OldMainInfo.SchoolCode : dt.NewMainInfo.SchoolCode,
+            zortherinst: item.newMainInfo.SchoolName === undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
+            begda: item.newMainInfo.FromTime === undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
+            endda: item.newMainInfo.ToTime === undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
             kdate: '',
             user_name: usernamelc,
             myvp_id: ''
@@ -380,38 +411,34 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateDocument = updatedFieldName_arr.some(u => documentKeyNames.indexOf(u) >= 0);
     if (shouldUpdateDocument) {
       sapData.document = [];
-      if (dt.update.userProfileHistoryEducation.length > 0) {
-        dt.update.userProfileHistoryEducation.map((item, index) => {
-          sapData.education.push({
-            actio: 'MOD',
-            pernr: pernr,
-            slart: item.newMainInfo.DegreeType == undefined ? item.OldMainInfo.DegreeType : item.NewMainInfo.DegreeType,
-            zausbi: item.newMainInfo.MajorCode == undefined ? dt.item.OldMainInfo.MajorCode : dt.NewMainInfo.MajorCode,
-            zinstitute: item.newMainInfo.SchoolCode == undefined ? dt.item.OldMainInfo.SchoolCode : dt.NewMainInfo.SchoolCode,
-            zortherinst: item.newMainInfo.SchoolName == undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
-            begda: item.newMainInfo.FromTime == undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
-            endda: item.newMainInfo.ToTime == undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
-            kdate: '',
-            user_name: usernamelc,
-            myvp_id: ''
-          });
+      if (updatedFieldName_arr.some(u => u === 'PersonalIdentifyNumber' && u === 'PersonalIdentifyDate' && u === 'PersonalIdentifyPlace')) {
+        sapData.contact.push({
+          actio: 'MOD',
+          kdate: '',
+          pernr: pernr,
+          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyNumber : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber,
+          ictyp: '01',
+          user_name: usernamelc,
+          myvp_id: '',
+          fpdat: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyDate : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate,
+          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyPlace : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace,
+          expid: '',
+          zznote: ''
         });
       }
-      if (dt.create.educations.length > 0) {
-        dt.create.educations.map((item, index) => {
-          sapData.education.push({
-            actio: 'INS',
-            slart: item.DegreeType,
-            zausbi: item.MajorCode,
-            zinstitute: item.SchoolCode,
-            zortherinst: item.SchoolName,
-            begda: item.FromTime,
-            endda: item.ToTime,
-            pernr: pernr,
-            kdate: '',
-            user_name: usernamelc,
-            myvp_id: ''
-          });
+      if (updatedFieldName_arr.some(u => u === 'PassportNumber' && u === 'PassportDate' && u === 'PassportPlace')) {
+        sapData.contact.push({
+          actio: 'MOD',
+          kdate: '',
+          pernr: pernr,
+          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportNumber : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber,
+          ictyp: '02',
+          user_name: usernamelc,
+          myvp_id: '',
+          fpdat: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportDate : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate,
+          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportPlace : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace,
+          expid: '',
+          zznote: ''
         });
       }
     }
@@ -425,7 +452,7 @@ class PersonalInfoEdit extends React.Component {
     bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
     let sapData = "";
     if (updateFields && Array.isArray(updateFields.UpdateField) && updateFields.UpdateField.length > 0) {
-      sapData = this.formatSapData(this.state.data, updateFields.UpdateField);
+      sapData = this.formatSapData(this.state, updateFields.UpdateField);
       sapData = JSON.stringify(sapData);
     }
     bodyFormData.append('UserProfileInfoToSap', sapData);
