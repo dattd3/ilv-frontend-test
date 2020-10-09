@@ -473,41 +473,56 @@ class PersonalInfoEdit extends React.Component {
       if (data && data.update) {
         const update = data.update;
         if (update && update.userProfileHistoryEducation && update.userProfileHistoryEducation[0].NewEducation) {
-          const newEducation = update.userProfileHistoryEducation[0].NewEducation;
-          if ((newEducation.SchoolCode || newEducation.DegreeType || newEducation.MajorCode || newEducation.FromTime || newEducation.ToTime)) {
-            const userEducation = this.state.userEducation;
-            let obj = {...this.objectToSap};
-            obj.actio = "MOD";
-            if (userEducation && userEducation.length > 0) {
-              obj.pre_begda = moment(userEducation[0].from_time, 'DD-MM-YYYY').format('YYYYMMDD');
-              obj.pre_endda = moment(userEducation[0].to_time, 'DD-MM-YYYY').format('YYYYMMDD');
-              obj.pre_slart = userEducation[0].education_level_id;
+          let educationUpdate = update.userProfileHistoryEducation;
+          for (let i = 0, len = educationUpdate.length; i < len; i++) {
+            const item = educationUpdate[i];
+            if (item.NewEducation.SchoolCode || item.NewEducation.DegreeType || item.NewEducation.MajorCode || item.NewEducation.FromTime || item.NewEducation.ToTime) {
+              const userEducation = this.state.userEducation;
+              const subItem = userEducation[i];
+              const schoolCode = item.NewEducation.SchoolCode;
+              let obj = {...this.objectToSap};
+              obj.actio = "MOD";
+              if (userEducation && userEducation.length > 0) {
+                obj.pre_begda = (subItem && subItem.from_time) ? moment(subItem.from_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+                obj.pre_endda = (subItem && subItem.to_time) ? moment(subItem.to_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+                obj.pre_seqnr = subItem.seqnr;
+                obj.pre_slart = subItem.education_level_id;
+              }
+              obj.begda = item.NewEducation.FromTime ? moment(item.NewEducation.FromTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+              obj.endda = item.NewEducation.ToTime ? moment(item.NewEducation.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+              obj.slart = item.NewEducation.DegreeType;
+              obj.zausbi = item.NewEducation.MajorCode;
+              if (this.isNullCustomize(schoolCode)) {
+                obj.zinstitute = "";
+                obj.zortherinst = item.NewEducation.SchoolName || "";
+              } else {
+                obj.zinstitute = schoolCode;
+                obj.zortherinst = "";
+              }
+              listObj = [...listObj, obj];
             }
-            obj.begda = moment(newEducation.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
-            obj.endda = moment(newEducation.ToTime, 'DD-MM-YYYY').format('YYYYMMDD');
-            obj.slart = newEducation.DegreeType;
-            obj.zausbi = newEducation.MajorCode;
-            obj.zinstitute = newEducation.SchoolCode;
-            obj.zortherinst = newEducation.SchoolName;
-            listObj = [...listObj, obj];
           }
         }
       }
       if (data && data.create && data.create.educations) {
-        let educations = data.create.educations;
-        const schoolCode = educations.SchoolCode;
-        let obj = {...this.objectToSap};
-        obj.actio = "INS";
-        obj.begda = moment(educations.FromTime, 'DD-MM-YYYY').format('YYYYMMDD');
-        obj.endda = educations.ToTime ? moment(educations.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : moment().format('YYYYMMDD');
-        obj.slart = educations.DegreeType;
-        obj.zausbi = educations.MajorCode || "";
-        if (this.isNullCustomize(schoolCode)) {
-          obj.zortherinst = educations.SchoolName || "";
-        } else {
-          obj.zinstitute = schoolCode;
-        }
-        listObj = [...listObj, obj];
+        let create = data.create.educations;
+        create.forEach(item => {
+          let obj = {...this.objectToSap};
+          const schoolCode = item.SchoolCode;
+          obj.actio = "INS";
+          obj.begda = item.FromTime ? moment(item.FromTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+          obj.endda = item.ToTime ? moment(item.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+          obj.slart = item.DegreeType;
+          obj.zausbi = item.MajorCode || "";
+          if (this.isNullCustomize(schoolCode)) {
+            // obj.zinstitute = "";
+            obj.zortherinst = item.SchoolName || "";
+          } else {
+            obj.zinstitute = schoolCode;
+            obj.zortherinst = "";
+          }
+          listObj = [...listObj, obj];
+        })
       }
       if (listObj.length > 0) {
         return listObj;
@@ -634,38 +649,36 @@ class PersonalInfoEdit extends React.Component {
     }
 
     prepareEducationModel = (data, action, type) => {
-      // console.log("child ooooooooooo");
-      // console.log(data); // => Sau khi sửa
       let obj = {
         SchoolCode: data.school_id || "",
         DegreeType: data.education_level_id || "",
-        DegreeTypeText: data.degree_text || "",
         MajorCode: data.major_id || "",
         FromTime: data.from_time || "",
         ToTime: data.to_time || ""
       }
       let objClone = {...obj};
+
       if (action === "insert" || (action === "update" && type === "new")) {
-        objClone.SchoolName = data.school_name || data.other_uni_name;
+        objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
+        objClone.DegreeTypeText = data.degree_text || "";
         objClone.MajorName = data.major_name || "";
       } else {
         objClone.SchoolName = data.university_name || data.other_uni_name;
+        objClone.DegreeTypeText = data.academic_level || "";
         objClone.MajorName = data.major || "";
       }
+
       return objClone;
     }
 
     updateEducation(educationNew) {
-      // console.log("parent ooooooooooooooo");
-      // console.log(educationNew); // => Sau khi sửa
       const educationOriginal = this.state.userEducation;
-      // console.log(educationOriginal); // => Nguyên bản
       let userProfileHistoryEducation = [];
 
       educationNew.forEach((element, index) => {
         if (!_.isEqual(element, educationOriginal[index])) {
-          const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "new");
-          const newObj = this.prepareEducationModel(element, "update", "old");
+          const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "old");
+          const newObj = this.prepareEducationModel(element, "update", "new");
           const obj =
           {
             OldEducation: oldObj,
