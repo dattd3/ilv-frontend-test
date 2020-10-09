@@ -315,7 +315,8 @@ class PersonalInfoEdit extends React.Component {
             obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
             const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
             obj.famst = maritalInfo[0];
-            obj.famdt = maritalInfo[1];
+            obj.famdt = moment().format('YYYYMMDD');
+            // obj.famdt = maritalInfo[1]; // Check again
             obj.konfe = this.getDataSpecificFields(newMainInfo.Religion, userDetail.religion_id);
             obj.gesch = this.getDataSpecificFields(newMainInfo.Gender, userDetail.gender);
             return [obj];
