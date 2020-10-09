@@ -174,13 +174,20 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ isShowModalConfirm: false });
   }
 
-  updatePersonalInfo(name, old, value) {
+  updatePersonalInfo(name, old, value, displayText) {
     let oldMainInfo = this.state.OldMainInfo;
     if (this.state.OldMainInfo[name] === undefined) {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
+      if(displayText && displayText != ""){
+        oldMainInfo[name+'Text'] = displayText;
+      }
     }
 
-    let newMainInfo = { ...this.state.NewMainInfo, [name]: value };
+    let newMainInfo = { ...this.state.NewMainInfo, [name]: value};
+    if(displayText && displayText != ""){
+      newMainInfo[name+'Text'] = displayText;
+    }
+
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
       OldMainInfo: oldMainInfo,
@@ -224,10 +231,11 @@ class PersonalInfoEdit extends React.Component {
     let sapData = {};
     let pernr = localStorage.getItem('employeeNo');
     let usernamelc = localStorage.getItem('email').split("@")[0];
-    let addressKeyNames = ['Nationality', 'Province', 'District', 'Wards', 'StreetName'];
-    let addressKeyNameTemps = ['TempProvince', 'TempDistrict', 'TempWards', 'TempStreetName'];
-    let informationKeyNames = ['Birthday', 'BirthProvince', 'Gender', 'Religion', 'PassportNo', 'DateOfIssue', 'PlaceOfIssue', 'Nationality'];
+    let addressKeyNames = ['StreetName', 'Wards', 'District', 'Province', 'Country'];
+    let addressKeyNameTemps = ['TempProvince', 'TempDistrict', 'TempWards', 'TempStreetName', 'TempCountry'];
+    let informationKeyNames = ['Birthday','Nationality', 'BirthCountry', 'BirthProvince','MaritalStatus','MarriageDate', 'Gender', 'Religion'];
     let contactKeyNames = ['PersonalEmail', 'CellPhoneNo', 'UrgentContactNo'];
+    let documentKeyNames = ['PersonalIdentifyNumber','PersonalIdentifyDate','PersonalIdentifyPlace','PassportNumber', 'PassportDate', 'PassportPlace'];
     let educationKeyNames = ['SchoolCode', 'SchoolName', 'DegreeType', 'MajorCode', 'FromTime', 'ToTime'];
     let raceKeyNames = ['Ethinic'];
 
@@ -368,6 +376,45 @@ class PersonalInfoEdit extends React.Component {
         });
       }
     }
+
+    let shouldUpdateDocument = updatedFieldName_arr.some(u => documentKeyNames.indexOf(u) >= 0);
+    if (shouldUpdateDocument) {
+      sapData.document = [];
+      if (dt.update.userProfileHistoryEducation.length > 0) {
+        dt.update.userProfileHistoryEducation.map((item, index) => {
+          sapData.education.push({
+            actio: 'MOD',
+            pernr: pernr,
+            slart: item.newMainInfo.DegreeType == undefined ? item.OldMainInfo.DegreeType : item.NewMainInfo.DegreeType,
+            zausbi: item.newMainInfo.MajorCode == undefined ? dt.item.OldMainInfo.MajorCode : dt.NewMainInfo.MajorCode,
+            zinstitute: item.newMainInfo.SchoolCode == undefined ? dt.item.OldMainInfo.SchoolCode : dt.NewMainInfo.SchoolCode,
+            zortherinst: item.newMainInfo.SchoolName == undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
+            begda: item.newMainInfo.FromTime == undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
+            endda: item.newMainInfo.ToTime == undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
+            kdate: '',
+            user_name: usernamelc,
+            myvp_id: ''
+          });
+        });
+      }
+      if (dt.create.educations.length > 0) {
+        dt.create.educations.map((item, index) => {
+          sapData.education.push({
+            actio: 'INS',
+            slart: item.DegreeType,
+            zausbi: item.MajorCode,
+            zinstitute: item.SchoolCode,
+            zortherinst: item.SchoolName,
+            begda: item.FromTime,
+            endda: item.ToTime,
+            pernr: pernr,
+            kdate: '',
+            user_name: usernamelc,
+            myvp_id: ''
+          });
+        });
+      }
+    }
     return sapData;
   }
   sendRequest = () => {
@@ -473,34 +520,36 @@ class PersonalInfoEdit extends React.Component {
 
   updateEducation = (educationNew) => {
     const educationOriginal = this.state.userEducation;
-      let userProfileHistoryEducation = [];
-      educationNew.forEach((element, index) => {
-        if (!_.isEqual(element, educationOriginal[index])) {
-          const oldObj = this.populateEducation(educationOriginal[index]);
-          const newObj = this.populateEducation(element);
-          const obj =
-          {
-            OldEducation: oldObj,
-            NewEducation: newObj
-          }
-          userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
+    let userProfileHistoryEducation = [];
+    educationNew.forEach((element, index) => {
+      if (!_.isEqual(element, educationOriginal[index])) {
+        const oldObj = this.populateEducation(educationOriginal[index]);
+        const newObj = this.populateEducation(element);
+        const obj =
+        {
+          OldEducation: oldObj,
+          NewEducation: newObj
+        }
+        userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
+        this.setState({
+          userProfileHistoryEducation: userProfileHistoryEducation
+        }, () => {
           this.setState({
-            userProfileHistoryEducation : userProfileHistoryEducation
+            update: {
+              ...this.state.update,
+              userProfileHistoryEducation: this.state.userProfileHistoryEducation
+            }
           }, () => {
             this.setState({
-              update : {
-                ...this.state.update,
-                userProfileHistoryEducation: this.state.userProfileHistoryEducation
-              }
-            }, () => {
-              this.setState({data : {
+              data: {
                 ...this.state.data,
                 update: this.state.update
-              }});
-            })
-          });
-        }
-      });
+              }
+            });
+          })
+        });
+      }
+    });
   }
 
   updateNewEducation = (value, index) => {
@@ -576,31 +625,103 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ isShowModalConfirm: true });
   }
 
+  mappingFields = key => {
+    switch (key) {
+      //#region education
+      case "DegreeType":
+        return "education_level_id";
+      case "SchoolCode":
+        return "school_id";
+      case "SchoolName":
+        return "other_uni_name";
+      case "MajorCode":
+        return "major_id";
+      case "FromTime":
+        return "from_time";
+      case "ToTime":
+        return "to_time";
+      //#endregion
+      //#region personal info
+      case "Birthday":
+        return "birthday";
+      case "DateOfIssue":
+        return "date_of_issue";
+      case "Gender":
+        return "gender";
+      case "PersonalEmail":
+        return "personal_email";
+      case "CellPhoneNo":
+        return "cell_phone_no";
+      case "UrgentContactNo":
+        return "urgent_contact_no";
+      case "BankAccountNumber":
+        return "bank_number";
+      case "PlaceOfIssue":
+        return "place_of_issue";
+      case "Ethinic":
+        return "race_id";
+      case "Religion":
+        return "religion_id";
+      case "BirthProvince":
+        return "birth_province_id";
+      case "Province":
+        return "province_id";
+      case "Nationality":
+        return "nationality_id";
+      case "MaritalStatus":
+        return "marital_status_code";
+      case "Bank":
+        return "bank_name_id";
+      case "DocumentTypeId":
+        return "document_type_id";
+      case "DocumentTypeValue":
+        return "passport_no";
+      case "PassportNo":
+        return "passport_no";
+      case "District":
+        return "district_id";
+      case "Wards":
+        return "ward_id";
+      case "TempProvince":
+        return "tmp_province_id";
+      case "TempDistrict":
+        return "tmp_district_id";
+      case "TempWards":
+        return "tmp_ward_id";
+      case "StreetName":
+        return "street_name";
+      case "TempStreetName":
+        return "tmp_street_name";
+      case "BankCode":
+        return "bank_name_id";
+      case "PersonalIdentifyNumber":
+        return "personal_id_no";
+      case "PersonalIdentifyDate":
+        return "pid_date_of_issue";
+      case "PersonalIdentifyPlace":
+        return "pid_place_of_issue";
+      case "PassportNumber":
+        return "passport_id_no";
+      case "PassportDate":
+        return "passport_date_of_issue";
+      case "PassportPlace":
+        return "passport_place_of_issue";
+      case "CountryCode":
+        return "country_id";
+      case "BirthCountry":
+        return "birth_country_id";
+      //#endregion
+      default: return key;
+    }
+  }
+
   mappingDataToProps = (props) => {
     if ((props && props.education && props.education.length > 0) || (props && props.newEducation && props.newEducation.length > 0) || (props.information)) {
       let st = { information: {}, education: [], newEducation: [] };
       if (props.education) {
         let educations = [];
         props.education.forEach((item, index) => {
-          let educationItem = {};
-          if (item.DegreeType) {
-            educationItem.education_level_id = item.DegreeType;
-          }
-          if (item.SchoolCode) {
-            educationItem.school_id = item.SchoolCode;
-          }
-          if (item.SchoolName) {
-            educationItem.other_uni_name = item.SchoolName;
-          }
-          if (item.MajorCode) {
-            educationItem.major_id = item.MajorCode;
-          }
-          if (item.FromTime) {
-            educationItem.from_time = item.FromTime;
-          }
-          if (item.ToTime) {
-            educationItem.to_time = item.ToTime;
-          }
+          let educationItem = Object.keys(item).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item[curr], pre), {});
           educations.push(educationItem);
         });
         st.education = educations;
@@ -608,103 +729,15 @@ class PersonalInfoEdit extends React.Component {
       if (props.newEducation && props.newEducation.length > 0) {
         let newUserEducation = [];
         props.newEducation.forEach((item, index) => {
-          let newEducationItem = {};
-          if (item.DegreeType) {
-            newEducationItem.education_level_id = item.DegreeType;
-          }
-          if (item.SchoolCode) {
-            newEducationItem.school_id = item.SchoolCode;
-          }
-          if (item.SchoolName) {
-            newEducationItem.other_uni_name = item.SchoolName;
-          }
-          if (item.MajorCode) {
-            newEducationItem.major_id = item.MajorCode;
-          }
-          if (item.FromTime) {
-            newEducationItem.from_time = item.FromTime;
-          }
-          if (item.ToTime) {
-            newEducationItem.to_time = item.ToTime;
-          }
+          let newEducationItem = Object.keys(item).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item[curr], pre), {});
           newUserEducation.push(newEducationItem);
         });
         st.newEducation = newUserEducation;
       }
-
       if (props.information) {
-        {
-          let changingDataWithCamelCase = convertObjectkeyToCamelCase(props.information);
-          if (changingDataWithCamelCase.birthProvince) {
-            changingDataWithCamelCase.province_id = changingDataWithCamelCase.birthProvince;
-          }
-          if (changingDataWithCamelCase.ethinic) {
-            changingDataWithCamelCase.race_id = changingDataWithCamelCase.ethinic;
-          }
-          if (changingDataWithCamelCase.religion) {
-            changingDataWithCamelCase.religion_id = changingDataWithCamelCase.religion;
-          }
-          if (changingDataWithCamelCase.passportNo) {
-            changingDataWithCamelCase.passport_no = changingDataWithCamelCase.passportNo;
-          }
-          if (changingDataWithCamelCase.dateOfIssue) {
-            changingDataWithCamelCase.date_of_issue = changingDataWithCamelCase.dateOfIssue;
-          }
-          if (changingDataWithCamelCase.placeOfIssue) {
-            changingDataWithCamelCase.place_of_issue = changingDataWithCamelCase.placeOfIssue;
-          }
-          if (changingDataWithCamelCase.streetName) {
-            changingDataWithCamelCase.street_name = changingDataWithCamelCase.streetName;
-          }
-          if (changingDataWithCamelCase.wards) {
-            changingDataWithCamelCase.ward_id = changingDataWithCamelCase.wards;
-          }
-          if (changingDataWithCamelCase.district) {
-            changingDataWithCamelCase.district_id = changingDataWithCamelCase.district;
-          }
-          if (changingDataWithCamelCase.province) {
-            changingDataWithCamelCase.province_id = changingDataWithCamelCase.province;
-          }
-          if (changingDataWithCamelCase.nationality) {
-            changingDataWithCamelCase.country_id = changingDataWithCamelCase.nationality;
-          }
-          if (changingDataWithCamelCase.tempStreetName) {
-            changingDataWithCamelCase.tmp_street_name = changingDataWithCamelCase.tempStreetName;
-          }
-          if (changingDataWithCamelCase.tempWards) {
-            changingDataWithCamelCase.tmp_ward_id = changingDataWithCamelCase.tempWards;
-          }
-          if (changingDataWithCamelCase.tempDistrict) {
-            changingDataWithCamelCase.tmp_district_id = changingDataWithCamelCase.tempDistrict;
-          }
-          if (changingDataWithCamelCase.tempProvince) {
-            changingDataWithCamelCase.tmp_province_id = changingDataWithCamelCase.tempProvince;
-          }
-          if (changingDataWithCamelCase.nationality) {
-            changingDataWithCamelCase.tmp_country_id = changingDataWithCamelCase.nationality;
-          }
-          if (changingDataWithCamelCase.maritalStatus) {
-            changingDataWithCamelCase.marital_status_code = changingDataWithCamelCase.maritalStatus;
-          }
-          if (changingDataWithCamelCase.personalEmail) {
-            changingDataWithCamelCase.personal_email = changingDataWithCamelCase.personalEmail;
-          }
-          if (changingDataWithCamelCase.cellPhoneNo) {
-            changingDataWithCamelCase.cell_phone_no = changingDataWithCamelCase.cellPhoneNo;
-          }
-          if (changingDataWithCamelCase.urgentContactNo) {
-            changingDataWithCamelCase.urgent_contact_no = changingDataWithCamelCase.urgentContactNo;
-          }
-          if (changingDataWithCamelCase.bankAccountNumber) {
-            changingDataWithCamelCase.bank_number = changingDataWithCamelCase.bankAccountNumber;
-          }
-          if (changingDataWithCamelCase.bankCode) {
-            changingDataWithCamelCase.bank_name_id = changingDataWithCamelCase.bankCode;
-          }
-          st.information = changingDataWithCamelCase;
-        }
-        return st;
+        st.information = Object.keys(props.information).reduce((pre, curr) => (pre[this.mappingFields(curr)] = props.information[curr], pre), {});
       }
+      return st;
     }
   }
   processProfile = (res) => {
@@ -825,7 +858,7 @@ class PersonalInfoEdit extends React.Component {
           dt.education = changingData.data.data.userProfileInfo.update.userProfileHistoryEducation.NewEducation;
         }
         if (changingData.data.data.userProfileInfo.create && changingData.data.data.userProfileInfo.create.educations) {
-          dt.newEducation.push(changingData.data.data.userProfileInfo.create.educations);
+          dt.newEducation = changingData.data.data.userProfileInfo.create.educations;
         }
 
         let dataMappingToProps = this.mappingDataToProps(dt);
@@ -849,6 +882,7 @@ class PersonalInfoEdit extends React.Component {
               userProfile={this.state.userProfile}
               removeInfo={this.removePersonalInfo.bind(this)}
               updateInfo={this.updatePersonalInfo.bind(this)}
+              mappingFieldFn={this.mappingFields.bind(this)}
               setState={this.setState.bind(this)}
               genders={this.state.genders}
               races={this.state.races}
@@ -858,7 +892,6 @@ class PersonalInfoEdit extends React.Component {
               countries={this.state.countries}
               religions={this.state.religions}
               documentTypes={this.state.documentTypes}
-              mappingFieldsToGetSapKey={this.mappingFieldsToGetSapKey}
             />
             <EducationComponent
               userEducation={this.state.userEducation}
@@ -868,8 +901,8 @@ class PersonalInfoEdit extends React.Component {
               majors={this.state.majors}
               schools={this.state.schools}
               updateEducation={this.updateEducation.bind(this)}
+              mappingFieldFn={this.mappingFields.bind(this)}
               updateNewEducation={this.updateNewEducation.bind(this)}
-              mappingFieldsToGetSapKey={this.mappingFieldsToGetSapKey}
             />
 
             <ul className="list-inline">
