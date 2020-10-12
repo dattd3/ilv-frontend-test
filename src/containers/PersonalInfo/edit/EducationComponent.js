@@ -99,6 +99,13 @@ class EducationComponent extends React.Component {
       }
     }
 
+    resetValueInValid = value => {
+      if (value == undefined || value == null || value == 'null' || value == '#') {
+        return "";
+      }
+      return value;
+    }
+
     itemHeader() {
         return <Row className="info-label">
         <Col xs={12} md={6} lg={3}>
@@ -132,7 +139,7 @@ class EducationComponent extends React.Component {
                 </div>
                 <div className="form-inline float-right">
                   <label className="mr-3">Khác: </label>
-                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''}/>
+                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={ this.resetValueInValid(item.other_uni_name) || ''}/>
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>

@@ -98,8 +98,6 @@ class PersonalComponent extends React.Component {
 
     render() {
         const userMainInfo = this.props.userMainInfo;
-        console.log(22222222);
-        console.log(userMainInfo);
         return (
             <div className="info">
                 <div className="box shadow">

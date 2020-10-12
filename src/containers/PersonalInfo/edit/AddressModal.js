@@ -8,6 +8,7 @@ class AddressModal extends React.Component {
         super();
     
         this.state = {
+            countries: props.countries,
             provinces: [],
             districts: [],
             wards: [],
@@ -19,26 +20,32 @@ class AddressModal extends React.Component {
                     wardName: "",
                     districtName: "",
                     provinceName: "",
+                    countryName: "",
                     oldStreetName: "",
                     oldWardName: "",
                     oldDistrictName: "",
                     oldProvinceName: "",
+                    oldCountryName: "",
                     wardId: props.ward_id || '',
                     districtId: props.district_id || '',
-                    provinceId: props.province_id || ''
+                    provinceId: props.province_id || '',
+                    countryId: props.country_id || '',
                 },
                 temp: {
                     streetName: "",
                     wardName: "",
                     districtName: "",
                     provinceName: "",
+                    countryName: "",
                     oldStreetName: "",
                     oldWardName: "",
                     oldDistrictName: "",
                     oldProvinceName: "",
+                    oldCountryName: "",
                     wardId: props.ward_id || '',
                     districtId: props.district_id || '',
-                    provinceId: props.province_id || ''
+                    provinceId: props.province_id || '',
+                    countryId: props.country_id || '',
                 }
             }
         }
@@ -58,6 +65,7 @@ class AddressModal extends React.Component {
         if (nextProps.street_name !== this.props.street_name) {
             this.setState({ street_name: nextProps.street_name })
             this.setState({ country: nextProps.country_id })
+            this.setState({ countries: nextProps.countries })
         }
     }
 
@@ -110,7 +118,13 @@ class AddressModal extends React.Component {
     }
 
     handleChange(name, oldLabel, item) {
-        if (name === "Province" || name === "TempProvince") {
+        if (name === "Country" || name === "TempCountry") {
+            const country = this.getLocationName("countries", item.value);
+            this.setMainAddress("countryId", country.ID);
+            this.setMainAddress("countryName", country.TEXT);
+            this.setMainAddress("oldCountryName", oldLabel);
+            this.setState({country: item.value});
+        } else if (name === "Province" || name === "TempProvince") {
             const province = this.getLocationName("provinces", item.value);
             this.setMainAddress("provinceId", province.ID);
             this.setMainAddress("provinceName", province.TEXT);
@@ -126,11 +140,11 @@ class AddressModal extends React.Component {
             this.setMainAddress("wardName", ward.TEXT);
             this.setMainAddress("oldWardName", oldLabel);
         } else {
-            this.setState({country : item.value});
+            this.setMainAddress("oldStreetName", oldLabel);
         }
-        this.setMainAddress("oldStreetName", oldLabel);
+
         const resetList = {
-            country_id: ['province_id', 'district_id', 'ward_id', 'street_name'],
+            Country: ['province_id', 'district_id', 'ward_id', 'street_name'],
             Province: ['district_id', 'ward_id', 'street_name'],
             District: ['ward_id', 'street_name'],
             Wards: ['street_name'],
@@ -141,7 +155,7 @@ class AddressModal extends React.Component {
             })
         }
         if (name === 'Country') {
-            this.setState({districts: [], wards: []})
+            this.setState({provinces: [], districts: [], wards: []})
             this.getProvices(item.value)
         }
         if (name === 'Province') {
@@ -149,6 +163,7 @@ class AddressModal extends React.Component {
             this.getDistricts(item.value)
         }
         if (name === 'District') {
+            this.setState({wards: []})
             this.getWards(item.value)
         }
         if (name === 'StreetName') {
@@ -156,7 +171,6 @@ class AddressModal extends React.Component {
             this.setState({street_name: value});
             this.setMainAddress("streetName", value);
         }
-
         this.props.updateAddress(name, item, this.state.address.main)
     }
 
@@ -178,7 +192,7 @@ class AddressModal extends React.Component {
                             Quốc gia
                         </div>
                         <div className="col-7">
-                            <Select options={countries} onChange={this.handleChange.bind(this, 'Country', "")} value={countries.filter(c => c.value == this.state.country)}/>
+                            <Select options={countries} onChange={this.handleChange.bind(this, 'Country', this.props.country_name)} value={countries.filter(c => c.value == this.state.country)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
