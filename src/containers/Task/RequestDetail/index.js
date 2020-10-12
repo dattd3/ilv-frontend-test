@@ -237,7 +237,8 @@ class PersonalInfoEdit extends React.Component {
     let informationKeyNames = ['Birthday', 'Nationality', 'BirthCountry', 'BirthProvince', 'MaritalStatus', 'MarriageDate', 'Gender', 'Religion'];
     let contactKeyNames = ['PersonalEmail', 'CellPhoneNo', 'UrgentContactNo'];
     let documentKeyNames = ['PersonalIdentifyNumber', 'PersonalIdentifyDate', 'PersonalIdentifyPlace', 'PassportNumber', 'PassportDate', 'PassportPlace'];
-    let educationKeyNames = ['SchoolCode', 'SchoolName', 'DegreeType', 'MajorCode', 'FromTime', 'ToTime'];
+    let bankKeyNames = ['BankAccountNumber','Bank'];
+    //let educationKeyNames = ['SchoolCode', 'SchoolName', 'DegreeType', 'MajorCode', 'FromTime', 'ToTime'];
     let raceKeyNames = ['Ethinic'];
 
     let shouldUpdateAddress = updatedFieldName_arr.some(u => addressKeyNames.indexOf(u) >= 0);
@@ -533,6 +534,24 @@ class PersonalInfoEdit extends React.Component {
         });
       }
     }
+
+    let shouldUpdateBank = updatedFieldName_arr.some(u => bankKeyNames.indexOf(u) >= 0);
+    if (shouldUpdateBank) {
+      sapData.bank = [];
+        let actio = 'MOD';
+        if (!st.userDetail.bank_number) {
+          actio = 'INS';
+        }
+        sapData.bank.push({
+          actio: actio,
+          kdate: '',
+          pernr: pernr,
+          bankl: dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank === undefined ? st.userDetail.bank_name_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank,
+          bankn: dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber === undefined ? st.userDetail.bank_number : dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber,
+          user_name: usernamelc,
+          myvp_id: ''
+        });
+    }
     return sapData;
   }
   sendRequest = () => {
@@ -827,6 +846,8 @@ class PersonalInfoEdit extends React.Component {
         return "country_id";
       case "BirthCountry":
         return "birth_country_id";
+      case "EducationId":
+        return "education_id";
       //#endregion
       default: return key;
     }
@@ -838,7 +859,7 @@ class PersonalInfoEdit extends React.Component {
       if (props.education) {
         let educations = [];
         props.education.forEach((item, index) => {
-          let educationItem = Object.keys(item).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item[curr], pre), {});
+          let educationItem = Object.keys(item.NewEducation).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item.NewEducation[curr], pre), {});
           educations.push(educationItem);
         });
         st.education = educations;
@@ -980,8 +1001,8 @@ class PersonalInfoEdit extends React.Component {
             NewMainInfo: newMainInfo
           });
         }
-        if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation.NewEducation) {
-          dt.education = changingData.data.data.userProfileInfo.update.userProfileHistoryEducation.NewEducation;
+        if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation) {
+          dt.education = changingData.data.data.userProfileInfo.update.userProfileHistoryEducation;
         }
         if (changingData.data.data.userProfileInfo.create && changingData.data.data.userProfileInfo.create.educations) {
           dt.newEducation = changingData.data.data.userProfileInfo.create.educations;

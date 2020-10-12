@@ -13,9 +13,7 @@ class EducationComponent extends React.Component {
   constructor() {
     super();
     this.state = {
-      userEducation: [],
-      newUserEducation: [],
-      schools: []
+      //don't use state bc vuongvt added the redux to this component
     }
   }
 
@@ -27,28 +25,6 @@ class EducationComponent extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-
-    // axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
-    //   .then(res => {
-    //     if (res && res.data && res.data.data) {
-    //       let userEducation = [
-    //         {
-    //           "other_uni_name": "ĐH Bách Khoa Hà Nội",
-    //           "school_id": 0,
-    //           "major": "Khác",
-    //           "academic_level": "Đại học",
-    //           "university_name": null,
-    //           "education_level_id": "VF",
-    //           "to_time": "31-12-2009",
-    //           "from_time": "01-01-2004",
-    //           "major_id": 0
-    //         }
-    //       ]
-    //       this.props.dispatch(actions.updateEducationAction({ education: userEducation }));
-    //       //this.setState({ userEducation: userEducation });
-    //     }
-    //   }).catch(error => {
-    //   });
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
       .then(res => {
@@ -109,7 +85,7 @@ class EducationComponent extends React.Component {
       this.props.updateNewEducation(newUserEducation, index)
     }
   }
-  
+
   itemHeader() {
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>
@@ -133,48 +109,48 @@ class EducationComponent extends React.Component {
     const schools = this.props.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
 
     return <Row className="info-value">
-            <Col xs={12} md={6} lg={3}>
-                <div>
-                  <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)}/>
-                </div>
-            </Col>
-            <Col xs={12} md={6} lg={3}>
-                <div className="mb-3">
-                  <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)}/>
-                </div>
-                <div className="form-inline float-right">
-                  <label className="mr-3">Khác: </label>
-                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''}/>
-                </div>
-            </Col>
-            <Col xs={12} md={6} lg={3}>
-                <div>
-                  <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)}/>
-                </div>
-            </Col>
-            <Col xs={12} md={6} lg={3}>
-                <div className="input-container">
-                  <label>
-                      <DatePicker 
-                          name="from_time" 
-                          key="from_time"
-                          selected={item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
-                          onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
-                          dateFormat="dd-MM-yyyy"
-                          locale="vi"
-                          className="form-control date"/>&nbsp;-&nbsp;
-                          <DatePicker 
-                          name="to_time" 
-                          key="to_time"
-                          selected={item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
-                          onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
-                          dateFormat="dd-MM-yyyy"
-                          locale="vi"
-                          className="form-control date"/>
-                  </label>
-                </div>
-            </Col>
-        </Row>
+      <Col xs={12} md={6} lg={3}>
+        <div>
+          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+        </div>
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div className="mb-3">
+          <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+        </div>
+        <div className="form-inline float-right">
+          <label className="mr-3">Khác: </label>
+          <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name !== '#' ? (item.other_uni_name || '') : ''} />
+        </div>
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div>
+          <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+        </div>
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div className="input-container">
+          <label>
+            <DatePicker
+              name="from_time"
+              key="from_time"
+              selected={item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+              onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
+              dateFormat="dd-MM-yyyy"
+              locale="vi"
+              className="form-control date" />&nbsp;-&nbsp;
+                          <DatePicker
+              name="to_time"
+              key="to_time"
+              selected={item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+              onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
+              dateFormat="dd-MM-yyyy"
+              locale="vi"
+              className="form-control date" />
+          </label>
+        </div>
+      </Col>
+    </Row>
   }
 
   educationItem(item) {
@@ -210,15 +186,19 @@ class EducationComponent extends React.Component {
       <div className="education">
         <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
         <div className="box shadow">
-            <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
-            <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
-            <hr/>
+          <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
+          <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
+          <hr />
 
-          {this.props.education.map((item, i) => {
+          {this.props.userEducation.map((item, i) => {
+            let ed = [];
+            if (this.props.education && Array.isArray(this.props.education) && this.props.education.some(e => e.education_id === item.education_id)) {
+              ed = this.props.education.filter(e => e.education_id = item.education_id);
+            }
             return <div className="item" key={i}>
               {this.itemHeader()}
               {userEducation[i] ? this.educationItem(userEducation[i]) : null}
-              {this.educationInput(item, i, 'education')}
+              {this.educationInput(ed.length > 0 ? ed[0] : item, i, 'education')}
             </div>
           })}
 
@@ -228,7 +208,7 @@ class EducationComponent extends React.Component {
             return <div className="clearfix new-item" key={i}>
               <div className="float-left input-table">
                 <div key={i}>
-                    {this.itemHeader()}
+                  {this.itemHeader()}
                   {this.educationInput(item, i, 'newEducation')}
                 </div>
               </div>
@@ -247,7 +227,7 @@ class EducationComponent extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     ...state.requestDetail,
-    userEducation: state.requestDetail.education,
+    education: state.requestDetail.education,
     //schools: state.requestDetail.schools
   };
 }
