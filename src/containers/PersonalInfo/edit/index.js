@@ -666,6 +666,7 @@ class PersonalInfoEdit extends React.Component {
 
     prepareEducationModel = (data, action, type) => {
       let obj = {
+        EducationId: data.education_id || "",
         SchoolCode: data.school_id || "",
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",

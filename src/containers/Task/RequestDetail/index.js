@@ -175,18 +175,17 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value, displayText) {
-    debugger;
     let oldMainInfo = this.state.OldMainInfo;
     if (this.state.OldMainInfo[name] === undefined) {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
-      if(displayText && displayText != ""){
-        oldMainInfo[name+'Text'] = displayText;
+      if (displayText && displayText != "") {
+        oldMainInfo[name + 'Text'] = displayText;
       }
     }
 
-    let newMainInfo = { ...this.state.NewMainInfo, [name]: value};
-    if(displayText && displayText != ""){
-      newMainInfo[name+'Text'] = displayText;
+    let newMainInfo = { ...this.state.NewMainInfo, [name]: value };
+    if (displayText && displayText != "") {
+      newMainInfo[name + 'Text'] = displayText;
     }
 
     let userProfileHistoryMainInfo = {
@@ -235,19 +234,20 @@ class PersonalInfoEdit extends React.Component {
     let usernamelc = localStorage.getItem('email').split("@")[0];
     let addressKeyNames = ['StreetName', 'Wards', 'District', 'Province', 'Country'];
     let addressKeyNameTemps = ['TempProvince', 'TempDistrict', 'TempWards', 'TempStreetName', 'TempCountry'];
-    let informationKeyNames = ['Birthday','Nationality', 'BirthCountry', 'BirthProvince','MaritalStatus','MarriageDate', 'Gender', 'Religion'];
+    let informationKeyNames = ['Birthday', 'Nationality', 'BirthCountry', 'BirthProvince', 'MaritalStatus', 'MarriageDate', 'Gender', 'Religion'];
     let contactKeyNames = ['PersonalEmail', 'CellPhoneNo', 'UrgentContactNo'];
-    let documentKeyNames = ['PersonalIdentifyNumber','PersonalIdentifyDate','PersonalIdentifyPlace','PassportNumber', 'PassportDate', 'PassportPlace'];
+    let documentKeyNames = ['PersonalIdentifyNumber', 'PersonalIdentifyDate', 'PersonalIdentifyPlace', 'PassportNumber', 'PassportDate', 'PassportPlace'];
     let educationKeyNames = ['SchoolCode', 'SchoolName', 'DegreeType', 'MajorCode', 'FromTime', 'ToTime'];
     let raceKeyNames = ['Ethinic'];
 
     let shouldUpdateAddress = updatedFieldName_arr.some(u => addressKeyNames.indexOf(u) >= 0);
     let shouldUpdateAddressTemp = updatedFieldName_arr.some(u => addressKeyNameTemps.indexOf(u) >= 0);
-    let actio = 'MOD';
+
     if (shouldUpdateAddress || shouldUpdateAddressTemp) {
       sapData.address = [];
       if (shouldUpdateAddress) {
-        if(!st.userDetail.province_id || !st.userDetail.street_name || !st.userDetail.district_id || !st.userDetail.ward_id){
+        let actio = 'MOD';
+        if (!st.userDetail.country_id && !st.userDetail.province_id && !st.userDetail.street_name && !st.userDetail.district_id && !st.userDetail.ward_id) {
           actio = 'INS';
         }
         sapData.address.push({
@@ -257,16 +257,19 @@ class PersonalInfoEdit extends React.Component {
           stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName === undefined ? st.userDetail.street_name : dt.update.userProfileHistoryMainInfo.NewMainInfo.StreetName,
           zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.District === undefined ? st.userDetail.district_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.District,
           zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards === undefined ? st.userDetail.ward_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Wards,
+          land1: dt.update.userProfileHistoryMainInfo.NewMainInfo.Country === undefined ? st.userDetail.country_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Country,
           kdate: '',
           pernr: pernr,
           user_name: usernamelc,
           myvp_id: ''
         });
       }
-      if(!st.userDetail.tmp_province_id || !st.userDetail.tmp_street_name || !st.userDetail.temp_district_id || !st.userDetail.tmp_ward_id){
-        actio = 'INS';
-      }
+
       if (shouldUpdateAddressTemp) {
+        let actio = 'MOD';
+        if (!st.userDetail.tmp_province_id && !st.userDetail.tmp_street_name && !st.userDetail.temp_district_id && !st.userDetail.tmp_ward_id) {
+          actio = 'INS';
+        }
         sapData.address.push({
           actio: actio,
           anssa: 2,
@@ -274,6 +277,7 @@ class PersonalInfoEdit extends React.Component {
           stras: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName === undefined ? st.userDetail.tmp_street_name : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempStreetName,
           zdistrict_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict === undefined ? st.userDetail.temp_district_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempDistrict,
           zwards_id: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards === undefined ? st.userDetail.tmp_ward_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempWards,
+          land1: dt.update.userProfileHistoryMainInfo.NewMainInfo.TempCountry === undefined ? st.userDetail.tmp_country_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.TempCountry,
           kdate: '',
           pernr: pernr,
           user_name: usernamelc,
@@ -283,7 +287,8 @@ class PersonalInfoEdit extends React.Component {
     }
     let shouldUpdateRace = updatedFieldName_arr.some(u => raceKeyNames.indexOf(u) >= 0);
     if (shouldUpdateRace) {
-      if(!st.userDetail.race_id){
+      let actio = 'MOD';
+      if (!st.userDetail.race_id) {
         actio = 'INS';
       }
       sapData.race = [{
@@ -295,14 +300,15 @@ class PersonalInfoEdit extends React.Component {
         myvp_id: ''
       }];
     }
-    
+
     let shouldUpdateContact = updatedFieldName_arr.some(u => contactKeyNames.indexOf(u) >= 0);
     if (shouldUpdateContact) {
       sapData.contact = [];
-      if(!st.userDetail.personal_email){
-        actio = 'INS';
-      }
       if (updatedFieldName_arr.some(u => u === 'PersonalEmail')) {
+        let actio = 'MOD';
+        if (!st.userDetail.personal_email) {
+          actio = 'INS';
+        }
         sapData.contact.push({
           actio: actio,
           subty: '0030',
@@ -314,7 +320,8 @@ class PersonalInfoEdit extends React.Component {
         });
       }
       if (updatedFieldName_arr.some(u => u === 'CellPhoneNo')) {
-        if(!st.userDetail.cell_phone_no){
+        let actio = 'MOD';
+        if (!st.userDetail.cell_phone_no) {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -328,7 +335,8 @@ class PersonalInfoEdit extends React.Component {
         });
       }
       if (updatedFieldName_arr.some(u => u === 'UrgentContactNo')) {
-        if(!st.userDetail.urgent_contact_no){
+        let actio = 'MOD';
+        if (!st.userDetail.urgent_contact_no) {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -344,12 +352,25 @@ class PersonalInfoEdit extends React.Component {
     }
     let shouldUpdateInformation = updatedFieldName_arr.some(u => informationKeyNames.indexOf(u) >= 0);
     if (shouldUpdateInformation) {
-      if(!st.userDetail.nationality_id || !st.userDetail.birth_country_id || !st.userDetail.race_id || !st.userDetail.birth_province_id || !st.userDetail.marital_status_code || !st.userDetail.gender){
-        actio = 'INS';
+      let actio = 'MOD';
+      // thông tin cá nhân luôn luôn là update
+      // if (!st.userDetail.birthday && !st.userDetail.nationality_id && !st.userDetail.birth_country_id && !st.userDetail.race_id && !st.userDetail.birth_province_id && !st.userDetail.marital_status_code && !st.userDetail.gender) {
+      //   actio = 'INS';
+      // } 
+
+      let _date_of_birth = dt.update.userProfileHistoryMainInfo.NewMainInfo.Birthday === undefined ? st.userDetail.birthday : dt.update.userProfileHistoryMainInfo.NewMainInfo.Birthday;
+      _date_of_birth = moment(_date_of_birth, 'DD-MM-YYYY');
+      if (_date_of_birth._isValid) {
+        _date_of_birth = _date_of_birth.format("YYYYMMDD");
       }
+      else {
+        return "Ngày tình trạng hôn nhân không hợp lệ";
+      }
+
       sapData.information = [{
         actio: actio,
         pernr: pernr,
+        gbdat: _date_of_birth,
         natio: dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality === undefined ? st.userDetail.nationality_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Nationality,
         gblnd: dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthCountry === undefined ? st.userDetail.birth_country_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.BirthCountry,
         konfe: dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion === undefined ? st.userDetail.race_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Religion,
@@ -361,28 +382,53 @@ class PersonalInfoEdit extends React.Component {
         myvp_id: '',
         famdt: ''
       }];
-      if(sapData.information[0].famst == '1' || sapData.information[0].famst == '2'){
-        sapData.information[0].famdt = dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate === undefined ? st.userDetail.marital_date : dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate;
+      if (sapData.information[0].famst == '1' || sapData.information[0].famst == '2') {
+        let _marital_date = dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate === undefined ? st.userDetail.marital_date : dt.update.userProfileHistoryMainInfo.NewMainInfo.MarriageDate;
+        _marital_date = moment(_marital_date, 'DD-MM-YYYY');
+        if (_marital_date._isValid) {
+          _marital_date = _marital_date.format("YYYYMMDD");
+        }
+        else {
+          return "Ngày tình trạng hôn nhân không hợp lệ";
+        }
+        sapData.information[0].famdt = _marital_date;
       }
     }
 
-    let shouldUpdateEducation = updatedFieldName_arr.some(u => educationKeyNames.indexOf(u) >= 0);
-    if (shouldUpdateEducation) {
+    //let shouldUpdateEducation = updatedFieldName_arr.some(u => educationKeyNames.indexOf(u) >= 0);
+    if ((dt.update.userProfileHistoryEducation && dt.update.userProfileHistoryEducation.length > 0) || (dt.create.educations && dt.create.educations.length > 0)) {
+      let actio = 'MOD';
       sapData.education = [];
-      if(!st.userDetail.DegreeType || !st.userDetail.MajorCode || !st.userDetail.race_id || !st.userDetail.birth_province_id || !st.userDetail.marital_status_code || !st.userDetail.gender){
-        actio = 'INS';
-      }
-      if (dt.update.userProfileHistoryEducation.length > 0) {
+
+      if (dt.update.userProfileHistoryEducation && dt.update.userProfileHistoryEducation.length > 0) {
         dt.update.userProfileHistoryEducation.map((item, index) => {
+          let _from_time = item.newMainInfo.FromTime === undefined ? '' : item.NewMainInfo.FromTime;
+          _from_time = moment(_from_time, 'DD-MM-YYYY');
+          if (_from_time._isValid) {
+            _from_time = _from_time.format("YYYYMMDD");
+          }
+          else {
+            _from_time = '';
+          }
+
+          let _to_time = item.newMainInfo.ToTime === undefined ? '' : item.NewMainInfo.ToTime;
+          _to_time = moment(_to_time, 'DD-MM-YYYY');
+          if (_to_time._isValid) {
+            _to_time = _to_time.format("YYYYMMDD");
+          }
+          else {
+            _to_time = '';
+          }
+
           sapData.education.push({
-            actio: 'MOD',
+            actio: actio,
             pernr: pernr,
-            slart: item.newMainInfo.DegreeType === undefined ? item.OldMainInfo.DegreeType : item.NewMainInfo.DegreeType,
-            zausbi: item.newMainInfo.MajorCode === undefined ? dt.item.OldMainInfo.MajorCode : dt.NewMainInfo.MajorCode,
-            zinstitute: item.newMainInfo.SchoolCode === undefined ? dt.item.OldMainInfo.SchoolCode : dt.NewMainInfo.SchoolCode,
-            zortherinst: item.newMainInfo.SchoolName === undefined ? dt.item.OldMainInfo.SchoolName : dt.NewMainInfo.SchoolName,
-            begda: item.newMainInfo.FromTime === undefined ? dt.item.OldMainInfo.FromTime : dt.NewMainInfo.FromTime,
-            endda: item.newMainInfo.ToTime === undefined ? dt.item.OldMainInfo.ToTime : dt.NewMainInfo.ToTime,
+            slart: item.newMainInfo.DegreeType === undefined ? '' : item.NewMainInfo.DegreeType,
+            zausbi: item.newMainInfo.MajorCode === undefined ? '' : item.NewMainInfo.MajorCode,
+            zinstitute: item.newMainInfo.SchoolCode === undefined ? '' : item.NewMainInfo.SchoolCode,
+            zortherinst: item.newMainInfo.SchoolName === undefined ? '' : item.NewMainInfo.SchoolName,
+            begda: _from_time,
+            endda:_to_time, 
             kdate: '',
             user_name: usernamelc,
             myvp_id: ''
@@ -390,19 +436,38 @@ class PersonalInfoEdit extends React.Component {
         });
       }
       if (dt.create.educations.length > 0) {
+        actio = 'INS';
         dt.create.educations.map((item, index) => {
+          let _from_time = item.FromTime;
+          _from_time = moment(_from_time, 'DD-MM-YYYY');
+          if (_from_time._isValid) {
+            _from_time = _from_time.format("YYYYMMDD");
+          }
+          else {
+            _from_time = '';
+          }
+
+          let _to_time = item.ToTime;
+          _to_time = moment(_to_time, 'DD-MM-YYYY');
+          if (_to_time._isValid) {
+            _to_time = _to_time.format("YYYYMMDD");
+          }
+          else {
+            _to_time = '';
+          }
           sapData.education.push({
             actio: 'INS',
-            slart: item.DegreeType,
-            zausbi: item.MajorCode,
-            zinstitute: item.SchoolCode,
-            zortherinst: item.SchoolName,
-            begda: item.FromTime,
-            endda: item.ToTime,
+            slart: item.DegreeType || '',
+            zausbi: item.MajorCode || '',
+            zinstitute: item.SchoolCode || '',
+            zortherinst: item.SchoolName || '',
+            begda: _from_time,
+            endda: _to_time,
             pernr: pernr,
             kdate: '',
             user_name: usernamelc,
-            myvp_id: ''
+            myvp_id: '',
+            slabs: ''
           });
         });
       }
@@ -411,32 +476,58 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateDocument = updatedFieldName_arr.some(u => documentKeyNames.indexOf(u) >= 0);
     if (shouldUpdateDocument) {
       sapData.document = [];
-      if (updatedFieldName_arr.some(u => u === 'PersonalIdentifyNumber' && u === 'PersonalIdentifyDate' && u === 'PersonalIdentifyPlace')) {
-        sapData.contact.push({
-          actio: 'MOD',
+      if (updatedFieldName_arr.some(u => u === 'PersonalIdentifyNumber' || u === 'PersonalIdentifyDate' || u === 'PersonalIdentifyPlace')) {
+        let actio = 'MOD';
+        if (!st.userDetail.personal_id_no || st.userDetail.pid_date_of_issue || st.userDetail.pid_place_of_issue) {
+          actio = 'INS';
+        }
+        let _pid_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate === undefined ? st.userDetail.pid_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate;
+        _pid_date_of_issue = moment(_pid_date_of_issue, 'DD-MM-YYYY');
+        if (_pid_date_of_issue._isValid) {
+          _pid_date_of_issue = _pid_date_of_issue.format("YYYYMMDD");
+        }
+        else {
+          return "Ngày cấp CMND/ CCCD không hợp lệ";
+        }
+
+        sapData.document.push({
+          actio: actio,
           kdate: '',
           pernr: pernr,
-          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyNumber : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber,
+          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber === undefined ? st.userDetail.personal_id_no : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyNumber,
           ictyp: '01',
           user_name: usernamelc,
           myvp_id: '',
-          fpdat: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyDate : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate,
-          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PersonalIdentifyPlace : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace,
+          fpdat: _pid_date_of_issue,
+          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace === undefined ? st.userDetail.pid_place_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyPlace,
           expid: '',
           zznote: ''
         });
       }
-      if (updatedFieldName_arr.some(u => u === 'PassportNumber' && u === 'PassportDate' && u === 'PassportPlace')) {
-        sapData.contact.push({
-          actio: 'MOD',
+      if (updatedFieldName_arr.some(u => u === 'PassportNumber' || u === 'PassportDate' || u === 'PassportPlace')) {
+        let actio = 'MOD';
+        if (!st.userDetail.passport_id_no || !st.userDetail.passport_date_of_issue || !st.userDetail.passport_place_of_issue) {
+          actio = 'INS';
+        }
+        let _passport_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate === undefined ? st.userDetail.passport_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate;
+        _passport_date_of_issue = moment(_passport_date_of_issue, 'DD-MM-YYYY');
+        if (_passport_date_of_issue._isValid) {
+          _passport_date_of_issue = _passport_date_of_issue.format("YYYYMMDD");
+        }
+        else {
+          return "Ngày cấp hộ chiếu không hợp lệ";
+        }
+
+        sapData.document.push({
+          actio: actio,
           kdate: '',
           pernr: pernr,
-          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportNumber : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber,
+          icnum: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber === undefined ? st.userDetail.passport_id_no : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportNumber,
           ictyp: '02',
           user_name: usernamelc,
           myvp_id: '',
-          fpdat: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportDate : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate,
-          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace === undefined ? dt.update.userProfileHistoryMainInfo.OldMainInfo.PassportPlace : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace,
+          fpdat: _passport_date_of_issue,
+          isspl: dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace === undefined ? st.userDetail.passport_place_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportPlace,
           expid: '',
           zznote: ''
         });
@@ -457,7 +548,6 @@ class PersonalInfoEdit extends React.Component {
     }
     bodyFormData.append('UserProfileInfoToSap', sapData);
     bodyFormData.append('UpdateField', JSON.stringify(updateFields));
-    //bodyFormData.append('Region', localStorage.getItem('region'));
     const fileSelected = this.state.files;
     for (let key in fileSelected) {
       bodyFormData.append('Files', fileSelected[key]);
@@ -535,11 +625,11 @@ class PersonalInfoEdit extends React.Component {
     const fromTime = data.from_time;
     const toTime = data.to_time;
     return {
-      SchoolCode: data.school_id,
-      SchoolName: data.university_name || data.other_uni_name,
-      DegreeType: data.education_level_id,
-      MajorCode: data.major_id,
-      MajorName: data.major,
+      SchoolCode: data.school_id || '',
+      SchoolName: data.university_name || data.other_uni_name || '',
+      DegreeType: data.education_level_id || '',
+      MajorCode: data.major_id || '',
+      MajorName: data.major || '',
       FromTime: fromTime,
       ToTime: toTime
     }
@@ -781,11 +871,18 @@ class PersonalInfoEdit extends React.Component {
       this.setState({ userDetail: userDetail });
     }
   }
+
+  processEducation = (res) => {
+    if (res && res.data && res.data.data) {
+      let userEducation = res.data.data;
+      this.setState({ userEducation: userEducation })
+    }
+  }
   //#endregion private function ============
 
   async componentDidMount() {
 
-    let userProfileHistoryAPIconfig = {
+    let configWithinSecretKey = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
@@ -794,12 +891,14 @@ class PersonalInfoEdit extends React.Component {
     }
     const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
     const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
-    const requestProfile = axios.get(profileEndpoint, userProfileHistoryAPIconfig);
-    const requestPersonalInfo = axios.get(personalInfoEndpoint, userProfileHistoryAPIconfig);
-
-    await axios.all([requestProfile, requestPersonalInfo]).then(axios.spread((...responses) => {
+    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`;
+    const requestProfile = axios.get(profileEndpoint, configWithinSecretKey);
+    const requestPersonalInfo = axios.get(personalInfoEndpoint, configWithinSecretKey);
+    const requestEducation = axios.get(personalEducationEnpoint, configWithinSecretKey);
+    await axios.all([requestProfile, requestPersonalInfo, requestEducation]).then(axios.spread((...responses) => {
       this.processProfile(responses[0]);
       this.processPersonalInfo(responses[1]);
+      this.processEducation(responses[2]);
     })).catch(errors => {
 
     })
@@ -809,7 +908,7 @@ class PersonalInfoEdit extends React.Component {
         'Authorization': localStorage.getItem('accessToken')
       }
     }
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, userProfileHistoryAPIconfig)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -887,7 +986,6 @@ class PersonalInfoEdit extends React.Component {
         if (changingData.data.data.userProfileInfo.create && changingData.data.data.userProfileInfo.create.educations) {
           dt.newEducation = changingData.data.data.userProfileInfo.create.educations;
         }
-
         let dataMappingToProps = this.mappingDataToProps(dt);
         this.store.dispatch(updatePersonalDataAction(dataMappingToProps));
       }
