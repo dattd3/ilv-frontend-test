@@ -257,14 +257,11 @@ class PersonalComponent extends React.Component {
         if (name !== "StreetName") {
             if (name == "Country") {
                 this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldCountryName, mainAddress.countryName); // For select tag
-            }
-            if (name == "Province") {
+            } else if (name == "Province") {
                 this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldProvinceName, mainAddress.provinceName); // For select tag
-            }
-            if (name == "District") {
+            } else if (name == "District") {
                 this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldDistrictName, mainAddress.districtName); // For select tag
-            }
-            if (name == "Wards") {
+            } else if (name == "Wards") {
                 this.handleUpdateAddressForInput(name, item.value, "", mainAddress.oldWardName, mainAddress.wardName); // For select tag
             }
         } else {
@@ -277,14 +274,11 @@ class PersonalComponent extends React.Component {
         if (name !== "StreetName") {
             if (name == "Country") {
                 this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldCountryName, tempAddress.countryName); // For select tag
-            }
-            if (name == "Province") {
+            } else if (name == "Province") {
                 this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldProvinceName, tempAddress.provinceName); // For select tag
-            }
-            if (name == "District") {
+            } else if (name == "District") {
                 this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldDistrictName, tempAddress.districtName); // For select tag
-            }
-            if (name == "Wards") {
+            } else if (name == "Wards") {
                 this.handleUpdateAddressForInput(name, item.value, "Temp", tempAddress.oldWardName, tempAddress.wardName); // For select tag
             }
         } else {
@@ -293,11 +287,12 @@ class PersonalComponent extends React.Component {
     }
 
     handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
-        if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
-            this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
-        } else {
-            this.props.removeInfo(prefix + name)
-        }
+        this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
+        // if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
+        //     this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
+        // } else {
+        //     this.props.removeInfo(prefix + name)
+        // }
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
@@ -323,12 +318,6 @@ class PersonalComponent extends React.Component {
         const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
-        const documentTypes = this.props.documentTypes.map(d =>  { return { value: d.ID, label: d.TEXT } } )
-        const documentTypeLabel = this.props.documentTypes.filter(item => { return item.ID == this.state.userDetail.document_type_id})
-        let tempDocumentTypeLabel = "";
-        if (documentTypeLabel && documentTypeLabel.length > 0) {
-            tempDocumentTypeLabel = documentTypeLabel[0].TEXT;
-        }
         const birthProvinces = this.state.birthProvinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
       return (
       <div className="info">
@@ -562,6 +551,7 @@ class PersonalComponent extends React.Component {
                         province_id={this.state.mainAddress.provinceId ? this.state.mainAddress.provinceId : this.state.userDetail.province_id}
                         province_name={this.state.userDetail.province}
                         country_id={this.state.userDetail.country_id}
+                        country_name={this.state.userDetail.nation}
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
                     /> : null}
@@ -596,6 +586,7 @@ class PersonalComponent extends React.Component {
                         province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
                         province_name={this.state.userDetail.tmp_province}
                         country_id={this.state.userDetail.tmp_country_id}
+                        country_name={this.state.userDetail.tmp_nation}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
                     /> : null}

@@ -284,10 +284,10 @@ class PersonalInfoEdit extends React.Component {
       if (newMainInfo.MaritalStatus) {
         const maritalStatus = newMainInfo.MaritalStatus;
         data[0] = maritalStatus;
-        data[1] = this.getMaritalDateForStatus(maritalStatus, newMainInfo.MarriageDate, userDetail.marriage_date);
+        data[1] = this.getMaritalDateForStatus(maritalStatus, newMainInfo.MarriageDate, userDetail.marital_date);
       } else {
         data[0] = userDetail.marital_status_code;
-        data[1] = this.getMaritalDateForStatus(userDetail.marital_status_code, newMainInfo.MarriageDate, userDetail.marriage_date);
+        data[1] = this.getMaritalDateForStatus(userDetail.marital_status_code, newMainInfo.MarriageDate, userDetail.marital_date);
       }
       return data;
     }
@@ -315,8 +315,7 @@ class PersonalInfoEdit extends React.Component {
             obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
             const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
             obj.famst = maritalInfo[0];
-            obj.famdt = moment().format('YYYYMMDD');
-            // obj.famdt = maritalInfo[1]; // Check again
+            obj.famdt = maritalInfo[1];
             obj.konfe = this.getDataSpecificFields(newMainInfo.Religion, userDetail.religion_id);
             obj.gesch = this.getDataSpecificFields(newMainInfo.Gender, userDetail.gender);
             return [obj];
