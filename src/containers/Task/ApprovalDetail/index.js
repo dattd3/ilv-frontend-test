@@ -8,7 +8,7 @@ import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import _ from 'lodash'
 
-class PersonalInfoEdit extends React.Component {
+class ApprovalDetail extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -160,66 +160,67 @@ class PersonalInfoEdit extends React.Component {
     }
   
     axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.getUserProfileHistoryId()}`, config)
-      .then(res => {
-        if (res && res.data) {
-          const response = res.data;
-          this.processBlockStatuses(response);
-          this.processEducationInfo(response);
-          // this.processFamilyInfo(response);
-          this.processMainInfo(response);
-          this.processDocumentInfo(response);
-          this.processUserInfo(response);
-        }
-      }).catch(error => {
-        console.log(error);
-      });
-    }
+    .then(res => {
+      if (res && res.data) {
+        const response = res.data;
+        this.processBlockStatuses(response);
+        this.processEducationInfo(response);
+        // this.processFamilyInfo(response);
+        this.processMainInfo(response);
+        this.processDocumentInfo(response);
+        this.processUserInfo(response);
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+  }
     
-    render() {
-      return (
-        <>
-        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
-        userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
-        <div className="edit-personal"><h4 className="title text-uppercase">Thông tin cá nhân</h4></div>
-        <div className="edit-personal detail-page">
-          <div className="box shadow">
-              <div className="row item-info">
-                <div className="col-2">
-                    <div className="label">Họ và tên</div>
-                </div>
-                <div className="col-10">
-                  <div className="detail">{this.state.userInfo.fullName}</div>
-                </div>
+  render() {
+    return (
+      <>
+      <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+      userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
+      <div className="edit-personal"><h4 className="title text-uppercase">Thông tin cá nhân</h4></div>
+      <div className="edit-personal detail-page">
+        <div className="box shadow">
+            <div className="row item-info">
+              <div className="col-2">
+                  <div className="label">Họ và tên</div>
               </div>
-              <div className="row item-info">
-                <div className="col-2">
-                    <div className="label">Chức danh</div>
-                </div>
-                <div className="col-10">
-                  <div className="detail">{this.state.userInfo.position}</div>
-                </div>
-              </div>
-              <div className="row item-info">
-                <div className="col-2">
-                    <div className="label">Bộ phận</div>
-                </div>
-                <div className="col-10">
-                    <div className="detail">{this.state.userInfo.department}</div>
-                </div>
+              <div className="col-10">
+                <div className="detail">{this.state.userInfo.fullName}</div>
               </div>
             </div>
-          {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
-          {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
-          {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
-          {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
-          <div className="clearfix mb-5">
-            <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
-              <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
-            <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
+            <div className="row item-info">
+              <div className="col-2">
+                  <div className="label">Chức danh</div>
+              </div>
+              <div className="col-10">
+                <div className="detail">{this.state.userInfo.position}</div>
+              </div>
+            </div>
+            <div className="row item-info">
+              <div className="col-2">
+                  <div className="label">Bộ phận</div>
+              </div>
+              <div className="col-10">
+                  <div className="detail">{this.state.userInfo.department}</div>
+              </div>
+            </div>
           </div>
+        {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
+        {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
+        {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
+        {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
+        <div className="clearfix mb-5">
+          <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
+            <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+          <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
         </div>
-        </>
-      )
-    }
+      </div>
+      </>
+    )
   }
-export default PersonalInfoEdit
+}
+
+export default ApprovalDetail

@@ -65,7 +65,6 @@ function Content(props) {
 }
 
 function TimesheetDetail(props) {
-  console.log(props)
   return (
     <div className="detail">
         <div className="card shadow">

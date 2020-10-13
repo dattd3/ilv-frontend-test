@@ -189,7 +189,6 @@ class PersonalInfoEdit extends React.Component {
     }
 
     submitRequest = (comment) => {
-      console.log(this.state.data);
       const updateFields = this.getFieldUpdates();
       const dataPostToSAP = this.getDataPostToSap(this.state.data);
       let bodyFormData = new FormData();

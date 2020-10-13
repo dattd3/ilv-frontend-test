@@ -29,11 +29,8 @@ function NotifyDetail({ match }) {
       'padding' : '0.375rem 0.75rem'
     };
 
-    if (result && result.data) { 
-    
+    if (result && result.data) {
       const notify = result.data;
-      //console.log("notify:",notify); 
-
         return (
             <form>            
                 
