@@ -321,8 +321,6 @@ class PersonalComponent extends React.Component {
         const provinces = this.state.provinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
         const religions = this.props.religions.map(r =>  { return { value: r.ID, label: r.TEXT } } )
         const birthProvinces = this.state.birthProvinces.map(province =>  { return { value: province.ID, label: province.TEXT } } )
-
-
       return (
       <div className="info">
         <h4 className="title text-uppercase">Thông tin cá nhân</h4>

@@ -19,30 +19,30 @@ class EducationComponent extends React.Component {
     }
 
     componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-          }
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
+      }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              this.setState({ userEducation: res.data.data });
-            }
-          }).catch(error => {
-          })
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          this.setState({ userEducation: res.data.data });
+        }
+      }).catch(error => {
+      })
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            let schools = res.data.data;
-            this.setState({ schools: schools });
-          }
-        }).catch(error => {
-        })
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let schools = res.data.data;
+          this.setState({ schools: schools });
+        }
+      }).catch(error => {
+      })
     }
 
     isNotNull(input) {
@@ -52,6 +52,7 @@ class EducationComponent extends React.Component {
     // name is : userEducation  or  newUserEducation
     educationLevelChange(index, name, level) {
       let newUserEducation = [...this.state[name]]
+      newUserEducation[index].old_education_level_id = newUserEducation[index].education_level_id
       newUserEducation[index].education_level_id = level.value
       newUserEducation[index].major_id = ''
       newUserEducation[index].school_id = ''
@@ -78,8 +79,10 @@ class EducationComponent extends React.Component {
 
     handleDatePickerInputChange(index, dateInput, field, name) {
       if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
+        const oldPrefix = "old_";
         const date = moment(dateInput).format('DD-MM-YYYY')
         let newUserEducation = [...this.state[name]]
+        newUserEducation[index][oldPrefix + field] = newUserEducation[index][field]
         newUserEducation[index][field] = date
         this.setState({ [name]: [...newUserEducation] })
         this.updateParrent(name, newUserEducation)

@@ -667,6 +667,10 @@ class PersonalInfoEdit extends React.Component {
     prepareEducationModel = (data, action, type) => {
       let obj = {
         EducationId: data.education_id || "",
+        PreBeginDate: data.old_from_time || data.from_time,
+        PreEndDate: data.old_to_time || data.to_time,
+        Seqnr: data.seqnr || 0,
+        PreEducationLevelId: data.old_education_level_id || data.education_level_id,
         SchoolCode: data.school_id || "",
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",
