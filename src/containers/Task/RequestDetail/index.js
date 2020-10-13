@@ -175,7 +175,7 @@ class RequestDetail extends React.Component {
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
         {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
         <div className="clearfix mb-5">
-          <a className="btn btn-primary float-right ml-3 shadow"><i className="fa fa-paper-plane" aria-hidden="true"></i>  Sửa thông tin</a>
+          <a className="btn btn-primary float-right ml-3 shadow btn-edit-task" title="Chỉnh sửa thông tin" href={`/tasks-request/${this.getUserProfileHistoryId()}/edit`}><i className="fa fa-edit" aria-hidden="true"></i>  Sửa thông tin</a>
         </div>
       </div>
       </>

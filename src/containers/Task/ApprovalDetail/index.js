@@ -179,7 +179,7 @@ class ApprovalDetail extends React.Component {
     return (
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
-      userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
+      userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
       <div className="edit-personal"><h4 className="title text-uppercase">Thông tin cá nhân</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">

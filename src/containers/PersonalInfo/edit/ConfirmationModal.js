@@ -1,18 +1,44 @@
 import React from "react";
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
+import ResultModal from '../../Task/ApprovalDetail/ResultModal';
+import Constants from '../../../commons/Constants'
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            message: ""
+            message: "",
+            isShowResultConfirm: false,
+            resultTitle: "",
+            resultMessage: ""
         }
 
         this.disapproval = 1;
         this.approval = 2;
         this.eviction = 3;
         this.sendRequest = 4;
+    }
+
+    showResultModal = (res) => {
+        this.setState({ isShowResultConfirm: true });
+        if (res && res.data) {
+            const result = res.data.result;
+            const code = result.code;
+            if (code == "000000") {
+                this.setState({
+                    resultTitle: "Thành công",
+                    resultMessage: result.message,
+                    isSuccess: true
+                });
+            } else {
+                this.setState({
+                    resultTitle: "Lỗi",
+                    resultMessage: result.message,
+                    isSuccess: false
+                });
+            }
+        }
     }
 
     ok = (e) => {
@@ -43,7 +69,7 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        window.location.href = "/tasks";
+                        this.showResultModal(response);
                     })
                     .catch(error => {
                         window.location.href = "/tasks";
@@ -69,9 +95,15 @@ class ConfirmationModal extends React.Component {
         this.setState({message : e.target.value});
     }
 
+    onHideResultModal = () => {
+        this.setState({isShowResultConfirm: false});
+        window.location.reload();
+    }
+
     render () {
         return (
             <>
+            <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
             <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                 <Modal.Header className='apply-position-modal' closeButton>
                     <Modal.Title>{this.props.title}</Modal.Title>
