@@ -194,12 +194,12 @@ export default [
           component: lazy(() => import("./Task/Request"))
         },
         {
-          key: "approval-task",
+          key: "request-task-edit",
           routeProps: {
             exact: true,
-            path: map.ApprovalTask
+            path: map.RequestTaskEdit
           },
-          component: lazy(() => import("./Task/Approval"))
+          component: lazy(() => import("./Task/Edit"))
         },
         {
           key: "request-task-detail",
@@ -208,6 +208,14 @@ export default [
             path: map.RequestTaskDetail
           },
           component: lazy(() => import("./Task/RequestDetail"))
+        },
+        {
+          key: "approval-task",
+          routeProps: {
+            exact: true,
+            path: map.ApprovalTask
+          },
+          component: lazy(() => import("./Task/Approval"))
         },
         {
           key: "approval-task-detail",

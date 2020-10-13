@@ -2,6 +2,7 @@ import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
+import EvictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
@@ -55,6 +56,16 @@ class TaskList extends React.Component {
         }
     }
 
+    evictionRequest = id => {
+        this.setState({
+            modalTitle: "Xác nhận thu hồi",
+            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+            isShowModalConfirm: true,
+            typeRequest: 3,
+            userProfileHistoryId: id
+        });
+    }
+
     onHideModalConfirm = () => {
         this.setState({isShowModalConfirm: false});
     }
@@ -77,7 +88,8 @@ class TaskList extends React.Component {
         const status = {
             0: {label: 'Đang chờ xử lý', className: 'request-status'},
             1: {label: 'Từ chối', className: 'request-status fail'},
-            2: {label: 'Đã phê duyệt', className: 'request-status success'}
+            2: {label: 'Đã phê duyệt', className: 'request-status success'},
+            3: {label: 'Đã thu hồi', className: 'request-status'}
         }
 
         const options = [
@@ -99,7 +111,7 @@ class TaskList extends React.Component {
         if (this.props.page === "approval") {
             return `/tasks-approval/${id}`;
         }
-        return `/tasks-request/${id}`;
+        return `/tasks-request/${id}/edit`;
     }
 
     getTaskCode = code => {
@@ -114,6 +126,34 @@ class TaskList extends React.Component {
         } else {
             return code;
         }
+    }
+
+    isShowEditButton = status => {
+        let isShow = true;
+        if (this.props.page == "approval") {
+            isShow = false;
+        } else {
+            if (status == 2 || status == 3) {
+                isShow = false;
+            } else {
+                isShow = true;
+            }
+        }
+        return isShow;
+    }
+
+    isShowEvictionButton = status => {
+        let isShow = true;
+        if (this.props.page == "approval") {
+            isShow = false;
+        } else {
+            if (status == 0) {
+                isShow = true;
+            } else {
+                isShow = false;
+            }
+        }
+        return isShow;
     }
 
     render() {
@@ -143,23 +183,15 @@ class TaskList extends React.Component {
             <tbody>
                 {tasks.map((task, index) => {
                     const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
-                    let isShowEditButton = true;
-                    if (this.props.page == "approval") {
-                        isShowEditButton = false;
-                    } else {
-                        if (task.status == 2) {
-                            isShowEditButton = false;
-                        } else {
-                            isShowEditButton = true;
-                        }
-                    }
+                    let isShowEditButton = this.isShowEditButton(task.status);
+                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
                     let userId = "";
                     if (task.userId) {
                         userId = task.userId.split("@")[0];
                     }
                     return (
                         <tr key={index}>
-                            <td><a href={this.getLinkUserProfileHistory(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                            <td><a href={`/tasks-request/${task.id}`} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
                             <td>{task.requestType.name}</td>
                             <th>{task.name}</th>
                             {
@@ -191,10 +223,14 @@ class TaskList extends React.Component {
                                     </Popover>}>
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
-                                { isShowEditButton ?
+                            { isShowEvictionButton ?
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)}><img alt="Thu hồi hồ sơ" src={EvictionButton} /></span>
+                                : null
+                            }
+                            { isShowEditButton ?
                                 <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
-                                }
+                            }
                             </td>
                         </tr>
                     )

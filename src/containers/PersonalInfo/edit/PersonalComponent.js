@@ -165,18 +165,20 @@ class PersonalComponent extends React.Component {
     }
 
     handleDatePickerInputChange(dateInput, name) {
-        const date = moment(dateInput).format('DD-MM-YYYY');
-        if(date !== this.props.userDetail[this.mappingFields(name)]) {
-            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], date)
-        } else {
-            this.props.removeInfo(name)
-        }
-        this.setState({
-            userDetail : {
-                ...this.state.userDetail,
-                [this.mappingFields(name)]: date
+        if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
+            const date = moment(dateInput).format('DD-MM-YYYY');
+            if(date !== this.props.userDetail[this.mappingFields(name)]) {
+                this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], date)
+            } else {
+                this.props.removeInfo(name)
             }
-        })
+            this.setState({
+                userDetail : {
+                    ...this.state.userDetail,
+                    [this.mappingFields(name)]: date
+                }
+            })
+        }
     }
 
     mappingFields = key => {

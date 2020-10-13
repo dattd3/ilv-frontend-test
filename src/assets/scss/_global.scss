@@ -117,6 +117,9 @@ a {
     .modal-body {
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
+      .wrap-result {
+        text-align: center;
+      }
     }
     .form-group {
       margin-bottom: 1.2rem;

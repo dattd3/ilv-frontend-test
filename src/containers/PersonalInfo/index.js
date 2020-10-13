@@ -167,16 +167,29 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? this.state.userDetail.religion : t("None")}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("IdentityPasportNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_no}</p></td>
+                        <td className="info-label">{t("Số CMND/CCCD")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_id_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("DateIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.date_of_issue}</p></td>
+                        <td className="info-label">{t("Ngày cấp CMND/CCCD")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_date_of_issue}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("PlaceIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.place_of_issue}</p></td>
+                        <td className="info-label">{t("Nơi cấp CMND/CCCD")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_place_of_issue}</p></td>
+                      </tr>
+
+                      <tr>
+                        <td className="info-label">{t("Số Hộ chiếu")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_id_no}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Ngày cấp Hộ chiếu")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_date_of_issue}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("Nơi cấp Hộ chiếu")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_place_of_issue}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("WorkPermitNo")}</td>

@@ -53,7 +53,8 @@ class PersonalInfoEdit extends React.Component {
             isShowResultConfirm: false,
             modalTitle: "",
             modalMessage: "",
-            confirmStatus: ""
+            confirmStatus: "",
+            isSuccess: true
         }
         this.inputReference = React.createRef()
 
@@ -214,14 +215,14 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowResultModal("Lỗi", response.data.result.message);
+            this.handleShowResultModal("Lỗi", response.data.result.message, false);
           } else {
-            this.handleShowResultModal("Thành công", "Cập nhật thông tin đã được lưu !");
+            this.handleShowResultModal("Thành công", "Bạn đã đăng tin thành công!", true);
           }
         }
       })
       .catch(response => {
-        this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !");
+        this.handleShowResultModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", false);
       });
     }
 
@@ -634,11 +635,12 @@ class PersonalInfoEdit extends React.Component {
       return model;
     }
 
-    handleShowResultModal = (title, message) => {
+    handleShowResultModal = (title, message, status) => {
       this.setState({
         isShowResultConfirm: true,
         modalTitle: title,
-        modalMessage: message
+        modalMessage: message,
+        isSuccess: status
       });
     }
 
@@ -667,6 +669,10 @@ class PersonalInfoEdit extends React.Component {
     prepareEducationModel = (data, action, type) => {
       let obj = {
         EducationId: data.education_id || "",
+        PreBeginDate: data.old_from_time || data.from_time,
+        PreEndDate: data.old_to_time || data.to_time,
+        Seqnr: data.seqnr || 0,
+        PreEducationLevelId: data.old_education_level_id || data.education_level_id,
         SchoolCode: data.school_id || "",
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",
@@ -795,7 +801,7 @@ class PersonalInfoEdit extends React.Component {
       this.setState({
         modalTitle: "Xác nhận gửi yêu cầu",
         modalMessage: "Thêm ghi chú (Không bắt buộc)",
-        typeRequest: 3
+        typeRequest: 4
       });
       this.onShowModalConfirm();
     }
@@ -813,7 +819,7 @@ class PersonalInfoEdit extends React.Component {
       <div className="edit-personal">
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} confirmStatus={this.state.confirmStatus}
         sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
-        <ResultModal show={this.state.isShowResultConfirm} title={this.state.modalTitle} message={this.state.modalMessage} onHide={this.onHideResultModal} />
+        <ResultModal show={this.state.isShowResultConfirm} title={this.state.modalTitle} message={this.state.modalMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
         <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
           <PersonalComponent userDetail={this.state.userDetail} 
             userProfile={this.state.userProfile} 
