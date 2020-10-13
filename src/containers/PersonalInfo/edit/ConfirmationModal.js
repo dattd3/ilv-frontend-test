@@ -11,7 +11,8 @@ class ConfirmationModal extends React.Component {
 
         this.disapproval = 1;
         this.approval = 2;
-        this.sendRequest = 3;
+        this.eviction = 3;
+        this.sendRequest = 4;
     }
 
     ok = (e) => {
@@ -39,6 +40,16 @@ class ConfirmationModal extends React.Component {
                     });
                 } else if (this.props.type == this.approval) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
+                        headers: { Authorization: localStorage.getItem('accessToken') }
+                    })
+                    .then(response => {
+                        window.location.href = "/tasks";
+                    })
+                    .catch(error => {
+                        window.location.href = "/tasks";
+                    });
+                } else if (this.props.type == this.eviction) {
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {

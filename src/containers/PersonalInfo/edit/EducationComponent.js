@@ -77,11 +77,13 @@ class EducationComponent extends React.Component {
     }
 
     handleDatePickerInputChange(index, dateInput, field, name) {
-      const date = moment(dateInput).format('DD-MM-YYYY')
-      let newUserEducation = [...this.state[name]]
-      newUserEducation[index][field] = date
-      this.setState({ [name]: [...newUserEducation] })
-      this.updateParrent(name, newUserEducation)
+      if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
+        const date = moment(dateInput).format('DD-MM-YYYY')
+        let newUserEducation = [...this.state[name]]
+        newUserEducation[index][field] = date
+        this.setState({ [name]: [...newUserEducation] })
+        this.updateParrent(name, newUserEducation)
+      }
     }
 
     otherUniInputChange(index, name, e) {

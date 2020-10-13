@@ -189,6 +189,7 @@ class PersonalInfoEdit extends React.Component {
     }
 
     submitRequest = (comment) => {
+      console.log(this.state.data);
       const updateFields = this.getFieldUpdates();
       const dataPostToSAP = this.getDataPostToSap(this.state.data);
       let bodyFormData = new FormData();
@@ -795,7 +796,7 @@ class PersonalInfoEdit extends React.Component {
       this.setState({
         modalTitle: "Xác nhận gửi yêu cầu",
         modalMessage: "Thêm ghi chú (Không bắt buộc)",
-        typeRequest: 3
+        typeRequest: 4
       });
       this.onShowModalConfirm();
     }
