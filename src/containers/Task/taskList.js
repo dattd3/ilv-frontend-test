@@ -155,6 +155,13 @@ class TaskList extends React.Component {
         return isShow;
     }
 
+    getTaskLink = id => {
+        if (this.props.page == "approval") {
+            return `/tasks-approval/${id}`;
+        }
+        return `/tasks-request/${id}`;
+    }
+
     render() {
         const recordPerPage =  25
         const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
@@ -190,7 +197,7 @@ class TaskList extends React.Component {
                     }
                     return (
                         <tr key={index}>
-                            <td><a href={`/tasks-request/${task.id}`} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                            <td><a href={this.getTaskLink(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
                             <td>{task.requestType.name}</td>
                             <th>{task.name}</th>
                             {
@@ -224,10 +231,10 @@ class TaskList extends React.Component {
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                             {
                                 isShowEvictionButton ?
-                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-sync'></i></span>
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
                                 : null
                             }
-                            { 
+                            {
                                 isShowEditButton ?
                                 <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
