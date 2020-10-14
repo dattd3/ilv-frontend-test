@@ -224,10 +224,10 @@ class TaskList extends React.Component {
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                             {
                                 isShowEvictionButton ?
-                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-sync'></i></span>
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
                                 : null
                             }
-                            { 
+                            {
                                 isShowEditButton ?
                                 <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
