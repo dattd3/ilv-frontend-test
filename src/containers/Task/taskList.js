@@ -2,7 +2,6 @@ import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
-import EvictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
@@ -223,11 +222,13 @@ class TaskList extends React.Component {
                                     </Popover>}>
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
-                            { isShowEvictionButton ?
-                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)}><img alt="Thu hồi hồ sơ" src={EvictionButton} /></span>
+                            {
+                                isShowEvictionButton ?
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-sync'></i></span>
                                 : null
                             }
-                            { isShowEditButton ?
+                            { 
+                                isShowEditButton ?
                                 <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
                             }

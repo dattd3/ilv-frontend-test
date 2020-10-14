@@ -54,9 +54,23 @@
                 .code {
                     width: 120px;
                 }
+                .request-type {
+                    width: 220px;
+                }
+                .request-date {
+                    width: 140px;
+                }
+                .approval-date {
+                    width: 140px;
+                }
+                .status {
+                    width: 180px;
+                }
             }
             td:last-child {
-                text-align: center;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
             }
             .status {
                 [class$="-control"] {
@@ -97,6 +111,12 @@
                 &:hover {
                     color: #347EF9;
                 }
+            }
+            .eviction {
+                font-size: 22px;
+                color: red;
+                cursor: pointer;
+                margin-top: 2px;
             }
         }
         img {
