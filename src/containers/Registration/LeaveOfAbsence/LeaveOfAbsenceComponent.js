@@ -12,6 +12,11 @@ import _ from 'lodash'
 
 registerLocale("vi", vi)
 
+const FULL_DAY = 1
+const DURING_THE_DAY = 2
+const DATE_FORMAT = 'DD/MM/YYYY'
+const TIME_FORMAT = 'HH:mm'
+
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
         super();
@@ -23,12 +28,14 @@ class LeaveOfAbsenceComponent extends React.Component {
             endTime: null,
             totalTime: 2,
             absenceType: null,
+            leaveType: FULL_DAY,
             note: null,
             approver: null,
             annualLeaveSummary: null,
+            pn03: null,
             files: [],
             errors: {},
-            isEdit: true
+            isEdit: false
         }
     }
 
@@ -58,41 +65,53 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.setState({
                 isEdit: true,
                 id: this.props.leaveOfAbsence.id,
-                startDate: moment(this.props.leaveOfAbsence.userProfileInfo.startDate).toDate(),
-                startTime: moment(this.props.leaveOfAbsence.userProfileInfo.startTime).toDate(),
-                endDate: moment(this.props.leaveOfAbsence.userProfileInfo.endDate).toDate(),
-                endTime: moment(this.props.leaveOfAbsence.userProfileInfo.endTime).toDate(),
+                startDate: this.props.leaveOfAbsence.userProfileInfo.startDate,
+                startTime: this.props.leaveOfAbsence.userProfileInfo.startTime,
+                endDate: this.props.leaveOfAbsence.userProfileInfo.endDate,
+                endTime: this.props.leaveOfAbsence.userProfileInfo.endTime,
                 totalTime: this.props.leaveOfAbsence.userProfileInfo.totalTime,
                 absenceType: this.props.leaveOfAbsence.userProfileInfo.absenceType,
+                leaveType: this.props.leaveOfAbsence.userProfileInfo.leaveType,
+                pn03: this.props.leaveOfAbsence.userProfileInfo.pn03,
                 note: this.props.leaveOfAbsence.comment,
-                approver: this.props.leaveOfAbsence.userProfileInfo.approver
+                approver: this.props.leaveOfAbsence.userProfileInfo.approver,
+                files: this.props.leaveOfAbsence.userProfileInfoDocuments.map(file => {
+                    return {
+                        id: file.id,
+                        name: file.fileName,
+                        fileSize: file.fileSize,
+                        fileType: file.other,
+                        fileUrl: file.Url
+                    }
+                }),
             })
         }
     }
 
     setStartDate(startDate) {
         this.setState({
-            startDate: startDate,
-            endDate: this.state.endDate === undefined || startDate > this.state.endDate ? startDate : this.state.endDate
+            startDate: moment(startDate).format(DATE_FORMAT),
+            endDate: this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
         })
     }
 
     setStartTime(startTime) {
         this.setState({
-            startTime: startTime,
-            endTime: this.state.endTime === undefined || startTime > this.state.endTime ? startTime : this.state.endTime
+            startTime: moment(startTime).format(TIME_FORMAT),
+            endTime: this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
         })
     }
 
     setEndTime(endTime) {
         this.setState({
-            endTime: endTime
+            endTime: moment(endTime).format(TIME_FORMAT)
         })
     }
 
     setEndDate(endDate) {
         this.setState({
-            endDate: endDate
+            startDate: this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate,
+            endDate: moment(endDate).format(DATE_FORMAT)
         })
     }
 
@@ -127,6 +146,18 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
 
+        if (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) {
+            errors['pn03'] = '(Bắt buộc)'
+        }
+
+        if(this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
+            errors['startTime'] = '(Bắt buộc)'
+        }
+
+        if(this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
+            errors['endTime'] = '(Bắt buộc)'
+        }
+
         this.setState({ errors: errors })
         return errors
     }
@@ -140,11 +171,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         const data = {
             startDate: this.state.startDate,
             startTime: this.state.startTime,
-            endDate: this.state.startDate,
+            endDate: this.state.endDate,
             endTime: this.state.endTime,
             absenceType: this.state.absenceType,
+            leaveType: this.state.leaveType,
             approver: this.state.approver,
             totalTime: this.state.totalTime,
+            pn03: this.state.absenceType.value === 'PN03' ? this.state.pn03 : null,
             user: {
                 fullname: localStorage.getItem('fullName'),
                 jobTitle: localStorage.getItem('jobTitle'),
@@ -192,6 +225,17 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ isShowStatusModal: false });
     }
 
+    updateLeaveType(leaveType) {
+        if (leaveType == this.state.leaveType) {
+            return
+        }
+        this.setState({leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null})
+    }
+
+    removeFile(index) {
+        this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+    }
+
     render() {
         const thisYear = new Date().getFullYear()
 
@@ -205,23 +249,24 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'IN02', label: 'Nghỉ thai sản' },
             { value: 'IN03', label: 'Nghỉ dưỡng sức (ốm, TS )' },
             { value: 'PN01', label: 'Nghỉ lễ người nước ngoài' },
-            { value: 'PN02', label: 'Nghỉ nuôi con dưới 1 tuổi' },
             { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
             { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
-            { value: 'PN05', label: 'Nghỉ ngừng việc do cty' },
-            { value: 'PN06', label: 'Nghỉ việc do thỏa thuận' },
             { value: 'PQ01', label: 'Nghỉ phép năm' },
             { value: 'PQ02', label: 'Nghỉ bù (Nếu có)' },
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
-            { value: 'PQ04', label: 'Nghỉ phép năm tạm ứng' },
             { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
             { value: 'UN01', label: 'Nghỉ không lương' },
-            { value: 'UN02', label: 'Nghỉ không phép' },
-            { value: 'UN03', label: 'Nghỉ ngừng việc do NLĐ' },
         ]
+
+        const PN03List = [
+            { value: '1', label: 'Bản thân Kết hôn' },
+            { value: '2', label: 'Con kết hôn' },
+            { value: '3', label: 'Bố đẻ, mẹ đẻ, bố vợ, mẹ vợ hoặc bố chồng, mẹ chồng chết; vợ chết hoặc chồng chết; con chết' },
+        ]
+
         return (
             <div className="leave-of-absence">
-                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
+                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
@@ -258,6 +303,18 @@ class LeaveOfAbsenceComponent extends React.Component {
                 <div className="box shadow">
                     <div className="form">
                         <div className="row">
+                            <div className="col">
+                                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                        Nghỉ cả ngày
+                                    </label>
+                                    <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                        Nghỉ trong ngày
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
                             <div className="col-5">
                                 <p className="title">Ngày/giờ bắt đầu</p>
                                 <div className="row">
@@ -267,9 +324,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="startDate"
                                                     selectsStart
-                                                    selected={this.state.startDate}
-                                                    startDate={this.state.startDate}
-                                                    endDate={this.state.endDate}
+                                                    selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                                                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                                                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                                                     onChange={this.setStartDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="Lựa chọn"
@@ -284,7 +341,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
-                                                    selected={this.state.startTime}
+                                                    selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setStartTime.bind(this)}
                                                     showTimeSelect
                                                     showTimeSelectOnly
@@ -293,6 +350,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     dateFormat="h:mm aa"
                                                     placeholderText="Lựa chọn"
                                                     className="form-control input"
+                                                    disabled={this.state.leaveType == FULL_DAY ? true : false}
                                                 />
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
@@ -313,10 +371,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="endDate"
                                                     selectsEnd
-                                                    selected={this.state.endDate}
-                                                    startDate={this.state.startDate}
-                                                    endDate={this.state.endDate}
-                                                    minDate={this.state.startDate}
+                                                    selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                                                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                                                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                                                    minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     onChange={this.setEndDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="Lựa chọn"
@@ -331,7 +389,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
-                                                    selected={this.state.endTime}
+                                                    selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setEndTime.bind(this)}
                                                     showTimeSelect
                                                     showTimeSelectOnly
@@ -340,6 +398,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     dateFormat="h:mm aa"
                                                     placeholderText="Lựa chọn"
                                                     className="form-control input"
+                                                    disabled={this.state.leaveType == FULL_DAY ? true : false}
                                                 />
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
@@ -366,10 +425,11 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 </div>
                                 {this.error('absenceType')}
 
-                                <p className="title">Thông tin nghỉ</p>
-                                <div>
-                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
-                                </div>
+                                {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
+                                {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <div>
+                                    <Select name="PN03" value={this.state.pn03} onChange={pn03 => this.handleSelectChange('pn03', pn03)} placeholder="Lựa chọn" key="absenceType" options={PN03List} />
+                                </div> : null}
+                                {this.error('pn03')}
                             </div>
 
                             <div className="col-7">
@@ -385,6 +445,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                 </div>
 
                 <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.leaveOfAbsence ? this.props.leaveOfAbsence.userProfileInfo.approver : null} />
+                <ul className="list-inline">
+                    {this.state.files.map((file, index) => {
+                        return <li className="list-inline-item" key={index}>
+                            <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+                        </li>
+                    })}
+                </ul>
                 <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
             </div>
         )

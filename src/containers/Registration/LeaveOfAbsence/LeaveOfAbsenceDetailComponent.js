@@ -3,11 +3,13 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 
+const DATE_FORMAT = 'DD/MM/YYYY'
+const TIME_FORMAT = 'HH:mm'
+
 class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      tasks: []
     }
   }
 
@@ -41,11 +43,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
               Từ ngày/giờ
-              <div className="detail">{moment(this.props.leaveOfAbsence.userProfileInfo.startDate).format('DD/MM/YYYY') + (this.props.leaveOfAbsence.userProfileInfo.startTime ? ' ' + moment(this.props.leaveOfAbsence.userProfileInfo.startTime).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.startDate + (this.props.leaveOfAbsence.userProfileInfo.startTime ? ' ' + moment(this.props.leaveOfAbsence.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
             </div>
             <div className="col-3">
               Đến ngày/giờ
-              <div className="detail">{moment(this.props.leaveOfAbsence.userProfileInfo.endDate).format('DD/MM/YYYY') + (this.props.leaveOfAbsence.userProfileInfo.endTime ? ' ' + moment(this.props.leaveOfAbsence.userProfileInfo.endTime).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.endDate + (this.props.leaveOfAbsence.userProfileInfo.endTime ? ' ' + moment(this.props.leaveOfAbsence.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
@@ -57,6 +59,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
 
+          {this.props.leaveOfAbsence.userProfileInfo.absenceType.value === 'PN03' ? <div className="row">
+            <div className="col">
+              Thông tin hiếu hỉ
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.pn03.label}</div>
+            </div>
+          </div> : null}
+
           <div className="row">
             <div className="col">
               Lý do đăng ký nghỉ phép
@@ -66,7 +75,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver}/>
+        <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} />
+
+        <ul className="list-inline">
+          {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
+            return <li className="list-inline-item" key={index}>
+              <a className="file-name" href={file.fileUrl} title="file đính kèm" target="_blank">{file.fileName}</a>
+            </li>
+          })}
+        </ul>
 
         <DetailButtonComponent />
       </div>

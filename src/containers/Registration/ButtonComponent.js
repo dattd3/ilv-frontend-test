@@ -10,6 +10,12 @@ class ButtonComponent extends React.Component {
         this.inputReference = React.createRef()
     }
 
+    componentDidMount() {
+        if (this.props.files) {
+            this.setState({files: this.props.files})
+        }
+    }
+
     fileUploadAction() {
         this.inputReference.current.click()
     }
@@ -21,23 +27,12 @@ class ButtonComponent extends React.Component {
         this.props.updateFiles(updateFiles)
     }
 
-    removeFile(index) {
-        this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
-    }
-
     submit () {
         this.props.submit()
     }
 
     render() {
         return <div className="bottom">
-        <ul className="list-inline">
-            {this.state.files.map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                    <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
-                </li>
-            })}
-        </ul>
         <div className="clearfix mt-5 mb-5">
             <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
             <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />

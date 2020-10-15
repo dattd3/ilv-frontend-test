@@ -5,6 +5,8 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
 import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -168,7 +170,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   showStatusModal = (message, isSuccess = false) => {
-    this.setState({isShowStatusModal: true, content: message, isSuccess: isSuccess});
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
   };
 
   hideStatusModal = () => {
@@ -198,7 +200,7 @@ class BusinessTripComponent extends React.Component {
     ]
     return (
       <div className="business-trip">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="form">
             <div className="row">
@@ -304,7 +306,20 @@ class BusinessTripComponent extends React.Component {
 
             <div className="row">
               <div className="col-5">
-                <p className="title">Loại chuyến Công tác/Đào tạo</p>
+                <p className="title">Loại chuyến Công tác/Đào tạo <OverlayTrigger 
+                                trigger="click"
+                                placement="right" 
+                                overlay={<Popover id={'note'} className="registration-popover">
+                                        <Popover.Title as="h3" className="bg-secondary text-light">Ghi chú</Popover.Title>
+                                        <Popover.Content>
+                                        <p>* Có CTP: được trả Công tác phí</p>
+                                        <p>* Không CTP: không được trả Công tác phí</p>
+                                        <p>* Có ăn ca: được trả tiền ăn ca</p>
+                                        <p>* Không ăn ca: không được trả tiền ăn ca</p>
+                                        </Popover.Content>
+                                    </Popover>}>
+                                    <i className="fa fa-info-circle text-info" aria-hidden="true"></i>
+                            </OverlayTrigger></p>
                 <div>
                   <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>
@@ -341,6 +356,13 @@ class BusinessTripComponent extends React.Component {
         </div>
 
         <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
+        <ul className="list-inline">
+          {this.state.files.map((file, index) => {
+            return <li className="list-inline-item" key={index}>
+              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+            </li>
+          })}
+        </ul>
         <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
       </div>
     )

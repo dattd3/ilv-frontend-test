@@ -27,15 +27,15 @@ class InOutTimeUpdateComponent extends React.Component {
   componentDidMount() {
     if (this.props.inOutTimeUpdate) {
       this.setState({
-          isEdit: true,
-          id: this.props.inOutTimeUpdate.id,
-          startDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
-          endDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
-          timesheets: this.props.inOutTimeUpdate.userProfileInfo.timesheets,
-          note: this.props.inOutTimeUpdate.comment,
-          approver: this.props.inOutTimeUpdate.userProfileInfo.approver
+        isEdit: true,
+        id: this.props.inOutTimeUpdate.id,
+        startDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
+        endDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
+        timesheets: this.props.inOutTimeUpdate.userProfileInfo.timesheets,
+        note: this.props.inOutTimeUpdate.comment,
+        approver: this.props.inOutTimeUpdate.userProfileInfo.approver
       })
-  }
+    }
   }
 
   setStartDate(startDate) {
@@ -94,31 +94,31 @@ class InOutTimeUpdateComponent extends React.Component {
   verifyInput() {
     let errors = {}
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      if(timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) {
+      if (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) {
         errors['startTime1Fact' + index] = '(Bắt buộc)'
       }
 
-      if(timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) {
+      if (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) {
         errors['endTime1Fact' + index] = '(Bắt buộc)'
       }
 
-      if(timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) {
+      if (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) {
         errors['startTime2Fact' + index] = '(Bắt buộc)'
       }
 
-      if(timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) {
+      if (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) {
         errors['endTime2Fact' + index] = '(Bắt buộc)'
       }
 
-      if(timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) {
+      if (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) {
         errors['startTime3Fact' + index] = '(Bắt buộc)'
       }
 
-      if(timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) {
+      if (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) {
         errors['endTime3Fact' + index] = '(Bắt buộc)'
       }
 
-      if(_.isNull(timesheet.note)) {
+      if (_.isNull(timesheet.note)) {
         errors['note' + index] = '(Bắt buộc)'
       }
     })
@@ -225,7 +225,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   showStatusModal = (message, isSuccess = false) => {
-    this.setState({isShowStatusModal: true, content: message, isSuccess: isSuccess});
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
   };
 
   hideStatusModal = () => {
@@ -235,7 +235,7 @@ class InOutTimeUpdateComponent extends React.Component {
   render() {
     return (
       <div className="in-out-time-update">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
@@ -513,6 +513,13 @@ class InOutTimeUpdateComponent extends React.Component {
         })}
 
         {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
+        <ul className="list-inline">
+          {this.state.files.map((file, index) => {
+            return <li className="list-inline-item" key={index}>
+              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+            </li>
+          })}
+        </ul>
         {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
       </div>
     )

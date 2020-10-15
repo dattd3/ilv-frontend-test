@@ -16,7 +16,7 @@ class RegistrationComponent extends React.Component {
     render() {
       return (
       <div className="registration-section personal-info">
-        <Tabs defaultActiveKey="InOutTimeUpdate" id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey="LeaveOfAbsenceRegistration" id="uncontrolled-tab-example">
             <Tab eventKey="LeaveOfAbsenceRegistration" title={'Đăng ký nghỉ phép'}>
                 <LeaveOfAbsence/>
             </Tab>
