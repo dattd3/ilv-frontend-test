@@ -30,7 +30,8 @@ class EducationComponent extends React.Component {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          this.setState({ userEducation: res.data.data });
+          const userEducation = res.data.data.map(d => { return {}})
+          this.setState({ userEducation: userEducation });
         }
       }).catch(error => {
       })

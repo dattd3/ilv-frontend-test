@@ -70,7 +70,7 @@ class PersonalComponent extends React.Component {
     processPersonalInfo = (res) => {
         if (res && res.data && res.data.data) {
             let userDetail = res.data.data[0];
-            this.setState({countryId: userDetail.country_id, userDetail: userDetail});
+            // this.setState({countryId: userDetail.country_id, userDetail: userDetail});
             this.props.setState({ userDetail: userDetail });
         }
     }
