@@ -65,9 +65,15 @@ class PersonalInfoEdit extends React.Component {
 
   //#region private function =====================
   getUserProfileHistoryId = () => {
+    let regx = /\/tasks-request\/(?<id>\d+)\/edit/;
     const pathName = window.location.pathname;
-    const pathNameArr = pathName.split('/');
-    return pathNameArr[pathNameArr.length - 1];
+    let idMatch = pathName.match(regx);
+    if (idMatch && idMatch.groups) {
+      return idMatch.groups.id;
+    }
+    return '';
+    // const pathNameArr = pathName.split('/');
+    // return pathNameArr[pathNameArr.length - 1];
   }
 
   processBlockStatuses = (response) => {
@@ -237,7 +243,7 @@ class PersonalInfoEdit extends React.Component {
     let informationKeyNames = ['Birthday', 'Nationality', 'BirthCountry', 'BirthProvince', 'MaritalStatus', 'MarriageDate', 'Gender', 'Religion'];
     let contactKeyNames = ['PersonalEmail', 'CellPhoneNo', 'UrgentContactNo'];
     let documentKeyNames = ['PersonalIdentifyNumber', 'PersonalIdentifyDate', 'PersonalIdentifyPlace', 'PassportNumber', 'PassportDate', 'PassportPlace'];
-    let bankKeyNames = ['BankAccountNumber','Bank'];
+    let bankKeyNames = ['BankAccountNumber', 'Bank'];
     //let educationKeyNames = ['SchoolCode', 'SchoolName', 'DegreeType', 'MajorCode', 'FromTime', 'ToTime'];
     let raceKeyNames = ['Ethinic'];
 
@@ -365,7 +371,7 @@ class PersonalInfoEdit extends React.Component {
         _date_of_birth = _date_of_birth.format("YYYYMMDD");
       }
       else {
-        return "Ngày tình trạng hôn nhân không hợp lệ";
+        return "Ngày sinh không hợp lệ";
       }
 
       sapData.information = [{
@@ -429,7 +435,7 @@ class PersonalInfoEdit extends React.Component {
             zinstitute: item.newMainInfo.SchoolCode === undefined ? '' : item.NewMainInfo.SchoolCode,
             zortherinst: item.newMainInfo.SchoolName === undefined ? '' : item.NewMainInfo.SchoolName,
             begda: _from_time,
-            endda:_to_time, 
+            endda: _to_time,
             kdate: '',
             user_name: usernamelc,
             myvp_id: ''
@@ -538,19 +544,19 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateBank = updatedFieldName_arr.some(u => bankKeyNames.indexOf(u) >= 0);
     if (shouldUpdateBank) {
       sapData.bank = [];
-        let actio = 'MOD';
-        if (!st.userDetail.bank_number) {
-          actio = 'INS';
-        }
-        sapData.bank.push({
-          actio: actio,
-          kdate: '',
-          pernr: pernr,
-          bankl: dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank === undefined ? st.userDetail.bank_name_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank,
-          bankn: dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber === undefined ? st.userDetail.bank_number : dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber,
-          user_name: usernamelc,
-          myvp_id: ''
-        });
+      let actio = 'MOD';
+      if (!st.userDetail.bank_number) {
+        actio = 'INS';
+      }
+      sapData.bank.push({
+        actio: actio,
+        kdate: '',
+        pernr: pernr,
+        bankl: dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank === undefined ? st.userDetail.bank_name_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Bank,
+        bankn: dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber === undefined ? st.userDetail.bank_number : dt.update.userProfileHistoryMainInfo.NewMainInfo.BankAccountNumber,
+        user_name: usernamelc,
+        myvp_id: ''
+      });
     }
     return sapData;
   }
@@ -650,7 +656,8 @@ class PersonalInfoEdit extends React.Component {
       MajorCode: data.major_id || '',
       MajorName: data.major || '',
       FromTime: fromTime,
-      ToTime: toTime
+      ToTime: toTime,
+      Seqnr: data.seqnr
     }
   }
 
@@ -658,7 +665,15 @@ class PersonalInfoEdit extends React.Component {
     const educationOriginal = this.state.userEducation;
     let userProfileHistoryEducation = [];
     educationNew.forEach((element, index) => {
-      if (!_.isEqual(element, educationOriginal[index])) {
+      educationOriginal[index].other_uni_name === '#' && (educationOriginal[index].other_uni_name = '');
+      let orig = educationOriginal[index];
+      if (!(element.education_level_id == orig.education_level_id
+        && element.school_id == orig.school_id
+        && element.from_time == orig.from_time
+        && element.to_time == orig.to_time
+        && element.seqnr == orig.seqnr
+        && element.major_id == orig.major_id
+        && element.other_uni_name == orig.other_uni_name)) {
         const oldObj = this.populateEducation(educationOriginal[index]);
         const newObj = this.populateEducation(element);
         const obj =
@@ -776,6 +791,10 @@ class PersonalInfoEdit extends React.Component {
         return "from_time";
       case "ToTime":
         return "to_time";
+      case "EducationId":
+        return "education_id";
+      case "Seqnr":
+        return "seqnr";
       //#endregion
       //#region personal info
       case "Birthday":
@@ -846,8 +865,8 @@ class PersonalInfoEdit extends React.Component {
         return "country_id";
       case "BirthCountry":
         return "birth_country_id";
-      case "EducationId":
-        return "education_id";
+      case "MarriageDate":
+        return "marital_date";
       //#endregion
       default: return key;
     }
@@ -860,6 +879,9 @@ class PersonalInfoEdit extends React.Component {
         let educations = [];
         props.education.forEach((item, index) => {
           let educationItem = Object.keys(item.NewEducation).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item.NewEducation[curr], pre), {});
+          //let curreducationItem = Object.keys(item.OldEducation).reduce((pre, curr) => (pre[this.mappingFields(curr)] = item.OldEducation[curr], pre), {});
+          //let educationItem = {NewEducation: editededucationItem, OldEducation: curreducationItem};
+          educationItem.school_id && (educationItem.other_uni_name = '');
           educations.push(educationItem);
         });
         st.education = educations;
@@ -986,7 +1008,13 @@ class PersonalInfoEdit extends React.Component {
         let oldMainInfo = {};
         if (changingData.data.data.userProfileInfo) {
           if (changingData.data.data.userProfileInfo.update) {
-            updatedData = changingData.data.data.userProfileInfo.update;
+            updatedData = {
+              userProfileHistoryMainInfo: {
+                OldMainInfo: changingData.data.data.userProfileInfo.update.OldMainInfo || {},
+                NewMainInfo: changingData.data.data.userProfileInfo.update.NewMainInfo || {}
+              },
+              userProfileHistoryEducation: changingData.data.data.userProfileInfo.update.userProfileHistoryEducation || []
+            };
             if (changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo && changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo) {
               oldMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo;
             }
@@ -994,12 +1022,7 @@ class PersonalInfoEdit extends React.Component {
               newMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
             }
           }
-          this.setState({
-            data: changingData.data.data.userProfileInfo,
-            update: updatedData,
-            OldMainInfo: oldMainInfo,
-            NewMainInfo: newMainInfo
-          });
+          
         }
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation) {
           dt.education = changingData.data.data.userProfileInfo.update.userProfileHistoryEducation;
@@ -1007,6 +1030,12 @@ class PersonalInfoEdit extends React.Component {
         if (changingData.data.data.userProfileInfo.create && changingData.data.data.userProfileInfo.create.educations) {
           dt.newEducation = changingData.data.data.userProfileInfo.create.educations;
         }
+        this.setState({
+          data: { ...this.state.data, create: {educations: dt.newEducation}, update: updatedData },
+          update: updatedData,
+          OldMainInfo: oldMainInfo,
+          NewMainInfo: newMainInfo
+        });
         let dataMappingToProps = this.mappingDataToProps(dt);
         this.store.dispatch(updatePersonalDataAction(dataMappingToProps));
       }
