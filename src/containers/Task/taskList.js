@@ -177,10 +177,9 @@ class TaskList extends React.Component {
                     <th scope="col" className="code">Mã yêu cầu</th>
                     <th scope="col" className="request-type">Loại yêu cầu</th>
                     <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
-                    {
-                        this.props.page == "approval" ? <th scope="col" className="user-request">Người yêu cầu</th> : null
-                    }
+                    <th scope="col" className="user-request">Người gửi yêu cầu</th>
                     <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
+                    <th scope="col" className="user-approved">Người gửi phê duyệt</th>
                     <th scope="col" className="approval-date">Thời gian phê duyệt</th>
                     <th scope="col" className="status">Trạng thái</th>
                     <th scope="col" className="tool">Ý kiến/Phản hồi/Chỉnh sửa</th>
@@ -192,21 +191,24 @@ class TaskList extends React.Component {
                     let isShowEditButton = this.isShowEditButton(task.status);
                     let isShowEvictionButton = this.isShowEvictionButton(task.status);
                     let userId = "";
+                    let userManagerId = "";
                     if (task.userId) {
                         userId = task.userId.split("@")[0];
                     }
+                    if (task.userManagerId) {
+                        userManagerId = task.userManagerId.split("@")[0];
+                    }
                     return (
                         <tr key={index}>
-                            <td><a href={this.getTaskLink(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                            <td>{task.requestType.name}</td>
-                            <th>{task.name}</th>
-                            {
-                                this.props.page == "approval" ? <th>{userId}</th> : null
-                            }
-                            <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                            <td>{approvalDate}</td>
+                            <td className="code"><a href={this.getTaskLink(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                            <td className="request-type">{task.requestType.name}</td>
+                            <td className="content">{task.name}</td>
+                            <td className="user-request">{userId}</td>
+                            <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                            <td className="user-approved">{userManagerId}</td>
+                            <td className="approval-date">{approvalDate}</td>
                             <td className="status">{this.showStatus(task.id, task.status)}</td>
-                            <td>
+                            <td className="tool">
                             {task.comment ? <OverlayTrigger 
                                 trigger="click"
                                 placement="left" 
@@ -230,13 +232,13 @@ class TaskList extends React.Component {
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                             {
-                                isShowEvictionButton ?
-                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                isShowEditButton ?
+                                <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
                             }
                             {
-                                isShowEditButton ?
-                                <a href={this.getLinkUserProfileHistory(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                isShowEvictionButton ?
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
                                 : null
                             }
                             </td>

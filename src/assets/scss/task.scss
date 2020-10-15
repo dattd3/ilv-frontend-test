@@ -23,6 +23,9 @@
         font-weight: bold;
     }
     .task-list {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
         border-radius: 5px;
         .table {
             width: 100%;
@@ -34,6 +37,7 @@
                 background-color: #eaecf4;
                 th {
                     vertical-align: middle;
+                    // display: inline-block;
                 }
                 th:first-child {
                     border-top-left-radius: 5px;
@@ -64,7 +68,36 @@
                     width: 140px;
                 }
                 .status {
+                    width: 160px;
+                }
+            }
+            tbody {
+                td {
+                    // display: inline-block;
+                }
+                .tool {
                     width: 180px;
+                }
+                .user-request {
+                    width: 120px;
+                }
+                .request-date, .approval-date {
+                    width: 120px;
+                }
+                .code {
+                    width: 120px;
+                }
+                .request-type {
+                    width: 220px;
+                }
+                .request-date {
+                    width: 140px;
+                }
+                .approval-date {
+                    width: 140px;
+                }
+                .status {
+                    width: 160px;
                 }
             }
             td:last-child {

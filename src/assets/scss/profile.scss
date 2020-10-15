@@ -6,7 +6,45 @@
     }
 }
 
+.user-info-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    .status {
+        padding: 4px 20px;
+        border: 1px solid;
+        border-radius: 30px;
+        background: #FFFFFF;
+        &.success {
+            border-color: #05BD29;
+            color: #05BD29;
+        }
+        &.fail {
+            border-color: #FF0000;
+            color: #FF0000;
+        }
+    }
+    .title {
+        margin-bottom: 0;
+    }
+    margin-bottom: 15px;
+}
+.detail-page {
+    .item-info {
+        .detail {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            margin-top: 10px;
+            background: #ECECEC;
+            border-radius: 5px;
+        }
+    }
+}
+
 .edit-personal, .edit-personal-detail-request {
+    // display: flex;
     .item-info {
         padding: 6px 0;
     }

@@ -9,13 +9,20 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 
-const fullName = localStorage.getItem('fullName');
-const position = localStorage.getItem('jobTitle');
-const department = localStorage.getItem('department');
+const code = localStorage.getItem('employeeNo') || "";
+const fullName = localStorage.getItem('fullName') || "";
+const title = localStorage.getItem('jobTitle') || "";
+const department = localStorage.getItem('department') || "";
 
 class PersonalInfoEdit extends React.Component {
     constructor() {
         super();
+        const staff = {
+          code: code,
+          fullName: fullName,
+          title: title,
+          department: department
+        }
         this.state = {
             userProfile: {},
             userDetail: {},
@@ -45,9 +52,8 @@ class PersonalInfoEdit extends React.Component {
             OldMainInfo: {},
             NewMainInfo: {},
             data: {
-              fullName: fullName || "",
-              position: position || "",
-              department: department || ""
+              staff: staff,
+              manager: {}
             },
             isShowModalConfirm: false,
             isShowResultConfirm: false,
