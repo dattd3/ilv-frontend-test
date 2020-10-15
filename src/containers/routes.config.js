@@ -143,7 +143,7 @@ export default [
             exact: true,
             path: map.EditPersonalInfo
           },
-          component: lazy(() => import("./PersonalInfo/edit"))
+          component: lazy(() => import("./PersonalInfo/edit/PersonalInfoEdit"))
         },
         {
           key: "position-recruiting",
@@ -199,7 +199,7 @@ export default [
             exact: true,
             path: map.RequestTaskEdit
           },
-          component: lazy(() => import("./Task/Edit"))
+          component: lazy(() => import("./PersonalInfo/edit/PersonalInfoRequestEdit"))
         },
         {
           key: "request-task-detail",
