@@ -3,6 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
+import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -131,7 +132,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
-        
         const errors = this.verifyInput()
         if (!_.isEmpty(errors)) {
             return
@@ -173,7 +173,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
             .then(response => {
                 if (response && response.data && response.data.result) {
-                    console.log(response.data)
+                    this.showStatusModal(`Cập nhập thành công!`, true)
                 }
             })
             .catch(response => {
@@ -182,6 +182,14 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     error(name) {
         return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
+    }
+
+    showStatusModal = (message, isSuccess = false) => {
+        this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+    }
+
+    hideStatusModal = () => {
+        this.setState({ isShowStatusModal: false });
     }
 
     render() {
@@ -213,6 +221,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         ]
         return (
             <div className="leave-of-absence">
+                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
@@ -356,12 +365,17 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
                                 </div>
                                 {this.error('absenceType')}
+
+                                <p className="title">Thông tin nghỉ</p>
+                                <div>
+                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
+                                </div>
                             </div>
 
                             <div className="col-7">
                                 <p className="title">Lý do đăng ký nghỉ phép</p>
                                 <div>
-                                    <textarea class="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this)}></textarea>
+                                    <textarea class="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
                                 {this.error('note')}
                             </div>
@@ -370,7 +384,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
                 </div>
 
-                <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.leaveOfAbsence ? this.props.leaveOfAbsence.userProfileInfo.approver : null}/>
+                <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.leaveOfAbsence ? this.props.leaveOfAbsence.userProfileInfo.approver : null} />
                 <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
             </div>
         )

@@ -3,6 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
+import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -155,7 +156,7 @@ class BusinessTripComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          console.log(response.data)
+          this.showStatusModal(`Cập nhập thành công!`, true)
         }
       })
       .catch(response => {
@@ -164,6 +165,14 @@ class BusinessTripComponent extends React.Component {
 
   error(name) {
     return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
+  }
+
+  showStatusModal = (message, isSuccess = false) => {
+    this.setState({isShowStatusModal: true, content: message, isSuccess: isSuccess});
+  };
+
+  hideStatusModal = () => {
+    this.setState({ isShowStatusModal: false });
   }
 
   render() {
@@ -189,6 +198,7 @@ class BusinessTripComponent extends React.Component {
     ]
     return (
       <div className="business-trip">
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
         <div className="box shadow">
           <div className="form">
             <div className="row">

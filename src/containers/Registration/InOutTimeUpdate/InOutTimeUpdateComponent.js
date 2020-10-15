@@ -1,8 +1,8 @@
 import React from 'react'
 import axios from 'axios'
-import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
+import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
@@ -19,12 +19,23 @@ class InOutTimeUpdateComponent extends React.Component {
       timesheets: [],
       approver: null,
       files: [],
-      errors: {}
+      errors: {},
+      isShowStatusModal: false
     }
   }
 
   componentDidMount() {
-
+    if (this.props.inOutTimeUpdate) {
+      this.setState({
+          isEdit: true,
+          id: this.props.inOutTimeUpdate.id,
+          startDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
+          endDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
+          timesheets: this.props.inOutTimeUpdate.userProfileInfo.timesheets,
+          note: this.props.inOutTimeUpdate.comment,
+          approver: this.props.inOutTimeUpdate.userProfileInfo.approver
+      })
+  }
   }
 
   setStartDate(startDate) {
@@ -41,14 +52,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = startTime
+    this.state.timesheets[index][name] = moment(startTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = endTime
+    this.state.timesheets[index][name] = moment(endTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -82,13 +93,34 @@ class InOutTimeUpdateComponent extends React.Component {
 
   verifyInput() {
     let errors = {}
-    const RequiredFields = ['note', 'startDate', 'startTime', 'endTime', 'substitutionType']
-    this.state.timesheets.forEach((timesheet, index) => {
-      RequiredFields.forEach(name => {
-        if (_.isNull(timesheet[name])) {
-          errors[name + index] = '(Bắt buộc)'
-        }
-      })
+    this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
+      if(timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) {
+        errors['startTime1Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) {
+        errors['endTime1Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) {
+        errors['startTime2Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) {
+        errors['endTime2Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) {
+        errors['startTime3Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) {
+        errors['endTime3Fact' + index] = '(Bắt buộc)'
+      }
+
+      if(_.isNull(timesheet.note)) {
+        errors['note' + index] = '(Bắt buộc)'
+      }
     })
 
     if (_.isNull(this.state.approver)) {
@@ -100,19 +132,22 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
-    // const errors = this.verifyInput()
-    // if (!_.isEmpty(errors)) {
-    //   return
-    // }
+    const errors = this.verifyInput()
+    if (!_.isEmpty(errors)) {
+      return
+    }
 
     const data = {
       timesheets: this.state.timesheets,
+      startDate: this.state.startDate,
+      endDate: this.state.endDate,
       user: {
         fullname: localStorage.getItem('fullName'),
         jobTitle: localStorage.getItem('jobTitle'),
         department: localStorage.getItem('department'),
         employeeNo: localStorage.getItem('employeeNo')
-      }
+      },
+      approver: this.state.approver,
     }
 
     let bodyFormData = new FormData();
@@ -135,7 +170,7 @@ class InOutTimeUpdateComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          console.log(response.data)
+          this.showStatusModal(`Cập nhập thành công!`, true)
         }
       })
       .catch(response => {
@@ -181,7 +216,6 @@ class InOutTimeUpdateComponent extends React.Component {
               endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
             }, ts)
           })
-          console.log(timesheets)
           this.setState({ timesheets: timesheets })
         }
       }).catch(error => {
@@ -190,9 +224,18 @@ class InOutTimeUpdateComponent extends React.Component {
       })
   }
 
+  showStatusModal = (message, isSuccess = false) => {
+    this.setState({isShowStatusModal: true, content: message, isSuccess: isSuccess});
+  };
+
+  hideStatusModal = () => {
+    this.setState({ isShowStatusModal: false });
+  }
+
   render() {
     return (
       <div className="in-out-time-update">
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal}/>
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
@@ -251,11 +294,11 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time1_fact ? <p>Bắt đầu 1: <b>{timesheet.start_time1_fact}</b> | Kết thúc 1: <b>{timesheet.end_time1_fact}</b></p> : null}
-                {!timesheet.isEdit && timesheet.start_time3_fact ? <p>Bắt đầu 3: <b>{timesheet.start_time3_fact}</b> | Kết thúc 3: <b>{timesheet.end_time3_fact}</b></p> : null}
+                {!timesheet.isEdit && timesheet.start_time1_plan ? <p>Bắt đầu 1: <b>{timesheet.start_time1_fact}</b> | Kết thúc 1: <b>{timesheet.end_time1_fact}</b></p> : null}
+                {!timesheet.isEdit && timesheet.start_time3_plan ? <p>Bắt đầu 3: <b>{timesheet.start_time3_fact}</b> | Kết thúc 3: <b>{timesheet.end_time3_fact}</b></p> : null}
               </div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time2_fact ? <p>Bắt đầu 2: <b>{timesheet.start_time2_fact}</b> | Kết thúc 2: <b>{timesheet.end_time2_fact}</b></p> : null}
+                {!timesheet.isEdit && timesheet.start_time2_plan ? <p>Bắt đầu 2: <b>{timesheet.start_time2_fact}</b> | Kết thúc 2: <b>{timesheet.end_time2_fact}</b></p> : null}
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
@@ -306,7 +349,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime1Fact}
+                                selected={timesheet.startTime1Fact ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -319,7 +362,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime')}
+                          {this.error(index, 'startTime1Fact')}
                         </div>
                       </div>
                     </div>
@@ -330,7 +373,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime1Fact}
+                                selected={timesheet.endTime1Fact ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -343,11 +386,114 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime')}
+                          {this.error(index, 'endTime1Fact')}
                         </div>
                       </div>
                     </div>
                   </div> : null}
+
+                  {timesheet.start_time2_plan ? <div className="row">
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col-4">Bắt đầu:</div>
+                        <div className="col-8">
+                          <div className="content input-container">
+                            <label>
+                              <DatePicker
+                                selected={timesheet.startTime2Fact ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'startTime2Fact')}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Giờ"
+                                dateFormat="h:mm aa"
+                                placeholderText="Lựa chọn"
+                                className="form-control input"
+                              />
+                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
+                            </label>
+                          </div>
+                          {this.error(index, 'startTime2Fact')}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col-4">Kết thúc:</div>
+                        <div className="col-8">
+                          <div className="content input-container">
+                            <label>
+                              <DatePicker
+                                selected={timesheet.endTime2Fact ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'endTime2Fact')}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Giờ"
+                                dateFormat="h:mm aa"
+                                placeholderText="Lựa chọn"
+                                className="form-control input"
+                              />
+                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
+                            </label>
+                          </div>
+                          {this.error(index, 'endTime2Fact')}
+                        </div>
+                      </div>
+                    </div>
+                  </div> : null}
+
+                  {timesheet.start_time3_plan ? <div className="row">
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col-4">Bắt đầu:</div>
+                        <div className="col-8">
+                          <div className="content input-container">
+                            <label>
+                              <DatePicker
+                                selected={timesheet.startTime3Fact ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'startTime3Fact')}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Giờ"
+                                dateFormat="h:mm aa"
+                                placeholderText="Lựa chọn"
+                                className="form-control input"
+                              />
+                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
+                            </label>
+                          </div>
+                          {this.error(index, 'startTime3Fact')}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col-4">Kết thúc:</div>
+                        <div className="col-8">
+                          <div className="content input-container">
+                            <label>
+                              <DatePicker
+                                selected={timesheet.endTime3Fact ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'endTime3Fact')}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Giờ"
+                                dateFormat="h:mm aa"
+                                placeholderText="Lựa chọn"
+                                className="form-control input"
+                              />
+                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
+                            </label>
+                          </div>
+                          {this.error(index, 'endTime3Fact')}
+                        </div>
+                      </div>
+                    </div>
+                  </div> : null}
+
                 </div>
               </div>
 
@@ -366,7 +512,7 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} /> : null}
+        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
         {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
       </div>
     )
