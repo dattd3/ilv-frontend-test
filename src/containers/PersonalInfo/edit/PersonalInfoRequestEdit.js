@@ -21,7 +21,7 @@ class PersonalInfoRequestEdit extends React.Component {
           axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.match.params.id}`, config)
           .then(res => {
             if (res && res.data) {
-              const requestedUserProfile = res.data
+              const requestedUserProfile = res.data.data
               this.setState({requestedUserProfile: requestedUserProfile})
             }
           }).catch(error => {
@@ -36,7 +36,7 @@ class PersonalInfoRequestEdit extends React.Component {
     render() {
         return (
            <div>
-               {this.state.userProfile ? <PersonalInfoEdit requestedUserProfile={this.state.requestedUserProfile}/> : null}
+               {this.state.requestedUserProfile ? <PersonalInfoEdit requestedUserProfile={this.state.requestedUserProfile}/> : null}
            </div>
         )
     }

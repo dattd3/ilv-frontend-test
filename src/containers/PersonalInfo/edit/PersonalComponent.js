@@ -58,6 +58,19 @@ class PersonalComponent extends React.Component {
 
         const birthCountryId = this.props.userDetail.birth_country_id;
         this.getBirthProvinces(birthCountryId);
+
+        if (this.props.requestedUserProfile) {
+            const fields = ['BirthProvince', 'BirthProvinceText', 'Birthday']
+            let userDetail = {}
+            fields.forEach(field => {
+                if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]) {
+                    userDetail[this.mappingFields(field)] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]
+                }
+            })
+            this.setState({
+                userDetail: userDetail
+            })
+        }
     }
 
     processProfile = (res) => {
