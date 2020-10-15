@@ -8,6 +8,12 @@ import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import _ from 'lodash'
 
+const code = localStorage.getItem('employeeNo') || "";
+const fullName = localStorage.getItem('fullName') || "";
+const title = localStorage.getItem('jobTitle') || "";
+const department = localStorage.getItem('department') || "";
+let manager = {};
+
 class ApprovalDetail extends React.Component {
   constructor() {
     super();
@@ -26,7 +32,9 @@ class ApprovalDetail extends React.Component {
       modalTitle: "",
       modalMessage: "",
       typeRequest: 1,
-      userInfo: {}
+      userInfo: {},
+      status: 0,
+      hrComment: ""
     }
   }
 
@@ -133,22 +141,53 @@ class ApprovalDetail extends React.Component {
   }
 
   onShowModalConfirm = () => {
-    this.setState({isShowModalConfirm: true});
+    const result = this.prepareManagerInfo();
+    if (result) {
+      this.setState({isShowModalConfirm: true});
+    }
   }
 
   onHideModalConfirm = () => {
     this.setState({isShowModalConfirm: false});
   }
 
-  processUserInfo = (response) => {
+  processUserInfo = response => {
     if (response && response.data && response.data.userProfileInfo) {
       const info = response.data.userProfileInfo;
-      const obj = {
-        fullName: info.fullName,
-        position: info.position,
-        department: info.department
+      const staff = info.staff;
+      const manager = info.manager;
+      let userInfo = {
+        staff: {
+          code: staff.code,
+          fullName: staff.fullName,
+          title: staff.title,
+          department: staff.department
+        },
+        manager: {
+          code: manager.code,
+          fullName: manager.fullName,
+          title: manager.title,
+          department: manager.department
+        } || null
       }
-      this.setState({userInfo : obj});
+      this.setState({userInfo : userInfo});
+    }
+  }
+
+  prepareManagerInfo = () => {
+    manager = {
+      code: code,
+      fullName: fullName,
+      title: title,
+      department: department
+    };
+    return true;
+  }
+
+  prepareStatus = response => {
+    if (response && response.data) {
+      this.setState({status: response.data.status});
+      this.setState({hrComment: response.data.hrComment ? response.data.hrComment : ""});
     }
   }
 
@@ -169,54 +208,94 @@ class ApprovalDetail extends React.Component {
         this.processMainInfo(response);
         this.processDocumentInfo(response);
         this.processUserInfo(response);
+        this.prepareStatus(response);
       }
     }).catch(error => {
       console.log(error);
     });
   }
-    
+
   render() {
+    const status = {
+      0: {label: 'Đang chờ xử lý', className: ''},
+      1: {label: 'Không phê duyệt', className: 'fail'},
+      2: {label: 'Đã phê duyệt', className: 'success'},
+      3: {label: 'Đã thu hồi', className: ''}
+    }
+
     return (
       <>
-      <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+      <ConfirmationModal show={this.state.isShowModalConfirm} manager={manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
-      <div className="edit-personal"><h4 className="title text-uppercase">Thông tin cá nhân</h4></div>
+      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4><span className={`status ${status[this.state.status].className}`}>{status[this.state.status].label}</span></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
-            <div className="row item-info">
-              <div className="col-2">
-                  <div className="label">Họ và tên</div>
-              </div>
-              <div className="col-10">
-                <div className="detail">{this.state.userInfo.fullName}</div>
-              </div>
+          <div className="row item-info">
+            <div className="col-3">
+              <div className="label">Họ và tên</div>
+              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.fullName : ""}</div>
             </div>
-            <div className="row item-info">
-              <div className="col-2">
-                  <div className="label">Chức danh</div>
-              </div>
-              <div className="col-10">
-                <div className="detail">{this.state.userInfo.position}</div>
-              </div>
+            <div className="col-2">
+              <div className="label">Mã nhân viên</div>
+              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.code : ""}</div>
             </div>
-            <div className="row item-info">
-              <div className="col-2">
-                  <div className="label">Bộ phận</div>
-              </div>
-              <div className="col-10">
-                  <div className="detail">{this.state.userInfo.department}</div>
-              </div>
+            <div className="col-2">
+              <div className="label">Chức danh</div>
+              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.title : ""}</div>
+            </div>
+            <div className="col-5">
+              <div className="label">Khối/Phòng/Bộ phận</div>
+              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.department : ""}</div>
             </div>
           </div>
+        </div>
+        <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin đăng ký chỉnh sửa</h4></div>
         {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
+        {
+          (this.state.userInfo.manager && this.state.status == 2) ?
+          <>
+          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBLĐ phê duyệt</h4></div>
+          <div className="box shadow">
+            <div className="row item-info">
+              <div className="col-4">
+                <div className="label">Người phê duyệt</div>
+                <div className="detail">{this.state.userInfo.manager.fullName || ""}</div>
+              </div>
+              <div className="col-4">
+                <div className="label">Chức danh</div>
+                <div className="detail">{this.state.userInfo.manager.title || ""}</div>
+              </div>
+              <div className="col-4">
+                <div className="label">Khối/Phòng/Bộ phận</div>
+                <div className="detail">{this.state.userInfo.manager.department || ""}</div>
+              </div>
+            </div>
+            {
+              this.state.status == 1 ?
+              <div className="row item-info">
+                <div className="col-12">
+                  <div className="label">Lý do không phê duyệt</div>
+                  <div className="detail">{this.state.hrComment}</div>
+                </div>
+              </div>
+              : null
+            }
+          </div>
+          </>
+          : null
+        }
         {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
-        <div className="clearfix mb-5">
-          <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
-            <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
-          <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
-        </div>
+        {
+          this.state.status == 0 ?
+          <div className="clearfix mb-5">
+            <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
+              <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+            <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
+          </div>
+          : null
+        }
       </div>
       </>
     )

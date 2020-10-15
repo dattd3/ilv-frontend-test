@@ -22,6 +22,39 @@ class PersonalComponent extends React.Component {
             tempAddress: {},
             birthProvinces: []
         }
+
+        this.mappingFields = {
+            Birthday: "birthday",
+            DateOfIssue: "date_of_issue",
+            MarriageDate: "marital_date",
+            Gender: "gender",
+            PersonalEmail: "personal_email",
+            CellPhoneNo: "cell_phone_no",
+            UrgentContactNo: "urgent_contact_no",
+            BankAccountNumber: "bank_number",
+            PlaceOfIssue: "place_of_issue",
+            Ethinic: "race_id",
+            Religion: "religion_id",
+            BirthProvince: "birth_province_id",
+            Nationality: "nationality_id",
+            BirthCountry: "birth_country_id",
+            MaritalStatus: "marital_status_code",
+            Bank: "bank_name_id", // need to check
+            PersonalIdentifyNumber: "personal_id_no",
+            PersonalIdentifyDate: "pid_date_of_issue",
+            PersonalIdentifyPlace: "pid_place_of_issue",
+            PassportNumber: "passport_id_no",
+            PassportDate: "passport_date_of_issue",
+            PassportPlace: "passport_place_of_issue",
+            Country: "country_id",
+            Province: "province_id",
+            District: "district_id",
+            Wards: "ward_id",
+            TempCountry: "tmp_country_id",
+            TempProvince: "tmp_province_id",
+            TempDistrict: "tmp_district_id",
+            TempWards: "tmp_ward_id"
+        }
     }
 
     async componentDidMount() {
@@ -64,7 +97,7 @@ class PersonalComponent extends React.Component {
             let userDetail = {}
             fields.forEach(field => {
                 if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]) {
-                    userDetail[this.mappingFields(field)] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]
+                    userDetail[this.mappingFields[field]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]
                 }
             })
             this.setState({
@@ -115,15 +148,15 @@ class PersonalComponent extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name;
 
-        if(value !== this.props.userDetail[this.mappingFields(name)]) {
-            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
+        if(value !== this.props.userDetail[this.mappingFields[name]]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
         } else {
             this.props.removeInfo(name)
         }
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
-                [this.mappingFields(name)]: value
+                [this.mappingFields[name]]: value
             }
         })
     }
@@ -146,12 +179,12 @@ class PersonalComponent extends React.Component {
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
-                [this.mappingFields(name)]: val
+                [this.mappingFields[name]]: val
             }
         })
 
-        if (val !== this.props.userDetail[this.mappingFields(name)]) {
-            this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], val, textOld, label)
+        if (val !== this.props.userDetail[this.mappingFields[name]]) {
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
         } else {
             this.props.removeInfo(name)
         }
@@ -180,82 +213,17 @@ class PersonalComponent extends React.Component {
     handleDatePickerInputChange(dateInput, name) {
         if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
             const date = moment(dateInput).format('DD-MM-YYYY');
-            if(date !== this.props.userDetail[this.mappingFields(name)]) {
-                this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], date)
+            if(date !== this.props.userDetail[this.mappingFields[name]]) {
+                this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], date)
             } else {
                 this.props.removeInfo(name)
             }
             this.setState({
                 userDetail : {
                     ...this.state.userDetail,
-                    [this.mappingFields(name)]: date
+                    [this.mappingFields[name]]: date
                 }
             })
-        }
-    }
-
-    mappingFields = key => {
-        switch (key) {
-            case "Birthday":
-                return "birthday";
-            case "DateOfIssue":
-                return "date_of_issue";
-            case "MarriageDate":
-                return "marital_date";
-            case "Gender":
-                return "gender";
-            case "PersonalEmail":
-                return "personal_email";
-            case "CellPhoneNo":
-                return "cell_phone_no";
-            case "UrgentContactNo":
-                return "urgent_contact_no";
-            case "BankAccountNumber":
-                return "bank_number";
-            case "PlaceOfIssue":
-                return "place_of_issue";
-            case "Ethinic":
-                return "race_id";
-            case "Religion":
-                return "religion_id";
-            case "BirthProvince":
-                return "birth_province_id";
-            case "Nationality":
-                return "nationality_id";
-            case "BirthCountry":
-                return "birth_country_id";
-            case "MaritalStatus":
-                return "marital_status_code";
-            case "Bank":
-                return "bank_name_id";
-            case "PersonalIdentifyNumber":
-                return "personal_id_no";
-            case "PersonalIdentifyDate":
-                return "pid_date_of_issue";
-            case "PersonalIdentifyPlace":
-                return "pid_place_of_issue";
-            case "PassportNumber":
-                return "passport_id_no";
-            case "PassportDate":
-                return "passport_date_of_issue";
-            case "PassportPlace":
-                return "passport_place_of_issue";
-            case "Country":
-                return "country_id";
-            case "Province":
-                return "province_id";
-            case "District":
-                return "district_id";
-            case "Wards":
-                return "ward_id";
-            case "TempCountry":
-                return "tmp_country_id";
-            case "TempProvince":
-                return "tmp_province_id";
-            case "TempDistrict":
-                return "tmp_district_id";
-            case "TempWards":
-                return "tmp_ward_id";
         }
     }
 
@@ -302,16 +270,16 @@ class PersonalComponent extends React.Component {
     }
 
     handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
-        this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
-        // if(value !== this.props.userDetail[this.mappingFields(prefix + name)]) {
-        //     this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields(prefix + name)], value, oldText, newText)
+        this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
+        // if(value !== this.props.userDetail[this.mappingFields[prefix + name]]) {
+        //     this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
         // } else {
         //     this.props.removeInfo(prefix + name)
         // }
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
-                [this.mappingFields(prefix + name)]: value
+                [this.mappingFields[prefix + name]]: value
             }
         })
     }

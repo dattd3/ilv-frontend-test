@@ -54,6 +54,7 @@ class ConfirmationModal extends React.Component {
                 if (this.props.type == this.disapproval) {
                     let formData = new FormData()
                     formData.append('HRComment', this.state.message)
+                    formData.append('ManagerInfo', JSON.stringify(this.props.manager))
     
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
@@ -65,7 +66,10 @@ class ConfirmationModal extends React.Component {
                         window.location.href = "/tasks";
                     });
                 } else if (this.props.type == this.approval) {
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, {}, {
+                    let formData = new FormData()
+                    formData.append('ManagerInfo', JSON.stringify(this.props.manager))
+                    
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
