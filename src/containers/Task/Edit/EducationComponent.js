@@ -46,20 +46,26 @@ class EducationComponent extends React.Component {
     newUserEducation[index].major_id = '';
     newUserEducation[index].school_id = '';
     this.updateParrent(name, [...newUserEducation], index);
-    this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
+    name === 'education' ?
+    this.props.dispatch(actions.updateEducationAction({ [name]: [...newUserEducation] }))
+    : this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
   }
 
   schoolChange(index, name, education) {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].school_id = education.value
-    this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
+    name === 'education' ?
+    this.props.dispatch(actions.updateEducationAction({ [name]: [...newUserEducation] }))
+    : this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
     this.updateParrent(name, newUserEducation, index)
   }
 
   majorChange(index, name, major) {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].major_id = major.value
-    this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
+    name === 'education' ?
+    this.props.dispatch(actions.updateEducationAction({ [name]: [...newUserEducation] }))
+    : this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
     this.updateParrent(name, newUserEducation, index)
   }
 
@@ -67,19 +73,23 @@ class EducationComponent extends React.Component {
     const date = moment(dateInput).format('DD-MM-YYYY')
     let newUserEducation = [...this.props[name]]
     newUserEducation[index][field] = date
-    this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
+    name === 'education' ?
+    this.props.dispatch(actions.updateEducationAction({ [name]: [...newUserEducation] }))
+    : this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
     this.updateParrent(name, newUserEducation, index)
   }
 
   otherUniInputChange(index, name, e) {
     let newUserEducation = [...this.props[name]]
     newUserEducation[index].other_uni_name = e.target.value
-    this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
+    name === 'education' ?
+    this.props.dispatch(actions.updateEducationAction({ [name]: [...newUserEducation] }))
+    : this.props.dispatch(actions.updateNewEducationAction({ [name]: [...newUserEducation] }));
     this.updateParrent(name, newUserEducation, index)
   }
 
   updateParrent(name, newUserEducation, index) {
-    if (name == 'education') {
+    if (name === 'education') {
       this.props.updateEducation(newUserEducation)
     } else {
       this.props.updateNewEducation(newUserEducation, index)
@@ -180,8 +190,18 @@ class EducationComponent extends React.Component {
     this.props.dispatch(actions.updateNewEducationAction({ newEducation: [...this.props.newEducation.slice(0, index), ...this.props.newEducation.slice(index + 1)] }));
   }
 
+  compareTwoItemWithinSpecificProperty(eduItemPrev, eduItemNext, arr_props) {
+    let rs = true;
+    arr_props.forEach(prop => {
+      if (rs === true && eduItemPrev[prop] != eduItemNext[prop]) {
+        rs = false;
+      }
+    });
+    return rs;
+  }
+
   render() {
-    const userEducation = this.props.userEducation
+    const userEducation = this.props.userEducation;
     return (
       <div className="education">
         <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
@@ -189,12 +209,25 @@ class EducationComponent extends React.Component {
           <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
           <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
           <hr />
-
-          {this.props.userEducation.map((item, i) => {
+          {this.props.education.map((item, i) => {
             let ed = [];
-            if (this.props.education && Array.isArray(this.props.education) && this.props.education.some(e => e.education_id === item.education_id)) {
-              ed = this.props.education.filter(e => e.education_id = item.education_id);
-            }
+            // do thay doi logic nen ko can load nua
+            // if (this.props.education && Array.isArray(this.props.education) && this.props.education.length > 0) {
+            //   if (item.other_uni_name === '#') { item.other_uni_name = ''; }
+            //   if (item.other_major === '#') { item.other_major = ''; }
+            //   let edItem = this.props.education.filter(e =>
+            //     e.OldEducation.seqnr == item.seqnr
+            //     && e.OldEducation.education_level_id == item.education_level_id
+            //     && e.OldEducation.from_time == item.from_time
+            //     && e.OldEducation.to_time == item.to_time
+            //     && e.OldEducation.major_id == item.major_id
+            //     && e.OldEducation.school_id == item.school_id
+            //     //&& (e.OldEducation.other_uni_name === '#' || e.OldEducation.other_uni_name === '' || e.OldEducation.other_uni_name == item.other_uni_name)
+            //   );
+            //   if (edItem.length > 0 && this.compareTwoItemWithinSpecificProperty(edItem[0].OldEducation, item, ["seqnr", "education_level_id", "from_time", "to_time", "major_id", "school_id"]) === false) {
+            //     ed = edItem.NewEducation;
+            //   }
+            // }
             return <div className="item" key={i}>
               {this.itemHeader()}
               {userEducation[i] ? this.educationItem(userEducation[i]) : null}
@@ -227,8 +260,6 @@ class EducationComponent extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     ...state.requestDetail,
-    education: state.requestDetail.education,
-    //schools: state.requestDetail.schools
   };
 }
 
