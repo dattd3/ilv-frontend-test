@@ -861,6 +861,8 @@ class PersonalInfoEdit extends React.Component {
             schools={this.state.schools}
             updateEducation={this.updateEducation.bind(this)}
             addEducation={this.addEducation.bind(this)}
+            requestedUserProfile={this.state.requestedUserProfile}
+            isEdit={this.state.isEdit}
           />
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
