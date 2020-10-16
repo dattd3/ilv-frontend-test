@@ -156,6 +156,15 @@ class ApprovalDetail extends React.Component {
       const info = response.data.userProfileInfo;
       const staff = info.staff;
       const manager = info.manager;
+      let managerToShow = null;
+      if (manager) {
+        managerToShow = {
+          code: manager.code,
+          fullName: manager.fullName,
+          title: manager.title,
+          department: manager.department
+        }
+      }
       let userInfo = {
         staff: {
           code: staff.code,
@@ -163,12 +172,7 @@ class ApprovalDetail extends React.Component {
           title: staff.title,
           department: staff.department
         },
-        manager: {
-          code: manager.code,
-          fullName: manager.fullName,
-          title: manager.title,
-          department: manager.department
-        } || null
+        manager: managerToShow
       }
       this.setState({userInfo : userInfo});
     }
