@@ -77,7 +77,6 @@ class EducationComponent extends React.Component {
   }
 
   binddingNewEducationEdited = (requestedUserProfile) => {
-    debugger
     if (requestedUserProfile && requestedUserProfile.userProfileInfo && requestedUserProfile.userProfileInfo.create && requestedUserProfile.userProfileInfo.create.educations) {
       const createEducations = requestedUserProfile.userProfileInfo.create.educations;
       let newEducation = []
@@ -126,6 +125,7 @@ class EducationComponent extends React.Component {
     let newUserEducation = [...this.state[name]]
     newUserEducation[index].school_id = education.value
     newUserEducation[index].university_name = education.label
+    newUserEducation[index].other_uni_name = ""
     this.setState({ [name]: [...newUserEducation] })
     this.updateParrent(name, newUserEducation)
   }
@@ -134,13 +134,14 @@ class EducationComponent extends React.Component {
     let newUserEducation = [...this.state[name]]
     newUserEducation[index].major_id = major.value
     newUserEducation[index].major_name = major.label
+    newUserEducation[index].other_major = ""
     this.setState({ [name]: [...newUserEducation] })
     this.updateParrent(name, newUserEducation)
   }
 
   handleDatePickerInputChange(index, dateInput, field, name) {
     if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
-      const oldPrefix = "old_";
+      const oldPrefix = "old_"
       const date = moment(dateInput).format('DD-MM-YYYY')
       let newUserEducation = [...this.state[name]]
       newUserEducation[index][oldPrefix + field] = newUserEducation[index][field]
@@ -151,8 +152,16 @@ class EducationComponent extends React.Component {
   }
 
   otherInputChange(index, name, inputType, e) {
-    let newUserEducation = [...this.state[name]]
-    newUserEducation[index][inputType] = e.target.value
+    let val = e.target.value;
+    let newUserEducation = [...this.state[name]];
+    newUserEducation[index][inputType] = val;
+    if (inputType === "other_uni_name") {
+      newUserEducation[index].school_id = "";
+      newUserEducation[index].university_name = "";
+    } else if (inputType === "other_major") {
+      newUserEducation[index].major_id = "";
+      newUserEducation[index].major = "";
+    }
     this.setState({ [name]: [...newUserEducation] })
     this.updateParrent(name, newUserEducation)
   }
@@ -228,7 +237,7 @@ class EducationComponent extends React.Component {
               dateFormat="dd-MM-yyyy"
               locale="vi"
               className="form-control date" />&nbsp;-&nbsp;
-                          <DatePicker
+            <DatePicker
               name="to_time"
               key="to_time"
               selected={item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}

@@ -514,17 +514,20 @@ class PersonalInfoEdit extends React.Component {
         create.forEach(item => {
           let obj = {...this.objectToSap};
           const schoolCode = item.SchoolCode;
+          const majorCode = item.MajorCode;
           obj.actio = "INS";
           obj.begda = item.FromTime ? moment(item.FromTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
           obj.endda = item.ToTime ? moment(item.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
           obj.slart = item.DegreeType;
-          obj.zausbi = item.MajorCode || "";
           if (this.isNullCustomize(schoolCode)) {
-            // obj.zinstitute = "";
             obj.zortherinst = item.SchoolName || "";
           } else {
             obj.zinstitute = schoolCode;
-            obj.zortherinst = "";
+          }
+          if (this.isNullCustomize(majorCode)) {
+            obj.zzotherausbi = item.OtherMajor || "";
+          } else {
+            obj.zausbi = majorCode;
           }
           listObj = [...listObj, obj];
         })
@@ -685,9 +688,9 @@ class PersonalInfoEdit extends React.Component {
         ToTime: data.to_time || ""
       }
       let objClone = {...obj};
-
+      // debugger;
       if (action === "insert" || (action === "update" && type === "new")) {
-        objClone.DegreeTypeText = data.degree_text || "";
+        objClone.DegreeTypeText = data.degree_text || data.academic_level;
         objClone.MajorCodeText = data.major_name || "";
       } else {
         objClone.EducationId = data.education_id || "";
@@ -752,6 +755,38 @@ class PersonalInfoEdit extends React.Component {
         }});
       });
     }
+
+    getInfoUpdate = (newItems, fieldsMapping) => {
+      let labelArray = [];
+      Object.keys(newItems).forEach(function(key) {
+        if (key == "BirthCountry" || key == "BirthCountryText") {
+          labelArray.push(fieldsMapping.BirthCountry);
+        } else if (key == "BirthProvince" || key == "BirthProvinceText") {
+          labelArray.push(fieldsMapping.BirthProvince);
+        } else if (key == "Gender" || key == "GenderText") {
+          labelArray.push(fieldsMapping.Gender);
+        } else if (key == "Ethinic" || key == "EthinicText") {
+          labelArray.push(fieldsMapping.Ethinic);
+        } else if (key == "Religion" || key == "ReligionText") {
+          labelArray.push(fieldsMapping.Religion);
+        } else if (key == "Nationality" || key == "NationalityText") {
+          labelArray.push(fieldsMapping.Nationality);
+        } else if (key == "Country" || key == "CountryText" || key == "Province" || key == "ProvinceText" || key == "District" || key == "DistrictText" 
+        || key == "Wards" || key == "WardsText" || key == "StreetName") {
+          labelArray.push(fieldsMapping.PermanentAddress);
+        } else if (key == "TempCountry" || key == "TempCountryText" || key == "TempProvince" || key == "TempProvinceText" 
+        || key == "TempDistrict" || key == "TempDistrictText" || key == "TempWards" || key == "TempWardsText" || key == "TempStreetName") {
+          labelArray.push(fieldsMapping.TemporaryAddress);
+        } else if (key == "MaritalStatus" || key == "MaritalStatusText") {
+          labelArray.push(fieldsMapping.MaritalStatus);
+        } else if (key == "Bank" || key == "BankText") {
+          labelArray.push(fieldsMapping.Bank);
+        } else {
+          labelArray.push(fieldsMapping[key]);
+        }
+      });
+      return labelArray;
+    }
     
     getNameFromData = (data) => {
       const nameArray = {
@@ -779,41 +814,21 @@ class PersonalInfoEdit extends React.Component {
         PassportDate: "Ngày cấp Hộ chiếu",
         PassportPlace: "Nơi cấp Hộ chiếu"
       }
-
       let labelArray = [];
-      if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
-        labelArray.push(nameArray.Education);
-      }
-      if (data && data.update && data.update.userProfileHistoryMainInfo) {
-        const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo;
-        const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
-        Object.keys(newItems).forEach(function(key) {
-          if (key == "BirthCountry" || key == "BirthCountryText") {
-            labelArray.push(nameArray.BirthCountry);
-          } else if (key == "BirthProvince" || key == "BirthProvinceText") {
-            labelArray.push(nameArray.BirthProvince);
-          } else if (key == "Gender" || key == "GenderText") {
-            labelArray.push(nameArray.Gender);
-          } else if (key == "Ethinic" || key == "EthinicText") {
-            labelArray.push(nameArray.Ethinic);
-          } else if (key == "Religion" || key == "ReligionText") {
-            labelArray.push(nameArray.Religion);
-          } else if (key == "Nationality" || key == "NationalityText") {
-            labelArray.push(nameArray.Nationality);
-          } else if (key == "Country" || key == "CountryText" || key == "Province" || key == "ProvinceText" || key == "District" || key == "DistrictText" 
-          || key == "Wards" || key == "WardsText" || key == "StreetName") {
-            labelArray.push(nameArray.PermanentAddress);
-          } else if (key == "TempCountry" || key == "TempCountryText" || key == "TempProvince" || key == "TempProvinceText" 
-          || key == "TempDistrict" || key == "TempDistrictText" || key == "TempWards" || key == "TempWardsText" || key == "TempStreetName") {
-            labelArray.push(nameArray.TemporaryAddress);
-          } else if (key == "MaritalStatus" || key == "MaritalStatusText") {
-            labelArray.push(nameArray.MaritalStatus);
-          } else if (key == "Bank" || key == "BankText") {
-            labelArray.push(nameArray.Bank);
-          } else {
-            labelArray.push(nameArray[key]);
+      if (data) {
+        if (data.create && data.create.educations && data.create.educations.length > 0) {
+          labelArray.push(nameArray.Education);
+        }
+        if (data.update) {
+          if (data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
+            labelArray.push(nameArray.Education);
           }
-        });
+          if (data.update.userProfileHistoryMainInfo) {
+            const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo;
+            const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
+            labelArray = labelArray.concat(this.getInfoUpdate(newItems, nameArray));
+          }
+        }
       }
       return _.uniq(labelArray).join(" - ");
     }
