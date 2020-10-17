@@ -19,11 +19,11 @@ class EducationComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.requestedUserProfile !== this.props.requestedUserProfile) {
-        this.setState({ requestedUserProfileToContinue: nextProps.requestedUserProfile })
-      }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //   if (nextProps.requestedUserProfile !== this.props.requestedUserProfile) {
+    //     this.setState({ requestedUserProfileToContinue: nextProps.requestedUserProfile })
+    //   }
+    // }
 
     componentDidMount() {
       const config = {
@@ -44,18 +44,34 @@ class EducationComponent extends React.Component {
 
       })
 
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
-      .then(res => {
-        if (res && res.data && res.data.data) {
-          const userEducation = res.data.data.map(d => { return {}})
-          this.setState({ userEducation: userEducation });
+      setTimeout(() => {
+        if (this.props.requestedUserProfile && this.props.isEdit) {
+          this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation)
+          this.binddingNewEducationEdited(this.props.requestedUserProfile)
+        } else {
+          const userEducation = this.props.userEducation.map(d => { return {}})
+            this.setState({ userEducation: userEducation })
         }
-      }).catch(error => {
+      }, 0)
+    }
+
+    updateEducation(userProfileHistoryEducation) {
+      const userEducation = userProfileHistoryEducation.map(d => {
+        return {
+          school_id: d.NewEducation.SchoolCode,
+          university_name: d.NewEducation.SchoolName,
+          education_level_id: d.NewEducation.DegreeType,
+          academic_level: d.NewEducation.DegreeTypeText,
+          major_id: d.NewEducation.MajorCode,
+          major: d.NewEducation.MajorName,
+          other_uni_name: d.NewEducation.OtherSchool,
+          other_major: d.NewEducation.OtherMajor,
+          from_time: d.NewEducation.FromTime,
+          to_time: d.NewEducation.ToTime,
+        }
       })
 
-      setTimeout(() => {
-        this.binddingNewEducationEdited(this.state.requestedUserProfileToContinue)
-      }, 0)
+      this.setState({userEducation: userEducation})
     }
 
     binddingNewEducationEdited = (requestedUserProfile) => {
