@@ -107,7 +107,7 @@ class TaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}/edit`
+        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
     }
 
     getLinkRegistration (id) {
@@ -234,7 +234,7 @@ class TaskList extends React.Component {
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
                             {
                                 isShowEditButton ?
-                                <a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
                             }
                             {
