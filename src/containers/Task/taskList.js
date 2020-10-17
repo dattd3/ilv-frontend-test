@@ -8,7 +8,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
-import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
+import ConfirmationModal from '../Registration/ConfirmationModal'
 
 class TaskList extends React.Component {
     constructor() {
@@ -249,7 +249,7 @@ class TaskList extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                {tasks.length > 0 ? <div className="row paging">
+                {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
                     <div className="col-sm">
                         <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
