@@ -37,61 +37,65 @@ class ConfirmationModal extends React.Component {
     }
 
     ok = (e) => {
-        const type = e.currentTarget.dataset.type;
-        if (this.props.type == null || this.props.type == undefined) {
+        const url = window.location.pathname
+        const id = window.location.pathname.substring(url.lastIndexOf('/') + 1)
+        let formData = new FormData()
+        formData.append('ManagerInfo', JSON.stringify({
+            fullname: localStorage.getItem('fullName'),
+            title: localStorage.getItem('jobTitle'),
+            department: localStorage.getItem('department'),
+            code: localStorage.getItem('employeeNo')
+        }))
 
-        } else {
-            if (type === "yes") {
-                if (this.props.type == this.disapproval) {
-                    let formData = new FormData()
-                    formData.append('HRComment', this.state.message)
-                    formData.append('ManagerInfo', JSON.stringify(this.props.manager))
-    
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
-                        headers: { Authorization: localStorage.getItem('accessToken') }
-                    })
-                    .then(response => {
-                        window.location.href = "/tasks";
-                    })
-                    .catch(error => {
-                        window.location.href = "/tasks";
-                    });
-                }
-            }
+        if (this.props.type == DISAPPROVAL) {
+            formData.append('HRComment', this.state.message)
+            this.updateRequest(formData, `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/disapproval`, id)
         }
     }
 
+    updateRequest(formData, url, id) {
+        axios.post(url, formData, {
+            headers: { Authorization: localStorage.getItem('accessToken') }
+        })
+            .then(response => {
+                window.location.href = "/tasks"
+            })
+            .catch(error => {
+                window.location.href = "/tasks"
+            })
+    }
+
     handleChangeMessage = (e) => {
-        this.setState({message : e.target.value});
+        this.setState({ message: e.target.value });
     }
 
     onHideResultModal = () => {
-        this.setState({isShowResultConfirm: false});
+        this.setState({ isShowResultConfirm: false });
         window.location.reload();
     }
 
-    render () {
+    render() {
         return (
             <>
-            <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>{this.props.title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>{this.props.message}</p>
-                    {
-                        this.props.type == DISAPPROVAL ?
-                        <div className="message">
-                            <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                    <Modal.Header className='apply-position-modal' closeButton>
+                        <Modal.Title>{this.props.title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{this.props.message}</p>
+                        {
+                            this.props.type == DISAPPROVAL ?
+                                <div className="message">
+                                    <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                </div>
+                                : null
+                        }
+                        <div className="clearfix">
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok.bind(this)}>Có</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
                         </div>
-                        : null
-                    }
-                    <div className="clearfix">
-                        <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok.bind(this)}>Có</button>
-                        <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
-                    </div>
-                </Modal.Body>
-            </Modal>
+                    </Modal.Body>
+                </Modal>
             </>
         )
     }
