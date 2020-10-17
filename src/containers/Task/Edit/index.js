@@ -654,7 +654,7 @@ class PersonalInfoEdit extends React.Component {
       SchoolName: data.university_name || data.other_uni_name || '',
       DegreeType: data.education_level_id || '',
       MajorCode: data.major_id || '',
-      MajorName: data.major || '',
+      MajorCodeText: data.major || '',
       FromTime: fromTime,
       ToTime: toTime,
       Seqnr: data.seqnr
@@ -709,7 +709,7 @@ class PersonalInfoEdit extends React.Component {
       SchoolName: "",
       DegreeType: "",
       MajorCode: "",
-      MajorName: "",
+      MajorCode: "",
       FromTime: "",
       ToTime: ""
     };

@@ -84,7 +84,7 @@ class EducationComponent extends React.Component {
           DegreeType: "education_level_id",
           DegreeTypeText: "academic_level",
           MajorCode: "major_id",
-          MajorName: "major",
+          MajorCodeText: "major",
           OtherSchool: "other_uni_name",
           OtherMajor: "other_major",
           FromTime: "from_time",

@@ -7,6 +7,10 @@ class EducationComponent extends React.Component {
     super();
   }
 
+  isNullCustomize = value => {
+    return (value == undefined || value == null || value == 'null' || value == '#' || value == "" || value == "00000000")
+  }
+
   itemHeader = () => {
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>Trường đào tạo</Col>
@@ -20,15 +24,13 @@ class EducationComponent extends React.Component {
   educationItem = (item, type) => {
     return <Row className={`info-value ${type}`}>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">
-          {item.SchoolName}
-        </div>
+        <div className="detail">{!this.isNullCustomize(item.OtherSchool) ? item.OtherSchool : item.SchoolName}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
         <div className="detail">{item.DegreeTypeText}</div>
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.MajorName}</div>
+        <div className="detail">{!this.isNullCustomize(item.OtherMajor) ? item.OtherMajor : item.MajorCodeText}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
         <div className="detail">{item.FromTime}</div>
