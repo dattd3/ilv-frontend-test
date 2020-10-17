@@ -15,6 +15,11 @@ import moment from 'moment'
 
 registerLocale("vi", vi)
 
+const FULL_DAY = 1
+const DURING_THE_DAY = 2
+const DATE_FORMAT = 'DD/MM/YYYY'
+const TIME_FORMAT = 'HH:mm'
+
 class BusinessTripComponent extends React.Component {
   constructor(props) {
     super();
@@ -25,6 +30,7 @@ class BusinessTripComponent extends React.Component {
       endDate: null,
       totalTime: 2,
       attendanceQuotaType: null,
+      leaveType: FULL_DAY,
       vehicle: null,
       place: null,
       note: null,
@@ -39,43 +45,55 @@ class BusinessTripComponent extends React.Component {
       this.setState({
         isEdit: true,
         id: this.props.businessTrip.id,
-        startDate: moment(this.props.businessTrip.userProfileInfo.startDate).toDate(),
-        startTime: moment(this.props.businessTrip.userProfileInfo.startTime).toDate(),
-        endDate: moment(this.props.businessTrip.userProfileInfo.endDate).toDate(),
-        endTime: moment(this.props.businessTrip.userProfileInfo.endTime).toDate(),
+        startDate: this.props.businessTrip.userProfileInfo.startDate,
+        startTime: this.props.businessTrip.userProfileInfo.startTime,
+        endDate: this.props.businessTrip.userProfileInfo.endDate,
+        endTime: this.props.businessTrip.userProfileInfo.endTime,
         totalTime: this.props.businessTrip.userProfileInfo.totalTime,
         attendanceQuotaType: this.props.businessTrip.userProfileInfo.attendanceQuotaType,
+        leaveType: this.props.businessTrip.userProfileInfo.leaveType,
         place: this.props.businessTrip.userProfileInfo.place,
         vehicle: this.props.businessTrip.userProfileInfo.vehicle,
         note: this.props.businessTrip.comment,
-        approver: this.props.businessTrip.userProfileInfo.approver
+        approver: this.props.businessTrip.userProfileInfo.approver,
+        files: this.props.businessTrip.userProfileInfoDocuments.map(file => {
+          return {
+            id: file.id,
+            name: file.fileName,
+            fileSize: file.fileSize,
+            fileType: file.other,
+            fileUrl: file.Url
+          }
+        }),
       })
     }
   }
 
   setStartDate(startDate) {
     this.setState({
-      startDate: startDate,
-      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? startDate : this.state.endDate
+      startDate: moment(startDate).format(DATE_FORMAT),
+      endDate: this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
     })
   }
 
   setStartTime(startTime) {
     this.setState({
-      startTime: startTime,
-      endTime: this.state.endTime === undefined || startTime > this.state.endTime ? startTime : this.state.endTime
+      startTime: moment(startTime).format(TIME_FORMAT),
+      endTime: this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
     })
   }
 
   setEndTime(endTime) {
     this.setState({
-      endTime: endTime
+      startTime: this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime,
+      endTime: moment(endTime).format(TIME_FORMAT)
     })
   }
 
   setEndDate(endDate) {
     this.setState({
-      endDate: endDate
+      startDate: this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate,
+      endDate: moment(endDate).format(DATE_FORMAT)
     })
   }
 
@@ -110,6 +128,14 @@ class BusinessTripComponent extends React.Component {
       }
     })
 
+    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
+      errors['startTime'] = '(Bắt buộc)'
+    }
+
+    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
+      errors['endTime'] = '(Bắt buộc)'
+    }
+
     this.setState({ errors: errors })
     return errors
   }
@@ -130,6 +156,7 @@ class BusinessTripComponent extends React.Component {
       totalTime: this.state.totalTime,
       vehicle: this.state.vehicle,
       place: this.state.place,
+      leaveType: this.state.leaveType,
       user: {
         fullname: localStorage.getItem('fullName'),
         jobTitle: localStorage.getItem('jobTitle'),
@@ -177,6 +204,17 @@ class BusinessTripComponent extends React.Component {
     this.setState({ isShowStatusModal: false });
   }
 
+  updateLeaveType(leaveType) {
+    if (leaveType == this.state.leaveType) {
+      return
+    }
+    this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null })
+  }
+
+  removeFile(index) {
+    this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+  }
+
   render() {
     const vehicles = [
       { value: '1', label: 'Xe cá nhân' },
@@ -204,6 +242,20 @@ class BusinessTripComponent extends React.Component {
         <div className="box shadow">
           <div className="form">
             <div className="row">
+              <div className="col-5"></div>
+              <div className="col-7">
+                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                    Nghỉ cả ngày
+                  </label>
+                  <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                    Nghỉ trong ngày
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
               <div className="col-5">
                 <p className="title">Ngày/giờ bắt đầu</p>
                 <div className="row">
@@ -213,9 +265,9 @@ class BusinessTripComponent extends React.Component {
                         <DatePicker
                           name="startDate"
                           selectsStart
-                          selected={this.state.startDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
+                          selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                          startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                          endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                           onChange={this.setStartDate.bind(this)}
                           dateFormat="dd/MM/yyyy"
                           placeholderText="Lựa chọn"
@@ -230,7 +282,7 @@ class BusinessTripComponent extends React.Component {
                     <div className="content input-container">
                       <label>
                         <DatePicker
-                          selected={this.state.startTime}
+                          selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setStartTime.bind(this)}
                           showTimeSelect
                           showTimeSelectOnly
@@ -239,6 +291,7 @@ class BusinessTripComponent extends React.Component {
                           dateFormat="h:mm aa"
                           placeholderText="Lựa chọn"
                           className="form-control input"
+                          disabled={this.state.leaveType == FULL_DAY ? true : false}
                         />
                         <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
@@ -259,10 +312,10 @@ class BusinessTripComponent extends React.Component {
                         <DatePicker
                           name="endDate"
                           selectsEnd
-                          selected={this.state.endDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
-                          minDate={this.state.startDate}
+                          selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                          startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                          endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                          minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           onChange={this.setEndDate.bind(this)}
                           dateFormat="dd/MM/yyyy"
                           placeholderText="Lựa chọn"
@@ -277,7 +330,7 @@ class BusinessTripComponent extends React.Component {
                     <div className="content input-container">
                       <label>
                         <DatePicker
-                          selected={this.state.endTime}
+                          selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setEndTime.bind(this)}
                           showTimeSelect
                           showTimeSelectOnly
@@ -286,11 +339,12 @@ class BusinessTripComponent extends React.Component {
                           dateFormat="h:mm aa"
                           placeholderText="Lựa chọn"
                           className="form-control input"
+                          disabled={this.state.leaveType == FULL_DAY ? true : false}
                         />
                         <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
                     </div>
-                    {this.error('startTime')}
+                    {this.error('endTime')}
                   </div>
                 </div>
 
@@ -306,20 +360,20 @@ class BusinessTripComponent extends React.Component {
 
             <div className="row">
               <div className="col-5">
-                <p className="title">Loại chuyến Công tác/Đào tạo <OverlayTrigger 
-                                trigger="click"
-                                placement="right" 
-                                overlay={<Popover id={'note'} className="registration-popover">
-                                        <Popover.Title as="h3" className="bg-secondary text-light">Ghi chú</Popover.Title>
-                                        <Popover.Content>
-                                        <p>* Có CTP: được trả Công tác phí</p>
-                                        <p>* Không CTP: không được trả Công tác phí</p>
-                                        <p>* Có ăn ca: được trả tiền ăn ca</p>
-                                        <p>* Không ăn ca: không được trả tiền ăn ca</p>
-                                        </Popover.Content>
-                                    </Popover>}>
-                                    <i className="fa fa-info-circle text-info" aria-hidden="true"></i>
-                            </OverlayTrigger></p>
+                <p className="title">Loại chuyến Công tác/Đào tạo <OverlayTrigger
+                  trigger="click"
+                  placement="right"
+                  overlay={<Popover id={'note'} className="registration-popover">
+                    <Popover.Title as="h3" className="bg-secondary text-light">Ghi chú</Popover.Title>
+                    <Popover.Content>
+                      <p>* Có CTP: được trả Công tác phí</p>
+                      <p>* Không CTP: không được trả Công tác phí</p>
+                      <p>* Có ăn ca: được trả tiền ăn ca</p>
+                      <p>* Không ăn ca: không được trả tiền ăn ca</p>
+                    </Popover.Content>
+                  </Popover>}>
+                  <i className="fa fa-info-circle text-info" aria-hidden="true"></i>
+                </OverlayTrigger></p>
                 <div>
                   <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>

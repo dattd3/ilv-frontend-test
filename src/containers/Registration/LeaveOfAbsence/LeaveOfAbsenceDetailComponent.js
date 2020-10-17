@@ -3,7 +3,6 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 
-const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
@@ -51,7 +50,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
-              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.totalTime +  ' ngày' : null}</div>
             </div>
             <div className="col-3">
               Loại nghỉ

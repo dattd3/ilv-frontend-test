@@ -134,4 +134,13 @@
         }
         
     }
+
+    .approver {
+        padding: 5px;
+
+        .comment {
+            font-size: small;
+            font-style: italic;
+        }
+    }
 }
