@@ -59,8 +59,6 @@ class PersonalComponent extends React.Component {
     }
 
     async componentDidMount() {
-        // debugger
-
         let config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -83,15 +81,18 @@ class PersonalComponent extends React.Component {
         this.bindBirthCountryAndProvince(config);
 
         if (this.props.requestedUserProfile) {
-            let userDetail = {}
-            Object.keys(this.mappingFields).forEach(key => {
-                if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]) {
-                    userDetail[this.mappingFields[key]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]
-                }
-            });
-            this.setState({
-                userDetail: userDetail
-            })
+            const requestedUserProfile = this.props.requestedUserProfile
+            if (requestedUserProfile.userProfileInfo.update && requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo) {
+                let userDetail = {}
+                Object.keys(this.mappingFields).forEach(key => {
+                    if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]) {
+                        userDetail[this.mappingFields[key]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]
+                    }
+                });
+                this.setState({
+                    userDetail: userDetail
+                })
+            }
         }
     }
 

@@ -131,13 +131,20 @@ class PersonalInfoEdit extends React.Component {
 
       if (this.props.requestedUserProfile) {
         const userProfileInfo = this.props.requestedUserProfile.userProfileInfo;
+        let oldMainInfo = {}
+        let newMainInfo = {}
+        if (userProfileInfo && userProfileInfo.update && userProfileInfo.update.userProfileHistoryMainInfo) {
+          oldMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo
+          newMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo
+        }
+
         this.setState({
           isEdit: true,
           id: this.props.requestedUserProfile.id,
           requestedUserProfile: this.props.requestedUserProfile,
           data: userProfileInfo,
-          OldMainInfo: userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo,
-          NewMainInfo: userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo
+          OldMainInfo: oldMainInfo,
+          NewMainInfo: newMainInfo
         })
       }
     }
@@ -668,12 +675,9 @@ class PersonalInfoEdit extends React.Component {
 
     prepareEducationModel = (data, action, type) => {
       let obj = {
-        EducationId: data.education_id || "",
-        PreBeginDate: data.old_from_time || data.from_time,
-        PreEndDate: data.old_to_time || data.to_time,
-        Seqnr: data.seqnr || 0,
-        PreEducationLevelId: data.old_education_level_id || data.education_level_id,
         SchoolCode: data.school_id || "",
+        SchoolName: data.university_name,
+        OtherSchool: data.other_uni_name,
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",
         FromTime: data.from_time || "",
@@ -682,15 +686,44 @@ class PersonalInfoEdit extends React.Component {
       let objClone = {...obj};
 
       if (action === "insert" || (action === "update" && type === "new")) {
-        objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
+        // objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
+        console.log(data.major_name);
         objClone.DegreeTypeText = data.degree_text || "";
         objClone.MajorName = data.major_name || "";
       } else {
-        objClone.SchoolName = data.university_name || data.other_uni_name;
+        // objClone.SchoolName = data.university_name || data.other_uni_name;
+        objClone.EducationId = data.education_id || "";
+        objClone.PreBeginDate = data.old_from_time || data.from_time;
+        objClone.PreEndDate = data.old_to_time || data.to_time;
+        objClone.Seqnr = data.seqnr || 0;
+        objClone.PreEducationLevelId = data.old_education_level_id || data.education_level_id;
         objClone.DegreeTypeText = data.academic_level || "";
         objClone.MajorName = data.major || "";
       }
 
+      // let obj = {
+      //   EducationId: data.education_id || "",
+      //   PreBeginDate: data.old_from_time || data.from_time,
+      //   PreEndDate: data.old_to_time || data.to_time,
+      //   Seqnr: data.seqnr || 0,
+      //   PreEducationLevelId: data.old_education_level_id || data.education_level_id,
+      //   SchoolCode: data.school_id || "",
+      //   DegreeType: data.education_level_id || "",
+      //   MajorCode: data.major_id || "",
+      //   FromTime: data.from_time || "",
+      //   ToTime: data.to_time || ""
+      // }
+      // let objClone = {...obj};
+
+      // if (action === "insert" || (action === "update" && type === "new")) {
+      //   objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
+      //   objClone.DegreeTypeText = data.degree_text || "";
+      //   objClone.MajorName = data.major_name || "";
+      // } else {
+      //   objClone.SchoolName = data.university_name || data.other_uni_name;
+      //   objClone.DegreeTypeText = data.academic_level || "";
+      //   objClone.MajorName = data.major || "";
+      // }
       return objClone;
     }
 
