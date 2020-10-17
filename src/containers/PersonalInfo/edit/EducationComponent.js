@@ -9,13 +9,20 @@ import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
 class EducationComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             userEducation: [],
             newUserEducation: [],
-            schools: []
+            schools: [],
+            requestedUserProfileToContinue: props.requestedUserProfile
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.requestedUserProfile !== this.props.requestedUserProfile) {
+        this.setState({ requestedUserProfileToContinue: nextProps.requestedUserProfile })
+      }
     }
 
     componentDidMount() {
@@ -27,6 +34,16 @@ class EducationComponent extends React.Component {
         }
       }
 
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let schools = res.data.data;
+          this.setState({ schools: schools });
+        }
+      }).catch(error => {
+
+      })
+
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
@@ -36,14 +53,38 @@ class EducationComponent extends React.Component {
       }).catch(error => {
       })
 
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
-      .then(res => {
-        if (res && res.data && res.data.data) {
-          let schools = res.data.data;
-          this.setState({ schools: schools });
+      setTimeout(() => {
+        this.binddingNewEducationEdited(this.state.requestedUserProfileToContinue)
+      }, 0)
+    }
+
+    binddingNewEducationEdited = (requestedUserProfile) => {
+      if (requestedUserProfile && requestedUserProfile.userProfileInfo && requestedUserProfile.userProfileInfo.create && requestedUserProfile.userProfileInfo.create.educations) {
+        const createEducations = requestedUserProfile.userProfileInfo.create.educations;
+        let newEducation = []
+        const mappingEducationFields = {
+          SchoolCode: "school_id",
+          SchoolName: "university_name",
+          DegreeType: "education_level_id",
+          DegreeTypeText: "academic_level",
+          MajorCode: "major_id",
+          MajorName: "major",
+          OtherSchool: "other_uni_name",
+          OtherMajor: "other_major",
+          FromTime: "from_time",
+          ToTime: "to_time"
         }
-      }).catch(error => {
-      })
+        createEducations.forEach(item => {
+          let educations = {}
+          Object.keys(item).forEach(key => {
+            if (item[key]) {
+              educations[mappingEducationFields[key]] = item[key]
+            }
+          });
+          newEducation = newEducation.concat(educations);
+        })
+        this.setState({newUserEducation : newEducation});
+      }
     }
 
     isNotNull(input) {
@@ -65,7 +106,7 @@ class EducationComponent extends React.Component {
     schoolChange(index, name, education) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].school_id = education.value
-      newUserEducation[index].school_name = education.label
+      newUserEducation[index].university_name = education.label
       this.setState({ [name]: [...newUserEducation] })
       this.updateParrent(name, newUserEducation)
     }
@@ -90,9 +131,9 @@ class EducationComponent extends React.Component {
       }
     }
 
-    otherUniInputChange(index, name, e) {
+    otherInputChange(index, name, inputType, e) {
       let newUserEducation = [...this.state[name]]
-      newUserEducation[index].other_uni_name = e.target.value
+      newUserEducation[index][inputType] = e.target.value
       this.setState({ [name]: [...newUserEducation] })
       this.updateParrent(name, newUserEducation)
     }
@@ -145,12 +186,16 @@ class EducationComponent extends React.Component {
                 </div>
                 <div className="form-inline float-right">
                   <label className="mr-3">Khác: </label>
-                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={ this.resetValueInValid(item.other_uni_name) || ''}/>
+                  <input className="form-control w-75 float-right" onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={ this.resetValueInValid(item.other_uni_name) || ''}/>
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
-                <div>
+                <div className="mb-3">
                   <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)}/>
+                </div>
+                <div className="form-inline float-right">
+                  <label className="mr-3">Khác: </label>
+                  <input className="form-control w-75 float-right" onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={ this.resetValueInValid(item.other_major) || ''}/>
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>
@@ -225,7 +270,7 @@ class EducationComponent extends React.Component {
 
                     <button type="button" className="btn btn-primary add" onClick={this.addEducation.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
 
-                    {this.state.newUserEducation.map((item, i) => {
+                    {this.state.newUserEducation && this.state.newUserEducation.map((item, i) => {
                       return <div className="clearfix new-item" key={i}>
                             <div className="float-left input-table">
                                 <div key={i}>

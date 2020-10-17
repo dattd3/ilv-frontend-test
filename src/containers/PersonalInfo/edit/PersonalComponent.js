@@ -10,17 +10,18 @@ import _ from 'lodash'
 registerLocale("vi", vi)
 
 class PersonalComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             userDetail: {},
             isAddressEdit: false,
             isTmpAddressEdit: false,
-            countryId: '',
+            countryId: props.birthCountry,
             provinces: [],
             mainAddress: {},
             tempAddress: {},
-            birthProvinces: []
+            birthProvinces: [],
+            birthCountryNotUpdate: ""
         }
 
         this.mappingFields = {
@@ -39,7 +40,7 @@ class PersonalComponent extends React.Component {
             Nationality: "nationality_id",
             BirthCountry: "birth_country_id",
             MaritalStatus: "marital_status_code",
-            Bank: "bank_name_id", // need to check
+            Bank: "bank_name_id",
             PersonalIdentifyNumber: "personal_id_no",
             PersonalIdentifyDate: "pid_date_of_issue",
             PersonalIdentifyPlace: "pid_place_of_issue",
@@ -77,32 +78,45 @@ class PersonalComponent extends React.Component {
             console.log(errors);
         })
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.state.countryId}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const data = res.data.data;
-            this.setState({
-                provinces: data,
-             })
-          }
-        }).catch(error => {
-
-        })
-
-        const birthCountryId = this.props.userDetail.birth_country_id;
-        this.getBirthProvinces(birthCountryId);
+        this.bindBirthCountryAndProvince(config);
 
         if (this.props.requestedUserProfile) {
-            const fields = ['BirthProvince', 'BirthProvinceText', 'Birthday']
-            let userDetail = {}
-            fields.forEach(field => {
-                if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]) {
-                    userDetail[this.mappingFields[field]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[field]
+            const requestedUserProfile = this.props.requestedUserProfile
+            if (requestedUserProfile.userProfileInfo.update && requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo) {
+                let userDetail = {}
+                Object.keys(this.mappingFields).forEach(key => {
+                    if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]) {
+                        userDetail[this.mappingFields[key]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]
+                    }
+                });
+                this.setState({
+                    userDetail: userDetail
+                })
+            }
+        }
+    }
+
+    bindBirthCountryAndProvince = (config) => {
+        if (!this.props.isEdit) {
+            // Edit profile
+        } else {
+            if (this.state.countryId) {
+                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.state.countryId}`, config)
+                .then(res => {
+                if (res && res.data && res.data.data) {
+                    const data = res.data.data;
+                    this.setState({
+                        birthProvinces: data
+                    })
                 }
-            })
-            this.setState({
-                userDetail: userDetail
-            })
+                }).catch(error => {
+    
+                })
+            } else if (!this.state.countryId) {
+                const birthCountryId = this.props.userDetail.birth_country_id;
+                this.getBirthProvinces(birthCountryId);
+                this.setState({birthCountryNotUpdate: birthCountryId});
+            }    
         }
     }
 
@@ -153,6 +167,7 @@ class PersonalComponent extends React.Component {
         } else {
             this.props.removeInfo(name)
         }
+
         this.setState({
             userDetail : {
                 ...this.state.userDetail,
@@ -347,7 +362,8 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.birth_country_name || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry" options={countries} value={countries.filter(n => n.value == this.state.userDetail.birth_country_id)} 
+                    <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry" 
+                    options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : this.state.userDetail.birth_country_id))} 
                     onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                 </div>
             </div>
