@@ -14,29 +14,29 @@ class TaskList extends React.Component {
     constructor() {
         super();
         this.state = {
-          tasks: [],
-          dataToModalConfirm: null,
-          isShowModalConfirm: false,
-          modalTitle: "",
-          modalMessage: "",
-          typeRequest: 1,
-          messageModalConfirm: "",
-          pageNumber: 1,
-          userProfileHistoryId: 0
+            tasks: [],
+            dataToModalConfirm: null,
+            isShowModalConfirm: false,
+            modalTitle: "",
+            modalMessage: "",
+            typeRequest: 1,
+            messageModalConfirm: "",
+            pageNumber: 1,
+            userProfileHistoryId: 0
         }
-        
+
         this.disapproval = 1;
         this.approval = 2;
     }
 
     onChangePage = index => {
-        this.setState({ pageNumber: index})
+        this.setState({ pageNumber: index })
     }
 
     onChangeStatus = (option, userProfileHistoryId) => {
         const value = option.value;
         const label = option.label;
-        this.setState({userProfileHistoryId: userProfileHistoryId});
+        this.setState({ userProfileHistoryId: userProfileHistoryId });
 
         if (value == this.disapproval) {
             this.setState({
@@ -66,35 +66,35 @@ class TaskList extends React.Component {
     }
 
     onHideModalConfirm = () => {
-        this.setState({isShowModalConfirm: false});
+        this.setState({ isShowModalConfirm: false });
     }
 
     showStatus = (userProfileHistoryId, value) => {
         const customStylesStatus = {
             control: base => ({
-              ...base,
-              width: 160,
-              height: 35,
-              minHeight: 35
+                ...base,
+                width: 160,
+                height: 35,
+                minHeight: 35
             }),
             option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-              return {
-                ...styles
-              };
+                return {
+                    ...styles
+                };
             },
-          }
+        }
 
         const status = {
-            0: {label: 'Đang chờ xử lý', className: 'request-status'},
-            1: {label: 'Từ chối', className: 'request-status fail'},
-            2: {label: 'Đã phê duyệt', className: 'request-status success'},
-            3: {label: 'Đã thu hồi', className: 'request-status'}
+            0: { label: 'Đang chờ xử lý', className: 'request-status' },
+            1: { label: 'Từ chối', className: 'request-status fail' },
+            2: { label: 'Đã phê duyệt', className: 'request-status success' },
+            3: { label: 'Đã thu hồi', className: 'request-status' }
         }
 
         const options = [
-           { value: 0, label: 'Đang chờ xử lý'},
-           { value: 1, label: 'Từ chối'},
-           { value: 2, label: 'Phê duyệt'}
+            { value: 0, label: 'Đang chờ xử lý' },
+            { value: 1, label: 'Từ chối' },
+            { value: 2, label: 'Phê duyệt' }
         ]
 
         if (this.props.page === "approval") {
@@ -110,7 +110,7 @@ class TaskList extends React.Component {
         return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
     }
 
-    getLinkRegistration (id) {
+    getLinkRegistration(id) {
         return this.props.page === "approval" ? `/registration/${id}` : `/registration/${id}/edit`
     }
 
@@ -164,100 +164,99 @@ class TaskList extends React.Component {
     }
 
     render() {
-        const recordPerPage =  25
+        const recordPerPage = 25
         const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
-        
-    return (
-        <>
-        <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
-        userProfileHistoryId={this.state.userProfileHistoryId} onHide={this.onHideModalConfirm} />
-        <div className="task-list ">
-            <table className="table table-borderless table-hover table-striped shadow">
-            <thead>
-                <tr>
-                    <th scope="col" className="code">Mã yêu cầu</th>
-                    <th scope="col" className="request-type">Loại yêu cầu</th>
-                    <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
-                    <th scope="col" className="user-request">Người gửi yêu cầu</th>
-                    <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
-                    <th scope="col" className="user-approved">Người gửi phê duyệt</th>
-                    <th scope="col" className="approval-date">Thời gian phê duyệt</th>
-                    <th scope="col" className="status">Trạng thái</th>
-                    <th scope="col" className="tool">Ý kiến/Phản hồi/Chỉnh sửa</th>
-                </tr>
-            </thead>
-            <tbody>
-                {tasks.map((task, index) => {
-                    const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
-                    let isShowEditButton = this.isShowEditButton(task.status);
-                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                    let userId = "";
-                    let userManagerId = "";
-                    if (task.userId) {
-                        userId = task.userId.split("@")[0];
-                    }
-                    if (task.userManagerId) {
-                        userManagerId = task.userManagerId.split("@")[0];
-                    }
-                    return (
-                        <tr key={index}>
-                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                            <td className="request-type">{task.requestType.name}</td>
-                            <td className="content">{task.name}</td>
-                            <td className="user-request">{userId}</td>
-                            <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                            <td className="user-approved">{userManagerId}</td>
-                            <td className="approval-date">{approvalDate}</td>
-                            <td className="status">{this.showStatus(task.id, task.status)}</td>
-                            <td className="tool">
-                            {task.comment ? <OverlayTrigger 
-                                trigger="click"
-                                placement="left" 
-                                overlay={<Popover id={'note-task-' + index}>
-                                        <Popover.Title as="h3">Ý kiến của cán bộ nhân viên</Popover.Title>
-                                        <Popover.Content>
-                                            {task.comment}
-                                        </Popover.Content>
-                                    </Popover>}>
-                                <img alt="Note task" src={notetButton} title="Ý kiến của CBNV"/>
-                            </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled"/>}
-                            {task.hrComment ? <OverlayTrigger 
-                                trigger="click"
-                                placement="left" 
-                                overlay={<Popover id={'comment-task-' + index}>
-                                        <Popover.Title as="h3">Phản hồi của nhân sự</Popover.Title>
-                                        <Popover.Content>
-                                            {task.hrComment}
-                                        </Popover.Content>
-                                    </Popover>}>
-                                    <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
-                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
-                            {
-                                isShowEditButton ?
-                                <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                : null
-                            }
-                            {
-                                isShowEvictionButton ?
-                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                : null
-                            }
-                            </td>
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
 
-        {tasks.length > 0 ? <div className="row paging">
-            <div className="col-sm"></div>
-            <div className="col-sm">
-                <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
-            </div>
-            <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
-            </div>: null }
-        </div>
-      </>)
+        return (
+            <>
+                <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
+                    userProfileHistoryId={this.state.userProfileHistoryId} onHide={this.onHideModalConfirm} />
+                <div className="task-list ">
+                    <table className="table table-borderless table-hover table-striped shadow">
+                        <thead>
+                            <tr>
+                                <th scope="col" className="code">Mã yêu cầu</th>
+                                <th scope="col" className="request-type">Loại yêu cầu</th>
+                                <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
+                                <th scope="col" className="user-request">Người gửi yêu cầu</th>
+                                <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
+                                <th scope="col" className="user-approved">Người gửi phê duyệt</th>
+                                <th scope="col" className="approval-date">Thời gian phê duyệt</th>
+                                <th scope="col" className="status">Trạng thái</th>
+                                <th scope="col" className="tool">Ý kiến/Phản hồi/Chỉnh sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tasks.map((task, index) => {
+                                const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                                let isShowEditButton = this.isShowEditButton(task.status);
+                                let isShowEvictionButton = this.isShowEvictionButton(task.status);
+                                let userId = "";
+                                let userManagerId = "";
+                                if (task.userId) {
+                                    userId = task.userId.split("@")[0];
+                                }
+                                if (task.userManagerId) {
+                                    userManagerId = task.userManagerId.split("@")[0];
+                                }
+                                return (
+                                    <tr key={index}>
+                                        <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                                        <td className="request-type">{task.requestType.name}</td>
+                                        <td className="content">{task.name}</td>
+                                        <td className="user-request">{userId}</td>
+                                        <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                                        <td className="user-approved">{userManagerId}</td>
+                                        <td className="approval-date">{approvalDate}</td>
+                                        <td className="status">{this.showStatus(task.id, task.status)}</td>
+                                        <td className="tool">
+                                            {task.comment ? <OverlayTrigger
+                                                trigger="click"
+                                                placement="left"
+                                                overlay={<Popover id={'note-task-' + index}>
+                                                    <Popover.Title as="h3">Ý kiến của cán bộ nhân viên</Popover.Title>
+                                                    <Popover.Content>
+                                                        {task.comment}
+                                                    </Popover.Content>
+                                                </Popover>}>
+                                                <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" />
+                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled" />}
+                                            {task.hrComment ? <OverlayTrigger
+                                                trigger="click"
+                                                placement="left"
+                                                overlay={<Popover id={'comment-task-' + index}>
+                                                    <Popover.Title as="h3">Phản hồi của nhân sự</Popover.Title>
+                                                    <Popover.Content>
+                                                        {task.hrComment}
+                                                    </Popover.Content>
+                                                </Popover>}>
+                                                <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự" />
+                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự" />}
+                                            {
+                                                isShowEditButton ?
+                                                    <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                    : null
+                                            }
+                                            {
+                                                isShowEvictionButton ?
+                                                    <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                    : null
+                                            }
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                {tasks.length > 0 ? <div className="row paging">
+                    <div className="col-sm"></div>
+                    <div className="col-sm">
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                    </div>
+                    <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
+                </div> : null}
+            </>)
     }
 }
 

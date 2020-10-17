@@ -40,7 +40,8 @@ class EducationComponent extends React.Component {
 
     setTimeout(() => {
       if (this.props.isEdit && this.props.requestedUserProfile) {
-        this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation)
+        debugger
+        this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update ? this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation : [])
         this.binddingNewEducationEdited(this.props.requestedUserProfile)
       } else {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
@@ -77,6 +78,7 @@ class EducationComponent extends React.Component {
   }
 
   binddingNewEducationEdited = (requestedUserProfile) => {
+    debugger
     if (requestedUserProfile && requestedUserProfile.userProfileInfo && requestedUserProfile.userProfileInfo.create && requestedUserProfile.userProfileInfo.create.educations) {
       const createEducations = requestedUserProfile.userProfileInfo.create.educations;
       let newEducation = []
@@ -270,7 +272,6 @@ class EducationComponent extends React.Component {
 
   render() {
     const userEducation = this.props.userEducation
-    console.log(this.state.userEducation)
 
     return (
       <div className="education">
@@ -280,11 +281,11 @@ class EducationComponent extends React.Component {
           <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
           <hr />
 
-          {this.state.userEducation.map((item, i) => {
+          {userEducation.map((item, i) => {
             return <div className="item" key={i}>
               {this.itemHeader()}
-              {userEducation[i] ? this.educationItem(userEducation[i]) : null}
-              {this.educationInput(item, i, 'userEducation')}
+              {item ? this.educationItem(item) : null}
+              {item ? this.educationInput(this.state.userEducation, i, 'userEducation') : null}
             </div>
           })}
 

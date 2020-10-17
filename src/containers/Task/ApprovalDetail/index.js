@@ -5,7 +5,7 @@ import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
-import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
+import ConfirmationModal from '../../Registration/ConfirmationModal'
 import _ from 'lodash'
 
 const code = localStorage.getItem('employeeNo') || "";

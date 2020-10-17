@@ -242,7 +242,6 @@ class BusinessTripComponent extends React.Component {
         <div className="box shadow">
           <div className="form">
             <div className="row">
-              <div className="col-5"></div>
               <div className="col-7">
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                   <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
