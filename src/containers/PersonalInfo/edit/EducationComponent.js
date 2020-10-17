@@ -40,14 +40,7 @@ class EducationComponent extends React.Component {
 
     setTimeout(() => {
       if (this.props.isEdit && this.props.requestedUserProfile) {
-<<<<<<< HEAD
-        debugger
         this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update ? this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation : [])
-=======
-        if (this.props.requestedUserProfile.userProfileInfo && this.props.requestedUserProfile.userProfileInfo.update) {
-          this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation)
-        }
->>>>>>> b5dea61ead7f45262e2db07f559a444ee6c6820c
         this.binddingNewEducationEdited(this.props.requestedUserProfile)
       } else {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
