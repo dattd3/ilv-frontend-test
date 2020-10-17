@@ -8,22 +8,44 @@ class AddressModal extends React.Component {
         super();
     
         this.state = {
+            countries: props.countries,
             provinces: [],
             districts: [],
             wards: [],
-            street_name: "",
+            country: props.country_id || '',
+            street_name: props.street_name || '',
             address: {
                 main: {
                     streetName: "",
                     wardName: "",
                     districtName: "",
-                    provinceName: ""
+                    provinceName: "",
+                    countryName: "",
+                    oldStreetName: "",
+                    oldWardName: "",
+                    oldDistrictName: "",
+                    oldProvinceName: "",
+                    oldCountryName: "",
+                    wardId: props.ward_id || '',
+                    districtId: props.district_id || '',
+                    provinceId: props.province_id || '',
+                    countryId: props.country_id || '',
                 },
                 temp: {
                     streetName: "",
                     wardName: "",
                     districtName: "",
-                    provinceName: ""
+                    provinceName: "",
+                    countryName: "",
+                    oldStreetName: "",
+                    oldWardName: "",
+                    oldDistrictName: "",
+                    oldProvinceName: "",
+                    oldCountryName: "",
+                    wardId: props.ward_id || '',
+                    districtId: props.district_id || '',
+                    provinceId: props.province_id || '',
+                    countryId: props.country_id || '',
                 }
             }
         }
@@ -38,17 +60,19 @@ class AddressModal extends React.Component {
             }
         }
     }
-    
-    componentDidMount() {
-        this.getProvices(this.props.country_id)
-        this.getDistricts(this.props.province_id)
-        this.getWards(this.props.district_id)
-    }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (nextProps.street_name !== this.props.street_name) {
             this.setState({ street_name: nextProps.street_name })
+            this.setState({ country: nextProps.country_id })
+            this.setState({ countries: nextProps.countries })
         }
+    }
+
+    componentDidMount() {
+        this.getProvices(this.state.country)
+        this.getDistricts(this.props.province_id)
+        this.getWards(this.props.district_id)
     }
 
     getProvices (country_id) {
@@ -84,7 +108,7 @@ class AddressModal extends React.Component {
     getLocationName = (name, locationId) => {
         const locations = this.state[name];
         const location = locations.filter(item => item.ID == locationId);
-        return location[0].TEXT || "";
+        return location[0];
     }
 
     setMainAddress = (field, locationName) => {
@@ -93,22 +117,34 @@ class AddressModal extends React.Component {
         this.setState({address: address});
     }
 
-    handleChange(name, item) {
-        let provinceName = "";
-        let districtName = "";
-        let wardName = "";
-        if (name === "Province" || name === "TempProvince") {
-            provinceName = this.getLocationName("provinces", item.value);
-            this.setMainAddress("provinceName", provinceName);
+    handleChange(name, oldLabel, item) {
+        if (name === "Country" || name === "TempCountry") {
+            const country = this.getLocationName("countries", item.value);
+            this.setMainAddress("countryId", country.ID);
+            this.setMainAddress("countryName", country.TEXT);
+            this.setMainAddress("oldCountryName", oldLabel);
+            this.setState({country: item.value});
+        } else if (name === "Province" || name === "TempProvince") {
+            const province = this.getLocationName("provinces", item.value);
+            this.setMainAddress("provinceId", province.ID);
+            this.setMainAddress("provinceName", province.TEXT);
+            this.setMainAddress("oldProvinceName", oldLabel);
         } else if (name === "District" || name === "TempDistrict") {
-            districtName = this.getLocationName("districts", item.value);
-            this.setMainAddress("districtName", districtName);
-        } else if (name === "Wards" || name === "Wards") {
-            wardName = this.getLocationName("wards", item.value);
-            this.setMainAddress("wardName", wardName);
+            const district = this.getLocationName("districts", item.value);
+            this.setMainAddress("districtId", district.ID);
+            this.setMainAddress("districtName", district.TEXT);
+            this.setMainAddress("oldDistrictName", oldLabel);
+        } else if (name === "Wards" || name === "TempWards") {
+            const ward = this.getLocationName("wards", item.value);
+            this.setMainAddress("wardId", ward.ID);
+            this.setMainAddress("wardName", ward.TEXT);
+            this.setMainAddress("oldWardName", oldLabel);
+        } else {
+            this.setMainAddress("oldStreetName", oldLabel);
         }
+
         const resetList = {
-            country_id: ['province_id', 'district_id', 'ward_id', 'street_name'],
+            Country: ['province_id', 'district_id', 'ward_id', 'street_name'],
             Province: ['district_id', 'ward_id', 'street_name'],
             District: ['ward_id', 'street_name'],
             Wards: ['street_name'],
@@ -118,8 +154,8 @@ class AddressModal extends React.Component {
                 this.props.updateAddress(name, '', this.state.address.main)
             })
         }
-        if (name === 'country_id') {
-            this.setState({districts: [], wards: []})
+        if (name === 'Country') {
+            this.setState({provinces: [], districts: [], wards: []})
             this.getProvices(item.value)
         }
         if (name === 'Province') {
@@ -127,6 +163,7 @@ class AddressModal extends React.Component {
             this.getDistricts(item.value)
         }
         if (name === 'District') {
+            this.setState({wards: []})
             this.getWards(item.value)
         }
         if (name === 'StreetName') {
@@ -134,7 +171,6 @@ class AddressModal extends React.Component {
             this.setState({street_name: value});
             this.setMainAddress("streetName", value);
         }
-
         this.props.updateAddress(name, item, this.state.address.main)
     }
 
@@ -143,7 +179,7 @@ class AddressModal extends React.Component {
         const districts = this.state.districts.map(district =>  { return { value: district.ID, label: district.TEXT } } )
         const wards = this.state.wards.map(ward =>  { return { value: ward.ID, label: ward.TEXT } } )
         const countries = this.props.countries.map(country =>  { return { value: country.ID, label: country.TEXT } } )
-  
+
         return (
             <>
             <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
@@ -152,19 +188,19 @@ class AddressModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="row mb-2">
-                            <div className="col-5">
-                                Quốc gia
-                            </div>
-                            <div className="col-7">
-                            <Select options={countries} onChange={this.handleChange.bind(this, 'country_id')} value={countries.filter(c => c.value == this.props.country_id)}/>
-                            </div>
+                        <div className="col-5">
+                            Quốc gia
+                        </div>
+                        <div className="col-7">
+                            <Select options={countries} onChange={this.handleChange.bind(this, 'Country', this.props.country_name)} value={countries.filter(c => c.value == this.state.country)}/>
+                        </div>
                     </div>
                     <div className="row mb-2">
                         <div className="col-5">
                             Tỉnh / thành phố
                         </div>
                         <div className="col-7">
-                        <Select options={provinces} onChange={this.handleChange.bind(this, 'Province')} value={provinces.filter(p => p.value == this.props.province_id)}/>
+                        <Select options={provinces} onChange={this.handleChange.bind(this, 'Province', this.props.province_name)} value={provinces.filter(p => p.value == this.props.province_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -172,7 +208,7 @@ class AddressModal extends React.Component {
                             Quận/Huyện
                         </div>
                         <div className="col-7">
-                            <Select options={districts} onChange={this.handleChange.bind(this, 'District')} value={districts.filter(d => d.value == this.props.district_id)}/>
+                            <Select options={districts} onChange={this.handleChange.bind(this, 'District', this.props.district_name)} value={districts.filter(d => d.value == this.props.district_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -180,7 +216,7 @@ class AddressModal extends React.Component {
                             Phường
                         </div>
                         <div className="col-7">
-                            <Select options={wards} onChange={this.handleChange.bind(this, 'Wards')} value={wards.filter(w => w.value == this.props.ward_id)}/>
+                            <Select options={wards} onChange={this.handleChange.bind(this, 'Wards', this.props.ward_name)} value={wards.filter(w => w.value == this.props.ward_id)}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -188,7 +224,7 @@ class AddressModal extends React.Component {
                             Đường phố
                         </div>
                         <div className="col-7">
-                            <input className="form-control" value={this.state.street_name} onChange={this.handleChange.bind(this, 'StreetName')} type="text" placeholder="Nhập đường phố" />
+                            <input className="form-control" value={this.state.street_name} onChange={this.handleChange.bind(this, 'StreetName', this.props.street_name_old)} type="text" placeholder="Nhập đường phố" />
                         </div>
                     </div>
                     <hr/>

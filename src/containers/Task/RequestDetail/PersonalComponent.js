@@ -1,51 +1,54 @@
 import React from 'react'
-import axios from 'axios'
 
 class PersonalComponent extends React.Component {
     constructor(props) {
         super();
-        // this.state = {
-        //     userDetail: {}
-        // }
     }
-
-    componentDidMount() {
-        
-    }
-
-    // isNotNull(input) {
-    //     if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-    //       return true;
-    //     }
-    //     return false;
-    // }
 
     getLabel = (key) => {
         switch (key) {
             case "Birthday":
                 return "Ngày sinh";
+            case "BirthCountry":
+                return "Mã quốc gia sinh";
+            case "BirthCountryText":
+                return "Quốc gia sinh";
             case "BirthProvince":
+                return "Mã nơi sinh";
+            case "BirthProvinceText":
                 return "Nơi sinh";
             case "Gender":
+                return "Mã giới tính";
+            case "GenderText":
                 return "Giới tính";
             case "Ethinic":
+                return "Mã dân tộc";
+            case "EthinicText":
                 return "Dân tộc";
             case "Religion":
+                return "Mã tôn giáo";
+            case "ReligionText":
                 return "Tôn giáo";
-            case "PassportNo":
-                return "Số CMND/CCCD/Hộ chiếu";
-            case "DateOfIssue":
-                return "Ngày cấp";
-            case "PlaceOfIssue":
-                return "Nơi cấp";
+            case "PersonalIdentifyNumber":
+                return "Số CMND/CCCD";
+            case "PersonalIdentifyDate":
+                return "Ngày cấp CMND/CCCD";
+            case "PersonalIdentifyPlace":
+                return "Nơi cấp CMND/CCCD";
+            case "PassportNumber":
+                return "Số Hộ chiếu";
+            case "PassportDate":
+                return "Ngày cấp Hộ chiếu";
+            case "PassportPlace":
+                return "Nơi cấp Hộ chiếu";
             case "Nationality":
+                return "Mã quốc tịch";
+            case "NationalityText":
                 return "Quốc tịch";
             case "MaritalStatus":
+                return "Mã tình trạng hôn nhân";
+            case "MaritalStatusText":
                 return "Tình trạng hôn nhân";
-            case "WorkPermitNo":
-                return "Số giấy phép lao động";
-            case "ExpiryDate":
-                return "Ngày hết hạn";
             case "PersonalEmail":
                 return "Email cá nhân";
             case "CellPhoneNo":
@@ -54,34 +57,49 @@ class PersonalComponent extends React.Component {
                 return "Điện thoại khẩn cấp";
             case "BankAccountNumber":
                 return "Số tài khoản ngân hàng";
-            case "BankName":
+            case "Bank":
+                return "Mã ngân hàng";
+            case "BankText":
                 return "Tên ngân hàng";
+            case "Education":
+                return "Bằng cấp/Chứng chỉ chuyên môn";
+            case "Province":
+                return "Mã Tỉnh/TP - Địa chỉ thường trú";
+            case "ProvinceText":
+                return "Tỉnh/TP - Địa chỉ thường trú";
+            case "District":
+                return "Mã Quận/Huyện - Địa chỉ thường trú";
+            case "DistrictText":
+                return "Quận/Huyện - Địa chỉ thường trú";
+            case "Wards":
+                return "Mã Xã/Phường - Địa chỉ thường trú";
+            case "WardsText":
+                return "Xã/Phường - Địa chỉ thường trú";
+            case "StreetName":
+                return "Tên đường - Địa chỉ thường trú";
+            case "TempProvince":
+                return "Mã Tỉnh/TP - Địa chỉ tạm trú";
+            case "TempProvinceText":
+                return "Tỉnh/TP - Địa chỉ tạm trú";
+            case "TempDistrict":
+                return "Mã Quận/Huyện - Địa chỉ tạm trú";
+            case "TempDistrictText":
+                return "Quận/Huyện - Địa chỉ tạm trú";
+            case "TempWards":
+                return "Mã Xã/Phường - Địa chỉ tạm trú";
+            case "TempWardsText":
+                return "Xã/Phường - Địa chỉ tạm trú";
+            case "StreetName":
+                return "Tên đường - Địa chỉ thường trú";
+            case "TempStreetName":
+                return "Tên đường - Địa chỉ tạm trú";
         }
     }
 
-    handleTextInputChange(event) {
-        const target = event.target
-        const value = target.type === 'checkbox' ? target.checked : target.value
-        const name = target.name;
-
-        // if(value !== this.props.userDetail[this.mappingFields(name)]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields(name)], value)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
-        // this.setState({
-        //     userDetail : {
-        //         ...this.state.userDetail,
-        //         [this.mappingFields(name)]: value
-        //     }
-        // })
-    }
-
     render() {
-        const userMainInfo = this.props.userMainInfo
+        const userMainInfo = this.props.userMainInfo;
         return (
             <div className="info">
-                <h4 className="title text-uppercase">Thông tin cá nhân</h4>
                 <div className="box shadow">
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> Thông tin cũ</div>
@@ -91,21 +109,20 @@ class PersonalComponent extends React.Component {
                     {
                         (userMainInfo || []).map((item, i) => {
                             const key = Object.keys(item)[0];
-                            return <div className="row" key={i}>
-                                <div className="col-2">
-                                    <div className="label">{this.getLabel(key)}</div> 
+                            const label = this.getLabel(key);
+                            if (label && !label.includes("Mã")) {
+                                return <div className="row" key={i}>
+                                    <div className="col-2">
+                                        <div className="label">{label}</div>
+                                    </div>
+                                    <div className="col-4 old">
+                                        <div className="detail">{item[key][0][0]}</div>
+                                    </div>
+                                    <div className="col-6 new">
+                                        <div className="detail">{item[key][0][1]}</div>
+                                    </div>
                                 </div>
-                                <div className="col-4 old">
-                                    <div className="detail">{item[key][0][0]}</div>
-                                </div>
-                                <div className="col-6 new">
-                                    {
-                                        this.props.page == "request" ? 
-                                        <input className="form-control" type="text" name="FullName" value={item[key][0][1] || ""} onChange={this.handleTextInputChange.bind(this)} />
-                                        : <div className="detail">{item[key][0][1]}</div>
-                                    }
-                                </div>
-                            </div>
+                            }
                         })
                     }
                 </div>

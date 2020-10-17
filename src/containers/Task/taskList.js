@@ -55,6 +55,16 @@ class TaskList extends React.Component {
         }
     }
 
+    evictionRequest = id => {
+        this.setState({
+            modalTitle: "Xác nhận thu hồi",
+            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+            isShowModalConfirm: true,
+            typeRequest: 3,
+            userProfileHistoryId: id
+        });
+    }
+
     onHideModalConfirm = () => {
         this.setState({isShowModalConfirm: false});
     }
@@ -77,7 +87,8 @@ class TaskList extends React.Component {
         const status = {
             0: {label: 'Đang chờ xử lý', className: 'request-status'},
             1: {label: 'Từ chối', className: 'request-status fail'},
-            2: {label: 'Đã phê duyệt', className: 'request-status success'}
+            2: {label: 'Đã phê duyệt', className: 'request-status success'},
+            3: {label: 'Đã thu hồi', className: 'request-status'}
         }
 
         const options = [
@@ -96,7 +107,7 @@ class TaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}/edit`
     }
 
     getLinkRegistration (id) {
@@ -117,6 +128,41 @@ class TaskList extends React.Component {
         }
     }
 
+    isShowEditButton = status => {
+        let isShow = true;
+        if (this.props.page == "approval") {
+            isShow = false;
+        } else {
+            if (status == 2 || status == 3) {
+                isShow = false;
+            } else {
+                isShow = true;
+            }
+        }
+        return isShow;
+    }
+
+    isShowEvictionButton = status => {
+        let isShow = true;
+        if (this.props.page == "approval") {
+            isShow = false;
+        } else {
+            if (status == 0) {
+                isShow = true;
+            } else {
+                isShow = false;
+            }
+        }
+        return isShow;
+    }
+
+    getTaskLink = id => {
+        if (this.props.page == "approval") {
+            return `/tasks-approval/${id}`;
+        }
+        return `/tasks-request/${id}`;
+    }
+
     render() {
         const recordPerPage =  25
         const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
@@ -129,10 +175,12 @@ class TaskList extends React.Component {
             <table className="table table-borderless table-hover table-striped shadow">
             <thead>
                 <tr>
-                    <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
                     <th scope="col" className="code">Mã yêu cầu</th>
                     <th scope="col" className="request-type">Loại yêu cầu</th>
+                    <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
+                    <th scope="col" className="user-request">Người gửi yêu cầu</th>
                     <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
+                    <th scope="col" className="user-approved">Người gửi phê duyệt</th>
                     <th scope="col" className="approval-date">Thời gian phê duyệt</th>
                     <th scope="col" className="status">Trạng thái</th>
                     <th scope="col" className="tool">Ý kiến/Phản hồi/Chỉnh sửa</th>
@@ -140,17 +188,28 @@ class TaskList extends React.Component {
             </thead>
             <tbody>
                 {tasks.map((task, index) => {
-                    const isShowEditButton = task.status == 2 ? false : true;
-                    console.log(task)
+                    const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                    let isShowEditButton = this.isShowEditButton(task.status);
+                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
+                    let userId = "";
+                    let userManagerId = "";
+                    if (task.userId) {
+                        userId = task.userId.split("@")[0];
+                    }
+                    if (task.userManagerId) {
+                        userManagerId = task.userManagerId.split("@")[0];
+                    }
                     return (
                         <tr key={index}>
-                            <th><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name}>{task.name}</a></th>
-                            <td>{this.getTaskCode(task.id)}</td>
-                            <td>{task.requestType.name}</td>
-                            <td><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                            <td><Moment format="DD/MM/YYYY">{task.approvalDate}</Moment></td>
+                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                            <td className="request-type">{task.requestType.name}</td>
+                            <td className="content">{task.name}</td>
+                            <td className="user-request">{userId}</td>
+                            <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                            <td className="user-approved">{userManagerId}</td>
+                            <td className="approval-date">{approvalDate}</td>
                             <td className="status">{this.showStatus(task.id, task.status)}</td>
-                            <td>
+                            <td className="tool">
                             {task.comment ? <OverlayTrigger 
                                 trigger="click"
                                 placement="left" 
@@ -173,10 +232,16 @@ class TaskList extends React.Component {
                                     </Popover>}>
                                     <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự"/>
                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự"/>}
-                                { isShowEditButton ?
+                            {
+                                isShowEditButton ?
                                 <a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                 : null
-                                }
+                            }
+                            {
+                                isShowEvictionButton ?
+                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                : null
+                            }
                             </td>
                         </tr>
                     )

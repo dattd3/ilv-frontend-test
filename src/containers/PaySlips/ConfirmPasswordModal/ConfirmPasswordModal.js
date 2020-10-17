@@ -32,7 +32,6 @@ class ConfirmPasswordModal extends React.Component {
 
         axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip/getaccesstoken`, bodyFormData, config)
         .then(res => {
-            console.log(res)
             if (res && res.data && res.data.data) {
                 if (res.data.data.access_token && res.data.data.access_token != '') {
                     this.props.onUpdateToken(res.data.data.access_token)
@@ -42,7 +41,6 @@ class ConfirmPasswordModal extends React.Component {
                 }
             }
         }).catch(error => {
-            debugger
             this.setState({error: 'Mật khẩu nhập không chính xác'})
         })
     }

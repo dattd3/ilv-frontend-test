@@ -1,9 +1,9 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
-import axios from 'axios'
+import _ from 'lodash'
 
 class EducationComponent extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
   }
 
@@ -21,14 +21,14 @@ class EducationComponent extends React.Component {
     return <Row className={`info-value ${type}`}>
       <Col xs={12} md={6} lg={3}>
         <div className="detail">
-          {item.SchoolName ? item.SchoolName : ""}
+          {item.SchoolName}
         </div>
       </Col>
       <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.DegreeName}</div>
+        <div className="detail">{item.DegreeTypeText}</div>
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.Major}</div>
+        <div className="detail">{item.MajorName}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
         <div className="detail">{item.FromTime}</div>
@@ -40,8 +40,8 @@ class EducationComponent extends React.Component {
   }
 
   render() {
-    const userEducationUpdate = this.props.userEducationUpdate;
-    const userEducationCreate = this.props.userEducationCreate;
+    const userEducationUpdate = _.uniqWith(this.props.userEducationUpdate, _.isEqual);
+    const userEducationCreate = _.uniqWith(this.props.userEducationCreate, _.isEqual);
     return (
       <div className="education">
         <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
@@ -70,4 +70,5 @@ class EducationComponent extends React.Component {
     )
   }
 }
+
 export default EducationComponent

@@ -19,65 +19,75 @@ class EducationComponent extends React.Component {
     }
 
     componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-          }
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
+      }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              this.setState({ userEducation: res.data.data })
-            }
-          }).catch(error => {
-          })
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const userEducation = res.data.data.map(d => { return {}})
+          this.setState({ userEducation: userEducation });
+        }
+      }).catch(error => {
+      })
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            let schools = res.data.data;
-            this.setState({ schools: schools });
-          }
-        }).catch(error => {
-        })
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let schools = res.data.data;
+          this.setState({ schools: schools });
+        }
+      }).catch(error => {
+      })
     }
 
     isNotNull(input) {
         return input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== ''
     }
 
-    educationLevelChange (index, name, level) {
+    // name is : userEducation  or  newUserEducation
+    educationLevelChange(index, name, level) {
       let newUserEducation = [...this.state[name]]
+      newUserEducation[index].old_education_level_id = newUserEducation[index].education_level_id
       newUserEducation[index].education_level_id = level.value
       newUserEducation[index].major_id = ''
       newUserEducation[index].school_id = ''
+      newUserEducation[index].degree_text = level.label
       this.updateParrent(name, [...newUserEducation])
       this.setState({ [name]: [...newUserEducation] })
     }
 
-    schoolChange (index, name, education) {
+    schoolChange(index, name, education) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].school_id = education.value
+      newUserEducation[index].school_name = education.label
       this.setState({ [name]: [...newUserEducation] })
       this.updateParrent(name, newUserEducation)
     }
 
-    majorChange (index, name, major) {
+    majorChange(index, name, major) {
       let newUserEducation = [...this.state[name]]
       newUserEducation[index].major_id = major.value
+      newUserEducation[index].major_name = major.label
       this.setState({ [name]: [...newUserEducation] })
       this.updateParrent(name, newUserEducation)
     }
 
     handleDatePickerInputChange(index, dateInput, field, name) {
-      const date = moment(dateInput).format('DD-MM-YYYY')
-      let newUserEducation = [...this.state[name]]
-      newUserEducation[index][field] = date
-      this.setState({ [name]: [...newUserEducation] })
-      this.updateParrent(name, newUserEducation)
+      if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
+        const oldPrefix = "old_";
+        const date = moment(dateInput).format('DD-MM-YYYY')
+        let newUserEducation = [...this.state[name]]
+        newUserEducation[index][oldPrefix + field] = newUserEducation[index][field]
+        newUserEducation[index][field] = date
+        this.setState({ [name]: [...newUserEducation] })
+        this.updateParrent(name, newUserEducation)
+      }
     }
 
     otherUniInputChange(index, name, e) {
@@ -87,12 +97,19 @@ class EducationComponent extends React.Component {
       this.updateParrent(name, newUserEducation)
     }
 
-    updateParrent (name, newUserEducation) {
-      if (name === 'userEducation') {
-        this.props.updateEducation(newUserEducation)
+    updateParrent(name, newUserEducation) {
+      if (name == 'userEducation') {
+        this.props.updateEducation(newUserEducation);
       } else {
         this.props.addEducation(newUserEducation)
       }
+    }
+
+    resetValueInValid = value => {
+      if (value == undefined || value == null || value == 'null' || value == '#') {
+        return "";
+      }
+      return value;
     }
 
     itemHeader() {
@@ -116,7 +133,6 @@ class EducationComponent extends React.Component {
         const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } } )
         const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } } )
         const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school =>  { return { value: school.ID, label: school.TEXT } } )
-
         return <Row className="info-value">
             <Col xs={12} md={6} lg={3}>
                 <div>
@@ -129,7 +145,7 @@ class EducationComponent extends React.Component {
                 </div>
                 <div className="form-inline float-right">
                   <label className="mr-3">Khác: </label>
-                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name || ''}/>
+                  <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={ this.resetValueInValid(item.other_uni_name) || ''}/>
                 </div>
             </Col>
             <Col xs={12} md={6} lg={3}>

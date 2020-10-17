@@ -56,12 +56,8 @@ function Notification(props) {
 
   var tableData;
 
-  if (result && result.data && result.data.notifications && result.data.total) {    
-    
+  if (result && result.data && result.data.notifications && result.data.total) {
     const objDataRes = result.data.notifications;
-
-    //console.log(objDataRes);
-
     const total = result.data.total;
           
     tableData = <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
