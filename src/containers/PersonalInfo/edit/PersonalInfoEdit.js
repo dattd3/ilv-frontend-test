@@ -680,50 +680,24 @@ class PersonalInfoEdit extends React.Component {
         OtherSchool: data.other_uni_name,
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",
+        OtherMajor: data.other_major || "",
         FromTime: data.from_time || "",
         ToTime: data.to_time || ""
       }
       let objClone = {...obj};
 
       if (action === "insert" || (action === "update" && type === "new")) {
-        // objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
-        console.log(data.major_name);
         objClone.DegreeTypeText = data.degree_text || "";
-        objClone.MajorName = data.major_name || "";
+        objClone.MajorCodeText = data.major_name || "";
       } else {
-        // objClone.SchoolName = data.university_name || data.other_uni_name;
         objClone.EducationId = data.education_id || "";
         objClone.PreBeginDate = data.old_from_time || data.from_time;
         objClone.PreEndDate = data.old_to_time || data.to_time;
         objClone.Seqnr = data.seqnr || 0;
         objClone.PreEducationLevelId = data.old_education_level_id || data.education_level_id;
         objClone.DegreeTypeText = data.academic_level || "";
-        objClone.MajorName = data.major || "";
+        objClone.MajorCodeText = data.major || "";
       }
-
-      // let obj = {
-      //   EducationId: data.education_id || "",
-      //   PreBeginDate: data.old_from_time || data.from_time,
-      //   PreEndDate: data.old_to_time || data.to_time,
-      //   Seqnr: data.seqnr || 0,
-      //   PreEducationLevelId: data.old_education_level_id || data.education_level_id,
-      //   SchoolCode: data.school_id || "",
-      //   DegreeType: data.education_level_id || "",
-      //   MajorCode: data.major_id || "",
-      //   FromTime: data.from_time || "",
-      //   ToTime: data.to_time || ""
-      // }
-      // let objClone = {...obj};
-
-      // if (action === "insert" || (action === "update" && type === "new")) {
-      //   objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
-      //   objClone.DegreeTypeText = data.degree_text || "";
-      //   objClone.MajorName = data.major_name || "";
-      // } else {
-      //   objClone.SchoolName = data.university_name || data.other_uni_name;
-      //   objClone.DegreeTypeText = data.academic_level || "";
-      //   objClone.MajorName = data.major || "";
-      // }
       return objClone;
     }
 
