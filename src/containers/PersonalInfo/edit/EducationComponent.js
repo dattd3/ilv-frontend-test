@@ -39,12 +39,20 @@ class EducationComponent extends React.Component {
       })
 
     setTimeout(() => {
-      if (this.props.requestedUserProfile && this.props.isEdit) {
+      if (this.props.isEdit && this.props.requestedUserProfile) {
         this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation)
         this.binddingNewEducationEdited(this.props.requestedUserProfile)
       } else {
-        const userEducation = this.props.userEducation.map(d => { return {} })
-        this.setState({ userEducation: userEducation })
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+          .then(res => {
+            if (res && res.data && res.data.data) {
+              if (!this.props.isEdit) {
+                const userEducation = res.data.data.map(d => { return {} })
+                this.setState({ userEducation: userEducation })
+              }
+            }
+          }).catch(error => {
+          })
       }
     }, 0)
   }
@@ -262,6 +270,8 @@ class EducationComponent extends React.Component {
 
   render() {
     const userEducation = this.props.userEducation
+    console.log(this.state.userEducation)
+
     return (
       <div className="education">
         <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
