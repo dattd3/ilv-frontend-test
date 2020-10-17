@@ -680,50 +680,24 @@ class PersonalInfoEdit extends React.Component {
         OtherSchool: data.other_uni_name,
         DegreeType: data.education_level_id || "",
         MajorCode: data.major_id || "",
+        OtherMajor: data.other_major || "",
         FromTime: data.from_time || "",
         ToTime: data.to_time || ""
       }
       let objClone = {...obj};
 
       if (action === "insert" || (action === "update" && type === "new")) {
-        // objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
-        console.log(data.major_name);
         objClone.DegreeTypeText = data.degree_text || "";
-        objClone.MajorName = data.major_name || "";
+        objClone.MajorCodeText = data.major_name || "";
       } else {
-        // objClone.SchoolName = data.university_name || data.other_uni_name;
         objClone.EducationId = data.education_id || "";
         objClone.PreBeginDate = data.old_from_time || data.from_time;
         objClone.PreEndDate = data.old_to_time || data.to_time;
         objClone.Seqnr = data.seqnr || 0;
         objClone.PreEducationLevelId = data.old_education_level_id || data.education_level_id;
         objClone.DegreeTypeText = data.academic_level || "";
-        objClone.MajorName = data.major || "";
+        objClone.MajorCodeText = data.major || "";
       }
-
-      // let obj = {
-      //   EducationId: data.education_id || "",
-      //   PreBeginDate: data.old_from_time || data.from_time,
-      //   PreEndDate: data.old_to_time || data.to_time,
-      //   Seqnr: data.seqnr || 0,
-      //   PreEducationLevelId: data.old_education_level_id || data.education_level_id,
-      //   SchoolCode: data.school_id || "",
-      //   DegreeType: data.education_level_id || "",
-      //   MajorCode: data.major_id || "",
-      //   FromTime: data.from_time || "",
-      //   ToTime: data.to_time || ""
-      // }
-      // let objClone = {...obj};
-
-      // if (action === "insert" || (action === "update" && type === "new")) {
-      //   objClone.SchoolName = data.school_name || this.resetValueInValid(data.other_uni_name);
-      //   objClone.DegreeTypeText = data.degree_text || "";
-      //   objClone.MajorName = data.major_name || "";
-      // } else {
-      //   objClone.SchoolName = data.university_name || data.other_uni_name;
-      //   objClone.DegreeTypeText = data.academic_level || "";
-      //   objClone.MajorName = data.major || "";
-      // }
       return objClone;
     }
 
@@ -782,24 +756,30 @@ class PersonalInfoEdit extends React.Component {
     getNameFromData = (data) => {
       const nameArray = {
         Birthday: "Ngày sinh",
+        BirthCountry: "Quốc gia sinh",
         BirthProvince: "Nơi sinh",
         Gender: "Giới tính",
         Ethinic: "Dân tộc",
         Religion: "Tôn giáo",
-        DocumentType: "Số CMND/CCCD/Hộ chiếu",
-        DateOfIssue: "Ngày cấp",
-        PlaceOfIssue: "Nơi cấp",
         Nationality: "Quốc tịch",
+        PermanentAddress: "Địa chỉ thường trú",
+        TemporaryAddress: "Địa chỉ tạm trú",
         MaritalStatus: "Tình trạng hôn nhân",
+        MarriageDate: "Ngày TT hôn nhân",
         PersonalEmail: "Email cá nhân",
         CellPhoneNo: "Điện thoại di động",
         UrgentContactNo: "Điện thoại khẩn cấp",
         BankAccountNumber: "Số tài khoản ngân hàng",
         Bank: "Tên ngân hàng",
         Education: "Bằng cấp/Chứng chỉ chuyên môn",
-        PermanentAddress: "Địa chỉ thường trú",
-        TempAddress: "Địa chỉ tạm trú"
+        PersonalIdentifyNumber: "Số CMND/CCCD",
+        PersonalIdentifyDate: "Ngày cấp CMND/CCCD",
+        PersonalIdentifyPlace: "Nơi cấp CMND/CCCD",
+        PassportNumber: "Số Hộ chiếu",
+        PassportDate: "Ngày cấp Hộ chiếu",
+        PassportPlace: "Nơi cấp Hộ chiếu"
       }
+
       let labelArray = [];
       if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length > 0) {
         labelArray.push(nameArray.Education);
@@ -808,12 +788,28 @@ class PersonalInfoEdit extends React.Component {
         const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo;
         const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
         Object.keys(newItems).forEach(function(key) {
-          if (key == "DocumentTypeId" || key == "DocumentTypeValue") {
-            labelArray.push(nameArray.DocumentType);
-          } else if (key == "Province" || key == "District" || key == "Wards" || key == "StreetName") {
+          if (key == "BirthCountry" || key == "BirthCountryText") {
+            labelArray.push(nameArray.BirthCountry);
+          } else if (key == "BirthProvince" || key == "BirthProvinceText") {
+            labelArray.push(nameArray.BirthProvince);
+          } else if (key == "Gender" || key == "GenderText") {
+            labelArray.push(nameArray.Gender);
+          } else if (key == "Ethinic" || key == "EthinicText") {
+            labelArray.push(nameArray.Ethinic);
+          } else if (key == "Religion" || key == "ReligionText") {
+            labelArray.push(nameArray.Religion);
+          } else if (key == "Nationality" || key == "NationalityText") {
+            labelArray.push(nameArray.Nationality);
+          } else if (key == "Country" || key == "CountryText" || key == "Province" || key == "ProvinceText" || key == "District" || key == "DistrictText" 
+          || key == "Wards" || key == "WardsText" || key == "StreetName") {
             labelArray.push(nameArray.PermanentAddress);
-          }else if (key == "TempProvince" || key == "TempDistrict" || key == "TempWards" || key == "TempStreetName") {
-            labelArray.push(nameArray.TempAddress);
+          } else if (key == "TempCountry" || key == "TempCountryText" || key == "TempProvince" || key == "TempProvinceText" 
+          || key == "TempDistrict" || key == "TempDistrictText" || key == "TempWards" || key == "TempWardsText" || key == "TempStreetName") {
+            labelArray.push(nameArray.TemporaryAddress);
+          } else if (key == "MaritalStatus" || key == "MaritalStatusText") {
+            labelArray.push(nameArray.MaritalStatus);
+          } else if (key == "Bank" || key == "BankText") {
+            labelArray.push(nameArray.Bank);
           } else {
             labelArray.push(nameArray[key]);
           }
