@@ -766,7 +766,7 @@ class PersonalInfoEdit extends React.Component {
   approval = () => {
     this.setState({
       modalTitle: "Xác nhận gửi yêu cầu",
-      modalMessage: "Thêm ghi chú (Không bắt buộc)",
+      modalMessage: "Lý do sửa đổi",
       typeRequest: 2
     });
     this.onShowModalConfirm();

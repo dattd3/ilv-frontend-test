@@ -150,6 +150,9 @@ class PersonalInfoEdit extends React.Component {
     }
 
     updatePersonalInfo(name, old, value, textOld, textNew) {
+      console.log("---------------------------------");
+      console.log(name + "   ====  " + old + " === " + value + " === " + textOld + " ==== " + textNew);
+
       let textForSelectOption = name + "Text";
       if (name == "StreetName" || name == "TempStreetName") {
         textForSelectOption = name;
@@ -247,7 +250,7 @@ class PersonalInfoEdit extends React.Component {
           if (code == "999") {
             this.handleShowResultModal("Lỗi", response.data.result.message, false);
           } else {
-            this.handleShowResultModal("Thành công", "Bạn đã đăng tin thành công!", true);
+            this.handleShowResultModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true);
           }
         }
       })
@@ -851,7 +854,7 @@ class PersonalInfoEdit extends React.Component {
     sendRequest = () => {
       this.setState({
         modalTitle: "Xác nhận gửi yêu cầu",
-        modalMessage: "Thêm ghi chú (Không bắt buộc)",
+        modalMessage: "Lý do sửa đổi",
         typeRequest: 4
       });
       this.onShowModalConfirm();
