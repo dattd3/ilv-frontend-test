@@ -40,8 +40,8 @@ class TaskList extends React.Component {
 
         if (value == this.disapproval) {
             this.setState({
-                modalTitle: "Xác nhận không duyệt",
-                modalMessage: "Thêm ghi chú (Không bắt buộc)",
+                modalTitle: "Xác nhận không phê duyệt",
+                modalMessage: "Lý do không phê duyệt(Bắt buộc)",
                 isShowModalConfirm: true,
                 typeRequest: 1
             });

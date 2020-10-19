@@ -542,15 +542,15 @@ class PersonalComponent extends React.Component {
                         show={this.state.isAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isAddressEdit')}
                         street_name={this.state.mainAddress.streetName ? this.state.mainAddress.streetName : this.state.userDetail.street_name}
-                        street_name_old={this.state.userDetail.street_name}
+                        street_name_old={userDetail.street_name}
                         ward_id={this.state.mainAddress.wardId ? this.state.mainAddress.wardId : this.state.userDetail.ward_id}
-                        ward_name={this.state.userDetail.wards}
+                        ward_name={userDetail.wards}
                         district_id={this.state.mainAddress.districtId ? this.state.mainAddress.districtId : this.state.userDetail.district_id}
-                        district_name={this.state.userDetail.district}
+                        district_name={userDetail.district}
                         province_id={this.state.mainAddress.provinceId ? this.state.mainAddress.provinceId : this.state.userDetail.province_id}
-                        province_name={this.state.userDetail.province}
+                        province_name={userDetail.province}
                         country_id={this.state.userDetail.country_id}
-                        country_name={this.state.userDetail.nation}
+                        country_name={userDetail.nation}
                         countries={this.props.countries}
                         updateAddress={this.updateAddress.bind(this)}
                     /> : null}
@@ -577,15 +577,15 @@ class PersonalComponent extends React.Component {
                         show={this.state.isTmpAddressEdit} 
                         onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                         street_name={this.state.tempAddress.streetName ? this.state.tempAddress.streetName : this.state.userDetail.tmp_street_name}
-                        street_name_old={this.state.userDetail.tmp_street_name}
+                        street_name_old={userDetail.tmp_street_name}
                         ward_id={this.state.tempAddress.wardId ? this.state.tempAddress.wardId : this.state.userDetail.tmp_ward_id}
-                        ward_name={this.state.userDetail.tmp_wards}
+                        ward_name={userDetail.tmp_wards}
                         district_id={this.state.tempAddress.districtId ? this.state.tempAddress.districtId : this.state.userDetail.tmp_district_id}
-                        district_name={this.state.userDetail.tmp_district}
+                        district_name={userDetail.tmp_district}
                         province_id={this.state.tempAddress.provinceId ? this.state.tempAddress.provinceId : this.state.userDetail.tmp_province_id}
-                        province_name={this.state.userDetail.tmp_province}
+                        province_name={userDetail.tmp_province}
                         country_id={this.state.userDetail.tmp_country_id}
-                        country_name={this.state.userDetail.tmp_nation}
+                        country_name={userDetail.tmp_nation}
                         countries={this.props.countries}
                         updateAddress={this.updateTmpAddress.bind(this)}
                     /> : null}
