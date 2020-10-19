@@ -292,7 +292,7 @@ class EducationComponent extends React.Component {
             return <div className="item" key={i}>
               {this.itemHeader()}
               {item ? this.educationItem(item) : null}
-              {item ? this.educationInput(this.state.userEducation, i, 'userEducation') : null}
+              {this.state.userEducation[i] ? this.educationInput(this.state.userEducation[i], i, 'userEducation') : null}
             </div>
           })}
 
