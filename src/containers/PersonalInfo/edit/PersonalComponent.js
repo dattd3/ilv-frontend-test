@@ -416,7 +416,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
-                    value={religions.filter(r => r.value == (this.state.userDetail.religion_id || '0'))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion || 'Không')} />
+                    value={religions.filter(r => r.value == (this.state.userDetail.religion_id))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion)} />
                 </div>
             </div>
             <div className="row">
