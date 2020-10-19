@@ -8,7 +8,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
-import ConfirmationModal from '../Registration/ConfirmationModal'
+import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 
 class TaskList extends React.Component {
     constructor() {
