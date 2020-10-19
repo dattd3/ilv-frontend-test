@@ -485,6 +485,7 @@ class PersonalInfoEdit extends React.Component {
               const userEducation = this.state.userEducation;
               const subItem = userEducation[i];
               const schoolCode = item.NewEducation.SchoolCode;
+              const majorCode = item.NewEducation.MajorCode;
               let obj = {...this.objectToSap};
               obj.actio = "MOD";
               if (userEducation && userEducation.length > 0) {
@@ -503,6 +504,13 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.zinstitute = schoolCode;
                 obj.zortherinst = "";
+              }
+              if (this.isNullCustomize(majorCode)) {
+                obj.zausbi = "";
+                obj.zzotherausbi = item.OtherMajor || "";
+              } else {
+                obj.zausbi = majorCode;
+                obj.zzotherausbi = "";
               }
               listObj = [...listObj, obj];
             }
@@ -707,7 +715,6 @@ class PersonalInfoEdit extends React.Component {
     updateEducation(educationNew) {
       const educationOriginal = this.state.userEducation;
       let userProfileHistoryEducation = [];
-      debugger
       educationNew.forEach((element, index) => {
         if (!_.isEqual(element, educationOriginal[index])) {
           const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "old");
