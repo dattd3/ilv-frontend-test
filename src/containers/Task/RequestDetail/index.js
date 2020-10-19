@@ -106,8 +106,8 @@ class RequestDetail extends React.Component {
 
   disApproval = () => {
     this.setState({
-      modalTitle: "Xác nhận không duyệt",
-      modalMessage: "Thêm ghi chú (Không bắt buộc)",
+      modalTitle: "Xác nhận không phê duyệt",
+      modalMessage: "Lý do không phê duyệt(Bắt buộc)",
       typeRequest: 1
     });
     this.onShowModalConfirm();
