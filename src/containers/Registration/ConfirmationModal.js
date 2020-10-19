@@ -47,13 +47,16 @@ class ConfirmationModal extends React.Component {
             code: localStorage.getItem('employeeNo')
         }))
 
-        if (this.props.type == DISAPPROVAL) {
+        if (this.props.type === DISAPPROVAL) {
             formData.append('HRComment', this.state.message)
             this.updateRequest(formData, `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/disapproval`, id)
+        } else if (this.props.type === APPROVAL) {
+            this.props.updateData()
+            this.props.onHide()
         }
     }
 
-    updateRequest(formData, url, id) {
+    updateRequest(formData, url) {
         axios.post(url, formData, {
             headers: { Authorization: localStorage.getItem('accessToken') }
         })

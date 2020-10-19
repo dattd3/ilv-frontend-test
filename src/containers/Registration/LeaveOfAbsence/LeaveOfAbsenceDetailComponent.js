@@ -2,14 +2,49 @@ import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import axios from 'axios'
 
 const TIME_FORMAT = 'HH:mm'
+const DATE_FORMAT = 'DD/MM/YYYY'
+const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
+const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
     }
+  }
+
+  updateData() {
+    const dataToSap = [{
+      MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
+      PERNR: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
+      BEGDA: moment(this.props.leaveOfAbsence.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+      ENDDA: moment(this.props.leaveOfAbsence.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+      SUBTY: this.props.leaveOfAbsence.userProfileInfo.absenceType.value,
+      BEGUZ: this.props.leaveOfAbsence.userProfileInfo.startTime ? moment(this.props.leaveOfAbsence.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+      ENDUZ: this.props.leaveOfAbsence.userProfileInfo.endTime ? moment(this.props.leaveOfAbsence.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+    }]
+
+    const config = {
+      headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
+          'Content-Type': 'application/json'
+      }
+  }
+
+  axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/requestabsence`, dataToSap, config)
+      .then(res => {
+          if (res && res.data && res.data.data) {
+              console(res.data.data)
+          }
+      }).catch(error => {
+          // localStorage.clear();
+          // window.location.href = map.Login;
+      })
   }
 
   render() {
@@ -84,7 +119,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           })}
         </ul>
 
-        <DetailButtonComponent />
+        <DetailButtonComponent updateData={this.updateData.bind(this)}/>
       </div>
     )
   }
