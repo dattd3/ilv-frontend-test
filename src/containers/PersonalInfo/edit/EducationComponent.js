@@ -58,22 +58,23 @@ class EducationComponent extends React.Component {
   }
 
   updateEducation(userProfileHistoryEducation) {
-    const userEducation = userProfileHistoryEducation.map(d => {
-      return {
-        school_id: d.NewEducation.SchoolCode,
-        university_name: d.NewEducation.SchoolName,
-        education_level_id: d.NewEducation.DegreeType,
-        academic_level: d.NewEducation.DegreeTypeText,
-        major_id: d.NewEducation.MajorCode,
-        major: d.NewEducation.MajorCodeText,
-        other_uni_name: d.NewEducation.OtherSchool,
-        other_major: d.NewEducation.OtherMajor,
-        from_time: d.NewEducation.FromTime,
-        to_time: d.NewEducation.ToTime,
-      }
-    })
-
-    this.setState({ userEducation: userEducation })
+    if (userProfileHistoryEducation) {
+      const userEducation = userProfileHistoryEducation.map(d => {
+        return {
+          school_id: d.NewEducation.SchoolCode,
+          university_name: d.NewEducation.SchoolName,
+          education_level_id: d.NewEducation.DegreeType,
+          academic_level: d.NewEducation.DegreeTypeText,
+          major_id: d.NewEducation.MajorCode,
+          major: d.NewEducation.MajorCodeText,
+          other_uni_name: d.NewEducation.OtherSchool,
+          other_major: d.NewEducation.OtherMajor,
+          from_time: d.NewEducation.FromTime,
+          to_time: d.NewEducation.ToTime,
+        }
+      })
+      this.setState({ userEducation: userEducation })
+    }
   }
 
   binddingNewEducationEdited = (requestedUserProfile) => {
@@ -112,11 +113,13 @@ class EducationComponent extends React.Component {
   // name is : userEducation  or  newUserEducation
   educationLevelChange(index, name, level) {
     let newUserEducation = [...this.state[name]]
-    newUserEducation[index].old_education_level_id = newUserEducation[index].education_level_id
-    newUserEducation[index].education_level_id = level.value
-    newUserEducation[index].major_id = ''
-    newUserEducation[index].school_id = ''
-    newUserEducation[index].degree_text = level.label
+    if (newUserEducation[index]) {
+      newUserEducation[index].old_education_level_id = newUserEducation[index].education_level_id
+      newUserEducation[index].education_level_id = level.value
+      newUserEducation[index].major_id = ''
+      newUserEducation[index].school_id = ''
+      newUserEducation[index].degree_text = level.label
+    }
     this.updateParrent(name, [...newUserEducation])
     this.setState({ [name]: [...newUserEducation] })
   }
