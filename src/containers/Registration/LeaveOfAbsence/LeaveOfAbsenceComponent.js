@@ -141,7 +141,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    debugger
+                    //debugger
                     const timesheets = res.data.data.filter(timesheet => timesheet.start_time1_plan || timesheet.start_time2_plan || timesheet.start_time3_plan)
                     this.setState({ totalTime: timesheets.length })
                 }
