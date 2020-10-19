@@ -208,12 +208,12 @@ class EducationComponent extends React.Component {
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn trường" name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
         </div>
         <div className="form-inline float-right">
           <label className="mr-3">Khác: </label>
@@ -222,7 +222,7 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn chuyên môn" name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
         </div>
         <div className="form-inline float-right">
           <label className="mr-3">Khác: </label>

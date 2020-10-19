@@ -223,7 +223,7 @@ class AddressModal extends React.Component {
                             Quốc gia
                         </div>
                         <div className="col-7">
-                            <Select options={countries} onChange={this.updateCountry.bind(this)} value={this.state.country}/>
+                            <Select options={countries} placeholder="Lựa chọn Quốc gia" isClearable={true} onChange={this.updateCountry.bind(this)} value={this.state.country}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -231,7 +231,7 @@ class AddressModal extends React.Component {
                             Tỉnh / thành phố
                         </div>
                         <div className="col-7">
-                            <Select options={provinces} onChange={this.updateProvice.bind(this)} value={this.state.province}/>
+                            <Select options={provinces} isClearable={true} placeholder="Lựa chọn Tỉnh/Thành phố" onChange={this.updateProvice.bind(this)} value={this.state.province}/>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -239,15 +239,15 @@ class AddressModal extends React.Component {
                             Quận/Huyện
                         </div>
                         <div className="col-7">
-                            <Select options={districts} onChange={this.updateDistrict.bind(this)} value={this.state.district}/>
+                            <Select options={districts} isClearable={true} placeholder="Lựa chọn Quận/Huyện" onChange={this.updateDistrict.bind(this)} value={this.state.district}/>
                         </div>
                     </div>
                     <div className="row mb-2">
                         <div className="col-5">
-                            Phường
+                           Xã/Phường
                         </div>
                         <div className="col-7">
-                            <Select options={wards} onChange={this.updateWard.bind(this)} value={this.state.warrd}/>
+                            <Select options={wards} isClearable={true} placeholder="Lựa chọn Xã/Phường" onChange={this.updateWard.bind(this)} value={this.state.warrd}/>
                         </div>
                     </div>
                     <div className="row mb-2">

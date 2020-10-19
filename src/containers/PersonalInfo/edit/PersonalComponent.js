@@ -363,6 +363,7 @@ class PersonalComponent extends React.Component {
                 </div>
                 <div className="col-6">
                     <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry" 
+                    isClearable={true}
                     options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : this.state.userDetail.birth_country_id))} 
                     onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                 </div>
@@ -376,7 +377,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.birth_province || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={birthProvinces} 
+                    <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={birthProvinces} isClearable={true}
                     value={birthProvinces.filter(p => p.value == this.state.userDetail.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                 </div>
             </div>
@@ -389,7 +390,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="Gender" placeholder="Lựa chọn giới tính" key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
+                    <Select name="Gender" placeholder="Lựa chọn giới tính" isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
                     onChange={e => this.handleSelectInputs(e, 'Gender', (userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ')} />
                 </div>
             </div>
@@ -402,7 +403,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.ethinic || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="Ethinic" placeholder="Lựa chọn dân tộc" options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} 
+                    <Select name="Ethinic" placeholder="Lựa chọn dân tộc" isClearable={true} options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)} 
                     onChange={e => this.handleSelectInputs(e, "Ethinic", userDetail.ethinic || "")} />
                 </div>
             </div>
@@ -415,7 +416,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.religion || 'Không'}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="Religion" placeholder="Lựa chọn tôn giáo" options={religions} 
+                    <Select name="Religion" placeholder="Lựa chọn tôn giáo" isClearable={true} options={religions} 
                     value={religions.filter(r => r.value == (this.state.userDetail.religion_id))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion)} />
                 </div>
             </div>
@@ -524,7 +525,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.nationality || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="Nationality" placeholder="Lựa chọn quốc tịch" options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)} 
+                    <Select name="Nationality" placeholder="Lựa chọn quốc tịch" isClearable={true} options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)} 
                     onChange={e => this.handleSelectInputs(e, 'Nationality', userDetail.nationality || "")} />
                 </div>
             </div>
@@ -607,7 +608,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{marriage ? marriage.TEXT : null}</div>
                 </div>
                 <div className="col-6">
-                    <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" options={marriages} 
+                    <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" isClearable={true} options={marriages} 
                     value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage ? marriage.TEXT : null)} />
                 </div>
             </div>
@@ -694,7 +695,7 @@ class PersonalComponent extends React.Component {
                     <div className="detail">{userDetail.bank_name || ""}</div>
                 </div>
                 <div className="col-6">
-                    <Select placeholder="Lựa chọn ngân hàng" name="Bank" options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
+                    <Select placeholder="Lựa chọn ngân hàng" name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)} 
                     onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
                 </div>
             </div>
