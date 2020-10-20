@@ -61,6 +61,11 @@
         .btn-edit-task {
             color: #FFFFFF;
         }
+        .btn-eviction-task {
+            color: #FFFFFF;
+            background: red;
+            border-color: red;
+        }
     }
     .box {
         width: 100%;
@@ -146,6 +151,20 @@
                     border-radius: 5px;
                     padding: 6px 10px;
                     min-height: 40px;
+                }
+                .other-field {
+                    display: flex;
+                    align-items: center;
+                    justify-content: start;
+                    .label {
+                        flex-grow: 1;
+                        text-align: left;
+                        justify-content: flex-start;
+                        margin-right: 0!important;
+                    }
+                    .input {
+                        flex-grow: 2;
+                    }
                 }
             }
         }

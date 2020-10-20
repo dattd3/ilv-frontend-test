@@ -115,10 +115,10 @@ class EducationComponent extends React.Component {
     let newUserEducation = [...this.state[name]]
     if (newUserEducation[index]) {
       newUserEducation[index].old_education_level_id = newUserEducation[index].education_level_id
-      newUserEducation[index].education_level_id = level.value
+      newUserEducation[index].education_level_id = level ? level.value : ""
       newUserEducation[index].major_id = ''
       newUserEducation[index].school_id = ''
-      newUserEducation[index].degree_text = level.label
+      newUserEducation[index].degree_text = level ? level.label : ""
     }
     this.updateParrent(name, [...newUserEducation])
     this.setState({ [name]: [...newUserEducation] })
@@ -126,18 +126,20 @@ class EducationComponent extends React.Component {
 
   schoolChange(index, name, education) {
     let newUserEducation = [...this.state[name]]
-    newUserEducation[index].school_id = education.value
-    newUserEducation[index].university_name = education.label
+    newUserEducation[index].school_id = education ? education.value : ""
+    newUserEducation[index].university_name = education ? education.label : ""
     newUserEducation[index].other_uni_name = ""
+    newUserEducation[index].isLockOtherSchool = education ? true : false
     this.setState({ [name]: [...newUserEducation] })
     this.updateParrent(name, newUserEducation)
   }
 
   majorChange(index, name, major) {
     let newUserEducation = [...this.state[name]]
-    newUserEducation[index].major_id = major.value
-    newUserEducation[index].major_name = major.label
+    newUserEducation[index].major_id = major ? major.value : ""
+    newUserEducation[index].major_name = major ? major.label : ""
     newUserEducation[index].other_major = ""
+    newUserEducation[index].isLockOtherMajor = major ? true : false
     this.setState({ [name]: [...newUserEducation] })
     this.updateParrent(name, newUserEducation)
   }
@@ -202,31 +204,37 @@ class EducationComponent extends React.Component {
   }
 
   educationInput(item, index, name) {
-    const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } })
+    const educationLevels = this.props.educationLevels.filter(educationLevel => {
+      return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA" 
+      && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
+    })
+    .map(educationLevel => {
+      return { value: educationLevel.ID, label: educationLevel.TEXT }
+    })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn trường" name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
         </div>
-        <div className="form-inline float-right">
-          <label className="mr-3">Khác: </label>
-          <input className="form-control w-75 float-right" onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
+        <div className="form-inline other-field">
+          <label className="mr-3 label">Khác: </label>
+          <input className="form-control w-75 input" disabled={item.isLockOtherSchool} onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+          <Select placeholder="Lựa chọn chuyên môn" name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
         </div>
-        <div className="form-inline float-right">
-          <label className="mr-3">Khác: </label>
-          <input className="form-control w-75 float-right" onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
+        <div className="form-inline other-field">
+          <label className="mr-3 label">Khác: </label>
+          <input className="form-control w-75 input" disabled={item.isLockOtherMajor} onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>

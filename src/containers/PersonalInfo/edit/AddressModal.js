@@ -125,7 +125,7 @@ class AddressModal extends React.Component {
         return errors
     }
 
-    error( name) {
+    error(name) {
         return this.state.errors[name] ? <div className="text-danger">{this.state.errors[name]}</div> : null
     }
 
@@ -153,7 +153,7 @@ class AddressModal extends React.Component {
                         <div className="row mb-2">
                             <div className="col-5">
                                 Quốc gia
-                        </div>
+                            </div>
                             <div className="col-7">
                                 <Select options={countries} onChange={this.updateCountry.bind(this)} value={this.state.country} />
                                 {this.error('country')}
@@ -162,7 +162,7 @@ class AddressModal extends React.Component {
                         <div className="row mb-2">
                             <div className="col-5">
                                 Tỉnh / thành phố
-                        </div>
+                            </div>
                             <div className="col-7">
                                 <Select options={provinces} onChange={this.updateProvice.bind(this)} value={this.state.province} />
                                 {this.error('province')}

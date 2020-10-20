@@ -41,7 +41,7 @@ class TaskList extends React.Component {
         if (value == this.disapproval) {
             this.setState({
                 modalTitle: "Xác nhận không phê duyệt",
-                modalMessage: "Lý do không phê duyệt(Bắt buộc)",
+                modalMessage: "Lý do không phê duyệt (Bắt buộc)",
                 isShowModalConfirm: true,
                 typeRequest: 1
             });
@@ -133,7 +133,7 @@ class TaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2 || status == 3) {
+            if (status == 0 || status == 2 || status == 3) {
                 isShow = false;
             } else {
                 isShow = true;
@@ -233,14 +233,14 @@ class TaskList extends React.Component {
                                                 <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự" />
                                             </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự" />}
                                             {
-                                                isShowEditButton ?
-                                                    <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                    : null
+                                                // isShowEditButton ?
+                                                //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                // : null
                                             }
                                             {
                                                 isShowEvictionButton ?
                                                     <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                    : null
+                                                : null
                                             }
                                         </td>
                                     </tr>

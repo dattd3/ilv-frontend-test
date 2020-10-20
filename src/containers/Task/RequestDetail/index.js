@@ -107,7 +107,7 @@ class RequestDetail extends React.Component {
   disApproval = () => {
     this.setState({
       modalTitle: "Xác nhận không phê duyệt",
-      modalMessage: "Lý do không phê duyệt(Bắt buộc)",
+      modalMessage: "Lý do không phê duyệt (Bắt buộc)",
       typeRequest: 1
     });
     this.onShowModalConfirm();
@@ -120,6 +120,16 @@ class RequestDetail extends React.Component {
       typeRequest: 2
     });
     this.onShowModalConfirm();
+  }
+
+  evictionRequest = id => {
+    this.setState({
+        modalTitle: "Xác nhận thu hồi",
+        modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+        isShowModalConfirm: true,
+        typeRequest: 3,
+        userProfileHistoryId: id
+    });
   }
 
   onShowModalConfirm = () => {
@@ -256,9 +266,16 @@ class RequestDetail extends React.Component {
         }
         {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
         {
-          (this.state.status == 0 || this.state.status == 1) ?
+          // (this.state.status == 1) ?
+          // <div className="clearfix mb-5">
+          //   <a className="btn btn-primary float-right ml-3 shadow btn-edit-task" title="Chỉnh sửa thông tin" href={`/tasks-request/${this.getUserProfileHistoryId()}/edit`}><i className="fa fa-edit" aria-hidden="true"></i>  Sửa thông tin</a>
+          // </div>
+          // : null
+        }
+        {
+          (this.state.status == 0) ?
           <div className="clearfix mb-5">
-            <a className="btn btn-primary float-right ml-3 shadow btn-edit-task" title="Chỉnh sửa thông tin" href={`/tasks-request/${this.getUserProfileHistoryId()}/edit`}><i className="fa fa-edit" aria-hidden="true"></i>  Sửa thông tin</a>
+            <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(this.getUserProfileHistoryId())}><i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
           </div>
           : null
         }
