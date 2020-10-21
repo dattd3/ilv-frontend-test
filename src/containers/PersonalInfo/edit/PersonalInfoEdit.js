@@ -149,14 +149,29 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    updatePersonalInfo(name, old, value, textOld, textNew) {
-      console.log("---------------------------------");
-      console.log(name + "   ====  " + old + " === " + value + " === " + textOld + " ==== " + textNew);
-
-      let textForSelectOption = name + "Text";
-      if (name == "StreetName" || name == "TempStreetName") {
-        textForSelectOption = name;
+    updateAddress(oldAddress, newAddress) {
+      let data = {...this.state.data}
+      if (data && data.update && data.update.userProfileHistoryMainInfo) {
+        const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo
+        const oldMainInfo = userProfileHistoryMainInfo.OldMainInfo
+        const newMainInfo = userProfileHistoryMainInfo.NewMainInfo
+        data.update.userProfileHistoryMainInfo.OldMainInfo = Object.assign(oldMainInfo, oldAddress)
+        data.update.userProfileHistoryMainInfo.NewMainInfo = Object.assign(newMainInfo, newAddress)
+        this.setState({ data : data})
+      } else {
+        let data = {...this.state.data}
+        data.update = {
+          userProfileHistoryMainInfo : {
+            OldMainInfo: oldAddress,
+            NewMainInfo: newAddress
+          }
+        }
+        this.setState({ data : data})
       }
+    }
+
+    updatePersonalInfo(name, old, value, textOld, textNew) {
+      let textForSelectOption = name + "Text";
       let oldMainInfo = {};
       let newMainInfo = {};
       if (textOld != null && textOld != "" && textNew != null && textNew != "") {
@@ -879,6 +894,7 @@ class PersonalInfoEdit extends React.Component {
             userProfile={this.state.userProfile} 
             removeInfo={this.removePersonalInfo.bind(this)} 
             updateInfo={this.updatePersonalInfo.bind(this)}
+            updateAddress={this.updateAddress.bind(this)}
             setState={this.setState.bind(this)}
             genders={this.state.genders}
             races={this.state.races}

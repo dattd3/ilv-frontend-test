@@ -10,14 +10,14 @@ class AddressModal extends React.Component {
 
         this.state = {
             countries: props.countries,
-            country: null,
+            country: props.country || null,
             provinces: [],
-            province: null,
+            province: props.province || null,
             districts: [],
-            district: null,
+            district: props.district || null,
             wards: [],
-            ward: null,
-            street_name: null,
+            ward: props.ward || null,
+            street_name: props.street || "",
             errors: []
         }
     }
@@ -33,17 +33,30 @@ class AddressModal extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.street_name !== this.props.street_name) {
-            this.setState({ street_name: nextProps.street_name })
-            this.setState({ country: nextProps.country_id })
+        if (nextProps.countries !== this.props.countries) {
             this.setState({ countries: nextProps.countries })
+        }
+        if (nextProps.country !== this.props.country) {
+            this.setState({ country: nextProps.country })
+        }
+        if (nextProps.province !== this.props.province) {
+            this.setState({ province: nextProps.province })
+        }
+        if (nextProps.district !== this.props.district) {
+            this.setState({ district: nextProps.district })
+        }
+        if (nextProps.ward !== this.props.ward) {
+            this.setState({ ward: nextProps.ward })
+        }
+        if (nextProps.street !== this.props.street) {
+            this.setState({ street_name: nextProps.street })
         }
     }
 
     componentDidMount() {
-        this.getProvices(this.state.country)
-        this.getDistricts(this.props.province_id)
-        this.getWards(this.props.district_id)
+        this.getProvices(this.state.country.value)
+        this.getDistricts(this.state.province.value)
+        this.getWards(this.state.district.value)
     }
 
     getProvices(country_id) {
@@ -135,6 +148,7 @@ class AddressModal extends React.Component {
             return
         }
         this.props.updateAddress(this.state.country, this.state.province, this.state.district, this.state.ward, this.state.street_name)
+        setTimeout(() => { this.props.onHide() }, 200)
     }
 
     render() {
@@ -142,7 +156,6 @@ class AddressModal extends React.Component {
         const districts = this.state.districts.map(district => { return { value: district.ID, label: district.TEXT } })
         const wards = this.state.wards.map(ward => { return { value: ward.ID, label: ward.TEXT } })
         const countries = this.props.countries.map(country => { return { value: country.ID, label: country.TEXT } })
-
         return (
             <>
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
@@ -171,7 +184,7 @@ class AddressModal extends React.Component {
                         <div className="row mb-2">
                             <div className="col-5">
                                 Quận/Huyện
-                        </div>
+                            </div>
                             <div className="col-7">
                                 <Select options={districts} onChange={this.updateDistrict.bind(this)} value={this.state.district} />
                                 {this.error('district')}
@@ -180,7 +193,7 @@ class AddressModal extends React.Component {
                         <div className="row mb-2">
                             <div className="col-5">
                                 Phường
-                        </div>
+                            </div>
                             <div className="col-7">
                                 <Select options={wards} onChange={this.updateWard.bind(this)} value={this.state.ward} />
                                 {this.error('ward')}
@@ -189,7 +202,7 @@ class AddressModal extends React.Component {
                         <div className="row mb-2">
                             <div className="col-5">
                                 Đường phố
-                        </div>
+                            </div>
                             <div className="col-7">
                                 <input className="form-control" value={this.state.street_name} onChange={this.updateStreetName.bind(this)} type="text" placeholder="Nhập đường phố" />
                             </div>
