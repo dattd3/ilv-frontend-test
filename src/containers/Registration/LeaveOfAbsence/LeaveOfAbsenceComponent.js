@@ -291,7 +291,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
             { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
             { value: 'UN01', label: 'Nghỉ không lương' },
-        ]
+        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' &&  absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
 
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },

@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import StatusModal from '../../../components/Common/StatusModal'
 import axios from 'axios'
 
 const TIME_FORMAT = 'HH:mm'
@@ -13,6 +14,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      isShowStatusModal: false
     }
   }
 
@@ -29,22 +31,54 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     const config = {
       headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
-          'Content-Type': 'application/json'
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
+        'Content-Type': 'application/json'
       }
+    }
+
+    axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/requestabsence`, dataToSap, config)
+      .then(res => {
+        if (res && res.data) {
+          const result = res.data[0]
+          if(result && result.STATUS === 'S') {
+            this.updateHistory(dataToSap)
+          } else {
+            this.showStatusModal(result.MESSAGE)
+          }
+        }
+      }).catch(error => {
+        this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
+      })
   }
 
-  axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/requestabsence`, dataToSap, config)
-      .then(res => {
-          if (res && res.data && res.data.data) {
-              console(res.data.data)
-          }
-      }).catch(error => {
-          // localStorage.clear();
-          // window.location.href = map.Login;
+  updateHistory(dataToSap) {
+    let bodyFormData = new FormData();
+    bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
+
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.leaveOfAbsence.id}/registration-approve`,
+      data: bodyFormData,
+      headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+    })
+      .then(response => {
+        if (response && response.data && response.data.result) {
+          this.showStatusModal('Phê duyệt thành công!', true)
+        }
       })
+      .catch(response => {
+        this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
+      })
+  }
+
+  showStatusModal = (message, isSuccess = false) => {
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+  }
+
+  hideStatusModal = () => {
+    this.setState({ isShowStatusModal: false });
   }
 
   render() {
@@ -71,6 +105,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
 
         <h5>Thông tin đăng ký nghỉ phép</h5>
         <div className="box shadow cbnv">
@@ -85,7 +120,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
-              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.totalTime +  ' ngày' : null}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.totalTime + ' ngày' : null}</div>
             </div>
             <div className="col-3">
               Loại nghỉ
@@ -119,7 +154,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           })}
         </ul>
 
-        <DetailButtonComponent updateData={this.updateData.bind(this)}/>
+        {this.props.leaveOfAbsence.status === 0 ? <DetailButtonComponent updateData={this.updateData.bind(this)} /> : null}
       </div>
     )
   }
