@@ -28,7 +28,7 @@ class BusinessTripComponent extends React.Component {
       startTime: null,
       endTime: null,
       endDate: null,
-      totalTime: 2,
+      totalTime: null,
       attendanceQuotaType: null,
       leaveType: FULL_DAY,
       vehicle: null,
@@ -70,10 +70,14 @@ class BusinessTripComponent extends React.Component {
   }
 
   setStartDate(startDate) {
+    const start = moment(startDate).format(DATE_FORMAT)
+    const end = this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
     this.setState({
-      startDate: moment(startDate).format(DATE_FORMAT),
-      endDate: this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+      startDate: start,
+      endDate: end
     })
+
+    this.calculateTotalTime(start, end)
   }
 
   setStartTime(startTime) {
@@ -91,10 +95,40 @@ class BusinessTripComponent extends React.Component {
   }
 
   setEndDate(endDate) {
+    const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate
+    const end = moment(endDate).format(DATE_FORMAT)
     this.setState({
-      startDate: this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate,
-      endDate: moment(endDate).format(DATE_FORMAT)
+      startDate: start,
+      endDate: end
     })
+
+    this.calculateTotalTime(start, end)
+  }
+
+  calculateTotalTime(startDate, endDate, startTime = null, endTime = null) {
+    if (!startDate || !endDate) return
+
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
+
+    const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
+
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const timesheets = res.data.data.filter(timesheet => timesheet.start_time1_plan || timesheet.start_time2_plan || timesheet.start_time3_plan)
+          this.setState({ totalTime: timesheets.length })
+        }
+      }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+      })
   }
 
   updateFiles(files) {
@@ -352,7 +386,7 @@ class BusinessTripComponent extends React.Component {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" class="form-control" value="2 ngày" readOnly />
+                  <input type="text" class="form-control" value={this.state.totalTime ? this.state.totalTime + ' Ngày' : null} readOnly />
                 </div>
               </div>
             </div>
