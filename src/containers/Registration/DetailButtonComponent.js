@@ -26,7 +26,6 @@ class DetailButtonComponent extends React.Component {
     }
 
     updateData() {
-        debugger
         this.props.updateData()
     }
 
