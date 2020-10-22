@@ -63,7 +63,8 @@ class PersonalInfoEdit extends React.Component {
             modalTitle: "",
             modalMessage: "",
             confirmStatus: "",
-            isSuccess: true
+            isSuccess: true,
+            errors: {},
         }
         this.inputReference = React.createRef()
 
@@ -235,7 +236,148 @@ class PersonalInfoEdit extends React.Component {
       this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1) ] })
     }
 
+    error = (name) => {
+      return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
+    }
+
+    isValidFileUpload = (data) => {
+      const dataPostToSAP = this.getDataPostToSap(data);
+      if (dataPostToSAP && dataPostToSAP.contact && _.size(dataPostToSAP.contact) > 0 && _.size(dataPostToSAP.information) == 0 && _.size(dataPostToSAP.address) == 0 
+        && _.size(dataPostToSAP.bank) == 0 && _.size(dataPostToSAP.education) == 0 && _.size(dataPostToSAP.race) == 0 && _.size(dataPostToSAP.document) == 0) {
+          return true
+      } else {
+        if (_.size(this.state.files) === 0) {
+          return false
+        }
+        return true;
+      }
+    }
+
+    isValidEmail = (email) => {
+      const filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+      return filter.test(email) ? true : false
+    }
+
+    isValidPhoneNumber = (phone) => {
+      const filter = /[^a-zA-Z]+/
+      return phone.search(filter) ? false : true
+    }
+
+    getValidationEducationObj = (education, type) => {
+      let obj = {}
+      if (type === "create") {
+        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
+          obj.degreeType = '(Loại bằng cấp là bắt buộc)'
+        }
+        if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
+          obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
+        }
+        if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
+          obj.toTime = '(Thời gian kết thúc là bắt buộc)'
+        }
+        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
+          obj.school = '(Trường học là bắt buộc)'
+        }
+        if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
+          obj.major = '(Chuyên môn là bắt buộc)'
+        }
+      } else if (type === "update") {
+        const educationUpdate = education.NewEducation
+        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.DegreeType) {
+          obj.degreeType = '(Loại bằng cấp là bắt buộc)'
+        }
+        if ((educationUpdate.DegreeType || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.FromTime) {
+          obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
+        }
+        if ((educationUpdate.DegreeType || educationUpdate.FromTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.ToTime) {
+          obj.toTime = '(Thời gian kết thúc là bắt buộc)'
+        }
+        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.DegreeType) && (!educationUpdate.OtherSchool && !educationUpdate.SchoolCode)) {
+          obj.school = '(Trường học là bắt buộc)'
+        }
+        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.OtherSchool || educationUpdate.SchoolCode || educationUpdate.DegreeType) && (!educationUpdate.MajorCode && !educationUpdate.OtherMajor)) {
+          obj.major = '(Chuyên môn là bắt buộc)'
+        }
+      }
+      return obj
+    }
+
+    verifyInput = (data) => {
+      // console.log("oooooooooooooooooooo ------------")
+      // console.log(data)
+
+      let errors = {}
+      let newMainInfo = {}
+      const isValidFileUpload = this.isValidFileUpload(data)
+  
+      if (!isValidFileUpload) {
+        errors.fileUpload = '(Thông tin file đính kèm là bắt buộc)'
+      }
+
+      if (data && data.update) {
+        const update = data.update
+        if (update.userProfileHistoryMainInfo) {
+          newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo
+          if (newMainInfo.PersonalEmail && !this.isValidEmail(newMainInfo.PersonalEmail)) {
+            errors.personalEmail = '(Email cá nhân không đúng định dạng)'
+          }
+          if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
+            errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
+          }
+          if ((newMainInfo.MaritalStatus && newMainInfo.MaritalStatus !== "") && !newMainInfo.MarriageDate) {
+            errors.maritalDate = '(Ngày của TT hôn nhân là bắt buộc)'
+          } else if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "" ) && newMainInfo.MarriageDate) {
+            errors.maritalStatus = '(Tình trạng hôn nhân là bắt buộc)'
+          }
+          if ((newMainInfo.PassportNumber || newMainInfo.PassportPlace) && !newMainInfo.PassportDate) {
+            errors.passportDate = '(Ngày cấp hộ chiếu là bắt buộc)'
+          }
+          if ((newMainInfo.PassportDate || newMainInfo.PassportPlace) && !newMainInfo.PassportNumber) {
+            errors.passportNumber = '(Số hộ chiếu là bắt buộc)'
+          }
+          if ((newMainInfo.PassportDate || newMainInfo.PassportNumber) && !newMainInfo.PassportPlace) {
+            errors.passportPlace = '(Nơi cấp hộ chiếu là bắt buộc)'
+          }
+          if ((newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyDate) {
+            errors.personalIdentifyDate = '(Ngày cấp CMND/CCCD là bắt buộc)'
+          }
+          if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
+            errors.personalIdentifyNumber = '(Số CMND/CCCD là bắt buộc)'
+          }
+          if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
+            errors.personalIdentifyPlace = '(Nơi cấp CMND/CCCD là bắt buộc)'
+          }
+        }
+        if (update.userProfileHistoryEducation) {
+          const educationUpdated = update.userProfileHistoryEducation
+          errors.update = []
+          for (let i = 0, len = educationUpdated.length; i < len; i++) {
+            const education = educationUpdated[i]
+            let obj = this.getValidationEducationObj(education, "update")
+            errors.update = errors.update.concat(obj)
+          }
+        }
+      }
+
+      if (data && data.create && data.create.educations && data.create.educations.length > 0) {
+        const educationCreated = data.create.educations
+        errors.create = []
+        for (let i = 0, len = educationCreated.length; i < len; i++) {
+          const education = educationCreated[i]
+          let obj = this.getValidationEducationObj(education, "create")
+          errors.create = errors.create.concat(obj)
+        }
+      }
+      this.setState({ errors: errors })
+      return errors
+  }
+
     submitRequest = (comment) => {
+      const errors = this.verifyInput(this.state.data)
+      if (!_.isEmpty(errors)) {
+        return
+      }
+
       const updateFields = this.getFieldUpdates();
       const dataPostToSAP = this.getDataPostToSap(this.state.data);
       let bodyFormData = new FormData();
@@ -249,7 +391,6 @@ class PersonalInfoEdit extends React.Component {
       for(let key in fileSelected) {
         bodyFormData.append('Files', fileSelected[key]);
       }
-
       const urlSubmit = this.state.isEdit ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`;
 
       axios({
@@ -509,8 +650,8 @@ class PersonalInfoEdit extends React.Component {
               if (userEducation && userEducation.length > 0) {
                 obj.pre_begda = (subItem && subItem.from_time) ? moment(subItem.from_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
                 obj.pre_endda = (subItem && subItem.to_time) ? moment(subItem.to_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
-                obj.pre_seqnr = subItem.seqnr;
-                obj.pre_slart = subItem.education_level_id;
+                obj.pre_seqnr = subItem ? subItem.seqnr : 0;
+                obj.pre_slart = subItem ? subItem.education_level_id : "";
               }
               obj.begda = item.NewEducation.FromTime ? moment(item.NewEducation.FromTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
               obj.endda = item.NewEducation.ToTime ? moment(item.NewEducation.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
@@ -714,7 +855,6 @@ class PersonalInfoEdit extends React.Component {
         ToTime: data.to_time || ""
       }
       let objClone = {...obj};
-      // debugger;
       if (action === "insert" || (action === "update" && type === "new")) {
         objClone.DegreeTypeText = data.degree_text || data.academic_level;
         objClone.MajorCodeText = data.major_name || "";
@@ -730,11 +870,30 @@ class PersonalInfoEdit extends React.Component {
       return objClone;
     }
 
+    preparePreEducation = (education) => {
+      if (education && _.size(education) > 0) {
+        return {
+          schoolId: education.school_id,
+          otherSchool: this.resetValueInValid(education.other_uni_name),
+          majorId: education.major_id,
+          otherMajor: this.resetValueInValid(education.other_major),
+          degreeType: education.education_level_id,
+          fromTime: education.from_time,
+          toTime: education.to_time
+        }
+      }
+      return null
+    }
+
     updateEducation(educationNew) {
       const educationOriginal = this.state.userEducation;
       let userProfileHistoryEducation = [];
+
       educationNew.forEach((element, index) => {
-        if (!_.isEqual(element, educationOriginal[index])) {
+        let oldEdu = this.preparePreEducation(educationOriginal[index])
+        let newEdu = this.preparePreEducation(element)
+
+        if (oldEdu != null && newEdu != null && !_.isEqual(oldEdu, newEdu)) {
           const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "old");
           const newObj = this.prepareEducationModel(element, "update", "new");
           const obj =
@@ -907,6 +1066,7 @@ class PersonalInfoEdit extends React.Component {
             requestedUserProfile={this.state.requestedUserProfile}
             isEdit={this.state.isEdit}
             birthCountry={this.props.birthCountry}
+            validationMessages={this.state.errors}
           />
           <EducationComponent 
             userEducation={this.state.userEducation} 
@@ -919,6 +1079,7 @@ class PersonalInfoEdit extends React.Component {
             addEducation={this.addEducation.bind(this)}
             requestedUserProfile={this.state.requestedUserProfile}
             isEdit={this.state.isEdit}
+            validationMessages={this.state.errors}
           />
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
@@ -929,6 +1090,7 @@ class PersonalInfoEdit extends React.Component {
                 </li>
             })}
           </ul>
+          {this.error('fileUpload')}
           
           <div className="clearfix mb-5">
             {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}

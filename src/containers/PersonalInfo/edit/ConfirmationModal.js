@@ -84,6 +84,8 @@ class ConfirmationModal extends React.Component {
                     .catch(error => {
                         window.location.href = "/tasks";
                     });
+
+                    setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == this.eviction) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
@@ -94,8 +96,11 @@ class ConfirmationModal extends React.Component {
                     .catch(error => {
                         window.location.href = "/tasks";
                     });
+
+                    setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == this.sendRequest) {
                     this.props.sendData(this.state.message);
+                    setTimeout(() => { this.props.onHide() }, 600);
                 }
             }
         }

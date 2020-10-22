@@ -14,7 +14,6 @@ class RegistrationDetailComponent extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
         let config = {
           headers: {
             'Authorization': localStorage.getItem('accessToken')
