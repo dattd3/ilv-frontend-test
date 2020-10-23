@@ -3,7 +3,6 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
-import axios from 'axios'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -16,61 +15,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       isShowStatusModal: false
     }
-  }
-
-  updateData() {
-    const dataToSap = [{
-      MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
-      PERNR: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
-      BEGDA: moment(this.props.leaveOfAbsence.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-      ENDDA: moment(this.props.leaveOfAbsence.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-      SUBTY: this.props.leaveOfAbsence.userProfileInfo.absenceType.value,
-      BEGUZ: this.props.leaveOfAbsence.userProfileInfo.startTime ? moment(this.props.leaveOfAbsence.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-      ENDUZ: this.props.leaveOfAbsence.userProfileInfo.endTime ? moment(this.props.leaveOfAbsence.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
-    }]
-
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET,
-        'Content-Type': 'application/json'
-      }
-    }
-
-    axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/requestabsence`, dataToSap, config)
-      .then(res => {
-        if (res && res.data) {
-          const result = res.data[0]
-          if(result && result.STATUS === 'S') {
-            this.updateHistory(dataToSap)
-          } else {
-            this.showStatusModal(result.MESSAGE)
-          }
-        }
-      }).catch(error => {
-        this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
-      })
-  }
-
-  updateHistory(dataToSap) {
-    let bodyFormData = new FormData();
-    bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-
-    axios({
-      method: 'POST',
-      url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.leaveOfAbsence.id}/registration-approve`,
-      data: bodyFormData,
-      headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
-    })
-      .then(response => {
-        if (response && response.data && response.data.result) {
-          this.showStatusModal('Phê duyệt thành công!', true)
-        }
-      })
-      .catch(response => {
-        this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
-      })
   }
 
   showStatusModal = (message, isSuccess = false) => {
@@ -154,7 +98,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           })}
         </ul>
 
-        {this.props.leaveOfAbsence.status === 0 ? <DetailButtonComponent updateData={this.updateData.bind(this)} /> : null}
+        {this.props.leaveOfAbsence.status === 0 ? <DetailButtonComponent dataToSap={[{
+          MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
+          PERNR: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
+          BEGDA: moment(this.props.leaveOfAbsence.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          ENDDA: moment(this.props.leaveOfAbsence.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          SUBTY: this.props.leaveOfAbsence.userProfileInfo.absenceType.value,
+          BEGUZ: this.props.leaveOfAbsence.userProfileInfo.startTime ? moment(this.props.leaveOfAbsence.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ENDUZ: this.props.leaveOfAbsence.userProfileInfo.endTime ? moment(this.props.leaveOfAbsence.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+        }]}
+          id={this.props.leaveOfAbsence.id}
+          urlName={'requestabsence'}
+        /> : null}
       </div>
     )
   }
