@@ -13,6 +13,7 @@ class ConfirmationModal extends React.Component {
             isShowResultConfirm: false,
             resultTitle: "",
             resultMessage: "",
+            manager: props.manager,
             errors: {}
         }
 
@@ -43,6 +44,12 @@ class ConfirmationModal extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        if (nextProps.manager !== this.props.manager) {
+          this.setState({ manager: nextProps.manager })
+        }
+    }
+
     ok = (e) => {
         const type = e.currentTarget.dataset.type;
         if (this.props.type == null || this.props.type == undefined) {
@@ -61,7 +68,7 @@ class ConfirmationModal extends React.Component {
 
                     let formData = new FormData()
                     formData.append('HRComment', this.state.message)
-                    formData.append('ManagerInfo', JSON.stringify(this.props.manager))
+                    formData.append('ManagerInfo', JSON.stringify(this.state.manager))
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
@@ -73,7 +80,7 @@ class ConfirmationModal extends React.Component {
                     });
                 } else if (this.props.type == this.approval) {
                     let formData = new FormData()
-                    formData.append('ManagerInfo', JSON.stringify(this.props.manager))
+                    formData.append('ManagerInfo', JSON.stringify(this.state.manager))
                     
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
@@ -100,7 +107,7 @@ class ConfirmationModal extends React.Component {
                     setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == this.sendRequest) {
                     this.props.sendData(this.state.message);
-                    setTimeout(() => { this.props.onHide() }, 600);
+                    setTimeout(() => { this.props.onHide() }, 400);
                 }
             }
         }

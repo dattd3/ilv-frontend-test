@@ -45,6 +45,9 @@
 
 .edit-personal, .edit-personal-detail-request {
     // display: flex;
+    .date-label {
+        position: relative;
+    }
     .item-info {
         padding: 6px 0;
     }
@@ -242,8 +245,8 @@
         }
         .input-img {
             position: absolute;
-            bottom: 15px;
-            left: 285px;
+            top: 6px;
+            right: 7px;
             width: 24px;
             height: 24px;
         }

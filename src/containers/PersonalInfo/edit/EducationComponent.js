@@ -24,7 +24,7 @@ class EducationComponent extends React.Component {
     if (nextProps.validationMessages !== this.props.validationMessages) {
       this.setState({ validationEducationMessagesFromParent: nextProps.validationMessages })
     }
-}
+  }
 
   componentDidMount() {
     const config = {
