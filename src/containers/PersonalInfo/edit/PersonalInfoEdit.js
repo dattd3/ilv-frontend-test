@@ -298,7 +298,12 @@ class PersonalInfoEdit extends React.Component {
       let errors = {}
       let newMainInfo = {}
       const isValidFileUpload = this.isValidFileUpload(data)
-  
+      
+      if ((data && !data.create && !data.update) || (data && !data.create && data.update && data.update.userProfileHistoryMainInfo 
+        && data.update.userProfileHistoryMainInfo.NewMainInfo && _.size(data.update.userProfileHistoryMainInfo.NewMainInfo) == 0)) {
+        errors.notChange = '(Không có thông tin được cập nhật)'
+      }
+
       if (!isValidFileUpload) {
         errors.fileUpload = '(Thông tin file đính kèm là bắt buộc)'
       }
@@ -367,10 +372,39 @@ class PersonalInfoEdit extends React.Component {
       }
       this.setState({ errors: errors })
       return errors
-  }
+    }
+
+    removeItemForValueNull = (dataInput) => {
+      let data = dataInput
+      if (data && data.update && data.update.userProfileHistoryMainInfo) {
+        let userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo
+        if (userProfileHistoryMainInfo.NewMainInfo && userProfileHistoryMainInfo.OldMainInfo) {
+          let newMainInfo = userProfileHistoryMainInfo.NewMainInfo
+          let oldMainInfo = userProfileHistoryMainInfo.OldMainInfo
+          if (newMainInfo.Birthday == null) {
+            delete newMainInfo.Birthday
+            delete oldMainInfo.Birthday
+          }
+          if (newMainInfo.MarriageDate == null) {
+            delete newMainInfo.MarriageDate
+            delete oldMainInfo.MarriageDate
+          }
+          if (newMainInfo.PassportDate == null) {
+            delete newMainInfo.PassportDate
+            delete oldMainInfo.PassportDate
+          }
+          if (newMainInfo.PersonalIdentifyDate == null) {
+            delete newMainInfo.PersonalIdentifyDate
+            delete oldMainInfo.PersonalIdentifyDate
+          }
+        }
+      }
+      return data
+    }
 
     submitRequest = (comment) => {
-      const errors = this.verifyInput(this.state.data)
+      let dataClone = this.removeItemForValueNull({...this.state.data})
+      const errors = this.verifyInput(dataClone)
       if (!_.isEmpty(errors)) {
         return
       }
@@ -576,10 +610,12 @@ class PersonalInfoEdit extends React.Component {
 
     getOnlyAddress = (newMainInfo) => {
       return [
+        newMainInfo.Country || "",
         newMainInfo.Province || "",
         newMainInfo.District || "",
         newMainInfo.Wards || "",
         newMainInfo.StreetName || "",
+        newMainInfo.TempCountry || "",
         newMainInfo.TempProvince || "",
         newMainInfo.TempDistrict || "",
         newMainInfo.TempWards || "",
@@ -592,28 +628,30 @@ class PersonalInfoEdit extends React.Component {
         const update = data.update;
         if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
           const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-          if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName) {
+          if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName 
+            || newMainInfo.TempDistrict || newMainInfo.TempProvince || newMainInfo.TempWards || newMainInfo.TempStreetName) {
+            const userDetail = this.state.userDetail;
             let addressArr = this.getOnlyAddress(newMainInfo);
-            addressArr = _.chunk(addressArr, 4);
+            addressArr = _.chunk(addressArr, 5);
             let listObj = [];
             addressArr.forEach((item, index) => {
               let obj = {...this.objectToSap};
               obj.actio = "MOD";
               if (index == 0) {
                 obj.anssa = "1";
-                obj.land1 = "VN";
-                obj.state = item[0];
-                obj.zdistrict_id = item[1];
-                obj.zwards_id = item[2];
-                obj.stras = item[3];
+                obj.land1 = item[0] ? item[0] : userDetail.country_id;
+                obj.state = item[1] ? item[1] : userDetail.province_id;
+                obj.zdistrict_id = item[2] ? item[2] : userDetail.district_id;
+                obj.zwards_id = item[3] ? item[3] : userDetail.ward_id;
+                obj.stras = (item[0] && item[1] && item[2] && item[3]) ? this.resetValueInValid(item[4]) : userDetail.wards;
                 listObj = [...listObj, obj];
               } else {
                 obj.anssa = "2";
-                obj.land1 = "VN";
-                obj.state = item[0];
-                obj.zdistrict_id = item[1];
-                obj.zwards_id = item[2];
-                obj.stras = item[3];
+                obj.land1 = item[0] ? item[0] : userDetail.tmp_country_id;
+                obj.state = item[1] ? item[1] : userDetail.tmp_province_id;
+                obj.zdistrict_id = item[2] ? item[2] : userDetail.tmp_district_id;
+                obj.zwards_id = item[3] ? item[3] : userDetail.tmp_ward_id;
+                obj.stras = (item[0] && item[1] && item[2] && item[3]) ? this.resetValueInValid(item[4]) : userDetail.tmp_street_name;
                 listObj = [...listObj, obj];
               }
             })
@@ -1087,7 +1125,9 @@ class PersonalInfoEdit extends React.Component {
                 </li>
             })}
           </ul>
-          {this.error('fileUpload')}
+
+          {this.error('notChange')}
+          {(this.state.errors && !this.state.errors.notChange) ? this.error('fileUpload') : null}
           
           <div className="clearfix mb-5">
             {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
