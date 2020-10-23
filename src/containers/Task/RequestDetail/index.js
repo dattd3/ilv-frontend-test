@@ -50,7 +50,8 @@ class RequestDetail extends React.Component {
         if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.NewFamily)) {
           this.setState({isShowFamilyComponent : true});
         }
-        if (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null) {
+        if (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
+          && _.size(data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) > 0) {
           this.setState({isShowPersonalComponent : true});
         }
         if (data.userProfileInfoDocuments && data.userProfileInfoDocuments.length > 0) {
@@ -140,11 +141,20 @@ class RequestDetail extends React.Component {
     this.setState({isShowModalConfirm: false});
   }
 
-  processUserInfo = (response) => {
+  processUserInfo = response => {
     if (response && response.data && response.data.userProfileInfo) {
       const info = response.data.userProfileInfo;
       const staff = info.staff;
       const manager = info.manager;
+      let managerToShow = null;
+      if (manager) {
+        managerToShow = {
+          code: manager.code,
+          fullName: manager.fullName,
+          title: manager.title,
+          department: manager.department
+        }
+      }
       let userInfo = {
         staff: {
           code: staff.code,
@@ -152,12 +162,7 @@ class RequestDetail extends React.Component {
           title: staff.title,
           department: staff.department
         },
-        manager: {
-          code: manager.code,
-          fullName: manager.fullName,
-          title: manager.title,
-          department: manager.department
-        } || null
+        manager: managerToShow
       }
       this.setState({userInfo : userInfo});
     }
@@ -227,7 +232,7 @@ class RequestDetail extends React.Component {
             </div>
           </div>
         </div>
-        <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin đăng ký chỉnh sửa</h4></div>
+        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin đăng ký chỉnh sửa</h4></div> : null}
         {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
