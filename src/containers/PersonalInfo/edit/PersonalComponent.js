@@ -399,6 +399,7 @@ class PersonalComponent extends React.Component {
                                 <DatePicker
                                     name="Birthday"
                                     key="Birthday"
+                                    maxDate={new Date()}
                                     selected={this.state.userDetail.birthday ? moment(this.state.userDetail.birthday, 'DD-MM-YYYY').toDate() : null}
                                     onChange={birthday => this.handleDatePickerInputChange(birthday, "Birthday")}
                                     dateFormat="dd-MM-yyyy"
@@ -507,6 +508,7 @@ class PersonalComponent extends React.Component {
                                 <DatePicker
                                     name="PersonalIdentifyDate"
                                     key="PersonalIdentifyDate"
+                                    maxDate={new Date()}
                                     selected={this.state.userDetail.pid_date_of_issue ? moment(this.state.userDetail.pid_date_of_issue, 'DD-MM-YYYY').toDate() : null}
                                     onChange={pidDateOfIssue => this.handleDatePickerInputChange(pidDateOfIssue, "PersonalIdentifyDate")}
                                     dateFormat="dd-MM-yyyy"
@@ -563,6 +565,7 @@ class PersonalComponent extends React.Component {
                                 <DatePicker
                                     name="PassportDate"
                                     key="PassportDate"
+                                    maxDate={new Date()}
                                     selected={this.state.userDetail.passport_date_of_issue ? moment(this.state.userDetail.passport_date_of_issue, 'DD-MM-YYYY').toDate() : null}
                                     onChange={passportDateOfIssue => this.handleDatePickerInputChange(passportDateOfIssue, "PassportDate")}
                                     dateFormat="dd-MM-yyyy"
@@ -693,6 +696,7 @@ class PersonalComponent extends React.Component {
                                 <DatePicker
                                     name="MarriageDate"
                                     key="MarriageDate"
+                                    maxDate={new Date()}
                                     selected={this.state.userDetail.marital_date ? moment(this.state.userDetail.marital_date, 'DD-MM-YYYY').toDate() : null}
                                     onChange={maritalDate => this.handleDatePickerInputChange(maritalDate, "MarriageDate")}
                                     dateFormat="dd-MM-yyyy"

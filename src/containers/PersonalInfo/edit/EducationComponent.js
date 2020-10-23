@@ -274,6 +274,7 @@ class EducationComponent extends React.Component {
             <DatePicker
               name="from_time"
               key="from_time"
+              maxDate={new Date()}
               selected={item && item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
@@ -282,6 +283,7 @@ class EducationComponent extends React.Component {
             <DatePicker
               name="to_time"
               key="to_time"
+              maxDate={new Date()}
               selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
               onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
               dateFormat="dd-MM-yyyy"
