@@ -404,7 +404,13 @@ class PersonalInfoEdit extends React.Component {
 
     submitRequest = (comment) => {
       let dataClone = this.removeItemForValueNull({...this.state.data})
-      const errors = this.verifyInput(dataClone)
+      let errors = this.verifyInput(dataClone)
+      if (errors.create && errors.create.length == 1 && _.size(errors.create[0]) == 0) {
+        delete errors.create
+      }
+      if (errors.update && errors.update.length == 1 && _.size(errors.update[0]) == 0) {
+        delete errors.update
+      }
       if (!_.isEmpty(errors)) {
         return
       }
