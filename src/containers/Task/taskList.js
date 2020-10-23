@@ -10,6 +10,12 @@ import Select from 'react-select'
 import Moment from 'react-moment'
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 
+const code = localStorage.getItem('employeeNo') || "";
+const fullName = localStorage.getItem('fullName') || "";
+const title = localStorage.getItem('jobTitle') || "";
+const department = localStorage.getItem('department') || "";
+let manager = {};
+
 class TaskList extends React.Component {
     constructor() {
         super();
@@ -46,12 +52,15 @@ class TaskList extends React.Component {
                 typeRequest: 1
             });
         } else if (value == this.approval) {
-            this.setState({
-                modalTitle: "Xác nhận phê duyệt",
-                modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
-                isShowModalConfirm: true,
-                typeRequest: 2
-            });
+            const result = this.prepareManagerInfo();
+            if (result) {
+                this.setState({
+                    modalTitle: "Xác nhận phê duyệt",
+                    modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+                    isShowModalConfirm: true,
+                    typeRequest: 2
+                });
+            }
         }
     }
 
@@ -67,6 +76,16 @@ class TaskList extends React.Component {
 
     onHideModalConfirm = () => {
         this.setState({ isShowModalConfirm: false });
+    }
+
+    prepareManagerInfo = () => {
+        manager = {
+          code: code,
+          fullName: fullName,
+          title: title,
+          department: department
+        };
+        return true;
     }
 
     showStatus = (userProfileHistoryId, value) => {
@@ -169,7 +188,7 @@ class TaskList extends React.Component {
 
         return (
             <>
-                <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
+                <ConfirmationModal show={this.state.isShowModalConfirm} manager={manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
                     userProfileHistoryId={this.state.userProfileHistoryId} onHide={this.onHideModalConfirm} />
                 <div className="task-list ">
                     <table className="table table-borderless table-hover table-striped shadow">

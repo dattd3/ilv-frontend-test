@@ -263,49 +263,38 @@ class PersonalInfoEdit extends React.Component {
       return phone.search(filter) ? false : true
     }
 
+    getValidationEducationItem = (education) => {
+      let obj = {}
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
+        obj.degreeType = '(Loại bằng cấp là bắt buộc)'
+      }
+      if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
+        obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
+      }
+      if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
+        obj.toTime = '(Thời gian kết thúc là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
+        obj.school = '(Trường học là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
+        obj.major = '(Chuyên môn là bắt buộc)'
+      }
+      return obj
+    }
+
     getValidationEducationObj = (education, type) => {
       let obj = {}
       if (type === "create") {
-        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-          obj.degreeType = '(Loại bằng cấp là bắt buộc)'
-        }
-        if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-          obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
-        }
-        if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-          obj.toTime = '(Thời gian kết thúc là bắt buộc)'
-        }
-        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-          obj.school = '(Trường học là bắt buộc)'
-        }
-        if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-          obj.major = '(Chuyên môn là bắt buộc)'
-        }
+        obj = this.getValidationEducationItem(education)
       } else if (type === "update") {
         const educationUpdate = education.NewEducation
-        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.DegreeType) {
-          obj.degreeType = '(Loại bằng cấp là bắt buộc)'
-        }
-        if ((educationUpdate.DegreeType || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.FromTime) {
-          obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
-        }
-        if ((educationUpdate.DegreeType || educationUpdate.FromTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.OtherSchool || educationUpdate.SchoolCode) && !educationUpdate.ToTime) {
-          obj.toTime = '(Thời gian kết thúc là bắt buộc)'
-        }
-        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.MajorCode || educationUpdate.OtherMajor || educationUpdate.DegreeType) && (!educationUpdate.OtherSchool && !educationUpdate.SchoolCode)) {
-          obj.school = '(Trường học là bắt buộc)'
-        }
-        if ((educationUpdate.FromTime || educationUpdate.ToTime || educationUpdate.OtherSchool || educationUpdate.SchoolCode || educationUpdate.DegreeType) && (!educationUpdate.MajorCode && !educationUpdate.OtherMajor)) {
-          obj.major = '(Chuyên môn là bắt buộc)'
-        }
+        obj = this.getValidationEducationItem(educationUpdate)
       }
       return obj
     }
 
     verifyInput = (data) => {
-      // console.log("oooooooooooooooooooo ------------")
-      // console.log(data)
-
       let errors = {}
       let newMainInfo = {}
       const isValidFileUpload = this.isValidFileUpload(data)
@@ -324,10 +313,18 @@ class PersonalInfoEdit extends React.Component {
           if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
             errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
           }
+          if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
+            errors.birthProvince = '(Nơi sinh là bắt buộc)'
+          }
           if ((newMainInfo.MaritalStatus && newMainInfo.MaritalStatus !== "") && !newMainInfo.MarriageDate) {
             errors.maritalDate = '(Ngày của TT hôn nhân là bắt buộc)'
           } else if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "" ) && newMainInfo.MarriageDate) {
             errors.maritalStatus = '(Tình trạng hôn nhân là bắt buộc)'
+          }
+          if (newMainInfo.Bank && !newMainInfo.BankAccountNumber) {
+            errors.bankAccountNumber = '(Số TK ngân hàng là bắt buộc)'
+          } else if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
+            errors.bank = '(Tên ngân hàng là bắt buộc)'
           }
           if ((newMainInfo.PassportNumber || newMainInfo.PassportPlace) && !newMainInfo.PassportDate) {
             errors.passportDate = '(Ngày cấp hộ chiếu là bắt buộc)'
