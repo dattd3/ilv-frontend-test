@@ -69,9 +69,9 @@ class PersonalComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (nextProps.validationMessages !== this.props.validationMessages) {
-          this.setState({ validationMessagesFromParent: nextProps.validationMessages })
+            this.setState({ validationMessagesFromParent: nextProps.validationMessages })
         }
     }
 
@@ -245,21 +245,14 @@ class PersonalComponent extends React.Component {
     }
 
     handleDatePickerInputChange(dateInput, name) {
-        if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
-            const date = moment(dateInput).format('DD-MM-YYYY');
-            this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], date)
-            // if (date !== this.props.userDetail[this.mappingFields[name]]) {
-            //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], date)
-            // } else {
-            //     this.props.removeInfo(name)
-            // }
-            this.setState({
-                userDetail: {
-                    ...this.state.userDetail,
-                    [this.mappingFields[name]]: date
-                }
-            })
-        }
+        const date = moment(dateInput, 'DD-MM-YYYY').isValid() ? moment(dateInput).format('DD-MM-YYYY') : null
+        this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], date)
+        this.setState({
+            userDetail: {
+                ...this.state.userDetail,
+                [this.mappingFields[name]]: date
+            }
+        })
     }
 
     showModal(name) {
@@ -271,7 +264,7 @@ class PersonalComponent extends React.Component {
     }
 
     updateAddress(country, province, district, ward, streetName) {
-        const mainAddressFromModal = {...this.state.mainAddressFromModal}
+        const mainAddressFromModal = { ...this.state.mainAddressFromModal }
         mainAddressFromModal.country_id = country.value
         mainAddressFromModal.nation = country.label
         mainAddressFromModal.province_id = province.value
@@ -281,7 +274,7 @@ class PersonalComponent extends React.Component {
         mainAddressFromModal.ward_id = ward.value
         mainAddressFromModal.wards = ward.label
         mainAddressFromModal.street_name = streetName
-        this.setState({ mainAddressFromModal : mainAddressFromModal })
+        this.setState({ mainAddressFromModal: mainAddressFromModal })
 
         const userDetail = { ...this.props.userDetail }
         const oldMainAddress = {
@@ -310,7 +303,7 @@ class PersonalComponent extends React.Component {
     }
 
     updateTmpAddress(country, province, district, ward, streetName) {
-        const tempAddressFromModal = {...this.state.tempAddressFromModal}
+        const tempAddressFromModal = { ...this.state.tempAddressFromModal }
         tempAddressFromModal.tmp_country_id = country.value
         tempAddressFromModal.tmp_nation = country.label
         tempAddressFromModal.tmp_province_id = province.value
@@ -320,7 +313,7 @@ class PersonalComponent extends React.Component {
         tempAddressFromModal.tmp_ward_id = ward.value
         tempAddressFromModal.tmp_wards = ward.label
         tempAddressFromModal.tmp_street_name = streetName
-        this.setState({ tempAddressFromModal : tempAddressFromModal })
+        this.setState({ tempAddressFromModal: tempAddressFromModal })
 
         const userDetail = { ...this.props.userDetail }
         const oldTempAddress = {
@@ -495,7 +488,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PersonalIdentifyNumber" type="text"
                                 value={this.state.userDetail.personal_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyNumber}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyNumber}</p> : null
                             }
                         </div>
                     </div>
@@ -521,7 +514,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
                             </label>
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyDate}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyDate}</p> : null
                             }
                         </div>
                     </div>
@@ -536,7 +529,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
                                 value={this.state.userDetail.pid_place_of_issue || ""} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyPlace) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyPlace}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyPlace) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyPlace}</p> : null
                             }
                         </div>
                     </div>
@@ -551,7 +544,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PassportNumber" type="text"
                                 value={this.state.userDetail.passport_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportNumber}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportNumber}</p> : null
                             }
                         </div>
                     </div>
@@ -577,7 +570,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
                             </label>
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportDate}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportDate}</p> : null
                             }
                         </div>
                     </div>
@@ -592,7 +585,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PassportPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
                                 value={this.state.userDetail.passport_place_of_issue || ""} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportPlace) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportPlace}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.passportPlace) ? <p className="text-danger">{this.state.validationMessagesFromParent.passportPlace}</p> : null
                             }
                         </div>
                     </div>
@@ -623,10 +616,10 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.mainAddressFromModal) > 0 ? {value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation} : {value: this.state.userDetail.country_id, label: this.state.userDetail.nation}}
-                                province={_.size(this.state.mainAddressFromModal) > 0 ? {value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province} : {value: this.state.userDetail.province_id, label: this.state.userDetail.province}}
-                                district={_.size(this.state.mainAddressFromModal) > 0 ? {value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district} : {value: this.state.userDetail.district_id, label: this.state.userDetail.district}}
-                                ward={_.size(this.state.mainAddressFromModal) > 0 ? {value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards} : {value: this.state.userDetail.ward_id, label: this.state.userDetail.wards}}
+                                country={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation } : { value: this.state.userDetail.country_id, label: this.state.userDetail.nation }}
+                                province={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province } : { value: this.state.userDetail.province_id, label: this.state.userDetail.province }}
+                                district={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district } : { value: this.state.userDetail.district_id, label: this.state.userDetail.district }}
+                                ward={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards } : { value: this.state.userDetail.ward_id, label: this.state.userDetail.wards }}
                                 street={_.size(this.state.mainAddressFromModal) > 0 ? this.state.mainAddressFromModal.street_name : this.state.userDetail.street_name}
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
@@ -653,10 +646,10 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.tempAddressFromModal) > 0 ? {value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation} : {value: this.state.userDetail.tmp_country_id, label: this.state.userDetail.tmp_nation}}
-                                province={_.size(this.state.tempAddressFromModal) > 0 ? {value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province} : {value: this.state.userDetail.tmp_province_id, label: this.state.userDetail.tmp_province}}
-                                district={_.size(this.state.tempAddressFromModal) > 0 ? {value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district} : {value: this.state.userDetail.tmp_district_id, label: this.state.userDetail.tmp_district}}
-                                ward={_.size(this.state.tempAddressFromModal) > 0 ? {value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards} : {value: this.state.userDetail.tmp_ward_id, label: this.state.userDetail.tmp_wards}}
+                                country={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation } : { value: this.state.userDetail.tmp_country_id, label: this.state.userDetail.tmp_nation }}
+                                province={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province } : { value: this.state.userDetail.tmp_province_id, label: this.state.userDetail.tmp_province }}
+                                district={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district } : { value: this.state.userDetail.tmp_district_id, label: this.state.userDetail.tmp_district }}
+                                ward={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards } : { value: this.state.userDetail.tmp_ward_id, label: this.state.userDetail.tmp_wards }}
                                 street={_.size(this.state.tempAddressFromModal) > 0 ? this.state.tempAddressFromModal.tmp_street_name : this.state.userDetail.tmp_street_name}
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
@@ -681,7 +674,7 @@ class PersonalComponent extends React.Component {
                             <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" isClearable={true} options={marriages}
                                 value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage ? marriage.TEXT : null)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.maritalStatus) ? <p className="text-danger">{this.state.validationMessagesFromParent.maritalStatus}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.maritalStatus) ? <p className="text-danger">{this.state.validationMessagesFromParent.maritalStatus}</p> : null
                             }
                         </div>
                     </div>
@@ -707,7 +700,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
                             </label>
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.maritalDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.maritalDate}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.maritalDate) ? <p className="text-danger">{this.state.validationMessagesFromParent.maritalDate}</p> : null
                             }
                         </div>
                     </div>
@@ -722,7 +715,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PersonalEmail" type="text" value={this.state.userDetail.personal_email || ""}
                                 onChange={this.handleTextInputChange.bind(this)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalEmail) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalEmail}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalEmail) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalEmail}</p> : null
                             }
                         </div>
                     </div>
@@ -738,7 +731,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="CellPhoneNo" type="text" value={this.state.userDetail.cell_phone_no || ""}
                                 onChange={this.handleTextInputChange.bind(this)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.cellPhoneNo) ? <p className="text-danger">{this.state.validationMessagesFromParent.cellPhoneNo}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.cellPhoneNo) ? <p className="text-danger">{this.state.validationMessagesFromParent.cellPhoneNo}</p> : null
                             }
                         </div>
                     </div>
