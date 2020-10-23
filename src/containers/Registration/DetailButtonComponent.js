@@ -32,6 +32,9 @@ class DetailButtonComponent extends React.Component {
     render() {
         return <div className="bottom">
             <ConfirmationModal
+                urlName={this.props.urlName}
+                dataToSap={this.props.dataToSap}
+                id={this.props.id}
                 show={this.state.isConfirmShow}
                 title={this.state.modalTitle}
                 type={this.state.typeRequest}
