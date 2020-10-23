@@ -402,7 +402,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.birthday || ""}</div>
                         </div>
                         <div className="col-6 input-container">
-                            <label>
+                            <label className="date-label">
                                 <DatePicker
                                     name="Birthday"
                                     key="Birthday"
@@ -507,7 +507,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.pid_date_of_issue}</div>
                         </div>
                         <div className="col-6 input-container">
-                            <label>
+                            <label className="date-label">
                                 <DatePicker
                                     name="PersonalIdentifyDate"
                                     key="PersonalIdentifyDate"
@@ -563,7 +563,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.passport_date_of_issue}</div>
                         </div>
                         <div className="col-6 input-container">
-                            <label>
+                            <label className="date-label">
                                 <DatePicker
                                     name="PassportDate"
                                     key="PassportDate"
@@ -693,7 +693,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.marital_date}</div>
                         </div>
                         <div className="col-6 input-container">
-                            <label>
+                            <label className="date-label">
                                 <DatePicker
                                     name="MarriageDate"
                                     key="MarriageDate"
