@@ -14,29 +14,35 @@ class InOutUpdateDetailComponent extends React.Component {
     this.state = {
     }
 
-    this.dataToSap()
+    // this.dataToSap()
   }
-
 
   dataToSap () {
     // let dataToSAP = []
     // this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-    //   dataToSAP.push({
-    //     MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}`,
-    //     PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
-    //     LDATE: moment(this.props.inOutTimeUpdate.userProfileInfo.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-    //     SATZA: 'P10',
-    //     LTIME: this.props.inOutTimeUpdate.userProfileInfo.startTime1Fact ? moment(this.props.businessTrip.userProfileInfo.startTime1Fact, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-    //     DALLF: '+'
+    //   [1, 2, 3].forEach(n => {
+    //     const startTimeName = `startTime${n}Fact`
+    //     const endTimeName = `endTime${n}Fact`
+    //     if (timesheet[startTimeName]) {
+    //       dataToSAP.push({
+    //         MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}`,
+    //         PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
+    //         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+    //         SATZA: 'P10',
+    //         LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+    //         DALLF: '+'
+    //       })
+    //     }
     //   })
-    //   dataToSAP.push({
-    //     MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index+1}`,
-    //     PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
-    //     LDATE: moment(this.props.inOutTimeUpdate.userProfileInfo.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-    //     SATZA: 'P20',
-    //     LTIME: this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact ? moment(this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-    //     DALLF: '+'
-    //   })
+      
+      // dataToSAP.push({
+      //   MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index+1}`,
+      //   PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
+      //   LDATE: moment(this.props.inOutTimeUpdate.userProfileInfo.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+      //   SATZA: 'P20',
+      //   LTIME: this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact ? moment(this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+      //   DALLF: '+'
+      // })
     // })
 
     // console.log(dataToSAP)
