@@ -8,12 +8,6 @@ import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import _ from 'lodash'
 
-const code = localStorage.getItem('employeeNo') || "";
-const fullName = localStorage.getItem('fullName') || "";
-const title = localStorage.getItem('jobTitle') || "";
-const department = localStorage.getItem('department') || "";
-let manager = {};
-
 class ApprovalDetail extends React.Component {
   constructor() {
     super();
@@ -36,6 +30,13 @@ class ApprovalDetail extends React.Component {
       status: 0,
       hrComment: ""
     }
+
+    this.manager = {
+      code: localStorage.getItem('employeeNo') || "",
+      fullName: localStorage.getItem('fullName') || "",
+      title: localStorage.getItem('jobTitle') || "",
+      department: localStorage.getItem('department') || ""
+    };
   }
 
   getUserProfileHistoryId = () => {
@@ -142,10 +143,7 @@ class ApprovalDetail extends React.Component {
   }
 
   onShowModalConfirm = () => {
-    const result = this.prepareManagerInfo();
-    if (result) {
-      this.setState({isShowModalConfirm: true});
-    }
+    this.setState({isShowModalConfirm: true});
   }
 
   onHideModalConfirm = () => {
@@ -177,16 +175,6 @@ class ApprovalDetail extends React.Component {
       }
       this.setState({userInfo : userInfo});
     }
-  }
-
-  prepareManagerInfo = () => {
-    manager = {
-      code: code,
-      fullName: fullName,
-      title: title,
-      department: department
-    };
-    return true;
   }
 
   prepareStatus = response => {
@@ -230,9 +218,9 @@ class ApprovalDetail extends React.Component {
 
     return (
       <>
-      <ConfirmationModal show={this.state.isShowModalConfirm} manager={manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+      <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
-      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4><span className={`status ${status[this.state.status].className}`}>{status[this.state.status].label}</span></div>
+      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
           <div className="row item-info">
@@ -259,7 +247,7 @@ class ApprovalDetail extends React.Component {
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
         {
-          (this.state.userInfo.manager && this.state.status == 2) ?
+          (this.state.userInfo.manager && (this.state.status == 2 || this.state.status == 1)) ?
           <>
           <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
@@ -291,7 +279,16 @@ class ApprovalDetail extends React.Component {
           </>
           : null
         }
-        {this.state.isShowDocumentComponent ? <DocumentComponent documents={this.state.documents} /> : null }
+        <div className="block-status">
+          <span className={`status ${status[this.state.status].className}`}>{status[this.state.status].label}</span>
+        </div>
+        { this.state.isShowDocumentComponent ? 
+          <>
+          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin file đính kèm</h4></div>
+          <DocumentComponent documents={this.state.documents} />
+          </>
+          : null
+        }
         {
           this.state.status == 0 ?
           <div className="clearfix mb-5">

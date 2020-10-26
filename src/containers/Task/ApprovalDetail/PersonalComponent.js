@@ -100,7 +100,7 @@ class PersonalComponent extends React.Component {
         const userMainInfo = this.props.userMainInfo;
         return (
             <div className="info">
-                <div className="box shadow">
+                <div className="box shadow wrap-item">
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> Thông tin cũ</div>
                         <div className="col"><i className="note note-new"></i> Thông tin điều chỉnh</div>
@@ -110,8 +110,26 @@ class PersonalComponent extends React.Component {
                         (userMainInfo || []).map((item, i) => {
                             const key = Object.keys(item)[0];
                             const label = this.getLabel(key);
+                            let addressClass = ""
+                            if (key == "ProvinceText") {
+                                addressClass = "province"
+                            } else if (key == "DistrictText") {
+                                addressClass = "district"
+                            } else if (key == "WardsText") {
+                                addressClass = "wards"
+                            } else if (key == "StreetName") {
+                                addressClass = "street"
+                            } else if (key == "TempProvinceText") {
+                                addressClass = "temp-province"
+                            } else if (key == "TempDistrictText") {
+                                addressClass = "temp-district"
+                            } else if (key == "TempWardsText") {
+                                addressClass = "temp-wards"
+                            } else if (key == "TempStreetName") {
+                                addressClass = "temp-street"
+                            }
                             if (label && !label.includes("Mã")) {
-                                return <div className="row" key={i}>
+                                return <div className={`row ${addressClass}`} key={i}>
                                     <div className="col-2">
                                         <div className="label">{label}</div>
                                     </div>

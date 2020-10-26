@@ -62,13 +62,14 @@ class ConfirmationModal extends React.Component {
             if (type === "yes") {
                 if (this.props.type == this.disapproval) {
                     const errors = this.verifyInput()
+                    const message = this.state.message
+                    const manager = JSON.stringify(this.state.manager)
                     if (!_.isEmpty(errors)) {
                       return
                     }
-
                     let formData = new FormData()
-                    formData.append('HRComment', this.state.message)
-                    formData.append('ManagerInfo', JSON.stringify(this.state.manager))
+                    formData.append('HRComment', message)
+                    formData.append('ManagerInfo', manager)
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
