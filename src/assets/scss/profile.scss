@@ -6,10 +6,10 @@
     }
 }
 
-.user-info-request {
+.block-status {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    justify-content: flex-start;
+    align-items: center;
     .status {
         padding: 4px 20px;
         border: 1px solid;
@@ -44,6 +44,34 @@
 }
 
 .edit-personal, .edit-personal-detail-request {
+    .wrap-item {
+        display: flex;
+        flex-direction: column;
+        .province {
+            order: 1;
+        }
+        .district {
+            order: 2;
+        }
+        .wards {
+            order: 3;
+        }
+        .street {
+            order: 4;
+        }
+        .temp-province {
+            order: 5;
+        }
+        .temp-district {
+            order: 6;
+        }
+        .temp-wards {
+            order: 7;
+        }
+        .temp-street {
+            order: 8;
+        }
+    }
     // display: flex;
     .date-label {
         position: relative;
