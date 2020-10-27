@@ -8,7 +8,7 @@ class Task extends React.Component {
         super();
         this.state = {
             isShowApprovalTab: true,
-            tabActive: new URLSearchParams(props.history.location.search).get('tab')
+            tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request"
         }
     }
 
