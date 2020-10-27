@@ -179,12 +179,6 @@ class PersonalComponent extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name;
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
-        // if (value !== this.props.userDetail[this.mappingFields[name]]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
-
         this.setState({
             userDetail: {
                 ...this.state.userDetail,
@@ -203,25 +197,16 @@ class PersonalComponent extends React.Component {
             val = "";
             label = "";
         }
-
         if (name == "BirthCountry") {
             this.getBirthProvinces(val);
         }
-
         this.setState({
             userDetail: {
                 ...this.state.userDetail,
                 [this.mappingFields[name]]: val
             }
         })
-
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
-
-        // if (val !== this.props.userDetail[this.mappingFields[name]]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
     }
 
     getBirthProvinces = (country_id) => {

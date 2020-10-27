@@ -409,7 +409,7 @@ class PersonalInfoEdit extends React.Component {
       bodyFormData.append('Name', this.getNameFromData(this.state.data));
       bodyFormData.append('Comment', comment);
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
-      bodyFormData.append('UpdateField', JSON.stringify(updateFields));
+      bodyFormData.append('UpdateField', updateFields !== "" ? JSON.stringify(updateFields) : updateFields);
       bodyFormData.append('Region', localStorage.getItem('region'));
       bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataPostToSAP));
       const fileSelected = this.state.files;
@@ -863,6 +863,7 @@ class PersonalInfoEdit extends React.Component {
         const educationKeys = this.convertObjectKeyToArray(educations);
         return { UpdateField: [].concat(mainInfoKeys, educationKeys) };
       }
+      return "";
     }
 
     convertObjectKeyToArray = (obj) => {
