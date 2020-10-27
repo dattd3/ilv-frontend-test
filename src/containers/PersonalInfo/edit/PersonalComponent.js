@@ -328,11 +328,6 @@ class PersonalComponent extends React.Component {
 
     handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
         this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
-        // if(value !== this.props.userDetail[this.mappingFields[prefix + name]]) {
-        //     this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
-        // } else {
-        //     this.props.removeInfo(prefix + name)
-        // }
         this.setState({
             userDetail: {
                 ...this.state.userDetail,

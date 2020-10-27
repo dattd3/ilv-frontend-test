@@ -263,37 +263,6 @@ class PersonalInfoEdit extends React.Component {
       return phone.search(filter) ? false : true
     }
 
-    getValidationEducationItem = (education) => {
-      let obj = {}
-      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-        obj.degreeType = '(Loại bằng cấp là bắt buộc)'
-      }
-      if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-        obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
-      }
-      if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-        obj.toTime = '(Thời gian kết thúc là bắt buộc)'
-      }
-      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-        obj.school = '(Trường học là bắt buộc)'
-      }
-      if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-        obj.major = '(Chuyên môn là bắt buộc)'
-      }
-      return obj
-    }
-
-    getValidationEducationObj = (education, type) => {
-      let obj = {}
-      if (type === "create") {
-        obj = this.getValidationEducationItem(education)
-      } else if (type === "update") {
-        const educationUpdate = education.NewEducation
-        obj = this.getValidationEducationItem(educationUpdate)
-      }
-      return obj
-    }
-
     verifyInput = (data) => {
       let errors = {}
       let newMainInfo = {}
@@ -352,26 +321,40 @@ class PersonalInfoEdit extends React.Component {
         }
         if (update.userProfileHistoryEducation) {
           const educationUpdated = update.userProfileHistoryEducation
-          errors.update = []
-          for (let i = 0, len = educationUpdated.length; i < len; i++) {
-            const education = educationUpdated[i]
-            let obj = this.getValidationEducationObj(education, "update")
-            errors.update = errors.update.concat(obj)
-          }
+          const objEducationUpdated = this.getValidationEducationItem(educationUpdated,  "_update_", "update");
+          errors = {...errors, ...objEducationUpdated}
         }
       }
-
       if (data && data.create && data.create.educations && data.create.educations.length > 0) {
         const educationCreated = data.create.educations
-        errors.create = []
-        for (let i = 0, len = educationCreated.length; i < len; i++) {
-          const education = educationCreated[i]
-          let obj = this.getValidationEducationObj(education, "create")
-          errors.create = errors.create.concat(obj)
-        }
+        const objEducationCreated = this.getValidationEducationItem(educationCreated, "_create_", "create");
+        errors = {...errors, ...objEducationCreated}
       }
       this.setState({ errors: errors })
       return errors
+    }
+
+    getValidationEducationItem = (item, prefix, type) => {
+      let obj = {}
+      for (let i = 0, len = item.length; i < len; i++) {
+        let education = type === "update" ? item[i].NewEducation : item[i]
+        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
+          obj["education" + prefix + i + "_degreeType"] = '(Loại bằng cấp là bắt buộc)'
+        }
+        if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
+          obj["education" + prefix + i + "_fromTime"] = '(Thời gian bắt đầu là bắt buộc)'
+        }
+        if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
+          obj["education" + prefix + i + "_toTime"] = '(Thời gian kết thúc là bắt buộc)'
+        }
+        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
+          obj["education" + prefix + i + "_school"] = '(Trường học là bắt buộc)'
+        }
+        if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
+          obj["education" + prefix + i + "_major"] = '(Chuyên môn là bắt buộc)'
+        }
+      }
+      return obj
     }
 
     removeItemForValueNull = (dataInput) => {
@@ -409,7 +392,7 @@ class PersonalInfoEdit extends React.Component {
       bodyFormData.append('Name', this.getNameFromData(this.state.data));
       bodyFormData.append('Comment', comment);
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
-      bodyFormData.append('UpdateField', updateFields !== "" ? JSON.stringify(updateFields) : updateFields);
+      bodyFormData.append('UpdateField', JSON.stringify(updateFields));
       bodyFormData.append('Region', localStorage.getItem('region'));
       bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataPostToSAP));
       const fileSelected = this.state.files;
@@ -863,7 +846,7 @@ class PersonalInfoEdit extends React.Component {
         const educationKeys = this.convertObjectKeyToArray(educations);
         return { UpdateField: [].concat(mainInfoKeys, educationKeys) };
       }
-      return "";
+      return { UpdateField: []};
     }
 
     convertObjectKeyToArray = (obj) => {
@@ -1056,14 +1039,7 @@ class PersonalInfoEdit extends React.Component {
     }
 
     sendRequest = () => {
-      let dataClone = this.removeItemForValueNull({...this.state.data})
-      let errors = this.verifyInput(dataClone)
-      if (errors.create && errors.create.length == 1 && _.size(errors.create[0]) == 0) {
-        delete errors.create
-      }
-      if (errors.update && errors.update.length == 1 && _.size(errors.update[0]) == 0) {
-        delete errors.update
-      }
+      let errors = this.verifyInput(this.state.data)
       if (!_.isEmpty(errors)) {
         return
       }
