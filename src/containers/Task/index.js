@@ -4,10 +4,11 @@ import RequestComponent from '../Task/Request/'
 import ApprovalComponent from '../Task/Approval/'
 
 class Task extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
-            isShowApprovalTab: true
+            isShowApprovalTab: true,
+            tabActive: new URLSearchParams(props.history.location.search).get('tab')
         }
     }
 
@@ -17,19 +18,20 @@ class Task extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        // this.state.isShowApprovalTab
+    updateTabLink = key => {
+        this.props.history.push('?tab=' + key);
+        this.setState({tabActive : key})
     }
 
     render() {
         return (
-            <Tabs defaultActiveKey="RequestTab" className="task-tabs">
-                <Tab eventKey="RequestTab" title="Yêu cầu">
+            <Tabs defaultActiveKey={this.state.tabActive} className="task-tabs" onSelect={(key) => this.updateTabLink(key)}>
+                <Tab eventKey="request" title="Yêu cầu">
                     <RequestComponent />
                 </Tab>
                 {
                     this.state.isShowApprovalTab == true ?
-                    <Tab eventKey="ApprovalTab" title="Phê duyệt">
+                    <Tab eventKey="approval" title="Phê duyệt">
                         <ApprovalComponent sendData={this.getData} />
                     </Tab>
                     : null
