@@ -259,8 +259,8 @@ class PersonalInfoEdit extends React.Component {
     }
 
     isValidPhoneNumber = (phone) => {
-      const filter = /[^a-zA-Z]+/
-      return phone.search(filter) ? false : true
+      const filter = /[a-zA-Z]+/
+      return filter.test(phone) ? false : true
     }
 
     verifyInput = (data) => {
@@ -286,6 +286,9 @@ class PersonalInfoEdit extends React.Component {
           }
           if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
             errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
+          }
+          if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
+            errors.urgentContactNo = '(Điện thoại khẩn cấp không đúng định dạng)'
           }
           if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
             errors.birthProvince = '(Nơi sinh là bắt buộc)'

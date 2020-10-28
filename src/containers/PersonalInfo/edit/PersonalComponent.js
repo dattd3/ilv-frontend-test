@@ -733,6 +733,9 @@ class PersonalComponent extends React.Component {
                         <div className="col-6">
                             <input className="form-control" name="UrgentContactNo" type="text"
                                 value={this.isNotNull(this.state.userDetail.urgent_contact_no) ? this.state.userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
+                            {
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.urgentContactNo) ? <p className="text-danger">{this.state.validationMessagesFromParent.urgentContactNo}</p> : null
+                            }
                         </div>
                     </div>
 
