@@ -179,12 +179,6 @@ class PersonalComponent extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name;
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
-        // if (value !== this.props.userDetail[this.mappingFields[name]]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
-
         this.setState({
             userDetail: {
                 ...this.state.userDetail,
@@ -203,25 +197,16 @@ class PersonalComponent extends React.Component {
             val = "";
             label = "";
         }
-
         if (name == "BirthCountry") {
             this.getBirthProvinces(val);
         }
-
         this.setState({
             userDetail: {
                 ...this.state.userDetail,
                 [this.mappingFields[name]]: val
             }
         })
-
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
-
-        // if (val !== this.props.userDetail[this.mappingFields[name]]) {
-        //     this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
-        // } else {
-        //     this.props.removeInfo(name)
-        // }
     }
 
     getBirthProvinces = (country_id) => {
@@ -343,11 +328,6 @@ class PersonalComponent extends React.Component {
 
     handleUpdateAddressForInput = (name, value, prefix, oldText, newText) => {
         this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
-        // if(value !== this.props.userDetail[this.mappingFields[prefix + name]]) {
-        //     this.props.updateInfo(prefix + name, this.props.userDetail[this.mappingFields[prefix + name]], value, oldText, newText)
-        // } else {
-        //     this.props.removeInfo(prefix + name)
-        // }
         this.setState({
             userDetail: {
                 ...this.state.userDetail,
@@ -753,6 +733,9 @@ class PersonalComponent extends React.Component {
                         <div className="col-6">
                             <input className="form-control" name="UrgentContactNo" type="text"
                                 value={this.isNotNull(this.state.userDetail.urgent_contact_no) ? this.state.userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
+                            {
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.urgentContactNo) ? <p className="text-danger">{this.state.validationMessagesFromParent.urgentContactNo}</p> : null
+                            }
                         </div>
                     </div>
 

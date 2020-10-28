@@ -4,6 +4,7 @@ class DocumentComponent extends React.Component {
     render() {
         const documents = this.props.documents
         return (
+            <div className="box shadow">
             <ul className="list-inline">
             {
                 (documents || []).map((item, i) => {
@@ -15,6 +16,7 @@ class DocumentComponent extends React.Component {
                 })
             }
             </ul>
+            </div>
         )
     }
 }
