@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import _ from 'lodash'
+import _, { startsWith } from 'lodash'
 
 registerLocale("vi", vi)
 
@@ -16,6 +16,7 @@ const FULL_DAY = 1
 const DURING_THE_DAY = 2
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
+const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -48,17 +49,16 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         }
 
-        const thisYear = new Date().getFullYear()
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
+        axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/currentabsence`, {
+            perno: localStorage.getItem('employeeNo'),
+            date: moment().format('YYYYMMDD')
+        }, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     const annualLeaveSummary = res.data.data
                     this.setState({ annualLeaveSummary: annualLeaveSummary })
                 }
             }).catch(error => {
-                // localStorage.clear();
-                // window.location.href = map.Login;
             })
 
         if (this.props.leaveOfAbsence) {
@@ -100,17 +100,25 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartTime(startTime) {
+        const start = moment(startTime).format(TIME_FORMAT)
+        const end = this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
         this.setState({
-            startTime: moment(startTime).format(TIME_FORMAT),
-            endTime: this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
+            startTime: start,
+            endTime: end
         })
+
+        this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
     setEndTime(endTime) {
+        const start = this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime
+        const end = moment(endTime).format(TIME_FORMAT)
         this.setState({
-            startTime: this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime,
-            endTime: moment(endTime).format(TIME_FORMAT)
+            startTime: start,
+            endTime: end
         })
+
+        this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
     setEndDate(endDate) {
@@ -138,16 +146,64 @@ class LeaveOfAbsenceComponent extends React.Component {
         const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
         const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+        axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+            perno: localStorage.getItem('employeeNo'),
+            from_date: start,
+            to_date: end
+        } ,config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    const timesheets = res.data.data.filter(timesheet => timesheet.start_time1_plan || timesheet.start_time2_plan || timesheet.start_time3_plan)
-                    this.setState({ totalTime: timesheets.length })
+                    this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
                 }
             }).catch(error => {
                 // localStorage.clear();
                 // window.location.href = map.Login;
             })
+    }
+
+    calFullDay(timesheets) {
+        const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.hours)
+        }, 0)
+        
+        return hours ? (hours / 8) : 0
+    }
+
+    calDuringTheDay(timesheets, startTime, endTime) {
+        if (!startTime || !endTime) return
+        
+        let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+        let endTimeSAP = moment(endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+        let hours = 0
+  
+        if ( timesheets.length > 0) {
+            const timesheet = timesheets[0]
+            const shiftIndex = ['1', '2']
+
+            shiftIndex.forEach(index => {
+                
+                if (timesheet['from_time' + index] && endTimeSAP > timesheet['from_time'+ index] && startTimeSAP < timesheet['to_time'+ index]) {
+                    
+                    // correct time if startTime < from_time and endTime > to_time
+                    startTimeSAP = startTimeSAP < timesheet['from_time'+ index] ? timesheet['from_time'+ index] : startTimeSAP
+                    endTimeSAP = endTimeSAP > timesheet['to_time'+ index] ? timesheet['to_time'+ index] : endTimeSAP
+
+                    // the startTime and the endTime are setted in the break time
+                    startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ index] && startTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_to_time'+ 1] : startTimeSAP
+                    endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
+
+                    const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
+                    hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
+
+                    if(startTimeSAP < timesheet['break_from_time_'+ index] && endTimeSAP > timesheet['break_to_time'+ index]) {
+                        const differenceInMsBreakTime = moment(timesheet['break_to_time'+ index], TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ index], TIME_OF_SAP_FORMAT))
+                        hours = hours - Math.abs(moment.duration(differenceInMsBreakTime).asHours())
+                    }
+                }
+            })
+        }
+     
+        return hours ? (hours / 8) : 0
     }
 
     updateFiles(files) {
@@ -263,7 +319,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     updateLeaveType(leaveType) {
         if (leaveType !== this.state.leaveType) {
-            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null })
+            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
         }
     }
 
@@ -272,13 +328,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
-        const thisYear = new Date().getFullYear()
-
-        const unusedAnnualLeaveOfThisYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_annual_leave ? this.state.annualLeaveSummary.unused_annual_leave.find(a => a.year == thisYear) : undefined
-        const unusedAnnualLeaveOfLastYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_annual_leave ? this.state.annualLeaveSummary.unused_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
-        const unusedCompensatoryLeaveOfThisYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_compensatory_leave ? this.state.annualLeaveSummary.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
-        const unusedCompensatoryLeaveOfLastYear = this.state.annualLeaveSummary && this.state.annualLeaveSummary.unused_compensatory_leave ? this.state.annualLeaveSummary.unused_compensatory_leave.find(a => a.year == (thisYear - 1)) : undefined
-
         const absenceTypes = [
             { value: 'IN01', label: 'Nghỉ ốm' },
             { value: 'IN02', label: 'Nghỉ thai sản' },
@@ -291,7 +340,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
             { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
             { value: 'UN01', label: 'Nghỉ không lương' },
-        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' &&  absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
+        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
 
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
@@ -306,31 +355,31 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tồn</div>
-                            <div className="result text-danger">{unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0}</div>
+                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_LEA_REMAIN : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép năm</div>
-                            <div className="result text-danger">{unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0}</div>
+                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_LEA : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tạm ứng</div>
-                            <div className="result text-danger">0</div>
+                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_ADV_LEA : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ bù tồn</div>
-                            <div className="result text-danger">{unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days * 8 : 0}</div>
+                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.HOUR_TIME_OFF_REMAIN : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ nghỉ bù</div>
-                            <div className="result text-danger">{unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days * 8 : 0}</div>
+                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.HOUR_COMP : 0}</div>
                         </div>
                     </div>
                 </div>
@@ -447,7 +496,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.totalTime ? this.state.totalTime + ' Ngày' : null} readOnly />
+                                    <input type="text" className="form-control" value={this.state.totalTime ? this.state.totalTime * 8 + ' giờ' : '0 giờ'} readOnly />
                                 </div>
                             </div>
                         </div>
