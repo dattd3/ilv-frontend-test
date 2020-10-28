@@ -152,7 +152,7 @@ class SubstitutionComponent extends React.Component {
     return (
       <div className="shift-work">
         {this.state.substitutions.map((substitution, index) => {
-          return <div className="box shadow">
+          return <div className="box shadow" key={index}>
             {this.state.substitutions.length > 1 ? <div className="clearfix">
               <button type="button" className="close text-danger" data-dismiss="alert" aria-label="Close" onClick={this.removeSubstitution.bind(this, index)}>
                 <i class="fa fa-times-circle" aria-hidden="true"></i>
