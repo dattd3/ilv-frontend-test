@@ -125,7 +125,7 @@ function Header(props) {
                         <div className="all-items">
                             {dataNotificationsUnRead}
                         </div>
-                        <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a>
+                        {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
                     </Dropdown.Menu>
                     : null
                     }
