@@ -323,39 +323,82 @@ class PersonalInfoEdit extends React.Component {
           }
         }
         if (update.userProfileHistoryEducation) {
+          
           const educationUpdated = update.userProfileHistoryEducation
-          const objEducationUpdated = this.getValidationEducationItem(educationUpdated,  "_update_", "update");
+          const objEducationUpdated = this.getValidationUpdateEducationItem(educationUpdated,  "_update_");
           errors = {...errors, ...objEducationUpdated}
         }
       }
       if (data && data.create && data.create.educations && data.create.educations.length > 0) {
         const educationCreated = data.create.educations
-        const objEducationCreated = this.getValidationEducationItem(educationCreated, "_create_", "create");
+        const objEducationCreated = this.getValidationCreateEducationItem(educationCreated, "_create_");
         errors = {...errors, ...objEducationCreated}
       }
       this.setState({ errors: errors })
       return errors
     }
 
-    getValidationEducationItem = (item, prefix, type) => {
+    mappingModel = model => {
+      return {
+        DegreeType: model.education_level_id,
+        DegreeTypeText: model.academic_level,
+        EducationId: model.education_id,
+        FromTime: model.from_time,
+        MajorCode: model.major_id,
+        MajorCodeText: model.major,
+        OtherMajor: model.other_major,
+        OtherSchool: model.other_uni_name,
+        SchoolCode: model.school_id,
+        SchoolName: model.university_name,
+        Seqnr: model.seqnr,
+        ToTime: model.to_time
+      }
+    }
+
+    getValidationUpdateEducationItem = (item, prefix) => {
+      const educationOriginal = this.state.userEducation
+      let obj = {}
+      for (let j = 0, lenEducationOriginal = educationOriginal.length; j < lenEducationOriginal; j++) {
+        let oldEducationOriginal = this.mappingModel(educationOriginal[j])
+        for (let i = 0, len = item.length; i < len; i++) {
+          let oldEducation = item[i].OldEducation
+          if (_.isEqual(oldEducationOriginal, oldEducation)) {
+            let education = item[i].NewEducation
+            let tempItem = this.getValidationEducationItem(education, prefix, j)
+            obj = {...obj, ...tempItem}
+          }
+        }
+      }
+      return obj
+    }
+
+    getValidationCreateEducationItem = (item, prefix) => {
       let obj = {}
       for (let i = 0, len = item.length; i < len; i++) {
-        let education = type === "update" ? item[i].NewEducation : item[i]
-        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-          obj["education" + prefix + i + "_degreeType"] = '(Loại bằng cấp là bắt buộc)'
-        }
-        if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-          obj["education" + prefix + i + "_fromTime"] = '(Thời gian bắt đầu là bắt buộc)'
-        }
-        if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-          obj["education" + prefix + i + "_toTime"] = '(Thời gian kết thúc là bắt buộc)'
-        }
-        if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-          obj["education" + prefix + i + "_school"] = '(Trường học là bắt buộc)'
-        }
-        if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-          obj["education" + prefix + i + "_major"] = '(Chuyên môn là bắt buộc)'
-        }
+        let education = item[i]
+        let tempItem = this.getValidationEducationItem(education, prefix, i)
+        obj = {...obj, ...tempItem}
+      }
+      return obj
+    }
+
+    getValidationEducationItem = (educationInput, prefix, index) => {
+      const education = educationInput
+      let obj = {}
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
+        obj["education" + prefix + index + "_degreeType"] = '(Loại bằng cấp là bắt buộc)'
+      }
+      if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
+        obj["education" + prefix + index + "_fromTime"] = '(Thời gian bắt đầu là bắt buộc)'
+      }
+      if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
+        obj["education" + prefix + index + "_toTime"] = '(Thời gian kết thúc là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
+        obj["education" + prefix + index + "_school"] = '(Trường học là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
+        obj["education" + prefix + index + "_major"] = '(Chuyên môn là bắt buộc)'
       }
       return obj
     }
@@ -876,10 +919,7 @@ class PersonalInfoEdit extends React.Component {
         objClone.MajorCodeText = data.major_name || "";
       } else {
         objClone.EducationId = data.education_id || "";
-        objClone.PreBeginDate = data.old_from_time || data.from_time;
-        objClone.PreEndDate = data.old_to_time || data.to_time;
         objClone.Seqnr = data.seqnr || 0;
-        objClone.PreEducationLevelId = data.old_education_level_id || data.education_level_id;
         objClone.DegreeTypeText = data.academic_level || "";
         objClone.MajorCodeText = data.major || "";
       }
