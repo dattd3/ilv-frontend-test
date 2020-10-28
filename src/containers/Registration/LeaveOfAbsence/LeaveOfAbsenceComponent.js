@@ -171,27 +171,36 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     calDuringTheDay(timesheets, startTime, endTime) {
         if (!startTime || !endTime) return
-
+        
         let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
         let endTimeSAP = moment(endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
         let hours = 0
+  
         if ( timesheets.length > 0) {
             const timesheet = timesheets[0]
-            // [1,2].forEach(index => {
-            // console.log(index)
-            if (timesheet['from_time' + 1] && startTimeSAP >= timesheet['from_time'+ 1] && startTimeSAP <= timesheet['to_time'+ 1]) {
-                startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ 1] && startTimeSAP <= timesheet['break_to_time'+ 1] ? timesheet['break_to_time'+ 1] : startTimeSAP
-                endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ 1] && endTimeSAP <= timesheet['break_to_time'+ 1] ? timesheet['break_from_time_'+ 1] : endTimeSAP
-                
-                const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
-                hours = moment.duration(differenceInMs).asHours()
+            const shiftIndex = ['1', '2']
 
-                if(startTimeSAP < timesheet['break_from_time_'+ 1] && endTimeSAP > timesheet['break_to_time'+ 1]) {
-                    const differenceInMsBreakTime = moment(timesheet['break_to_time'+ 1], TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ 1], TIME_OF_SAP_FORMAT))
-                    hours = hours - moment.duration(differenceInMsBreakTime).asHours()
+            shiftIndex.forEach(index => {
+                
+                if (timesheet['from_time' + index] && endTimeSAP > timesheet['from_time'+ index] && startTimeSAP < timesheet['to_time'+ index]) {
+                    
+                    // correct time if startTime < from_time and endTime > to_time
+                    startTimeSAP = startTimeSAP < timesheet['from_time'+ index] ? timesheet['from_time'+ index] : startTimeSAP
+                    endTimeSAP = endTimeSAP > timesheet['to_time'+ index] ? timesheet['to_time'+ index] : endTimeSAP
+
+                    // the startTime and the endTime are setted in the break time
+                    startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ index] && startTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_to_time'+ 1] : startTimeSAP
+                    endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
+
+                    const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
+                    hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
+
+                    if(startTimeSAP < timesheet['break_from_time_'+ index] && endTimeSAP > timesheet['break_to_time'+ index]) {
+                        const differenceInMsBreakTime = moment(timesheet['break_to_time'+ index], TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ index], TIME_OF_SAP_FORMAT))
+                        hours = hours - Math.abs(moment.duration(differenceInMsBreakTime).asHours())
+                    }
                 }
-            }
-            // })
+            })
         }
      
         return hours ? (hours / 8) : 0

@@ -19,6 +19,7 @@ const FULL_DAY = 1
 const DURING_THE_DAY = 2
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
+const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 class BusinessTripComponent extends React.Component {
   constructor(props) {
@@ -81,18 +82,26 @@ class BusinessTripComponent extends React.Component {
   }
 
   setStartTime(startTime) {
+    const start = moment(startTime).format(TIME_FORMAT)
+    const end = this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
     this.setState({
-      startTime: moment(startTime).format(TIME_FORMAT),
-      endTime: this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
+        startTime: start,
+        endTime: end
     })
-  }
 
-  setEndTime(endTime) {
+    this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
+}
+
+setEndTime(endTime) {
+    const start = this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime
+    const end = moment(endTime).format(TIME_FORMAT)
     this.setState({
-      startTime: this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime,
-      endTime: moment(endTime).format(TIME_FORMAT)
+        startTime: start,
+        endTime: end
     })
-  }
+
+    this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
+}
 
   setEndDate(endDate) {
     const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate
@@ -109,27 +118,75 @@ class BusinessTripComponent extends React.Component {
     if (!startDate || !endDate) return
 
     const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
     }
 
     const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
     const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
-      .then(res => {
-        if (res && res.data && res.data.data) {
-          const timesheets = res.data.data.filter(timesheet => timesheet.start_time1_plan || timesheet.start_time2_plan || timesheet.start_time3_plan)
-          this.setState({ totalTime: timesheets.length })
-        }
-      }).catch(error => {
-        // localStorage.clear();
-        // window.location.href = map.Login;
-      })
-  }
+    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+        perno: localStorage.getItem('employeeNo'),
+        from_date: start,
+        to_date: end
+    } ,config)
+        .then(res => {
+            if (res && res.data && res.data.data) {
+                this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
+            }
+        }).catch(error => {
+            // localStorage.clear();
+            // window.location.href = map.Login;
+        })
+}
+
+calFullDay(timesheets) {
+    const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.hours)
+    }, 0)
+    
+    return hours ? (hours / 8) : 0
+}
+
+calDuringTheDay(timesheets, startTime, endTime) {
+    if (!startTime || !endTime) return
+    
+    let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+    let endTimeSAP = moment(endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+    let hours = 0
+
+    if ( timesheets.length > 0) {
+        const timesheet = timesheets[0]
+        const shiftIndex = ['1', '2']
+
+        shiftIndex.forEach(index => {
+            
+            if (timesheet['from_time' + index] && endTimeSAP > timesheet['from_time'+ index] && startTimeSAP < timesheet['to_time'+ index]) {
+                
+                // correct time if startTime < from_time and endTime > to_time
+                startTimeSAP = startTimeSAP < timesheet['from_time'+ index] ? timesheet['from_time'+ index] : startTimeSAP
+                endTimeSAP = endTimeSAP > timesheet['to_time'+ index] ? timesheet['to_time'+ index] : endTimeSAP
+
+                // the startTime and the endTime are setted in the break time
+                startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ index] && startTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_to_time'+ 1] : startTimeSAP
+                endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
+
+                const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
+                hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
+
+                if(startTimeSAP < timesheet['break_from_time_'+ index] && endTimeSAP > timesheet['break_to_time'+ index]) {
+                    const differenceInMsBreakTime = moment(timesheet['break_to_time'+ index], TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ index], TIME_OF_SAP_FORMAT))
+                    hours = hours - Math.abs(moment.duration(differenceInMsBreakTime).asHours())
+                }
+            }
+        })
+    }
+ 
+    return hours ? (hours / 8) : 0
+}
 
   updateFiles(files) {
     this.setState({ files: files })

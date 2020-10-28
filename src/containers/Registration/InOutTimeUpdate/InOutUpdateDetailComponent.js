@@ -13,42 +13,44 @@ class InOutUpdateDetailComponent extends React.Component {
     super();
     this.state = {
     }
-
-    // this.dataToSap()
   }
 
   dataToSap () {
-    // let dataToSAP = []
-    // this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-    //   [1, 2, 3].forEach(n => {
-    //     const startTimeName = `startTime${n}Fact`
-    //     const endTimeName = `endTime${n}Fact`
-    //     if (timesheet[startTimeName]) {
-    //       dataToSAP.push({
-    //         MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}`,
-    //         PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
-    //         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-    //         SATZA: 'P10',
-    //         LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-    //         DALLF: '+'
-    //       })
-    //     }
-    //   })
-      
-      // dataToSAP.push({
-      //   MYVP_ID: 'TEV' + '0'.repeat(8 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index+1}`,
-      //   PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
-      //   LDATE: moment(this.props.inOutTimeUpdate.userProfileInfo.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-      //   SATZA: 'P20',
-      //   LTIME: this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact ? moment(this.props.inOutTimeUpdate.userProfileInfo.endTime1Fact, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-      //   DALLF: '+'
-      // })
-    // })
+    let dataToSAP = []
+    
+    this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+      ['1', '2', '3'].forEach(n => {
+        const startTimeName = `startTime${n}Fact`
+        const endTimeName = `endTime${n}Fact`
+        if (timesheet[startTimeName] && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
+          dataToSAP.push({
+            MYVP_ID: 'TEVS' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+            PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+            SATZA: 'P10',
+            LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+          })
+        }
 
-    // console.log(dataToSAP)
+        if (timesheet[startTimeName] && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+          dataToSAP.push({
+            MYVP_ID: 'TEVE' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+            PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+            SATZA: 'P20',
+            LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+          })
+        }
+      })
+    })
+    
+    return dataToSAP
   }
 
   render() {
+    this.dataToSap()
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -151,7 +153,11 @@ class InOutUpdateDetailComponent extends React.Component {
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} />
 
-        <DetailButtonComponent />
+        <DetailButtonComponent
+          dataToSap={this.dataToSap()}
+          id={this.props.inOutTimeUpdate.id}
+          urlName={'requesttimekeeping'}
+        />
       </div>
     )
   }
