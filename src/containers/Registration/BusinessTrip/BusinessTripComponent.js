@@ -264,6 +264,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('UpdateField', JSON.stringify({}))
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
+    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -274,13 +275,13 @@ calDuringTheDay(timesheets, startTime, endTime) {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-      .then(response => {
-        if (response && response.data && response.data.result) {
-          this.showStatusModal(`Cập nhập thành công!`, true)
-        }
-      })
-      .catch(response => {
-      })
+    .then(response => {
+      if (response && response.data && response.data.result) {
+        this.showStatusModal(`Cập nhập thành công!`, true)
+      }
+    })
+    .catch(response => {
+    })
   }
 
   error(name) {
@@ -443,7 +444,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" class="form-control" value={this.state.totalTime ? this.state.totalTime + ' Ngày' : null} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime ? this.state.totalTime + ' Ngày' : null} readOnly />
                 </div>
               </div>
             </div>
@@ -491,7 +492,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-12">
                 <p className="title">Lý do đăng ký Công tác/Đào tạo</p>
                 <div>
-                  <textarea class="form-control" name="note" value={this.state.note} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
+                  <textarea className="form-control" name="note" value={this.state.note} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
                 </div>
                 {this.error('note')}
               </div>

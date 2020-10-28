@@ -285,6 +285,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('UpdateField', {})
         bodyFormData.append('Region', localStorage.getItem('region'))
         bodyFormData.append('UserProfileInfoToSap', {})
+        bodyFormData.append('UserManagerId', this.state.approver.userAccount)
         this.state.files.forEach(file => {
             bodyFormData.append('Files', file)
         })
@@ -295,13 +296,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data && response.data.result) {
-                    this.showStatusModal(`Cập nhập thành công!`, true)
-                }
-            })
-            .catch(response => {
-            })
+        .then(response => {
+            if (response && response.data && response.data.result) {
+                this.showStatusModal(`Cập nhập thành công!`, true)
+            }
+        })
+        .catch(response => {
+        })
     }
 
     error(name) {
@@ -495,7 +496,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
-                                    <input type="text" class="form-control" value={this.state.totalTime ? this.state.totalTime * 8 + ' giờ' : '0 giờ'} readOnly />
+                                    <input type="text" className="form-control" value={this.state.totalTime ? this.state.totalTime * 8 + ' giờ' : '0 giờ'} readOnly />
                                 </div>
                             </div>
                         </div>
@@ -518,7 +519,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-7">
                                 <p className="title">Lý do đăng ký nghỉ phép</p>
                                 <div>
-                                    <textarea class="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
+                                    <textarea className="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
                                 {this.error('note')}
                             </div>

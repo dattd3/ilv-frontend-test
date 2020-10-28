@@ -158,6 +158,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('UpdateField', {})
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('UserProfileInfoToSap', {})
+    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -168,13 +169,13 @@ class InOutTimeUpdateComponent extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-      .then(response => {
-        if (response && response.data && response.data.result) {
-          this.showStatusModal(`Cập nhập thành công!`, true)
-        }
-      })
-      .catch(response => {
-      })
+    .then(response => {
+      if (response && response.data && response.data.result) {
+        this.showStatusModal(`Cập nhập thành công!`, true)
+      }
+    })
+    .catch(response => {
+    })
   }
 
   error(index, name) {
@@ -284,13 +285,13 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" class="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
+                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
               </div>
             </div>
           </div>
         </div>
         {this.state.timesheets.map((timesheet, index) => {
-          return <div className="box shadow">
+          return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
@@ -303,7 +304,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-2 ">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
-                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i class="fas fa-times-circle"></i> Hủy</p>}
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
               </div>
             </div>
             {timesheet.isEdit ? <div className="row">
@@ -503,7 +504,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>
-                  <textarea class="form-control" value={timesheet.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea className="form-control" value={timesheet.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>
