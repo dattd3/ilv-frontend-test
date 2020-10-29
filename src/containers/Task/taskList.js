@@ -195,7 +195,7 @@ class TaskList extends React.Component {
                         </thead>
                         <tbody>
                             {tasks.map((task, index) => {
-                                const approvalDate = task.approvalDate == "0001-01-01T00:00:00" ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                                const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
                                 let isShowEditButton = this.isShowEditButton(task.status);
                                 let isShowEvictionButton = this.isShowEvictionButton(task.status);
                                 let userId = "";
