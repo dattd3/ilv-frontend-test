@@ -259,8 +259,39 @@ class PersonalInfoEdit extends React.Component {
     }
 
     isValidPhoneNumber = (phone) => {
-      const filter = /[a-zA-Z]+/
-      return filter.test(phone) ? false : true
+      const filter = /[^a-zA-Z]+/
+      return phone.search(filter) ? false : true
+    }
+
+    getValidationEducationItem = (education) => {
+      let obj = {}
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
+        obj.degreeType = '(Loại bằng cấp là bắt buộc)'
+      }
+      if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
+        obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
+      }
+      if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
+        obj.toTime = '(Thời gian kết thúc là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
+        obj.school = '(Trường học là bắt buộc)'
+      }
+      if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
+        obj.major = '(Chuyên môn là bắt buộc)'
+      }
+      return obj
+    }
+
+    getValidationEducationObj = (education, type) => {
+      let obj = {}
+      if (type === "create") {
+        obj = this.getValidationEducationItem(education)
+      } else if (type === "update") {
+        const educationUpdate = education.NewEducation
+        obj = this.getValidationEducationItem(educationUpdate)
+      }
+      return obj
     }
 
     verifyInput = (data) => {
@@ -286,9 +317,6 @@ class PersonalInfoEdit extends React.Component {
           }
           if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
             errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
-          }
-          if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
-            errors.urgentContactNo = '(Điện thoại khẩn cấp không đúng định dạng)'
           }
           if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
             errors.birthProvince = '(Nơi sinh là bắt buộc)'
@@ -323,84 +351,28 @@ class PersonalInfoEdit extends React.Component {
           }
         }
         if (update.userProfileHistoryEducation) {
-          
           const educationUpdated = update.userProfileHistoryEducation
-          const objEducationUpdated = this.getValidationUpdateEducationItem(educationUpdated,  "_update_");
-          errors = {...errors, ...objEducationUpdated}
-        }
-      }
-      if (data && data.create && data.create.educations && data.create.educations.length > 0) {
-        const educationCreated = data.create.educations
-        const objEducationCreated = this.getValidationCreateEducationItem(educationCreated, "_create_");
-        errors = {...errors, ...objEducationCreated}
-      }
-      this.setState({ errors: errors })
-      return errors
-    }
-
-    mappingModel = model => {
-      return {
-        DegreeType: model.education_level_id,
-        DegreeTypeText: model.academic_level,
-        EducationId: model.education_id,
-        FromTime: model.from_time,
-        MajorCode: model.major_id,
-        MajorCodeText: model.major,
-        OtherMajor: model.other_major,
-        OtherSchool: model.other_uni_name,
-        SchoolCode: model.school_id,
-        SchoolName: model.university_name,
-        Seqnr: model.seqnr,
-        ToTime: model.to_time
-      }
-    }
-
-    getValidationUpdateEducationItem = (item, prefix) => {
-      const educationOriginal = this.state.userEducation
-      let obj = {}
-      for (let j = 0, lenEducationOriginal = educationOriginal.length; j < lenEducationOriginal; j++) {
-        let oldEducationOriginal = this.mappingModel(educationOriginal[j])
-        for (let i = 0, len = item.length; i < len; i++) {
-          let oldEducation = item[i].OldEducation
-          if (_.isEqual(oldEducationOriginal, oldEducation)) {
-            let education = item[i].NewEducation
-            let tempItem = this.getValidationEducationItem(education, prefix, j)
-            obj = {...obj, ...tempItem}
+          errors.update = []
+          for (let i = 0, len = educationUpdated.length; i < len; i++) {
+            const education = educationUpdated[i]
+            let obj = this.getValidationEducationObj(education, "update")
+            debugger
+            errors.update = errors.update.concat(obj)
           }
         }
       }
-      return obj
-    }
 
-    getValidationCreateEducationItem = (item, prefix) => {
-      let obj = {}
-      for (let i = 0, len = item.length; i < len; i++) {
-        let education = item[i]
-        let tempItem = this.getValidationEducationItem(education, prefix, i)
-        obj = {...obj, ...tempItem}
+      if (data && data.create && data.create.educations && data.create.educations.length > 0) {
+        const educationCreated = data.create.educations
+        errors.create = []
+        for (let i = 0, len = educationCreated.length; i < len; i++) {
+          const education = educationCreated[i]
+          let obj = this.getValidationEducationObj(education, "create")
+          errors.create = errors.create.concat(obj)
+        }
       }
-      return obj
-    }
-
-    getValidationEducationItem = (educationInput, prefix, index) => {
-      const education = educationInput
-      let obj = {}
-      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-        obj["education" + prefix + index + "_degreeType"] = '(Loại bằng cấp là bắt buộc)'
-      }
-      if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-        obj["education" + prefix + index + "_fromTime"] = '(Thời gian bắt đầu là bắt buộc)'
-      }
-      if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-        obj["education" + prefix + index + "_toTime"] = '(Thời gian kết thúc là bắt buộc)'
-      }
-      if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-        obj["education" + prefix + index + "_school"] = '(Trường học là bắt buộc)'
-      }
-      if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-        obj["education" + prefix + index + "_major"] = '(Chuyên môn là bắt buộc)'
-      }
-      return obj
+      this.setState({ errors: errors })
+      return errors
     }
 
     removeItemForValueNull = (dataInput) => {
@@ -432,6 +404,12 @@ class PersonalInfoEdit extends React.Component {
     }
 
     submitRequest = (comment) => {
+      let dataClone = this.removeItemForValueNull({...this.state.data})
+      const errors = this.verifyInput(dataClone)
+      if (!_.isEmpty(errors)) {
+        return
+      }
+
       const updateFields = this.getFieldUpdates();
       const dataPostToSAP = this.getDataPostToSap(this.state.data);
       let bodyFormData = new FormData();
@@ -892,7 +870,6 @@ class PersonalInfoEdit extends React.Component {
         const educationKeys = this.convertObjectKeyToArray(educations);
         return { UpdateField: [].concat(mainInfoKeys, educationKeys) };
       }
-      return { UpdateField: []};
     }
 
     convertObjectKeyToArray = (obj) => {
@@ -919,7 +896,10 @@ class PersonalInfoEdit extends React.Component {
         objClone.MajorCodeText = data.major_name || "";
       } else {
         objClone.EducationId = data.education_id || "";
+        objClone.PreBeginDate = data.old_from_time || data.from_time;
+        objClone.PreEndDate = data.old_to_time || data.to_time;
         objClone.Seqnr = data.seqnr || 0;
+        objClone.PreEducationLevelId = data.old_education_level_id || data.education_level_id;
         objClone.DegreeTypeText = data.academic_level || "";
         objClone.MajorCodeText = data.major || "";
       }
@@ -1082,11 +1062,6 @@ class PersonalInfoEdit extends React.Component {
     }
 
     sendRequest = () => {
-      let errors = this.verifyInput(this.state.data)
-      if (!_.isEmpty(errors)) {
-        return
-      }
-
       this.setState({
         modalTitle: "Xác nhận gửi yêu cầu",
         modalMessage: "Lý do sửa đổi",

@@ -101,9 +101,6 @@
                 [class$="-indicatorContainer"] {
                     padding: 4px;
                 }
-                & > [class$="-container"] {
-                    position: absolute;
-                }
             }
             .request-status {
                 display: inline-block;

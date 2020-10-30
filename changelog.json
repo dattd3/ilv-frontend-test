@@ -1,0 +1,9 @@
+{
+  "latestVersion": "1.4.5",
+  "latestVersionCode": 133,
+  "forceUpdate": 1,
+  "url": "https://play.google.com/store/apps/details?id=com.vinpearl.myvinpearl.app",
+  "releaseNotes": [
+    "- Sửa lỗi hiển thị ảnh trong thông báo nội bộ, Lỗi crash khi không có dữ liệu & bấm nút tìm kiếm trong tuyển dụng nội bộ "
+  ]
+}

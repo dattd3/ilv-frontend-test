@@ -8,6 +8,18 @@
 }
 
 .registration-section {
+
+    .shift-table {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 350px;
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #4e73df;
+        }
+    }
     
     h5 {
         color: #2a377c;
