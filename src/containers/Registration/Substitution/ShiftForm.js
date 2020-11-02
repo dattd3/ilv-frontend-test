@@ -24,6 +24,7 @@ class ShiftForm extends React.Component {
                                 <DatePicker
                                     selected={this.props.timesheet.startTime ? moment(this.props.timesheet.startTime, TIME_FORMAT).toDate() : null}
                                     onChange={this.updateTime.bind(this, 'startTime')}
+                                    autoComplete="off"
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -43,6 +44,7 @@ class ShiftForm extends React.Component {
                                 <DatePicker
                                     selected={this.props.timesheet.endTime ? moment(this.props.timesheet.endTime, TIME_FORMAT).toDate() : null}
                                     onChange={this.updateTime.bind(this, 'endTime')}
+                                    autoComplete="off"
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -62,6 +64,7 @@ class ShiftForm extends React.Component {
                                 <DatePicker
                                     selected={this.props.timesheet.startBreakTime ? moment(this.props.timesheet.startBreakTime, TIME_FORMAT).toDate() : null}
                                     onChange={this.updateTime.bind(this, 'startBreakTime')}
+                                    autoComplete="off"
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -81,6 +84,7 @@ class ShiftForm extends React.Component {
                                 <DatePicker
                                     selected={this.props.timesheet.endBreakTime ? moment(this.props.timesheet.endBreakTime, TIME_FORMAT).toDate() : null}
                                     onChange={this.updateTime.bind(this, 'endBreakTime')}
+                                    autoComplete="off"
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}

@@ -311,7 +311,7 @@ class SubstitutionComponent extends React.Component {
 
           <div className="row mt-3">
             <div className="col-12">
-              <button type="button" class="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
+              <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
             </div>
           </div>
         </div>
@@ -328,7 +328,7 @@ class SubstitutionComponent extends React.Component {
               <div className="col-2 ">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
-                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i class="fas fa-times-circle"></i> Hủy</p>}
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
               </div>
             </div>
 
