@@ -246,6 +246,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <DatePicker
                     name="startDate"
                     selectsStart
+                    autoComplete="off"
                     selected={this.state.startDate}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
@@ -267,6 +268,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <DatePicker
                     name="endDate"
                     selectsEnd
+                    autoComplete="off"
                     selected={this.state.endDate}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
@@ -352,6 +354,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.startTime1Fact ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -376,6 +379,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.endTime1Fact ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -403,6 +407,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.startTime2Fact ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime2Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -427,6 +432,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.endTime2Fact ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime2Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -454,6 +460,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.startTime3Fact ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime3Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
@@ -478,6 +485,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <DatePicker
                                 selected={timesheet.endTime3Fact ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime3Fact')}
+                                autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}

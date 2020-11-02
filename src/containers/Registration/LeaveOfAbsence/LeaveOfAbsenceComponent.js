@@ -408,6 +408,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="startDate"
                                                     selectsStart
+                                                    autoComplete="off"
                                                     selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -427,6 +428,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setStartTime.bind(this)}
+                                                    autoComplete="off"
                                                     showTimeSelect
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
@@ -519,7 +521,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-7">
                                 <p className="title">Lý do đăng ký nghỉ phép</p>
                                 <div>
-                                    <textarea className="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
+                                    <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
                                 {this.error('note')}
                             </div>

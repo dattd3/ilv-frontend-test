@@ -356,6 +356,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           name="startDate"
                           selectsStart
+                          autoComplete="off"
                           selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -375,6 +376,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setStartTime.bind(this)}
+                          autoComplete="off"
                           showTimeSelect
                           showTimeSelectOnly
                           timeIntervals={15}
@@ -403,6 +405,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           name="endDate"
                           selectsEnd
+                          autoComplete="off"
                           selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                           startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -423,6 +426,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setEndTime.bind(this)}
+                          autoComplete="off"
                           showTimeSelect
                           showTimeSelectOnly
                           timeIntervals={15}
