@@ -443,9 +443,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                         {this.error('startTime')}
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <div className="col-5">
@@ -492,9 +490,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         {this.error('endTime')}
                                     </div>
                                 </div>
-
                             </div>
-
+                            {/* Need update here - CuongNV56 */}
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
@@ -543,4 +540,5 @@ class LeaveOfAbsenceComponent extends React.Component {
         )
     }
 }
+
 export default LeaveOfAbsenceComponent
