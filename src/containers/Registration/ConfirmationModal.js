@@ -20,7 +20,7 @@ class ConfirmationModal extends React.Component {
 
     ok = (e) => {
         const url = window.location.pathname
-        const id = window.location.pathname.substring(url.lastIndexOf('/') + 1)
+        const id = this.props.id
         let formData = new FormData()
         formData.append('ManagerInfo', JSON.stringify({
             fullname: localStorage.getItem('fullName'),
@@ -64,7 +64,6 @@ class ConfirmationModal extends React.Component {
     }
 
     updateHistory() {
-        debugger
         let bodyFormData = new FormData();
         bodyFormData.append('UserProfileInfoToSap', JSON.stringify(this.props.dataToSap))
 
@@ -88,12 +87,9 @@ class ConfirmationModal extends React.Component {
         axios.post(url, formData, {
             headers: { Authorization: localStorage.getItem('accessToken') }
         })
-            .then(response => {
-                window.location.href = "/tasks"
-            })
-            .catch(error => {
-                window.location.href = "/tasks"
-            })
+        .finally(() => {
+            window.location.href = "/tasks?tab=approval";
+        })
     }
 
     handleChangeMessage = (e) => {
