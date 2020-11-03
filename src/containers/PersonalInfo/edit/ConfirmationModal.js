@@ -73,12 +73,9 @@ class ConfirmationModal extends React.Component {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                    .then(response => {
-                        window.location.href = "/tasks";
+                    .finally(() => {
+                        window.location.href = "/tasks?tab=approval";
                     })
-                    .catch(error => {
-                        window.location.href = "/tasks";
-                    });
                 } else if (this.props.type == this.approval) {
                     let formData = new FormData()
                     formData.append('ManagerInfo', JSON.stringify(this.state.manager))
@@ -90,7 +87,7 @@ class ConfirmationModal extends React.Component {
                         this.showResultModal(response);
                     })
                     .catch(error => {
-                        window.location.href = "/tasks";
+                        window.location.href = "/tasks?tab=approval";
                     });
 
                     setTimeout(() => { this.props.onHide() }, 600);
@@ -98,12 +95,9 @@ class ConfirmationModal extends React.Component {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                    .then(response => {
-                        window.location.href = "/tasks";
+                    .finally(() => {
+                        window.location.href = "/tasks?tab=approval";
                     })
-                    .catch(error => {
-                        window.location.href = "/tasks";
-                    });
 
                     setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == this.sendRequest) {

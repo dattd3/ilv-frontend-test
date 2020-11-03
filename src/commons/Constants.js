@@ -14,5 +14,11 @@ const Constants = {
   LEAVE_OF_ABSENCE: 2,
   BUSINESS_TRIP: 3,
   IN_OUT_TIME_UPDATE: 5,
+  mappingStatus: {
+    0: {label: 'Đang chờ xử lý', className: ''},
+    1: {label: 'Không phê duyệt', className: 'fail'},
+    2: {label: 'Đã phê duyệt', className: 'success'},
+    3: {label: 'Đã thu hồi', className: ''}
+  }
 };
 export default Constants

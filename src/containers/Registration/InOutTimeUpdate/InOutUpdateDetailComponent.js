@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -74,12 +75,10 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
         <h5>Thông tin đăng ký nghỉ phép</h5>
         {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow">
             <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
-
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
@@ -140,7 +139,6 @@ class InOutUpdateDetailComponent extends React.Component {
                 </div>
               </div>
             </div>
-
             <p>Lý do sửa giờ vào - ra</p>
             <div className="row">
               <div className="col">
@@ -149,10 +147,11 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+        </div>
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} />
-
         <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
@@ -162,4 +161,5 @@ class InOutUpdateDetailComponent extends React.Component {
     )
   }
 }
+
 export default InOutUpdateDetailComponent

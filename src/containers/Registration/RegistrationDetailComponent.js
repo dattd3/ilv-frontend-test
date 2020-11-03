@@ -14,22 +14,24 @@ class RegistrationDetailComponent extends React.Component {
     }
 
     componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': localStorage.getItem('accessToken')
-          }
+      const userProfileHistoryId = this.props.match.params.id
+      const notificationId = this.props.match.params.notificationId
+      let config = {
+        headers: {
+          'Authorization': localStorage.getItem('accessToken')
         }
-      
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.match.params.id}`, config)
-          .then(res => {
-            if (res && res.data) {
-              const response = res.data.data
-              this.setState({data: response })
-            }
-          }).catch(error => {
-            console.log(error)
-          });
+      }
+    
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${userProfileHistoryId}/${notificationId}`, config)
+      .then(res => {
+        if (res && res.data) {
+          const response = res.data.data
+          this.setState({data: response })
         }
+      }).catch(error => {
+        console.log(error)
+      });
+    }
 
     render() {
       return (
