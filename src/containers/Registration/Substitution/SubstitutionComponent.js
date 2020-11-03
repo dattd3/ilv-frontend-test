@@ -354,7 +354,9 @@ class SubstitutionComponent extends React.Component {
             </div> : null}
           </div>
         })}
-
+        {/* <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.businessTrip.status].className}`}>{Constants.mappingStatus[this.props.businessTrip.status].label}</span>
+        </div> */}
         <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} />
         <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
       </div >

@@ -3,6 +3,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -50,7 +51,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
         <h5>Thông tin đăng ký nghỉ phép</h5>
         <div className="box shadow cbnv">
           <div className="row">
@@ -71,14 +71,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.absenceType.label}</div>
             </div>
           </div>
-
           {this.props.leaveOfAbsence.userProfileInfo.absenceType.value === 'PN03' ? <div className="row">
             <div className="col">
               Thông tin hiếu hỉ
               <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.pn03.label}</div>
             </div>
           </div> : null}
-
           <div className="row">
             <div className="col">
               Lý do đăng ký nghỉ phép
@@ -86,10 +84,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+        </div>
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} />
-
         <ul className="list-inline">
           {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -97,7 +96,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </li>
           })}
         </ul>
-
         {this.props.leaveOfAbsence.status === 0 ? <DetailButtonComponent dataToSap={[{
           MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
           PERNR: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
@@ -114,4 +112,5 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     )
   }
 }
+
 export default LeaveOfAbsenceDetailComponent
