@@ -25,6 +25,7 @@ class ButtonComponent extends React.Component {
         const updateFiles = this.state.files.concat(files)
         this.setState({ files: updateFiles })
         this.props.updateFiles(updateFiles)
+        this.props.isUpdateFiles(true)
     }
 
     submit () {

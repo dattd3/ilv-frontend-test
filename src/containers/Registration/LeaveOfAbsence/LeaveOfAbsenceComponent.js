@@ -35,6 +35,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             annualLeaveSummary: null,
             pn03: null,
             files: [],
+            isUpdateFiles: false,
             errors: {},
             isEdit: false
         }
@@ -284,6 +285,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('UserProfileInfo', JSON.stringify(data))
         bodyFormData.append('UpdateField', {})
         bodyFormData.append('Region', localStorage.getItem('region'))
+        bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
         bodyFormData.append('UserProfileInfoToSap', {})
         bodyFormData.append('UserManagerId', this.state.approver.userAccount)
         this.state.files.forEach(file => {
@@ -325,6 +327,10 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     removeFile(index) {
         this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+    }
+
+    getIsUpdateStatus = (status) => {
+        this.setState({isUpdateFiles : status})
     }
 
     render() {
@@ -536,7 +542,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
             </div>
         )
     }
