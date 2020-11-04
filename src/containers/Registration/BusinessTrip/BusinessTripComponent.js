@@ -37,6 +37,7 @@ class BusinessTripComponent extends React.Component {
       note: null,
       approver: null,
       files: [],
+      isUpdateFiles: false,
       errors: {}
     }
   }
@@ -263,15 +264,16 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
     bodyFormData.append('UpdateField', JSON.stringify({}))
     bodyFormData.append('Region', localStorage.getItem('region'))
+    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : {})
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
 
     axios({
       method: 'POST',
-      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
@@ -305,6 +307,10 @@ calDuringTheDay(timesheets, startTime, endTime) {
 
   removeFile(index) {
     this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+  }
+
+  getIsUpdateStatus = (status) => {
+    this.setState({isUpdateFiles : status})
   }
 
   render() {
@@ -442,7 +448,6 @@ calDuringTheDay(timesheets, startTime, endTime) {
                     {this.error('endTime')}
                   </div>
                 </div>
-
               </div>
 
               <div className="col-2">
@@ -515,7 +520,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
             </li>
           })}
         </ul>
-        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
       </div>
     )
   }
