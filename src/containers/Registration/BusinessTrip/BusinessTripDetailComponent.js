@@ -78,7 +78,7 @@ class BusinessTripDetailComponent extends React.Component {
         <ul className="list-inline">
           {this.props.businessTrip.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
-              <a className="file-name" href={file.fileUrl} title="file đính kèm" target="_blank">{file.fileName}</a>
+              <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
             </li>
           })}
         </ul>

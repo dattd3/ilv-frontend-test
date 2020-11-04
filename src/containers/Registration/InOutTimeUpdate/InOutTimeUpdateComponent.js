@@ -338,7 +338,6 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                   </div> : null}
                 </div>
-
               </div>
 
               <div className="col-6">
@@ -502,10 +501,8 @@ class InOutTimeUpdateComponent extends React.Component {
                       </div>
                     </div>
                   </div> : null}
-
                 </div>
               </div>
-
             </div> : null}
 
             {timesheet.isEdit ? <div className="row">
@@ -517,15 +514,16 @@ class InOutTimeUpdateComponent extends React.Component {
                 {this.error(index, 'note')}
               </div>
             </div> : null}
-
           </div>
         })}
-
         {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
-              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+              <span className="file-name">
+                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
+              </span>
             </li>
           })}
         </ul>
@@ -534,4 +532,5 @@ class InOutTimeUpdateComponent extends React.Component {
     )
   }
 }
+
 export default InOutTimeUpdateComponent

@@ -62,8 +62,8 @@ class BusinessTripComponent extends React.Component {
             id: file.id,
             name: file.fileName,
             fileSize: file.fileSize,
-            fileType: file.other,
-            fileUrl: file.Url
+            fileType: file.fileType,
+            fileUrl: file.fileUrl
           }
         }),
       })
@@ -508,7 +508,10 @@ calDuringTheDay(timesheets, startTime, endTime) {
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
-              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+              <span className="file-name">
+                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
+              </span>
             </li>
           })}
         </ul>
