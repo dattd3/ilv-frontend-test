@@ -13,6 +13,7 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
+const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const SHIFT_CODE = 1
@@ -22,8 +23,8 @@ class SubstitutionComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: moment().startOf('month').toDate(),
-      endDate: new Date(),
+      startDate: null,
+      endDate: null,
       timesheets: [],
       shifts: [],
       substitutionType: null,
@@ -48,21 +49,52 @@ class SubstitutionComponent extends React.Component {
           const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
           this.setState({ shifts: shifts })
         }
-      }).catch(error => {
-        // localStorage.clear();
-        // window.location.href = map.Login;
+      }).catch(error => { })
+
+    if (this.props.substitution) {
+      this.setState({
+        isEdit: true,
+        id: this.props.substitution.id,
+        startDate: this.props.substitution.userProfileInfo.startDate,
+        endDate: this.props.substitution.userProfileInfo.endDate,
+        substitutionType: this.props.substitution.userProfileInfo.substitutionType,
+        timesheets: this.props.substitution.userProfileInfo.timesheets,
+        note: this.props.substitution.comment,
+        approver: this.props.substitution.userProfileInfo.approver,
+        files: this.props.substitution.userProfileInfoDocuments.map(file => {
+          return {
+            id: file.id,
+            name: file.fileName,
+            fileSize: file.fileSize,
+            fileType: file.other,
+            fileUrl: file.Url
+          }
+        }),
       })
+    }
   }
 
   verifyInput() {
     let errors = {}
-    const RequiredFields = ['note', 'startDate', 'startTime', 'endTime', 'substitutionType']
-    this.state.substitutions.forEach((substitution, index) => {
-      RequiredFields.forEach(name => {
-        if (_.isNull(substitution[name])) {
-          errors[name + index] = '(Bắt buộc)'
+    const shiftRequiredFields = ['startTime', 'endTime']
+    this.state.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+      if (timesheet.shiftType === SHIFT_CODE) {
+        if (_.isNull(timesheet['shiftId'])) {
+          errors['shiftId' + index] = '(Bắt buộc)'
         }
-      })
+      }
+
+      if (timesheet.shiftType === SHIFT_UPDATE) {
+        shiftRequiredFields.forEach(name => {
+          if (_.isNull(timesheet[name])) {
+            errors[name + index] = '(Bắt buộc)'
+          }
+        })
+      }
+
+      if (_.isNull(timesheet['note'])) {
+        errors['note' + index] = '(Bắt buộc)'
+      }
     })
 
     if (_.isNull(this.state.approver)) {
@@ -78,9 +110,10 @@ class SubstitutionComponent extends React.Component {
     if (!_.isEmpty(errors)) {
       return
     }
-
+    
     const data = {
       startDate: this.state.startDate,
+      endDate: this.state.endDate,
       startTime: this.state.startTime,
       timesheets: this.state.timesheets,
       substitutionType: this.state.substitutionType,
@@ -127,28 +160,30 @@ class SubstitutionComponent extends React.Component {
 
   setStartDate(startDate) {
     this.setState({
-      startDate: startDate,
-      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? startDate : this.state.endDate
+      startDate: moment(startDate).format(DATE_FORMAT),
+      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
     })
   }
 
   setEndDate(endDate) {
     this.setState({
-      endDate: endDate
+      endDate: moment(endDate).format(DATE_FORMAT)
     })
   }
 
   updateTime(index, name, value) {
-    this.state.timesheets[index][name] = value
+    let timesheets = this.state.timesheets
+    timesheets[index][name] = value
     this.setState({
-      timesheets: [...this.state.timesheets]
+      timesheets: [...timesheets]
     })
   }
 
   updateNote(index, e) {
-    this.state.timesheets[index].note = e.currentTarget.value
+    let timesheets = this.state.timesheets
+    timesheets[index].note = e.currentTarget.value
     this.setState({
-      timesheets: [...this.state.timesheets]
+      timesheets: [...timesheets]
     })
   }
 
@@ -161,29 +196,38 @@ class SubstitutionComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    this.state.timesheets[index].isEdit = !this.state.timesheets[index].isEdit
+    let timesheets = this.state.timesheets
+    timesheets[index].isEdit = !this.state.timesheets[index].isEdit
     this.setState({
-      timesheets: [...this.state.timesheets]
+      timesheets: [...timesheets]
     })
   }
 
   updateShiftType(shiftType, index) {
     if (shiftType !== this.state.timesheets[index].shiftType) {
-      this.state.timesheets[index].shiftType = shiftType
-      this.state.timesheets[index].startTime = null
-      this.state.timesheets[index].endTime = null
-      this.state.timesheets[index].startBreakTime = null
-      this.state.timesheets[index].endBreakTime = null
+      let timesheets = this.state.timesheets
+      timesheets[index].shiftType = shiftType
+      timesheets[index].startTime = null
+      timesheets[index].endTime = null
+      timesheets[index].startBreakTime = null
+      timesheets[index].endBreakTime = null
+      timesheets[index].shiftId = null
+      timesheets[index].shiftHours = null
       this.setState({
-        timesheets: [...this.state.timesheets]
+        timesheets: [...timesheets],
+        errors: {}
       })
     }
   }
 
-  updateShift(index, shiftId) {
-    this.state.timesheets[index].shiftId = shiftId
+  updateShift(index, shift) {
+    let timesheets = this.state.timesheets
+    timesheets[index].shiftId = shift.shift_id
+    timesheets[index].shiftHours = shift.hours
+    timesheets[index].startTime = moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
+    timesheets[index].endTime = moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
     this.setState({
-      timesheets: [...this.state.timesheets]
+      timesheets: [...timesheets]
     })
   }
 
@@ -210,8 +254,8 @@ class SubstitutionComponent extends React.Component {
       }
     }
 
-    const start = moment(this.state.startDate).format('YYYYMMDD').toString()
-    const end = moment(this.state.endDate).format('YYYYMMDD').toString()
+    const start = moment(this.state.startDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    const end = moment(this.state.endDate, DATE_FORMAT).format('YYYYMMDD').toString()
 
     axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
       perno: localStorage.getItem('employeeNo'),
@@ -236,6 +280,7 @@ class SubstitutionComponent extends React.Component {
                 endBreakTime: null,
                 shiftType: SHIFT_CODE,
                 shiftId: null,
+                shiftHours: null,
                 shiftIndex: shiftIndex
               } : undefined
             })
@@ -255,6 +300,11 @@ class SubstitutionComponent extends React.Component {
     return (
       <div className="shift-work">
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <div className="row">
+          <div className="col">
+            <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div>
+          </div>
+        </div>
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
@@ -264,9 +314,9 @@ class SubstitutionComponent extends React.Component {
                   <DatePicker
                     name="startDate"
                     selectsStart
-                    selected={this.state.startDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
+                    selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                     onChange={this.setStartDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
@@ -285,10 +335,10 @@ class SubstitutionComponent extends React.Component {
                   <DatePicker
                     name="endDate"
                     selectsEnd
-                    selected={this.state.endDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    minDate={this.state.startDate}
+                    selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                    minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     onChange={this.setEndDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
@@ -334,29 +384,45 @@ class SubstitutionComponent extends React.Component {
 
             {timesheet.isEdit ? <hr /> : null}
 
-            {timesheet.isEdit ? <div className="btn-group btn-group-toggle" data-toggle="buttons">
+            {timesheet.isEdit ? <div>
+              <p className="text-uppercase"><b>Lựa chọn hình thức thay đổi phân ca</b></p>
+              <div className="btn-group btn-group-toggle" data-toggle="buttons">
               <label onClick={this.updateShiftType.bind(this, SHIFT_CODE, index)} className={timesheet.shiftType === SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                 Chọn mã ca làm việc
                 </label>
               <label onClick={this.updateShiftType.bind(this, SHIFT_UPDATE, index)} className={timesheet.shiftType === SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                 Nhập giờ thay đổi phân ca
                 </label>
-            </div> : null}
+            </div></div> : null}
 
-            {timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ? <ShiftTable shifts={this.state.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} updateShift={this.updateShift.bind(this)} /> : null}
+            {timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ?
+              <>
+                <ShiftTable shifts={this.state.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} updateShift={this.updateShift.bind(this)} />
+                {this.error(index, 'shiftId')}
+              </>
+             : null}
             {timesheet.isEdit && timesheet.shiftType === SHIFT_UPDATE
-              ? <ShiftForm updateTime={this.updateTime.bind(this)} timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime }} />
+              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime }} />
               : null}
 
             {timesheet.isEdit ? <div>
               <p>Lý do đăng ký thay đổi phân ca</p>
               <textarea placeholder="Nhập lý do" value={timesheet.note} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
+              {this.error(index, 'note')}
             </div> : null}
           </div>
         })}
 
-        <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} />
-        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> : null}
+        <ul className="list-inline">
+          {this.state.files.map((file, index) => {
+            return <li className="list-inline-item" key={index}>
+              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+            </li>
+          })}
+        </ul>
+
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
       </div >
     )
   }

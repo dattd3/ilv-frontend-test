@@ -9,6 +9,7 @@ const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
+const FULL_DAY = 1
 
 class BusinessTripDetailComponent extends React.Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               Tổng thời gian CT/ĐT
-              <div className="detail">{this.props.businessTrip.userProfileInfo.totalTime ? this.props.businessTrip.userProfileInfo.totalTime + ' ngày' : null}</div>
+              <div className="detail">{this.props.businessTrip.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.businessTrip.userProfileInfo.totalTime + ' ngày' : this.props.businessTrip.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
             </div>
           </div>
 

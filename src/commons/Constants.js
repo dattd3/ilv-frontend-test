@@ -13,6 +13,7 @@ const Constants = {
   KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport',
   LEAVE_OF_ABSENCE: 2,
   BUSINESS_TRIP: 3,
+  SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
 };
 export default Constants

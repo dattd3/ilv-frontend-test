@@ -335,6 +335,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
           <div className="form">
             <div className="row">
               <div className="col-7">
+                <p className="text-uppercase"><b>Lựa chọn hình thức nghỉ</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                   <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                     Nghỉ cả ngày
@@ -444,7 +445,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" className="form-control" value={this.state.totalTime ? this.state.totalTime + ' Ngày' : null} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : null} readOnly />
                 </div>
               </div>
             </div>

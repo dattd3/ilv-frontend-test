@@ -513,7 +513,7 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -521,7 +521,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </li>
           })}
         </ul>
-        {this.state.timesheets.length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} /> : null}
       </div>
     )
   }

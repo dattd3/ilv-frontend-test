@@ -12,8 +12,12 @@ class ShiftForm extends React.Component {
         this.props.updateTime(this.props.timesheet.index, name, moment(value).format(TIME_FORMAT))
     }
 
+    error(index, name) {
+        return this.props.errors[name + index] ? <div className="text-danger">{this.props.errors[name + index]}</div> : null
+    }
+
     render() {
-        debugger
+
         return (
             <div className="shift-form mt-3">
                 <div className="row">
@@ -35,6 +39,7 @@ class ShiftForm extends React.Component {
                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                         </div>
+                        {this.error(this.props.timesheet.index, 'startTime')}
                     </div>
                     <div className="col">
                         <p>Kết thúc 1 - Thay đổi</p>
@@ -54,6 +59,7 @@ class ShiftForm extends React.Component {
                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                         </div>
+                        {this.error(this.props.timesheet.index, 'endTime')}
                     </div>
                     <div className="col">
                         <p>Thời gian bắt đầu nghỉ ca</p>
@@ -73,6 +79,7 @@ class ShiftForm extends React.Component {
                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                         </div>
+                        {this.error(this.props.timesheet.index, 'startBreakTime')}
                     </div>
                     <div className="col">
                         <p>Thời gian kết thúc nghỉ ca</p>
@@ -91,8 +98,13 @@ class ShiftForm extends React.Component {
                                 />
                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
+                            {this.error(this.props.timesheet.index, 'endBreakTime')}
                         </div>
                     </div>
+                </div>
+                <div className="row">
+                    <div className="col"></div>
+                    <div className="col text-danger"><p>*Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p></div>
                 </div>
             </div>
         )

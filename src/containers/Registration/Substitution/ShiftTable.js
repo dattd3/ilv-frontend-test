@@ -6,14 +6,14 @@ const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 class ShiftTable extends React.Component {
 
-    updateShift(e) {
-        this.props.updateShift(this.props.timesheet.index, e.currentTarget.value)
+    updateShift(shift) {
+        this.props.updateShift(this.props.timesheet.index, shift)
     }
 
     render() {
         return (
             <div className="shift-table mt-3">
-                <table className="table table-hover">
+                <table className="table table-hover table-borderless table-striped">
                     <thead className="bg-primary text-white text-center">
                         <tr>
                             <th scope="col">Lựa chọn mã ca</th>
@@ -28,7 +28,7 @@ class ShiftTable extends React.Component {
                             return <tr className="text-center">
                                 <th scope="row">
                                     <div className="d-flex justify-content-center">
-                                        <input className="form-check-input position-static" checked={shift.shift_id == this.props.timesheet.shiftId} onChange={this.updateShift.bind(this)} type="radio" name={'shift' + this.props.timesheet.index} value={shift.shift_id}/>
+                                        <input className="form-check-input position-static" checked={shift.shift_id == this.props.timesheet.shiftId} onChange={this.updateShift.bind(this, shift)} type="radio" name={'shift' + this.props.timesheet.index} value={shift.shift_id}/>
                                     </div>
                                 </th>
                                 <td>{shift.shift_id}</td>
