@@ -29,71 +29,73 @@ class BusinessTripDetailComponent extends React.Component {
   }
 
   render() {
+    const businessTrip = this.props.businessTrip
+
     return (
       <div className="business-trip">
         <h5>Thông tin CBNV đăng ký</h5>
-        <RequesterDetailComponent user={this.props.businessTrip.userProfileInfo.user} />
+        <RequesterDetailComponent user={businessTrip.userProfileInfo.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký nghỉ phép</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
               Từ ngày/giờ
-              <div className="detail">{this.props.businessTrip.userProfileInfo.startDate + (this.props.businessTrip.userProfileInfo.startTime ? ' ' + moment(this.props.businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
             </div>
             <div className="col-4">
               Đến ngày/giờ
-              <div className="detail">{this.props.businessTrip.userProfileInfo.endDate + (this.props.businessTrip.userProfileInfo.endTime ? ' ' + moment(this.props.businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
             </div>
             <div className="col-4">
               Tổng thời gian CT/ĐT
-              <div className="detail">{this.props.businessTrip.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.businessTrip.userProfileInfo.totalTime + ' ngày' : this.props.businessTrip.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
+              <div className="detail">{businessTrip && businessTrip.userProfileInfo.totalTime ? this.props.leaveOfAbsence && this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? businessTrip.userProfileInfo.totalTime + ' ngày' : businessTrip && businessTrip.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
             </div>
           </div>
           <div className="row">
             <div className="col-4">
               Loại chuyến Công tác/Đào tạo
-              <div className="detail">{this.props.businessTrip.userProfileInfo.attendanceQuotaType.label}</div>
+              <div className="detail">{businessTrip.userProfileInfo.attendanceQuotaType.label}</div>
             </div>
             <div className="col-4">
               Địa điểm
-              <div className="detail">{this.props.businessTrip.userProfileInfo.place.label}</div>
+              <div className="detail">{businessTrip.userProfileInfo.place.label}</div>
             </div>
             <div className="col-4">
               Phương tiện
-              <div className="detail">{this.props.businessTrip.userProfileInfo.vehicle.label}</div>
+              <div className="detail">{businessTrip.userProfileInfo.vehicle.label}</div>
             </div>
           </div>
           <div className="row">
             <div className="col">
               Lý do đăng ký nghỉ phép
-              <div className="detail">{this.props.businessTrip.comment}</div>
+              <div className="detail">{businessTrip.comment}</div>
             </div>
           </div>
         </div>
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.businessTrip.status].className}`}>{Constants.mappingStatus[this.props.businessTrip.status].label}</span>
+          <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
         </div>
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.businessTrip.userProfileInfo.approver} />
+        <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} />
         <ul className="list-inline">
-          {this.props.businessTrip.userProfileInfoDocuments.map((file, index) => {
+          {businessTrip.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
               <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
             </li>
           })}
         </ul>
-        {this.props.businessTrip.status === 0 ? <DetailButtonComponent 
+        {businessTrip.status === 0 ? <DetailButtonComponent 
         dataToSap={[{
-          MYVP_ID: 'ATT' + '0'.repeat(9 - this.props.businessTrip.id.toString().length) + this.props.businessTrip.id,
-          PERNR: this.props.businessTrip.userProfileInfo.user.employeeNo,
-          BEGDA: moment(this.props.businessTrip.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          ENDDA: moment(this.props.businessTrip.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          SUBTY: this.props.businessTrip.userProfileInfo.attendanceQuotaType.value,
-          BEGUZ: this.props.businessTrip.userProfileInfo.startTime ? moment(this.props.businessTrip.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: this.props.businessTrip.userProfileInfo.endTime ? moment(this.props.businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+          MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
+          PERNR: businessTrip.userProfileInfo.user.employeeNo,
+          BEGDA: moment(businessTrip.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          ENDDA: moment(businessTrip.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          SUBTY: businessTrip.userProfileInfo.attendanceQuotaType.value,
+          BEGUZ: businessTrip.userProfileInfo.startTime ? moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ENDUZ: businessTrip.userProfileInfo.endTime ? moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
         }]}
-        id={this.props.businessTrip.id}
+        id={businessTrip.id}
         urlName={'requestattendance'}
         /> : null}
       </div>
