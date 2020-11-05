@@ -117,8 +117,8 @@ class TaskList extends React.Component {
         return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
     }
 
-    getLinkRegistration(id, notificationId) {
-        return this.props.page === "approval" ? `/registration/${id}/${notificationId}/approval` : `/registration/${id}/${notificationId}/request`
+    getLinkRegistration(id) {
+        return this.props.page === "approval" ? `/registration/${id}/approval` : `/registration/${id}/request`
     }
 
     getTaskCode = code => {
@@ -208,7 +208,7 @@ class TaskList extends React.Component {
                                 }
                                 return (
                                     <tr key={index}>
-                                        <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id, task.notificationId)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                                        <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
                                         <td className="request-type">{task.requestType.name}</td>
                                         <td className="content">{task.name}</td>
                                         <td className="user-request">{userId}</td>

@@ -17,7 +17,6 @@ class ShiftForm extends React.Component {
     }
 
     render() {
-
         return (
             <div className="shift-form mt-3">
                 <div className="row">
@@ -108,10 +107,14 @@ class ShiftForm extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col"></div>
-                    <div className="col text-danger"><p>*Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p></div>
+                    <div className="col text-danger">
+                        <p>*Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p>
+                        {this.error(this.props.timesheet.index, 'breakTime')}
+                    </div>
                 </div>
             </div>
         )
     }
 }
+
 export default ShiftForm
