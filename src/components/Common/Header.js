@@ -60,8 +60,9 @@ function Header(props) {
                 {
                     data.notifications.map((item, i) => {
                         const timePost = getTimePost(item.createdDate);
+                        const notificationLink = item.isShowOnList ? `/notifications/${item.id}` : `/registration/${item.userProfileHistoryId}?notification=${item.id}`
                         return <div key={i} className="item">
-                            <a className="title" href={`/notifications/${item.id}`} title={item.title}>{item.title}</a>
+                            <a className="title" href={notificationLink} title={item.title}>{item.title}</a>
                             <p className="description">{item.description != null ? item.description : ""}</p>
                             <div className="time-file">
                                 <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>

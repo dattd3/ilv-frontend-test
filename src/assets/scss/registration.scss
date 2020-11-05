@@ -101,7 +101,10 @@
         border: 1px solid #ddd;
         background-color: #fff;
         border-radius: 5px;
-
+        color: #858796;
+        & > a {
+            color: #858796;
+        }
         .remove {
             margin-left: 10px;
             cursor: pointer;

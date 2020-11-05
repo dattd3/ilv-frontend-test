@@ -60,6 +60,18 @@ class NotificationDetailComponent extends React.Component {
     return `(${fileSize} KB)`;
   }
 
+  hasAttachmentFiles = notificationDocuments => {
+    if (notificationDocuments) {
+      for (let i = 0, len = notificationDocuments.length; i < len; i++) {
+        if (!notificationDocuments[i].isDeleted) {
+          return true
+        }
+      }
+      return false
+    }
+    return false
+  }
+
   render() {
     return (
       <>
@@ -70,18 +82,22 @@ class NotificationDetailComponent extends React.Component {
             <div className="detail-notifications-block">
               <div className="content" 
               dangerouslySetInnerHTML={{__html: this.state.notificationInfo.content != null ? this.state.notificationInfo.content : ""}} />
-              {Array.isArray(this.state.notificationInfo.notificationDocuments) &&  this.state.notificationInfo.notificationDocuments.length > 0 ? 
+              {
+              this.hasAttachmentFiles(this.state.notificationInfo.notificationDocuments) ?
+              <>
+              <hr />
               <div className="list-attachment-files">
                 {
-                this.state.notificationInfo.notificationDocuments.map((item, i) => {
-                  return <span key={i} className="file">
+                (this.state.notificationInfo.notificationDocuments || []).map((item, i) => {
+                  return !item.isDeleted ? <span key={i} className="file">
                     {this.getFileIcon(item.type)}
                     <a href={item.link} target="_blank" className="file-name">{item.name}</a>
                     <span className="size">{this.getFileSize(item.size)}</span>
-                  </span>
+                  </span> : null
                 })
                 }
               </div>
+              </>
               : null
               }
               </div>

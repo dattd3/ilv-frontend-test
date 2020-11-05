@@ -35,6 +35,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             annualLeaveSummary: null,
             pn03: null,
             files: [],
+            isUpdateFiles: false,
             errors: {},
             isEdit: false
         }
@@ -80,8 +81,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                         id: file.id,
                         name: file.fileName,
                         fileSize: file.fileSize,
-                        fileType: file.other,
-                        fileUrl: file.Url
+                        fileType: file.fileType,
+                        fileUrl: file.fileUrl
                     }
                 }),
             })
@@ -284,6 +285,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('UserProfileInfo', JSON.stringify(data))
         bodyFormData.append('UpdateField', {})
         bodyFormData.append('Region', localStorage.getItem('region'))
+        bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
         bodyFormData.append('UserProfileInfoToSap', {})
         bodyFormData.append('UserManagerId', this.state.approver.userAccount)
         this.state.files.forEach(file => {
@@ -325,6 +327,10 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     removeFile(index) {
         this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+    }
+
+    getIsUpdateStatus = (status) => {
+        this.setState({isUpdateFiles : status})
     }
 
     render() {
@@ -409,6 +415,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="startDate"
                                                     selectsStart
+                                                    autoComplete="off"
                                                     selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -428,6 +435,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setStartTime.bind(this)}
+                                                    autoComplete="off"
                                                     showTimeSelect
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
@@ -442,9 +450,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                         {this.error('startTime')}
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <div className="col-5">
@@ -491,9 +497,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         {this.error('endTime')}
                                     </div>
                                 </div>
-
                             </div>
-
+                            {/* Need update here - CuongNV56 */}
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
@@ -520,26 +525,28 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-7">
                                 <p className="title">Lý do đăng ký nghỉ phép</p>
                                 <div>
-                                    <textarea className="form-control" value={this.state.note} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
+                                    <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
                                 {this.error('note')}
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.leaveOfAbsence ? this.props.leaveOfAbsence.userProfileInfo.approver : null} />
                 <ul className="list-inline">
                     {this.state.files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>
-                            <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+                            <span className="file-name">
+                                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
+                            </span>
                         </li>
                     })}
                 </ul>
-                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+                <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
             </div>
         )
     }
 }
+
 export default LeaveOfAbsenceComponent

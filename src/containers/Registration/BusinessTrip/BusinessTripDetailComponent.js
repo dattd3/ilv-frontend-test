@@ -4,6 +4,7 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -33,8 +34,6 @@ class BusinessTripDetailComponent extends React.Component {
         <h5>Thông tin CBNV đăng ký</h5>
         <RequesterDetailComponent user={this.props.businessTrip.userProfileInfo.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
-
         <h5>Thông tin đăng ký nghỉ phép</h5>
         <div className="box shadow cbnv">
           <div className="row">
@@ -51,7 +50,6 @@ class BusinessTripDetailComponent extends React.Component {
               <div className="detail">{this.props.businessTrip.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.businessTrip.userProfileInfo.totalTime + ' ngày' : this.props.businessTrip.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
             </div>
           </div>
-
           <div className="row">
             <div className="col-4">
               Loại chuyến Công tác/Đào tạo
@@ -66,7 +64,6 @@ class BusinessTripDetailComponent extends React.Component {
               <div className="detail">{this.props.businessTrip.userProfileInfo.vehicle.label}</div>
             </div>
           </div>
-
           <div className="row">
             <div className="col">
               Lý do đăng ký nghỉ phép
@@ -74,18 +71,18 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.businessTrip.status].className}`}>{Constants.mappingStatus[this.props.businessTrip.status].label}</span>
+        </div>
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.businessTrip.userProfileInfo.approver} />
-
         <ul className="list-inline">
           {this.props.businessTrip.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
-              <a className="file-name" href={file.fileUrl} title="file đính kèm" target="_blank">{file.fileName}</a>
+              <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
             </li>
           })}
         </ul>
-
         {this.props.businessTrip.status === 0 ? <DetailButtonComponent 
         dataToSap={[{
           MYVP_ID: 'ATT' + '0'.repeat(9 - this.props.businessTrip.id.toString().length) + this.props.businessTrip.id,
@@ -103,4 +100,5 @@ class BusinessTripDetailComponent extends React.Component {
     )
   }
 }
+
 export default BusinessTripDetailComponent

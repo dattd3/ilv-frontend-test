@@ -37,6 +37,7 @@ class BusinessTripComponent extends React.Component {
       note: null,
       approver: null,
       files: [],
+      isUpdateFiles: false,
       errors: {}
     }
   }
@@ -62,8 +63,8 @@ class BusinessTripComponent extends React.Component {
             id: file.id,
             name: file.fileName,
             fileSize: file.fileSize,
-            fileType: file.other,
-            fileUrl: file.Url
+            fileType: file.fileType,
+            fileUrl: file.fileUrl
           }
         }),
       })
@@ -263,15 +264,16 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
     bodyFormData.append('UpdateField', JSON.stringify({}))
     bodyFormData.append('Region', localStorage.getItem('region'))
+    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : {})
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
 
     axios({
       method: 'POST',
-      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
@@ -305,6 +307,10 @@ calDuringTheDay(timesheets, startTime, endTime) {
 
   removeFile(index) {
     this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+  }
+
+  getIsUpdateStatus = (status) => {
+    this.setState({isUpdateFiles : status})
   }
 
   render() {
@@ -357,6 +363,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           name="startDate"
                           selectsStart
+                          autoComplete="off"
                           selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -376,6 +383,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setStartTime.bind(this)}
+                          autoComplete="off"
                           showTimeSelect
                           showTimeSelectOnly
                           timeIntervals={15}
@@ -404,6 +412,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           name="endDate"
                           selectsEnd
+                          autoComplete="off"
                           selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                           startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                           endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -424,6 +433,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                         <DatePicker
                           selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                           onChange={this.setEndTime.bind(this)}
+                          autoComplete="off"
                           showTimeSelect
                           showTimeSelectOnly
                           timeIntervals={15}
@@ -439,7 +449,6 @@ calDuringTheDay(timesheets, startTime, endTime) {
                     {this.error('endTime')}
                   </div>
                 </div>
-
               </div>
 
               <div className="col-2">
@@ -505,11 +514,14 @@ calDuringTheDay(timesheets, startTime, endTime) {
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
-              <span className="file-name">{file.name} <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i></span>
+              <span className="file-name">
+                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
+              </span>
             </li>
           })}
         </ul>
-        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
       </div>
     )
   }
