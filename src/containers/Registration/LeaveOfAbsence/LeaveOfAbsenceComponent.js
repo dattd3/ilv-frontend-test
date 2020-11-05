@@ -54,13 +54,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             perno: localStorage.getItem('employeeNo'),
             date: moment().format('YYYYMMDD')
         }, config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                    const annualLeaveSummary = res.data.data
-                    this.setState({ annualLeaveSummary: annualLeaveSummary })
-                }
-            }).catch(error => {
-            })
+        .then(res => {
+            if (res && res.data) {
+                const annualLeaveSummary = res.data
+                this.setState({ annualLeaveSummary: annualLeaveSummary })
+            }
+        }).catch(error => {
+        })
 
         if (this.props.leaveOfAbsence) {
             this.setState({
@@ -182,7 +182,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             const shiftIndex = ['1', '2']
 
             shiftIndex.forEach(index => {
-                
                 if (timesheet['from_time' + index] && endTimeSAP > timesheet['from_time'+ index] && startTimeSAP < timesheet['to_time'+ index]) {
                     
                     // correct time if startTime < from_time and endTime > to_time
@@ -347,12 +346,12 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
             { value: 'UN01', label: 'Nghỉ không lương' },
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
-
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
             { value: '2', label: 'Con kết hôn' },
             { value: '3', label: 'Bố đẻ, mẹ đẻ, bố vợ, mẹ vợ hoặc bố chồng, mẹ chồng chết; vợ chết hoặc chồng chết; con chết' },
         ]
+        const annualLeaveSummary = this.state.annualLeaveSummary
 
         return (
             <div className="leave-of-absence">
@@ -361,31 +360,31 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tồn</div>
-                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_LEA_REMAIN : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_LEA_REMAIN) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép năm</div>
-                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_LEA : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_LEA) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tạm ứng</div>
-                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_ADV_LEA : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_ADV_LEA) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ bù tồn</div>
-                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.HOUR_TIME_OFF_REMAIN : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.HOUR_TIME_OFF_REMAIN) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ nghỉ bù</div>
-                            <div className="result text-danger">{this.state.annualLeaveSummary ? this.state.annualLeaveSummary.HOUR_COMP : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.HOUR_COMP) : 0}</div>
                         </div>
                     </div>
                 </div>

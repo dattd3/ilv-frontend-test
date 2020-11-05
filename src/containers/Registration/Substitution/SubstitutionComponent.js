@@ -96,6 +96,10 @@ class SubstitutionComponent extends React.Component {
       if (_.isNull(timesheet['note'])) {
         errors['note' + index] = '(Bắt buộc)'
       }
+
+      if ((_.isNull(timesheet['startBreakTime']) && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime']))) {
+        errors['breakTime' + index] = '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)'
+      }
     })
 
     if (_.isNull(this.state.approver)) {

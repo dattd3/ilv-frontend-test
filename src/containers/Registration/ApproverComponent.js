@@ -47,6 +47,20 @@ class ApproverComponent extends React.Component {
     this.props.updateApprover(value)
   }
 
+  isApprover = (level, company, department) => {
+    const levelApprover = ["P1", "P2", "T1", "T2", "T3", "T4"]
+    const userCompany = localStorage.getItem('company')
+    const userDepartment = localStorage.getItem('department')
+    if (levelApprover.includes(level) && userCompany === company && userDepartment === department) {
+      return true
+    }
+    return false
+  }
+
+  getDepartment = (item) => {
+    return item.division + " / " + item.department + " / " + item.unit
+  }
+
   getApproverInfo = (value) => {
     if (value !== "") {
       const config = {
@@ -60,7 +74,9 @@ class ApproverComponent extends React.Component {
       axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          const users = res.data.data.map(res => {
+          const data = res.data.data
+          const users = data.filter(item => this.isApprover(item.employee_level, item.pnl, this.getDepartment(item)) === true)
+          .map(res => {
             return {
               label: res.fullname,
               value: res.user_account,
