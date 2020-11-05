@@ -29,6 +29,7 @@ class SubstitutionComponent extends React.Component {
       substitutionType: null,
       approver: null,
       files: [],
+      isUpdateFiles: false,
       errors: {}
     }
   }
@@ -57,7 +58,7 @@ class SubstitutionComponent extends React.Component {
   verifyInput() {
     let errors = {}
     const RequiredFields = ['note', 'startDate', 'startTime', 'endTime', 'substitutionType']
-    this.state.substitutions.forEach((substitution, index) => {
+    this.state.substitutions && this.state.substitutions.forEach((substitution, index) => {
       RequiredFields.forEach(name => {
         if (_.isNull(substitution[name])) {
           errors[name + index] = '(Bắt buộc)'
@@ -94,12 +95,13 @@ class SubstitutionComponent extends React.Component {
     }
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', 'Đăng ký nghỉ phép')
+    bodyFormData.append('Name', 'Thay đổi phân ca')
     bodyFormData.append('RequestTypeId', '4')
     bodyFormData.append('Comment', '')
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
     bodyFormData.append('UpdateField', {})
     bodyFormData.append('Region', localStorage.getItem('region'))
+    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
     bodyFormData.append('UserManagerId', this.state.approver.userAccount)
     this.state.files.forEach(file => {
@@ -199,6 +201,14 @@ class SubstitutionComponent extends React.Component {
     this.setState({
       substitutionType: substitutionType
     })
+  }
+
+  removeFile(index) {
+    this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+  }
+
+  getIsUpdateStatus = (status) => {
+    this.setState({isUpdateFiles : status})
   }
 
   search() {
@@ -317,7 +327,7 @@ class SubstitutionComponent extends React.Component {
         </div>
 
         {this.state.timesheets.map((timesheet, index) => {
-          return <div className="box shadow">
+          return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
@@ -358,7 +368,19 @@ class SubstitutionComponent extends React.Component {
           <span className={`status ${Constants.mappingStatus[this.props.businessTrip.status].className}`}>{Constants.mappingStatus[this.props.businessTrip.status].label}</span>
         </div> */}
         <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} />
-        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} />
+
+        <ul className="list-inline">
+          {this.state.files.map((file, index) => {
+            return <li className="list-inline-item" key={index}>
+              <span className="file-name">
+                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
+              </span>
+            </li>
+          })}
+        </ul>
+
+        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
       </div >
     )
   }
