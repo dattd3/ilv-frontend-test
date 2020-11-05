@@ -17,14 +17,13 @@ class RegistrationDetailComponent extends React.Component {
     componentDidMount() {
       debugger
       const userProfileHistoryId = this.props.match.params.id
-      const notificationId = this.props.match.params.notificationId
       let config = {
         headers: {
           'Authorization': localStorage.getItem('accessToken')
         }
       }
     
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${userProfileHistoryId}/${notificationId}`, config)
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${userProfileHistoryId}`, config)
       .then(res => {
         if (res && res.data) {
           const response = res.data.data
