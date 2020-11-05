@@ -24,8 +24,8 @@ class ShiftTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.shifts.filter(s => s.shift_id !== 'OFF').map(shift => {
-                            return <tr className="text-center">
+                        {this.props.shifts.filter(s => s.shift_id !== 'OFF').map((shift, index) => {
+                            return <tr className="text-center" key={index}>
                                 <th scope="row">
                                     <div className="d-flex justify-content-center">
                                         <input className="form-check-input position-static" checked={shift.shift_id == this.props.timesheet.shiftId} onChange={this.updateShift.bind(this, shift)} type="radio" name={'shift' + this.props.timesheet.index} value={shift.shift_id}/>
