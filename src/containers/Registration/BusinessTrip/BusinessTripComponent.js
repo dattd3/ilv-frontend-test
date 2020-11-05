@@ -302,7 +302,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     if (leaveType == this.state.leaveType) {
       return
     }
-    this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null })
+    this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
   }
 
   removeFile(index) {
@@ -454,7 +454,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" className="form-control" value={this.state.totalTime ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : null} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : null} readOnly />
                 </div>
               </div>
             </div>

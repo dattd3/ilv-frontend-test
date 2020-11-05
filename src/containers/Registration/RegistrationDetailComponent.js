@@ -15,6 +15,7 @@ class RegistrationDetailComponent extends React.Component {
     }
 
     componentDidMount() {
+      debugger
       const userProfileHistoryId = this.props.match.params.id
       const notificationId = this.props.match.params.notificationId
       let config = {
