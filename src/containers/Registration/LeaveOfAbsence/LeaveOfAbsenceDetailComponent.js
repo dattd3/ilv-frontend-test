@@ -86,11 +86,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        <div className="block-status">
+        {/* <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
-        </div>
+        </div> */}
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} />
+        <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
         <ul className="list-inline">
           {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
