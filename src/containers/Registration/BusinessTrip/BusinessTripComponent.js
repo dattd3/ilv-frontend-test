@@ -175,6 +175,9 @@ calDuringTheDay(timesheets, startTime, endTime) {
                 startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ index] && startTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_to_time'+ 1] : startTimeSAP
                 endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
 
+                // endtime < startime ex: starTime = 23:00:00 endTime = 06:00:00 
+                endTimeSAP = endTimeSAP < startTimeSAP ? moment(endTimeSAP, TIME_OF_SAP_FORMAT).add(1, 'days').format(TIME_OF_SAP_FORMAT) : endTimeSAP
+                
                 const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
                 hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
 

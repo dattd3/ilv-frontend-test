@@ -3,6 +3,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -144,6 +145,10 @@ class SubstitutionDetailComponent extends React.Component {
             </div>
           </div>
         })}
+
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{Constants.mappingStatus[this.props.substitution.status].label}</span>
+        </div>
 
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} />
