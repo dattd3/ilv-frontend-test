@@ -15,6 +15,7 @@ class RegistrationDetailComponent extends React.Component {
     }
 
     componentDidMount() {
+      debugger
       const userProfileHistoryId = this.props.match.params.id
       let config = {
         headers: {

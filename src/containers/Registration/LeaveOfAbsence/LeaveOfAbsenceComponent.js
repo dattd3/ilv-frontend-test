@@ -319,6 +319,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(leaveType) {
+        debugger
         if (leaveType !== this.state.leaveType) {
             this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
         }
@@ -501,7 +502,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.totalTime ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : null} readOnly />
+                                    <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
                                 </div>
                             </div>
                         </div>
