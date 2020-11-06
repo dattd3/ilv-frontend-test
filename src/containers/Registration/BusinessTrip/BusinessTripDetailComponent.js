@@ -36,7 +36,7 @@ class BusinessTripDetailComponent extends React.Component {
         <h5>Thông tin CBNV đăng ký</h5>
         <RequesterDetailComponent user={businessTrip.userProfileInfo.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký nghỉ phép</h5>
+        <h5>Thông tin đăng ký Công tác/Đào tạo</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
@@ -68,16 +68,16 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              Lý do đăng ký nghỉ phép
+              Lý do đăng ký Công tác/Đào tạo
               <div className="detail">{businessTrip.comment}</div>
             </div>
           </div>
         </div>
-        <div className="block-status">
+        {/* <div className="block-status">
           <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
-        </div>
+        </div> */}
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} />
+        <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
         <ul className="list-inline">
           {businessTrip.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>

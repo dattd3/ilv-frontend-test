@@ -77,10 +77,9 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
         {this.props.substitution.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
-          return <div className="box shadow cbnv">
+          return <div className="box shadow cbnv" key={index}>
             <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
               <div className="col-6">
@@ -151,7 +150,7 @@ class SubstitutionDetailComponent extends React.Component {
         </div>
 
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} />
+        <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
 
         <ul className="list-inline">
           {this.props.substitution.userProfileInfoDocuments.map((file, index) => {

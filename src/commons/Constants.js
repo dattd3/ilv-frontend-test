@@ -15,6 +15,10 @@ const Constants = {
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
+  STATUS_PENDING: 0,
+  STATUS_NOT_APPROVED: 1,
+  STATUS_APPROVED: 2,
+  STATUS_EVICTION: 3,
   mappingStatus: {
     0: {label: 'Đang chờ xử lý', className: ''},
     1: {label: 'Không phê duyệt', className: 'fail'},

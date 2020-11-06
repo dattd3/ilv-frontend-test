@@ -75,7 +75,7 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        <h5>Thông tin đăng ký nghỉ phép</h5>
+        <h5>Thông tin sửa giờ vào - ra</h5>
         {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow">
             <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
@@ -147,11 +147,11 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <div className="block-status">
+        {/* <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
-        </div>
+        </div> */}
         <h5>Thông tin CBLĐ phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} />
+        <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
         <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
