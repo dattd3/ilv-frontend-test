@@ -115,15 +115,15 @@ class MyComponent extends React.Component {
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
           <div className="clearfix edit-button">
-            <a href="/personal-info/edit" className="btn btn-primary float-right"><i className="fas fa-user-edit"></i> Sửa thông tin</a>
-            <a href="/tasks" className="btn btn-info float-right"><i className="far fa-address-card"></i> Xem lịch sử</a>
+            <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a>
+            <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> Xem lịch sử</a>
           </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
             <Row >
               <Col xs={12} md={12} lg={6}>
                 <h4>{t("PersonalInformation")}</h4>
-                <div className="info-tab-content">
+                <div className="info-tab-content shadow">
                   <table>
                     <tbody>
                       <tr>
@@ -237,7 +237,7 @@ class MyComponent extends React.Component {
               </Col>
               <Col xs={12} md={12} lg={6}>
                 <h4>{t("WorkingInformation")}</h4>
-                <div className="info-tab-content">
+                <div className="info-tab-content shadow">
                   <table>
                     <tbody>
                       <tr>
@@ -303,7 +303,7 @@ class MyComponent extends React.Component {
                   (this.state.userHealth !== undefined && this.state.userHealth !== null) ?
                     <>
                       <h4>{t("HealthCheckInfo")}</h4>
-                      <div className="info-tab-content">
+                      <div className="info-tab-content shadow">
                         <table>
                           <tbody>
                             <tr>
@@ -318,7 +318,7 @@ class MyComponent extends React.Component {
                         </table>
                       </div>
                       <h4>{t("OccupationalDisease")}</h4>
-                      <div className="info-tab-content">
+                      <div className="info-tab-content shadow">
                         <table>
                           <tbody>
                             <tr>
@@ -337,7 +337,7 @@ class MyComponent extends React.Component {
                         </table>
                       </div>
                       <h4>{t("AccidentsAtWork")}</h4>
-                      <div className="info-tab-content">
+                      <div className="info-tab-content shadow">
                         <table>
                           <tbody>
                             <tr>
@@ -366,7 +366,7 @@ class MyComponent extends React.Component {
             </Row>
           </Tab>
           <Tab eventKey="Diploma" title={t("Diploma") + `/` + t("Certificate")}>
-            <Container fluid className="info-tab-content">
+            <Container fluid className="info-tab-content shadow">
               {
                 (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
                   <><h4>{t("Diploma")}</h4>
@@ -427,7 +427,7 @@ class MyComponent extends React.Component {
             </Container>
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("PersonalRelations")}>
-            <Container fluid className="info-tab-content">
+            <Container fluid className="info-tab-content shadow">
               {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
                 this.state.userFamily.map((item, i) => {
                   return <div key={i}>

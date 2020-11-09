@@ -53,7 +53,7 @@ class MyComponent extends React.Component {
                 <h1 className="h3 text-uppercase text-gray-800">{t("WorkingProcess")}</h1>
                 <Tabs defaultActiveKey="LaborContract" id="uncontrolled-tab-example">
                     <Tab eventKey="LaborContract" title={t("LaborContract")}>
-                        <Container fluid className="info-tab-content">
+                        <Container fluid className="info-tab-content shadow">
                             {(this.state.userContract !== undefined && this.state.userContract.length > 0) ?
                                 this.state.userContract.map((item, i) => {
                                     return <div key={i}>

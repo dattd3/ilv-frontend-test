@@ -45,7 +45,7 @@ function SuccessClass(props) {
 
     return (
         <>
-            <div className="card mb-4">
+            <div className="card mb-4 shadow">
                 <div className="card-header py-3">
                     <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("SuccessfulClass")}</h6>
                 </div>
