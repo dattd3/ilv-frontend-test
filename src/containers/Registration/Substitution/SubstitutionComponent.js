@@ -106,6 +106,10 @@ class SubstitutionComponent extends React.Component {
       errors['approver'] = '(Bắt buộc)'
     }
 
+    if (_.isNull(this.state.substitutionType)) {
+      errors['substitutionType'] = '(Bắt buộc)'
+    }
+
     this.setState({ errors: errors })
     return errors
   }
@@ -162,6 +166,10 @@ class SubstitutionComponent extends React.Component {
 
   error(index, name) {
     return this.state.errors[name + index] ? <div className="text-danger">{this.state.errors[name + index]}</div> : null
+  }
+
+  errorWithoutItem(name) {
+    return this.state.errors[name] ? <div className="text-danger">{this.state.errors[name]}</div> : null
   }
 
   setStartDate(startDate) {
@@ -339,7 +347,7 @@ class SubstitutionComponent extends React.Component {
                   <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                 </label>
               </div>
-              {this.error('startDate')}
+              {this.errorWithoutItem('startDate')}
             </div>
 
             <div className="col-4">
@@ -361,7 +369,7 @@ class SubstitutionComponent extends React.Component {
                   <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
                 </label>
               </div>
-              {this.error('endDate')}
+              {this.errorWithoutItem('endDate')}
             </div>
 
             <div className="col-4">
@@ -369,7 +377,7 @@ class SubstitutionComponent extends React.Component {
               <div>
                 <Select name="substitutionType" value={this.state.substitutionType} onChange={substitutionType => this.handleSelectChange(substitutionType)} placeholder="Lựa chọn" key="timeTotal" options={substitutionTypes} />
               </div>
-              {this.error('substitutionType')}
+              {this.errorWithoutItem('substitutionType')}
             </div>
           </div>
 
