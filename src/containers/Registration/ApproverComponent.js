@@ -47,11 +47,20 @@ class ApproverComponent extends React.Component {
     this.props.updateApprover(value)
   }
 
-  isApprover = (level, company, department) => {
-    const levelApprover = ["P1", "P2", "T1", "T2", "T3", "T4"]
+  isApprover = (levelApproverFilter, company, department, currentUserLevel) => {
+    const levelApprover = ["P2", "P1", "T4", "T3", "T2", "T1"]
     const userCompany = localStorage.getItem('company')
     const userDepartment = localStorage.getItem('department')
-    if (levelApprover.includes(level) && userCompany === company && userDepartment === department) {
+    let indexCurrentUserLevel = _.findIndex(levelApprover, function(item) { return item == currentUserLevel });
+    let indexApproverFilterLevel = _.findIndex(levelApprover, function(item) { return item == levelApproverFilter });
+
+    if (indexApproverFilterLevel == -1) {
+      return false
+    }
+    if (indexCurrentUserLevel >= indexApproverFilterLevel) {
+      return false
+    }
+    if (levelApprover.includes(levelApproverFilter) && userCompany === company && userDepartment === department) {
       return true
     }
     return false
@@ -70,12 +79,13 @@ class ApproverComponent extends React.Component {
           'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
+      const currentUserLevel = localStorage.getItem('employeeLevel')
   
       axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
-          const users = data.filter(item => this.isApprover(item.employee_level, item.pnl, this.getDepartment(item)) === true)
+          const users = data.filter(item => this.isApprover(item.employee_level, item.pnl, this.getDepartment(item), currentUserLevel) === true)
           .map(res => {
             return {
               label: res.fullname,
