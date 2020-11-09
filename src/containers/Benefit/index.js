@@ -23,7 +23,7 @@ function Benefit() {
     var items = result.data;
       return (     
         <div>
-          <span className="level-job-title">
+          <span className="level-job-title shadow">
               <img src={IconLevelUrl} alt="Icon Level" className="icon-level"/>
               <span style={{'color':'red'}}> Cấp Phúc Lợi: <b>{benefitTitle}</b> &nbsp; </span>
           </span>
