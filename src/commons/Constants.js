@@ -24,6 +24,20 @@ const Constants = {
     1: {label: 'Không phê duyệt', className: 'fail'},
     2: {label: 'Đã phê duyệt', className: 'success'},
     3: {label: 'Đã thu hồi', className: ''}
-  }
+  },
+  DATE_OF_SAP_FORMAT: 'YYYYMMDD',
+  TIME_OF_SAP_FORMAT: 'HHmm00',
+  IN_OUT_TIME_FORMAT: 'HH:mm:ss',
+  IN_OUT_DATE_FORMAT: 'DD-MM-YYYY',
+  SUBSTITUTION_TIME_OF_SAP_FORMAT: 'HHmm00',
+  SUBSTITUTION_TIME_FORMAT: 'HH:mm:00',
+  SUBSTITUTION_DATE_FORMAT: 'DD-MM-YYYY',
+  SUBSTITUTION_SHIFT_CODE: 1,
+  SUBSTITUTION_SHIFT_UPDATE: 2,
+  LEAVE_TIME_FORMAT: 'HH:mm',
+  LEAVE_DATE_FORMAT: 'DD/MM/YYYY',
+  LEAVE_FULL_DAY: 1,
+  BUSINESS_TRIP_TIME_FORMAT: 'HH:mm',
+  BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY'
 };
 export default Constants

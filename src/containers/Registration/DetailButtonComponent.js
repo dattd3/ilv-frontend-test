@@ -10,7 +10,6 @@ class DetailButtonComponent extends React.Component {
             modalMessage: "",
             typeRequest: 1
         }
-
     }
 
     approval() {
@@ -37,6 +36,7 @@ class DetailButtonComponent extends React.Component {
 
     render() {
         const action = this.getAction();
+
         return <div className="bottom">
             <ConfirmationModal
                 urlName={this.props.urlName}
