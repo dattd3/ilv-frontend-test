@@ -17,9 +17,6 @@ class ConfirmationModal extends React.Component {
             errors: {}
         }
 
-        this.disapproval = 1;
-        this.approval = 2;
-        this.eviction = 3;
         this.sendRequest = 4;
     }
 
@@ -60,7 +57,7 @@ class ConfirmationModal extends React.Component {
             }
         } else {
             if (type === "yes") {
-                if (this.props.type == this.disapproval) {
+                if (this.props.type == Constants.STATUS_NOT_APPROVED) {
                     const errors = this.verifyInput()
                     const message = this.state.message
                     const manager = JSON.stringify(this.state.manager)
@@ -70,17 +67,17 @@ class ConfirmationModal extends React.Component {
                     let formData = new FormData()
                     formData.append('HRComment', message)
                     formData.append('ManagerInfo', manager)
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/disapproval`, formData, {
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .finally(() => {
                         window.location.href = "/tasks?tab=approval";
                     })
-                } else if (this.props.type == this.approval) {
+                } else if (this.props.type == Constants.STATUS_APPROVED) {
                     let formData = new FormData()
                     formData.append('ManagerInfo', JSON.stringify(this.state.manager))
                     
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/approval`, formData, {
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/approval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
@@ -91,8 +88,8 @@ class ConfirmationModal extends React.Component {
                     });
 
                     setTimeout(() => { this.props.onHide() }, 600);
-                } else if (this.props.type == this.eviction) {
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.userProfileHistoryId}/eviction`, {}, {
+                } else if (this.props.type == Constants.STATUS_EVICTION) {
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .finally(() => {
@@ -141,7 +138,7 @@ class ConfirmationModal extends React.Component {
                 <Modal.Body>
                     <p>{this.props.message}</p>
                     {
-                        this.props.type == this.disapproval || this.props.type == this.sendRequest ?
+                        this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == this.sendRequest ?
                         <div className="message">
                             <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                             {this.error('message')}

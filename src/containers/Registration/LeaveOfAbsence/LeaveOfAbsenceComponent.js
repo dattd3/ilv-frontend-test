@@ -319,7 +319,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(leaveType) {
-        debugger
         if (leaveType !== this.state.leaveType) {
             this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
         }
@@ -498,7 +497,6 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            {/* Need update here - CuongNV56 */}
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
