@@ -145,10 +145,6 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
 
-        <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{Constants.mappingStatus[this.props.substitution.status].label}</span>
-        </div>
-
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
 
