@@ -53,6 +53,8 @@ class SubstitutionDetailComponent extends React.Component {
   }
 
   render() {
+    const requestTypeId = this.props.substitution.requestTypeId
+
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -159,6 +161,7 @@ class SubstitutionDetailComponent extends React.Component {
         {this.props.substitution.status === 0 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
           urlName={'requestsubstitution'}
+          requestTypeId={requestTypeId}
         /> : null}
       </div>
     )
