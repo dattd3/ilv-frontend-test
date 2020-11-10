@@ -52,6 +52,8 @@ class InOutUpdateDetailComponent extends React.Component {
 
   render() {
     this.dataToSap()
+    const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
+
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -147,15 +149,15 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        {/* <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
-        </div> */}
+
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+        
         <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
           urlName={'requesttimekeeping'}
+          requestTypeId={requestTypeId}
         />
       </div>
     )

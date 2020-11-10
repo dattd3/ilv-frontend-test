@@ -3,7 +3,6 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
-import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -29,6 +28,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   render() {
     const userProfileInfo = this.props.leaveOfAbsence.userProfileInfo
+    const requestTypeId = this.props.leaveOfAbsence.requestTypeId
+
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -86,11 +87,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        {/* <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
-        </div> */}
+
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
+
         <ul className="list-inline">
           {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -110,6 +110,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }]}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
+          requestTypeId={requestTypeId}
         /> : null}
       </div>
     )

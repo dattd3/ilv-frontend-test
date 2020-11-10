@@ -97,11 +97,16 @@ class ConfirmationModal extends React.Component {
     }
 
     render() {
+        const backgroundColorMapping = {
+            [Constants.STATUS_NOT_APPROVED]: "bg-not-approved",
+            [Constants.STATUS_APPROVED]: "bg-approved",
+        }
+
         return (
             <>
             <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                    <Modal.Header className='apply-position-modal' closeButton>
+                    <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -114,7 +119,7 @@ class ConfirmationModal extends React.Component {
                                 : null
                         }
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok.bind(this)}>Có</button>
+                            <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" onClick={this.ok.bind(this)}>Có</button>
                             <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
                         </div>
                     </Modal.Body>

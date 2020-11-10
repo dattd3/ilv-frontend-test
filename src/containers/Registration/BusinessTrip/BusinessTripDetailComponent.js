@@ -4,7 +4,6 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
-import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -30,6 +29,7 @@ class BusinessTripDetailComponent extends React.Component {
 
   render() {
     const businessTrip = this.props.businessTrip
+    const requestTypeId = this.props.businessTrip.requestTypeId
 
     return (
       <div className="business-trip">
@@ -73,11 +73,10 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        {/* <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
-        </div> */}
+
         <h5>Thông tin CBLĐ phê duyệt</h5>
         <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
+
         <ul className="list-inline">
           {businessTrip.userProfileInfoDocuments.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -97,6 +96,7 @@ class BusinessTripDetailComponent extends React.Component {
         }]}
         id={businessTrip.id}
         urlName={'requestattendance'}
+        requestTypeId={requestTypeId}
         /> : null}
       </div>
     )

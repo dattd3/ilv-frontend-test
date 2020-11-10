@@ -10,14 +10,21 @@ class DetailButtonComponent extends React.Component {
             modalMessage: "",
             typeRequest: 1
         }
+
+        this.requestRegistraion = {
+            2: "Đăng ký nghỉ phép",
+            3: "Đăng ký Công tác/Đào tạo",
+            4: "Thay đổi phân ca",
+            5: "Sửa giờ vào - ra"
+        }
     }
 
-    approval() {
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt không?", typeRequest: 2 })
+    approval = () => {
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt " + this.requestRegistraion[this.props.requestTypeId] + " này ?", typeRequest: 2 })
     }
 
-    disApproval() {
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Bạn có đồng ý không phê duyệt không?", typeRequest: 1 })
+    disApproval = () => {
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: 1 })
     }
 
     onHideModalConfirm() {
@@ -29,13 +36,13 @@ class DetailButtonComponent extends React.Component {
     }
 
     getAction = () => {
-        const pathName = window.location.pathname;
-        const pathNameArr = pathName.split('/');
-        return pathNameArr[pathNameArr.length - 1];
+        const pathName = window.location.pathname
+        const pathNameArr = pathName.split('/')
+        return pathNameArr[pathNameArr.length - 1]
     }
 
     render() {
-        const action = this.getAction();
+        const action = this.getAction()
 
         return <div className="bottom">
             <ConfirmationModal
