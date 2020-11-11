@@ -21,6 +21,8 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
+const TRAINING_OPTION_VALUE = "DT01"
+
 class BusinessTripComponent extends React.Component {
   constructor(props) {
     super();
@@ -40,7 +42,8 @@ class BusinessTripComponent extends React.Component {
       isUpdateFiles: false,
       errors: {},
       titleModal: "",
-      messageModal: ""
+      messageModal: "",
+      isShowAddressAndVehicle: true
     }
   }
 
@@ -213,13 +216,22 @@ calDuringTheDay(timesheets, startTime, endTime) {
   }
 
   handleSelectChange(name, value) {
+    if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
+      this.setState({isShowAddressAndVehicle : false})
+    } else {
+      this.setState({isShowAddressAndVehicle : true})
+    }
     this.setState({ [name]: value })
   }
 
   verifyInput() {
     let errors = {}
-    const RequiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
-    RequiredFields.forEach(name => {
+    let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
+    if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
+      requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
+    }
+
+    requiredFields.forEach(name => {
       if (_.isNull(this.state[name])) {
         errors[name] = '(Bắt buộc)'
       }
@@ -232,8 +244,9 @@ calDuringTheDay(timesheets, startTime, endTime) {
     if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
       errors['endTime'] = '(Bắt buộc)'
     }
-
+    
     this.setState({ errors: errors })
+
     return errors
   }
 
@@ -475,22 +488,26 @@ calDuringTheDay(timesheets, startTime, endTime) {
                 </div>
                 {this.error('attendanceQuotaType')}
               </div>
-
-              <div className="col-5">
-                <p className="title">Địa điểm</p>
-                <div>
-                  <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+              {
+                this.state.isShowAddressAndVehicle ?
+                <>
+                <div className="col-5">
+                  <p className="title">Địa điểm</p>
+                  <div>
+                    <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+                  </div>
+                  {this.error('place')}
                 </div>
-                {this.error('place')}
-              </div>
-
-              <div className="col-2">
-                <p className="title">Phương tiện</p>
-                <div>
-                  <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                <div className="col-2">
+                  <p className="title">Phương tiện</p>
+                  <div>
+                    <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                  </div>
+                  {this.error('vehicle')}
                 </div>
-                {this.error('vehicle')}
-              </div>
+                </>
+              : null
+              }
             </div>
 
             <div className="row">
