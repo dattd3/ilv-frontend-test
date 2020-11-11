@@ -3,7 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
-import ResultModal from '../ResultModal'
+import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -37,9 +37,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             files: [],
             isUpdateFiles: false,
             errors: {},
-            isEdit: false,
-            titleModal: "",
-            messageModal: ""
+            isEdit: false
         }
     }
 
@@ -135,7 +133,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.calculateTotalTime(start, end)
     }
 
-    calculateTotalTime(startDate, endDate, startTime = null, endTime = null) {
+    calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
         if (!startDate || !endDate) return
 
         const config = {
@@ -193,6 +191,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                     // the startTime and the endTime are setted in the break time
                     startTimeSAP = startTimeSAP >= timesheet['break_from_time_'+ index] && startTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_to_time'+ 1] : startTimeSAP
                     endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
+
+                    // endtime < startime ex: starTime = 23:00:00 endTime = 06:00:00 
+                    endTimeSAP = endTimeSAP < startTimeSAP ? moment(endTimeSAP, TIME_OF_SAP_FORMAT).add(1, 'days').format(TIME_OF_SAP_FORMAT) : endTimeSAP
 
                     const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
                     hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
@@ -301,11 +302,10 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             if (response && response.data && response.data.result) {
-                this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+                this.showStatusModal(`Cập nhập thành công!`, true)
             }
         })
         .catch(response => {
-            this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         })
     }
 
@@ -313,16 +313,16 @@ class LeaveOfAbsenceComponent extends React.Component {
         return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (message, isSuccess = false) => {
+        this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
     }
 
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false });
-        window.location.reload();
     }
 
     updateLeaveType(leaveType) {
+        debugger
         if (leaveType !== this.state.leaveType) {
             this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
         }
@@ -347,7 +347,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PQ01', label: 'Nghỉ phép năm' },
             { value: 'PQ02', label: 'Nghỉ bù (Nếu có)' },
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
-            { value: 'UN01', label: 'Nghỉ không lương' }
+            { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
+            { value: 'UN01', label: 'Nghỉ không lương' },
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
@@ -358,7 +359,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         return (
             <div className="leave-of-absence">
-                <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
@@ -396,13 +397,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="form">
                         <div className="row">
                             <div className="col-7">
-                                <p className="text-uppercase"><b>Lựa chọn thời gian nghỉ</b></p>
+                                <p className="text-uppercase"><b>Lựa chọn hình thức nghỉ</b></p>
                                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                                     <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                         Nghỉ cả ngày
                                     </label>
                                     <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                        Nghỉ theo giờ
+                                        Nghỉ trong ngày
                                     </label>
                                 </div>
                             </div>
@@ -464,7 +465,6 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="endDate"
                                                     selectsEnd
-                                                    autoComplete="off"
                                                     selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                                                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -486,14 +486,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setEndTime.bind(this)}
                                                     showTimeSelect
-                                                    autoComplete="off"
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
                                                     timeCaption="Giờ"
                                                     dateFormat="h:mm aa"
                                                     placeholderText="Lựa chọn"
                                                     className="form-control input"
-                                                    disabled={this.state.leaveType == FULL_DAY ? true : false} />
+                                                    disabled={this.state.leaveType == FULL_DAY ? true : false}
+                                                />
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
                                         </div>
@@ -501,6 +501,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                 </div>
                             </div>
+                            {/* Need update here - CuongNV56 */}
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
