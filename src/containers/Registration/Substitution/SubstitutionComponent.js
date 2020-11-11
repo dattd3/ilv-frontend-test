@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import moment from 'moment'
@@ -79,7 +78,6 @@ class SubstitutionComponent extends React.Component {
 
   verifyInput() {
     let errors = {}
-    const shiftRequiredFields = ['startTime', 'endTime']
     this.state.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       if (timesheet.shiftType === SHIFT_CODE) {
         if (_.isNull(timesheet['shiftId'])) {
@@ -88,6 +86,7 @@ class SubstitutionComponent extends React.Component {
       }
 
       if (timesheet.shiftType === SHIFT_UPDATE) {
+        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
         shiftRequiredFields.forEach(name => {
           if (_.isNull(timesheet[name])) {
             errors[name + index] = '(Bắt buộc)'
@@ -106,10 +105,6 @@ class SubstitutionComponent extends React.Component {
 
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
-    }
-
-    if (_.isNull(this.state.substitutionType)) {
-      errors['substitutionType'] = '(Bắt buộc)'
     }
 
     if (_.isNull(this.state.files) || this.state.files.length === 0) {
@@ -200,9 +195,9 @@ class SubstitutionComponent extends React.Component {
     })
   }
 
-  updateNote(index, e) {
+  updateNote(index, value) {
     let timesheets = this.state.timesheets
-    timesheets[index].note = e.currentTarget.value
+    timesheets[index].note = value
     this.setState({
       timesheets: [...timesheets]
     })
@@ -321,12 +316,6 @@ class SubstitutionComponent extends React.Component {
   }
 
   render() {
-    const substitutionTypes = [
-      { value: '01', label: 'Phân ca làm việc' },
-      { value: '02', label: 'Phân ca gãy' },
-      { value: '03', label: 'Phân ca bờ đảo full ngày' }
-    ]
-
     return (
       <div className="shift-work">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -383,16 +372,7 @@ class SubstitutionComponent extends React.Component {
             </div>
 
             <div className="col-4">
-              <p className="title">Loại phân ca</p>
-              <div>
-                <Select name="substitutionType" value={this.state.substitutionType} onChange={substitutionType => this.handleSelectChange(substitutionType)} placeholder="Lựa chọn" key="timeTotal" options={substitutionTypes} />
-              </div>
-              {this.errorWithoutItem('substitutionType')}
-            </div>
-          </div>
-
-          <div className="row mt-3">
-            <div className="col-12">
+              <p className="title">&nbsp;</p>
               <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
             </div>
           </div>
@@ -434,14 +414,9 @@ class SubstitutionComponent extends React.Component {
               </>
              : null}
             {timesheet.isEdit && timesheet.shiftType === SHIFT_UPDATE
-              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime }} />
+              ? <ShiftForm updateTime={this.updateTime.bind(this)} updateNote={this.updateNote.bind(this)} errors={this.state.errors} 
+              timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime, note: timesheet.note }} />
               : null}
-
-            {timesheet.isEdit ? <div>
-              <p>Lý do đăng ký thay đổi phân ca</p>
-              <textarea placeholder="Nhập lý do" value={timesheet.note} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
-              {this.error(index, 'note')}
-            </div> : null}
           </div>
         })}
 
@@ -457,6 +432,12 @@ class SubstitutionComponent extends React.Component {
             </li>
           })}
         </ul>
+
+        {
+          this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh</div>
+          : null
+        }
         {this.errorWithoutItem("files")}
 
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}

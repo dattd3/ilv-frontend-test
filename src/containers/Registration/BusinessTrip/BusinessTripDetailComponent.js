@@ -74,16 +74,26 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
         </div>
 
-        <h5>Thông tin CBLĐ phê duyệt</h5>
+        <h5>Thông tin phê duyệt</h5>
         <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
 
-        <ul className="list-inline">
-          {businessTrip.userProfileInfoDocuments.map((file, index) => {
-            return <li className="list-inline-item" key={index}>
-              <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-            </li>
-          })}
-        </ul>
+        {
+          businessTrip.userProfileInfoDocuments.length > 0 ?
+          <>
+          <h5>Tài liệu chứng minh</h5>
+          <div className="box shadow">
+            <ul className="list-inline">
+              {businessTrip.userProfileInfoDocuments.map((file, index) => {
+                return <li className="list-inline-item" key={index}>
+                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                </li>
+              })}
+            </ul>
+          </div>
+          </>
+          : null
+        }
+
         {businessTrip.status === 0 ? <DetailButtonComponent 
         dataToSap={[{
           MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,

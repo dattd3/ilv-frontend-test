@@ -147,16 +147,25 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
 
-        <h5>Thông tin CBLĐ phê duyệt</h5>
+        <h5>Thông tin phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
 
-        <ul className="list-inline">
-          {this.props.substitution.userProfileInfoDocuments.map((file, index) => {
-            return <li className="list-inline-item" key={index}>
-              <a className="file-name" href={file.fileUrl} title="file đính kèm" target="_blank">{file.fileName}</a>
-            </li>
-          })}
-        </ul>
+        {
+          this.props.substitution.userProfileInfoDocuments.length > 0 ?
+          <>
+          <h5>Tài liệu chứng minh</h5>
+          <div className="box shadow">
+            <ul className="list-inline">
+              {this.props.substitution.userProfileInfoDocuments.map((file, index) => {
+                return <li className="list-inline-item" key={index}>
+                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                </li>
+              })}
+            </ul>
+          </div>
+          </>
+          : null
+        }
 
         {this.props.substitution.status === 0 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}

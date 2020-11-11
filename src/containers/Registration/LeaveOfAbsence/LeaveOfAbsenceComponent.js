@@ -3,7 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
-import StatusModal from '../../../components/Common/StatusModal'
+import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -37,7 +37,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             files: [],
             isUpdateFiles: false,
             errors: {},
-            isEdit: false
+            isEdit: false,
+            titleModal: "",
+            messageModal: ""
         }
     }
 
@@ -302,10 +304,11 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             if (response && response.data && response.data.result) {
-                this.showStatusModal(`Cập nhập thành công!`, true)
+                this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
             }
         })
         .catch(response => {
+            this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         })
     }
 
@@ -313,12 +316,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
     }
 
-    showStatusModal = (message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     }
 
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false });
+        window.location.reload();
     }
 
     updateLeaveType(leaveType) {
@@ -347,8 +351,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PQ01', label: 'Nghỉ phép năm' },
             { value: 'PQ02', label: 'Nghỉ bù (Nếu có)' },
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
-            { value: 'PQ05', label: 'Nghỉ bù trực MOD' },
-            { value: 'UN01', label: 'Nghỉ không lương' },
+            { value: 'UN01', label: 'Nghỉ không lương' }
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
@@ -359,7 +362,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         return (
             <div className="leave-of-absence">
-                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
@@ -397,13 +400,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="form">
                         <div className="row">
                             <div className="col-7">
-                                <p className="text-uppercase"><b>Lựa chọn hình thức nghỉ</b></p>
+                                <p className="text-uppercase"><b>Lựa chọn thời gian nghỉ</b></p>
                                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                                     <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                         Nghỉ cả ngày
                                     </label>
                                     <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                        Nghỉ trong ngày
+                                        Nghỉ theo giờ
                                     </label>
                                 </div>
                             </div>
@@ -465,6 +468,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <DatePicker
                                                     name="endDate"
                                                     selectsEnd
+                                                    autoComplete="off"
                                                     selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                                                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                                                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -486,6 +490,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
                                                     onChange={this.setEndTime.bind(this)}
                                                     showTimeSelect
+                                                    autoComplete="off"
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
                                                     timeCaption="Giờ"
@@ -501,7 +506,6 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            {/* Need update here - CuongNV56 */}
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>

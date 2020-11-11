@@ -551,6 +551,12 @@ class InOutTimeUpdateComponent extends React.Component {
             </li>
           })}
         </ul>
+
+        {
+          this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm từ màn hình in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+          : null
+        }
         {this.errorWithoutItem("files")}
         
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
