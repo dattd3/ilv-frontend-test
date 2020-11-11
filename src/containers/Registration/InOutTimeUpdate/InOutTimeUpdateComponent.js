@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
-import StatusModal from '../../../components/Common/StatusModal'
+import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
@@ -21,7 +21,9 @@ class InOutTimeUpdateComponent extends React.Component {
       files: [],
       isUpdateFiles: false,
       errors: {},
-      isShowStatusModal: false
+      isShowStatusModal: false,
+      titleModal: "",
+      messageModal: ""
     }
   }
 
@@ -128,6 +130,10 @@ class InOutTimeUpdateComponent extends React.Component {
       errors['approver'] = '(Bắt buộc)'
     }
 
+    if (_.isNull(this.state.files) || this.state.files.length === 0) {
+      errors['files'] = '(*) File đính kèm là bắt buộc'
+    }
+
     this.setState({ errors: errors })
     return errors
   }
@@ -173,15 +179,20 @@ class InOutTimeUpdateComponent extends React.Component {
     })
     .then(response => {
       if (response && response.data && response.data.result) {
-        this.showStatusModal(`Cập nhập thành công!`, true)
+        this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
       }
     })
     .catch(response => {
+      this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
     })
   }
 
   error(index, name) {
     return this.state.errors[name + index] ? <div className="text-danger">{this.state.errors[name + index]}</div> : null
+  }
+
+  errorWithoutItem(name) {
+    return this.state.errors[name] ? <div className="text-danger">{this.state.errors[name]}</div> : null
   }
 
   updateEditMode(index) {
@@ -227,12 +238,13 @@ class InOutTimeUpdateComponent extends React.Component {
       })
   }
 
-  showStatusModal = (message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+  showStatusModal = (title, message, isSuccess = false) => {
+    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
   };
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
+    window.location.reload();
   }
 
   removeFile(index) {
@@ -246,7 +258,7 @@ class InOutTimeUpdateComponent extends React.Component {
   render() {
     return (
       <div className="in-out-time-update">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
@@ -528,6 +540,7 @@ class InOutTimeUpdateComponent extends React.Component {
         })}
         
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
+        
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -538,6 +551,8 @@ class InOutTimeUpdateComponent extends React.Component {
             </li>
           })}
         </ul>
+        {this.errorWithoutItem("files")}
+        
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
       </div>
     )

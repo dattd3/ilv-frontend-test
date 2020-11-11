@@ -4,7 +4,7 @@ import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
@@ -44,6 +44,14 @@ class TaskList extends React.Component {
             3: {request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance"},
             4: {request: "Thay đổi phân ca", requestUrl: "requestsubstitution"},
             5: {request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping"}
+        }
+
+        this.typeFeedbackMapping = {
+            1: "Phản hồi của Nhân sự",
+            2: "Phản hồi của CBLĐ",
+            3: "Phản hồi của CBLĐ",
+            4: "Phản hồi của CBLĐ",
+            5: "Phản hồi của CBLĐ"
         }
     }
 
@@ -343,36 +351,38 @@ class TaskList extends React.Component {
                                 return (
                                     <tr key={index}>
                                         <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                                        <td className="request-type">{task.requestType.name}</td>
-                                        <td className="content">{task.name}</td>
+                                        <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                        <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
                                         <td className="user-request">{userId}</td>
                                         <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
                                         <td className="user-approved">{userManagerId}</td>
                                         <td className="approval-date">{approvalDate}</td>
                                         <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
                                         <td className="tool">
-                                            {task.comment ? <OverlayTrigger
+                                            {task.comment ? <OverlayTrigger 
+                                                rootClose
                                                 trigger="click"
                                                 placement="left"
                                                 overlay={<Popover id={'note-task-' + index}>
-                                                    <Popover.Title as="h3">Ý kiến của cán bộ nhân viên</Popover.Title>
+                                                    <Popover.Title as="h3">Ý kiến của CBNV</Popover.Title>
                                                     <Popover.Content>
                                                         {task.comment}
                                                     </Popover.Content>
                                                 </Popover>}>
                                                 <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" />
                                             </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled" />}
-                                            {task.hrComment ? <OverlayTrigger
+                                            {task.hrComment ? <OverlayTrigger 
+                                                rootClose
                                                 trigger="click"
                                                 placement="left"
                                                 overlay={<Popover id={'comment-task-' + index}>
-                                                    <Popover.Title as="h3">Phản hồi của nhân sự</Popover.Title>
+                                                    <Popover.Title as="h3">{this.typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
                                                     <Popover.Content>
                                                         {task.hrComment}
                                                     </Popover.Content>
                                                 </Popover>}>
-                                                <img alt="comment task" src={commentButton} title="Phản hồi của Nhân sự" />
-                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title="Phản hồi của Nhân sự" />}
+                                                <img alt="comment task" src={commentButton} title={this.typeFeedbackMapping[task.requestTypeId]} />
+                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={this.typeFeedbackMapping[task.requestTypeId]} />}
                                             {
                                                 // isShowEditButton ?
                                                 //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>

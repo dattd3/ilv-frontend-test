@@ -8,7 +8,21 @@
 }
 
 .registration-section {
-
+    .business-type {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 10px 0 5px 0;
+        span {
+            display: inline-block;
+            width: 54%;
+            font-size: 12px;
+            padding: 2px 0;
+            &.smaller {
+                width: 46%;
+            }
+        }
+    }
     .shift-table {
         overflow-x: auto;
         overflow-y: auto;
