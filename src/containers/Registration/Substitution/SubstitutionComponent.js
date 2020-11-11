@@ -7,7 +7,7 @@ import moment from 'moment'
 import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import StatusModal from '../../../components/Common/StatusModal'
+import ResultModal from '../ResultModal'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
@@ -31,7 +31,9 @@ class SubstitutionComponent extends React.Component {
       approver: null,
       files: [],
       isUpdateFiles: false,
-      errors: {}
+      errors: {},
+      titleModal: "",
+      messageModal: ""
     }
   }
 
@@ -110,6 +112,10 @@ class SubstitutionComponent extends React.Component {
       errors['substitutionType'] = '(Bắt buộc)'
     }
 
+    if (_.isNull(this.state.files) || this.state.files.length === 0) {
+      errors['files'] = '(*) File đính kèm là bắt buộc'
+    }
+
     this.setState({ errors: errors })
     return errors
   }
@@ -157,10 +163,11 @@ class SubstitutionComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          this.showStatusModal(`Cập nhập thành công!`, true)
+          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
         }
       })
       .catch(response => {
+        this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
       })
   }
 
@@ -245,12 +252,13 @@ class SubstitutionComponent extends React.Component {
     })
   }
 
-  showStatusModal = (message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+  showStatusModal = (title, message, isSuccess = false) => {
+    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
   }
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
+    window.location.reload();
   }
 
   handleSelectChange(substitutionType) {
@@ -321,7 +329,7 @@ class SubstitutionComponent extends React.Component {
 
     return (
       <div className="shift-work">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="row">
           <div className="col">
             <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div>
@@ -336,6 +344,7 @@ class SubstitutionComponent extends React.Component {
                   <DatePicker
                     name="startDate"
                     selectsStart
+                    autoComplete="off"
                     selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -357,6 +366,7 @@ class SubstitutionComponent extends React.Component {
                   <DatePicker
                     name="endDate"
                     selectsEnd
+                    autoComplete="off"
                     selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
@@ -436,6 +446,7 @@ class SubstitutionComponent extends React.Component {
         })}
 
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> : null}
+        
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -446,6 +457,7 @@ class SubstitutionComponent extends React.Component {
             </li>
           })}
         </ul>
+        {this.errorWithoutItem("files")}
 
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
       </div >
