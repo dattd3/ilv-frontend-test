@@ -18,6 +18,12 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
+const absenceTypesAndDaysOffMapping = {
+    1: {day: 3, time: 24},
+    2: {day: 1, time: 8},
+    3: {day: 3, time: 24}
+}
+
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
         super();
@@ -58,7 +64,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }, config)
         .then(res => {
             if (res && res.data) {
-                const annualLeaveSummary = res.data
+                const annualLeaveSummary = res.data.data
                 this.setState({ annualLeaveSummary: annualLeaveSummary })
             }
         }).catch(error => {
@@ -254,6 +260,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             errors['endTime'] = '(Bắt buộc)'
         }
 
+        if (this.state.pn03 && ((this.state.leaveType == FULL_DAY && this.state.totalTime > absenceTypesAndDaysOffMapping[this.state.pn03.value].day) 
+            || (this.state.leaveType == DURING_THE_DAY && this.state.totalTime*8 > absenceTypesAndDaysOffMapping[this.state.pn03.value].time))) {
+            const unit = this.state.leaveType == FULL_DAY ? "ngày" : "giờ"
+            const time = this.state.leaveType == FULL_DAY ? absenceTypesAndDaysOffMapping[this.state.pn03.value].day : absenceTypesAndDaysOffMapping[this.state.pn03.value].time
+            errors['totalDaysOff'] = `(*) Thời gian được đăng ký nghỉ tối đa là ${time} ${unit}`
+        }
+
         this.setState({ errors: errors })
         return errors
     }
@@ -367,19 +380,19 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tồn</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_LEA_REMAIN) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_LEA_REMAIN).toFixed(2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép năm</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_LEA) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_LEA).toFixed(2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tạm ứng</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.DAY_ADV_LEA) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_ADV_LEA).toFixed(2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
@@ -433,7 +446,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                             </label>
                                         </div>
-                                        {this.error('startDate')}
+                                        {this.state.startDate ? this.error('startDate') : null}
                                     </div>
                                     <div className="col">
                                         <div className="content input-container">
@@ -454,7 +467,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
                                         </div>
-                                        {this.error('startTime')}
+                                        {this.state.startTime ? this.error('startTime') : null}
                                     </div>
                                 </div>
                             </div>
@@ -481,7 +494,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                             </label>
                                         </div>
-                                        {this.error('endDate')}
+                                        {this.state.endDate ? this.error('endDate') : null}
                                     </div>
                                     <div className="col">
                                         <div className="content input-container">
@@ -502,7 +515,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
                                         </div>
-                                        {this.error('endTime')}
+                                        {this.state.endTime ? this.error('endTime') : null}
                                     </div>
                                 </div>
                             </div>
@@ -511,6 +524,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
                                 </div>
+
+                                {this.state.totalTime ? this.error('totalDaysOff') : null}
                             </div>
                         </div>
 
@@ -520,13 +535,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
                                 </div>
-                                {this.error('absenceType')}
+                                {this.state.absenceType && _.size(this.state.absenceType) > 0 ? this.error('absenceType') : null}
 
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <div>
                                     <Select name="PN03" value={this.state.pn03} onChange={pn03 => this.handleSelectChange('pn03', pn03)} placeholder="Lựa chọn" key="absenceType" options={PN03List} />
                                 </div> : null}
-                                {this.error('pn03')}
+                                {this.state.pn03 && _.size(this.state.pn03) > 0 ? this.error('pn03') : null}
                             </div>
 
                             <div className="col-7">
@@ -534,7 +549,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
-                                {this.error('note')}
+                                {this.state.note ? this.error('note') : null}
                             </div>
                         </div>
                     </div>
