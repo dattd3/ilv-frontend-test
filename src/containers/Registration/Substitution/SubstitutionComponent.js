@@ -92,7 +92,7 @@ class SubstitutionComponent extends React.Component {
       }
       errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
         && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)' : null
-      errors['note' + index] = _.isNull(timesheet['note']) ? '(Bắt buộc)' : null
+      errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? '(Bắt buộc)' : null
     })
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
@@ -166,14 +166,14 @@ class SubstitutionComponent extends React.Component {
 
   setStartDate(startDate) {
     this.setState({
-      startDate: moment(startDate).format(DATE_FORMAT),
-      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+      startDate: moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null,
+      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
     })
   }
 
   setEndDate(endDate) {
     this.setState({
-      endDate: moment(endDate).format(DATE_FORMAT)
+      endDate: moment(endDate).isValid() ? moment(endDate).format(DATE_FORMAT) : null
     })
   }
 

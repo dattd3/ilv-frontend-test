@@ -77,46 +77,43 @@ class BusinessTripComponent extends React.Component {
   }
 
   setStartDate(startDate) {
-    const start = moment(startDate).format(DATE_FORMAT)
-    const end = this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+    const start = moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null
+    const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate) 
+    || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
     this.setState({
       startDate: start,
       endDate: end
     })
-
     this.calculateTotalTime(start, end)
   }
 
   setStartTime(startTime) {
-    const start = moment(startTime).format(TIME_FORMAT)
-    const end = this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
+    const start = moment(startTime).isValid() ? moment(startTime).format(TIME_FORMAT) : null
+    const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) > this.state.endTime) ? moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) : this.state.endTime
     this.setState({
         startTime: start,
         endTime: end
     })
-
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
-}
+  }
 
-setEndTime(endTime) {
-    const start = this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime
-    const end = moment(endTime).format(TIME_FORMAT)
+  setEndTime(endTime) {
+    const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) : this.state.startTime
+    const end =  moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
     this.setState({
         startTime: start,
         endTime: end
     })
-
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
-}
+  }
 
   setEndDate(endDate) {
-    const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate
-    const end = moment(endDate).format(DATE_FORMAT)
+    const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT) : this.state.startDate
+    const end = moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT)
     this.setState({
       startDate: start,
       endDate: end
     })
-
     this.calculateTotalTime(start, end)
   }
 
@@ -238,7 +235,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
       requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
     }
     requiredFields.forEach(name => {
-      if (_.isNull(this.state[name])) {
+      if (_.isNull(this.state[name]) || !this.state[name]) {
         errors[name] = '(Bắt buộc)'
       } else {
         if (name !== "approver") {
