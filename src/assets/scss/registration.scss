@@ -34,6 +34,11 @@
             background-color: #4e73df;
         }
     }
+    .shift-work {
+        .total-time {
+            margin-top: 40px;
+        }
+    }
     
     h5 {
         color: #2a377c;
@@ -113,7 +118,7 @@
     .file-name {
         padding: 10px;
         border: 1px solid #ddd;
-        background-color: #fff;
+        background-color: #EEEEEE;
         border-radius: 5px;
         color: #858796;
         & > a {
@@ -165,8 +170,6 @@
     }
 
     .approver {
-        padding: 5px;
-
         .avatar {
             height: 50px;
             width: 50px;

@@ -156,11 +156,14 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: this.state.approver,
     }
+    const comments = this.state.timesheets.map(item => (
+      item.note
+    )).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Sửa giờ vào-ra')
     bodyFormData.append('RequestTypeId', '5')
-    bodyFormData.append('Comment', '')
+    bodyFormData.append('Comment', comments)
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
     bodyFormData.append('UpdateField', {})
     bodyFormData.append('Region', localStorage.getItem('region'))
@@ -382,8 +385,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
@@ -407,8 +409,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
@@ -435,8 +436,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
@@ -460,8 +460,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
@@ -488,8 +487,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
@@ -513,8 +511,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="h:mm aa"
                                 placeholderText="Lựa chọn"
-                                className="form-control input"
-                              />
+                                className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
@@ -551,6 +548,12 @@ class InOutTimeUpdateComponent extends React.Component {
             </li>
           })}
         </ul>
+
+        {
+          this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm từ màn hình in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+          : null
+        }
         {this.errorWithoutItem("files")}
         
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
