@@ -52,6 +52,8 @@ class InOutUpdateDetailComponent extends React.Component {
 
   render() {
     this.dataToSap()
+    const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
+
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -147,16 +149,33 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        {/* <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
-        </div> */}
-        <h5>Thông tin CBLĐ phê duyệt</h5>
+
+        <h5>Thông tin phê duyệt</h5>
         <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
-        <DetailButtonComponent
+
+        {
+          this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
+          <>
+          <h5>Tài liệu chứng minh</h5>
+          <div className="box shadow">
+            <ul className="list-inline">
+              {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
+                return <li className="list-inline-item" key={index}>
+                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                </li>
+              })}
+            </ul>
+          </div>
+          </>
+          : null
+        }
+        
+        { this.props.inOutTimeUpdate.status === 0 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
           urlName={'requesttimekeeping'}
-        />
+          requestTypeId={requestTypeId}
+        /> : null }
       </div>
     )
   }

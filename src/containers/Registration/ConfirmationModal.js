@@ -2,10 +2,7 @@ import React from "react"
 import axios from 'axios'
 import { Modal } from 'react-bootstrap'
 import StatusModal from '../../components/Common/StatusModal'
-
-const DISAPPROVAL = 1
-const APPROVAL = 2
-const EVICTION = 3
+import Constants from '../../commons/Constants'
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -22,23 +19,17 @@ class ConfirmationModal extends React.Component {
         const url = window.location.pathname
         const id = this.props.id
         let formData = new FormData()
-        formData.append('ManagerInfo', JSON.stringify({
-            fullname: localStorage.getItem('fullName'),
-            title: localStorage.getItem('jobTitle'),
-            department: localStorage.getItem('department'),
-            code: localStorage.getItem('employeeNo')
-        }))
-
-        if (this.props.type === DISAPPROVAL) {
+        if (this.props.type === Constants.STATUS_NOT_APPROVED) {
             formData.append('HRComment', this.state.message)
-            this.updateRequest(formData, `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/disapproval`, id)
-        } else if (this.props.type === APPROVAL) {
+            this.updateRequest(formData, `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-disapprove`, id)
+        } else if (this.props.type === Constants.STATUS_APPROVED) {
             this.updateData()
             this.props.onHide()
         }
     }
 
     updateData() {
+        const dataToSap = this.props.dataToSap
         const config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -48,24 +39,25 @@ class ConfirmationModal extends React.Component {
             }
         }
 
-        axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/${this.props.urlName}`, this.props.dataToSap, config)
-            .then(res => {
-                if (res && res.data) {
-                    const result = res.data[0]
-                    if (result && result.STATUS === 'S') {
-                        this.updateHistory()
-                    } else {
-                        this.showStatusModal(result.MESSAGE)
-                    }
+        axios.put(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/${this.props.urlName}`, dataToSap, config)
+        .then(res => {
+            if (res && res.data) {
+                const result = res.data[0]
+                if (result && result.STATUS === 'S') {
+                    this.updateHistory()
+                } else {
+                    this.showStatusModal(result.MESSAGE)
                 }
-            }).catch(error => {
-                this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
-            })
+            }
+        }).catch(error => {
+            this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
+        })
     }
 
     updateHistory() {
+        const dataToSap = this.props.dataToSap
         let bodyFormData = new FormData();
-        bodyFormData.append('UserProfileInfoToSap', JSON.stringify(this.props.dataToSap))
+        bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
 
         axios({
             method: 'POST',
@@ -73,14 +65,14 @@ class ConfirmationModal extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data && response.data.result) {
-                    this.showStatusModal('Phê duyệt thành công!', true)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
-            })
+        .then(response => {
+            if (response && response.data && response.data.result) {
+                this.showStatusModal('Phê duyệt thành công!', true)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal('Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ')
+        })
     }
 
     updateRequest(formData, url) {
@@ -98,31 +90,36 @@ class ConfirmationModal extends React.Component {
 
     showStatusModal = (message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
-      }
+    }
     
-      hideStatusModal = () => {
+    hideStatusModal = () => {
         this.setState({ isShowStatusModal: false });
-      }
+    }
 
     render() {
+        const backgroundColorMapping = {
+            [Constants.STATUS_NOT_APPROVED]: "bg-not-approved",
+            [Constants.STATUS_APPROVED]: "bg-approved",
+        }
+
         return (
             <>
             <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                    <Modal.Header className='apply-position-modal' closeButton>
+                    <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>{this.props.message}</p>
                         {
-                            this.props.type == DISAPPROVAL ?
+                            this.props.type == Constants.STATUS_NOT_APPROVED ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                                 </div>
                                 : null
                         }
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok.bind(this)}>Có</button>
+                            <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" onClick={this.ok.bind(this)}>Có</button>
                             <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
                         </div>
                     </Modal.Body>

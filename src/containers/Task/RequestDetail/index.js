@@ -29,6 +29,7 @@ class RequestDetail extends React.Component {
       typeRequest: 1,
       userInfo: {},
       status: 0,
+      taskId: 0
     }
   }
 
@@ -129,7 +130,7 @@ class RequestDetail extends React.Component {
         modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
         isShowModalConfirm: true,
         typeRequest: 3,
-        userProfileHistoryId: id
+        taskId: id
     });
   }
 
@@ -209,7 +210,7 @@ class RequestDetail extends React.Component {
     return (
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
-      userProfileHistoryId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
+      taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
       <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">

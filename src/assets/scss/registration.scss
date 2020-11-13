@@ -8,7 +8,21 @@
 }
 
 .registration-section {
-
+    .business-type {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 10px 0 5px 0;
+        span {
+            display: inline-block;
+            width: 54%;
+            font-size: 12px;
+            padding: 2px 0;
+            &.smaller {
+                width: 46%;
+            }
+        }
+    }
     .shift-table {
         overflow-x: auto;
         overflow-y: auto;
@@ -18,6 +32,11 @@
             position: sticky;
             top: 0;
             background-color: #4e73df;
+        }
+    }
+    .shift-work {
+        .total-time {
+            margin-top: 40px;
         }
     }
     
@@ -99,7 +118,7 @@
     .file-name {
         padding: 10px;
         border: 1px solid #ddd;
-        background-color: #fff;
+        background-color: #EEEEEE;
         border-radius: 5px;
         color: #858796;
         & > a {
@@ -151,8 +170,6 @@
     }
 
     .approver {
-        padding: 5px;
-
         .avatar {
             height: 50px;
             width: 50px;

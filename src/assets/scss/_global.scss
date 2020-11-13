@@ -96,6 +96,9 @@ a {
           top: 35px;
         }
       }
+      &.bg-not-approved {
+        background: #e74a3b;
+      }
     }
     .modal-body {
       padding: 1rem 2rem 2rem 2rem;
@@ -104,6 +107,12 @@ a {
       }
       .validation-message {
         margin-top: 8px;
+      }
+      button {
+        &.bg-not-approved {
+          background: #e74a3b;
+          border-color: #e74a3b;
+        }
       }
     }
   }

@@ -3,7 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
-import StatusModal from '../../../components/Common/StatusModal'
+import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
@@ -20,6 +20,8 @@ const DURING_THE_DAY = 2
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
+
+const TRAINING_OPTION_VALUE = "DT01"
 
 class BusinessTripComponent extends React.Component {
   constructor(props) {
@@ -38,7 +40,10 @@ class BusinessTripComponent extends React.Component {
       approver: null,
       files: [],
       isUpdateFiles: false,
-      errors: {}
+      errors: {},
+      titleModal: "",
+      messageModal: "",
+      isShowAddressAndVehicle: true
     }
   }
 
@@ -211,13 +216,22 @@ calDuringTheDay(timesheets, startTime, endTime) {
   }
 
   handleSelectChange(name, value) {
+    if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
+      this.setState({isShowAddressAndVehicle : false})
+    } else {
+      this.setState({isShowAddressAndVehicle : true})
+    }
     this.setState({ [name]: value })
   }
 
   verifyInput() {
     let errors = {}
-    const RequiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
-    RequiredFields.forEach(name => {
+    let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
+    if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
+      requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
+    }
+
+    requiredFields.forEach(name => {
       if (_.isNull(this.state[name])) {
         errors[name] = '(Bắt buộc)'
       }
@@ -230,8 +244,9 @@ calDuringTheDay(timesheets, startTime, endTime) {
     if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
       errors['endTime'] = '(Bắt buộc)'
     }
-
+    
     this.setState({ errors: errors })
+
     return errors
   }
 
@@ -282,10 +297,11 @@ calDuringTheDay(timesheets, startTime, endTime) {
     })
     .then(response => {
       if (response && response.data && response.data.result) {
-        this.showStatusModal(`Cập nhập thành công!`, true)
+        this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
       }
     })
     .catch(response => {
+      this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
     })
   }
 
@@ -293,12 +309,13 @@ calDuringTheDay(timesheets, startTime, endTime) {
     return this.state.errors[name] ? <p className="text-danger">{this.state.errors[name]}</p> : null
   }
 
-  showStatusModal = (message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+  showStatusModal = (title, message, isSuccess = false) => {
+    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
   };
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
+    window.location.reload();
   }
 
   updateLeaveType(leaveType) {
@@ -339,23 +356,22 @@ calDuringTheDay(timesheets, startTime, endTime) {
     ]
     return (
       <div className="business-trip">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="form">
             <div className="row">
               <div className="col-7">
-                <p className="text-uppercase"><b>Lựa chọn hình thức nghỉ</b></p>
+                <p className="text-uppercase"><b>Lựa chọn thời gian công tác/đào tạo</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                   <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                    Nghỉ cả ngày
+                    Cả ngày
                   </label>
                   <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                    Nghỉ trong ngày
+                    Theo giờ
                   </label>
                 </div>
               </div>
             </div>
-
             <div className="row">
               <div className="col-5">
                 <p className="title">Ngày/giờ bắt đầu</p>
@@ -394,16 +410,13 @@ calDuringTheDay(timesheets, startTime, endTime) {
                           dateFormat="h:mm aa"
                           placeholderText="Lựa chọn"
                           className="form-control input"
-                          disabled={this.state.leaveType == FULL_DAY ? true : false}
-                        />
+                          disabled={this.state.leaveType == FULL_DAY ? true : false} />
                         <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
                     </div>
                     {this.error('startTime')}
                   </div>
-
                 </div>
-
               </div>
 
               <div className="col-5">
@@ -444,8 +457,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                           dateFormat="h:mm aa"
                           placeholderText="Lựa chọn"
                           className="form-control input"
-                          disabled={this.state.leaveType == FULL_DAY ? true : false}
-                        />
+                          disabled={this.state.leaveType == FULL_DAY ? true : false} />
                         <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
                     </div>
@@ -457,55 +469,52 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : null} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
                 </div>
               </div>
             </div>
 
             <div className="row">
               <div className="col-5">
-                <p className="title">Loại chuyến Công tác/Đào tạo <OverlayTrigger
-                  trigger="click"
-                  placement="right"
-                  overlay={<Popover id={'note'} className="registration-popover">
-                    <Popover.Title as="h3" className="bg-secondary text-light">Ghi chú</Popover.Title>
-                    <Popover.Content>
-                      <p>* Có CTP: được trả Công tác phí</p>
-                      <p>* Không CTP: không được trả Công tác phí</p>
-                      <p>* Có ăn ca: được trả tiền ăn ca</p>
-                      <p>* Không ăn ca: không được trả tiền ăn ca</p>
-                    </Popover.Content>
-                  </Popover>}>
-                  <i className="fa fa-info-circle text-info" aria-hidden="true"></i>
-                </OverlayTrigger></p>
+                <p className="title">Loại chuyến Công tác/Đào tạo</p>
                 <div>
                   <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>
+                <div className="business-type">
+                  <span className="text-info smaller">* Có CTP: được trả Công tác phí</span>
+                  <span className="text-info">* Không CTP: không được trả Công tác phí</span>
+                  <span className="text-info smaller">* Có ăn ca: được trả tiền ăn ca</span>
+                  <span className="text-info">* Không ăn ca: không được trả tiền ăn ca</span>
+                </div>
                 {this.error('attendanceQuotaType')}
               </div>
-
-              <div className="col-5">
-                <p className="title">Địa điểm</p>
-                <div>
-                  <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+              {
+                this.state.isShowAddressAndVehicle ?
+                <>
+                <div className="col-5">
+                  <p className="title">Địa điểm</p>
+                  <div>
+                    <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+                  </div>
+                  {this.error('place')}
                 </div>
-                {this.error('place')}
-              </div>
-
-              <div className="col-2">
-                <p className="title">Phương tiện</p>
-                <div>
-                  <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                <div className="col-2">
+                  <p className="title">Phương tiện</p>
+                  <div>
+                    <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                  </div>
+                  {this.error('vehicle')}
                 </div>
-                {this.error('vehicle')}
-              </div>
+                </>
+              : null
+              }
             </div>
 
             <div className="row">
               <div className="col-12">
                 <p className="title">Lý do đăng ký Công tác/Đào tạo</p>
                 <div>
-                  <textarea className="form-control" name="note" value={this.state.note} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
+                  <textarea className="form-control" name="note" value={this.state.note || ""} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
                 </div>
                 {this.error('note')}
               </div>

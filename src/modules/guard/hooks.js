@@ -51,6 +51,7 @@ const Storage = {
     localStorage.setItem('jobTitle', currentAuthUser.jobTitle);
     localStorage.setItem('jobId', currentAuthUser.jobId);
     localStorage.setItem('benefitLevel', currentAuthUser.benefitLevel);
+    localStorage.setItem('employeeLevel', currentAuthUser.employeeLevel);
     localStorage.setItem('company', currentAuthUser.company);
     localStorage.setItem('sabaId', currentAuthUser.sabaId);
     localStorage.setItem('employeeNo', currentAuthUser.employeeNo);
@@ -76,6 +77,7 @@ const Storage = {
       jobTitle: localStorage.getItem('jobTitle'),
       jobId: localStorage.getItem('jobId'),
       benefitLevel: localStorage.getItem('benefitLevel'),
+      employeeLevel: localStorage.getItem('employeeLevel'),
       company: localStorage.getItem('company'),
       sabaId: localStorage.getItem('sabaId'),
       department: localStorage.getItem('department'),
@@ -98,6 +100,7 @@ const Storage = {
     localStorage.removeItem('jobTitle');
     localStorage.removeItem('jobId');
     localStorage.removeItem('benefitLevel');
+    localStorage.removeItem('employeeLevel');
     localStorage.removeItem('company');
     localStorage.removeItem('sabaId');
     localStorage.removeItem('employeeNo');
@@ -122,6 +125,7 @@ const deserialize = (currentAuthUser) => ({
   jobTitle: currentAuthUser.jobTitle,
   jobId:currentAuthUser.jobId,
   benefitLevel: currentAuthUser.benefitLevel,
+  employeeLevel: currentAuthUser.employeeLevel,
   company: currentAuthUser.company,
   sabaId: currentAuthUser.sabaId,
   department: currentAuthUser.department,
