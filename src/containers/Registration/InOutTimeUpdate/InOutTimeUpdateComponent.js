@@ -55,14 +55,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -110,7 +110,7 @@ class InOutTimeUpdateComponent extends React.Component {
       errors['endTime2Fact' + index] = (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) ? '(Bắt buộc)' : null
       errors['startTime3Fact' + index] = (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) ? '(Bắt buộc)' : null
       errors['endTime3Fact' + index] = (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) ? '(Bắt buộc)' : null
-      errors['note' + index] = _.isNull(timesheet.note) ? '(Bắt buộc)' : null
+      errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
     })
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
@@ -300,7 +300,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.timesheets.map((timesheet, index) => {
+        {this.state.timesheets.filter(t => t.start_time1_plan || t.start_time2_plan || t.start_time3_plan).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
