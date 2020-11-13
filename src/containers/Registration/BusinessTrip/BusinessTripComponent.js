@@ -514,7 +514,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-12">
                 <p className="title">Lý do đăng ký Công tác/Đào tạo</p>
                 <div>
-                  <textarea className="form-control" name="note" value={this.state.note} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
+                  <textarea className="form-control" name="note" value={this.state.note || ""} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
                 </div>
                 {this.error('note')}
               </div>
