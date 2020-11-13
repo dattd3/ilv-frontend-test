@@ -117,7 +117,7 @@ setEndTime(endTime) {
     this.calculateTotalTime(start, end)
   }
 
-  calculateTotalTime(startDate, endDate, startTime = null, endTime = null) {
+  calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
     if (!startDate || !endDate) return
 
     const config = {
