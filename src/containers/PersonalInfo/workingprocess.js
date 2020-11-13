@@ -11,11 +11,13 @@ class MyComponent extends React.Component {
         super(props);
 
         this.state = {
-            userContract: {}
+            userContract: {},
+            userBonuses: {},
+            userPenalties: {}
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -35,6 +37,25 @@ class MyComponent extends React.Component {
                 window.location.href = map.Login;
             });
 
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`)
+              .then(res => {
+                if (res && res.data && res.data.data) {
+                    this.setState({ userBonuses: JSON.parse(res.data.data) });
+                }
+              }).catch(error => {
+                // localStorage.clear();
+                // window.location.href = map.Login;
+              });
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${localStorage.getItem('employeeNo')}`)
+              .then(res => {
+                if (res && res.data && res.data.data) {
+                    let userPenaltiesResult = JSON.parse(res.data.data);
+                    this.setState({ userPenalties: userPenaltiesResult });
+                }
+              }).catch(error => {
+                // localStorage.clear();
+                // window.location.href = map.Login;
+              });
     }
 
     render() {
@@ -47,7 +68,7 @@ class MyComponent extends React.Component {
         }
 
         const { t } = this.props;
-
+        
         return (
             <div className="personal-info">
                 <h1 className="h3 text-uppercase text-gray-800">{t("WorkingProcess")}</h1>
@@ -96,24 +117,94 @@ class MyComponent extends React.Component {
                             }
                         </Container>
                     </Tab>
-                    {/* <Tab eventKey="CommendationViolation" title={t("CommendationViolation")}>
+                    <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
                             <Col>
-                                <h4>{t("Felicitation")}</h4>
-                                <div className="info-tab-content">
-                                    {t("NoDataFound")}
-                                </div>
+                                <h4>QUYẾT ĐỊNH KHEN THƯỞNG</h4>
                             </Col>
+                            <Container fluid className="info-tab-content shadow">
+                                <form className="info-value">
+                                    {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
+                                        this.state.userBonuses.map((item, i) => {
+                                            return <div key={i}>
+                                                <div className="form-row">
+                                                      <div className="form-group col-md-6 col-lg-2">
+                                                        <div className="info-label mb-2">Số quyết định</div>
+                                                        <p>{item.decision_number}</p>
+                                                      </div>
+                                                      <div className="form-group col-md-6 col-lg-2">
+                                                        <div className="info-label mb-2">Ngày hiệu lực</div>
+                                                        <p>{item.effective_date ? item.effective_date.split('T')[0] : '.' }</p>
+                                                      </div>
+                                                      <div className="form-group col-md-6 col-lg-3">
+                                                        <div className="info-label mb-2">Lý do khen thưởng</div>
+                                                        <p>{item.compliment_reason}</p>
+                                                      </div>
+                                                      <div className="form-group col-md-6 col-lg-3">
+                                                        <div className="info-label mb-2">Hình thức khen thưởng</div>
+                                                        <p>{item.merit}</p>
+                                                      </div>
+                                                      <div className="form-group col-md-6 col-lg-2">
+                                                        <div className="info-label mb-2">Số tiền khen thưởng</div>
+                                                        <p>{item.bonus_amount}</p>
+                                                      </div>
+                                                    </div>
+                                                </div>;
+                                        }) : t("NoDataFound")
+                                    }
+                                </form>
+                            </Container>
                         </Row>
                         <Row>
                             <Col>
-                                <h4>{t("Discipline")}</h4>
-                                <div className="info-tab-content">
-                                    {t("NoDataFound")}
-                                </div>
+                                <h4>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h4>
                             </Col>
+                            <Container fluid className="info-tab-content shadow">
+                                <form className="info-value">
+                                    {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0)  ?
+                                        this.state.userPenalties.map((item, i) => {
+                                            return  <div key={i}>
+                                                        <div className="form-row">
+                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <div className="info-label mb-2">Số quyết định</div>
+                                                            <p>{item.decision_number}</p>
+                                                          </div>
+                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <div className="info-label mb-2">Ngày hiệu lực</div>
+                                                            <p>{item.effective_date ? item.effective_date.split('T')[0]:'.'  }</p>
+                                                          </div>
+                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <div className="info-label mb-2">Nhóm lỗi</div>
+                                                            <p>{item.diciplinary_type}</p>
+                                                          </div>
+                                                          <div className="form-group col-md-6 col-lg-3">
+                                                            <div className="info-label mb-2">Lỗi vi phạm</div>
+                                                            <p>{item.dimiss}</p>
+                                                          </div>
+                                                          <div className="form-group col-md-6 col-lg-3">
+                                                            <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
+                                                            <p>{item.compensation}</p>
+                                                          </div>
+                                                        </div>
+                                                        <div className="form-row">
+                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <div className="info-label mb-2">Số tiền trừ thưởng</div>
+                                                            <p>{item.bonus_deducted_amount}</p>
+                                                          </div>
+                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <div className="info-label mb-2">% trừ thưởng</div>
+                                                             <p>{item.deduction_bonus_percent} &nbsp;</p> 
+                                                          </div>
+                                                        </div>
+                                                        <hr />
+                                                    </div>
+                                        }) : t("NoDataFound")
+                                    }
+                                </form>
+                            </Container>
                         </Row>
-                    </Tab> */}
+                    </Tab>
+                
                 </Tabs>
             </div>
         )
