@@ -221,8 +221,15 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ files: files })
     }
 
-    updateApprover(approver) {
+    updateApprover(approver, isApprover) {
         this.setState({ approver: approver })
+        const errors = {...this.state.errors}
+        if (!isApprover) {
+            errors.approver = 'Người phê duyệt không có thẩm quyền!'
+        } else {
+            errors.approver = null
+        }
+        this.setState({ errors: errors })
     }
 
     handleInputChange(event) {
@@ -240,40 +247,36 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     verifyInput() {
-        let errors = {}
-        const RequiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
-        RequiredFields.forEach(name => {
+        let errors = {...this.state.errors}
+        const requiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
+        requiredFields.forEach(name => {
             if (_.isNull(this.state[name])) {
                 errors[name] = '(Bắt buộc)'
+            } else {
+                if (name !== "approver") {
+                    errors[name] = null
+                }
             }
         })
-
-        if (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) {
-            errors['pn03'] = '(Bắt buộc)'
-        }
-
-        if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
-            errors['startTime'] = '(Bắt buộc)'
-        }
-
-        if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
-            errors['endTime'] = '(Bắt buộc)'
-        }
-
+        errors['pn03'] = (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) ? '(Bắt buộc)' : null
+        errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
+        errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
         if (this.state.pn03 && ((this.state.leaveType == FULL_DAY && this.state.totalTime > absenceTypesAndDaysOffMapping[this.state.pn03.value].day) 
             || (this.state.leaveType == DURING_THE_DAY && this.state.totalTime*8 > absenceTypesAndDaysOffMapping[this.state.pn03.value].time))) {
             const unit = this.state.leaveType == FULL_DAY ? "ngày" : "giờ"
             const time = this.state.leaveType == FULL_DAY ? absenceTypesAndDaysOffMapping[this.state.pn03.value].day : absenceTypesAndDaysOffMapping[this.state.pn03.value].time
             errors['totalDaysOff'] = `(*) Thời gian được đăng ký nghỉ tối đa là ${time} ${unit}`
+        } else {
+            errors['totalDaysOff'] = null
         }
-
         this.setState({ errors: errors })
         return errors
     }
 
     submit() {
         const errors = this.verifyInput()
-        if (!_.isEmpty(errors)) {
+        const hasErrors = !Object.values(errors).every(item => item === null)
+        if (hasErrors) {
             return
         }
 

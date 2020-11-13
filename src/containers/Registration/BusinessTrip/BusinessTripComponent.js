@@ -201,8 +201,15 @@ calDuringTheDay(timesheets, startTime, endTime) {
     this.setState({ files: files })
   }
 
-  updateApprover(approver) {
+  updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
+    const errors = {...this.state.errors}
+    if (!isApprover) {
+      errors.approver = 'Người phê duyệt không có thẩm quyền!'
+    } else {
+      errors.approver = null
+    }
+    this.setState({ errors: errors })
   }
 
   handleInputChange(event) {
@@ -225,35 +232,31 @@ calDuringTheDay(timesheets, startTime, endTime) {
   }
 
   verifyInput() {
-    let errors = {}
+    let errors = {...this.state.errors}
     let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
     if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
       requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
     }
-
     requiredFields.forEach(name => {
       if (_.isNull(this.state[name])) {
         errors[name] = '(Bắt buộc)'
+      } else {
+        if (name !== "approver") {
+          errors[name] = null
+        }
       }
     })
-
-    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
-      errors['startTime'] = '(Bắt buộc)'
-    }
-
-    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
-      errors['endTime'] = '(Bắt buộc)'
-    }
-    
+    errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
+    errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
     this.setState({ errors: errors })
-
     return errors
   }
 
   submit() {
     const errors = this.verifyInput()
-    if (!_.isEmpty(errors)) {
-      return
+    const hasErrors = !Object.values(errors).every(item => item === null)
+    if (hasErrors) {
+        return
     }
 
     const data = {

@@ -43,8 +43,10 @@ class ApproverComponent extends React.Component {
   }
 
   handleSelectChange(name, value) {
+    const currentUserLevel = localStorage.getItem('employeeLevel')
     this.setState({ [name]: value })
-    this.props.updateApprover(value)
+    const isApprover = this.isApprover(value.employeeLevel, value.pnl, value.departmentToCompare, currentUserLevel)
+    this.props.updateApprover(value, isApprover)
   }
 
   isApprover = (levelApproverFilter, company, department, currentUserLevel) => {
@@ -54,12 +56,10 @@ class ApproverComponent extends React.Component {
     let indexCurrentUserLevel = _.findIndex(levelApprover, function(item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(levelApprover, function(item) { return item == levelApproverFilter });
 
-    if (indexApproverFilterLevel == -1) {
+    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel >= indexApproverFilterLevel) {
       return false
     }
-    if (indexCurrentUserLevel >= indexApproverFilterLevel) {
-      return false
-    }
+
     if (levelApprover.includes(levelApproverFilter) && userCompany === company && userDepartment === department) {
       return true
     }
@@ -79,19 +79,20 @@ class ApproverComponent extends React.Component {
           'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
-      const currentUserLevel = localStorage.getItem('employeeLevel')
   
       axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
-          const users = data.filter(item => this.isApprover(item.employee_level, item.pnl, this.getDepartment(item), currentUserLevel) === true)
-          .map(res => {
+          const users = data.map(res => {
             return {
               label: res.fullname,
               value: res.user_account,
               fullname: res.fullname,
               avatar: res.avatar,
+              employeeLevel: res.employee_level,
+              pnl: res.pnl,
+              departmentToCompare: `${res.division} / ${res.department} / ${res.unit}`,
               userAccount: res.user_account,
               current_position: res.title,
               department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
