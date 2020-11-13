@@ -72,8 +72,15 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({ files: files })
   }
 
-  updateApprover(approver) {
+  updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
+    const errors = {...this.state.errors}
+    if (!isApprover) {
+      errors.approver = 'Người phê duyệt không có thẩm quyền!'
+    } else {
+      errors.approver = null
+    }
+    this.setState({ errors: errors })
   }
 
   handleInputChange(index, event) {
@@ -95,52 +102,28 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
-    let errors = {}
+    let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      if (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) {
-        errors['startTime1Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) {
-        errors['endTime1Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) {
-        errors['startTime2Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) {
-        errors['endTime2Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) {
-        errors['startTime3Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) {
-        errors['endTime3Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (_.isNull(timesheet.note)) {
-        errors['note' + index] = '(Bắt buộc)'
-      }
+      errors['startTime1Fact' + index] = (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) ? '(Bắt buộc)' : null
+      errors['endTime1Fact' + index] = (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) ? '(Bắt buộc)' : null
+      errors['startTime2Fact' + index] = (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) ? '(Bắt buộc)' : null
+      errors['endTime2Fact' + index] = (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) ? '(Bắt buộc)' : null
+      errors['startTime3Fact' + index] = (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) ? '(Bắt buộc)' : null
+      errors['endTime3Fact' + index] = (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) ? '(Bắt buộc)' : null
+      errors['note' + index] = _.isNull(timesheet.note) ? '(Bắt buộc)' : null
     })
-
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
-
-    if (_.isNull(this.state.files) || this.state.files.length === 0) {
-      errors['files'] = '(*) File đính kèm là bắt buộc'
-    }
-
+    errors['files'] = (_.isNull(this.state.files) || this.state.files.length === 0) ? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
     return errors
   }
 
   submit() {
     const errors = this.verifyInput()
-    if (!_.isEmpty(errors)) {
+    const hasErrors = !Object.values(errors).every(item => item === null)
+    if (hasErrors) {
       return
     }
 
@@ -528,7 +511,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>
-                  <textarea className="form-control" value={timesheet.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>
