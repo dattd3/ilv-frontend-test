@@ -24,6 +24,9 @@ const absenceTypesAndDaysOffMapping = {
     3: {day: 3, time: 24}
 }
 
+const ANNUAL_LEAVE_KEY = "PQ01"
+const COMPENSATORY_LEAVE_KEY = "PQ02"
+
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
         super();
@@ -98,46 +101,43 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartDate(startDate) {
-        const start = moment(startDate).format(DATE_FORMAT)
-        const end = this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+        const start = moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null
+        const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate) 
+        || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
         this.setState({
             startDate: start,
             endDate: end
         })
-
         this.calculateTotalTime(start, end)
     }
 
     setStartTime(startTime) {
-        const start = moment(startTime).format(TIME_FORMAT)
-        const end = this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
+        const start = moment(startTime).isValid() ? moment(startTime).format(TIME_FORMAT) : null
+        const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) > this.state.endTime) ?  moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) : this.state.endTime
         this.setState({
             startTime: start,
             endTime: end
         })
-
         this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
     setEndTime(endTime) {
-        const start = this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime
-        const end = moment(endTime).format(TIME_FORMAT)
+        const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) : this.state.startTime
+        const end = moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
         this.setState({
             startTime: start,
             endTime: end
         })
-
         this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
     setEndDate(endDate) {
-        const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate
-        const end = moment(endDate).format(DATE_FORMAT)
+        const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT) : this.state.startDate
+        const end = moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT)
         this.setState({
             startDate: start,
             endDate: end
         })
-
         this.calculateTotalTime(start, end)
     }
 
@@ -221,8 +221,15 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ files: files })
     }
 
-    updateApprover(approver) {
+    updateApprover(approver, isApprover) {
         this.setState({ approver: approver })
+        const errors = {...this.state.errors}
+        if (!isApprover) {
+            errors.approver = 'Người phê duyệt không có thẩm quyền!'
+        } else {
+            errors.approver = null
+        }
+        this.setState({ errors: errors })
     }
 
     handleInputChange(event) {
@@ -240,40 +247,47 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     verifyInput() {
-        let errors = {}
-        const RequiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
-        RequiredFields.forEach(name => {
-            if (_.isNull(this.state[name])) {
+        const annualLeaveTotal = this.state.annualLeaveSummary.DAY_LEA
+        let errors = {...this.state.errors}
+        const requiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
+        requiredFields.forEach(name => {
+            if (_.isNull(this.state[name]) || !this.state[name]) {
                 errors[name] = '(Bắt buộc)'
+            } else {
+                if (name !== "approver") {
+                    errors[name] = null
+                }
             }
         })
-
-        if (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) {
-            errors['pn03'] = '(Bắt buộc)'
-        }
-
-        if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
-            errors['startTime'] = '(Bắt buộc)'
-        }
-
-        if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
-            errors['endTime'] = '(Bắt buộc)'
-        }
-
+        errors['pn03'] = (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) ? '(Bắt buộc)' : null
+        errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
+        errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
         if (this.state.pn03 && ((this.state.leaveType == FULL_DAY && this.state.totalTime > absenceTypesAndDaysOffMapping[this.state.pn03.value].day) 
             || (this.state.leaveType == DURING_THE_DAY && this.state.totalTime*8 > absenceTypesAndDaysOffMapping[this.state.pn03.value].time))) {
             const unit = this.state.leaveType == FULL_DAY ? "ngày" : "giờ"
             const time = this.state.leaveType == FULL_DAY ? absenceTypesAndDaysOffMapping[this.state.pn03.value].day : absenceTypesAndDaysOffMapping[this.state.pn03.value].time
-            errors['totalDaysOff'] = `(*) Thời gian được đăng ký nghỉ tối đa là ${time} ${unit}`
+            errors['totalDaysOff'] = `Thời gian được đăng ký nghỉ tối đa là ${time} ${unit}`
+        } else {
+            errors['totalDaysOff'] = null
         }
-
+        if (this.state.absenceType && this.state.absenceType.value === ANNUAL_LEAVE_KEY) {
+            if (this.state.totalTime > annualLeaveTotal) {
+                if (this.state.leaveType == FULL_DAY) {
+                    errors['totalDaysOff'] = `Số ngày nghỉ phép được đăng ký tối đa là ${parseFloat(annualLeaveTotal).toFixed(2)} ngày`
+                }
+                if (this.state.leaveType == DURING_THE_DAY) {
+                    errors['totalDaysOff'] = `Số giờ nghỉ phép được đăng ký tối đa là ${parseFloat(annualLeaveTotal*8).toFixed(2)} giờ`
+                }
+            }
+        }
         this.setState({ errors: errors })
         return errors
     }
 
     submit() {
         const errors = this.verifyInput()
-        if (!_.isEmpty(errors)) {
+        const hasErrors = !Object.values(errors).every(item => item === null)
+        if (hasErrors) {
             return
         }
 
@@ -339,7 +353,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(leaveType) {
-        debugger
         if (leaveType !== this.state.leaveType) {
             this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
         }
@@ -361,8 +374,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PN01', label: 'Nghỉ lễ người nước ngoài' },
             { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
             { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
-            { value: 'PQ01', label: 'Nghỉ phép năm' },
-            { value: 'PQ02', label: 'Nghỉ bù (Nếu có)' },
+            { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
+            { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
             { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
@@ -446,7 +459,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                             </label>
                                         </div>
-                                        {this.state.startDate ? this.error('startDate') : null}
+                                        {this.state.errors.startDate ? this.error('startDate') : null}
                                     </div>
                                     <div className="col">
                                         <div className="content input-container">
@@ -467,7 +480,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
                                         </div>
-                                        {this.state.startTime ? this.error('startTime') : null}
+                                        {this.state.errors.startTime ? this.error('startTime') : null}
                                     </div>
                                 </div>
                             </div>
@@ -494,7 +507,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                                             </label>
                                         </div>
-                                        {this.state.endDate ? this.error('endDate') : null}
+                                        {this.state.errors.endDate ? this.error('endDate') : null}
                                     </div>
                                     <div className="col">
                                         <div className="content input-container">
@@ -515,7 +528,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                             </label>
                                         </div>
-                                        {this.state.endTime ? this.error('endTime') : null}
+                                        {this.state.errors.endTime ? this.error('endTime') : null}
                                     </div>
                                 </div>
                             </div>
@@ -524,8 +537,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
                                 </div>
-
-                                {this.state.totalTime ? this.error('totalDaysOff') : null}
+                                {this.state.errors.totalDaysOff ? this.error('totalDaysOff') : null}
                             </div>
                         </div>
 
@@ -535,13 +547,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
                                 </div>
-                                {this.state.absenceType && _.size(this.state.absenceType) > 0 ? this.error('absenceType') : null}
+                                {this.state.errors.absenceType ? this.error('absenceType') : null}
 
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <div>
                                     <Select name="PN03" value={this.state.pn03} onChange={pn03 => this.handleSelectChange('pn03', pn03)} placeholder="Lựa chọn" key="absenceType" options={PN03List} />
                                 </div> : null}
-                                {this.state.pn03 && _.size(this.state.pn03) > 0 ? this.error('pn03') : null}
+                                {this.state.errors.pn03 ? this.error('pn03') : null}
                             </div>
 
                             <div className="col-7">
@@ -549,7 +561,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div>
                                     <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
-                                {this.state.note ? this.error('note') : null}
+                                {this.state.errors.note ? this.error('note') : null}
                             </div>
                         </div>
                     </div>

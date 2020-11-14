@@ -79,47 +79,33 @@ class SubstitutionComponent extends React.Component {
   }
 
   verifyInput() {
-    let errors = {}
+    let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       if (timesheet.shiftType === SHIFT_CODE) {
-        if (_.isNull(timesheet['shiftId'])) {
-          errors['shiftId' + index] = '(Bắt buộc)'
-        }
+        errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
       }
-
       if (timesheet.shiftType === SHIFT_UPDATE) {
         const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
         shiftRequiredFields.forEach(name => {
-          if (_.isNull(timesheet[name])) {
-            errors[name + index] = '(Bắt buộc)'
-          }
+          errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
         })
       }
-
-      if (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) {
-        errors['breakTime' + index] = '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)'
-      }
-
-      if (_.isNull(timesheet['note'])) {
-        errors['note' + index] = '(Bắt buộc)'
-      }
+      errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
+        && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)' : null
+      errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? '(Bắt buộc)' : null
     })
-
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
-
-    if (_.isNull(this.state.files) || this.state.files.length === 0) {
-      errors['files'] = '(*) File đính kèm là bắt buộc'
-    }
-
+    errors['files'] = (_.isNull(this.state.files) || this.state.files.length === 0) ? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
     return errors
   }
 
   submit() {
     const errors = this.verifyInput()
-    if (!_.isEmpty(errors)) {
+    const hasErrors = !Object.values(errors).every(item => item === null)
+    if (hasErrors) {
       return
     }
     
@@ -180,14 +166,14 @@ class SubstitutionComponent extends React.Component {
 
   setStartDate(startDate) {
     this.setState({
-      startDate: moment(startDate).format(DATE_FORMAT),
-      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+      startDate: moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null,
+      endDate: this.state.endDate === undefined || startDate > this.state.endDate ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
     })
   }
 
   setEndDate(endDate) {
     this.setState({
-      endDate: moment(endDate).format(DATE_FORMAT)
+      endDate: moment(endDate).isValid() ? moment(endDate).format(DATE_FORMAT) : null
     })
   }
 
@@ -224,8 +210,15 @@ class SubstitutionComponent extends React.Component {
     this.setState({ files: files })
   }
 
-  updateApprover(approver) {
+  updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
+    const errors = {...this.state.errors}
+    if (!isApprover) {
+        errors.approver = 'Người phê duyệt không có thẩm quyền!'
+    } else {
+        errors.approver = null
+    }
+    this.setState({ errors: errors })
   }
 
   updateEditMode(index) {
