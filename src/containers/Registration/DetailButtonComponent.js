@@ -57,11 +57,22 @@ class DetailButtonComponent extends React.Component {
                 onHide={this.onHideModalConfirm.bind(this)}
             />
             {
-            action !== "request" ?
+            action === "approval" ?
             <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
-                    <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
-                <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Không duyệt</button>
+                {
+                    !this.props.isShowRevocationOfApproval ?
+                    <>
+                    <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
+                        <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Không duyệt</button>
+                    </>
+                    : null
+                }
+                {
+                    this.props.isShowRevocationOfApproval ?
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Thu hồi phê duyệt</button>
+                    : null
+                }
             </div>
             : null
             }

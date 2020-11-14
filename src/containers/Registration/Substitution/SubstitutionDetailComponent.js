@@ -147,8 +147,13 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{Constants.mappingStatus[this.props.substitution.status].label}</span>
+          {
+            this.props.substitution.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           this.props.substitution.userProfileInfoDocuments.length > 0 ?
@@ -167,8 +172,9 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
 
-        {this.props.substitution.status === 0 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.status === 0 || this.props.substitution.status === 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
+          isShowRevocationOfApproval={this.props.substitution.status === 2}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
         /> : null}

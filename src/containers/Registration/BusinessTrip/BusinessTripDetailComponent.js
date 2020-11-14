@@ -2,8 +2,8 @@ import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
-import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -59,11 +59,11 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               Địa điểm
-              <div className="detail">{businessTrip.userProfileInfo.place.label}</div>
+              <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.place.label}</div>
             </div>
             <div className="col-4">
               Phương tiện
-              <div className="detail">{businessTrip.userProfileInfo.vehicle.label}</div>
+              <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.vehicle.label}</div>
             </div>
           </div>
           <div className="row">
@@ -74,8 +74,13 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
         </div>
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
+          {
+            businessTrip.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           businessTrip.userProfileInfoDocuments.length > 0 ?
@@ -94,7 +99,7 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
 
-        {businessTrip.status === 0 ? <DetailButtonComponent 
+        {businessTrip.status === 0 || businessTrip.status === 2 ? <DetailButtonComponent 
         dataToSap={[{
           MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
           PERNR: businessTrip.userProfileInfo.user.employeeNo,
@@ -104,6 +109,7 @@ class BusinessTripDetailComponent extends React.Component {
           BEGUZ: businessTrip.userProfileInfo.startTime ? moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           ENDUZ: businessTrip.userProfileInfo.endTime ? moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
         }]}
+        isShowRevocationOfApproval={businessTrip.status === 2}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}
