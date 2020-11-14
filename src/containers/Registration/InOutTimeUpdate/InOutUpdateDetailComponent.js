@@ -1,7 +1,6 @@
 import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
-import ApproverDetailComponent from '../ApproverDetailComponent'
 import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm:ss'
@@ -150,8 +149,13 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         })}
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+          {
+            this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
@@ -170,9 +174,10 @@ class InOutUpdateDetailComponent extends React.Component {
           : null
         }
         
-        { this.props.inOutTimeUpdate.status === 0 ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate.status === 0 || this.props.inOutTimeUpdate.status === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
+          isShowRevocationOfApproval={this.props.inOutTimeUpdate.status === 2}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
         /> : null }

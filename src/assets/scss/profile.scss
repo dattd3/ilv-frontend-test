@@ -16,6 +16,7 @@
         border: 1px solid;
         border-radius: 30px;
         background: #FFFFFF;
+        margin-right: 40px;
         &.success {
             border-color: #05BD29;
             color: #05BD29;
@@ -23,6 +24,12 @@
         &.fail {
             border-color: #FF0000;
             color: #FF0000;
+        }
+    }
+    .hr-comments-block {
+        color: #FF0000;
+        .hr-comments {
+            font-weight: bold;
         }
     }
     .title {

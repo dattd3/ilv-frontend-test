@@ -10,11 +10,13 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
+const CLOSING_SALARY_DATE_PRE_MONTH = 25
+
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: moment().startOf('month').toDate(),
+      startDate: moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
       endDate: new Date(),
       timesheets: [],
       approver: null,
@@ -241,6 +243,13 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({isUpdateFiles : status})
   }
 
+  getClosingSalaryDatePreMonth = () => {
+    const now = moment()
+    const preMonth = now.month()
+    const currentYear = preMonth == 0 ? now.year() - 1 : now.year()
+    return `${CLOSING_SALARY_DATE_PRE_MONTH}/${preMonth}/${currentYear}`
+  }
+
   render() {
     return (
       <div className="in-out-time-update">
@@ -256,9 +265,10 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsStart
                     autoComplete="off"
                     selected={this.state.startDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
+                    minDate={this.state.startDate}
+                    maxDate={this.state.endDate}
                     onChange={this.setStartDate.bind(this)}
+                    showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
@@ -278,10 +288,10 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={this.state.endDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
                     minDate={this.state.startDate}
+                    maxDate={this.state.endDate}
                     onChange={this.setEndDate.bind(this)}
+                    showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
