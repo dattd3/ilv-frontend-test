@@ -9,14 +9,12 @@ import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _, { startsWith } from 'lodash'
+import Constants from '../../../commons/Constants'
 
 registerLocale("vi", vi)
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
-const DATE_FORMAT = 'DD/MM/YYYY'
-const TIME_FORMAT = 'HH:mm'
-const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 const absenceTypesAndDaysOffMapping = {
     1: {day: 3, time: 24},
@@ -101,9 +99,9 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartDate(startDate) {
-        const start = moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null
-        const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate) 
-        || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
+        const start = moment(startDate).isValid() ? moment(startDate).format(Constants.LEAVE_DATE_FORMAT) : null
+        const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) > this.state.endDate) 
+        || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) : this.state.endDate
         this.setState({
             startDate: start,
             endDate: end
@@ -112,8 +110,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartTime(startTime) {
-        const start = moment(startTime).isValid() ? moment(startTime).format(TIME_FORMAT) : null
-        const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) > this.state.endTime) ?  moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) : this.state.endTime
+        const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
+        const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT) > this.state.endTime) ?  moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : this.state.endTime
         this.setState({
             startTime: start,
             endTime: end
@@ -122,8 +120,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setEndTime(endTime) {
-        const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) : this.state.startTime
-        const end = moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
+        const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT) : this.state.startTime
+        const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
         this.setState({
             startTime: start,
             endTime: end
@@ -132,8 +130,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setEndDate(endDate) {
-        const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT) : this.state.startDate
-        const end = moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT)
+        const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : this.state.startDate
+        const end = moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT)
         this.setState({
             startDate: start,
             endDate: end
@@ -143,31 +141,31 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
         if (!startDate || !endDate) return
-
         const config = {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
+        const start = moment(startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
+        const end = moment(endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
 
-        const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
-        const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
-
-        axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}user/leave`, {
             perno: localStorage.getItem('employeeNo'),
             from_date: start,
-            to_date: end
+            from_time: this.state.leaveType === FULL_DAY ? "" : startTime,
+            to_date: end,
+            to_time: this.state.leaveType === FULL_DAY ? "" : endTime
         } ,config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                    this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
+        .then(res => {
+            if (res && res.data) {
+                const data = res.data
+                if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
+                    this.setState({totalTime: data.data.days || ""})
                 }
-            }).catch(error => {
-                // localStorage.clear();
-                // window.location.href = map.Login;
-            })
+            }
+        }).catch(error => {
+
+        })
     }
 
     calFullDay(timesheets) {
@@ -181,8 +179,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     calDuringTheDay(timesheets, startTime, endTime) {
         if (!startTime || !endTime) return
         
-        let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
-        let endTimeSAP = moment(endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+        let startTimeSAP = moment(startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
+        let endTimeSAP = moment(endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
         let hours = 0
   
         if ( timesheets.length > 0) {
@@ -201,13 +199,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                     endTimeSAP = endTimeSAP >= timesheet['break_from_time_'+ index] && endTimeSAP <= timesheet['break_to_time'+ index] ? timesheet['break_from_time_'+ index] : endTimeSAP
 
                     // endtime < startime ex: starTime = 23:00:00 endTime = 06:00:00 
-                    endTimeSAP = endTimeSAP < startTimeSAP ? moment(endTimeSAP, TIME_OF_SAP_FORMAT).add(1, 'days').format(TIME_OF_SAP_FORMAT) : endTimeSAP
+                    endTimeSAP = endTimeSAP < startTimeSAP ? moment(endTimeSAP, Constants.TIME_OF_SAP_FORMAT).add(1, 'days').format(Constants.TIME_OF_SAP_FORMAT) : endTimeSAP
 
-                    const differenceInMs = moment(endTimeSAP, TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, TIME_OF_SAP_FORMAT))
+                    const differenceInMs = moment(endTimeSAP, Constants.TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, Constants.TIME_OF_SAP_FORMAT))
                     hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
 
                     if(startTimeSAP < timesheet['break_from_time_'+ index] && endTimeSAP > timesheet['break_to_time'+ index]) {
-                        const differenceInMsBreakTime = moment(timesheet['break_to_time'+ index], TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ index], TIME_OF_SAP_FORMAT))
+                        const differenceInMsBreakTime = moment(timesheet['break_to_time'+ index], Constants.TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_'+ index], Constants.TIME_OF_SAP_FORMAT))
                         hours = hours - Math.abs(moment.duration(differenceInMsBreakTime).asHours())
                     }
                 }
@@ -448,9 +446,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     name="startDate"
                                                     selectsStart
                                                     autoComplete="off"
-                                                    selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
-                                                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
-                                                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                                                    selected={this.state.startDate ? moment(this.state.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                    startDate={this.state.startDate ? moment(this.state.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                    endDate={this.state.endDate ? moment(this.state.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                     onChange={this.setStartDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="Lựa chọn"
@@ -465,7 +463,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
-                                                    selected={this.state.startTime ? moment(this.state.startTime, TIME_FORMAT).toDate() : null}
+                                                    selected={this.state.startTime ? moment(this.state.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                     onChange={this.setStartTime.bind(this)}
                                                     autoComplete="off"
                                                     showTimeSelect
@@ -495,10 +493,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     name="endDate"
                                                     selectsEnd
                                                     autoComplete="off"
-                                                    selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
-                                                    startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
-                                                    endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
-                                                    minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                                                    selected={this.state.endDate ? moment(this.state.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                    startDate={this.state.startDate ? moment(this.state.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                    endDate={this.state.endDate ? moment(this.state.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                    minDate={this.state.startDate ? moment(this.state.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                     onChange={this.setEndDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="Lựa chọn"
@@ -513,7 +511,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
-                                                    selected={this.state.endTime ? moment(this.state.endTime, TIME_FORMAT).toDate() : null}
+                                                    selected={this.state.endTime ? moment(this.state.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                     onChange={this.setEndTime.bind(this)}
                                                     showTimeSelect
                                                     autoComplete="off"

@@ -141,9 +141,9 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: this.state.approver,
     }
-    const comments = this.state.timesheets.map(item => (
-      item.note
-    )).join(" - ")
+    const comments = this.state.timesheets
+    .filter(item => (item.note && item.note))
+    .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Sửa giờ vào-ra')
