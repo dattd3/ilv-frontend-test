@@ -24,6 +24,7 @@ const absenceTypesAndDaysOffMapping = {
 
 const ANNUAL_LEAVE_KEY = "PQ01"
 const COMPENSATORY_LEAVE_KEY = "PQ02"
+const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -34,7 +35,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             startTime: null,
             endDate: null,
             endTime: null,
-            totalTime: null,
+            totalDays: "",
+            totalTimes: "",
             absenceType: null,
             leaveType: FULL_DAY,
             note: null,
@@ -79,7 +81,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 startTime: this.props.leaveOfAbsence.userProfileInfo.startTime,
                 endDate: this.props.leaveOfAbsence.userProfileInfo.endDate,
                 endTime: this.props.leaveOfAbsence.userProfileInfo.endTime,
-                totalTime: this.props.leaveOfAbsence.userProfileInfo.totalTime,
+                totalTimes: this.props.leaveOfAbsence.userProfileInfo.totalTimes,
                 absenceType: this.props.leaveOfAbsence.userProfileInfo.absenceType,
                 leaveType: this.props.leaveOfAbsence.userProfileInfo.leaveType,
                 pn03: this.props.leaveOfAbsence.userProfileInfo.pn03,
@@ -140,7 +142,10 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
-        if (!startDate || !endDate) return
+        if (this.state.leaveType === FULL_DAY && (!startDate || !endDate)) return
+        if (this.state.leaveType === DURING_THE_DAY && (!startDate || !endDate || !startTime || !endTime)) return
+
+        const absenceType = this.state.absenceType ? this.state.absenceType.value : ""
         const config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -152,19 +157,28 @@ class LeaveOfAbsenceComponent extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}user/leave`, {
             perno: localStorage.getItem('employeeNo'),
             from_date: start,
-            from_time: this.state.leaveType === FULL_DAY ? "" : startTime,
+            from_time: this.state.leaveType === FULL_DAY ? "" : moment(startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
             to_date: end,
-            to_time: this.state.leaveType === FULL_DAY ? "" : endTime
+            to_time: this.state.leaveType === FULL_DAY ? "" : moment(endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+            should_check_leave: absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY
         } ,config)
         .then(res => {
             if (res && res.data) {
                 const data = res.data
                 if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
-                    this.setState({totalTime: data.data.days || ""})
+                    const errors = {...this.state.errors}
+                    errors.totalDaysOff = null
+                    this.setState({totalTimes: data.data.hours || "", totalDays: data.data.days, errors: errors})
+                } else {
+                    const errors = {...this.state.errors}
+                    errors.totalDaysOff = data.result.message
+                    this.setState({errors: errors, totalTimes: "", totalDays: ""})
                 }
             }
         }).catch(error => {
-
+            const errors = {...this.state.errors}
+            errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+            this.setState({errors: errors, totalTimes: "", totalDays: ""})
         })
     }
 
@@ -241,11 +255,24 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value) {
-        this.setState({ [name]: value })
+        this.setState({ [name]: value }, () => {
+            if (name === "absenceType") {
+                this.calculateTotalTime(this.state.startDate, this.state.endDate, this.state.startTime, this.state.endTime)
+            } else if (name === "pn03") {
+                const errors = {...this.state.errors}
+                if (this.state.pn03 && (this.state.leaveType == FULL_DAY && this.state.totalDays > absenceTypesAndDaysOffMapping[this.state.pn03.value].day)) {
+                    const days = absenceTypesAndDaysOffMapping[this.state.pn03.value].day
+                    errors['totalDaysOff'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
+                } else {
+                    errors['totalDaysOff'] = null
+                }
+                this.setState({ errors: errors })
+            }
+        })
     }
 
     verifyInput() {
-        const annualLeaveTotal = this.state.annualLeaveSummary.DAY_LEA
+        const annualLeaveTotal = this.state.annualLeaveSummary ? this.state.annualLeaveSummary.DAY_LEA : 0
         let errors = {...this.state.errors}
         const requiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
         requiredFields.forEach(name => {
@@ -260,24 +287,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         errors['pn03'] = (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) ? '(Bắt buộc)' : null
         errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
         errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
-        if (this.state.pn03 && ((this.state.leaveType == FULL_DAY && this.state.totalTime > absenceTypesAndDaysOffMapping[this.state.pn03.value].day) 
-            || (this.state.leaveType == DURING_THE_DAY && this.state.totalTime*8 > absenceTypesAndDaysOffMapping[this.state.pn03.value].time))) {
-            const unit = this.state.leaveType == FULL_DAY ? "ngày" : "giờ"
-            const time = this.state.leaveType == FULL_DAY ? absenceTypesAndDaysOffMapping[this.state.pn03.value].day : absenceTypesAndDaysOffMapping[this.state.pn03.value].time
-            errors['totalDaysOff'] = `Thời gian được đăng ký nghỉ tối đa là ${time} ${unit}`
-        } else {
-            errors['totalDaysOff'] = null
-        }
-        if (this.state.absenceType && this.state.absenceType.value === ANNUAL_LEAVE_KEY) {
-            if (this.state.totalTime > annualLeaveTotal) {
-                if (this.state.leaveType == FULL_DAY) {
-                    errors['totalDaysOff'] = `Số ngày nghỉ phép được đăng ký tối đa là ${parseFloat(annualLeaveTotal).toFixed(2)} ngày`
-                }
-                if (this.state.leaveType == DURING_THE_DAY) {
-                    errors['totalDaysOff'] = `Số giờ nghỉ phép được đăng ký tối đa là ${parseFloat(annualLeaveTotal*8).toFixed(2)} giờ`
-                }
-            }
-        }
+
         this.setState({ errors: errors })
         return errors
     }
@@ -297,7 +307,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             absenceType: this.state.absenceType,
             leaveType: this.state.leaveType,
             approver: this.state.approver,
-            totalTime: this.state.totalTime,
+            totalTimes: this.state.totalTimes,
+            totalDays: this.state.totalDays,
             pn03: this.state.absenceType.value === 'PN03' ? this.state.pn03 : null,
             user: {
                 fullname: localStorage.getItem('fullName'),
@@ -352,7 +363,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     updateLeaveType(leaveType) {
         if (leaveType !== this.state.leaveType) {
-            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTime: null })
+            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTimes: null, totalDays: null })
         }
     }
 
@@ -374,9 +385,10 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
             { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
             { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
-            { value: 'PQ03', label: 'Nghỉ bù tạm ứng' },
+            { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }
-        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03'))
+        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))
+
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
             { value: '2', label: 'Con kết hôn' },
@@ -533,7 +545,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
+                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? this.state.totalDays ? this.state.totalDays + ' ngày' : "" : this.state.totalTimes ? this.state.totalTimes + ' giờ' : ""} readOnly />
                                 </div>
                                 {this.state.errors.totalDaysOff ? this.error('totalDaysOff') : null}
                             </div>
