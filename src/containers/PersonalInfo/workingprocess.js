@@ -142,7 +142,14 @@ class MyComponent extends React.Component {
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-3">
                                                         <div className="info-label mb-2">Hình thức khen thưởng</div>
-                                                        <p>{item.merit}&nbsp;</p>
+                                                        <p>
+                                                            {item.merit ? 'Giấy khen ' : null }
+                                                            {item.merit_certificate ? 'Bằng khen ' : null }
+                                                            {item.cash ? 'Tiền mặt ' : null }
+                                                            {item.merit_and_cash ? 'Giấy khen & tiền mặt ' : null }
+                                                            {item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt ' : null }
+                                                            {item.other_rewards ? 'Khác' : null }
+                                                        </p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-2">
                                                         <div className="info-label mb-2">Số tiền khen thưởng</div>
@@ -183,7 +190,14 @@ class MyComponent extends React.Component {
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
-                                                            <p>{item.compensation}&nbsp;</p>
+                                                            <p>
+                                                                {item.dimiss ? 'Sa thải' : null}&nbsp;
+                                                                {item.removal_demotion ? 'Cách chức/ Hạ chức' : null}&nbsp;
+                                                                {item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc' : null}&nbsp;
+                                                                {item.terminate_labour_contract ? 'Chấm dứt HĐLĐ' : null}&nbsp;
+                                                                {item.compensation ? 'Bồi thường thiệt hại' : null}&nbsp;
+                                                                {item.other ? 'Khác' : null}&nbsp;
+                                                            </p>
                                                           </div>
                                                         </div>
                                                         <div className="form-row">
