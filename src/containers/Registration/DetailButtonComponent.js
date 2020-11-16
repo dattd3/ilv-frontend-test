@@ -70,7 +70,7 @@ class DetailButtonComponent extends React.Component {
                 }
                 {
                     this.props.isShowRevocationOfApproval ?
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Thu hồi phê duyệt</button>
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi phê duyệt</button>
                     : null
                 }
             </div>

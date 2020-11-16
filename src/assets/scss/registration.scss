@@ -117,10 +117,11 @@
 
     .file-name {
         padding: 10px;
-        border: 1px solid #ddd;
-        background-color: #EEEEEE;
+        border: 1px solid #DDDDDD;
+        background-color: #FFFFFF;
         border-radius: 5px;
         color: #858796;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         & > a {
             color: #858796;
         }
