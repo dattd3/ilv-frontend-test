@@ -118,7 +118,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ENDDA: moment(userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
           SUBTY: userProfileInfo.absenceType ? userProfileInfo.absenceType.value : "",
           BEGUZ: userProfileInfo.startTime ? moment(userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ACTIO: 'INS'
         }]}
           isShowRevocationOfApproval={this.props.leaveOfAbsence.status === 2}
           id={this.props.leaveOfAbsence.id}

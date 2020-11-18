@@ -4,6 +4,7 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
@@ -154,7 +155,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })

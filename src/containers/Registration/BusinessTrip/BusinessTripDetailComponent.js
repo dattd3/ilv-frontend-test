@@ -105,7 +105,8 @@ class BusinessTripDetailComponent extends React.Component {
           ENDDA: moment(businessTrip.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
           SUBTY: businessTrip.userProfileInfo.attendanceQuotaType.value,
           BEGUZ: businessTrip.userProfileInfo.startTime ? moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: businessTrip.userProfileInfo.endTime ? moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+          ENDUZ: businessTrip.userProfileInfo.endTime ? moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ACTIO: 'INS'
         }]}
         isShowRevocationOfApproval={businessTrip.status === 2}
         id={businessTrip.id}

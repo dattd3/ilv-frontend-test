@@ -3,6 +3,7 @@ import axios from 'axios'
 import ButtonComponent from '../ButtonComponent'
 import Select from 'react-select'
 import ApproverComponent from '../ApproverComponent'
+import Constants from '../../../commons/Constants'
 import moment from 'moment'
 import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
@@ -135,7 +136,7 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
