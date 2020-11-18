@@ -284,7 +284,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : {})
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })

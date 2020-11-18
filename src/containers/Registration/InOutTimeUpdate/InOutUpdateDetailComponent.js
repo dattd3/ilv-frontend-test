@@ -29,7 +29,8 @@ class InOutUpdateDetailComponent extends React.Component {
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P10',
             LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            ACTIO: 'INS'
           })
         }
 
@@ -40,7 +41,8 @@ class InOutUpdateDetailComponent extends React.Component {
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P20',
             LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            ACTIO: 'INS'
           })
         }
       })

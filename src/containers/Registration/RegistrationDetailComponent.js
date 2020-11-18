@@ -5,6 +5,7 @@ import InOutUpdateDetailComponent from './InOutTimeUpdate/InOutUpdateDetailCompo
 import SubstitutionDetailComponent from './Substitution/SubstitutionDetailComponent'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
+import map from "../map.config"
 
 class RegistrationDetailComponent extends React.Component {
     constructor(props) {
@@ -12,6 +13,12 @@ class RegistrationDetailComponent extends React.Component {
         this.state = {
           data: {}
         }
+    }
+
+    getTypeDetail = () => {
+      const pathName = window.location.pathname;
+      const pathNameArr = pathName.split('/');
+      return pathNameArr[pathNameArr.length - 1];
     }
 
     componentDidMount() {
@@ -22,10 +29,14 @@ class RegistrationDetailComponent extends React.Component {
         }
       }
     
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${taskId}`, config)
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${taskId}?typeDetail=${this.getTypeDetail()}`, config)
       .then(res => {
         if (res && res.data) {
-          const response = res.data.data
+          const data = res.data
+          if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
+            return window.location.href = map.NotFound;
+          }
+          const response = data.data
           this.setState({data: response })
         }
       }).catch(error => {
