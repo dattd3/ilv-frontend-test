@@ -77,46 +77,43 @@ class BusinessTripComponent extends React.Component {
   }
 
   setStartDate(startDate) {
-    const start = moment(startDate).format(DATE_FORMAT)
-    const end = this.state.endDate === undefined || moment(startDate).format(DATE_FORMAT) > this.state.endDate || this.state.leaveType === DURING_THE_DAY ? moment(startDate).format(DATE_FORMAT) : this.state.endDate
+    const start = moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null
+    const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate) 
+    || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
     this.setState({
       startDate: start,
       endDate: end
     })
-
     this.calculateTotalTime(start, end)
   }
 
   setStartTime(startTime) {
-    const start = moment(startTime).format(TIME_FORMAT)
-    const end = this.state.endTime === undefined || moment(startTime).format(TIME_FORMAT) > this.state.endTime ? moment(startTime).format(TIME_FORMAT) : this.state.endTime
+    const start = moment(startTime).isValid() ? moment(startTime).format(TIME_FORMAT) : null
+    const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) > this.state.endTime) ? moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) : this.state.endTime
     this.setState({
         startTime: start,
         endTime: end
     })
-
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
-}
+  }
 
-setEndTime(endTime) {
-    const start = this.state.startTime === undefined || moment(endTime).format(TIME_FORMAT) < this.state.startTime ? moment(endTime).format(TIME_FORMAT) : this.state.startTime
-    const end = moment(endTime).format(TIME_FORMAT)
+  setEndTime(endTime) {
+    const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) : this.state.startTime
+    const end =  moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
     this.setState({
         startTime: start,
         endTime: end
     })
-
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
-}
+  }
 
   setEndDate(endDate) {
-    const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).format(DATE_FORMAT) : this.state.startDate
-    const end = moment(endDate).format(DATE_FORMAT)
+    const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT) : this.state.startDate
+    const end = moment(endDate).isValid() && moment(endDate).format(DATE_FORMAT)
     this.setState({
       startDate: start,
       endDate: end
     })
-
     this.calculateTotalTime(start, end)
   }
 
@@ -201,8 +198,15 @@ calDuringTheDay(timesheets, startTime, endTime) {
     this.setState({ files: files })
   }
 
-  updateApprover(approver) {
+  updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
+    const errors = {...this.state.errors}
+    if (!isApprover) {
+      errors.approver = 'Người phê duyệt không có thẩm quyền!'
+    } else {
+      errors.approver = null
+    }
+    this.setState({ errors: errors })
   }
 
   handleInputChange(event) {
@@ -225,35 +229,31 @@ calDuringTheDay(timesheets, startTime, endTime) {
   }
 
   verifyInput() {
-    let errors = {}
+    let errors = {...this.state.errors}
     let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
     if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
       requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
     }
-
     requiredFields.forEach(name => {
-      if (_.isNull(this.state[name])) {
+      if (_.isNull(this.state[name]) || !this.state[name]) {
         errors[name] = '(Bắt buộc)'
+      } else {
+        if (name !== "approver") {
+          errors[name] = null
+        }
       }
     })
-
-    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) {
-      errors['startTime'] = '(Bắt buộc)'
-    }
-
-    if (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) {
-      errors['endTime'] = '(Bắt buộc)'
-    }
-    
+    errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
+    errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
     this.setState({ errors: errors })
-
     return errors
   }
 
   submit() {
     const errors = this.verifyInput()
-    if (!_.isEmpty(errors)) {
-      return
+    const hasErrors = !Object.values(errors).every(item => item === null)
+    if (hasErrors) {
+        return
     }
 
     const data = {
@@ -284,7 +284,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : {})
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })

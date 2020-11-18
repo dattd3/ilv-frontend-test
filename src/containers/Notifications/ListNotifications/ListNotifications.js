@@ -24,15 +24,19 @@ const usePreloadGetPhoneSupport = (params) => {
     });
     return data;
 };
- 
+
+const getOrganizationLevelByRawLevel = level => {
+    return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
+}
+
 function ListNotifications(props) {
     const [page, SetPage] = useState(Constants.NOTIFICATION_PAGE_INDEX_DEFAULT);
     const [pageSize, SetPageSize] = useState(Constants.NOTIFICATION_PAGE_SIZE_DEFAULT);
     const [keyword, SetKeyword] = useState("");
 
-    const lv3 = localStorage.getItem('organizationLv3');
-    const lv4 = localStorage.getItem('organizationLv4');
-    const lv5 = localStorage.getItem('organizationLv5');
+    const lv3 = localStorage.getItem('organizationLv3')
+    const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
+    const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
     const region = localStorage.getItem('region');
     const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
     const phonesSupportForRegion = usePreloadGetPhoneSupport([region]);

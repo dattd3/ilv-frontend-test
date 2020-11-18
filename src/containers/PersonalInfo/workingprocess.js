@@ -40,7 +40,7 @@ class MyComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`)
               .then(res => {
                 if (res && res.data && res.data.data) {
-                    this.setState({ userBonuses: JSON.parse(res.data.data) });
+                    this.setState({ userBonuses: res.data.data });
                 }
               }).catch(error => {
                 // localStorage.clear();
@@ -49,7 +49,7 @@ class MyComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${localStorage.getItem('employeeNo')}`)
               .then(res => {
                 if (res && res.data && res.data.data) {
-                    let userPenaltiesResult = JSON.parse(res.data.data);
+                    let userPenaltiesResult = res.data.data;
                     this.setState({ userPenalties: userPenaltiesResult });
                 }
               }).catch(error => {
@@ -130,23 +130,30 @@ class MyComponent extends React.Component {
                                                 <div className="form-row">
                                                       <div className="form-group col-md-6 col-lg-2">
                                                         <div className="info-label mb-2">Số quyết định</div>
-                                                        <p>{item.decision_number}</p>
+                                                        <p>{item.decision_number}&nbsp;</p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-2">
                                                         <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                        <p>{item.effective_date ? item.effective_date.split('T')[0] : '.' }</p>
+                                                        <p>{item.effective_date ? item.effective_date.split('T')[0] : '.' }&nbsp;</p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-3">
                                                         <div className="info-label mb-2">Lý do khen thưởng</div>
-                                                        <p>{item.compliment_reason}</p>
+                                                        <p>{item.compliment_reason}&nbsp;</p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-3">
                                                         <div className="info-label mb-2">Hình thức khen thưởng</div>
-                                                        <p>{item.merit}</p>
+                                                        <p>
+                                                            {item.merit ? 'Giấy khen ' : null }
+                                                            {item.merit_certificate ? 'Bằng khen ' : null }
+                                                            {item.cash ? 'Tiền mặt ' : null }
+                                                            {item.merit_and_cash ? 'Giấy khen & tiền mặt ' : null }
+                                                            {item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt ' : null }
+                                                            {item.other_rewards ? 'Khác' : null }
+                                                        </p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-2">
                                                         <div className="info-label mb-2">Số tiền khen thưởng</div>
-                                                        <p>{item.bonus_amount}</p>
+                                                        <p>{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
                                                       </div>
                                                     </div>
                                                 </div>;
@@ -167,7 +174,7 @@ class MyComponent extends React.Component {
                                                         <div className="form-row">
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Số quyết định</div>
-                                                            <p>{item.decision_number}</p>
+                                                            <p>{item.decision_number}&nbsp;</p>
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
@@ -175,21 +182,28 @@ class MyComponent extends React.Component {
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
-                                                            <p>{item.diciplinary_type}</p>
+                                                            <p>{item.diciplinary_type}&nbsp;</p>
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Lỗi vi phạm</div>
-                                                            <p>{item.dimiss}</p>
+                                                            <p>{item.dimiss}&nbsp;</p>
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
-                                                            <p>{item.compensation}</p>
+                                                            <p>
+                                                                {item.dimiss ? 'Sa thải' : null}&nbsp;
+                                                                {item.removal_demotion ? 'Cách chức/ Hạ chức' : null}&nbsp;
+                                                                {item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc' : null}&nbsp;
+                                                                {item.terminate_labour_contract ? 'Chấm dứt HĐLĐ' : null}&nbsp;
+                                                                {item.compensation ? 'Bồi thường thiệt hại' : null}&nbsp;
+                                                                {item.other ? 'Khác' : null}&nbsp;
+                                                            </p>
                                                           </div>
                                                         </div>
                                                         <div className="form-row">
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Số tiền trừ thưởng</div>
-                                                            <p>{item.bonus_deducted_amount}</p>
+                                                            <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">% trừ thưởng</div>

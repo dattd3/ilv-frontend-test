@@ -4,17 +4,20 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
+const CLOSING_SALARY_DATE_PRE_MONTH = 25
+
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: moment().startOf('month').toDate(),
+      startDate: moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
       endDate: new Date(),
       timesheets: [],
       approver: null,
@@ -55,14 +58,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HH:mm:ss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -72,8 +75,15 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({ files: files })
   }
 
-  updateApprover(approver) {
+  updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
+    const errors = {...this.state.errors}
+    if (!isApprover) {
+      errors.approver = 'Người phê duyệt không có thẩm quyền!'
+    } else {
+      errors.approver = null
+    }
+    this.setState({ errors: errors })
   }
 
   handleInputChange(index, event) {
@@ -95,52 +105,28 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
-    let errors = {}
+    let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      if (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) {
-        errors['startTime1Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) {
-        errors['endTime1Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) {
-        errors['startTime2Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) {
-        errors['endTime2Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) {
-        errors['startTime3Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) {
-        errors['endTime3Fact' + index] = '(Bắt buộc)'
-      }
-
-      if (_.isNull(timesheet.note)) {
-        errors['note' + index] = '(Bắt buộc)'
-      }
+      errors['startTime1Fact' + index] = (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) ? '(Bắt buộc)' : null
+      errors['endTime1Fact' + index] = (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) ? '(Bắt buộc)' : null
+      errors['startTime2Fact' + index] = (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) ? '(Bắt buộc)' : null
+      errors['endTime2Fact' + index] = (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) ? '(Bắt buộc)' : null
+      errors['startTime3Fact' + index] = (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) ? '(Bắt buộc)' : null
+      errors['endTime3Fact' + index] = (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) ? '(Bắt buộc)' : null
+      errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
     })
-
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
-
-    if (_.isNull(this.state.files) || this.state.files.length === 0) {
-      errors['files'] = '(*) File đính kèm là bắt buộc'
-    }
-
+    errors['files'] = (_.isNull(this.state.files) || this.state.files.length === 0) ? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
     return errors
   }
 
   submit() {
     const errors = this.verifyInput()
-    if (!_.isEmpty(errors)) {
+    const hasErrors = !Object.values(errors).every(item => item === null)
+    if (hasErrors) {
       return
     }
 
@@ -156,9 +142,9 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: this.state.approver,
     }
-    const comments = this.state.timesheets.map(item => (
-      item.note
-    )).join(" - ")
+    const comments = this.state.timesheets
+    .filter(item => (item.note && item.note))
+    .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Sửa giờ vào-ra')
@@ -169,7 +155,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -258,6 +244,13 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({isUpdateFiles : status})
   }
 
+  getClosingSalaryDatePreMonth = () => {
+    const now = moment()
+    const preMonth = now.month()
+    const currentYear = preMonth == 0 ? now.year() - 1 : now.year()
+    return `${CLOSING_SALARY_DATE_PRE_MONTH}/${preMonth}/${currentYear}`
+  }
+
   render() {
     return (
       <div className="in-out-time-update">
@@ -273,9 +266,10 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsStart
                     autoComplete="off"
                     selected={this.state.startDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
+                    minDate={this.state.startDate}
+                    maxDate={this.state.endDate}
                     onChange={this.setStartDate.bind(this)}
+                    showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
@@ -295,10 +289,10 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={this.state.endDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
                     minDate={this.state.startDate}
+                    maxDate={this.state.endDate}
                     onChange={this.setEndDate.bind(this)}
+                    showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
@@ -317,7 +311,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.timesheets.map((timesheet, index) => {
+        {this.state.timesheets.filter(t => t.start_time1_plan || t.start_time2_plan || t.start_time3_plan).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
@@ -528,7 +522,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>
-                  <textarea className="form-control" value={timesheet.note} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>

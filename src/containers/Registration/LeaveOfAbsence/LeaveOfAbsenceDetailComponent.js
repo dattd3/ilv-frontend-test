@@ -1,8 +1,8 @@
 import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
-import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
+import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -88,35 +88,40 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+          {
+            this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           this.props.leaveOfAbsence.userProfileInfoDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
-          <div className="box shadow">
-            <ul className="list-inline">
-              {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                </li>
-              })}
-            </ul>
-          </div>
+          <ul className="list-inline">
+            {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+              </li>
+            })}
+          </ul>
           </>
           : null
         }
 
-        {this.props.leaveOfAbsence.status === 0 ? <DetailButtonComponent dataToSap={[{
+        {this.props.leaveOfAbsence.status === 0 || this.props.leaveOfAbsence.status === 2 ? <DetailButtonComponent dataToSap={[{
           MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
           PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",
           BEGDA: moment(userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
           ENDDA: moment(userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
           SUBTY: userProfileInfo.absenceType ? userProfileInfo.absenceType.value : "",
           BEGUZ: userProfileInfo.startTime ? moment(userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ACTIO: 'INS'
         }]}
+          isShowRevocationOfApproval={this.props.leaveOfAbsence.status === 2}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}

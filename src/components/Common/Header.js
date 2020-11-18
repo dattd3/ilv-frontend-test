@@ -16,6 +16,10 @@ const usePreload = (params) => {
     return data;
 };
 
+const getOrganizationLevelByRawLevel = level => {
+    return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
+}
+
 function Header(props) {
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
@@ -24,8 +28,8 @@ function Header(props) {
 
     let totalNotificationUnRead = 0;
     const lv3 = localStorage.getItem('organizationLv3');
-    const lv4 = localStorage.getItem('organizationLv4');
-    const lv5 = localStorage.getItem('organizationLv5');
+    const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
+    const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
 
     const getTimePost = (createdDateInput) => {
         let timePost = moment(createdDateInput).format("DD/MM/YYYY");

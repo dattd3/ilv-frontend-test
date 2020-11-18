@@ -42,7 +42,8 @@ class SubstitutionDetailComponent extends React.Component {
         PBEG1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         PEND1: timesheet.shiftType === SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         PBEZ1: '',
-        PUNB1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : ''
+        PUNB1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+        ACTIO: 'INS'
       }
     })
   }
@@ -147,28 +148,32 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{Constants.mappingStatus[this.props.substitution.status].label}</span>
+          {
+            this.props.substitution.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           this.props.substitution.userProfileInfoDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
-          <div className="box shadow">
-            <ul className="list-inline">
-              {this.props.substitution.userProfileInfoDocuments.map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                </li>
-              })}
-            </ul>
-          </div>
+          <ul className="list-inline">
+            {this.props.substitution.userProfileInfoDocuments.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+              </li>
+            })}
+          </ul>
           </>
           : null
         }
 
-        {this.props.substitution.status === 0 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.status === 0 || this.props.substitution.status === 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
+          isShowRevocationOfApproval={this.props.substitution.status === 2}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
         /> : null}

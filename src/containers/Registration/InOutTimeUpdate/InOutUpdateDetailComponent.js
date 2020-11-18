@@ -1,7 +1,6 @@
 import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
-import ApproverDetailComponent from '../ApproverDetailComponent'
 import Constants from '../.../../../../commons/Constants'
 
 const TIME_FORMAT = 'HH:mm:ss'
@@ -30,7 +29,8 @@ class InOutUpdateDetailComponent extends React.Component {
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P10',
             LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            ACTIO: 'INS'
           })
         }
 
@@ -41,7 +41,8 @@ class InOutUpdateDetailComponent extends React.Component {
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P20',
             LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            ACTIO: 'INS'
           })
         }
       })
@@ -150,29 +151,33 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         })}
 
-        <h5>Thông tin phê duyệt</h5>
-        <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+          {
+            this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
+            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
+          }
+        </div>
 
         {
           this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
-          <div className="box shadow">
-            <ul className="list-inline">
-              {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                </li>
-              })}
-            </ul>
-          </div>
+          <ul className="list-inline">
+            {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+              </li>
+            })}
+          </ul>
           </>
           : null
         }
         
-        { this.props.inOutTimeUpdate.status === 0 ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate.status === 0 || this.props.inOutTimeUpdate.status === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
+          isShowRevocationOfApproval={this.props.inOutTimeUpdate.status === 2}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
         /> : null }
