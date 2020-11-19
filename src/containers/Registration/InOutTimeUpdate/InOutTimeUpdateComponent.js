@@ -129,7 +129,8 @@ class InOutTimeUpdateComponent extends React.Component {
     if (hasErrors) {
       return
     }
-
+    const approver = {...this.state.approver}
+    delete approver.avatar
     const data = {
       timesheets: this.state.timesheets,
       startDate: this.state.startDate,
@@ -140,7 +141,7 @@ class InOutTimeUpdateComponent extends React.Component {
         department: localStorage.getItem('department'),
         employeeNo: localStorage.getItem('employeeNo')
       },
-      approver: this.state.approver,
+      approver: approver,
     }
     const comments = this.state.timesheets
     .filter(item => (item.note && item.note))
@@ -155,7 +156,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
+    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -199,11 +200,14 @@ class InOutTimeUpdateComponent extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-
     const start = moment(this.state.startDate).format('YYYYMMDD').toString()
     const end = moment(this.state.endDate).format('YYYYMMDD').toString()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+      perno: localStorage.getItem('employeeNo'),
+      from_date: start,
+      to_date: end
+    }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const timesheets = res.data.data.map(ts => {
@@ -249,6 +253,18 @@ class InOutTimeUpdateComponent extends React.Component {
     const preMonth = now.month()
     const currentYear = preMonth == 0 ? now.year() - 1 : now.year()
     return `${CLOSING_SALARY_DATE_PRE_MONTH}/${preMonth}/${currentYear}`
+  }
+
+  isNullCustomize = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+  }
+
+  formatData = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? "" : value
+  }
+
+  printTimeFormat = value => {
+    return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : ""
   }
 
   render() {
@@ -311,16 +327,16 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.timesheets.filter(t => t.start_time1_plan || t.start_time2_plan || t.start_time3_plan).map((timesheet, index) => {
+        {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time1_plan ? <p>Bắt đầu 1: <b>{timesheet.start_time1_fact}</b> | Kết thúc 1: <b>{timesheet.end_time1_fact}</b></p> : null}
-                {!timesheet.isEdit && timesheet.start_time3_plan ? <p>Bắt đầu 3: <b>{timesheet.start_time3_fact}</b> | Kết thúc 3: <b>{timesheet.end_time3_fact}</b></p> : null}
+                {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdit ? <p>Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p> : null}
               </div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time2_plan ? <p>Bắt đầu 2: <b>{timesheet.start_time2_fact}</b> | Kết thúc 2: <b>{timesheet.end_time2_fact}</b></p> : null}
+                {!timesheet.isEdit ? <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p> : null}
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
@@ -332,37 +348,37 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ thực tế</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time1_fact ? timesheet.start_time1_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time2_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time2_fact ? timesheet.start_time2_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time2_fact ? timesheet.end_time2_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time3_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time3_fact ? timesheet.start_time3_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time3_fact ? timesheet.end_time3_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
 
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Sửa giờ vào ra</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
                       <div className="row">
                         <div className="col-4">Bắt đầu:</div>
@@ -370,7 +386,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime1Fact ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.startTime1Fact) ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -394,7 +410,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime1Fact ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.endTime1Fact) ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -411,9 +427,9 @@ class InOutTimeUpdateComponent extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div> : null}
+                  </div>
 
-                  {timesheet.start_time2_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
                       <div className="row">
                         <div className="col-4">Bắt đầu:</div>
@@ -421,7 +437,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime2Fact ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.startTime2Fact) ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime2Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -445,7 +461,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime2Fact ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.endTime2Fact) ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime2Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -462,9 +478,9 @@ class InOutTimeUpdateComponent extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div> : null}
+                  </div>
 
-                  {timesheet.start_time3_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
                       <div className="row">
                         <div className="col-4">Bắt đầu:</div>
@@ -472,7 +488,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime3Fact ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.startTime3Fact) ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setStartTime.bind(this, index, 'startTime3Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -496,7 +512,7 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime3Fact ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
+                                selected={!this.isNullCustomize(timesheet.endTime3Fact) ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
                                 onChange={this.setEndTime.bind(this, index, 'endTime3Fact')}
                                 autoComplete="off"
                                 showTimeSelect
@@ -513,7 +529,7 @@ class InOutTimeUpdateComponent extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
             </div> : null}
