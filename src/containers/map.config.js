@@ -16,7 +16,7 @@ export default {
   Timesheet: "/timesheet",
   LeaveTime: "/leaveTime",
   WorkingProcess: "/working-process",
-  Benefit: "/benefit",
+  // Benefit: "/benefit",
 
   Notifications: "/notifications",
   NotificationsUnRead: "/notifications-unread",
@@ -36,7 +36,7 @@ export default {
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
-  BenefitUpload: "/benefit/upload",
+  // BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
   Job: "/job",  
   Kpi: "/kpi",
