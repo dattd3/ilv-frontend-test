@@ -67,7 +67,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
-              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalTime + ' ngày' : this.props.leaveOfAbsence.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalDays ? this.props.leaveOfAbsence.userProfileInfo.totalDays + ' ngày' : "" : this.props.leaveOfAbsence.userProfileInfo.totalTimes ? this.props.leaveOfAbsence.userProfileInfo.totalTimes + ' giờ' : ""}</div>
             </div>
             <div className="col-3">
               Loại nghỉ

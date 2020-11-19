@@ -109,13 +109,14 @@ class SubstitutionComponent extends React.Component {
     if (hasErrors) {
       return
     }
-    
+    const approver = {...this.state.approver}
+    delete approver.avatar
     const data = {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       startTime: this.state.startTime,
       timesheets: this.state.timesheets,
-      approver: this.state.approver,
+      approver: approver,
       user: {
         fullname: localStorage.getItem('fullName'),
         jobTitle: localStorage.getItem('jobTitle'),
@@ -136,7 +137,7 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
+    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })

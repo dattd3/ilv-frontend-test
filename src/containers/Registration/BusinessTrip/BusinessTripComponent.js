@@ -5,8 +5,6 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
 import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -253,16 +251,17 @@ calDuringTheDay(timesheets, startTime, endTime) {
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
     if (hasErrors) {
-        return
+      return
     }
-
+    const approver = {...this.state.approver}
+    delete approver.avatar
     const data = {
       startDate: this.state.startDate,
       startTime: this.state.startTime,
       endDate: this.state.startDate,
       endTime: this.state.endTime,
       attendanceQuotaType: this.state.attendanceQuotaType,
-      approver: this.state.approver,
+      approver: approver,
       totalTime: this.state.totalTime,
       vehicle: this.state.vehicle,
       place: this.state.place,
@@ -284,7 +283,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
+    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
