@@ -160,14 +160,14 @@ export const Navigation = [
     to: map.PositionIntroduced,
     role: 'U'
   },
-  {
-    id: 99,
-    parentId: 10,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Phúc lợi",
-    to: map.Benefit,
-    role: "U"
-  },
+  // {
+  //   id: 99,
+  //   parentId: 10,
+  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+  //   label: "Phúc lợi",
+  //   to: map.Benefit,
+  //   role: "U"
+  // },
   {
     id: 19,
     parentId: 18,
