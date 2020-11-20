@@ -176,6 +176,7 @@ class SubstitutionDetailComponent extends React.Component {
           isShowRevocationOfApproval={this.props.substitution.status === 2}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
+          hiddenRevocationOfApprovalButton={1}
         /> : null}
       </div>
     )
