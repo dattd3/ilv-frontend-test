@@ -45,7 +45,7 @@ class ShiftForm extends React.Component {
         const startBreakTime = this.state.startBreakTime ? moment(this.state.startBreakTime).format("DD/MM/YYYY HH:mm:ss") : ""
         const endBreakTime = this.state.endBreakTime ? moment(this.state.endBreakTime).format("DD/MM/YYYY HH:mm:ss") : ""
 
-        if (startTime && endTime && moment(startTime).isBefore(moment(endTime))) {
+        if (startTime && endTime && moment(startTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss")) {
             if (!startBreakTime && !endBreakTime) {
                 totalTime = this.getDuration(endTime, startTime)
             } else if (startBreakTime && !endBreakTime) {
@@ -53,7 +53,9 @@ class ShiftForm extends React.Component {
             } else if (!startBreakTime && endBreakTime) {
                 totalTime = this.getDuration(endTime, startTime)
             } else {
-                if (moment(startBreakTime).isBetween(moment(startTime), moment(endTime)) && moment(endBreakTime).isBetween(moment(startTime), moment(endTime)) && moment(startBreakTime).isBefore(moment(endBreakTime))) {
+                if (moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
+                    && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
+                    && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endBreakTime, "DD/MM/YYYY HH:mm:ss")) {
                     const rangeFirst = this.getDuration(startBreakTime, startTime)
                     const rangeSecond = this.getDuration(endTime, endBreakTime)
                     const duration = moment.duration(rangeFirst).add(moment.duration(rangeSecond))
@@ -212,6 +214,7 @@ class ShiftForm extends React.Component {
                                 <div className="col">
                                     <p>Tổng thời gian</p>
                                     <input type="text" className="form-control" value={this.state.totalTime || ""} readOnly />
+                                    {this.error(this.props.timesheet.index, 'totalHours')}
                                 </div>
                             </div>
                             {

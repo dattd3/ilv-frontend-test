@@ -90,7 +90,15 @@ class SubstitutionComponent extends React.Component {
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
         })
+
+        // Validation for broken shift
+        const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss")
+        const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss")
+        const duration = moment.duration(endBreakTime.diff(startBreakTime))
+        const totalHours = duration.asHours()
+        errors['totalHours' + index] = totalHours <= 2 ? '(Tổng số thời gian nghỉ phải lớn hơn 2h)' : null
       }
+      errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? '(Bắt buộc)' : null
       errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
         && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)' : null
       errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? '(Bắt buộc)' : null
@@ -314,7 +322,8 @@ class SubstitutionComponent extends React.Component {
                 shiftType: SHIFT_CODE,
                 shiftId: null,
                 shiftHours: null,
-                shiftIndex: shiftIndex
+                shiftIndex: shiftIndex,
+                substitutionType: null
               } : undefined
             })
           }).filter(t => t !== undefined)
