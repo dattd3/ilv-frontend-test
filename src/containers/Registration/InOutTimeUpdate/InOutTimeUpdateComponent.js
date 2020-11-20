@@ -333,10 +333,14 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
-                {!timesheet.isEdit ? <p>Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p> : null}
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
+                  <p>Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                : null }
               </div>
               <div className="col-4">
-                {!timesheet.isEdit ? <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p> : null}
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ? 
+                  <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
+                  : null }
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
