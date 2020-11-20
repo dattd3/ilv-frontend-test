@@ -58,14 +58,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -107,12 +107,18 @@ class InOutTimeUpdateComponent extends React.Component {
   verifyInput() {
     let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      errors['startTime1Fact' + index] = (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) ? '(Bắt buộc)' : null
-      errors['endTime1Fact' + index] = (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) ? '(Bắt buộc)' : null
-      errors['startTime2Fact' + index] = (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) ? '(Bắt buộc)' : null
-      errors['endTime2Fact' + index] = (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) ? '(Bắt buộc)' : null
-      errors['startTime3Fact' + index] = (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) ? '(Bắt buộc)' : null
-      errors['endTime3Fact' + index] = (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) ? '(Bắt buộc)' : null
+      errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? '(Bắt buộc)' : null
+      errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? '(Bắt buộc)' : null
+      // Optional
+      if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
+        errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
+        errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? '(Bắt buộc)' : null
+      }
+      // Optional
+      if (!this.isNullCustomize(timesheet.start_time3_fact_update) || !this.isNullCustomize(timesheet.end_time3_fact_update)) {
+        errors['start_time3_fact_update' + index] = this.isNullCustomize(timesheet.start_time3_fact_update) ? '(Bắt buộc)' : null
+        errors['end_time3_fact_update' + index] = this.isNullCustomize(timesheet.end_time3_fact_update) ? '(Bắt buộc)' : null
+      }
       errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
     })
     if (_.isNull(this.state.approver)) {
@@ -215,12 +221,12 @@ class InOutTimeUpdateComponent extends React.Component {
               isEdit: false,
               note: null,
               error: {},
-              startTime1Fact: ts.start_time1_fact ? ts.start_time1_fact : null,
-              startTime2Fact: ts.start_time2_fact ? ts.start_time2_fact : null,
-              startTime3Fact: ts.start_time3_fact ? ts.start_time3_fact : null,
-              endTime1Fact: ts.end_time1_fact ? ts.end_time1_fact : null,
-              endTime2Fact: ts.end_time2_fact ? ts.end_time2_fact : null,
-              endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
+              start_time1_fact_update: ts.start_time1_fact ? ts.start_time1_fact : null,
+              start_time2_fact_update: ts.start_time2_fact ? ts.start_time2_fact : null,
+              start_time3_fact_update: ts.start_time3_fact ? ts.start_time3_fact : null,
+              end_time1_fact_update: ts.end_time1_fact ? ts.end_time1_fact : null,
+              end_time2_fact_update: ts.end_time2_fact ? ts.end_time2_fact : null,
+              end_time3_fact_update: ts.end_time3_fact ? ts.end_time3_fact : null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -334,7 +340,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-4">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
-                  <p>Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                 : null }
               </div>
               <div className="col-4">
@@ -370,10 +376,10 @@ class InOutTimeUpdateComponent extends React.Component {
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
+                      Bắt đầu (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
+                      Kết thúc (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
                   </div>
                 </div>
@@ -390,8 +396,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.startTime1Fact) ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
+                                selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'start_time1_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -403,7 +409,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime1Fact')}
+                          {this.error(index, 'start_time1_fact_update')}
                         </div>
                       </div>
                     </div>
@@ -414,8 +420,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.endTime1Fact) ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
+                                selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'end_time1_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -427,7 +433,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime1Fact')}
+                          {this.error(index, 'end_time1_fact_update')}
                         </div>
                       </div>
                     </div>
@@ -441,8 +447,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.startTime2Fact) ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime2Fact')}
+                                selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'start_time2_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -454,7 +460,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime2Fact')}
+                          {this.error(index, 'start_time2_fact_update')}
                         </div>
                       </div>
                     </div>
@@ -465,8 +471,8 @@ class InOutTimeUpdateComponent extends React.Component {
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.endTime2Fact) ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime2Fact')}
+                                selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'end_time2_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -478,7 +484,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime2Fact')}
+                          {this.error(index, 'end_time2_fact_update')}
                         </div>
                       </div>
                     </div>
@@ -487,13 +493,13 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
+                        <div className="col-4">Bắt đầu (OT):</div>
                         <div className="col-8">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.startTime3Fact) ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime3Fact')}
+                                selected={!this.isNullCustomize(timesheet.start_time3_fact_update) ? moment(timesheet.start_time3_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'start_time3_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -505,19 +511,19 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime3Fact')}
+                          {this.error(index, 'start_time3_fact_update')}
                         </div>
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc:</div>
+                        <div className="col-4">Kết thúc (OT):</div>
                         <div className="col-8">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={!this.isNullCustomize(timesheet.endTime3Fact) ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime3Fact')}
+                                selected={!this.isNullCustomize(timesheet.end_time3_fact_update) ? moment(timesheet.end_time3_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'end_time3_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
@@ -529,7 +535,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime3Fact')}
+                          {this.error(index, 'end_time3_fact_update')}
                         </div>
                       </div>
                     </div>
