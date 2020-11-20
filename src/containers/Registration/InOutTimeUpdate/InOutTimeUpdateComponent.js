@@ -221,12 +221,12 @@ class InOutTimeUpdateComponent extends React.Component {
               isEdit: false,
               note: null,
               error: {},
-              start_time1_fact_update: ts.start_time1_fact ? ts.start_time1_fact : null,
-              start_time2_fact_update: ts.start_time2_fact ? ts.start_time2_fact : null,
-              start_time3_fact_update: ts.start_time3_fact ? ts.start_time3_fact : null,
-              end_time1_fact_update: ts.end_time1_fact ? ts.end_time1_fact : null,
-              end_time2_fact_update: ts.end_time2_fact ? ts.end_time2_fact : null,
-              end_time3_fact_update: ts.end_time3_fact ? ts.end_time3_fact : null
+              start_time1_fact_update: !this.isNullCustomize(ts.start_time1_fact) ? ts.start_time1_fact : null,
+              start_time2_fact_update: !this.isNullCustomize(ts.start_time2_fact) ? ts.start_time2_fact : null,
+              start_time3_fact_update: !this.isNullCustomize(ts.start_time3_fact) ? ts.start_time3_fact : null,
+              end_time1_fact_update: !this.isNullCustomize(ts.end_time1_fact) ? ts.end_time1_fact : null,
+              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null,
+              end_time3_fact_update: !this.isNullCustomize(ts.end_time3_fact) ? ts.end_time3_fact : null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
