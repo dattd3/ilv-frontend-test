@@ -38,7 +38,7 @@ class SubstitutionDetailComponent extends React.Component {
         TPROG: timesheet.shiftType === SHIFT_CODE ? timesheet.shiftId : '',
         BEGUZ: timesheet.shiftType === SHIFT_UPDATE ? moment(timesheet.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         ENDUZ: timesheet.shiftType === SHIFT_UPDATE ? moment(timesheet.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
-        VTART: timesheet.substitutionType,
+        VTART: timesheet.substitutionType.value,
         PBEG1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         PEND1: timesheet.shiftType === SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         PBEZ1: '',
