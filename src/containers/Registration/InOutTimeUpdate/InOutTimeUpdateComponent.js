@@ -150,7 +150,7 @@ class InOutTimeUpdateComponent extends React.Component {
       approver: approver,
     }
     const comments = this.state.timesheets
-    .filter(item => (item.note && item.note))
+    .filter(item => (item.note))
     .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
@@ -360,26 +360,26 @@ class InOutTimeUpdateComponent extends React.Component {
                   <p className="text-center">Giờ thực tế</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
+                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
+                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
+                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
+                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
+                      Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
+                      Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
                   </div>
                 </div>
@@ -391,8 +391,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
-                        <div className="col-8">
+                        <div className="col-5">Bắt đầu 1:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -415,8 +415,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc:</div>
-                        <div className="col-8">
+                        <div className="col-5">Kết thúc 1:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -442,8 +442,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
-                        <div className="col-8">
+                        <div className="col-5">Bắt đầu 2:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -466,8 +466,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc:</div>
-                        <div className="col-8">
+                        <div className="col-5">Kết thúc 2:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -493,8 +493,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu (OT):</div>
-                        <div className="col-8">
+                        <div className="col-5">Bắt đầu 3 (OT):</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -517,8 +517,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc (OT):</div>
-                        <div className="col-8">
+                        <div className="col-5">Kết thúc 3 (OT):</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker

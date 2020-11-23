@@ -36,7 +36,8 @@ class SubstitutionComponent extends React.Component {
       errors: {},
       titleModal: "",
       messageModal: "",
-      isShowStartBreakTimeAndEndBreakTime: false
+      isShowStartBreakTimeAndEndBreakTime: false,
+      totalHours: ""
     }
   }
 
@@ -95,8 +96,15 @@ class SubstitutionComponent extends React.Component {
         const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss")
         const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss")
         const duration = moment.duration(endBreakTime.diff(startBreakTime))
-        const totalHours = duration.asHours()
-        errors['totalHours' + index] = totalHours <= 2 ? '(Tổng số thời gian nghỉ phải lớn hơn 2h)' : null
+        const totalHoursBreak = duration.asHours()
+
+        if (timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && totalHoursBreak < 2) {
+          errors['totalHours' + index] = '(Tổng số thời gian nghỉ phải lớn hơn hoặc bằng 2h)'
+        } else if (timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && moment.duration(this.state.totalHours).asHours() > 10) {
+          errors['totalHours' + index] = '(Tổng số thời gian đăng ký không được vượt quá 10h)'
+        } else {
+          errors['totalHours' + index] = null
+        }
       }
       errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? '(Bắt buộc)' : null
       errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
@@ -132,9 +140,9 @@ class SubstitutionComponent extends React.Component {
         employeeNo: localStorage.getItem('employeeNo')
       }
     }
-    const comments = this.state.timesheets.map(item => (
-      item.note
-    )).join(" - ")
+    const comments = this.state.timesheets
+    .filter(item => (item.note))
+    .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Thay đổi phân ca')
@@ -267,6 +275,10 @@ class SubstitutionComponent extends React.Component {
     this.setState({
       timesheets: [...timesheets]
     })
+  }
+
+  updateTotalHours(totalHours) {
+    this.setState({totalHours: totalHours})
   }
 
   showStatusModal = (title, message, isSuccess = false) => {
@@ -448,7 +460,7 @@ class SubstitutionComponent extends React.Component {
               </>
              : null}
             {timesheet.isEdit && timesheet.shiftType === SHIFT_UPDATE
-              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime} 
+              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime} updateTotalHours={this.updateTotalHours.bind(this)}
               timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime, note: timesheet.note, substitutionType: timesheet.substitutionType }} />
               : null}
 
