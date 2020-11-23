@@ -25,6 +25,7 @@ const absenceTypesAndDaysOffMapping = {
 const ANNUAL_LEAVE_KEY = "PQ01"
 const COMPENSATORY_LEAVE_KEY = "PQ02"
 const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
+const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -160,8 +161,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             from_time: this.state.leaveType === FULL_DAY ? "" : moment(startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
             to_date: end,
             to_time: this.state.leaveType === FULL_DAY ? "" : moment(endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-            should_check_leave: absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY
-        } ,config)
+            leaveType: (absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_ABSENCE_LEAVE_KEY) ? absenceType : ""
+        }, config)
         .then(res => {
             if (res && res.data) {
                 const data = res.data
@@ -298,7 +299,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (hasErrors) {
             return
         }
-
+        const approver = {...this.state.approver}
+        delete approver.avatar
         const data = {
             startDate: this.state.startDate,
             startTime: this.state.startTime,
@@ -306,7 +308,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             endTime: this.state.endTime,
             absenceType: this.state.absenceType,
             leaveType: this.state.leaveType,
-            approver: this.state.approver,
+            approver: approver,
             totalTimes: this.state.totalTimes,
             totalDays: this.state.totalDays,
             pn03: this.state.absenceType.value === 'PN03' ? this.state.pn03 : null,
@@ -327,7 +329,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('Region', localStorage.getItem('region'))
         bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
         bodyFormData.append('UserProfileInfoToSap', {})
-        bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : "")
+        bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
         this.state.files.forEach(file => {
             bodyFormData.append('Files', file)
         })
@@ -384,6 +386,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
             { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
             { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
+            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: 'Nghỉ phép tạm ứng' },
             { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
             { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }

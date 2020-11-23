@@ -16,13 +16,12 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 
   dataToSap () {
-    let dataToSAP = []
-    
+    let dataToSAP = []   
     this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2', '3'].forEach(n => {
-        const startTimeName = `startTime${n}Fact`
-        const endTimeName = `endTime${n}Fact`
-        if (timesheet[startTimeName] && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
+        const startTimeName = `start_time${n}_fact_update`
+        const endTimeName = `end_time${n}_fact_update`
+        if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
           dataToSAP.push({
             MYVP_ID: 'TEVS' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
@@ -34,7 +33,7 @@ class InOutUpdateDetailComponent extends React.Component {
           })
         }
 
-        if (timesheet[startTimeName] && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+        if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
           dataToSAP.push({
             MYVP_ID: 'TEVE' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
@@ -47,12 +46,22 @@ class InOutUpdateDetailComponent extends React.Component {
         }
       })
     })
-    
     return dataToSAP
   }
 
+  isNullCustomize = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+  }
+
+  formatData = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? "" : value
+  }
+
+  printTimeFormat = value => {
+    return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : ""
+  }
+
   render() {
-    this.dataToSap()
     const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
 
     return (
@@ -80,72 +89,72 @@ class InOutUpdateDetailComponent extends React.Component {
         </div>
         <h5>Thông tin sửa giờ vào - ra</h5>
         {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
-          return <div className="box shadow">
+          return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ thực tế</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time1_fact ? timesheet.start_time1_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time2_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time2_fact ? timesheet.start_time2_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time2_fact ? timesheet.end_time2_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time3_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time3_fact ? timesheet.start_time3_fact : null}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time3_fact ? timesheet.end_time3_fact : null}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ chỉnh sửa</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.startTime1Fact }</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.endTime1Fact}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact_update)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time2_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.startTime2Fact}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.endTime2Fact}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time3_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.startTime3Fact}</b>
+                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.endTime3Fact}</b>
+                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact_update)}</b>
                     </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
             </div>
             <p>Lý do sửa giờ vào - ra</p>
             <div className="row">
               <div className="col">
-                <div className="detail">{timesheet.note}</div>
+                <div className="detail">{timesheet.note || ""}</div>
               </div>
             </div>
           </div>
