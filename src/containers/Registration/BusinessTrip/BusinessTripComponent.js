@@ -117,42 +117,68 @@ class BusinessTripComponent extends React.Component {
 
   calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
     if (!startDate || !endDate) return
-
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
-    }
-
     const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
     const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
+
+    this.validationFromDB(start, end)
 
     axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
         perno: localStorage.getItem('employeeNo'),
         from_date: start,
         to_date: end
-    } ,config)
-        .then(res => {
-            if (res && res.data && res.data.data) {
-                this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
-            }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
-}
+    }, config)
+    .then(res => {
+        if (res && res.data && res.data.data) {
+            this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
+        }
+    }).catch(error => {
 
-calFullDay(timesheets) {
+    })
+  }
+
+  validationFromDB = (startDate, endDate, startTime = null, endTime = null) => {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}user/validation-business-trip`, {
+        from_date: startDate,
+        to_date: endDate
+    }, config)
+    .then(res => {
+      if (res && res.data) {
+        const data = res.data
+        const errors = {...this.state.errors}
+        if (_.isNull(data.data) && data.result.code == Constants.API_ERROR_CODE) {
+          errors.startTimeAndEndTime = data.result.message
+        } else {
+          errors.startTimeAndEndTime = null
+        }
+        this.setState({errors, errors})
+      }
+    }).catch(error => {
+
+    })
+  }
+
+  calFullDay(timesheets) {
     const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
         return accumulator + parseFloat(currentValue.hours)
     }, 0)
     
     return hours ? (hours / 8) : 0
-}
+  }
 
-calDuringTheDay(timesheets, startTime, endTime) {
+  calDuringTheDay(timesheets, startTime, endTime) {
     if (!startTime || !endTime) return
     
     let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
@@ -190,7 +216,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     }
  
     return hours ? (hours / 8) : 0
-}
+  }
 
   updateFiles(files) {
     this.setState({ files: files })
@@ -471,6 +497,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
                   <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
                 </div>
               </div>
+              <div className="col-12">{this.error('startTimeAndEndTime')}</div>
             </div>
 
             <div className="row">

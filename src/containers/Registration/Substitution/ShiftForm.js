@@ -65,6 +65,7 @@ class ShiftForm extends React.Component {
                 }
             }
         }
+        this.props.updateTotalHours(totalTime)
         this.setState({totalTime: totalTime})
     }
 
@@ -77,20 +78,6 @@ class ShiftForm extends React.Component {
     error(index, name) {
         return this.props.errors[name + index] ? <div className="text-danger">{this.props.errors[name + index]}</div> : null
     }
-
-    // updateNote(e) {
-    //     this.props.updateNote(this.props.timesheet.index, e.currentTarget.value)
-    // }
-
-    // updateSubstitution = item => {
-    //     const val = item.value
-    //     if (val === BROKEN_SHIFT_OPTION_VALUE) {
-    //         this.setState({isShowStartBreakTimeAndEndBreakTime: true})
-    //     } else {
-    //         this.setState({isShowStartBreakTimeAndEndBreakTime: false})
-    //     }
-    //     this.props.updateSubstitution(this.props.timesheet.index, item.value)
-    // }
 
     render() {
         return (
