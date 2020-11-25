@@ -26,6 +26,7 @@ const ANNUAL_LEAVE_KEY = "PQ01"
 const COMPENSATORY_LEAVE_KEY = "PQ02"
 const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
+const MATERNITY_LEAVE_KEY = "IN02"
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -114,7 +115,19 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     setStartTime(startTime) {
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT) > this.state.endTime) ?  moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : this.state.endTime
+        const endTime = this.state.endTime
+        const startTimeToSave = moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
+        let end = endTime
+
+        if (end === undefined || (moment(startTime).isValid() && moment(startTimeToSave, Constants.LEAVE_TIME_FORMAT) > moment(endTime, Constants.LEAVE_TIME_FORMAT))) {
+            end = moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
+        }
+
+        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("22:00", Constants.LEAVE_TIME_FORMAT)) 
+            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") <= moment("06:00", "HH:mm"))) {
+            end = endTime
+        }
+
         this.setState({
             startTime: start,
             endTime: end
@@ -123,7 +136,19 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setEndTime(endTime) {
-        const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT) : this.state.startTime
+        const startTime = this.state.startTime
+        const endTimeToSave = moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
+        let start = startTime
+
+        if (startTime === undefined || (moment(endTime).isValid() && moment(endTimeToSave, Constants.LEAVE_TIME_FORMAT) < moment(startTime, Constants.LEAVE_TIME_FORMAT))) {
+            start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
+        }
+
+        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("22:00", Constants.LEAVE_TIME_FORMAT)) 
+            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") <= moment("06:00", "HH:mm"))) {
+            start = startTime
+        }
+
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
         this.setState({
             startTime: start,
@@ -161,7 +186,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             from_time: this.state.leaveType === FULL_DAY ? "" : moment(startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
             to_date: end,
             to_time: this.state.leaveType === FULL_DAY ? "" : moment(endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-            leaveType: (absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_ABSENCE_LEAVE_KEY) ? absenceType : ""
+            leaveType: (absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_ABSENCE_LEAVE_KEY || absenceType === MATERNITY_LEAVE_KEY) ? absenceType : ""
         }, config)
         .then(res => {
             if (res && res.data) {
@@ -380,7 +405,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     render() {
         const absenceTypes = [
             { value: 'IN01', label: 'Nghỉ ốm' },
-            { value: 'IN02', label: 'Nghỉ thai sản' },
+            { value: MATERNITY_LEAVE_KEY, label: 'Nghỉ thai sản' },
             { value: 'IN03', label: 'Nghỉ dưỡng sức (ốm, TS )' },
             { value: 'PN01', label: 'Nghỉ lễ người nước ngoài' },
             { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
