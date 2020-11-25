@@ -98,7 +98,8 @@ class ShiftForm extends React.Component {
                                             locale="vi"
                                             timeIntervals={15}
                                             timeCaption="Giờ"
-                                            dateFormat="h:mm aa"
+                                            dateFormat="HH:mm"
+                                            timeFormat="HH:mm"
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
@@ -120,7 +121,8 @@ class ShiftForm extends React.Component {
                                             showTimeSelectOnly
                                             timeIntervals={15}
                                             timeCaption="Giờ"
-                                            dateFormat="h:mm aa"
+                                            dateFormat="HH:mm"
+                                            timeFormat="HH:mm"
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
@@ -130,21 +132,8 @@ class ShiftForm extends React.Component {
                                 {this.error(this.props.timesheet.index, 'endTime')}
                             </div>
                         </div>
-                        {/* <div>
-                            <p>Lý do đăng ký thay đổi phân ca</p>
-                            <textarea placeholder="Nhập lý do" value={this.props.timesheet.note || ""} onChange={this.updateNote.bind(this)} className="form-control" name="note" rows="4" />
-                            {this.error(this.props.timesheet.index, 'note')}
-                        </div> */}
                     </div>
                     <div className="col-7">
-                        {/* <div>
-                            <p className="title">Loại phân ca</p>
-                            <div>
-                                <Select name="substitutionType" value={substitutionTypeDefault} onChange={substitutionType => this.updateSubstitution(substitutionType)} placeholder="Lựa chọn" key="substitutionType" options={substitutionTypes} />
-                            </div>
-                            {this.error(this.props.timesheet.index, 'substitutionType')}
-                        </div> */}
-
                             <div className="row">
                                 <div className="col">
                                     {
@@ -162,7 +151,8 @@ class ShiftForm extends React.Component {
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
                                                 timeCaption="Giờ"
-                                                dateFormat="h:mm aa"
+                                                dateFormat="HH:mm"
+                                                timeFormat="HH:mm"
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />
@@ -188,7 +178,8 @@ class ShiftForm extends React.Component {
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
                                                 timeCaption="Giờ"
-                                                dateFormat="h:mm aa"
+                                                dateFormat="HH:mm"
+                                                timeFormat="HH:mm"
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />

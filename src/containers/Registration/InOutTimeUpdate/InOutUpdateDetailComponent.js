@@ -18,7 +18,7 @@ class InOutUpdateDetailComponent extends React.Component {
   dataToSap () {
     let dataToSAP = []   
     this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-      ['1', '2', '3'].forEach(n => {
+      ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
         const endTimeName = `end_time${n}_fact_update`
         if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
@@ -58,7 +58,7 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 
   printTimeFormat = value => {
-    return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : ""
+    return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : "" // pending by CuongNV56
   }
 
   render() {
@@ -97,26 +97,26 @@ class InOutUpdateDetailComponent extends React.Component {
                   <p className="text-center">Giờ thực tế</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
+                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
+                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
+                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
+                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
+                      Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
+                      Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
                   </div>
                 </div>
@@ -126,26 +126,18 @@ class InOutUpdateDetailComponent extends React.Component {
                   <p className="text-center">Giờ chỉnh sửa</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
+                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time1_fact_update)}</b>
+                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact_update)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time2_fact_update)}</b>
+                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-6">
-                      Bắt đầu: <b>{this.printTimeFormat(timesheet.start_time3_fact_update)}</b>
-                    </div>
-                    <div className="col-6 text-right">
-                      Kết thúc: <b>{this.printTimeFormat(timesheet.end_time3_fact_update)}</b>
+                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
                   </div>
                 </div>

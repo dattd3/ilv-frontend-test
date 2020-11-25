@@ -126,6 +126,13 @@ class MyComponent extends React.Component {
                                 <form className="info-value">
                                     {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
                                         this.state.userBonuses.map((item, i) => {
+                                            let bonusTitle = (item.merit ? 'Giấy khen | ' : '');
+                                            bonusTitle += (item.merit_certificate ? 'Bằng khen | ' : '');
+                                            bonusTitle += (item.cash ? 'Tiền mặt | ' : '');
+                                            bonusTitle += (item.merit_and_cash ? 'Giấy khen & tiền mặt | ' : '');
+                                            bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
+                                            bonusTitle += (item.other_rewards ? 'Khác | ' : '');    
+                                            bonusTitle = bonusTitle.substring(0, bonusTitle.length - 3);  
                                             return <div key={i}>
                                                 <div className="form-row">
                                                       <div className="form-group col-md-6 col-lg-2">
@@ -143,12 +150,7 @@ class MyComponent extends React.Component {
                                                       <div className="form-group col-md-6 col-lg-3">
                                                         <div className="info-label mb-2">Hình thức khen thưởng</div>
                                                         <p>
-                                                            {item.merit ? 'Giấy khen ' : null }
-                                                            {item.merit_certificate ? 'Bằng khen ' : null }
-                                                            {item.cash ? 'Tiền mặt ' : null }
-                                                            {item.merit_and_cash ? 'Giấy khen & tiền mặt ' : null }
-                                                            {item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt ' : null }
-                                                            {item.other_rewards ? 'Khác' : null }
+                                                            {bonusTitle}&nbsp;
                                                         </p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-2">
@@ -170,6 +172,13 @@ class MyComponent extends React.Component {
                                 <form className="info-value">
                                     {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0)  ?
                                         this.state.userPenalties.map((item, i) => {
+                                            let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
+                                                penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
+                                                penaltiesTitle += (item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc | ' : '');
+                                                penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
+                                                penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
+                                                penaltiesTitle += (item.other ? 'Khác | ' : '');    
+                                                penaltiesTitle = penaltiesTitle.substring(0, penaltiesTitle.length - 3);  
                                             return  <div key={i}>
                                                         <div className="form-row">
                                                           <div className="form-group col-md-6 col-lg-2">
@@ -180,32 +189,33 @@ class MyComponent extends React.Component {
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
                                                             <p>{item.effective_date ? item.effective_date.split('T')[0]:'.'  }</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-2">
+                                                          <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
-                                                            <p>{item.diciplinary_type}&nbsp;</p>
+                                                            <p>{item.violation_group}&nbsp;</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-3">
+                                                          <div className="form-group col-md-6 col-lg-5">
                                                             <div className="info-label mb-2">Lỗi vi phạm</div>
-                                                            <p>{item.dimiss}&nbsp;</p>
+                                                            <p>{item.disciplinary_reason}&nbsp;</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-3">
+                                                        </div>
+                                                        <div className="form-row">
+                                                        <div className="form-group col-12">
                                                             <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
                                                             <p>
-                                                                {item.dimiss ? 'Sa thải' : null}&nbsp;
-                                                                {item.removal_demotion ? 'Cách chức/ Hạ chức' : null}&nbsp;
-                                                                {item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc' : null}&nbsp;
-                                                                {item.terminate_labour_contract ? 'Chấm dứt HĐLĐ' : null}&nbsp;
-                                                                {item.compensation ? 'Bồi thường thiệt hại' : null}&nbsp;
-                                                                {item.other ? 'Khác' : null}&nbsp;
+                                                                {penaltiesTitle}
                                                             </p>
                                                           </div>
                                                         </div>
                                                         <div className="form-row">
-                                                          <div className="form-group col-md-6 col-lg-2">
-                                                            <div className="info-label mb-2">Số tiền trừ thưởng</div>
-                                                            <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
+                                                          <div className="form-group col-md-4 col-lg-2">
+                                                            <div className="info-label mb-2">Số tiền kỷ luật</div>
+                                                            <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-2">
+                                                          <div className="form-group col-md-4 col-lg-2">
+                                                            <div className="info-label mb-2">Số tiền bồi thường</div>
+                                                            <p>{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                          </div>
+                                                          <div className="form-group col-md-4 col-lg-2">
                                                             <div className="info-label mb-2">% trừ thưởng</div>
                                                              <p>{item.deduction_bonus_percent} &nbsp;</p> 
                                                           </div>

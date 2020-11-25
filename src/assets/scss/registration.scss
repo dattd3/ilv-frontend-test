@@ -8,6 +8,50 @@
 }
 
 .registration-section {
+    .in-out-time-update {
+        .block-time-item-edit {
+            input {
+
+            }
+            .react-datepicker__time-list {
+                .react-datepicker__time-list-item {
+                    line-height: 20px;
+                }
+            }
+        }
+        .block-note-item-edit {
+
+        }
+    }
+    .block-filter-shift {
+        border: 1px solid #d1d3e2;
+        margin: 15px 0;
+        font-size: 15px;
+        padding-bottom: 15px;
+        input, button {
+            font-size: 14px;
+        }
+        legend {
+            font-size: 15px;
+            margin-bottom: 0;
+            display: inline;
+            padding: 0 10px;
+            width: auto;
+        }
+        .time-filter {
+            display: block;
+            position: relative;
+            > .react-datepicker-wrapper {
+                display: block;
+            }
+            .input-img {
+                position: absolute;
+                right: 10px;
+                top: 6px;
+            }
+        }
+
+    }
     .business-type {
         display: flex;
         flex-wrap: wrap;
@@ -81,7 +125,7 @@
 
         .input {
             margin:0;
-            padding-right: 50px;
+            padding-right: 10px;
             width: 100%;
         }
         .input-img {

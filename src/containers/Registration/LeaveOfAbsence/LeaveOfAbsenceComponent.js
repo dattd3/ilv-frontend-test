@@ -321,7 +321,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
 
         let bodyFormData = new FormData();
-        bodyFormData.append('Name', 'Đăng ký nghỉ phép')
+        bodyFormData.append('Name', 'Đăng ký nghỉ')
         bodyFormData.append('RequestTypeId', '2')
         bodyFormData.append('Comment', this.state.note)
         bodyFormData.append('UserProfileInfo', JSON.stringify(data))
@@ -485,7 +485,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
                                                     timeCaption="Giờ"
-                                                    dateFormat="h:mm aa"
+                                                    dateFormat="HH:mm"
+                                                    timeFormat="HH:mm"
                                                     placeholderText="Lựa chọn"
                                                     className="form-control input"
                                                     disabled={this.state.leaveType == FULL_DAY ? true : false}
@@ -533,7 +534,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
                                                     timeCaption="Giờ"
-                                                    dateFormat="h:mm aa"
+                                                    dateFormat="HH:mm"
+                                                    timeFormat="HH:mm"
                                                     placeholderText="Lựa chọn"
                                                     className="form-control input"
                                                     disabled={this.state.leaveType == FULL_DAY ? true : false}
@@ -570,7 +572,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             </div>
 
                             <div className="col-7">
-                                <p className="title">Lý do đăng ký nghỉ phép</p>
+                                <p className="title">Lý do đăng ký nghỉ</p>
                                 <div>
                                     <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>

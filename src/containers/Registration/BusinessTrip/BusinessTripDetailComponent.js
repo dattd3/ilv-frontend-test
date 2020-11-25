@@ -41,11 +41,11 @@ class BusinessTripDetailComponent extends React.Component {
           <div className="row">
             <div className="col-4">
               Từ ngày/giờ
-              <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               Đến ngày/giờ
-              <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               Tổng thời gian CT/ĐT

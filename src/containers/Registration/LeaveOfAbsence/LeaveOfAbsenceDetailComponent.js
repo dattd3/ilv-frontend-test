@@ -54,16 +54,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký nghỉ phép</h5>
+        <h5>Thông tin đăng ký nghỉ</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
               Từ ngày/giờ
-              <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
               Đến ngày/giờ
-              <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
@@ -82,7 +82,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div> : null}
           <div className="row">
             <div className="col">
-              Lý do đăng ký nghỉ phép
+              Lý do đăng ký nghỉ
               <div className="detail">{this.props.leaveOfAbsence.comment}</div>
             </div>
           </div>
