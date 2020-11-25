@@ -12,7 +12,7 @@ class DetailButtonComponent extends React.Component {
         }
 
         this.requestRegistraion = {
-            2: "Đăng ký nghỉ phép",
+            2: "Đăng ký nghỉ",
             3: "Đăng ký Công tác/Đào tạo",
             4: "Thay đổi phân ca",
             5: "Sửa giờ vào - ra"

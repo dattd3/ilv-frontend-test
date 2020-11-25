@@ -40,7 +40,7 @@ class TaskList extends React.Component {
         };
 
         this.requestRegistraion = {
-            2: {request: "Đăng ký nghỉ phép", requestUrl: "requestabsence"},
+            2: {request: "Đăng ký nghỉ", requestUrl: "requestabsence"},
             3: {request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance"},
             4: {request: "Thay đổi phân ca", requestUrl: "requestsubstitution"},
             5: {request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping"}
