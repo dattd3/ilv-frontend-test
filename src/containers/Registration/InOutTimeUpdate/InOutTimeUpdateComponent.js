@@ -129,10 +129,12 @@ class InOutTimeUpdateComponent extends React.Component {
     if (hasErrors) {
       return
     }
+
+    const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
     const approver = {...this.state.approver}
     delete approver.avatar
     const data = {
-      timesheets: this.state.timesheets,
+      timesheets: timesheets,
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       user: {
@@ -143,7 +145,7 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: approver,
     }
-    const comments = this.state.timesheets
+    const comments = timesheets
     .filter(item => (item.note))
     .map(item => item.note).join(" - ")
 
