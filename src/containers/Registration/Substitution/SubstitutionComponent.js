@@ -124,13 +124,33 @@ class SubstitutionComponent extends React.Component {
     if (hasErrors) {
       return
     }
+    const timesheets = [...this.state.timesheets].map(item => {
+      return {
+        isEdit: item.isEdit,
+        date: item.date,
+        endBreakTime: item.endBreakTime,
+        endTime: item.endTime,
+        endTimeFilter: item.endTimeFilter,
+        fromTime: item.fromTime,
+        note: item.note,
+        shiftHours: item.shiftHours,
+        shiftId: item.shiftId,
+        shiftIndex: item.shiftIndex,
+        shiftType: item.shiftType,
+        startBreakTime: item.startBreakTime,
+        startTime: item.startTime,
+        substitutionType: item.substitutionType,
+        toTime: item.toTime
+      }
+    })
+
     const approver = {...this.state.approver}
     delete approver.avatar
     const data = {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       startTime: this.state.startTime,
-      timesheets: this.state.timesheets,
+      timesheets: timesheets,
       approver: approver,
       user: {
         fullname: localStorage.getItem('fullName'),
@@ -139,7 +159,7 @@ class SubstitutionComponent extends React.Component {
         employeeNo: localStorage.getItem('employeeNo')
       }
     }
-    const comments = this.state.timesheets
+    const comments = timesheets
     .filter(item => (item.note))
     .map(item => item.note).join(" - ")
 
@@ -386,6 +406,43 @@ class SubstitutionComponent extends React.Component {
     this.setState({ timesheets: timesheets })
   }
 
+  resetValidation = (index) => {
+    const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdit);
+    const errors = {...this.state.errors}
+
+    const startTime = moment(timesheets[0].startTime, "HH:mm:ss").isValid() ? moment(timesheets[0].startTime, "HH:mm:ss") : null
+    const endTime = moment(timesheets[0].endTime, "HH:mm:ss").isValid() ? moment(timesheets[0].endTime, "HH:mm:ss") : null
+    const startBreakTime = moment(timesheets[0].startBreakTime, "HH:mm:ss").isValid() ? moment(timesheets[0].startBreakTime, "HH:mm:ss") : null
+    const endBreakTime =  moment(timesheets[0].endBreakTime, "HH:mm:ss").isValid() ? moment(timesheets[0].endBreakTime, "HH:mm:ss") : null
+
+    if (startTime && endTime && startTime > endTime) {
+      errors['startTime' + index] = '(Thời gian Bắt đầu 1 không được lớn hơn Kết thúc 1)'
+    } else {
+      errors['startTime' + index] = null
+    }
+
+    if (startBreakTime) {
+      if (startBreakTime < startTime || startBreakTime > endTime) {
+        errors['startBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)'
+      } else if (endBreakTime && startBreakTime > endBreakTime) {
+        errors['startBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca không được lớn hơn Thời gian kết thúc nghỉ ca)'
+      } else {
+        errors['startBreakTime' + index] = null
+      }
+    }
+
+    if (endBreakTime) {
+      if (endBreakTime < startTime || endBreakTime > endTime) {
+        errors['endBreakTime' + index] = '(Thời gian kết thúc nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)'
+      } else if (startBreakTime && startBreakTime > endBreakTime) {
+        errors['endBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca không được lớn hơn Thời gian kết thúc nghỉ ca)'
+      } else {
+        errors['endBreakTime' + index] = null
+      }
+    }
+    this.setState({errors : errors})
+  }
+
   render() {
     const substitutionTypes = [
       { value: '01', label: 'Phân ca làm việc' },
@@ -563,7 +620,8 @@ class SubstitutionComponent extends React.Component {
               </>
              : null}
             {timesheet.isEdit && timesheet.shiftType === SHIFT_UPDATE
-              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime} updateTotalHours={this.updateTotalHours.bind(this)}
+              ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime} 
+              updateTotalHours={this.updateTotalHours.bind(this)} resetValidation={this.resetValidation.bind(this)}
               timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime, note: timesheet.note, substitutionType: timesheet.substitutionType }} />
               : null}
 
