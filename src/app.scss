@@ -7,6 +7,7 @@
 @import './assets/scss/profile.scss';
 @import './assets/scss/task.scss';
 @import './assets/scss/registration.scss';
+@import './assets/scss/question-answer.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -250,6 +251,36 @@
 .icon-recruitment {
   &:before {
     content: "\e915";
+  }
+}
+
+.icon-qa {
+  &:before {
+    content: "\e91a";
+  }
+}
+
+.icon-arrow-left {
+  &:before {
+    content: "\e918";
+  }
+}
+
+.icon-arrow-right {
+  &:before {
+    content: "\e919";
+  }
+}
+
+.icon-qa-selected {
+  &:before {
+    content: "\e917";
+  }
+}
+
+.icon-search {
+  &:before {
+    content: "\e986";
   }
 }
 
