@@ -492,7 +492,8 @@ class SubstitutionComponent extends React.Component {
                   {this.error(index, 'substitutionType')}
                 </div>
               </div>
-              <div className="">
+              { timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ?
+              <div>
                 <fieldset className="col-12 block-filter-shift">
                   <legend>Tìm kiếm thông tin mã ca</legend>
                     <div className="row">
@@ -552,6 +553,7 @@ class SubstitutionComponent extends React.Component {
                     </div>
                 </fieldset>
               </div>
+              : null }
             </div> : null}
 
             {timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ?
