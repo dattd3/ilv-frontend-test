@@ -4,7 +4,6 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
@@ -114,11 +113,6 @@ class InOutTimeUpdateComponent extends React.Component {
         errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
         errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? '(Bắt buộc)' : null
       }
-      // Optional
-      if (!this.isNullCustomize(timesheet.start_time3_fact_update) || !this.isNullCustomize(timesheet.end_time3_fact_update)) {
-        errors['start_time3_fact_update' + index] = this.isNullCustomize(timesheet.start_time3_fact_update) ? '(Bắt buộc)' : null
-        errors['end_time3_fact_update' + index] = this.isNullCustomize(timesheet.end_time3_fact_update) ? '(Bắt buộc)' : null
-      }
       errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
     })
     if (_.isNull(this.state.approver)) {
@@ -223,10 +217,8 @@ class InOutTimeUpdateComponent extends React.Component {
               error: {},
               start_time1_fact_update: !this.isNullCustomize(ts.start_time1_fact) ? ts.start_time1_fact : null,
               start_time2_fact_update: !this.isNullCustomize(ts.start_time2_fact) ? ts.start_time2_fact : null,
-              start_time3_fact_update: !this.isNullCustomize(ts.start_time3_fact) ? ts.start_time3_fact : null,
               end_time1_fact_update: !this.isNullCustomize(ts.end_time1_fact) ? ts.end_time1_fact : null,
-              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null,
-              end_time3_fact_update: !this.isNullCustomize(ts.end_time3_fact) ? ts.end_time3_fact : null
+              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -354,7 +346,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
               </div>
             </div>
-            {timesheet.isEdit ? <div className="row">
+            {timesheet.isEdit ? <div className="row block-time-item-edit">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ thực tế</p>
@@ -403,7 +395,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
@@ -427,7 +420,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
@@ -454,7 +448,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
@@ -478,7 +473,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
@@ -489,62 +485,11 @@ class InOutTimeUpdateComponent extends React.Component {
                       </div>
                     </div>
                   </div>
-
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col-5">Bắt đầu 3 (OT):</div>
-                        <div className="col-7">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.start_time3_fact_update) ? moment(timesheet.start_time3_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'start_time3_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="h:mm aa"
-                                placeholderText="Lựa chọn"
-                                className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
-                            </label>
-                          </div>
-                          {this.error(index, 'start_time3_fact_update')}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col-5">Kết thúc 3 (OT):</div>
-                        <div className="col-7">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.end_time3_fact_update) ? moment(timesheet.end_time3_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'end_time3_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="h:mm aa"
-                                placeholderText="Lựa chọn"
-                                className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
-                            </label>
-                          </div>
-                          {this.error(index, 'end_time3_fact_update')}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div> : null}
 
-            {timesheet.isEdit ? <div className="row">
+            {timesheet.isEdit ? <div className="row block-note-item-edit">
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>

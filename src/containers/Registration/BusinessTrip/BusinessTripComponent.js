@@ -432,7 +432,8 @@ class BusinessTripComponent extends React.Component {
                           showTimeSelectOnly
                           timeIntervals={15}
                           timeCaption="Giờ"
-                          dateFormat="h:mm aa"
+                          dateFormat="HH:mm"
+                          timeFormat="HH:mm"
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
@@ -479,7 +480,8 @@ class BusinessTripComponent extends React.Component {
                           showTimeSelectOnly
                           timeIntervals={15}
                           timeCaption="Giờ"
-                          dateFormat="h:mm aa"
+                          dateFormat="HH:mm"
+                          timeFormat="HH:mm"
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
