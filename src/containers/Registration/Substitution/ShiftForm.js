@@ -35,6 +35,7 @@ class ShiftForm extends React.Component {
                 break;
         }
         this.props.updateTime(this.props.timesheet.index, name, moment(value).format(TIME_FORMAT))
+        this.props.resetValidation(this.props.timesheet.index)
         setTimeout(() => { this.calculateTotalTime() }, 0)
     }
 
@@ -49,9 +50,9 @@ class ShiftForm extends React.Component {
             if (!startBreakTime && !endBreakTime) {
                 totalTime = this.getDuration(endTime, startTime)
             } else if (startBreakTime && !endBreakTime) {
-                totalTime = this.getDuration(endTime, startTime)
+                totalTime = ""
             } else if (!startBreakTime && endBreakTime) {
-                totalTime = this.getDuration(endTime, startTime)
+                totalTime = ""
             } else {
                 if (moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
                     && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
@@ -61,7 +62,7 @@ class ShiftForm extends React.Component {
                     const duration = moment.duration(rangeFirst).add(moment.duration(rangeSecond))
                     totalTime = moment.utc(duration.as('milliseconds')).format("HH:mm")
                 } else {
-                    totalTime = this.getDuration(endTime, startTime)
+                    totalTime = ""
                 }
             }
         }
@@ -159,6 +160,7 @@ class ShiftForm extends React.Component {
                                             <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
+                                    {this.error(this.props.timesheet.index, 'startBreakTime')}
                                     </>
                                     : null }
                                 </div>
@@ -186,6 +188,7 @@ class ShiftForm extends React.Component {
                                             <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
+                                    {this.error(this.props.timesheet.index, 'endBreakTime')}
                                     </>
                                     : null }
                                 </div>
