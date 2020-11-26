@@ -118,19 +118,19 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p>&nbsp;{item.contract_number}</p>
+                                                <p className="mb-0">&nbsp;{item.contract_number}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.contract_type}</p>
+                                                <p className="mb-0">&nbsp;{item.contract_type}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.from_time}</p>
+                                                <p className="mb-0">&nbsp;{item.from_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.to_time}</p>
+                                                <p className="mb-0">&nbsp;{item.to_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                <p>&nbsp;{item.company_name}</p>
+                                                <p className="mb-0">&nbsp;{item.company_name}</p>
                                             </Col>
                                         </Row>
                                     </div>;
@@ -141,13 +141,13 @@ class MyComponent extends React.Component {
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
 
-                            <Container fluid className="mb-3 p-0">
+                            <Container fluid className="p-0">
                                 <div className="timesheet-section p-0 search-box">
                                     <WorkingProcessSearch clickSearch={this.search.bind(this)} />
                                 </div>
                             </Container>
-                            <Col variant="pl-0">
-                                <h4 className="pl-0">QUYẾT ĐỊNH KHEN THƯỞNG</h4>
+                            <Col>
+                                <h4 className="pl-0 pt-0">QUYẾT ĐỊNH KHEN THƯỞNG</h4>
                             </Col>
 
                             {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
@@ -159,30 +159,30 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
                                     bonusTitle += (item.other_rewards ? 'Khác | ' : '');
                                     bonusTitle = bonusTitle.substring(0, bonusTitle.length - 3);
-                                    return <Container key={i} fluid className="info-tab-content shadow mb-3">
-                                        <form className="info-value"><div >
+                                    return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                        <form className="info-value pb-0"><div >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6 col-lg-2">
                                                     <div className="info-label mb-2">Số quyết định</div>
-                                                    <p>{item.decision_number}&nbsp;</p>
+                                                    <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-6 col-lg-2">
                                                     <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                    <p>{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
+                                                    <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-6 col-lg-3">
                                                     <div className="info-label mb-2">Lý do khen thưởng</div>
-                                                    <p>{item.compliment_reason}&nbsp;</p>
+                                                    <p className="mb-0">{item.compliment_reason}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-6 col-lg-3">
                                                     <div className="info-label mb-2">Hình thức khen thưởng</div>
-                                                    <p>
+                                                    <p className="mb-0">
                                                         {bonusTitle}&nbsp;
                                                         </p>
                                                 </div>
                                                 <div className="form-group col-md-6 col-lg-2">
                                                     <div className="info-label mb-2">Số tiền khen thưởng</div>
-                                                    <p>{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
+                                                    <p className="mb-0">{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,33 +207,33 @@ class MyComponent extends React.Component {
                                         penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
                                         penaltiesTitle += (item.other ? 'Khác | ' : '');
                                         penaltiesTitle = penaltiesTitle.substring(0, penaltiesTitle.length - 3);
-                                        return <Container key={i} fluid className="info-tab-content shadow mb-3">
-                                            <form className="info-value">
+                                        return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                            <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">
                                                         <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Số quyết định</div>
-                                                            <p>{item.decision_number}&nbsp;</p>
+                                                            <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                            <p>{moment(item.effective_date).format('DD/MM/YYYY').toString()}</p>
+                                                            <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}</p>
                                                         </div>
                                                         <div className="form-group col-md-6 col-lg-7">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
-                                                            <p>{item.violation_group}&nbsp;</p>
+                                                            <p className="mb-0">{item.violation_group}&nbsp;</p>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
                                                         <div className="form-group col-12">
                                                             <div className="info-label mb-2">Lý do kỷ luật</div>
-                                                            <p>{item.disciplinary_reason}&nbsp;</p>
+                                                            <p className="mb-0">{item.disciplinary_reason}&nbsp;</p>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
                                                         <div className="form-group col-12">
                                                             <div className="info-label mb-2">Nội dung kỷ luật</div>
-                                                            <p>
+                                                            <p className="mb-0">
                                                                 {penaltiesTitle}
                                                             </p>
                                                         </div>
@@ -241,15 +241,15 @@ class MyComponent extends React.Component {
                                                     <div className="form-row">
                                                         <div className="form-group col-md-4 col-lg-3">
                                                             <div className="info-label mb-2">Số tiền kỷ luật</div>
-                                                            <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                            <p className="mb-0">{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
                                                         <div className="form-group col-md-4 col-lg-4">
                                                             <div className="info-label mb-2">% trừ thưởng</div>
-                                                            <p>{item.deduction_bonus_percent} &nbsp;</p>
+                                                            <p className="mb-0">{item.deduction_bonus_percent} &nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-4 col-lg-5">
                                                             <div className="info-label mb-2">Số tiền bồi thường</div>
-                                                            <p>{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                            <p className="mb-0">{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
                                                     </div>
                                                 </div>
