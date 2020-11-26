@@ -123,8 +123,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             end = moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
         }
 
-        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("22:00", Constants.LEAVE_TIME_FORMAT)) 
-            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") <= moment("06:00", "HH:mm"))) {
+        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT)) 
+            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") < moment("08:00", "HH:mm"))) {
             end = endTime
         }
 
@@ -144,8 +144,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
         }
 
-        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("22:00", Constants.LEAVE_TIME_FORMAT)) 
-            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") <= moment("06:00", "HH:mm"))) {
+        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT)) 
+            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") < moment("08:00", "HH:mm"))) {
             start = startTime
         }
 
