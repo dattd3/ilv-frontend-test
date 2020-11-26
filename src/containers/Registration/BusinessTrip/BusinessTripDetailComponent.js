@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
+import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 
@@ -17,6 +18,12 @@ class BusinessTripDetailComponent extends React.Component {
     this.state = {
       isShowStatusModal: false
     }
+  }
+
+  getTypeDetail = () => {
+    const pathName = window.location.pathname;
+    const pathNameArr = pathName.split('/');
+    return pathNameArr[pathNameArr.length - 1];
   }
 
   showStatusModal = (message, isSuccess = false) => {
@@ -74,13 +81,20 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
         </div>
 
-        <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
-          {
-            businessTrip.status == Constants.STATUS_NOT_APPROVED ?
-            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
-          }
-        </div>
+        {
+          this.getTypeDetail() === "request" ?
+          <>
+          <h5>Thông tin phê duyệt</h5>
+          <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
+          </> : 
+          <div className="block-status">
+            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
+            {
+              businessTrip.status == Constants.STATUS_NOT_APPROVED ?
+              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
+            }
+          </div>
+        }
 
         {
           businessTrip.userProfileInfoDocuments.length > 0 ?

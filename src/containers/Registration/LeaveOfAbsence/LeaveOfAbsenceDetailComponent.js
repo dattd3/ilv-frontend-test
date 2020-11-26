@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
+import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 
@@ -16,6 +17,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       isShowStatusModal: false
     }
+  }
+
+  getTypeDetail = () => {
+    const pathName = window.location.pathname;
+    const pathNameArr = pathName.split('/');
+    return pathNameArr[pathNameArr.length - 1];
   }
 
   showStatusModal = (message, isSuccess = false) => {
@@ -87,14 +94,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
-        <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
-          {
-            this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
-            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
-          }
-        </div>
+        
+        {
+          this.getTypeDetail() === "request" ?
+          <>
+          <h5>Thông tin phê duyệt</h5>
+          <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
+          </> : 
+          <div className="block-status">
+            <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+            {
+              this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
+              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
+            }
+          </div>
+        }
 
         {
           this.props.leaveOfAbsence.userProfileInfoDocuments.length > 0 ?
