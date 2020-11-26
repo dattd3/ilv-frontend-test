@@ -140,6 +140,7 @@ class InOutUpdateDetailComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
                   </div>
+                  <div className="row">&nbsp;</div>
                 </div>
               </div>
             </div>
