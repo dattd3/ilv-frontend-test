@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
 import map from '../map.config';
+import WorkingProcessSearch from './workingProcessSearch';
 
 class MyComponent extends React.Component {
 
@@ -13,7 +14,9 @@ class MyComponent extends React.Component {
         this.state = {
             userContract: {},
             userBonuses: {},
-            userPenalties: {}
+            userPenalties: {},
+            userBonusesRoot: {},
+            userPenaltiesRoot: {}
         };
     }
 
@@ -40,7 +43,7 @@ class MyComponent extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`)
               .then(res => {
                 if (res && res.data && res.data.data) {
-                    this.setState({ userBonuses: res.data.data });
+                    this.setState({ userBonuses: res.data.data, userBonusesRoot: res.data.data });
                 }
               }).catch(error => {
                 // localStorage.clear();
@@ -50,12 +53,29 @@ class MyComponent extends React.Component {
               .then(res => {
                 if (res && res.data && res.data.data) {
                     let userPenaltiesResult = res.data.data;
-                    this.setState({ userPenalties: userPenaltiesResult });
+                    this.setState({ userPenalties: userPenaltiesResult, userPenaltiesRoot : userPenaltiesResult });
                 }
               }).catch(error => {
                 // localStorage.clear();
                 // window.location.href = map.Login;
               });
+    }
+    
+    search (startDate, endDate) {
+        const start = moment(startDate).format('YYYY-MM-DD').toString()
+        const end = moment(endDate).format('YYYY-MM-DD').toString()
+        this.setState({
+            userBonuses: this.filterBonus(this.state.userBonusesRoot, start, end),
+            userPenalties: this.filterPenalties(this.state.userPenaltiesRoot,start, end)
+        });
+    }
+    filterBonus (bonuses, startDate, endDate) {
+        debugger;
+        return  bonuses.filter(bonus => Date.parse(moment(bonus.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(bonus.effective_date) <= Date.parse(endDate));
+    }
+    
+    filterPenalties (penalties, startDate, endDate) {
+        return  penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate));
     }
 
     render() {
@@ -119,6 +139,12 @@ class MyComponent extends React.Component {
                     </Tab>
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
+                            
+                            <Container fluid className="mb-3 p-0">
+                                <div className="timesheet-section p-0 search-box">
+                                    <WorkingProcessSearch clickSearch={this.search.bind(this)}/>
+                                </div>
+                            </Container>
                             <Col>
                                 <h4>QUYẾT ĐỊNH KHEN THƯỞNG</h4>
                             </Col>
@@ -141,7 +167,7 @@ class MyComponent extends React.Component {
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-2">
                                                         <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                        <p>{item.effective_date ? item.effective_date.split('T')[0] : '.' }&nbsp;</p>
+                                                        <p>{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
                                                       </div>
                                                       <div className="form-group col-md-6 col-lg-3">
                                                         <div className="info-label mb-2">Lý do khen thưởng</div>
@@ -187,13 +213,13 @@ class MyComponent extends React.Component {
                                                           </div>
                                                           <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                            <p>{item.effective_date ? item.effective_date.split('T')[0]:'.'  }</p>
+                                                            <p>{moment(item.effective_date).format('DD/MM/YYYY').toString() }</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-3">
+                                                          <div className="form-group col-md-6 col-lg-4">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
                                                             <p>{item.violation_group}&nbsp;</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-5">
+                                                          <div className="form-group col-md-6 col-lg-4">
                                                             <div className="info-label mb-2">Lỗi vi phạm</div>
                                                             <p>{item.disciplinary_reason}&nbsp;</p>
                                                           </div>
