@@ -207,7 +207,7 @@ class MyComponent extends React.Component {
                                                 penaltiesTitle = penaltiesTitle.substring(0, penaltiesTitle.length - 3);  
                                             return  <div key={i}>
                                                         <div className="form-row">
-                                                          <div className="form-group col-md-6 col-lg-2">
+                                                          <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Số quyết định</div>
                                                             <p>{item.decision_number}&nbsp;</p>
                                                           </div>
@@ -215,36 +215,39 @@ class MyComponent extends React.Component {
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
                                                             <p>{moment(item.effective_date).format('DD/MM/YYYY').toString() }</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-4">
+                                                          <div className="form-group col-md-6 col-lg-7">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
                                                             <p>{item.violation_group}&nbsp;</p>
                                                           </div>
-                                                          <div className="form-group col-md-6 col-lg-4">
-                                                            <div className="info-label mb-2">Lỗi vi phạm</div>
-                                                            <p>{item.disciplinary_reason}&nbsp;</p>
-                                                          </div>
+                                                        </div>
+                                                        <div className="form-row">
+                                                            <div className="form-group col-12">
+                                                                <div className="info-label mb-2">Lý do kỷ luật</div>
+                                                                <p>{item.disciplinary_reason}&nbsp;</p>
+                                                            </div>                                                    
                                                         </div>
                                                         <div className="form-row">
                                                         <div className="form-group col-12">
-                                                            <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
+                                                            <div className="info-label mb-2">Nội dung kỷ luật</div>
                                                             <p>
                                                                 {penaltiesTitle}
                                                             </p>
                                                           </div>
                                                         </div>
                                                         <div className="form-row">
-                                                          <div className="form-group col-md-4 col-lg-2">
+                                                          <div className="form-group col-md-4 col-lg-3">
                                                             <div className="info-label mb-2">Số tiền kỷ luật</div>
                                                             <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                           </div>
-                                                          <div className="form-group col-md-4 col-lg-2">
-                                                            <div className="info-label mb-2">Số tiền bồi thường</div>
-                                                            <p>{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
-                                                          </div>
-                                                          <div className="form-group col-md-4 col-lg-2">
+                                                          <div className="form-group col-md-4 col-lg-4">
                                                             <div className="info-label mb-2">% trừ thưởng</div>
                                                              <p>{item.deduction_bonus_percent} &nbsp;</p> 
                                                           </div>
+                                                          <div className="form-group col-md-4 col-lg-5">
+                                                            <div className="info-label mb-2">Số tiền bồi thường</div>
+                                                            <p>{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                          </div>
+                                                          
                                                         </div>
                                                         <hr />
                                                     </div>
