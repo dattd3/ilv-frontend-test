@@ -37,7 +37,7 @@ class WorkingProcessSearch extends React.Component {
 
   render() {
     return <>
-    <div className="timesheet-box shadow">
+    <div className="timesheet-box shadow p-3 mb-10">
       <div className="row">
         <div className="col">
           <div className="title">Từ ngày</div>
