@@ -8,6 +8,13 @@
 }
 
 .registration-section {
+    .registration-detail {
+        .btn-eviction-task {
+            color: #FFFFFF;
+            background: red;
+            border-color: red;
+        }
+    }
     .in-out-time-update {
         .block-time-item-edit {
             input {

@@ -5,7 +5,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import _ from 'lodash'
 
 const TIME_FORMAT = 'HH:mm:00'
-// const BROKEN_SHIFT_OPTION_VALUE = "02"
 
 class ShiftForm extends React.Component {
     constructor(props) {
