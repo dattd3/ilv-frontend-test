@@ -84,7 +84,7 @@ class SubstitutionComponent extends React.Component {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
       }
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
-        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
+        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType', 'startBreakTime', 'endBreakTime']
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
         })
@@ -408,6 +408,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   resetValidation = (index) => {
+    debugger
     const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdit);
     const errors = {...this.state.errors}
 
