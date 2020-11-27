@@ -8,6 +8,7 @@ import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ResultModal from '../ResultModal'
+import Constants from '../.../../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
@@ -16,9 +17,6 @@ registerLocale("vi", vi)
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-const SHIFT_CODE = 1
-const SHIFT_UPDATE = 2
-
 const BROKEN_SHIFT_OPTION_VALUE = "02"
 
 class SubstitutionComponent extends React.Component {
@@ -82,11 +80,11 @@ class SubstitutionComponent extends React.Component {
   verifyInput() {
     let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-      if (timesheet.shiftType === SHIFT_CODE) {
+      if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
       }
-      if (timesheet.shiftType === SHIFT_UPDATE) {
-        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
+      if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
+        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType', 'startBreakTime', 'endBreakTime']
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
         })
@@ -140,7 +138,8 @@ class SubstitutionComponent extends React.Component {
         startBreakTime: item.startBreakTime,
         startTime: item.startTime,
         substitutionType: item.substitutionType,
-        toTime: item.toTime
+        toTime: item.toTime,
+        totalHours: this.state.totalHours
       }
     })
 
@@ -281,9 +280,11 @@ class SubstitutionComponent extends React.Component {
       timesheets[index].shiftCodeFilter = ""
       timesheets[index].startTimeFilter = null
       timesheets[index].endTimeFilter = null
+
       this.setState({
         timesheets: [...timesheets],
-        errors: {}
+        errors: {},
+        isShowStartBreakTimeAndEndBreakTime: false
       })
     }
   }
@@ -369,7 +370,7 @@ class SubstitutionComponent extends React.Component {
                 endTime: null,
                 startBreakTime: null,
                 endBreakTime: null,
-                shiftType: SHIFT_CODE,
+                shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftId: null,
                 shiftHours: null,
                 shiftIndex: shiftIndex,
@@ -407,6 +408,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   resetValidation = (index) => {
+    debugger
     const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdit);
     const errors = {...this.state.errors}
 
@@ -533,15 +535,15 @@ class SubstitutionComponent extends React.Component {
             <div>
               <p className="text-uppercase"><b>Lựa chọn hình thức thay đổi phân ca</b></p>
               <div className="btn-group btn-group-toggle" data-toggle="buttons">
-                <label onClick={this.updateShiftType.bind(this, SHIFT_CODE, index)} className={timesheet.shiftType === SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                   Chọn mã ca làm việc
                 </label>
-                <label onClick={this.updateShiftType.bind(this, SHIFT_UPDATE, index)} className={timesheet.shiftType === SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                   Nhập giờ thay đổi phân ca
                 </label>
               </div>
               <div className="row">
-                <div className="col-5">
+                <div className="col-6">
                   <p className="title">Loại phân ca</p>
                   <div>
                       <Select name="substitutionType" value={timesheet.substitutionType} onChange={substitutionType => this.updateSubstitution(index, substitutionType)} placeholder="Lựa chọn" key="substitutionType" options={substitutionTypes} />
@@ -549,7 +551,7 @@ class SubstitutionComponent extends React.Component {
                   {this.error(index, 'substitutionType')}
                 </div>
               </div>
-              { timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ?
+              { timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <div>
                 <fieldset className="col-12 block-filter-shift">
                   <legend>Tìm kiếm thông tin mã ca</legend>
@@ -613,13 +615,13 @@ class SubstitutionComponent extends React.Component {
               : null }
             </div> : null}
 
-            {timesheet.isEdit && timesheet.shiftType === SHIFT_CODE ?
+            {timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <>
                 <ShiftTable shifts={timesheet.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} updateShift={this.updateShift.bind(this)} />
                 {this.error(index, 'shiftId')}
               </>
              : null}
-            {timesheet.isEdit && timesheet.shiftType === SHIFT_UPDATE
+            {timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE
               ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime} 
               updateTotalHours={this.updateTotalHours.bind(this)} resetValidation={this.resetValidation.bind(this)}
               timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime, note: timesheet.note, substitutionType: timesheet.substitutionType }} />

@@ -115,32 +115,25 @@ class BusinessTripComponent extends React.Component {
     this.calculateTotalTime(start, end)
   }
 
-  calculateTotalTime(startDate, endDate, startTime = null, endTime = null) {
-    if (!startDate || !endDate) return
-    const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
-    const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
+  calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null) {
+    if (this.state.leaveType === FULL_DAY && (!startDateInput || !endDateInput)) return
+    if (this.state.leaveType === DURING_THE_DAY && startDateInput !== endDateInput && (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput)) return
+    
+    const startDate = moment(startDateInput, "DD/MM/YYYY")
+    const endDate = moment(endDateInput, "DD/MM/YYYY")
+    const startTime = moment(startTimeInput, "HH:mm")
+    const endTime = moment(endTimeInput, "HH:mm")
+    let totalTime = ""
+
+    if (this.state.leaveType === FULL_DAY) {
+      totalTime = endDate.diff(startDate, 'days') + 1
+    } else {
+      totalTime = endTime.diff(startTime)
+      totalTime = totalTime ? Math.abs(moment.duration(totalTime).asHours()) : ""
+      totalTime = totalTime ? totalTime/8 : 0
     }
 
-    this.validationFromDB(start, end)
-
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
-        perno: localStorage.getItem('employeeNo'),
-        from_date: start,
-        to_date: end
-    }, config)
-    .then(res => {
-        if (res && res.data && res.data.data) {
-            this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
-        }
-    }).catch(error => {
-
-    })
+    this.setState({totalTime : totalTime})
   }
 
   validationFromDB = (startDate, endDate, startTime = null, endTime = null) => {
@@ -168,14 +161,6 @@ class BusinessTripComponent extends React.Component {
     }).catch(error => {
 
     })
-  }
-
-  calFullDay(timesheets) {
-    const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
-        return accumulator + parseFloat(currentValue.hours)
-    }, 0)
-    
-    return hours ? (hours / 8) : 0
   }
 
   calDuringTheDay(timesheets, startTime, endTime) {
@@ -496,7 +481,7 @@ class BusinessTripComponent extends React.Component {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime*8 + ' giờ' : ''} readOnly />
                 </div>
               </div>
               <div className="col-12">{this.error('startTimeAndEndTime')}</div>

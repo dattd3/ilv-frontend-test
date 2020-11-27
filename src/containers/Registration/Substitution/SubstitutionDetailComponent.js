@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import _ from 'lodash'
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -9,8 +10,6 @@ const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
-const SHIFT_CODE = 1
-const SHIFT_UPDATE = 2
 
 class SubstitutionDetailComponent extends React.Component {
   constructor(props) {
@@ -41,20 +40,24 @@ class SubstitutionDetailComponent extends React.Component {
         PERNR: this.props.substitution.userProfileInfo.user.employeeNo,
         BEGDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
         ENDDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-        TPROG: timesheet.shiftType === SHIFT_CODE ? timesheet.shiftId : '',
-        BEGUZ: timesheet.shiftType === SHIFT_UPDATE ? moment(timesheet.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
-        ENDUZ: timesheet.shiftType === SHIFT_UPDATE ? moment(timesheet.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
+        TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
+        BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
+        ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         VTART: timesheet.substitutionType.value,
-        PBEG1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
-        PEND1: timesheet.shiftType === SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
+        PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
+        PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : '',
         PBEZ1: '',
-        PUNB1: timesheet.shiftType === SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : ''
+        PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+        TPKLA: moment.duration(timesheet.totalHours).asHours() > 4 ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
       }
     })
   }
 
-  calTime(startTime, endTime) {
-    const differenceInMs = moment(endTime, TIME_FORMAT).diff(moment(startTime, TIME_FORMAT))
+  calTime(start, end) {
+    if (start == null || end == null) {
+      return ""
+    }
+    const differenceInMs = moment(end, TIME_FORMAT).diff(moment(start, TIME_FORMAT))
     return moment.duration(differenceInMs).asHours()
   }
 
@@ -118,7 +121,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
             </div>
 
-            {timesheet.shiftType === SHIFT_UPDATE ? <div className="row">
+            {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? <div className="row">
               <div className="col">
                 <p>Thời gian bắt đầu nghỉ ca</p>
                 <div className="detail">{timesheet.startBreakTime}</div>
@@ -133,7 +136,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
             </div> : null}
 
-            {timesheet.shiftType === SHIFT_CODE ? <div className="row">
+            {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? <div className="row">
               <div className="col">
                 <p>Mã ca thay đổi</p>
                 <div className="detail">{timesheet.shiftId}</div>
