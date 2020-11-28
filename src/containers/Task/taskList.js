@@ -9,6 +9,7 @@ import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
 import moment from 'moment'
+import _ from 'lodash'
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
@@ -266,13 +267,22 @@ class TaskList extends React.Component {
                 TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
                 BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                VTART: data.userProfileInfo.substitutionType.value,
+                VTART: timesheet.substitutionType.value,
                 PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PBEZ1: '',
-                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : ''
+                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+                TPKLA: moment.duration(timesheet.totalHours).asHours() > 4 ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
             }
         })
+    }
+
+    calTime = (start, end) => {
+        if (start == null || end == null) {
+          return ""
+        }
+        const differenceInMs = moment(end, Constants.SUBSTITUTION_TIME_FORMAT).diff(moment(start, Constants.SUBSTITUTION_TIME_FORMAT))
+        return moment.duration(differenceInMs).asHours()
     }
 
     getLeaveOfAbsenceToSAp = data => {
