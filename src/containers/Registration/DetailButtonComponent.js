@@ -12,7 +12,7 @@ class DetailButtonComponent extends React.Component {
         }
 
         this.requestRegistraion = {
-            2: "Đăng ký nghỉ phép",
+            2: "Đăng ký nghỉ",
             3: "Đăng ký Công tác/Đào tạo",
             4: "Thay đổi phân ca",
             5: "Sửa giờ vào - ra"
@@ -25,6 +25,10 @@ class DetailButtonComponent extends React.Component {
 
     disApproval = () => {
         this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: 1 })
+    }
+
+    revocationApproval = () => {
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi phê duyệt", modalMessage: "Bạn có đồng ý thu hồi phê duyệt " + this.requestRegistraion[this.props.requestTypeId] + " này ?", typeRequest: 4 })
     }
 
     onHideModalConfirm() {
@@ -69,8 +73,8 @@ class DetailButtonComponent extends React.Component {
                     : null
                 }
                 {
-                    this.props.isShowRevocationOfApproval ?
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Thu hồi phê duyệt</button>
+                    this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton ?
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi phê duyệt</button>
                     : null
                 }
             </div>

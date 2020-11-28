@@ -57,14 +57,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HH:mm:ss')
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -82,7 +82,7 @@ class InOutTimeUpdateComponent extends React.Component {
     } else {
       errors.approver = null
     }
-    this.setState({ errors: errors })
+    // this.setState({ errors: errors })
   }
 
   handleInputChange(index, event) {
@@ -106,12 +106,13 @@ class InOutTimeUpdateComponent extends React.Component {
   verifyInput() {
     let errors = {...this.state.errors}
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      errors['startTime1Fact' + index] = (timesheet.start_time1_plan && _.isNull(timesheet.startTime1Fact)) ? '(Bắt buộc)' : null
-      errors['endTime1Fact' + index] = (timesheet.end_time1_plan && _.isNull(timesheet.endTime1Fact)) ? '(Bắt buộc)' : null
-      errors['startTime2Fact' + index] = (timesheet.start_time2_plan && _.isNull(timesheet.startTime2Fact)) ? '(Bắt buộc)' : null
-      errors['endTime2Fact' + index] = (timesheet.end_time2_plan && _.isNull(timesheet.endTime2Fact)) ? '(Bắt buộc)' : null
-      errors['startTime3Fact' + index] = (timesheet.start_time3_plan && _.isNull(timesheet.startTime3Fact)) ? '(Bắt buộc)' : null
-      errors['endTime3Fact' + index] = (timesheet.end_time3_plan && _.isNull(timesheet.endTime3Fact)) ? '(Bắt buộc)' : null
+      errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? '(Bắt buộc)' : null
+      errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? '(Bắt buộc)' : null
+      // Optional
+      if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
+        errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
+        errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? '(Bắt buộc)' : null
+      }
       errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
     })
     if (_.isNull(this.state.approver)) {
@@ -129,8 +130,11 @@ class InOutTimeUpdateComponent extends React.Component {
       return
     }
 
+    const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
+    const approver = {...this.state.approver}
+    delete approver.avatar
     const data = {
-      timesheets: this.state.timesheets,
+      timesheets: timesheets,
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       user: {
@@ -139,11 +143,11 @@ class InOutTimeUpdateComponent extends React.Component {
         department: localStorage.getItem('department'),
         employeeNo: localStorage.getItem('employeeNo')
       },
-      approver: this.state.approver,
+      approver: approver,
     }
-    const comments = this.state.timesheets.map(item => (
-      item.note
-    )).join(" - ")
+    const comments = timesheets
+    .filter(item => (item.note))
+    .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Sửa giờ vào-ra')
@@ -154,7 +158,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', this.state.approver.userAccount)
+    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -198,11 +202,14 @@ class InOutTimeUpdateComponent extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-
     const start = moment(this.state.startDate).format('YYYYMMDD').toString()
     const end = moment(this.state.endDate).format('YYYYMMDD').toString()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+      perno: localStorage.getItem('employeeNo'),
+      from_date: start,
+      to_date: end
+    }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const timesheets = res.data.data.map(ts => {
@@ -210,12 +217,10 @@ class InOutTimeUpdateComponent extends React.Component {
               isEdit: false,
               note: null,
               error: {},
-              startTime1Fact: ts.start_time1_fact ? ts.start_time1_fact : null,
-              startTime2Fact: ts.start_time2_fact ? ts.start_time2_fact : null,
-              startTime3Fact: ts.start_time3_fact ? ts.start_time3_fact : null,
-              endTime1Fact: ts.end_time1_fact ? ts.end_time1_fact : null,
-              endTime2Fact: ts.end_time2_fact ? ts.end_time2_fact : null,
-              endTime3Fact: ts.end_time3_fact ? ts.end_time3_fact : null
+              start_time1_fact_update: !this.isNullCustomize(ts.start_time1_fact) ? ts.start_time1_fact : null,
+              start_time2_fact_update: !this.isNullCustomize(ts.start_time2_fact) ? ts.start_time2_fact : null,
+              end_time1_fact_update: !this.isNullCustomize(ts.end_time1_fact) ? ts.end_time1_fact : null,
+              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -248,6 +253,18 @@ class InOutTimeUpdateComponent extends React.Component {
     const preMonth = now.month()
     const currentYear = preMonth == 0 ? now.year() - 1 : now.year()
     return `${CLOSING_SALARY_DATE_PRE_MONTH}/${preMonth}/${currentYear}`
+  }
+
+  isNullCustomize = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+  }
+
+  formatData = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? "" : value
+  }
+
+  printTimeFormat = value => {
+    return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : ""
   }
 
   render() {
@@ -310,16 +327,20 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.timesheets.filter(t => t.start_time1_plan || t.start_time2_plan || t.start_time3_plan).map((timesheet, index) => {
+        {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time1_plan ? <p>Bắt đầu 1: <b>{timesheet.start_time1_fact}</b> | Kết thúc 1: <b>{timesheet.end_time1_fact}</b></p> : null}
-                {!timesheet.isEdit && timesheet.start_time3_plan ? <p>Bắt đầu 3: <b>{timesheet.start_time3_fact}</b> | Kết thúc 3: <b>{timesheet.end_time3_fact}</b></p> : null}
+                {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
+                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                : null }
               </div>
               <div className="col-4">
-                {!timesheet.isEdit && timesheet.start_time2_plan ? <p>Bắt đầu 2: <b>{timesheet.start_time2_fact}</b> | Kết thúc 2: <b>{timesheet.end_time2_fact}</b></p> : null}
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ? 
+                  <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
+                  : null }
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
@@ -327,197 +348,150 @@ class InOutTimeUpdateComponent extends React.Component {
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
               </div>
             </div>
-            {timesheet.isEdit ? <div className="row">
+            {timesheet.isEdit ? <div className="row block-time-item-edit">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Giờ thực tế</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time1_fact ? timesheet.start_time1_fact : null}</b>
+                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time1_fact ? timesheet.end_time1_fact : null}</b>
+                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time2_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time2_fact ? timesheet.start_time2_fact : null}</b>
+                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time2_fact ? timesheet.end_time2_fact : null}</b>
+                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
-                  </div> : null}
-                  {timesheet.start_time3_plan ? <div className="row">
+                  </div>
+                  <div className="row">
                     <div className="col-6">
-                      Bắt đầu: <b>{timesheet.start_time3_fact ? timesheet.start_time3_fact : null}</b>
+                      Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc: <b>{timesheet.end_time3_fact ? timesheet.end_time3_fact : null}</b>
+                      Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
                     </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
 
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">Sửa giờ vào ra</p>
-                  {timesheet.start_time1_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
-                        <div className="col-8">
+                        <div className="col-5">Bắt đầu 1:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime1Fact ? moment(timesheet.startTime1Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime1Fact')}
+                                selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'start_time1_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime1Fact')}
+                          {this.error(index, 'start_time1_fact_update')}
                         </div>
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc:</div>
-                        <div className="col-8">
+                        <div className="col-5">Kết thúc 1:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime1Fact ? moment(timesheet.endTime1Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime1Fact')}
+                                selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'end_time1_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime1Fact')}
+                          {this.error(index, 'end_time1_fact_update')}
                         </div>
                       </div>
                     </div>
-                  </div> : null}
+                  </div>
 
-                  {timesheet.start_time2_plan ? <div className="row">
+                  <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
-                        <div className="col-8">
+                        <div className="col-5">Bắt đầu 2:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.startTime2Fact ? moment(timesheet.startTime2Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime2Fact')}
+                                selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setStartTime.bind(this, index, 'start_time2_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'startTime2Fact')}
+                          {this.error(index, 'start_time2_fact_update')}
                         </div>
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-4">Kết thúc:</div>
-                        <div className="col-8">
+                        <div className="col-5">Kết thúc 2:</div>
+                        <div className="col-7">
                           <div className="content input-container">
                             <label>
                               <DatePicker
-                                selected={timesheet.endTime2Fact ? moment(timesheet.endTime2Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime2Fact')}
+                                selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                                onChange={this.setEndTime.bind(this, index, 'end_time2_fact_update')}
                                 autoComplete="off"
                                 showTimeSelect
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="h:mm aa"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
                                 placeholderText="Lựa chọn"
                                 className="form-control input" />
                               <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
-                          {this.error(index, 'endTime2Fact')}
+                          {this.error(index, 'end_time2_fact_update')}
                         </div>
                       </div>
                     </div>
-                  </div> : null}
-
-                  {timesheet.start_time3_plan ? <div className="row">
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col-4">Bắt đầu:</div>
-                        <div className="col-8">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={timesheet.startTime3Fact ? moment(timesheet.startTime3Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'startTime3Fact')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="h:mm aa"
-                                placeholderText="Lựa chọn"
-                                className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
-                            </label>
-                          </div>
-                          {this.error(index, 'startTime3Fact')}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col-4">Kết thúc:</div>
-                        <div className="col-8">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={timesheet.endTime3Fact ? moment(timesheet.endTime3Fact, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'endTime3Fact')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="h:mm aa"
-                                placeholderText="Lựa chọn"
-                                className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
-                            </label>
-                          </div>
-                          {this.error(index, 'endTime3Fact')}
-                        </div>
-                      </div>
-                    </div>
-                  </div> : null}
+                  </div>
                 </div>
               </div>
             </div> : null}
 
-            {timesheet.isEdit ? <div className="row">
+            {timesheet.isEdit ? <div className="row block-note-item-edit">
               <div className="col-12">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>

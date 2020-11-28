@@ -2,6 +2,7 @@ const Constants = {
   NOTIFICATION_PAGE_INDEX_DEFAULT: 1,
   NOTIFICATION_PAGE_SIZE_DEFAULT: 8,
   API_ERROR_CODE: 1,
+  API_ERROR_NOT_FOUND_CODE: "404",
   PDF_FILE_TYPE: 'pdf',
   DOC_FILE_TYPE: 'doc',
   XLS_FILE_TYPE: 'xls',
@@ -19,6 +20,7 @@ const Constants = {
   STATUS_NOT_APPROVED: 1,
   STATUS_APPROVED: 2,
   STATUS_EVICTION: 3,
+  STATUS_REVOCATION: 4,
   mappingStatus: {
     0: {label: 'Đang chờ xử lý', className: ''},
     1: {label: 'Không phê duyệt', className: 'fail'},
@@ -36,8 +38,11 @@ const Constants = {
   SUBSTITUTION_SHIFT_UPDATE: 2,
   LEAVE_TIME_FORMAT: 'HH:mm',
   LEAVE_DATE_FORMAT: 'DD/MM/YYYY',
+  LEAVE_TIME_FORMAT_TO_VALIDATION: 'HHmm00',
   LEAVE_FULL_DAY: 1,
   BUSINESS_TRIP_TIME_FORMAT: 'HH:mm',
-  BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY'
+  BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
+  SUBSTITUTION_TPKLA_FULL_DAY: 1,
+  SUBSTITUTION_TPKLA_HALF_DAY: 2,
 };
 export default Constants

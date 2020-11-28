@@ -178,7 +178,7 @@
   "ClassificationOfAccidentsIncurred" : "Classification",
   "ReasonsOfAccidentsIncurred" : "Reasons",
   "SearchLabel": "Search",
-  "Registration": "Đăng ký nghỉ phép, công tác, thay đổi phân ca, sửa giờ vào-ra",
-  "BonusAndPenalty": "Bonus and Penalty",
   "QuestionAndAnswer": "Question & Answer"
+  "Registration": "Đăng ký nghỉ, công tác, thay đổi phân ca, sửa giờ vào-ra",
+  "BonusAndPenalty": "Bonus and Penalty"
 }

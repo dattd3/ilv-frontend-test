@@ -9,6 +9,7 @@ import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import Moment from 'react-moment'
 import moment from 'moment'
+import _ from 'lodash'
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
@@ -40,7 +41,7 @@ class TaskList extends React.Component {
         };
 
         this.requestRegistraion = {
-            2: {request: "Đăng ký nghỉ phép", requestUrl: "requestabsence"},
+            2: {request: "Đăng ký nghỉ", requestUrl: "requestabsence"},
             3: {request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance"},
             4: {request: "Thay đổi phân ca", requestUrl: "requestsubstitution"},
             5: {request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping"}
@@ -235,7 +236,8 @@ class TaskList extends React.Component {
                 LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
                 SATZA: 'P10',
                 LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+                ACTIO: 'INS'
               })
             }
 
@@ -246,7 +248,8 @@ class TaskList extends React.Component {
                 LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
                 SATZA: 'P20',
                 LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-'
+                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+                ACTIO: 'INS'
               })
             }
           })
@@ -264,13 +267,22 @@ class TaskList extends React.Component {
                 TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
                 BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                VTART: data.userProfileInfo.substitutionType.value,
+                VTART: timesheet.substitutionType.value,
                 PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PBEZ1: '',
-                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : ''
+                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+                TPKLA: moment.duration(timesheet.totalHours).asHours() > 4 ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
             }
         })
+    }
+
+    calTime = (start, end) => {
+        if (start == null || end == null) {
+          return ""
+        }
+        const differenceInMs = moment(end, Constants.SUBSTITUTION_TIME_FORMAT).diff(moment(start, Constants.SUBSTITUTION_TIME_FORMAT))
+        return moment.duration(differenceInMs).asHours()
     }
 
     getLeaveOfAbsenceToSAp = data => {
@@ -284,7 +296,8 @@ class TaskList extends React.Component {
                     ENDDA: moment(data.userProfileInfo.endDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
                     SUBTY: data.userProfileInfo.absenceType ? data.userProfileInfo.absenceType.value : "",
                     BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null
+                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+                    ACTIO: 'INS'
                 }
             )
         }
@@ -302,7 +315,8 @@ class TaskList extends React.Component {
                     ENDDA: moment(data.userProfileInfo.endDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
                     SUBTY: data.userProfileInfo.attendanceQuotaType.value,
                     BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null
+                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+                    ACTIO: 'INS'
                 }
             )
         }

@@ -22,7 +22,7 @@ class RegistrationComponent extends React.Component {
     return (
       <div className="registration-section personal-info">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
-          <Tab eventKey="LeaveOfAbsenceRegistration" title={'Đăng ký nghỉ phép'}>
+          <Tab eventKey="LeaveOfAbsenceRegistration" title={'Đăng ký nghỉ'}>
             <LeaveOfAbsence />
           </Tab>
           <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>

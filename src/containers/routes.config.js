@@ -329,14 +329,14 @@ export default [
           },
           component: lazy(() => import("./Notifications/Detail/Detail"))
         },
-        {
-          key: "benefit",
-          routeProps: {
-            exact: true,
-            path: map.Benefit
-          },
-          component: lazy(() => import("./Benefit"))
-        },        
+        // {
+        //   key: "benefit",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.Benefit
+        //   },
+        //   component: lazy(() => import("./Benefit"))
+        // },        
         {
           key: "kpi",
           routeProps: {

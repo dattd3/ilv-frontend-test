@@ -5,7 +5,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import _ from 'lodash'
 
 const TIME_FORMAT = 'HH:mm:00'
-// const BROKEN_SHIFT_OPTION_VALUE = "02"
 
 class ShiftForm extends React.Component {
     constructor(props) {
@@ -35,6 +34,7 @@ class ShiftForm extends React.Component {
                 break;
         }
         this.props.updateTime(this.props.timesheet.index, name, moment(value).format(TIME_FORMAT))
+        this.props.resetValidation(this.props.timesheet.index)
         setTimeout(() => { this.calculateTotalTime() }, 0)
     }
 
@@ -45,24 +45,27 @@ class ShiftForm extends React.Component {
         const startBreakTime = this.state.startBreakTime ? moment(this.state.startBreakTime).format("DD/MM/YYYY HH:mm:ss") : ""
         const endBreakTime = this.state.endBreakTime ? moment(this.state.endBreakTime).format("DD/MM/YYYY HH:mm:ss") : ""
 
-        if (startTime && endTime && moment(startTime).isBefore(moment(endTime))) {
+        if (startTime && endTime && moment(startTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss")) {
             if (!startBreakTime && !endBreakTime) {
                 totalTime = this.getDuration(endTime, startTime)
             } else if (startBreakTime && !endBreakTime) {
-                totalTime = this.getDuration(endTime, startTime)
+                totalTime = ""
             } else if (!startBreakTime && endBreakTime) {
-                totalTime = this.getDuration(endTime, startTime)
+                totalTime = ""
             } else {
-                if (moment(startBreakTime).isBetween(moment(startTime), moment(endTime)) && moment(endBreakTime).isBetween(moment(startTime), moment(endTime)) && moment(startBreakTime).isBefore(moment(endBreakTime))) {
+                if (moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
+                    && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endTime, "DD/MM/YYYY HH:mm:ss") 
+                    && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") <= moment(endBreakTime, "DD/MM/YYYY HH:mm:ss")) {
                     const rangeFirst = this.getDuration(startBreakTime, startTime)
                     const rangeSecond = this.getDuration(endTime, endBreakTime)
                     const duration = moment.duration(rangeFirst).add(moment.duration(rangeSecond))
                     totalTime = moment.utc(duration.as('milliseconds')).format("HH:mm")
                 } else {
-                    totalTime = this.getDuration(endTime, startTime)
+                    totalTime = ""
                 }
             }
         }
+        this.props.updateTotalHours(totalTime)
         this.setState({totalTime: totalTime})
     }
 
@@ -75,20 +78,6 @@ class ShiftForm extends React.Component {
     error(index, name) {
         return this.props.errors[name + index] ? <div className="text-danger">{this.props.errors[name + index]}</div> : null
     }
-
-    // updateNote(e) {
-    //     this.props.updateNote(this.props.timesheet.index, e.currentTarget.value)
-    // }
-
-    // updateSubstitution = item => {
-    //     const val = item.value
-    //     if (val === BROKEN_SHIFT_OPTION_VALUE) {
-    //         this.setState({isShowStartBreakTimeAndEndBreakTime: true})
-    //     } else {
-    //         this.setState({isShowStartBreakTimeAndEndBreakTime: false})
-    //     }
-    //     this.props.updateSubstitution(this.props.timesheet.index, item.value)
-    // }
 
     render() {
         return (
@@ -109,7 +98,8 @@ class ShiftForm extends React.Component {
                                             locale="vi"
                                             timeIntervals={15}
                                             timeCaption="Giờ"
-                                            dateFormat="h:mm aa"
+                                            dateFormat="HH:mm"
+                                            timeFormat="HH:mm"
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
@@ -131,7 +121,8 @@ class ShiftForm extends React.Component {
                                             showTimeSelectOnly
                                             timeIntervals={15}
                                             timeCaption="Giờ"
-                                            dateFormat="h:mm aa"
+                                            dateFormat="HH:mm"
+                                            timeFormat="HH:mm"
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
@@ -141,21 +132,8 @@ class ShiftForm extends React.Component {
                                 {this.error(this.props.timesheet.index, 'endTime')}
                             </div>
                         </div>
-                        {/* <div>
-                            <p>Lý do đăng ký thay đổi phân ca</p>
-                            <textarea placeholder="Nhập lý do" value={this.props.timesheet.note || ""} onChange={this.updateNote.bind(this)} className="form-control" name="note" rows="4" />
-                            {this.error(this.props.timesheet.index, 'note')}
-                        </div> */}
                     </div>
                     <div className="col-7">
-                        {/* <div>
-                            <p className="title">Loại phân ca</p>
-                            <div>
-                                <Select name="substitutionType" value={substitutionTypeDefault} onChange={substitutionType => this.updateSubstitution(substitutionType)} placeholder="Lựa chọn" key="substitutionType" options={substitutionTypes} />
-                            </div>
-                            {this.error(this.props.timesheet.index, 'substitutionType')}
-                        </div> */}
-
                             <div className="row">
                                 <div className="col">
                                     {
@@ -173,13 +151,15 @@ class ShiftForm extends React.Component {
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
                                                 timeCaption="Giờ"
-                                                dateFormat="h:mm aa"
+                                                dateFormat="HH:mm"
+                                                timeFormat="HH:mm"
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />
                                             <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
+                                    {this.error(this.props.timesheet.index, 'startBreakTime')}
                                     </>
                                     : null }
                                 </div>
@@ -199,19 +179,22 @@ class ShiftForm extends React.Component {
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
                                                 timeCaption="Giờ"
-                                                dateFormat="h:mm aa"
+                                                dateFormat="HH:mm"
+                                                timeFormat="HH:mm"
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />
                                             <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
+                                    {this.error(this.props.timesheet.index, 'endBreakTime')}
                                     </>
                                     : null }
                                 </div>
                                 <div className="col">
                                     <p>Tổng thời gian</p>
                                     <input type="text" className="form-control" value={this.state.totalTime || ""} readOnly />
+                                    {this.error(this.props.timesheet.index, 'totalHours')}
                                 </div>
                             </div>
                             {

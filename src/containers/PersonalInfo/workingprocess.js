@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
 import map from '../map.config';
+import WorkingProcessSearch from './workingProcessSearch';
 
 class MyComponent extends React.Component {
 
@@ -13,7 +14,9 @@ class MyComponent extends React.Component {
         this.state = {
             userContract: {},
             userBonuses: {},
-            userPenalties: {}
+            userPenalties: {},
+            userBonusesRoot: {},
+            userPenaltiesRoot: {}
         };
     }
 
@@ -38,24 +41,42 @@ class MyComponent extends React.Component {
             });
 
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`)
-              .then(res => {
+            .then(res => {
                 if (res && res.data && res.data.data) {
-                    this.setState({ userBonuses: res.data.data });
+                    let userBonusResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
+                    this.setState({ userBonuses: userBonusResult, userBonusesRoot: userBonusResult });
                 }
-              }).catch(error => {
+            }).catch(error => {
                 // localStorage.clear();
                 // window.location.href = map.Login;
-              });
+            });
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${localStorage.getItem('employeeNo')}`)
-              .then(res => {
+            .then(res => {
                 if (res && res.data && res.data.data) {
-                    let userPenaltiesResult = res.data.data;
-                    this.setState({ userPenalties: userPenaltiesResult });
+                    let userPenaltiesResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
+                    this.setState({ userPenalties: userPenaltiesResult, userPenaltiesRoot: userPenaltiesResult });
                 }
-              }).catch(error => {
+            }).catch(error => {
                 // localStorage.clear();
                 // window.location.href = map.Login;
-              });
+            });
+    }
+
+    search(startDate, endDate) {
+        const start = moment(startDate).format('YYYY-MM-DD').toString()
+        const end = moment(endDate).format('YYYY-MM-DD').toString()
+        this.setState({
+            userBonuses: this.filterBonus(this.state.userBonusesRoot, start, end),
+            userPenalties: this.filterPenalties(this.state.userPenaltiesRoot, start, end)
+        });
+    }
+    filterBonus(bonuses, startDate, endDate) {
+        debugger;
+        return bonuses.filter(bonus => Date.parse(moment(bonus.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(bonus.effective_date) <= Date.parse(endDate));
+    }
+
+    filterPenalties(penalties, startDate, endDate) {
+        return penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate));
     }
 
     render() {
@@ -68,7 +89,7 @@ class MyComponent extends React.Component {
         }
 
         const { t } = this.props;
-        
+
         return (
             <div className="personal-info">
                 <h1 className="h3 text-uppercase text-gray-800">{t("WorkingProcess")}</h1>
@@ -97,19 +118,19 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p>&nbsp;{item.contract_number}</p>
+                                                <p className="mb-0">&nbsp;{item.contract_number}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.contract_type}</p>
+                                                <p className="mb-0">&nbsp;{item.contract_type}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.from_time}</p>
+                                                <p className="mb-0">&nbsp;{item.from_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p>&nbsp;{item.to_time}</p>
+                                                <p className="mb-0">&nbsp;{item.to_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                <p>&nbsp;{item.company_name}</p>
+                                                <p className="mb-0">&nbsp;{item.company_name}</p>
                                             </Col>
                                         </Row>
                                     </div>;
@@ -119,106 +140,128 @@ class MyComponent extends React.Component {
                     </Tab>
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
-                            <Col>
-                                <h4>QUYẾT ĐỊNH KHEN THƯỞNG</h4>
-                            </Col>
-                            <Container fluid className="info-tab-content shadow">
-                                <form className="info-value">
-                                    {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
-                                        this.state.userBonuses.map((item, i) => {
-                                            return <div key={i}>
-                                                <div className="form-row">
-                                                      <div className="form-group col-md-6 col-lg-2">
-                                                        <div className="info-label mb-2">Số quyết định</div>
-                                                        <p>{item.decision_number}&nbsp;</p>
-                                                      </div>
-                                                      <div className="form-group col-md-6 col-lg-2">
-                                                        <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                        <p>{item.effective_date ? item.effective_date.split('T')[0] : '.' }&nbsp;</p>
-                                                      </div>
-                                                      <div className="form-group col-md-6 col-lg-3">
-                                                        <div className="info-label mb-2">Lý do khen thưởng</div>
-                                                        <p>{item.compliment_reason}&nbsp;</p>
-                                                      </div>
-                                                      <div className="form-group col-md-6 col-lg-3">
-                                                        <div className="info-label mb-2">Hình thức khen thưởng</div>
-                                                        <p>
-                                                            {item.merit ? 'Giấy khen ' : null }
-                                                            {item.merit_certificate ? 'Bằng khen ' : null }
-                                                            {item.cash ? 'Tiền mặt ' : null }
-                                                            {item.merit_and_cash ? 'Giấy khen & tiền mặt ' : null }
-                                                            {item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt ' : null }
-                                                            {item.other_rewards ? 'Khác' : null }
-                                                        </p>
-                                                      </div>
-                                                      <div className="form-group col-md-6 col-lg-2">
-                                                        <div className="info-label mb-2">Số tiền khen thưởng</div>
-                                                        <p>{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
-                                                      </div>
-                                                    </div>
-                                                </div>;
-                                        }) : t("NoDataFound")
-                                    }
-                                </form>
+
+                            <Container fluid className="p-0">
+                                <div className="timesheet-section p-0 search-box">
+                                    <WorkingProcessSearch clickSearch={this.search.bind(this)} />
+                                </div>
                             </Container>
+                            <Col>
+                                <h4 className="pl-0 pt-0">QUYẾT ĐỊNH KHEN THƯỞNG</h4>
+                            </Col>
+
+                            {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
+                                this.state.userBonuses.map((item, i) => {
+                                    let bonusTitle = (item.merit ? 'Giấy khen | ' : '');
+                                    bonusTitle += (item.merit_certificate ? 'Bằng khen | ' : '');
+                                    bonusTitle += (item.cash ? 'Tiền mặt | ' : '');
+                                    bonusTitle += (item.merit_and_cash ? 'Giấy khen & tiền mặt | ' : '');
+                                    bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
+                                    bonusTitle += (item.other_rewards ? 'Khác | ' : '');
+                                    bonusTitle = bonusTitle.substring(0, bonusTitle.length - 3);
+                                    return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                        <form className="info-value pb-0"><div >
+                                            <div className="form-row">
+                                                <div className="form-group col-md-6 col-lg-2">
+                                                    <div className="info-label mb-2">Số quyết định</div>
+                                                    <p className="mb-0">{item.decision_number}&nbsp;</p>
+                                                </div>
+                                                <div className="form-group col-md-6 col-lg-2">
+                                                    <div className="info-label mb-2">Ngày hiệu lực</div>
+                                                    <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
+                                                </div>
+                                                <div className="form-group col-md-6 col-lg-3">
+                                                    <div className="info-label mb-2">Lý do khen thưởng</div>
+                                                    <p className="mb-0">{item.compliment_reason}&nbsp;</p>
+                                                </div>
+                                                <div className="form-group col-md-6 col-lg-3">
+                                                    <div className="info-label mb-2">Hình thức khen thưởng</div>
+                                                    <p className="mb-0">
+                                                        {bonusTitle}&nbsp;
+                                                        </p>
+                                                </div>
+                                                <div className="form-group col-md-6 col-lg-2">
+                                                    <div className="info-label mb-2">Số tiền khen thưởng</div>
+                                                    <p className="mb-0">{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </Container>;
+                                }) : t("NoDataFound")
+                            }
+
                         </Row>
                         <Row>
                             <Col>
                                 <h4>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h4>
                             </Col>
-                            <Container fluid className="info-tab-content shadow">
-                                <form className="info-value">
-                                    {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0)  ?
-                                        this.state.userPenalties.map((item, i) => {
-                                            return  <div key={i}>
-                                                        <div className="form-row">
-                                                          <div className="form-group col-md-6 col-lg-2">
+                            <>
+
+                                {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0) ?
+                                    this.state.userPenalties.map((item, i) => {
+                                        let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
+                                        penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
+                                        penaltiesTitle += (item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc | ' : '');
+                                        penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
+                                        penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
+                                        penaltiesTitle += (item.other ? 'Khác | ' : '');
+                                        penaltiesTitle = penaltiesTitle.substring(0, penaltiesTitle.length - 3);
+                                        return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                            <form className="info-value pb-0">
+                                                <div >
+                                                    <div className="form-row">
+                                                        <div className="form-group col-md-6 col-lg-3">
                                                             <div className="info-label mb-2">Số quyết định</div>
-                                                            <p>{item.decision_number}&nbsp;</p>
-                                                          </div>
-                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <p className="mb-0">{item.decision_number}&nbsp;</p>
+                                                        </div>
+                                                        <div className="form-group col-md-6 col-lg-2">
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
-                                                            <p>{item.effective_date ? item.effective_date.split('T')[0]:'.'  }</p>
-                                                          </div>
-                                                          <div className="form-group col-md-6 col-lg-2">
+                                                            <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}</p>
+                                                        </div>
+                                                        <div className="form-group col-md-6 col-lg-7">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
-                                                            <p>{item.diciplinary_type}&nbsp;</p>
-                                                          </div>
-                                                          <div className="form-group col-md-6 col-lg-3">
-                                                            <div className="info-label mb-2">Lỗi vi phạm</div>
-                                                            <p>{item.dimiss}&nbsp;</p>
-                                                          </div>
-                                                          <div className="form-group col-md-6 col-lg-3">
-                                                            <div className="info-label mb-2">Hình thức xử lý vi phạm</div>
-                                                            <p>
-                                                                {item.dimiss ? 'Sa thải' : null}&nbsp;
-                                                                {item.removal_demotion ? 'Cách chức/ Hạ chức' : null}&nbsp;
-                                                                {item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc' : null}&nbsp;
-                                                                {item.terminate_labour_contract ? 'Chấm dứt HĐLĐ' : null}&nbsp;
-                                                                {item.compensation ? 'Bồi thường thiệt hại' : null}&nbsp;
-                                                                {item.other ? 'Khác' : null}&nbsp;
-                                                            </p>
-                                                          </div>
+                                                            <p className="mb-0">{item.violation_group}&nbsp;</p>
                                                         </div>
-                                                        <div className="form-row">
-                                                          <div className="form-group col-md-6 col-lg-2">
-                                                            <div className="info-label mb-2">Số tiền trừ thưởng</div>
-                                                            <p>{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
-                                                          </div>
-                                                          <div className="form-group col-md-6 col-lg-2">
-                                                            <div className="info-label mb-2">% trừ thưởng</div>
-                                                             <p>{item.deduction_bonus_percent} &nbsp;</p> 
-                                                          </div>
-                                                        </div>
-                                                        <hr />
                                                     </div>
-                                        }) : t("NoDataFound")
-                                    }
-                                </form>
-                            </Container>
+                                                    <div className="form-row">
+                                                        <div className="form-group col-12">
+                                                            <div className="info-label mb-2">Lý do kỷ luật</div>
+                                                            <p className="mb-0">{item.disciplinary_reason}&nbsp;</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-row">
+                                                        <div className="form-group col-12">
+                                                            <div className="info-label mb-2">Nội dung kỷ luật</div>
+                                                            <p className="mb-0">
+                                                                {penaltiesTitle}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-row">
+                                                        <div className="form-group col-md-4 col-lg-3">
+                                                            <div className="info-label mb-2">Số tiền kỷ luật</div>
+                                                            <p className="mb-0">{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                        </div>
+                                                        <div className="form-group col-md-4 col-lg-4">
+                                                            <div className="info-label mb-2">% trừ thưởng</div>
+                                                            <p className="mb-0">{item.deduction_bonus_percent} &nbsp;</p>
+                                                        </div>
+                                                        <div className="form-group col-md-4 col-lg-5">
+                                                            <div className="info-label mb-2">Số tiền bồi thường</div>
+                                                            <p className="mb-0">{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </Container>
+                                    }) : t("NoDataFound")
+                                }
+
+                            </>
                         </Row>
                     </Tab>
-                
+
                 </Tabs>
             </div>
         )

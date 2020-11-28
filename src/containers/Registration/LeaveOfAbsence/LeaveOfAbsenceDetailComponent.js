@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
+import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 
@@ -16,6 +17,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       isShowStatusModal: false
     }
+  }
+
+  getTypeDetail = () => {
+    const pathName = window.location.pathname;
+    const pathNameArr = pathName.split('/');
+    return pathNameArr[pathNameArr.length - 1];
   }
 
   showStatusModal = (message, isSuccess = false) => {
@@ -54,20 +61,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký nghỉ phép</h5>
+        <h5>Thông tin đăng ký nghỉ</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
               Từ ngày/giờ
-              <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
               Đến ngày/giờ
-              <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('hh:mm A') : '')}</div>
+              <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
               Tổng thời gian nghỉ
-              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.totalTime ? this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalTime + ' ngày' : this.props.leaveOfAbsence.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
+              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalDays ? this.props.leaveOfAbsence.userProfileInfo.totalDays + ' ngày' : "" : this.props.leaveOfAbsence.userProfileInfo.totalTimes ? this.props.leaveOfAbsence.userProfileInfo.totalTimes + ' giờ' : ""}</div>
             </div>
             <div className="col-3">
               Loại nghỉ
@@ -82,33 +89,38 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div> : null}
           <div className="row">
             <div className="col">
-              Lý do đăng ký nghỉ phép
+              Lý do đăng ký nghỉ
               <div className="detail">{this.props.leaveOfAbsence.comment}</div>
             </div>
           </div>
         </div>
-
-        <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
-          {
-            this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
-            <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
-          }
-        </div>
+        
+        {
+          this.getTypeDetail() === "request" ?
+          <>
+          <h5>Thông tin phê duyệt</h5>
+          <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
+          </> : 
+          <div className="block-status">
+            <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+            {
+              this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
+              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
+            }
+          </div>
+        }
 
         {
           this.props.leaveOfAbsence.userProfileInfoDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
-          <div className="box shadow">
-            <ul className="list-inline">
-              {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                  <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                </li>
-              })}
-            </ul>
-          </div>
+          <ul className="list-inline">
+            {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+              </li>
+            })}
+          </ul>
           </>
           : null
         }
@@ -120,7 +132,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ENDDA: moment(userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
           SUBTY: userProfileInfo.absenceType ? userProfileInfo.absenceType.value : "",
           BEGUZ: userProfileInfo.startTime ? moment(userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null
+          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ACTIO: 'INS'
         }]}
           isShowRevocationOfApproval={this.props.leaveOfAbsence.status === 2}
           id={this.props.leaveOfAbsence.id}

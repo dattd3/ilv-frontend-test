@@ -5,8 +5,6 @@ import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
 import Constants from '../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -117,44 +115,55 @@ class BusinessTripComponent extends React.Component {
     this.calculateTotalTime(start, end)
   }
 
-  calculateTotalTime(startDate, endDate, startTime = null, endTime = null) {
-    if (!startDate || !endDate) return
+  calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null) {
+    if (this.state.leaveType === FULL_DAY && (!startDateInput || !endDateInput)) return
+    if (this.state.leaveType === DURING_THE_DAY && startDateInput !== endDateInput && (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput)) return
+    
+    const startDate = moment(startDateInput, "DD/MM/YYYY")
+    const endDate = moment(endDateInput, "DD/MM/YYYY")
+    const startTime = moment(startTimeInput, "HH:mm")
+    const endTime = moment(endTimeInput, "HH:mm")
+    let totalTime = ""
 
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
+    if (this.state.leaveType === FULL_DAY) {
+      totalTime = endDate.diff(startDate, 'days') + 1
+    } else {
+      totalTime = endTime.diff(startTime)
+      totalTime = totalTime ? Math.abs(moment.duration(totalTime).asHours()) : ""
+      totalTime = totalTime ? totalTime/8 : 0
     }
 
-    const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
-    const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    this.setState({totalTime : totalTime})
+  }
 
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
-        perno: localStorage.getItem('employeeNo'),
-        from_date: start,
-        to_date: end
-    } ,config)
-        .then(res => {
-            if (res && res.data && res.data.data) {
-                this.setState({totalTime: this.state.leaveType === FULL_DAY ? this.calFullDay(res.data.data) : this.calDuringTheDay(res.data.data, startTime, endTime)})
-            }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
-}
+  validationFromDB = (startDate, endDate, startTime = null, endTime = null) => {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
 
-calFullDay(timesheets) {
-    const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
-        return accumulator + parseFloat(currentValue.hours)
-    }, 0)
-    
-    return hours ? (hours / 8) : 0
-}
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}user/validation-business-trip`, {
+        from_date: startDate,
+        to_date: endDate
+    }, config)
+    .then(res => {
+      if (res && res.data) {
+        const data = res.data
+        const errors = {...this.state.errors}
+        if (_.isNull(data.data) && data.result.code == Constants.API_ERROR_CODE) {
+          errors.startTimeAndEndTime = data.result.message
+        } else {
+          errors.startTimeAndEndTime = null
+        }
+        this.setState({errors, errors})
+      }
+    }).catch(error => {
 
-calDuringTheDay(timesheets, startTime, endTime) {
+    })
+  }
+
+  calDuringTheDay(timesheets, startTime, endTime) {
     if (!startTime || !endTime) return
     
     let startTimeSAP = moment(startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
@@ -192,7 +201,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     }
  
     return hours ? (hours / 8) : 0
-}
+  }
 
   updateFiles(files) {
     this.setState({ files: files })
@@ -206,7 +215,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     } else {
       errors.approver = null
     }
-    this.setState({ errors: errors })
+    // this.setState({ errors: errors })
   }
 
   handleInputChange(event) {
@@ -253,16 +262,17 @@ calDuringTheDay(timesheets, startTime, endTime) {
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
     if (hasErrors) {
-        return
+      return
     }
-
+    const approver = {...this.state.approver}
+    delete approver.avatar
     const data = {
       startDate: this.state.startDate,
       startTime: this.state.startTime,
       endDate: this.state.startDate,
       endTime: this.state.endTime,
       attendanceQuotaType: this.state.attendanceQuotaType,
-      approver: this.state.approver,
+      approver: approver,
       totalTime: this.state.totalTime,
       vehicle: this.state.vehicle,
       place: this.state.place,
@@ -284,7 +294,7 @@ calDuringTheDay(timesheets, startTime, endTime) {
     bodyFormData.append('Region', localStorage.getItem('region'))
     bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', this.state.approver ? this.state.approver.userAccount : {})
+    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -407,7 +417,8 @@ calDuringTheDay(timesheets, startTime, endTime) {
                           showTimeSelectOnly
                           timeIntervals={15}
                           timeCaption="Giờ"
-                          dateFormat="h:mm aa"
+                          dateFormat="HH:mm"
+                          timeFormat="HH:mm"
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
@@ -454,7 +465,8 @@ calDuringTheDay(timesheets, startTime, endTime) {
                           showTimeSelectOnly
                           timeIntervals={15}
                           timeCaption="Giờ"
-                          dateFormat="h:mm aa"
+                          dateFormat="HH:mm"
+                          timeFormat="HH:mm"
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
@@ -469,9 +481,10 @@ calDuringTheDay(timesheets, startTime, endTime) {
               <div className="col-2">
                 <p className="title">Tổng thời gian CT/ĐT</p>
                 <div>
-                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime* 8 + ' giờ' : ''} readOnly />
+                  <input type="text" className="form-control" value={this.state.totalTime && !_.isNull(this.state.totalTime) ? this.state.leaveType == FULL_DAY ? this.state.totalTime + ' ngày' : this.state.totalTime*8 + ' giờ' : ''} readOnly />
                 </div>
               </div>
+              <div className="col-12">{this.error('startTimeAndEndTime')}</div>
             </div>
 
             <div className="row">
