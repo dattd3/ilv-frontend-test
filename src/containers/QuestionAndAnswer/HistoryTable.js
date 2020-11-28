@@ -5,11 +5,11 @@ class HistoryTable extends React.Component {
   generateStatus(questionStatus)
     {
         switch(questionStatus) {
-          case 'Assigned':
+          case 2:
             return <span className="align-self-center question-status inprogress">Đã giải đáp</span>
-          case 'Cancelled':
+          case 1:
             return <span className="align-self-center question-status cancelled">Đang chờ xử lý</span>
-          case 'Overdue':
+          case 3:
             return <span className="align-self-center question-status overdue">Quá hạn</span>;
           default:
             return <span className="course-status undefined">Undefined</span>;
@@ -26,21 +26,31 @@ class HistoryTable extends React.Component {
                           </span>
                           <div className="media-body row">
                               <div className  = "col-sm-12 col-lg-8">
-                                <h5 className="mt-1"><a href ={`/question-and-answer-details/1`}>Media heading</a></h5>
+                                <h5 className="mt-1"><a href ={`/question-and-answer-details/`+question.id}>{question.content}</a></h5>
                                 <span> 
-                                <i className="icon-hr mr-1"></i>Phòng Nhân sự
-                                <i className="fa fa-clock-o mr-1 ml-3"></i>5 giờ trước
+                                <i className="icon-hr mr-1"></i> {question.fullName}
+                                <i className="fa fa-clock-o mr-1 ml-3"></i>{question.createdAt}
                                 </span>
                               </div>
                               
                               <div className ="col-sm-12 col-lg-4 pull-right content-center">
-                                {this.generateStatus(question.status)}  
-                                  <Button variant="outline-light content-center p-0 ml-3">
+                                <div className="col-7 content-center">
+                                {this.generateStatus(question.ticketStatusId)}  
+                                </div>
+                                <div className = " col-5 content-center text-left">
+                                { 
+                                (question.ticketStatusId === 1) ?
+                                   <>
+                                  <Button variant="outline-light content-center p-0 ml-3 border-0">
                                       <i className="icon icon-qa-edit align-self-center"></i>
                                   </Button>
-                                  <Button variant="outline-light content-center">
+                                  <Button variant="outline-light content-center p-0 pt-0 ml-3 border-0">
                                       <i className="icon icon-qa-undo align-self-center"></i>
                                   </Button>
+                                  </>
+                                   : null
+                                }   
+                                </div>
                               </div>
                           </div>
                           </div>
