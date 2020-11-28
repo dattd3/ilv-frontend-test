@@ -223,13 +223,17 @@ class TaskList extends React.Component {
         return jsonData
     }
 
+    isNullCustomize = value => {
+        return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    }
+
     getInOutUpdateToSAp = data => {
         let dataToSAP = []
         data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-          ['1', '2', '3'].forEach(n => {
-            const startTimeName = `startTime${n}Fact`
-            const endTimeName = `endTime${n}Fact`
-            if (timesheet[startTimeName] && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
+          ['1', '2'].forEach(n => {
+            const startTimeName = `start_time${n}_fact_update`
+            const endTimeName = `end_time${n}_fact_update`
+            if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
               dataToSAP.push({
                 MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
                 PERNR: data.userProfileInfo.user.employeeNo,
@@ -241,7 +245,7 @@ class TaskList extends React.Component {
               })
             }
 
-            if (timesheet[startTimeName] && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+            if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
               dataToSAP.push({
                 MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
                 PERNR: data.userProfileInfo.user.employeeNo,
@@ -272,7 +276,7 @@ class TaskList extends React.Component {
                 PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PBEZ1: '',
                 PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
-                TPKLA: moment.duration(timesheet.totalHours).asHours() > 4 ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
+                TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
             }
         })
     }

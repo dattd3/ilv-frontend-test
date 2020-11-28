@@ -84,7 +84,7 @@ class SubstitutionComponent extends React.Component {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
       }
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
-        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType', 'startBreakTime', 'endBreakTime']
+        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
         })
@@ -122,7 +122,7 @@ class SubstitutionComponent extends React.Component {
     if (hasErrors) {
       return
     }
-    const timesheets = [...this.state.timesheets].map(item => {
+    let timesheets = [...this.state.timesheets].map(item => {
       return {
         isEdit: item.isEdit,
         date: item.date,
@@ -138,8 +138,7 @@ class SubstitutionComponent extends React.Component {
         startBreakTime: item.startBreakTime,
         startTime: item.startTime,
         substitutionType: item.substitutionType,
-        toTime: item.toTime,
-        totalHours: this.state.totalHours
+        toTime: item.toTime
       }
     })
 
@@ -292,7 +291,7 @@ class SubstitutionComponent extends React.Component {
   updateShift(index, shift) {
     let timesheets = this.state.timesheets
     timesheets[index].shiftId = shift.shift_id
-    timesheets[index].shiftHours = shift.hours
+    timesheets[index].shiftHours = shift.hours.trim()
     timesheets[index].startTime = moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
     timesheets[index].endTime = moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
     this.setState({
@@ -300,8 +299,11 @@ class SubstitutionComponent extends React.Component {
     })
   }
 
-  updateTotalHours(totalHours) {
-    this.setState({totalHours: totalHours})
+  updateTotalHours(index, totalHours) {
+    const timesheets = [...this.state.timesheets]
+    timesheets[index].shiftHours = moment.duration(totalHours).asHours()
+
+    this.setState({totalHours: totalHours, timesheets: timesheets})
   }
 
   showStatusModal = (title, message, isSuccess = false) => {
