@@ -186,9 +186,10 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
 
-        {this.props.substitution.status === 0 || this.props.substitution.status === 2 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.status == 0 || this.props.substitution.status == 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
-          isShowRevocationOfApproval={this.props.substitution.status === 2}
+          isShowRevocationOfApproval={this.props.substitution.status == 2}
+          isShowEvictionRequest={this.props.substitution.status == 0}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
           hiddenRevocationOfApprovalButton={1}

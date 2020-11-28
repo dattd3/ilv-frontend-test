@@ -408,7 +408,6 @@ class SubstitutionComponent extends React.Component {
   }
 
   resetValidation = (index) => {
-    debugger
     const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdit);
     const errors = {...this.state.errors}
 
