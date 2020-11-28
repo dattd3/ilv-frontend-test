@@ -36,7 +36,7 @@ class SubstitutionDetailComponent extends React.Component {
   getData() {
     return this.props.substitution.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
       return {
-        MYVP_ID: 'ABS' + '0'.repeat(8 - this.props.substitution.id.toString().length) + this.props.substitution.id + index,
+        MYVP_ID: 'SUB' + '0'.repeat(8 - this.props.substitution.id.toString().length) + this.props.substitution.id + index,
         PERNR: this.props.substitution.userProfileInfo.user.employeeNo,
         BEGDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
         ENDDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
