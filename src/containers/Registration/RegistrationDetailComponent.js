@@ -3,6 +3,7 @@ import LeaveOfAbsenceDetailComponent from './LeaveOfAbsence/LeaveOfAbsenceDetail
 import BusinessTripDetailComponent from './BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from './InOutTimeUpdate/InOutUpdateDetailComponent'
 import SubstitutionDetailComponent from './Substitution/SubstitutionDetailComponent'
+import RegistrationConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
@@ -52,20 +53,24 @@ class RegistrationDetailComponent extends React.Component {
     const data = this.state.data
 
     return (
-    <div className="registration-section">
-      {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={this.state.data}/> : null}
-      {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
-      {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
-      {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
+      <>
+      <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage} 
+        type={this.state.typeRequest} urlName={this.state.requestUrl} onHide={this.onHideModalRegistrationConfirm} />
+      <div className="registration-section">
+        {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={this.state.data}/> : null}
+        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
+        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
+        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
 
-      {
-        data.status == 0 && this.getTypeDetail() === "request" ?
-        <div className="clearfix mb-5 registration-detail">
-          <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(data.id)}><i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
-        </div>
-        : null
-      }
-    </div>
+        {/* {
+          data.status == 0 && this.getTypeDetail() === "request" ?
+          <div className="clearfix mb-5 registration-detail">
+            <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(data.id)}><i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
+          </div>
+          : null
+        } */}
+      </div>
+      </>
     )
   }
 }

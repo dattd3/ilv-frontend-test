@@ -90,7 +90,7 @@ class ShiftForm extends React.Component {
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
-                                            selected={this.props.timesheet.startTime ? moment(this.props.timesheet.startTime, TIME_FORMAT).toDate() : null}
+                                            selected={this.props.timesheet.startTime && moment(this.props.timesheet.startTime, TIME_FORMAT).isValid() ? moment(this.props.timesheet.startTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'startTime')}
                                             autoComplete="off"
                                             showTimeSelect
@@ -113,7 +113,7 @@ class ShiftForm extends React.Component {
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
-                                            selected={this.props.timesheet.endTime ? moment(this.props.timesheet.endTime, TIME_FORMAT).toDate() : null}
+                                            selected={this.props.timesheet.endTime && moment(this.props.timesheet.endTime, TIME_FORMAT).isValid() ? moment(this.props.timesheet.endTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'endTime')}
                                             autoComplete="off"
                                             locale="vi"
@@ -143,7 +143,7 @@ class ShiftForm extends React.Component {
                                     <div className="content input-container">
                                         <label>
                                             <DatePicker
-                                                selected={this.props.timesheet.startBreakTime ? moment(this.props.timesheet.startBreakTime, TIME_FORMAT).toDate() : null}
+                                                selected={this.props.timesheet.startBreakTime && moment(this.props.timesheet.startBreakTime, TIME_FORMAT).isValid() ? moment(this.props.timesheet.startBreakTime, TIME_FORMAT).toDate() : null}
                                                 onChange={this.updateTime.bind(this, 'startBreakTime')}
                                                 autoComplete="off"
                                                 locale="vi"
@@ -171,7 +171,7 @@ class ShiftForm extends React.Component {
                                     <div className="content input-container">
                                         <label>
                                             <DatePicker
-                                                selected={this.props.timesheet.endBreakTime ? moment(this.props.timesheet.endBreakTime, TIME_FORMAT).toDate() : null}
+                                                selected={this.props.timesheet.endBreakTime && moment(this.props.timesheet.endBreakTime, TIME_FORMAT).isValid() ? moment(this.props.timesheet.endBreakTime, TIME_FORMAT).toDate() : null}
                                                 onChange={this.updateTime.bind(this, 'endBreakTime')}
                                                 autoComplete="off"
                                                 locale="vi"
