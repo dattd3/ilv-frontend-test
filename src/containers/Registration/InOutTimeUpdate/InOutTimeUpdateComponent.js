@@ -518,7 +518,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {
           this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
-          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm từ màn hình in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
           : null
         }
         {this.errorWithoutItem("files")}

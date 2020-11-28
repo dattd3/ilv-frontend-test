@@ -65,7 +65,7 @@ class ShiftForm extends React.Component {
                 }
             }
         }
-        this.props.updateTotalHours(totalTime)
+        this.props.updateTotalHours(this.props.timesheet.index, totalTime)
         this.setState({totalTime: totalTime})
     }
 
