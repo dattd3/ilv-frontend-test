@@ -431,31 +431,37 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tồn</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_LEA_REMAIN).toFixed(2) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép năm</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_LEA).toFixed(2) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Ngày phép tạm ứng</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseFloat(annualLeaveSummary.DAY_ADV_LEA).toFixed(2) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ bù tồn</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.HOUR_TIME_OFF_REMAIN) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
                         <div className="item">
                             <div className="title">Giờ nghỉ bù</div>
-                            <div className="result text-danger">{annualLeaveSummary ? parseInt(annualLeaveSummary.HOUR_COMP) : 0}</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="item">
+                            <div className="title">Giờ nghỉ bù tạm ứng</div>
+                            <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_ADV_COMP, 2) : 0}</div>
                         </div>
                     </div>
                 </div>
