@@ -330,7 +330,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
-              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-3"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
@@ -342,7 +342,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null }
               </div>
-              <div className="col-2 ">
+              <div className="col-1">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
@@ -368,14 +368,6 @@ class InOutTimeUpdateComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
-                    </div>
-                    <div className="col-6 text-right">
-                      Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -385,8 +377,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Bắt đầu 1:</div>
-                        <div className="col-7">
+                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -410,8 +402,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Kết thúc 1:</div>
-                        <div className="col-7">
+                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -438,8 +430,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Bắt đầu 2:</div>
-                        <div className="col-7">
+                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -463,8 +455,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Kết thúc 2:</div>
-                        <div className="col-7">
+                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
