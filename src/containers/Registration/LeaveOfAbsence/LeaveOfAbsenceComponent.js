@@ -413,7 +413,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
             { value: ADVANCE_ABSENCE_LEAVE_KEY, label: 'Nghỉ phép tạm ứng' },
             { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
-            { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
+            // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))
 
@@ -458,12 +458,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
                         </div>
                     </div>
-                    <div className="col">
+                    {/* <div className="col">
                         <div className="item">
                             <div className="title">Giờ nghỉ bù tạm ứng</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_ADV_COMP, 2) : 0}</div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="box shadow">
