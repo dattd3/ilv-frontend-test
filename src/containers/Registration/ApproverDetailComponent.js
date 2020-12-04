@@ -6,7 +6,7 @@ function ApproverDetailComponent(props) {
     <div className="row">
       <div className="col-4">
         Người phê duyệt
-        <div className="detail">{props.approver ? props.approver.label : null}</div>
+        <div className="detail">{props.approver ? props.approver.fullname : null}</div>
       </div>
       <div className="col-4">
         Chức danh
