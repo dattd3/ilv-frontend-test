@@ -579,7 +579,6 @@ class SubstitutionComponent extends React.Component {
                               timeFormat="HH:mm"
                               placeholderText="Lựa chọn"
                               className="form-control input" />
-                            <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                           </label>
                         </div>
                       </div>
@@ -599,7 +598,6 @@ class SubstitutionComponent extends React.Component {
                               timeFormat="HH:mm"
                               placeholderText="Lựa chọn"
                               className="form-control input" />
-                            <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                           </label>
                         </div>
                       </div>

@@ -412,7 +412,6 @@ class BusinessTripComponent extends React.Component {
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
-                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
                     </div>
                     {this.error('startTime')}
@@ -460,7 +459,6 @@ class BusinessTripComponent extends React.Component {
                           placeholderText="Lựa chọn"
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
-                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                       </label>
                     </div>
                     {this.error('endTime')}
