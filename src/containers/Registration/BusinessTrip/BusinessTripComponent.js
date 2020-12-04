@@ -194,7 +194,7 @@ class BusinessTripComponent extends React.Component {
     } else {
       errors.approver = null
     }
-    // this.setState({ errors: errors })
+    this.setState({ errors: errors })
   }
 
   handleInputChange(event) {

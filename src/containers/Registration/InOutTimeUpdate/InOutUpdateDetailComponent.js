@@ -118,14 +118,6 @@ class InOutUpdateDetailComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
-                    </div>
-                    <div className="col-6 text-right">
-                      Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="col-6">
@@ -147,7 +139,6 @@ class InOutUpdateDetailComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
                   </div>
-                  <div className="row">&nbsp;</div>
                 </div>
               </div>
             </div>
