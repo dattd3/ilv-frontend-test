@@ -170,7 +170,7 @@ class BusinessTripComponent extends React.Component {
       if (res && res.data) {
         const data = res.data
         const errors = {...this.state.errors}
-        if (_.isNull(data.data) && data.result.code == Constants.API_ERROR_CODE) {
+        if (!_.isNull(data.result) && data.result.code == Constants.API_ERROR_CODE) {
           errors.startTimeAndEndTime = data.result.message
         } else {
           errors.startTimeAndEndTime = null
