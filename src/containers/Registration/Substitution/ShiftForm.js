@@ -103,7 +103,6 @@ class ShiftForm extends React.Component {
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
-                                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                     </label>
                                 </div>
                                 {this.error(this.props.timesheet.index, 'startTime')}
@@ -126,7 +125,6 @@ class ShiftForm extends React.Component {
                                             placeholderText="Lựa chọn"
                                             className="form-control input"
                                         />
-                                        <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                     </label>
                                 </div>
                                 {this.error(this.props.timesheet.index, 'endTime')}
@@ -156,7 +154,6 @@ class ShiftForm extends React.Component {
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />
-                                            <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
                                     {this.error(this.props.timesheet.index, 'startBreakTime')}
@@ -184,7 +181,6 @@ class ShiftForm extends React.Component {
                                                 placeholderText="Lựa chọn"
                                                 className="form-control input"
                                             />
-                                            <span className="input-group-addon input-img text-warning"><i className="fa fa-clock-o"></i></span>
                                         </label>
                                     </div>
                                     {this.error(this.props.timesheet.index, 'endBreakTime')}

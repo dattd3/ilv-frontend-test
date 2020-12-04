@@ -10,7 +10,7 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
-const CLOSING_SALARY_DATE_PRE_MONTH = 25
+const CLOSING_SALARY_DATE_PRE_MONTH = 26
 
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
@@ -217,10 +217,10 @@ class InOutTimeUpdateComponent extends React.Component {
               isEdit: false,
               note: null,
               error: {},
-              start_time1_fact_update: !this.isNullCustomize(ts.start_time1_fact) ? ts.start_time1_fact : null,
-              start_time2_fact_update: !this.isNullCustomize(ts.start_time2_fact) ? ts.start_time2_fact : null,
-              end_time1_fact_update: !this.isNullCustomize(ts.end_time1_fact) ? ts.end_time1_fact : null,
-              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null
+              start_time1_fact_update: null,
+              start_time2_fact_update: null,
+              end_time1_fact_update: null,
+              end_time2_fact_update: null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -391,9 +391,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'start_time1_fact_update')}
@@ -416,9 +414,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'end_time1_fact_update')}
@@ -444,9 +440,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'start_time2_fact_update')}
@@ -469,9 +463,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'end_time2_fact_update')}
