@@ -284,6 +284,44 @@
   }
 }
 
+.icon-Icon-Answer{
+  font-size: larger;
+}
+
+.icon-Icon-Answer .path1:before {
+  content: "\e91d";
+  color: #ff7f00;
+}
+.icon-Icon-Answer .path2:before {
+  content: "\e91e";
+  color: #347ef9;
+  margin-left: -1em;
+}
+.icon-Icon-Answer .path3:before {
+  content: "\e91f";
+  color: #fff;
+  margin-left: -1em;
+}
+
+.icon-Icon-Question{
+  font-size: larger;
+}
+
+.icon-Icon-Question .path1:before {
+  content: "\e920";
+  color: #ff7f00;
+}
+.icon-Icon-Question .path2:before {
+  content: "\e921";
+  color: #fff;
+  margin-left: -1em;
+}
+.icon-Icon-Question .path3:before {
+  content: "\e922";
+  color: #fff;
+  margin-left: -1em;
+}
+
 .icon-task {
   &:before {
     content: "\e916";

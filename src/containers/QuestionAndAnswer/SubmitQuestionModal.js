@@ -13,9 +13,9 @@ class SubmitQuestionModal extends React.Component {
             categories: {},
             categorySelectedId: 0,
             validated: false,
-            questionContent: ""
+            questionContent: "",
+            supervise: {}
         };
-
     }
     componentWillMount() {
         let config = {
@@ -29,18 +29,31 @@ class SubmitQuestionModal extends React.Component {
                     let categoriesResult = res.data.data.sort((a, b) => {
                         return a.name[0].toLowerCase().localeCompare(b.name[0].toLowerCase(), "pl");
                     });;
-                    this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id});
+                    this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
                 }
             }).catch(error => {
                 //localStorage.clear();
                 //window.location.href = map.Login;
+            });
+        config = {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+            .then(res => {
+                if (res && res.data && res.data.data && res.data.data.length > 0) {
+                    this.setState({ supervise: res.data.data[0] })
+                }
+            }).catch(error => {
+
             });
     }
     alertSuccess = () => {
         this.props.showStatusModal('Gửi câu hỏi thành công !', true);
     }
     alertFail = () => {
-        this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!')
+        this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!', false)
     }
     setCategory(category) {
         this.setState({ categorySelectedId: category.value });
@@ -52,35 +65,41 @@ class SubmitQuestionModal extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
     }
     handleSubmit = (event) => {
-        debugger;
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
         } else {
-            debugger;
             event.preventDefault();
-            this.submitQuestion(this.state.categorySelectedId, this.state.questionContent, this.alertSuccess, this.alertFail);
+            (this.props.editQuestion && this.props.isEdit) ? this.submitQuestion(this.props.editQuestion.id, this.state.categorySelectedId, this.state.questionContent, this.alertSuccess, this.alertFail)
+                : this.submitQuestion(null, this.state.categorySelectedId, this.state.questionContent, this.alertSuccess, this.alertFail);
         }
         this.setValidated(true);
     };
 
-    submitQuestion(categoryId, questionContent, alertSuccess, alertFail) {
-        debugger;
+    submitQuestion(questionId, categoryId, questionContent, alertSuccess, alertFail) {
         var axios = require('axios');
-        var data = JSON.stringify({
+        var data = (questionId && this.props.isEdit) ? JSON.stringify({
+            "id": questionId,
             "subject": questionContent,
             "content": questionContent,
             "ticketstatusid": 1,
             "userid": `${localStorage.getItem('email')}`,
             "agentid": "vuongvt2@vingroup.net",
-            "supporterid": "",
             "ticketcategoryid": categoryId
-        });
+        })
+            : JSON.stringify({
+                "subject": questionContent,
+                "content": questionContent,
+                "ticketstatusid": 1,
+                "userid": `${localStorage.getItem('email')}`,
+                "agentid": this.state.supervise.userid + "@vingroup.net",
+                "ticketcategoryid": categoryId
+            });
 
         var config = {
             method: 'post',
-            url: `${process.env.REACT_APP_REQUEST_URL}ticket/Create`,
+            url: (questionId && this.props.isEdit) ? `${process.env.REACT_APP_REQUEST_URL}ticket/edit` : `${process.env.REACT_APP_REQUEST_URL}ticket/Create`,
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 'Content-Type': 'application/json'
@@ -92,9 +111,14 @@ class SubmitQuestionModal extends React.Component {
                 alertSuccess();
             })
             .catch(function (error) {
-                alertFail();
+
             });
     }
+
+    updateEditDate(question, isEdit) {
+        this.setState({ questionContent: (question && isEdit) ? question.content : '' })
+    }
+
     render() {
         let categoriesDisplay = [];
         if (this.state.categories && this.state.categories.length > 0) {
@@ -106,7 +130,9 @@ class SubmitQuestionModal extends React.Component {
             });
         }
         return (
-            <Modal backdrop="static" keyboard={false} className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+            <Modal backdrop="static" keyboard={false} className='info-modal-common position-apply-modal' centered show={this.props.show}
+                onHide={this.props.onHide}
+                onShow={() => this.updateEditDate(this.props.editQuestion, this.props.isEdit)}>
                 <Modal.Header className='apply-position-modal' closeButton>
                     <Modal.Title>ĐẶT CÂU HỎI</Modal.Title>
                 </Modal.Header>
@@ -125,22 +151,26 @@ class SubmitQuestionModal extends React.Component {
                             </div>
                             <Form.Group controlId="QuestionContent">
                                 <Form.Label>Nội dung câu hỏi</Form.Label>
-                                <Form.Control type="text" placeholder="Nội dung câu hỏi" required name="questionContent" onChange={this.handleChange.bind(this)} />
+                                <Form.Control type="text"
+                                    placeholder="Nội dung câu hỏi"
+                                    required name="questionContent"
+                                    value={this.state.questionContent}
+                                    onChange={this.handleChange.bind(this)} />
                                 <Form.Control.Feedback type="invalid">
                                     Điền nội dung câu hỏi !
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.CBQL">
                                 <Form.Label>CBQL trực tiếp</Form.Label>
-                                <Form.Control type="text" placeholder="Huy Như" readOnly />
+                                <Form.Control type="text" placeholder={this.state.supervise.userid} readOnly />
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.Title">
                                 <Form.Label>Chức danh</Form.Label>
-                                <Form.Control type="text" placeholder="Trưởng Phòng" readOnly />
+                                <Form.Control type="text" placeholder={this.state.supervise.title} readOnly />
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.Department">
                                 <Form.Label>Khối/ Phòng/ Bộ phận</Form.Label>
-                                <Form.Control type="text" placeholder="CNTT" readOnly />
+                                <Form.Control type="text" placeholder={this.state.supervise.department} readOnly />
                             </Form.Group>
                         </div>
                         <div className="clearfix edit-button text-right">
