@@ -30,7 +30,7 @@ class InOutUpdateDetailComponent extends React.Component {
         const endTimeName = `end_time${n}_fact_update`
         if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
           dataToSAP.push({
-            MYVP_ID: 'TEVS' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+            MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P10',
@@ -40,9 +40,9 @@ class InOutUpdateDetailComponent extends React.Component {
           })
         }
 
-        if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+        if (!this.isNullCustomize(timesheet[endTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
           dataToSAP.push({
-            MYVP_ID: 'TEVE' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+            MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P20',
@@ -118,14 +118,6 @@ class InOutUpdateDetailComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      Bắt đầu 3: <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
-                    </div>
-                    <div className="col-6 text-right">
-                      Kết thúc 3: <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="col-6">
@@ -147,7 +139,6 @@ class InOutUpdateDetailComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
                   </div>
-                  <div className="row">&nbsp;</div>
                 </div>
               </div>
             </div>

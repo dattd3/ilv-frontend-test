@@ -10,7 +10,7 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 registerLocale("vi", vi)
 
-const CLOSING_SALARY_DATE_PRE_MONTH = 25
+const CLOSING_SALARY_DATE_PRE_MONTH = 26
 
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
@@ -82,7 +82,7 @@ class InOutTimeUpdateComponent extends React.Component {
     } else {
       errors.approver = null
     }
-    // this.setState({ errors: errors })
+    this.setState({ errors: errors })
   }
 
   handleInputChange(index, event) {
@@ -217,10 +217,10 @@ class InOutTimeUpdateComponent extends React.Component {
               isEdit: false,
               note: null,
               error: {},
-              start_time1_fact_update: !this.isNullCustomize(ts.start_time1_fact) ? ts.start_time1_fact : null,
-              start_time2_fact_update: !this.isNullCustomize(ts.start_time2_fact) ? ts.start_time2_fact : null,
-              end_time1_fact_update: !this.isNullCustomize(ts.end_time1_fact) ? ts.end_time1_fact : null,
-              end_time2_fact_update: !this.isNullCustomize(ts.end_time2_fact) ? ts.end_time2_fact : null
+              start_time1_fact_update: null,
+              start_time2_fact_update: null,
+              end_time1_fact_update: null,
+              end_time2_fact_update: null
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -330,7 +330,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
-              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-3"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
@@ -342,7 +342,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null }
               </div>
-              <div className="col-2 ">
+              <div className="col-1">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
@@ -368,14 +368,6 @@ class InOutTimeUpdateComponent extends React.Component {
                       Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b>
-                    </div>
-                    <div className="col-6 text-right">
-                      Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -385,8 +377,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Bắt đầu 1:</div>
-                        <div className="col-7">
+                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -399,9 +391,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'start_time1_fact_update')}
@@ -410,8 +400,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Kết thúc 1:</div>
-                        <div className="col-7">
+                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -424,9 +414,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'end_time1_fact_update')}
@@ -438,8 +426,8 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Bắt đầu 2:</div>
-                        <div className="col-7">
+                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -452,9 +440,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock text-warning"><i className="fa fa-clock-o"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'start_time2_fact_update')}
@@ -463,8 +449,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-6">
                       <div className="row">
-                        <div className="col-5">Kết thúc 2:</div>
-                        <div className="col-7">
+                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">
                           <div className="content input-container">
                             <label>
                               <DatePicker
@@ -477,9 +463,7 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm"
                                 timeFormat="HH:mm"
-                                placeholderText="Lựa chọn"
                                 className="form-control input" />
-                              <span className="input-group-addon input-clock"><i className="fa fa-clock-o text-warning"></i></span>
                             </label>
                           </div>
                           {this.error(index, 'end_time2_fact_update')}
@@ -518,7 +502,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {
           this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
-          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm từ màn hình in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
           : null
         }
         {this.errorWithoutItem("files")}

@@ -27,7 +27,29 @@ class ConfirmationModal extends React.Component {
             this.approve(id)
         } else if (this.props.type === Constants.STATUS_REVOCATION) {
             this.revocation(id)
+        } else if (this.props.type === Constants.STATUS_EVICTION) {
+            this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
         }
+    }
+
+    eviction = (url, id) => {
+        this.props.onHide();
+        axios.post(url, null, {
+            headers: { Authorization: localStorage.getItem('accessToken') }
+        })
+        .then(res => {
+            if (res && res.data) {
+                const data = res.data
+                if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                  return window.location.href = map.NotFound
+                } else {
+                    this.showStatusModal("Thành công", "Thu hồi yêu cầu thành công!", true)
+                }
+            }
+        })
+        .catch(response => {
+            window.location.href = "/tasks?tab=approval"
+        })
     }
 
     revocation = (id) => {

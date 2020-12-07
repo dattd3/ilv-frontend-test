@@ -8,6 +8,14 @@
 }
 
 .registration-section {
+    .block-time-item-edit {
+        .box-time, input {
+            font-size: 15px;
+        }
+    }
+    .block-note-item-edit, textarea {
+        font-size: 15px;
+    }
     .registration-detail {
         .btn-eviction-task {
             color: #FFFFFF;
@@ -17,17 +25,11 @@
     }
     .in-out-time-update {
         .block-time-item-edit {
-            input {
-
-            }
             .react-datepicker__time-list {
                 .react-datepicker__time-list-item {
                     line-height: 20px;
                 }
             }
-        }
-        .block-note-item-edit {
-
         }
     }
     .block-filter-shift {
