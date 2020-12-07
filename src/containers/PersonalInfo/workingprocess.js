@@ -40,7 +40,13 @@ class MyComponent extends React.Component {
                 window.location.href = map.Login;
             });
 
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`)
+        config = {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let userBonusResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
@@ -50,7 +56,7 @@ class MyComponent extends React.Component {
                 // localStorage.clear();
                 // window.location.href = map.Login;
             });
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${localStorage.getItem('employeeNo')}`)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${localStorage.getItem('employeeNo')}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let userPenaltiesResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
