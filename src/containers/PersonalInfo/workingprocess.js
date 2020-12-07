@@ -245,7 +245,7 @@ class MyComponent extends React.Component {
                                                         </div>
                                                         <div className="form-group col-md-4 col-lg-4">
                                                             <div className="info-label mb-2">% trừ thưởng</div>
-                                                            <p className="mb-0">{item.deduction_bonus_percent} &nbsp;</p>
+                                                            <p className="mb-0">{item.deduction_bonus_percent} %&nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-4 col-lg-5">
                                                             <div className="info-label mb-2">Số tiền bồi thường</div>
