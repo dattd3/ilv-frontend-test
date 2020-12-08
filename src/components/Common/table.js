@@ -1,6 +1,6 @@
 class TableUtil {
     updateData (data, pageNumber, recordPerPage) {
-      return [...data].slice(
+      return Array.from(data).slice(
         pageNumber * recordPerPage,
         pageNumber * recordPerPage + recordPerPage
       )
