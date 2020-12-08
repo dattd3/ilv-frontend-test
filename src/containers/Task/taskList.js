@@ -329,7 +329,7 @@ class TaskList extends React.Component {
 
     render() {
         const recordPerPage = 25
-        const tasks = TableUtil.updateData(this.props.tasks, this.state.pageNumber - 1, recordPerPage)
+        const tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
 
         return (
