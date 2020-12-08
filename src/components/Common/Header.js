@@ -52,7 +52,7 @@ function Header(props) {
         const res = result.result;
         const data = result.data;
         if (res.code != 1) {
-            if (data.notifications.length > 0) {
+            if (data.notifications && data.notifications.length > 0) {
                 if (data.total > 99) {
                     totalNotificationUnRead = "+99";
                 } else if (data.total == 0) {
