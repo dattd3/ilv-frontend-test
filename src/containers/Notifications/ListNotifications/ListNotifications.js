@@ -78,7 +78,7 @@ function ListNotifications(props) {
         const result = response.result;
         if (result.code != Constants.API_ERROR_CODE) {
             total = response.data.total;
-            const notifications = response.data.notifications;
+            const notifications = response.data.notifications ? response.data.notifications : [];
             dataBlock = <>
             {
                 notifications.map((item, i) => {
