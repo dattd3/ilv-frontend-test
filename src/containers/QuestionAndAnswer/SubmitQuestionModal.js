@@ -85,7 +85,17 @@ class SubmitQuestionModal extends React.Component {
             "content": questionContent,
             "ticketstatusid": 1,
             "userid": `${localStorage.getItem('email')}`,
-            "agentid": "vuongvt2@vingroup.net",
+            "userjobtitle": `${localStorage.getItem('jobTitle')}`,
+            "useremployeeno": `${localStorage.getItem('employeeNo')}`,
+            "userdepartmentname": `${localStorage.getItem('department')}`,
+            "userfullname": `${localStorage.getItem('fullName')}`,
+            "useravatar": `${localStorage.getItem('avatar')}`,
+            "agentid": this.state.supervise.userid + "@vingroup.net",
+            "agentjobtitle": this.state.supervise.title,
+            "agentemployeeno": "",
+            "agentdepartmentname": this.state.supervise.department,
+            "agentfullname": this.state.supervise.fullname,
+            "agentavatar": "",
             "ticketcategoryid": categoryId
         })
             : JSON.stringify({
@@ -93,7 +103,17 @@ class SubmitQuestionModal extends React.Component {
                 "content": questionContent,
                 "ticketstatusid": 1,
                 "userid": `${localStorage.getItem('email')}`,
+                "userjobtitle": `${localStorage.getItem('jobTitle')}`,
+                "useremployeeno": `${localStorage.getItem('employeeNo')}`,
+                "userdepartmentname": `${localStorage.getItem('department')}`,
+                "userfullname": `${localStorage.getItem('fullName')}`,
+                "useravatar": `${localStorage.getItem('avatar')}`,
                 "agentid": this.state.supervise.userid + "@vingroup.net",
+                "agentjobtitle": this.state.supervise.title,
+                "agentemployeeno": "",
+                "agentdepartmentname": this.state.supervise.department,
+                "agentfullname": this.state.supervise.fullname,
+                "agentavatar": "",
                 "ticketcategoryid": categoryId
             });
 

@@ -8,6 +8,7 @@ import map from '../map.config';
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
+import CommonQuestionComponent from './CommonQuestionComponent'
 
 class MyComponent extends React.Component {
 
@@ -21,7 +22,11 @@ class MyComponent extends React.Component {
       content: "",
       isSuccess: false,
       questionContent: {},
-      isEditQuestion: false
+      isEditQuestion: false,
+      commonTicketList: {},
+      commonTicketListFilter: {},
+      categories: {},
+      keySearch: ""
     };
   }
 
@@ -29,11 +34,28 @@ class MyComponent extends React.Component {
   componentDidMount() {
     let config = {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let commonTicketListRs = res.data.data.sort((a, b) => {
+            return a.subject[0].toLowerCase().localeCompare(b.subject[0].toLowerCase(), "pl");
+          });;
+          this.setState({ commonTicketList: commonTicketListRs, commonTicketListFilter: commonTicketListRs });
+        }
+      }).catch(error => {
+      });
+
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          this.setState({ categories: res.data.data })
+        }
+      }).catch(error => {
+
+      });
   }
 
   showSubmitModal(modalStatus, isEdit = false) {
@@ -56,9 +78,32 @@ class MyComponent extends React.Component {
   }
 
   showEditModal = (question) => {
-    this.setState({questionContent: question});
+    this.setState({ questionContent: question });
     this.showSubmitModal(true, true);
     this.showHistoryModal(false);
+  }
+
+  filterCommonTicket(tickets, categoryId) {
+    let filterCommonTickets = tickets.filter(ticket => ticket.ticketCategoryId === categoryId);
+    return filterCommonTickets
+  }
+
+  filterCommonTicketByKeyword(keySearch) {
+    debugger
+    let filterCommonTickets = this.state.commonTicketList
+    if (keySearch && keySearch !== '') {
+      filterCommonTickets = filterCommonTickets.filter(ticket => ticket.subject.includes(keySearch) || ticket.answer.includes(keySearch))
+    }
+    return filterCommonTickets
+  }
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  search = (keySearch) =>
+  {
+    console.log(keySearch)
+    this.setState({commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
   }
 
   render() {
@@ -71,14 +116,14 @@ class MyComponent extends React.Component {
     return (
       <div className="personal-info">
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
-        <SubmitQuestionModal 
-        isEdit = {this.state.isEditQuestion}
-        editQuestion={this.state.questionContent} 
-        show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
-        <HistoryModal show={this.state.isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload} 
-        showStatusModal={this.showStatusModal.bind(this)}
-        showEditModal = {this.showEditModal.bind(this)}
-         />
+        <SubmitQuestionModal
+          isEdit={this.state.isEditQuestion}
+          editQuestion={this.state.questionContent}
+          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
+        <HistoryModal show={this.state.isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
+          showStatusModal={this.showStatusModal.bind(this)}
+          showEditModal={this.showEditModal.bind(this)}
+        />
         <div className="clearfix edit-button mb-2">
           <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
           <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>Lịch sử giải đáp</button>
@@ -89,26 +134,24 @@ class MyComponent extends React.Component {
             <label htmlFor="exampleInputEmail1">Tìm kiếm từ khóa cần giải đáp</label>
             <div className="form-group row">
               <div className="col-sm-12 col-md-9 mb-2">
-                <input type="text" className="form-control" placeholder="Nhập tìm kiếm" id="txt-search" aria-describedby="emailHelp" />
+                <input type="text" className="form-control" placeholder="Nhập tìm kiếm" id="txt-search" name="keySearch" aria-describedby="emailHelp" onChange={this.handleChange.bind(this)} />
               </div>
               <div className="col-sm-12 col-md-3 mb-2">
-                <button type="button" className="btn btn-warning pr-5 pl-5"><i className="icon-search mr-1"></i>Tìm kiếm</button>
+                <button type="button" className="btn btn-warning pr-5 pl-5" onClick={() => this.search(this.state.keySearch)}><i className="icon-search mr-1"></i>Tìm kiếm</button>
               </div>
             </div>
           </div>
         </Container>
-
-        <h4 className="text-uppercase text-gray-800">Chấm công, thời gian làm việc</h4>
-        <Container fluid className="info-tab-content shadow pl-3 pr-3">
-          <div className="mb-1">
-            <span className="icon-Icon-Question mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
-            <span><b>CBNV thực hiện chấm công ?</b></span>
-          </div>
-          <div className="pl-4 pr-4">
-            <span className="lg icon-Icon-Answer mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
-            <span className="font-italic">CBNV đi làm theo phân ca</span>
-          </div>
-        </Container>
+        {
+          (this.state.categories && this.state.categories.length > 0 && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length > 0) ? this.state.categories.map((category, index) => {
+            let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id, this.state.keySearch)
+            return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index}>
+                <h4 className="text-uppercase text-gray-800">{category.name}</h4>
+                <CommonQuestionComponent questions = {commonticketFiler} />
+              </div>
+              : null
+          }) : null
+        }
       </div >
     )
   }

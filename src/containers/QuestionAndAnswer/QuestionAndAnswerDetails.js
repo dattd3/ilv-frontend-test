@@ -161,19 +161,33 @@ class QuestionAndAnswerDetails extends React.Component {
     })
   }
 
-  submitSelectSupporterModal = (supporterId) => {
+  submitSelectSupporterModal = (supporter) => {
     debugger
     let question = this.state.question
-    if (question && supporterId) {
+    if (question && supporter && supporter.userAccount) {
       var axios = require('axios');
       var data = JSON.stringify({
         "id": question.id,
         "subject": question.subject,
         "content": question.content,
-        "ticketstatusid": question.ticketStatusId,
+        "ticketstatusid": 1,
         "userid": question.userId,
+        "userjobtitle": question.userTitle,
+        "userdepartmentname": question.userDepartmentName,
+        "userfullname": question.fullName,
+        "useravatar": question.ownerAvatar,
         "agentid": question.agentId,
-        "supporterid": supporterId + '@vingroup.net',
+        "agentjobtitle": question.agentTitle,
+        "agentemployeeno": "",
+        "agentdepartmentname": question.agentDepartmentName,
+        "agentfullname": question.agentName,
+        "agentavatar": question.agentAvatar,
+        "supporterid": supporter.userAccount + "@vingroup.net",
+        "supporterjobtitle": supporter.current_position,
+        "supporteremployeeno": "",
+        "supporterdepartmentname": supporter.part,
+        "supporterfullname": supporter.fullname,
+        "supporteravatar": supporter.avatar,
         "ticketcategoryid": question.ticketCategoryId
       })
       var config = {
@@ -262,7 +276,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.fullName}</h6>
@@ -278,7 +292,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.agentImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.agentName}</h6>
@@ -294,7 +308,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.supporterImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.supporterName}</h6>
@@ -314,7 +328,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.fullName}</h6>
@@ -330,7 +344,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.agentName}</h6>
@@ -346,7 +360,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.supporterName}</h6>
