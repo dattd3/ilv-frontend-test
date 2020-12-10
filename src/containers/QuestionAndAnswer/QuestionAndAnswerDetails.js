@@ -163,7 +163,6 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   submitSelectSupporterModal = (supporter) => {
-    debugger
     let question = this.state.question
     if (question && supporter && supporter.userAccount) {
       var axios = require('axios');
