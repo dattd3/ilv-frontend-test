@@ -81,11 +81,9 @@ function Header(props) {
                 } else {
                     totalNotificationUnRead = data.total;
                 }
-                console.log(data)
                 dataNotificationsUnRead = <>
                     {
                         data.notifications.map((item, i) => {
-                            console.log(item.url)
                             const timePost = getTimePost(item.createdDate);
                             let notificationLink = (type) => {
                                 switch (type) {
