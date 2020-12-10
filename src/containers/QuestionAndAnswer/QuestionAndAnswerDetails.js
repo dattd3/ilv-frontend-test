@@ -164,6 +164,7 @@ class QuestionAndAnswerDetails extends React.Component {
 
   submitSelectSupporterModal = (supporter) => {
     let question = this.state.question
+    let _self = this
     if (question && supporter && supporter.userAccount) {
       var axios = require('axios');
       var data = JSON.stringify({
@@ -199,13 +200,13 @@ class QuestionAndAnswerDetails extends React.Component {
         },
         data: data
       };
-      let _this = this
+      
       axios(config)
         .then(function (response) {
-          _this.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
+          _self.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
         })
         .catch(function (error) {
-          _this.showStatusModal("Rất tiếc, đã có lỗi xảy ra!")
+          _self.showStatusModal("Rất tiếc, đã có lỗi xảy ra!")
         });
     }
   }
