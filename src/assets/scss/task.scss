@@ -18,6 +18,18 @@
     }
 }
 .task-section {
+    .block-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        .title {
+            margin-bottom: 0;
+        }
+        .ic-export {
+            margin-right: 10px;
+        }
+    }
     .title {
         color: #2a377c;
         font-weight: bold;
