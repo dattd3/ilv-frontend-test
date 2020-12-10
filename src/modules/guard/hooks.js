@@ -58,6 +58,7 @@ const Storage = {
     localStorage.setItem('department', currentAuthUser.department);
     localStorage.setItem('avatar', currentAuthUser.avatar);
     localStorage.setItem('benefitTitle', currentAuthUser.benefitTitle);
+    localStorage.setItem('organizationLv2', currentAuthUser.organizationLv2);
     localStorage.setItem('organizationLv3', currentAuthUser.organizationLv3);
     localStorage.setItem('organizationLv4', currentAuthUser.organizationLv4);
     localStorage.setItem('organizationLv5', currentAuthUser.organizationLv5);
@@ -84,6 +85,7 @@ const Storage = {
       avatar: localStorage.getItem('avatar'),
       employeeNo: localStorage.getItem('employeeNo'),
       benefitTitle: localStorage.getItem('benefitTitle'),
+      organizationLv2: localStorage.getItem('organizationLv2'),
       organizationLv3: localStorage.getItem('organizationLv3'),
       organizationLv4: localStorage.getItem('organizationLv4'),
       organizationLv5: localStorage.getItem('organizationLv5'),
@@ -108,6 +110,7 @@ const Storage = {
     localStorage.removeItem('jobType');
     localStorage.removeItem('avatar');
     localStorage.removeItem('benefitTitle');
+    localStorage.removeItem('organizationLv2');
     localStorage.removeItem('organizationLv3');
     localStorage.removeItem('organizationLv4');
     localStorage.removeItem('organizationLv5');
@@ -133,6 +136,7 @@ const deserialize = (currentAuthUser) => ({
   avatar: currentAuthUser.avatar,
   employeeNo: currentAuthUser.employeeNo,
   benefitTitle: currentAuthUser.benefitTitle,
+  organizationLv2: currentAuthUser.organizationLv2,
   organizationLv3: currentAuthUser.organizationLv3,
   organizationLv4: currentAuthUser.organizationLv4,
   organizationLv5: currentAuthUser.organizationLv5,
