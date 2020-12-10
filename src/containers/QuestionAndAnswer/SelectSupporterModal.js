@@ -67,6 +67,7 @@ class SelectSupporterModal extends React.Component {
                 pnl: res.pnl,
                 departmentToCompare: `${res.division} / ${res.department} / ${res.unit}`,
                 userAccount: res.user_account,
+                part: res.part,
                 current_position: res.title,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
@@ -88,7 +89,6 @@ class SelectSupporterModal extends React.Component {
         cursor: 'pointer',
       })
     }
-    console.log(this.state.supporter)
     return (
       <Modal backdrop="static" keyboard={false}
         className='info-modal-common position-apply-modal'

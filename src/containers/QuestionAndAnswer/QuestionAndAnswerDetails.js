@@ -28,6 +28,7 @@ class QuestionAndAnswerDetails extends React.Component {
       isShowCommentEditor: false,
       isShowSelectSupporterModal: false
     }
+    this.submitSelectSupporterModal = this.submitSelectSupporterModal.bind(this)
   }
 
   componentWillMount() {
@@ -152,17 +153,16 @@ class QuestionAndAnswerDetails extends React.Component {
     this.setState({ isShowSelectSupporterModal: modalStatus });
   }
   checkRole = () => {
-    let userId = localStorage.getItem('email');
+    let userId = localStorage.getItem('email').toLowerCase();
     this.setState({
       isShowCommentEditor: (this.state.question &&
-        (this.state.question.agentId === userId || this.state.question.supporterId === userId)
+        (this.state.question.agentId.toLowerCase() === userId || this.state.question.supporterId.toLowerCase() === userId)
         && this.state.question.ticketStatusId === 1
       ) ? true : false
     })
   }
 
   submitSelectSupporterModal = (supporter) => {
-    debugger
     let question = this.state.question
     if (question && supporter && supporter.userAccount) {
       var axios = require('axios');
@@ -182,7 +182,7 @@ class QuestionAndAnswerDetails extends React.Component {
         "agentdepartmentname": question.agentDepartmentName,
         "agentfullname": question.agentName,
         "agentavatar": question.agentAvatar,
-        "supporterid": supporter.userAccount + "@vingroup.net",
+        "supporterid": supporter.userAccount.toLowerCase() + "@vingroup.net",
         "supporterjobtitle": supporter.current_position,
         "supporteremployeeno": "",
         "supporterdepartmentname": supporter.part,
@@ -234,7 +234,7 @@ class QuestionAndAnswerDetails extends React.Component {
           <SelectSupporterModal
             show={this.state.isShowSelectSupporterModal}
             onHide={() => this.showSelectSupporterModal(false)}
-            onAcceptClick={this.submitSelectSupporterModal.bind(this)}
+            onAcceptClick={this.submitSelectSupporterModal}
             onCancelClick={() => this.showSelectSupporterModal(false)}
             modalHeader="GỬI ĐẾN CBLĐ/ HR GIẢI ĐÁP"
           />
