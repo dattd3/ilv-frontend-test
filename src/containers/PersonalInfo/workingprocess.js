@@ -164,31 +164,31 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.merit_and_cash ? 'Giấy khen & tiền mặt | ' : '');
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
                                     bonusTitle += (item.other_rewards ? 'Khác | ' : '');
-                                    bonusTitle = bonusTitle.substring(0, bonusTitle.length - 3);
+                                    bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
                                     return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                         <form className="info-value pb-0"><div >
                                             <div className="form-row">
-                                                <div className="form-group col-md-6 col-lg-2">
+                                                <div className="form-group col-md-6 ">
                                                     <div className="info-label mb-2">Số quyết định</div>
                                                     <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                 </div>
-                                                <div className="form-group col-md-6 col-lg-2">
+                                                <div className="form-group col-md-6">
                                                     <div className="info-label mb-2">Ngày hiệu lực</div>
                                                     <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
                                                 </div>
-                                                <div className="form-group col-md-6 col-lg-3">
+                                                <div className="form-group col-md-12">
                                                     <div className="info-label mb-2">Lý do khen thưởng</div>
                                                     <p className="mb-0">{item.compliment_reason}&nbsp;</p>
                                                 </div>
-                                                <div className="form-group col-md-6 col-lg-3">
+                                                <div className="form-group col-md-6">
                                                     <div className="info-label mb-2">Hình thức khen thưởng</div>
                                                     <p className="mb-0">
                                                         {bonusTitle}&nbsp;
-                                                        </p>
+                                                    </p>
                                                 </div>
-                                                <div className="form-group col-md-6 col-lg-2">
+                                                <div className="form-group col-md-6">
                                                     <div className="info-label mb-2">Số tiền khen thưởng</div>
-                                                    <p className="mb-0">{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '.'} VND</p>
+                                                    <p className="mb-0">{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -212,20 +212,20 @@ class MyComponent extends React.Component {
                                         penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
                                         penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
                                         penaltiesTitle += (item.other ? 'Khác | ' : '');
-                                        penaltiesTitle = penaltiesTitle.substring(0, penaltiesTitle.length - 3);
+                                        penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
                                         return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                             <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">
-                                                        <div className="form-group col-md-6 col-lg-3">
+                                                        <div className="form-group col-md-6">
                                                             <div className="info-label mb-2">Số quyết định</div>
                                                             <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                         </div>
-                                                        <div className="form-group col-md-6 col-lg-2">
+                                                        <div className="form-group col-md-6">
                                                             <div className="info-label mb-2">Ngày hiệu lực</div>
                                                             <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}</p>
                                                         </div>
-                                                        <div className="form-group col-md-6 col-lg-7">
+                                                        <div className="form-group col-md-12">
                                                             <div className="info-label mb-2">Nhóm lỗi</div>
                                                             <p className="mb-0">{item.violation_group}&nbsp;</p>
                                                         </div>
@@ -245,15 +245,15 @@ class MyComponent extends React.Component {
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
-                                                        <div className="form-group col-md-4 col-lg-3">
+                                                        <div className="form-group col-md-4">
                                                             <div className="info-label mb-2">Số tiền kỷ luật</div>
                                                             <p className="mb-0">{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
-                                                        <div className="form-group col-md-4 col-lg-4">
+                                                        <div className="form-group col-md-4">
                                                             <div className="info-label mb-2">% trừ thưởng</div>
-                                                            <p className="mb-0">{item.deduction_bonus_percent} %&nbsp;</p>
+                                                            <p className="mb-0">{item.deduction_bonus_percent ? item.deduction_bonus_percent + '%' : ''} &nbsp;</p>
                                                         </div>
-                                                        <div className="form-group col-md-4 col-lg-5">
+                                                        <div className="form-group col-md-4">
                                                             <div className="info-label mb-2">Số tiền bồi thường</div>
                                                             <p className="mb-0">{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>

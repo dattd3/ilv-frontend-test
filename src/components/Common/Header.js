@@ -39,16 +39,37 @@ function Header(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-          timePost = Math.floor(minutes) + " phút trước";
+            timePost = Math.floor(minutes) + " phút trước";
         } else if (hours < 24) {
-          timePost = Math.floor(hours) + " giờ trước";
+            timePost = Math.floor(hours) + " giờ trước";
         }
         return timePost;
     }
 
+    const clickNotification = (id) => {
+        var axios = require('axios');
+        var data = '';
+        var config = {
+            method: 'post',
+            url:  `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/`+id,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        axios(config)
+            .then(function (response) {
+                
+            })
+            .catch(function (error) {
+
+            });
+    }
+
     let dataNotificationsUnRead = "";
     const result = usePreload([lv3, lv4, lv5]);
-    if(result && result.data && result.result) {
+    if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
         if (res.code != 1) {
@@ -60,21 +81,34 @@ function Header(props) {
                 } else {
                     totalNotificationUnRead = data.total;
                 }
+                console.log(data)
                 dataNotificationsUnRead = <>
-                {
-                    data.notifications.map((item, i) => {
-                        const timePost = getTimePost(item.createdDate);
-                        const notificationLink = item.isShowOnList ? `/notifications/${item.id}` : `/registration/${item.userProfileHistoryId}/approval`
-                        return <div key={i} className="item">
-                            <a className="title" href={notificationLink} title={item.title}>{item.title}</a>
-                            <p className="description">{item.description != null ? item.description : ""}</p>
-                            <div className="time-file">
-                                <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                { item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span> : ""}
+                    {
+                        data.notifications.map((item, i) => {
+                            console.log(item.url)
+                            const timePost = getTimePost(item.createdDate);
+                            let notificationLink = (type) => {
+                                switch (type) {
+                                    case 0:
+                                        return `/notifications/${item.id}`
+                                    case 1:
+                                        return `/registration/${item.userProfileHistoryId}/approval`
+                                    case 5:
+                                        return item.url
+                                    default:
+                                        return `${item.url}`
+                                }
+                            }
+                            return <div key={i} className="item">
+                                <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
+                                <p className="description">{item.description != null ? item.description : ""}</p>
+                                <div className="time-file">
+                                    <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span> : ""}
+                                </div>
                             </div>
-                        </div>
-                    })
-                }
+                        })
+                    }
                 </>;
             }
         }
@@ -84,7 +118,7 @@ function Header(props) {
         try {
             guard.setLogOut();
             Auth.signOut({ global: true });
-        } catch  {
+        } catch {
             guard.setLogOut();
             window.location.reload();
         }
@@ -104,55 +138,57 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
+    
+
     return (
         isApp ? null :
-        <div>
-            <Navbar expand="lg" className="navigation-top-bar-custom">
-                <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
-                <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
-                    <InputGroup className='d-none'>
-                        <InputGroup.Prepend>
-                            <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
-                        </InputGroup.Prepend>
-                        <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
-                    </InputGroup>
-                </Form>
-                <Dropdown id="notifications-block">
-                    <Dropdown.Toggle>
-                        <span className="notifications-block">
-                            <i className="far fa-bell ic-customize"></i>
-                            {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : "" }
-                        </span>
-                    </Dropdown.Toggle>
-                    {dataNotificationsUnRead != "" ?
-                    <Dropdown.Menu className="list-notification-popup">
-                        <div className="title-block">thông báo nội bộ</div>
-                        <div className="all-items">
-                            {dataNotificationsUnRead}
-                        </div>
-                        {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
-                    </Dropdown.Menu>
-                    : null
-                    }
-                </Dropdown>
-                <Dropdown>
-                    <div className='mr-2 small text-right username'>
-                        <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                            <span className="text-gray-600">{fullName}</span>
-                            {
-                                (avatar != null && avatar !== '' && avatar !== 'null') ?
-                                    <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
-                                    :
-                                    <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
-                            }
+            <div>
+                <Navbar expand="lg" className="navigation-top-bar-custom">
+                    <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
+                    <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
+                        <InputGroup className='d-none'>
+                            <InputGroup.Prepend>
+                                <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
+                            </InputGroup.Prepend>
+                            <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
+                        </InputGroup>
+                    </Form>
+                    <Dropdown id="notifications-block">
+                        <Dropdown.Toggle>
+                            <span className="notifications-block">
+                                <i className="far fa-bell ic-customize"></i>
+                                {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                            </span>
                         </Dropdown.Toggle>
-                    </div>
-                    <Dropdown.Menu className='animated--grow-in'>
-                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </Navbar>
-        </div>
+                        {dataNotificationsUnRead != "" ?
+                            <Dropdown.Menu className="list-notification-popup">
+                                <div className="title-block">thông báo nội bộ</div>
+                                <div className="all-items">
+                                    {dataNotificationsUnRead}
+                                </div>
+                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
+                            </Dropdown.Menu>
+                            : null
+                        }
+                    </Dropdown>
+                    <Dropdown>
+                        <div className='mr-2 small text-right username'>
+                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
+                                <span className="text-gray-600">{fullName}</span>
+                                {
+                                    (avatar != null && avatar !== '' && avatar !== 'null') ?
+                                        <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                        :
+                                        <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
+                                }
+                            </Dropdown.Toggle>
+                        </div>
+                        <Dropdown.Menu className='animated--grow-in'>
+                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Navbar>
+            </div>
     );
 }
 
