@@ -61,4 +61,8 @@ export default {
   ApprovalTaskDetail: "/tasks-approval/:id",
   RegistrationDetailRequest: "/registration/:id/request",
   RegistrationDetailApproval: "/registration/:id/approval",
+
+  //Q&A
+  QuestionAndAnswer: "/question-and-answer",
+  QuestionAndAnswerDetails:"/question-and-answer-details/:id"
 };

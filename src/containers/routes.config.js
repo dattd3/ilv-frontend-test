@@ -401,6 +401,22 @@ export default [
           },
           component: lazy(() => import("./Registration/RegistrationEditComponent"))
         },
+        {
+          key: "question-and-answer",
+          routeProps: {
+            exact: true,
+            path: map.QuestionAndAnswer
+          },
+          component: lazy(() => import("./QuestionAndAnswer"))
+        },
+        {
+          key: "question-and-answer-details",
+          routeProps: {
+            exact: true,
+            path: map.QuestionAndAnswerDetails
+          },
+          component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
+        }
       ],
     },
   },
