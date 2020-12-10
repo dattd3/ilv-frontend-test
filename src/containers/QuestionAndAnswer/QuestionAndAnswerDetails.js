@@ -28,6 +28,7 @@ class QuestionAndAnswerDetails extends React.Component {
       isShowCommentEditor: false,
       isShowSelectSupporterModal: false
     }
+    this.submitSelectSupporterModal = this.submitSelectSupporterModal.bind(this)
   }
 
   componentWillMount() {
@@ -234,7 +235,7 @@ class QuestionAndAnswerDetails extends React.Component {
           <SelectSupporterModal
             show={this.state.isShowSelectSupporterModal}
             onHide={() => this.showSelectSupporterModal(false)}
-            onAcceptClick={this.submitSelectSupporterModal.bind(this)}
+            onAcceptClick={this.submitSelectSupporterModal}
             onCancelClick={() => this.showSelectSupporterModal(false)}
             modalHeader="GỬI ĐẾN CBLĐ/ HR GIẢI ĐÁP"
           />
