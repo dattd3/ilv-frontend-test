@@ -92,7 +92,7 @@ class MyComponent extends React.Component {
     debugger
     let filterCommonTickets = this.state.commonTicketList
     if (keySearch && keySearch !== '') {
-      filterCommonTickets = filterCommonTickets.filter(ticket => ticket.subject.includes(keySearch) || ticket.answer.includes(keySearch))
+      filterCommonTickets = filterCommonTickets.filter(ticket => ticket.subject.toLowerCase().includes(keySearch.toLowerCase()) || ticket.answertoLowerCase().includes(keySearch.toLowerCase()))
     }
     return filterCommonTickets
   }

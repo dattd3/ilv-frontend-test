@@ -152,10 +152,10 @@ class QuestionAndAnswerDetails extends React.Component {
     this.setState({ isShowSelectSupporterModal: modalStatus });
   }
   checkRole = () => {
-    let userId = localStorage.getItem('email');
+    let userId = localStorage.getItem('email').toLowerCase();
     this.setState({
       isShowCommentEditor: (this.state.question &&
-        (this.state.question.agentId === userId || this.state.question.supporterId === userId)
+        (this.state.question.agentId.toLowerCase() === userId || this.state.question.supporterId.toLowerCase() === userId)
         && this.state.question.ticketStatusId === 1
       ) ? true : false
     })
@@ -182,7 +182,7 @@ class QuestionAndAnswerDetails extends React.Component {
         "agentdepartmentname": question.agentDepartmentName,
         "agentfullname": question.agentName,
         "agentavatar": question.agentAvatar,
-        "supporterid": supporter.userAccount + "@vingroup.net",
+        "supporterid": supporter.userAccount.toLowerCase() + "@vingroup.net",
         "supporterjobtitle": supporter.current_position,
         "supporteremployeeno": "",
         "supporterdepartmentname": supporter.part,
