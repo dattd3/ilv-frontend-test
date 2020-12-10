@@ -224,12 +224,12 @@ export const Navigation = [
     to: map.Registration,
     role: 'U'
   },
-  {
+  /*{
     id: 98,
     parentId: 0,
     icon: 'qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: 'U'
-  },
+  },*/
 ];
