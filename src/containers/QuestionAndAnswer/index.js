@@ -91,7 +91,7 @@ class MyComponent extends React.Component {
   filterCommonTicketByKeyword(keySearch) {
     let filterCommonTickets = this.state.commonTicketList
     if (keySearch && keySearch !== '') {
-      filterCommonTickets = filterCommonTickets.filter(ticket => ticket.subject.toLowerCase().includes(keySearch.toLowerCase()) || ticket.answertoLowerCase().includes(keySearch.toLowerCase()))
+      filterCommonTickets = filterCommonTickets.filter(ticket => ticket.subject.toLowerCase().includes(keySearch.toLowerCase()) || ticket.answer.toLowerCase().includes(keySearch.toLowerCase()))
     }
     return filterCommonTickets
   }
