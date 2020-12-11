@@ -76,10 +76,10 @@ class ApproverComponent extends React.Component {
         }
       }
   
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value,  should_check_superviser: true}, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          const data = res.data.data
+          const data = res.data.data || []
           const users = data.map(res => {
             return {
               label: res.fullname,
