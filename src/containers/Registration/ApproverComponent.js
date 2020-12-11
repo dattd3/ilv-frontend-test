@@ -45,14 +45,13 @@ class ApproverComponent extends React.Component {
   handleSelectChange(name, value) {
     const currentUserLevel = localStorage.getItem('employeeLevel')
     this.setState({ [name]: value })
-    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, value.orglv3Id, currentUserLevel)
+    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel)
     this.props.updateApprover(value, isApprover)
   }
 
-  isApprover = (levelApproverFilter, orglv2Id, orglv3Id, currentUserLevel) => {
+  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel) => {
     const levelApprover = ["P2", "P1", "T4", "T3", "T2", "T1"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    const orglv3IdCurrentUser = localStorage.getItem('organizationLv3')
     let indexCurrentUserLevel = _.findIndex(levelApprover, function(item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(levelApprover, function(item) { return item == levelApproverFilter });
 
@@ -60,9 +59,10 @@ class ApproverComponent extends React.Component {
       return false
     }
 
-    if (levelApprover.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id && orglv3IdCurrentUser === orglv3Id) {
+    if (levelApprover.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
       return true
     }
+    
     return false
   }
 
@@ -89,7 +89,6 @@ class ApproverComponent extends React.Component {
               employeeLevel: res.employee_level,
               pnl: res.pnl,
               orglv2Id: res.orglv2_id,
-              orglv3Id: res.orglv3_id,
               userAccount: res.user_account,
               current_position: res.title,
               department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
