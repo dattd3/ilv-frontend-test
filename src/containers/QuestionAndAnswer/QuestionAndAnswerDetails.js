@@ -9,6 +9,7 @@ import FormControl from 'react-bootstrap/FormControl'
 import ConfirmModal from './ConfirmModal'
 import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
+import Constants from '../../commons/Constants';
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -99,6 +100,14 @@ class QuestionAndAnswerDetails extends React.Component {
     this.submitComment(this.state.comment, userId, this.state.question.id, this.showStatusModal)
   }
 
+  rejectComment = () => {
+    let userId = localStorage.getItem('email')
+    const rejectReason = Constants.QAAlreadyExist
+    this.completeQuestion(this.state.question.id)
+    this.submitComment(rejectReason, userId, this.state.question.id, this.showStatusModal)
+  }
+
+
   submitComment = (comment, userid, ticketid, callBack) => {
     var axios = require('axios');
     var data = JSON.stringify({
@@ -120,6 +129,7 @@ class QuestionAndAnswerDetails extends React.Component {
         callBack("Gửi trả lời thành công!", true);
       })
       .catch(function (error) {
+        callBack("Rất tiếc, có lỗi xảy ra!");
       });
   }
 
@@ -200,7 +210,7 @@ class QuestionAndAnswerDetails extends React.Component {
         },
         data: data
       };
-      
+
       axios(config)
         .then(function (response) {
           _self.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
@@ -211,6 +221,9 @@ class QuestionAndAnswerDetails extends React.Component {
     }
   }
 
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
 
   render() {
     const { t } = this.props
@@ -382,7 +395,7 @@ class QuestionAndAnswerDetails extends React.Component {
               <div className="content-center">
                 <div className="media">
                   <span className="align-self-center mr-25">
-                    <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                    <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                   </span>
                   <div className="media-body text-left">
                     <h6 className="mt-1 avt-color font-weight-bold">{question.fullName}</h6>
@@ -421,22 +434,31 @@ class QuestionAndAnswerDetails extends React.Component {
               }
               {
                 this.state.question && this.state.isShowCommentEditor ?
-                  <div className="pl-5 mb-4">
+                  <div className="pl-5">
                     <div className="pl-5">
                       <div className="media">
                         <span className="align-self-center mr-25">
                           <img className="align-self-center" src={`data:image/png;base64,${localStorage.getItem('avatar')}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                         </span>
                         <div className="media-body text-left">
-                          <FormControl placeholder="Viết trả lời..." as="textarea" onKeyPress={this.handleKeyPress.bind(this)} />
+                          <FormControl placeholder="Viết trả lời..." as="textarea" name="comment" onChange={this.handleChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} />
                         </div>
                       </div>
+                    </div>
+                    <div className="mt-2 text-right">
+                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>Từ chối</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
                     </div>
                   </div>
                   : null
               }
 
             </Container>
+            {this.state.question && this.state.isShowCommentEditor ?
+              <div className="dannger-note">
+                <p>*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn "Từ chối" để yêu cầu CBNV tự tra cứu trên MyVinpearl</p>
+              </div> : null
+            }
           </div>
         </> :
         <>

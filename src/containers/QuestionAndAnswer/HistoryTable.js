@@ -30,7 +30,8 @@ class HistoryTable extends React.Component {
   }
   render() {
     return <div className="wrap-result text-left">
-      {this.props.questions.map((question, index) => {
+      { this.props.questions && this.props.questions.length > 0 ?
+      this.props.questions.map((question, index) => {
         return <div key={index}>
           <div className="media">
             <span className="img-circle align-self-center">
@@ -68,7 +69,9 @@ class HistoryTable extends React.Component {
           </div>
           <hr />
         </div>
-      })}
+      }) :
+      <div className="text-center mt-5"><p>Không tìm thấy dữ liệu!</p></div>
+      }
     </div>
   }
 }
