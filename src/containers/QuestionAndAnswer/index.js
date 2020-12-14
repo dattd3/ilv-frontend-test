@@ -103,6 +103,15 @@ class MyComponent extends React.Component {
   {
     this.setState({commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
   }
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter' && event.shiftKey) {
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      this.search(this.state.keySearch)
+    }
+  }
 
   render() {
     const { t } = this.props;
@@ -132,7 +141,7 @@ class MyComponent extends React.Component {
             <label htmlFor="exampleInputEmail1">Tìm kiếm từ khóa cần giải đáp</label>
             <div className="form-group row">
               <div className="col-sm-12 col-md-9 mb-2">
-                <input type="text" className="form-control" placeholder="Nhập tìm kiếm" id="txt-search" name="keySearch" aria-describedby="emailHelp" onChange={this.handleChange.bind(this)} />
+                <input type="text" className="form-control" placeholder="Nhập tìm kiếm" id="txt-search" name="keySearch" aria-describedby="emailHelp" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChange.bind(this)} />
               </div>
               <div className="col-sm-12 col-md-3 mb-2">
                 <button type="button" className="btn btn-warning pr-5 pl-5" onClick={() => this.search(this.state.keySearch)}><i className="icon-search mr-1"></i>Tìm kiếm</button>
@@ -142,13 +151,13 @@ class MyComponent extends React.Component {
         </Container>
         {
           (this.state.categories && this.state.categories.length > 0 && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length > 0) ? this.state.categories.map((category, index) => {
-            let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id, this.state.keySearch)
+            let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id)
             return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index}>
                 <h4 className="text-uppercase text-gray-800">{category.name}</h4>
                 <CommonQuestionComponent questions = {commonticketFiler} />
               </div>
               : null
-          }) : null
+          }) : <div><p className="text-center">Không có kết quả phù hợp, vui lòng lựa chọn tìm từ khóa khác!</p></div>
         }
       </div >
     )
