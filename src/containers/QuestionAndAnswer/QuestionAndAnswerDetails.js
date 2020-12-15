@@ -420,7 +420,7 @@ class QuestionAndAnswerDetails extends React.Component {
                           <span className="align-self-center mr-25">
                             <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                           </span>
-                          <div className="media-body text-left">
+                          <div className="media-body text-left multiline">
                             <h6 className="mt-1 avt-color font-weight-bold pt-1">{item.fullName}</h6>
                             <p className="mb-0 text-break">
                               <b className="text-left">Trả lời: </b>
