@@ -87,6 +87,11 @@ class QuestionAndAnswerDetails extends React.Component {
     }
 
     if (event.key === 'Enter') {
+      if(this.state.comment === "")
+      {
+        this.showStatusModal("Nhập câu trả lời để tiếp tục!");
+        return;
+      }
       this.setState({ comment: event.target.value })
       this.showConfirmModal(true)
     }
@@ -447,7 +452,7 @@ class QuestionAndAnswerDetails extends React.Component {
                     </div>
                     <div className="mt-2 text-right">
                       <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>Từ chối</Button>{' '}
-                      <Button variant="primary pl-4 pr-4" onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
                     </div>
                   </div>
                   : null
