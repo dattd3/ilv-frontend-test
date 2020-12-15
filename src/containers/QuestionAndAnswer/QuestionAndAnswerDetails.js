@@ -87,6 +87,11 @@ class QuestionAndAnswerDetails extends React.Component {
     }
 
     if (event.key === 'Enter') {
+      if(this.state.comment === "")
+      {
+        this.showStatusModal("Nhập câu trả lời để tiếp tục!");
+        return;
+      }
       this.setState({ comment: event.target.value })
       this.showConfirmModal(true)
     }
@@ -420,7 +425,7 @@ class QuestionAndAnswerDetails extends React.Component {
                           <span className="align-self-center mr-25">
                             <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                           </span>
-                          <div className="media-body text-left">
+                          <div className="media-body text-left multiline">
                             <h6 className="mt-1 avt-color font-weight-bold pt-1">{item.fullName}</h6>
                             <p className="mb-0 text-break">
                               <b className="text-left">Trả lời: </b>
@@ -447,7 +452,7 @@ class QuestionAndAnswerDetails extends React.Component {
                     </div>
                     <div className="mt-2 text-right">
                       <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>Từ chối</Button>{' '}
-                      <Button variant="primary pl-4 pr-4" onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
                     </div>
                   </div>
                   : null

@@ -1,12 +1,19 @@
 import React from 'react';
 import axios from 'axios';
 import Constants from '../../../commons/Constants';
+import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
+import StatusModal from '../../../components/Common/StatusModal'
 
 class NotificationDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      notificationInfo: []
+      notificationInfo: [],
+      isShowSubmitQuestionModal: false,
+      isEditQuestion: false,
+      isShowStatusModal: false,
+      content: "",
+      isSuccess: false
     }
   }
 
@@ -23,16 +30,16 @@ class NotificationDetailComponent extends React.Component {
       }
     }
     axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications/${this.getNotificationId()}`, config)
-    .then(res => {                        
-      if (res && res.data && res.data.data && res.data.result) {
-        const result = res.data.result;
-        if (result.code != Constants.API_ERROR_CODE) {
-          this.setState({notificationInfo : res.data.data });
+      .then(res => {
+        if (res && res.data && res.data.data && res.data.result) {
+          const result = res.data.result;
+          if (result.code != Constants.API_ERROR_CODE) {
+            this.setState({ notificationInfo: res.data.data });
+          }
         }
-      }
-    }).catch(error => {
-      this.setState({notificationInfo : []});
-    });
+      }).catch(error => {
+        this.setState({ notificationInfo: [] });
+      });
   }
 
   getFileIcon = fileType => {
@@ -72,34 +79,57 @@ class NotificationDetailComponent extends React.Component {
     return false
   }
 
+  showSubmitModal(modalStatus, isEdit = false) {
+    this.setState({ isShowSubmitQuestionModal: modalStatus, isEditQuestion: isEdit });
+  }
+  showStatusModal = (message, isSuccess = false) => {
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+    this.showSubmitModal(false);
+  };
+  hideStatusModal = () => {
+    this.setState({ isShowStatusModal: false });
+  }
+
   render() {
     return (
       <>
-      <div className="notifications-detail-section">
-        <h4 className="h4 title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h4>
-        <div className="card shadow mb-4">
-          <div className="card-body">
-            <div className="detail-notifications-block">
-              <div className="content" 
-              dangerouslySetInnerHTML={{__html: this.state.notificationInfo.content != null ? this.state.notificationInfo.content : ""}} />
-              {
-              this.hasAttachmentFiles(this.state.notificationInfo.notificationDocuments) ?
-              <>
-              <hr />
-              <div className="list-attachment-files">
+        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <SubmitQuestionModal
+          isEdit={this.state.isEditQuestion}
+          editQuestion={this.state.questionContent}
+          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
+        <div className="notifications-detail-section mt-5">
+          <div className="row">
+            <div className="col-md-8 display-inline">
+              <h4 className="h4 title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h4>
+            </div>
+            <div className="col-md-4">
+              <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
+            </div>
+          </div>
+          <div className="card shadow mb-4">
+            <div className="card-body">
+              <div className="detail-notifications-block">
+                <div className="content"
+                  dangerouslySetInnerHTML={{ __html: this.state.notificationInfo.content != null ? this.state.notificationInfo.content : "" }} />
                 {
-                (this.state.notificationInfo.notificationDocuments || []).map((item, i) => {
-                  return !item.isDeleted ? <span key={i} className="file">
-                    {this.getFileIcon(item.type)}
-                    <a href={item.link} target="_blank" className="file-name">{item.name}</a>
-                    <span className="size">{this.getFileSize(item.size)}</span>
-                  </span> : null
-                })
+                  this.hasAttachmentFiles(this.state.notificationInfo.notificationDocuments) ?
+                    <>
+                      <hr />
+                      <div className="list-attachment-files">
+                        {
+                          (this.state.notificationInfo.notificationDocuments || []).map((item, i) => {
+                            return !item.isDeleted ? <span key={i} className="file">
+                              {this.getFileIcon(item.type)}
+                              <a href={item.link} target="_blank" className="file-name">{item.name}</a>
+                              <span className="size">{this.getFileSize(item.size)}</span>
+                            </span> : null
+                          })
+                        }
+                      </div>
+                    </>
+                    : null
                 }
-              </div>
-              </>
-              : null
-              }
               </div>
             </div>
           </div>
