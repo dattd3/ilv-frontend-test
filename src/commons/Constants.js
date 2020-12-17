@@ -44,5 +44,6 @@ const Constants = {
   BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
   SUBSTITUTION_TPKLA_FULL_DAY: 1,
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
+  QAAlreadyExist: "Nội dung câu trả lời đã có trong bộ Q&A của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên Myvinpearl"
 };
 export default Constants

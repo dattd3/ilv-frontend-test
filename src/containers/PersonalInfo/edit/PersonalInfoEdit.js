@@ -356,7 +356,6 @@ class PersonalInfoEdit extends React.Component {
           for (let i = 0, len = educationUpdated.length; i < len; i++) {
             const education = educationUpdated[i]
             let obj = this.getValidationEducationObj(education, "update")
-            debugger
             errors.update = errors.update.concat(obj)
           }
         }
@@ -403,10 +402,33 @@ class PersonalInfoEdit extends React.Component {
       return data
     }
 
+    isEmptyCustomize = (errors) => {
+      if (errors == null || _.isEmpty(errors)) {
+        return true
+      }
+      const create = errors.create
+      const update = errors.update
+      if (create == null && update == null) {
+        return true
+      }
+      for (let i = 0, countCreate = create.length; i < countCreate; i++) {
+        if (_.size(create[i]) > 0) {
+          return false
+        }
+      }
+      for (let j = 0, countUpdate = update.length; j < countUpdate; j++) {
+        if (_.size(update[j]) > 0) {
+          return false
+        }
+      }
+      return true
+    }
+
     submitRequest = (comment) => {
       let dataClone = this.removeItemForValueNull({...this.state.data})
       const errors = this.verifyInput(dataClone)
-      if (!_.isEmpty(errors)) {
+
+      if (!this.isEmptyCustomize(errors)) {
         return
       }
 
