@@ -93,7 +93,7 @@ class SubmitQuestionModal extends React.Component {
             "agentemployeeno": "",
             "agentdepartmentname": this.state.supervise.department,
             "agentfullname": this.state.supervise.fullname,
-            "agentavatar": "",
+            "agentavatar": this.state.supervise.avatar,
             "ticketcategoryid": categoryId
         })
             : JSON.stringify({
@@ -111,7 +111,7 @@ class SubmitQuestionModal extends React.Component {
                 "agentemployeeno": "",
                 "agentdepartmentname": this.state.supervise.department,
                 "agentfullname": this.state.supervise.fullname,
-                "agentavatar": "",
+                "agentavatar": this.state.supervise.avatar,
                 "ticketcategoryid": categoryId
             });
 
