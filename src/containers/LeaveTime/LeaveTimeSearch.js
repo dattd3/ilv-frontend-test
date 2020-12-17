@@ -37,7 +37,7 @@ class LeaveTimeSearch extends React.Component {
 
   render() {
     return <>
-    <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ NGÀY NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
+    <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ GIỜ NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
     <div className="search-box shadow">
       <div className="row">
         <div className="col">

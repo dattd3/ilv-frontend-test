@@ -130,7 +130,7 @@ function LeaveTimeSummary(props) {
                 <div className="row">
                         <div className="col-md-6 border-right">
                             <LeaveTimeGraph 
-                                    title="SỐ NGÀY BÙ TỒN NĂM TRƯỚC"
+                                    title="GIỜ BÙ TỒN NĂM TRƯỚC"
                                     data={
                                         {
                                             total: (usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0),
@@ -152,7 +152,7 @@ function LeaveTimeSummary(props) {
 
                         <div className="col-md-6">
                             <LeaveTimeGraph 
-                                    title="SỐ NGÀY BÙ NĂM NAY"
+                                    title="GIỜ BÙ TỒN NĂM NAY"
                                     data={
                                         {
                                             total: (usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0),
@@ -175,7 +175,7 @@ function LeaveTimeSummary(props) {
                     </div>
                     <hr/>
                     <div className="d-block text-center">
-                        <b>TỔNG SỐ NGÀY BÙ CÒN ĐƯỢC SỬ DỤNG</b>
+                        <b>TỔNG SỐ GIỜ BÙ CÒN ĐƯỢC SỬ DỤNG</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
                         {displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}
