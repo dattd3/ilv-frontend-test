@@ -180,7 +180,7 @@ class SubmitQuestionModal extends React.Component {
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.CBQL">
                                 <Form.Label>CBQL trực tiếp</Form.Label>
-                                <Form.Control type="text" placeholder={this.state.supervise.userid} readOnly />
+                                <Form.Control type="text" placeholder={this.state.supervise.fullname} readOnly />
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.Title">
                                 <Form.Label>Chức danh</Form.Label>
