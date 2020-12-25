@@ -1,0 +1,168 @@
+.task-tabs {
+    &.nav-tabs {
+        border: none;
+        padding: 0 0 50px 0;
+        margin: 0 auto;
+        .nav-item {
+            border: 1px solid #ccc;
+            border-radius: 0.5em;
+            padding: 0.5em 5em;
+            margin-right: 2em;
+            background-color: #fff;
+            color: #858796;
+        }
+        .active {
+            background-color: #347ef9;
+            color: #fff;
+        }
+    }
+}
+.task-section {
+    .block-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        .title {
+            margin-bottom: 0;
+        }
+        .ic-export {
+            margin-right: 10px;
+        }
+    }
+    .title {
+        color: #2a377c;
+        font-weight: bold;
+    }
+    .task-list {
+        display: block;
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 450px;
+        border-radius: 5px;
+        &::-webkit-scrollbar {
+            width: 10px;
+            background-color: #F5F5F5;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #C1C1C1;
+        }
+        &::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px #F1F1F1;
+            -webkit-box-shadow: inset 0 0 6px #F1F1F1;
+            background-color: #F1F1F1;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #eee;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #858796;
+            border-radius: 5px;
+            thead {
+                color: #347EF9;
+                background-color: #eaecf4;
+                th {
+                    vertical-align: middle;
+                    position: sticky; 
+                    top: 0;
+                    background-color: #eaecf4;
+                    z-index: 10;
+                }
+                th:first-child {
+                    border-top-left-radius: 5px;
+                }
+                th:last-child {
+                    text-align: center;
+                    border-top-right-radius: 5px;
+                }
+
+                .request-type, .content, .tool {
+                    min-width: 180px;
+                }
+            
+                .code, .user-request, .request-date, .approval-date {
+                    min-width: 120px;
+                }
+         
+                .request-date, .user-approved, .approval-date {
+                    min-width: 140px;
+                }
+
+                .status {
+                    min-width: 160px;
+                }
+            }
+            td:last-child {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+            }
+            .status {
+                [class$="-control"] {
+                    border-radius: 30px;
+                }
+                [class$="-singleValue"] {
+                    top: 45%;
+                    color: #aaa;
+                }
+                [class$="-placeholder"] {
+                    top: 44%;
+                }
+                [class$="-indicatorContainer"] {
+                    padding: 4px;
+                }
+            }
+            .request-status {
+                display: inline-block;
+                padding: 2px;
+                width: 160px;
+                text-align: center;
+                border-radius: 20px;
+                border: 1px solid;
+                &.success {
+                    border-color: #05BD29;
+                    color: #05BD29;
+                    background: #FFFFFF;
+                }
+                &.fail {
+                    border-color: #FF0000;
+                    color: #FF0000;
+                    background: #FFFFFF;
+                }
+            }
+            .task-title {
+                font-weight: normal;
+                color: #858796;
+                &:hover {
+                    color: #347EF9;
+                }
+            }
+            .eviction {
+                border: 1px solid red;
+                border-radius: 50px;
+                width: 25px;
+                height: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: red;
+                cursor: pointer;
+            }
+        }
+        img {
+            height: 25px;
+            margin: 0 5px;
+        }
+        img:hover {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+        .disabled {
+            cursor: none;
+            opacity: 0.2;
+        }
+    }
+}

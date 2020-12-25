@@ -137,7 +137,118 @@ export default [
           },
           component: lazy(() => import("./PersonalInfo"))
         },
-        
+        {
+          key: "edit-personal-info",
+          routeProps: {
+            exact: true,
+            path: map.EditPersonalInfo
+          },
+          component: lazy(() => import("./PersonalInfo/edit/PersonalInfoEdit"))
+        },
+        {
+          key: "position-recruiting",
+          routeProps: {
+            exact: true,
+            path: map.PositionRecruiting
+          },
+          component: lazy(() => import("./InternalRecruitment/Jobs"))
+        },
+        {
+          key: "position-applied",
+          routeProps: {
+            exact: true,
+            path: map.PositionApplied
+          },
+          component: lazy(() => import("./InternalRecruitment/history/PositionApplied"))
+        },
+        {
+          key: "position-introduced",
+          routeProps: {
+            exact: true,
+            path: map.PositionIntroduced
+          },
+          component: lazy(() => import("./InternalRecruitment/history/IntroductedPositionList"))
+        },
+        {
+          key: "position-recruiting-detail",
+          routeProps: {
+            exact: true,
+            path: map.PositionRecruitingDetail
+          },
+          component: lazy(() => import("./InternalRecruitment/PositionRecruitingDetail"))
+        },
+        {
+          key: "task",
+          routeProps: {
+            exact: true,
+            path: map.Task
+          },
+          component: lazy(() => import("./Task/"))
+        },
+        {
+          key: "request-task",
+          routeProps: {
+            exact: true,
+            path: map.RequestTask
+          },
+          component: lazy(() => import("./Task/Request"))
+        },
+        {
+          key: "request-task-edit",
+          routeProps: {
+            exact: true,
+            path: map.RequestTaskEdit
+          },
+          component: lazy(() => import("./PersonalInfo/edit/PersonalInfoRequestEdit"))
+        },
+        {
+          key: "request-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.RequestTaskDetail
+          },
+          component: lazy(() => import("./Task/RequestDetail"))
+        },
+        {
+          key: "approval-task",
+          routeProps: {
+            exact: true,
+            path: map.ApprovalTask
+          },
+          component: lazy(() => import("./Task/Approval"))
+        },
+        {
+          key: "approval-task-detail",
+          routeProps: {
+            exact: true,
+            path: map.ApprovalTaskDetail
+          },
+          component: lazy(() => import("./Task/ApprovalDetail"))
+        },
+        {
+          key: "timesheet",
+          routeProps: {
+            exact: true,
+            path: map.Timesheet
+          },
+          component: lazy(() => import("./Timesheet"))
+        },
+        {
+          key: "leaveTime",
+          routeProps: {
+            exact: true,
+            path: map.LeaveTime
+          },
+          component: lazy(() => import("./LeaveTime"))
+        },
+        {
+          key: "payslips",
+          routeProps: {
+            exact: true,
+            path: map.PaySlips
+          },
+          component: lazy(() => import("./PaySlips"))
+        },
         {
           key: "working-process",
           routeProps: {
@@ -195,29 +306,37 @@ export default [
           component: lazy(() => import("./Corporation/Vinpearl")),
         },
         {
-          key: "notify",
+          key: "notifications",
           routeProps: {
             exact: true,
-            path: map.Notify
+            path: map.Notifications
           },
-          component: lazy(() => import("./Notify"))
-        }, 
-        {
-          key: "notify-detail",
-          routeProps: {
-            exact: true,
-            path: map.NotifyDetail
-          },
-          component: lazy(() => import("./Notify/NotifyDetail"))
+          component: lazy(() => import("./Notifications/index"))
         },
         {
-          key: "benefit",
+          key: "notifications-unread",
           routeProps: {
             exact: true,
-            path: map.Benefit
+            path: map.NotificationsUnRead
           },
-          component: lazy(() => import("./Benefit"))
-        },        
+          component: lazy(() => import("./Notifications/ListNotificationsUnRead/ListNotificationsUnRead"))
+        }, 
+        {
+          key: "notification-detail",
+          routeProps: {
+            exact: true,
+            path: map.NotificationDetail
+          },
+          component: lazy(() => import("./Notifications/Detail/Detail"))
+        },
+        // {
+        //   key: "benefit",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.Benefit
+        //   },
+        //   component: lazy(() => import("./Benefit"))
+        // },        
         {
           key: "kpi",
           routeProps: {
@@ -250,6 +369,54 @@ export default [
           },
           component: lazy(() => import("./NotFound")),
         },
+        {
+          key: "registration",
+          routeProps: {
+            exact: true,
+            path: map.Registration
+          },
+          component: lazy(() => import("./Registration"))
+        },
+        {
+          key: "registration-detail-request",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationDetailRequest
+          },
+          component: lazy(() => import("./Registration/RegistrationDetailComponent"))
+        },
+        {
+          key: "registration-detail-approval",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationDetailApproval
+          },
+          component: lazy(() => import("./Registration/RegistrationDetailComponent"))
+        },
+        {
+          key: "edit-registration",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationEdit
+          },
+          component: lazy(() => import("./Registration/RegistrationEditComponent"))
+        },
+        {
+          key: "question-and-answer",
+          routeProps: {
+            exact: true,
+            path: map.QuestionAndAnswer
+          },
+          component: lazy(() => import("./QuestionAndAnswer"))
+        },
+        {
+          key: "question-and-answer-details",
+          routeProps: {
+            exact: true,
+            path: map.QuestionAndAnswerDetails
+          },
+          component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
+        }
       ],
     },
   },

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApi, useFetcher } from "../../../modules";
+import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
@@ -24,7 +24,10 @@ function OnGoingClass(props) {
     document.title = `Learning`;
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
-    const sabaEnrollments = usePreload([`emplo000000000008166`, 100, pageIndex, pageSize]);
+    const guard = useGuardStore();
+    const user = guard.getCurentUser()
+   
+    const sabaEnrollments = usePreload([user.sabaId, 100, pageIndex, pageSize]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
@@ -38,14 +41,14 @@ function OnGoingClass(props) {
     }
 
     try {
-        if (sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
+        if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
             SetIsOnGoing(true);
         }
     } catch { }
 
     return (
         <>
-            <div className="card mb-4">
+            <div className="card mb-4 shadow">
                 <div className="card-header py-3">
                     <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("ClassInprogress")}</h6>
                 </div>

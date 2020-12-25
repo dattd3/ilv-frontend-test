@@ -44,6 +44,8 @@ class StaffInfo extends React.Component {
                             </div>
                         </td>
                     </tr>
+                   
+                   {/*
                     <tr>                
                         <td><div className="content-title"> Cán bộ quản lý </div></td>  
                         <td>  
@@ -51,7 +53,9 @@ class StaffInfo extends React.Component {
                               <span className="content-value"> {this.props.ManagerFullName} </span>
                             </div>
                         </td>
-                    </tr>               
+                    </tr>  
+                  */}
+
                   </tbody>  
                </table>
            </div>      

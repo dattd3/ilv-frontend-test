@@ -51,12 +51,18 @@ const Storage = {
     localStorage.setItem('jobTitle', currentAuthUser.jobTitle);
     localStorage.setItem('jobId', currentAuthUser.jobId);
     localStorage.setItem('benefitLevel', currentAuthUser.benefitLevel);
+    localStorage.setItem('employeeLevel', currentAuthUser.employeeLevel);
     localStorage.setItem('company', currentAuthUser.company);
     localStorage.setItem('sabaId', currentAuthUser.sabaId);
     localStorage.setItem('employeeNo', currentAuthUser.employeeNo);
     localStorage.setItem('department', currentAuthUser.department);
     localStorage.setItem('avatar', currentAuthUser.avatar);
     localStorage.setItem('benefitTitle', currentAuthUser.benefitTitle);
+    localStorage.setItem('organizationLv2', currentAuthUser.organizationLv2);
+    localStorage.setItem('organizationLv3', currentAuthUser.organizationLv3);
+    localStorage.setItem('organizationLv4', currentAuthUser.organizationLv4);
+    localStorage.setItem('organizationLv5', currentAuthUser.organizationLv5);
+    localStorage.setItem('region', currentAuthUser.region);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -72,12 +78,18 @@ const Storage = {
       jobTitle: localStorage.getItem('jobTitle'),
       jobId: localStorage.getItem('jobId'),
       benefitLevel: localStorage.getItem('benefitLevel'),
+      employeeLevel: localStorage.getItem('employeeLevel'),
       company: localStorage.getItem('company'),
       sabaId: localStorage.getItem('sabaId'),
       department: localStorage.getItem('department'),
       avatar: localStorage.getItem('avatar'),
       employeeNo: localStorage.getItem('employeeNo'),
-      benefitTitle: localStorage.getItem('benefitTitle')
+      benefitTitle: localStorage.getItem('benefitTitle'),
+      organizationLv2: localStorage.getItem('organizationLv2'),
+      organizationLv3: localStorage.getItem('organizationLv3'),
+      organizationLv4: localStorage.getItem('organizationLv4'),
+      organizationLv5: localStorage.getItem('organizationLv5'),
+      region: localStorage.getItem('region')
     }
   },
   reset() {
@@ -90,6 +102,7 @@ const Storage = {
     localStorage.removeItem('jobTitle');
     localStorage.removeItem('jobId');
     localStorage.removeItem('benefitLevel');
+    localStorage.removeItem('employeeLevel');
     localStorage.removeItem('company');
     localStorage.removeItem('sabaId');
     localStorage.removeItem('employeeNo');
@@ -97,6 +110,11 @@ const Storage = {
     localStorage.removeItem('jobType');
     localStorage.removeItem('avatar');
     localStorage.removeItem('benefitTitle');
+    localStorage.removeItem('organizationLv2');
+    localStorage.removeItem('organizationLv3');
+    localStorage.removeItem('organizationLv4');
+    localStorage.removeItem('organizationLv5');
+    localStorage.removeItem('region');
   }
 }
 
@@ -110,11 +128,17 @@ const deserialize = (currentAuthUser) => ({
   jobTitle: currentAuthUser.jobTitle,
   jobId:currentAuthUser.jobId,
   benefitLevel: currentAuthUser.benefitLevel,
+  employeeLevel: currentAuthUser.employeeLevel,
   company: currentAuthUser.company,
   sabaId: currentAuthUser.sabaId,
   department: currentAuthUser.department,
   jobType: currentAuthUser.jobType,
   avatar: currentAuthUser.avatar,
   employeeNo: currentAuthUser.employeeNo,
-  benefitTitle: currentAuthUser.benefitTitle
+  benefitTitle: currentAuthUser.benefitTitle,
+  organizationLv2: currentAuthUser.organizationLv2,
+  organizationLv3: currentAuthUser.organizationLv3,
+  organizationLv4: currentAuthUser.organizationLv4,
+  organizationLv5: currentAuthUser.organizationLv5,
+  region: currentAuthUser.region
 })

@@ -1,3 +1,14 @@
+@import './assets/scss/job-description.scss';
+@import './assets/scss/timesheet.scss';
+@import './assets//scss/leaveTime.scss';
+@import './assets/scss/internal-recruitment.scss';
+@import './assets/scss/payslip.scss';
+@import './assets/scss/notifications.scss';
+@import './assets/scss/profile.scss';
+@import './assets/scss/task.scss';
+@import './assets/scss/registration.scss';
+@import './assets/scss/question-answer.scss';
+
 @font-face {
   font-family: "icomoon";
   src: url("./assets/fonts/icomoon.eot?kpoxqk");
@@ -139,7 +150,13 @@
   padding: 0 !important;
   width: 0 !important;
 }
-
+.icon-arrow_right {
+  padding: 7px 0;
+  margin-left: auto;
+  &:before {
+    content: "\203A";
+  }
+}
 .icon-arrow_collapse {
   padding: 7px 0;
   margin-left: auto;
@@ -230,6 +247,87 @@
     content: "\e914";
   }
 }
+
+.icon-recruitment {
+  &:before {
+    content: "\e915";
+  }
+}
+
+.icon-qa {
+  &:before {
+    content: "\e91a";
+  }
+}
+
+.icon-arrow-left {
+  &:before {
+    content: "\e918";
+  }
+}
+
+.icon-arrow-right {
+  &:before {
+    content: "\e919";
+  }
+}
+
+.icon-qa-selected {
+  &:before {
+    content: "\e917";
+  }
+}
+
+.icon-search {
+  &:before {
+    content: "\e986";
+  }
+}
+
+.icon-Icon-Answer{
+  font-size: larger;
+}
+
+.icon-Icon-Answer .path1:before {
+  content: "\e91d";
+  color: #ff7f00;
+}
+.icon-Icon-Answer .path2:before {
+  content: "\e91e";
+  color: #347ef9;
+  margin-left: -1em;
+}
+.icon-Icon-Answer .path3:before {
+  content: "\e91f";
+  color: #fff;
+  margin-left: -1em;
+}
+
+.icon-Icon-Question{
+  font-size: larger;
+}
+
+.icon-Icon-Question .path1:before {
+  content: "\e920";
+  color: #ff7f00;
+}
+.icon-Icon-Question .path2:before {
+  content: "\e921";
+  color: #fff;
+  margin-left: -1em;
+}
+.icon-Icon-Question .path3:before {
+  content: "\e922";
+  color: #fff;
+  margin-left: -1em;
+}
+
+.icon-task {
+  &:before {
+    content: "\e916";
+  }
+}
+
 .upload-form {
   .file-upload {
     visibility: hidden;
@@ -455,7 +553,8 @@
 }
 .metismenu-link {
   padding-left: none !important;
-  line-height: 3.5 !important;
+  height: 2.8em;
+  line-height: 1.4 !important;
   font-size: 14px !important;
   display: flex !important;
   align-items: center !important;
@@ -492,7 +591,8 @@
           margin-left: 2em;
         }
         .metismenu-link {
-          padding-left: 3em !important;
+          padding-left: 2em !important;
+          padding-right: 5px;
         }
         a {
           &:hover {
@@ -852,13 +952,11 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  height: 3rem;
+  padding: 1rem;
+  .user-infor-header {
+    padding: 0;
+  }
 }
-
-.user-info-margin {
-  margin-top: -8px !important;
-}
-
 .model-body-notify {
   border-bottom-left-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
@@ -1169,14 +1267,16 @@ span.badge-notification[data-badge]::after {
     .nav-item {
       border: 1px solid #ccc;
       border-radius: 0.5em;
-      padding: 0.8em 3em;
       margin-right: 2em;
       background-color: #fff;
       color: #293281;
     }
     .active {
-      background-color: #ff7f00;
+      background-color: #347ef9;
       color: #fff;
+    }
+    a {
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
     }
   }
 }
@@ -1187,6 +1287,7 @@ span.badge-notification[data-badge]::after {
       font-family: regular 23px/27px Helvetica Neue;
       letter-spacing: 0px;
       color: #283280;
+      font-weight: bold;
     }
 
     .content-border {
@@ -1266,6 +1367,7 @@ span.badge-notification[data-badge]::after {
       font-family: regular 23px/27px Helvetica Neue;
       letter-spacing: 0px;
       color: #283280;
+      font-weight: bold;
     }
 
   .item-row {
@@ -1338,8 +1440,12 @@ span.badge-notification[data-badge]::after {
 }
 
 .level-job-title {
-    background: #FFFFFF;
-    border: 1px solid #FF0000;
-    border-radius: 20px;
-    padding: 10px;       
-  }
+  background: #FFFFFF;
+  border: 1px solid #FF0000;
+  border-radius: 20px;
+  padding: 10px;       
+}
+.multiline {
+  white-space: pre-wrap;
+  line-height: 2;
+}

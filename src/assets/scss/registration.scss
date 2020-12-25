@@ -1,0 +1,243 @@
+.registration-popover {
+    max-width: 300px;
+    
+    p {
+        padding: 5px;
+        margin: 0;
+    }
+}
+
+.registration-section {
+    .block-time-item-edit {
+        .box-time, input {
+            font-size: 15px;
+        }
+    }
+    .block-note-item-edit, textarea {
+        font-size: 15px;
+    }
+    .registration-detail {
+        .btn-eviction-task {
+            color: #FFFFFF;
+            background: red;
+            border-color: red;
+        }
+    }
+    .in-out-time-update {
+        .block-time-item-edit {
+            .react-datepicker__time-list {
+                .react-datepicker__time-list-item {
+                    line-height: 20px;
+                }
+            }
+        }
+    }
+    .block-filter-shift {
+        border: 1px solid #d1d3e2;
+        margin: 15px 0;
+        font-size: 15px;
+        padding-bottom: 15px;
+        input, button {
+            font-size: 14px;
+        }
+        legend {
+            font-size: 15px;
+            margin-bottom: 0;
+            display: inline;
+            padding: 0 10px;
+            width: auto;
+        }
+        .time-filter {
+            display: block;
+            position: relative;
+            > .react-datepicker-wrapper {
+                display: block;
+            }
+            .input-img {
+                position: absolute;
+                right: 10px;
+                top: 6px;
+            }
+        }
+
+    }
+    .business-type {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 10px 0 5px 0;
+        span {
+            display: inline-block;
+            width: 54%;
+            font-size: 12px;
+            padding: 2px 0;
+            &.smaller {
+                width: 46%;
+            }
+        }
+    }
+    .shift-table {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 350px;
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #4e73df;
+        }
+    }
+    .shift-work {
+        .total-time {
+            margin-top: 40px;
+        }
+    }
+    
+    h5 {
+        color: #2a377c;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #fff;
+        margin: 15px 0;
+
+        p {
+            margin: 10px 0;
+        }
+
+        .box-time {
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            padding: 20px 10px;
+            margin: 10px 0;
+
+            .row {
+                line-height: 40px;
+            }
+        }
+
+        .close {
+            opacity: 1;
+        }
+    }
+
+    .input-container {
+        position:relative;
+
+        label, .react-datepicker-wrapper {
+            width: 100%;
+        }
+
+        .input {
+            margin:0;
+            padding-right: 10px;
+            width: 100%;
+        }
+        .input-img {
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .input-clock {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        label {
+            margin-bottom: 0;
+        }
+        i {
+            font-size: 20px;
+            font-weight: 100;
+        }
+    }
+
+    .nav {
+        a {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+    }
+
+    .file-name {
+        padding: 10px;
+        border: 1px solid #DDDDDD;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        color: #858796;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        & > a {
+            color: #858796;
+        }
+        .remove {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            opacity: 0.6;
+        }
+    }
+
+    .list-inline-item {
+        margin: 15px 15px 15px 0;
+    }
+
+    .detail {
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        background-color: #eee;
+        padding: 7px;
+        border-radius: 5px;
+        width: 100%;
+        min-height: 40px;
+    }
+
+    .leave-of-absence {
+        .summary {
+            .item {
+                border: 1px solid #ddd;
+                background-color: #fff;
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+                box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            }
+        }
+    }
+
+    .in-out-time-update, .shift-work {
+        .edit {
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+    }
+
+    .approver {
+        .avatar {
+            height: 50px;
+            width: 50px;
+            border: 0;
+            border-radius: 50%;
+        }
+        .comment {
+            font-size: small;
+            font-style: italic;
+        }
+
+        .title, .comment {
+            margin: 0 5px;
+            padding: 0;
+        }
+    }
+}

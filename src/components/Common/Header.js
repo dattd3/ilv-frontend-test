@@ -4,29 +4,119 @@ import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
+import moment from 'moment';
 
 const usePreload = (params) => {
     const api = useApi();
     const [data = [], err] = useFetcher({
-        api: api.fetchNotifyList,
+        api: api.fetchNotificationsUnReadLimitation,
         autoRun: true,
         params: params
     });
     return data;
 };
 
-function Header(props) {
+const getOrganizationLevelByRawLevel = level => {
+    return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
+}
 
+function Header(props) {
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
     const guard = useGuardStore();
 
+    let totalNotificationUnRead = 0;
+    const lv3 = localStorage.getItem('organizationLv3');
+    const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
+    const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
+
+    const getTimePost = (createdDateInput) => {
+        let timePost = moment(createdDateInput).format("DD/MM/YYYY");
+        const createdDate = moment(createdDateInput);
+        const now = moment();
+        const duration = moment.duration(now.diff(createdDate));
+        const minutes = duration.asMinutes();
+        const hours = duration.asHours();
+        if (minutes < 60) {
+            timePost = Math.floor(minutes) + " phút trước";
+        } else if (hours < 24) {
+            timePost = Math.floor(hours) + " giờ trước";
+        }
+        return timePost;
+    }
+
+    const clickNotification = (id) => {
+        var axios = require('axios');
+        var data = '';
+        var config = {
+            method: 'post',
+            url:  `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/`+id,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        axios(config)
+            .then(function (response) {
+                
+            })
+            .catch(function (error) {
+
+            });
+    }
+
+    let dataNotificationsUnRead = "";
+    const result = usePreload([lv3, lv4, lv5]);
+    if (result && result.data && result.result) {
+        const res = result.result;
+        const data = result.data;
+        if (res.code != 1) {
+            if (data.notifications && data.notifications.length > 0) {
+                if (data.total > 99) {
+                    totalNotificationUnRead = "+99";
+                } else if (data.total == 0) {
+                    totalNotificationUnRead = "";
+                } else {
+                    totalNotificationUnRead = data.total;
+                }
+                dataNotificationsUnRead = <>
+                    {
+                        data.notifications.map((item, i) => {
+                            const timePost = getTimePost(item.createdDate);
+                            let notificationLink = (type) => {
+                                switch (type) {
+                                    case 0:
+                                        return `/notifications/${item.id}`
+                                    case 1:
+                                        return `/registration/${item.userProfileHistoryId}/approval`
+                                    case 5:
+                                        return item.url
+                                    default:
+                                        return `${item.url}`
+                                }
+                            }
+                            return <div key={i} className="item">
+                                <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
+                                <p className="description">{item.description != null ? item.description : ""}</p>
+                                <div className="time-file">
+                                    <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span> : ""}
+                                </div>
+                            </div>
+                        })
+                    }
+                </>;
+            }
+        }
+    }
+
     const userLogOut = () => {
         try {
             guard.setLogOut();
             Auth.signOut({ global: true });
-        } catch  {
+        } catch {
             guard.setLogOut();
             window.location.reload();
         }
@@ -46,6 +136,8 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
+    
+
     return (
         isApp ? null :
             <div>
@@ -59,9 +151,26 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
+                    <Dropdown id="notifications-block">
+                        <Dropdown.Toggle>
+                            <span className="notifications-block">
+                                <i className="far fa-bell ic-customize"></i>
+                                {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                            </span>
+                        </Dropdown.Toggle>
+                        {dataNotificationsUnRead != "" ?
+                            <Dropdown.Menu className="list-notification-popup">
+                                <div className="title-block">thông báo nội bộ</div>
+                                <div className="all-items">
+                                    {dataNotificationsUnRead}
+                                </div>
+                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
+                            </Dropdown.Menu>
+                            : null
+                        }
+                    </Dropdown>
                     <Dropdown>
-                        <div className='mr-2 mt-3 small text-right username'>
-
+                        <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
                                 <span className="text-gray-600">{fullName}</span>
                                 {
@@ -81,4 +190,4 @@ function Header(props) {
     );
 }
 
-export default Header;
+export default Header

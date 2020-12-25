@@ -1,0 +1,443 @@
+.position-recruiting-section {
+    margin-bottom: 30px;
+
+    .paging {
+        margin-top: 20px;
+    }
+    .card-body {
+        padding: 0;
+
+        thead th {
+            border: none;
+            background-color: #F4F5F9;
+            &:first-child {
+                border-top-left-radius: 0.35rem;
+            }
+            &:last-child {
+                border-top-right-radius: 0.35rem;
+            }
+        }
+        tbody {
+            td {
+                border: none;
+                padding: 1rem;
+                p {
+                    margin-bottom: 0;
+                    color: #000000;
+                }
+                .position {
+                    color: #FF0000 !important;
+                }
+            }
+            .watched {
+                td {
+                    p {
+                        color: #B3B3B3 !important;
+                    }
+                    a {
+                        color: #B3B3B3 !important;
+                    }
+                }
+            }
+        } 
+        tr:nth-child(odd) {
+            background-color: #FFFFFF;
+        }
+        tr:nth-child(even) {
+            background-color: #F4F5F9;
+        }
+    }
+    .recruiting-search-box {
+        display: block;
+        background-color: #FFFFFF;
+        width: 100%;
+        padding: 30px 10px;
+        margin: 10px 0;
+        border-radius: 10px;
+
+        .form-control-lg {
+            height: calc(1.8em + 1rem + 2px);
+            padding: 0.5rem 1rem;
+            font-size: 17px;
+            line-height: 0.5;
+            border-radius: 0.3rem;
+        }
+
+        .title {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .content {
+            display: block;
+        }
+        .input-container {
+            position:relative;
+            .input {
+                margin:0;
+                padding-right: 50px;
+                width: 300px;
+            }
+            .input-img {
+                position: absolute;
+                bottom: 22px;
+                left: 270px;
+                width: 24px;
+                height: 24px;
+            }
+            i {
+                font-size: 24px;
+                font-weight: 100;
+            }
+        }
+        .btnSearch {
+            width: 100%;
+        }
+    }
+    .searchTitle {
+        color: #2a377c;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .result-label {
+        color: #2a377c;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .search-result-title-row {
+        color: #347EF9;
+    }
+    .summary {
+        margin-top: 60px;
+    }
+    .detail {
+        margin-top: 30px;
+        .btn-link {
+            text-decoration: none;
+            color: #858796;
+            font-weight: 550;
+        }
+        .content {
+            margin-left: 15px;
+            .box {
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                margin-left: 15px;
+                padding: 20px 10px;
+            }
+        }
+        hr {
+            margin-left: 15px;
+        }
+    }
+}
+
+
+.recruiting-search-result-block, .position-applied-block {
+    table {
+        overflow: auto;
+    }
+
+    th, td {
+        padding-left: 15px !important;
+        padding-right: 10px !important;
+    }
+    .placeOfWork {
+        min-width: 150px;
+    }
+
+    .department {
+        min-width: 180px;
+    }
+
+    .profession {
+        min-width: 180px;
+    }
+
+    .rank {
+        min-width: 130px;
+    }
+
+    .phone {
+        min-width: 130px;
+    }
+
+    .result {
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .applicantType {
+        min-width: 130px;
+    }
+
+    .note {
+        text-align: center;
+        min-width: 50px;
+    }
+}
+
+
+.position-applied-block {
+    .result-label {
+        color: #2a377c;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .card-body {
+        padding: 0;
+        thead th {
+            border: none;
+            background-color: #F4F5F9;
+            &:first-child {
+                border-top-left-radius: 0.35rem;
+            }
+            &:last-child {
+                border-top-right-radius: 0.35rem;
+            }
+        }
+        tbody {
+            td {
+                border: none;
+                padding: 1rem;
+                p {
+                    margin-bottom: 0;
+                    color: #000000;
+                }
+                .position {
+                    color: #FF0000 !important;
+                }
+                .recruiting-status {
+                    height: 25px;
+                    line-height: 25px;
+                    border: 1px solid;
+                    border-radius: 13px;
+                    text-align: center;
+                    font-size: 12px;
+                    &.waiting-approve {
+                        color: #707070;
+                        border-color: #707070;
+                    }
+                    &.mapped-conditions {
+                        color: #347EF9;
+                        border-color: #347EF9;
+                    }
+                    &.not-map-conditions {
+                        color: #FF0000;
+                        border-color: #FF0000;
+                    }
+                    &.not-recruited {
+                        color: #FF7F00;
+                        border-color: #FF7F00;
+                    }
+                    &.recruited {
+                        color: #05BD29;
+                        border-color: #05BD29;
+                    }
+                }
+            }
+        } 
+        tr:nth-child(odd) {
+            background-color: #FFFFFF;
+        }
+        tr:nth-child(even) {
+            background-color: #F4F5F9;
+        }
+    }
+    .result-label {
+        color: #2a377c;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .position-applied-title-row {
+        color: #347EF9;
+    }
+    .summary {
+        margin-top: 60px;
+    }
+    .detail {
+        margin-top: 30px;
+        
+        .btn-link {
+            text-decoration: none;
+            color: #858796;
+            font-weight: 550;
+        }
+        .content {
+            margin-left: 15px;
+            .box {
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                margin-left: 15px;
+                padding: 20px 10px;
+            }
+        }
+        hr {
+            margin-left: 15px;
+        }
+    }
+}
+
+.position-recruiting-detail-block {
+    margin-top: 1em;
+    margin-bottom: 30px;
+
+    .card {
+        margin-top: 10px;
+    }
+
+    .header-block {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        .result-label {
+            margin-bottom: 0;
+        }
+        
+    }
+
+    .btn-apply-block {
+        display: inline-block;
+        background: #347EF9;
+        border-radius: 25px;
+        padding: 4px;
+        cursor: pointer;
+        .btn-apply {
+            display: inline-block;
+            width: 170px;
+            color: #FFFFFF;
+            border-radius: 15px;
+            padding: 3px 4px 4px 4px;
+            font-size: 15px;
+            text-align: center;
+            border: 1.2px solid #FFFFFF;
+            i {
+                // font-size: 26px;
+            }
+        }
+    }
+    .result-label {
+        color: #2a377c;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 1.25rem;
+        display: inline;
+    }
+    i.metismenu-state-icon {
+        line-height: unset;
+        float: unset;
+
+    }
+    .content {
+        padding: 20px;
+        color: #000000;
+        .description-position {
+            margin-top: 15px;
+        }
+        .title {
+            color: #2a377c;
+            font-weight: bold;
+            margin-bottom: 10px;
+            &.position {
+                margin-bottom: 15px;
+            }
+        }
+        .cate {
+            padding: 10px 0;
+            p {
+                margin: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .navigation-top-bar-custom {
+        height: auto !important;
+    }
+    .position-recruiting-section {
+        .recruiting-search-box {
+            padding: 15px 10px;
+            .row {
+                flex-direction: column;
+                .col {
+                    margin-bottom: 20px;
+                    &.block-button {
+                        margin-bottom: 0;
+                        &>.title {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+        .summary {
+            margin-top: 40px;
+        }
+        .card-body tbody td {
+            padding: 0.5rem;
+        }
+    }
+    .recruiting-search-result-block {
+        table, thead, tbody, th, td, tr { 
+            display: block; 
+        }
+        thead tr { 
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        tr {
+            // border: 1px solid #ccc;
+        }
+        td {
+            border: none;
+            border-bottom: 1px solid rgb(248, 246, 246);
+            position: relative;
+            padding-left: 50%;
+            .position {
+                display: block;
+                width: 100%;
+            }
+        }
+        td:before {
+            display: block;
+            width: 100%;
+            white-space: nowrap;
+            content: attr(data-title);
+        }
+    }
+
+    .position-applied-block {
+        table, thead, tbody, th, td, tr {
+            display: block; 
+        }
+        thead tr { 
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        tr {
+            // border: 1px solid #ccc;
+        }
+        .card-body tbody {
+            td {
+                border: none;
+                border-bottom: 1px solid rgb(248, 246, 246);
+                position: relative;
+                padding-left: 50%;
+                padding: 5px 10px;
+                .position {
+                    display: block;
+                    width: 100%;
+                }
+            }
+        }
+        td:before {
+            display: block;
+            width: 100%;
+            white-space: nowrap;
+            content: attr(data-title);
+        }
+    }
+}

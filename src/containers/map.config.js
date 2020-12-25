@@ -12,11 +12,15 @@ export default {
   Instruction: "/training/instruction",
   TraniningKPI: "/training/kpi",
   PersonalInfo: "/personal-info",
+  EditPersonalInfo: "/personal-info/edit",
+  Timesheet: "/timesheet",
+  LeaveTime: "/leaveTime",
   WorkingProcess: "/working-process",
-  Benefit: "/benefit",
+  // Benefit: "/benefit",
 
-  Notify: "/notify",
-  NotifyDetail: "/notify/:id",
+  Notifications: "/notifications",
+  NotificationsUnRead: "/notifications-unread",
+  NotificationDetail: "/notifications/:id",
 
   //Checklist
   CheckListCreate: "/checklist/create",
@@ -32,9 +36,33 @@ export default {
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
-  BenefitUpload: "/benefit/upload",
+  // BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
   Job: "/job",  
   Kpi: "/kpi",
-  KpiDetail: "/kpi/:id"  
+  KpiDetail: "/kpi/:id",
+  PositionRecruiting: "/position-recruiting",
+  PositionApplied: "/position-applied",
+  PositionIntroduced: "/position-introduced",
+  PositionRecruitingDetail: "/position-recruiting-detail/:id",
+  PaySlips: "/payslips",
+
+  //Task
+  Task: "/tasks",
+  RequestTask: "/tasks/request",
+  ApprovalTask: "/tasks/approval",
+  RequestTaskDetail: "/tasks-request/:id",
+  ApprovalTaskDetail: "/tasks-approval/:id",
+
+  //Registration
+  Registration: "/registration",
+  RegistrationEdit: "/registration/:id/edit",
+  RequestTaskEdit: "/tasks-request/:id/edit",
+  ApprovalTaskDetail: "/tasks-approval/:id",
+  RegistrationDetailRequest: "/registration/:id/request",
+  RegistrationDetailApproval: "/registration/:id/approval",
+
+  //Q&A
+  QuestionAndAnswer: "/question-and-answer",
+  QuestionAndAnswerDetails:"/question-and-answer-details/:id"
 };

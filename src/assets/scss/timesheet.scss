@@ -1,0 +1,82 @@
+.timesheet-section {
+    margin-bottom: 30px;
+    .timesheet-box {
+        display: block;
+        background-color: #fff;
+        width: 100%;
+        padding: 30px 10px;
+        margin: 10px 0px;
+        border-radius: 10px;
+        .title {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .content {
+            display: block;
+        }
+        .input-container {
+            position:relative;
+            label {
+                position: relative;
+            }
+            .input {
+                margin:0;
+                padding-right: 20px;
+                width: 300px;
+                font-size: 1rem;
+            }
+            .input-img {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            i {
+                font-size: 20px;
+                font-weight: 100;
+            }
+        }
+        .btnSearch {
+            width: 100%;
+        }
+    }
+    .searchTitle {
+        color: #2a377c;
+        font-weight: bold;
+    }
+    .summary {
+        margin-top: 30px;
+    }
+    .detail {
+        margin-top: 30px;
+        .btn-link {
+            text-decoration: none;
+            color: #858796;
+            font-weight: 550;
+            padding: 10px 0;
+        }
+        .content {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .content {
+                .item {
+                    p {
+                        margin-bottom: 0.5rem;
+                        &.data {
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+        }
+        .time-item {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .time-item > * {
+            flex: 1 1 160px;
+            margin: 10px;
+        }
+    }
+}

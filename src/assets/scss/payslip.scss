@@ -1,0 +1,263 @@
+.confirm-password-modal {
+    .modal-content {
+      .modal-header {
+        background: #FFFFFF;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        .modal-title {
+          font-size: 16px;
+          text-transform: uppercase;
+          color: #FFFFFF;
+        }
+        .close {
+          top: 25px;
+          right: 20px;
+          color: #707070;
+          width: 25px;
+          height: 25px;
+          font-size: 26px;
+          outline: none;
+          span {
+            top: 10px;
+            left: 0;
+          }
+        }
+      }
+      .modal-body {
+        padding: 1rem 2rem 1rem 2rem;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        .label {
+            font-weight: bold;
+        }
+        form {
+            .btn-submit {
+                width: 100%;
+            }
+        }
+      }
+    }
+}
+
+.payslips-section {
+    .clear {
+        clear: both;
+    }
+    .color-black {
+        color: #000000;
+    }
+    .bold {
+        font-weight: bold;
+    }
+
+    .search-block {
+        .title-search-block {
+            text-transform: uppercase;
+            color: #283280;
+            font-weight: bold;
+        }
+        .search-form {
+            option {
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+    
+            .btn-submit {
+                width: 100%;
+                background: #F9C20A;
+                border: 1px solid #F9C20A;
+                color: #FFFFFF;
+                outline: none;
+            }
+        }
+    }
+    
+    .main-result-section {
+        .block-title {
+            margin-bottom: 20px;
+            .title {
+                text-align: center;
+                font-size: 16px;
+                text-transform: uppercase;
+                &.special {
+                    color: #283280;
+                }
+            }
+        }
+        .column-item {
+            padding: 0;
+            list-style: none;
+            & > li {
+                padding: 5px 0;
+            }
+            &.first-column {
+                .label {
+                    display: inline-block;
+                    width: 200px;
+                }
+            }
+            &.second-column {
+                .label {
+                    display: inline-block;
+                    width: 200px;
+                }
+            }
+        }
+    }
+
+    .other-result-section {
+        overflow: hidden;
+        .workday-information-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            background-color: #fff;
+   
+            tbody {
+                border-spacing: 0; 
+                border: 1px solid #cccaca;
+                border-right: 2px solid #cccaca;
+          
+                .second-title {
+                    td {
+                        padding: 10px 0;
+                    }
+                }
+                td {
+                    border: 1px solid #cccaca;
+                }
+                .same-width {
+                    width: 7.14%;
+                    padding: 10px 5px;
+                }
+            }
+            thead {
+                .top-title {
+                    padding: 10px 0;
+                    color: #FFFFFF;
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    background: #347EF9;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
+            }
+            th, td {
+                vertical-align: middle;
+                text-align: center;
+            }
+        }
+
+        .leave-days-information-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            background-color: #fff;
+
+            .title {
+                font-weight: bold;
+            }
+            tbody {
+                border-spacing: 0; 
+                border: 1px solid #cccaca;
+                border-right: 2px solid #cccaca;
+                .title-second {
+                    font-size: 11px;
+                }
+                td {
+                    border: 1px solid #cccaca;
+                }
+                .same-width {
+                    width: 25%;
+                    padding: 10px;
+                }
+            }
+            thead {
+                .top-title {
+                    padding: 10px 0;
+                    color: #FFFFFF;
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    background: #347EF9;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                    text-align: center;
+                }
+            }
+            th, td {
+                vertical-align: middle;
+                text-align: left;
+            }
+        }
+
+        .income-information-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            .title {
+                font-weight: bold;
+            }
+            tr {
+                &:first-child {
+                    .special {
+                        text-align: left;
+                    }
+                }
+                &.root {
+                    background: #97C0FF;
+                }
+                &.first {
+                    background: #D9E6FA;
+                }
+                &.second {
+                    background: #F0F6FF;
+                }
+            }
+            tbody {
+                border-spacing: 0; 
+                border: 1px solid #cccaca;
+                border-right: 2px solid #cccaca;
+                .title-second {
+                    font-size: 11px;
+                }
+                td {
+                    padding: 10px;
+                    border: 1px solid #cccaca;
+                    &.special {
+                        width: 58%;
+                    }
+                }
+                .same-width {
+                    width: 14%;
+                    padding: 10px;
+                    text-align: center;
+                }
+                .child-first {
+                    margin-left: 15px;
+                }
+                .child-third {
+                    margin-left: 30px;
+                }
+                .child-fourth {
+                    margin-left: 45px;
+                }
+            }
+            thead {
+                .top-title {
+                    padding: 10px 0;
+                    color: #FFFFFF;
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    background: #347EF9;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                    text-align: center;
+                }
+            }
+            th, td {
+                vertical-align: middle;
+                text-align: left;
+            }
+        }
+    }
+}

@@ -4,15 +4,7 @@ class ReportStaffComponent extends React.Component {
 
   constructor(props) {    
     super(props);    
-
-    var ManagerAtFormComplete = props.kpiInfo.ManagerAtFormComplete;
-    if(ManagerAtFormComplete == null || ManagerAtFormComplete.length == 0) {
-       ManagerAtFormComplete = props.kpiInfo.ManagerFullName;               
-    } 
-       
-    this.state = {
-      ManagerAtFormComplete: ManagerAtFormComplete    
-    };      
+      
   }
 
   render() {  
@@ -70,19 +62,23 @@ class ReportStaffComponent extends React.Component {
                     <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}> 
                          <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
                          <div className="card-body" style={{'padding':'0px'}}>
-                            <div className="text-center" style={{'color':'#FF0000'}}>Kết qủa đánh giá tổng thể</div>                            
+                            <br/>
+                            <div className="text-center" style={{'color':'#FF0000'}}>Kết quả đánh giá tổng thể</div>   
+                            <br/>                         
                             <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{this.props.kpiInfo.Score}</div>                            
                          </div>
-                        <div className="card-body" style={{'padding':'0px','marginTop':'-12px'}}>
+                        
+                        {/*<div className="card-body" style={{'padding':'0px','marginTop':'-12px'}}>
                             <hr className="hr-remove-margin"></hr>
                             <div className="text-center">CBQL đánh giá:</div>
-                            <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.state.ManagerAtFormComplete}</div>
+                            <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.ManagerAtFormComplete}</div>
                             <hr className="hr-remove-margin"></hr>
                         </div>
                         <div className="card-body" style={{'padding':'0px','marginTop':'-12px'}}>
                             <div className="text-center">CBLĐ phê duyệt:</div>
                             <div className="text-center text-primary text-weight-bold" style={{'color':'#FF0000'}}>{this.props.kpiInfo.MatrixFullName}</div>
-                        </div>                    
+                        </div> */} 
+
                     </div>                    
                </div>
           </div> 

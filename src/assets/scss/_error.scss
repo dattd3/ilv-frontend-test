@@ -21,13 +21,13 @@
   content: attr(data-text);
   position: absolute;
   left: 2px;
-  text-shadow: -1px 0 $red;
+  // text-shadow: -1px 0 $red;
   top: 0;
   color: $gray-800;
   background: $gray-100;
   overflow: hidden;
-  clip: rect(0,900px,0,0);
-  animation: noise-anim 2s infinite linear alternate-reverse;
+  // clip: rect(0,900px,0,0);
+  // animation: noise-anim 2s infinite linear alternate-reverse;
 }
 
 @keyframes noise-anim-2 {
@@ -42,11 +42,11 @@
   content: attr(data-text);
   position: absolute;
   left: -2px;
-  text-shadow: 1px 0 $blue;
+  // text-shadow: 1px 0 $blue;
   top: 0;
   color: $gray-800;
   background: $gray-100;
   overflow: hidden;
-  clip: rect(0,900px,0,0);
-  animation: noise-anim-2 3s infinite linear alternate-reverse;
+  // clip: rect(0,900px,0,0);
+  // animation: noise-anim-2 3s infinite linear alternate-reverse;
 }

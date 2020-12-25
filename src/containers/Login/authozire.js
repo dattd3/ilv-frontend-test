@@ -20,7 +20,7 @@ function Authorize(props) {
 
     const getUser = (token, jwtToken, vgEmail) => { 
 
-        if(token == null) {
+        if(jwtToken == null || jwtToken == "") {
             return;
         }
 
@@ -30,7 +30,7 @@ function Authorize(props) {
 
         let config = {
           headers: {             
-             'Authorization': `Bearer ${token}`
+             'Authorization': `Bearer ${jwtToken}`
           }
         }
 
@@ -38,7 +38,7 @@ function Authorize(props) {
           .then(res => {            
             if (res && res.data && res.data.data) { 
               let userProfile = res.data.data[0]; 
-              checkUser(userProfile, jwtToken, vgEmail);              
+              checkUser(userProfile, jwtToken, vgEmail);                
             }
           })
           .catch(error => {
@@ -64,8 +64,8 @@ function Authorize(props) {
             SetIsGetUser(true);
 
             var benefitTitle = "";
-            if(user.benefit_level) {
-                benefitTitle = user.benefit_level;                
+            if(user.benefit_level && user.benefit_level !== '#') {
+                benefitTitle = user.benefit_level;
             } else {
                 benefitTitle = user.rank_name;
             }
@@ -81,13 +81,57 @@ function Authorize(props) {
                 jobTitle: user.job_name,
                 jobId: user.job_id,
                 benefitLevel: user.benefit_level || user.employee_level,
+                employeeLevel: user.employee_level,
                 benefitTitle: benefitTitle,
                 company: user.pnl,
                 sabaId: `saba-${user.uid}`,
                 employeeNo: user.uid,
                 jobType: user.rank_name,                
-                department: `${user.division} / ${user.department} / ${user.unit}`
+                department: `${user.division} / ${user.department} / ${user.unit}`,
+                organizationLv2: user.organization_lv2,
+                organizationLv3: user.organization_lv3,
+                organizationLv4: user.organization_lv4,
+                organizationLv5: user.organization_lv5,
+                region: user.department
             });
+
+            axios.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
+                headers: {             
+                   'Authorization': `${token}`
+                }
+              })
+            .then(res => {            
+                if (res && res.data && res.data.data) { 
+                    guard.setIsAuth({
+                        tokenType: 'Bearer',
+                        accessToken: jwtToken,
+                        tokenExpired: '',
+                        email: vgEmail,
+                        plEmail: user.company_email,
+                        avatar: '',
+                        fullName: user.fullname,
+                        jobTitle: user.job_name,
+                        jobId: user.job_id,
+                        benefitLevel: user.benefit_level || user.employee_level,
+                        employeeLevel: user.employee_level,
+                        benefitTitle: benefitTitle,
+                        company: user.pnl,
+                        sabaId: res.data.data.saba_response.id,
+                        employeeNo: user.uid,
+                        jobType: user.rank_name,                
+                        department: `${user.division} / ${user.department} / ${user.unit}`,
+                        organizationLv2: user.organization_lv2,
+                        organizationLv3: user.organization_lv3,
+                        organizationLv4: user.organization_lv4,
+                        organizationLv5: user.organization_lv5,
+                        region: user.department
+                    })
+                }
+            })
+            .catch(error => {
+                console.log("Call getUser error:", error)
+            })
+
             history.push(map.Dashboard);
         }
     }
