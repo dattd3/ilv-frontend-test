@@ -55,7 +55,7 @@ class ApproverComponent extends React.Component {
     let indexCurrentUserLevel = _.findIndex(levelApprover, function(item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(levelApprover, function(item) { return item == levelApproverFilter });
 
-    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel >= indexApproverFilterLevel) {
+    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
       return false
     }
 
