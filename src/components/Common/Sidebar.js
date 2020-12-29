@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import logo from '../../assets/img/myvp-logo-white.png';
+import logo from '../../assets/img/LogoVinsoftware.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import MetisMenu from 'react-metismenu';
 import { Navigation } from '../../modules';

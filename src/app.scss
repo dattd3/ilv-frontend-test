@@ -8,6 +8,7 @@
 @import './assets/scss/task.scss';
 @import './assets/scss/registration.scss';
 @import './assets/scss/question-answer.scss';
+@import './assets/scss/icon.scss';
 
 @font-face {
   font-family: "icomoon";
@@ -132,9 +133,11 @@
 }
 
 .metismenu-icon {
-  text-align: center;
-  padding: 0 1rem;
-  font-size: 1.5em;
+    margin-left: 1em;
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .icon-notification {
@@ -229,7 +232,7 @@
 
 .icon-sub-menu-lv2 {
   font-size: 12px;
-  padding: 0 2.5em 0 1.8em;
+  padding-top: 9px;
 }
 
 .icon-menu-bullet-lv2 {
@@ -363,14 +366,31 @@
 .no-bg {
   background: none !important;
 }
+.yellow{
+  color: yellow;
+}
 
 .bg-login-image {
-  background: url("./assets/img/Login590x590.png");
+  background: url("./assets/img/Theme.jpg");
   background-position: center;
   background-size: cover;
 }
+.bg-white-trasparent{
+  background: rgba(255, 255, 255, 0.7);
+}
+.vg-footer{
+  background-color: #E52C08;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: white;
+  padding: 1.3rem 0 !important;
+}
+.opacity-1{
+  opacity: 1 !important;
+}
 .btn-login {
-  background-image: linear-gradient(to right, #2e3192, #29abe2);
+  background-image: linear-gradient(to right, #92000C,#EC5662);
   border: none;
   padding: 15px 0;
   text-transform: uppercase;
@@ -385,10 +405,11 @@
   button {
     cursor: pointer;
     padding: 0 5px;
-    color: #2e3192;
+    color: #C11D2A;
     &:hover {
       text-decoration: none;
       font-weight: 700;
+      color: #000000;
     }
   }
   .lang-active {
@@ -429,7 +450,7 @@
   border: none !important;
   background: none !important;
   .modal-header {
-    background: #293281;
+    background: #C11D2A;
     padding: 0.5rem;
     border: none !important;
     border-top-left-radius: 0.6rem;
@@ -441,7 +462,7 @@
       top: 0px;
       border-radius: 50%;
       padding: 0.5rem;
-      color: #293281;
+      color:#C11D2A;
       font-size: 40px;
       font-weight: 700;
       opacity: 1;
@@ -523,7 +544,8 @@
 }
 
 .bg-vp-blue {
-  background: #293281 !important;
+  background: #ffffff !important;
+  border-left: 5px solid #E52C08;
 }
 
 .sidebar-dark {
@@ -558,13 +580,17 @@
   font-size: 14px !important;
   display: flex !important;
   align-items: center !important;
+  color: black !important;
+  text-shadow: none !important;
+  font-weight: bold;
   &:hover {
-    color: #f9c20a !important;
+    color: #E52C08 !important;
     text-decoration: none;
   }
 }
 .metismenu {
-  background: #293281 !important;
+  background: #ffffff !important;
+  position: unset !important;
   &::after {
     box-shadow: none !important;
   }
@@ -573,13 +599,13 @@
     background: none !important;
     .metismenu-item {
       .has-active-child {
-        color: #f9c20a !important;
-        background: rgba(255, 255, 255, 0.05);
+        color: #E52C08 !important;
+        background: rgba(247, 225, 225, 0.5);
       }
 
       .active {
-        background: none;
-        color: #f9c20a !important;
+        background: rgba(247, 225, 225, 0.5);
+        color: #E52C08 !important;
       }
     }
 
@@ -597,7 +623,7 @@
         a {
           &:hover {
             background: none !important;
-            color: #f9c20a !important;
+            color: #E52C08 !important;
           }
         }
       }
@@ -701,6 +727,10 @@
 .color-283280 {
   color: #283280 !important;
 }
+.color-C11D2A {
+  color:#C11D2A !important;
+}
+
 
 .training-kpi-progress {
   height: 3rem !important;

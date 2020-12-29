@@ -4,7 +4,7 @@ export const Navigation = [
   {
     id: 1,
     parentId: 0,
-    icon: "menu",
+    icon: "c-home",
     label: "Menu",
     to: "/",
     role: "U",
@@ -12,21 +12,21 @@ export const Navigation = [
   {
     id: 10,
     parentId: 0,
-    icon: "hr",
+    icon: "c-hr",
     label: "Menu_HumanResource",
     role: "U",
   },
   {
     id: 2,
     parentId: 0,
-    icon: "training",
+    icon: "c-dt",
     label: "Menu_Training",
     role: "U",
   },
   {
     id: 11,
     parentId: 0,
-    icon: 'recruitment',
+    icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
     role: 'U'
@@ -34,7 +34,7 @@ export const Navigation = [
   {
     id: 12,
     parentId: 0,
-    icon: 'task',
+    icon: 'c-task',
     label: "Menu_Task",
     to: map.Task,
     role: 'U'
@@ -75,7 +75,7 @@ export const Navigation = [
   {
     id: 13,
     parentId: 0,
-    icon: "groupinfo",
+    icon: "c-group",
     label: "Menu_GroupInformation",
     to: "/announcement",
     role: "U",
@@ -179,7 +179,7 @@ export const Navigation = [
   {
     id: 20,
     parentId: 0,
-    icon: "notification",
+    icon: "c-notification",
     label: "Notification",
     to: map.Notifications,
     role: "U"
@@ -227,7 +227,7 @@ export const Navigation = [
   {
     id: 98,
     parentId: 0,
-    icon: 'qa',
+    icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: 'U'

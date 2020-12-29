@@ -68,8 +68,7 @@ function Authorize(props) {
                 benefitTitle = user.benefit_level;
             } else {
                 benefitTitle = user.rank_name;
-            }
-                                    
+            }               
             guard.setIsAuth({
                 tokenType: 'Bearer',
                 accessToken: jwtToken,
@@ -92,7 +91,8 @@ function Authorize(props) {
                 organizationLv3: user.organization_lv3,
                 organizationLv4: user.organization_lv4,
                 organizationLv5: user.organization_lv5,
-                region: user.department
+                region: user.department,
+                companyCode: user.company_code
             });
 
             axios.get(`${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`, {
@@ -124,7 +124,8 @@ function Authorize(props) {
                         organizationLv3: user.organization_lv3,
                         organizationLv4: user.organization_lv4,
                         organizationLv5: user.organization_lv5,
-                        region: user.department
+                        region: user.department,
+                        companyCode: user.company_code
                     })
                 }
             })

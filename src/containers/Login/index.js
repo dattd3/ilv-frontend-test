@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
-import logo from '../../assets/img/logo-vp-vt.png';
+import logo from '../../assets/img/LogoVingroup.svg';
 import { useLocalizeStore } from '../../modules';
 
 function LoginGuideModal(props) {
@@ -52,9 +52,10 @@ function Login() {
         <Col className="col-xl-10 col-lg-12 col-md-9">
           <div className="card o-hidden border-0 shadow-lg my-10">
             <div className="card-body p-0">
-              <div className="row">
-                <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                <div className="col-lg-6">
+              <div className="row bg-login-image" >
+                <div className="col-lg-6 d-none d-lg-block"></div>
+                <div className="col-lg-6 bg-white-trasparent">
+                <div className="opacity-1">
                   <div className="float-right language-selector">
                     <Button className={langCode === 'vi-VN' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi-VN')}>{t("LangViet")}</Button>|
                     <Button className={langCode === 'en-US' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en-US')}>{t("LangEng")}</Button>
@@ -65,10 +66,12 @@ function Login() {
                     </div>
                     <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}> {t("Login")}</Button>
                     <div className="text-center login-guide">
-                      <Button className="small color-283280" variant="link" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
+                      <Button className="small color-C11D2A" variant="link" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
                     </div>
                   </div>
                 </div>
+                </div>
+                
               </div>
             </div>
           </div>

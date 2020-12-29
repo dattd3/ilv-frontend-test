@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="42" height="42" viewBox="0 0 42 42">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#94de39"/>
+      <stop offset="0.134" stop-color="#7ad731"/>
+      <stop offset="0.545" stop-color="#3bc92c"/>
+      <stop offset="0.844" stop-color="#14c02a"/>
+      <stop offset="1" stop-color="#05bd29"/>
+    </linearGradient>
+    <clipPath id="clip-Icon_Nhân_sự">
+      <rect width="42" height="42"/>
+    </clipPath>
+  </defs>
+  <g id="Icon_Nhân_sự" data-name="Icon Nhân sự" clip-path="url(#clip-Icon_Nhân_sự)">
+    <g id="Group_9241" data-name="Group 9241" transform="translate(19898.08 -595.35)">
+      <path id="Rectangle_46" data-name="Rectangle 46" d="M15.493,0h8.966A15.493,15.493,0,0,1,39.952,15.493v8.966A15.493,15.493,0,0,1,24.459,39.952H15.493A15.493,15.493,0,0,1,0,24.459V15.493A15.493,15.493,0,0,1,15.493,0Z" transform="translate(-19897.08 596.35)" fill="url(#linear-gradient)"/>
+      <path id="Path_1517" data-name="Path 1517" d="M269.117,1655.392l.439-3.058h1.9l.435,3.038h.038l1.778-5.553a4.323,4.323,0,0,1,4.438,3.37,4.55,4.55,0,0,1,.108,1.014c.01,2.01,0,4.019,0,6.029v.123h-15.6v-6.134a4.279,4.279,0,0,1,3.829-4.336c.261-.033.52-.07.8-.109l1.8,5.61Z" transform="translate(-20147.561 -1034.04)" fill="none" stroke="#fff" stroke-width="1"/>
+      <path id="Path_1518" data-name="Path 1518" d="M274.424,1644.3a5.614,5.614,0,0,1-2.246,4.344,2.691,2.691,0,0,1-3.352,0,5.493,5.493,0,0,1-2.159-3.6,3.817,3.817,0,0,1,.824-3.229,3.9,3.9,0,0,1,5.489-.538l.011.009a3.9,3.9,0,0,1,1.4,2.571C274.4,1644,274.412,1644.14,274.424,1644.3Z" transform="translate(-20147.561 -1034.04)" fill="none" stroke="#fff" stroke-width="1"/>
+      <path id="Path_1519" data-name="Path 1519" d="M268.639,1649.823h3.754c-.018.052-.038.1-.061.154-.27.56-.543,1.119-.8,1.681a.214.214,0,0,1-.232.143c-.531-.006-1.064,0-1.593-.007a.24.24,0,0,1-.184-.091c-.3-.6-.587-1.216-.878-1.825C268.635,1649.869,268.639,1649.855,268.639,1649.823Z" transform="translate(-20147.561 -1034.04)" fill="none" stroke="#fff" stroke-width="1"/>
+    </g>
+  </g>
+</svg>
