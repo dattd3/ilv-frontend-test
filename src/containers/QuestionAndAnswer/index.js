@@ -37,7 +37,7 @@ class MyComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common/`+ localStorage.getItem("companyCode"), config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let commonTicketListRs = res.data.data.sort((a, b) => {

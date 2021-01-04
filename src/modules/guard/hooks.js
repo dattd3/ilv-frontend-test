@@ -64,6 +64,7 @@ const Storage = {
     localStorage.setItem('organizationLv5', currentAuthUser.organizationLv5);
     localStorage.setItem('region', currentAuthUser.region);
     localStorage.setItem('companyCode', currentAuthUser.companyCode);
+    localStorage.setItem('companyLogoUrl', currentAuthUser.companyLogoUrl);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -91,7 +92,8 @@ const Storage = {
       organizationLv4: localStorage.getItem('organizationLv4'),
       organizationLv5: localStorage.getItem('organizationLv5'),
       region: localStorage.getItem('region'),
-      region: localStorage.getItem('companyCode')
+      companyCode: localStorage.getItem('companyCode'),
+      companyLogoUrl: localStorage.getItem('companyLogoUrl')
     }
   },
   reset() {
@@ -118,6 +120,7 @@ const Storage = {
     localStorage.removeItem('organizationLv5');
     localStorage.removeItem('region');
     localStorage.removeItem('companyCode');
+    localStorage.removeItem('companyLogoUrl');
   }
 }
 
@@ -144,5 +147,6 @@ const deserialize = (currentAuthUser) => ({
   organizationLv4: currentAuthUser.organizationLv4,
   organizationLv5: currentAuthUser.organizationLv5,
   region: currentAuthUser.region,
-  companyCode: currentAuthUser.companyCode
+  companyCode: currentAuthUser.companyCode,
+  companyLogoUrl: currentAuthUser.companyLogoUrl
 })

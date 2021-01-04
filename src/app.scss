@@ -233,6 +233,7 @@
 .icon-sub-menu-lv2 {
   font-size: 12px;
   padding-top: 9px;
+  padding-right: 30px;
 }
 
 .icon-menu-bullet-lv2 {
@@ -582,7 +583,6 @@
   align-items: center !important;
   color: black !important;
   text-shadow: none !important;
-  font-weight: bold;
   &:hover {
     color: #E52C08 !important;
     text-decoration: none;
@@ -720,8 +720,8 @@
   background-image: url("./assets/img/vp_vinpearl-luxury-landmark-81-banner.jpg");
 }
 .vp-logo {
-  width: 60%;
-  padding: 3rem 1rem 1rem 1rem;
+  width: 65%;
+  padding: 1rem 2rem 2rem 1rem;
 }
 
 .color-283280 {

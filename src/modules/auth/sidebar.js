@@ -23,14 +23,14 @@ export const Navigation = [
     label: "Menu_Training",
     role: "U",
   },
-  {
-    id: 11,
-    parentId: 0,
-    icon: 'c-recruiment',
-    label: "Menu_InternalRecruitment",
-    to: map.InternalRecruitment,
-    role: 'U'
-  },
+  // {
+  //   id: 11,
+  //   parentId: 0,
+  //   icon: 'c-recruiment',
+  //   label: "Menu_InternalRecruitment",
+  //   to: map.InternalRecruitment,
+  //   role: 'U'
+  // },
   {
     id: 12,
     parentId: 0,
@@ -88,14 +88,14 @@ export const Navigation = [
     to: map.Vingroup,
     role: 'U'
   },
-  {
-    id: 15,
-    parentId: 13,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "Menu_VinpearlIntroduction",
-    to: map.Vinpearl,
-    role: 'U'
-  },
+  // {
+  //   id: 15,
+  //   parentId: 13,
+  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //   label: "Menu_VinpearlIntroduction",
+  //   to: map.Vinpearl,
+  //   role: 'U'
+  // },
   {
     id: 16,
     parentId: 13,
@@ -176,14 +176,14 @@ export const Navigation = [
     to: map.Job,
     role: "U"
   },
-  {
-    id: 20,
-    parentId: 0,
-    icon: "c-notification",
-    label: "Notification",
-    to: map.Notifications,
-    role: "U"
-  },
+  // {
+  //   id: 20,
+  //   parentId: 0,
+  //   icon: "c-notification",
+  //   label: "Notification",
+  //   to: map.Notifications,
+  //   role: "U"
+  // },
   {
     id: 21,
     parentId: 18,
@@ -217,7 +217,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 12,
+    id: 97,
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",

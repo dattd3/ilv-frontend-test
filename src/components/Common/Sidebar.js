@@ -1,16 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import logo from '../../assets/img/LogoVinsoftware.svg';
+// import logo from '../../assets/img/LogoVinsoftware.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import MetisMenu from 'react-metismenu';
 import { Navigation } from '../../modules';
 import { useGuardStore } from '../../modules';
 import { useTranslation } from "react-i18next";
- 
+
 function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
     const user = guard.getCurentUser();
+    const { companyLogoUrl } = props.user;
+    
     const { show } = props;
 
     const getNavigation = (role) => {
@@ -29,13 +31,15 @@ function SideBar(props) {
         return rootNav;
     }
 
-    const content = getNavigation(user.jobType); 
-
+    const content = getNavigation(user.jobType);
+    
     return (
         <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block shadow' : 'bg-vp-blue sidebar shadow'}>
-            <a href="/">
-                <img className='vp-logo' src={logo} alt='My Vinpearl' />
-            </a>
+            <div className="text-center">
+                <a href="/">
+                    <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My Vin' /> 
+                </a>
+            </div>
             <MetisMenu
                 className='sidebar sidebar-dark'
                 content={content}
