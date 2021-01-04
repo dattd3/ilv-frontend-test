@@ -250,8 +250,9 @@ class InOutTimeUpdateComponent extends React.Component {
 
   getClosingSalaryDatePreMonth = () => {
     const now = moment()
-    const preMonth = now.month()
-    const currentYear = preMonth == 0 ? now.year() - 1 : now.year()
+    let preMonth = now.month()
+    const currentYear = preMonth === 0 ? now.year() - 1 : now.year()
+    preMonth = preMonth === 0 ? 12 : preMonth
     return `${CLOSING_SALARY_DATE_PRE_MONTH}/${preMonth}/${currentYear}`
   }
 
