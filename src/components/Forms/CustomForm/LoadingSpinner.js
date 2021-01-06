@@ -1,5 +1,6 @@
 import React from "react";
 import logo from '../../../assets/img/myvp-logo.png';
+import Spinner from 'react-bootstrap/Spinner'
 
 
 class LoadingSpinner extends React.Component { 
@@ -7,10 +8,8 @@ class LoadingSpinner extends React.Component {
   render() {
 
     return (
-      <div className="vp-spinner">
-        <div className="loading-spinner">
-          <img src={logo} alt="Loading..." />
-        </div>
+      <div className="text-center no-bg">
+        <Spinner animation="border" variant="danger" sile="lg" />
       </div>
     );
 

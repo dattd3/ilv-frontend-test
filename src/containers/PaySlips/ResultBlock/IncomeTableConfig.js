@@ -227,8 +227,8 @@ export const IncomeTablesConfig = {
                                 {label: 'Phụ cấp chuyên môn/tay nghề', field: 'professional_allowance'},
                                 {label: 'Phụ cấp kiêm nhiệm', field: 'pluralism_allowance'},
                                 {label: 'Phụ cấp chức vụ', field: 'position_allowance'},
-                                {label: 'Phụ cấp ngoại ngữ', field: 'todo'},
-                                {label: 'Phụ cấp ngoại hình', field: 'todo'}
+                                {label: 'Phụ cấp ngoại ngữ', field: 'foreign_language_allowance'},
+                                {label: 'Phụ cấp ngoại hình', field: 'looking_allowance'}
                             ]
                         },
                         {
@@ -238,32 +238,32 @@ export const IncomeTablesConfig = {
                         }
                     ]
                 },
-                {
-                    label: 'THU NHẬP GIẢNG DẠY',
-                    field: 'other_income_amount',
-                    level3: [
-                        {
-                            label: 'Thu nhập tiết giảng dạy',
-                            field: 'todo',
-                            level4: []
-                        },
-                        {
-                            label: 'Thu nhập tiết theo ngày công',
-                            field: 'todo',
-                            level4: []
-                        },
-                        {
-                            label: 'Thu nhập tiết sự kiện đồng giá',
-                            field: 'todo',
-                            level4: []
-                        },
-                        {
-                            label: 'Thu nhập tiết sự kiện không đồng giá',
-                            field: 'todo',
-                            level4: []
-                        }
-                    ]
-                },
+                // {
+                //     label: 'THU NHẬP GIẢNG DẠY',
+                //     field: 'other_income_amount',
+                //     level3: [
+                //         {
+                //             label: 'Thu nhập tiết giảng dạy',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết theo ngày công',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết sự kiện đồng giá',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết sự kiện không đồng giá',
+                //             field: 'todo',
+                //             level4: []
+                //         }
+                //     ]
+                // },
                 {
                     label: 'CÁC KHOẢN THU NHẬP KHÁC',
                     field: 'other_income_amount',
@@ -272,31 +272,31 @@ export const IncomeTablesConfig = {
                             label: 'Tiền thưởng',
                             field: 'bonus_amount',
                             level4: [
-                                {label: 'Thưởng tay nghề', field: 'todo'},
+                                // {label: 'Thưởng tay nghề', field: 'todo'},
                                 {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
                                 {label: 'Thưởng ngoại hình', field: 'good_looking_bonus'},
-                                {label: 'Thưởng service charge', field: 'todo'},
+                                // {label: 'Thưởng service charge', field: 'todo'},
                                 {label: 'Thưởng khoán/KPI', field: 'kpi_bonus'},
                                 {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus'},
                                 {label: 'Thưởng cuối năm Âm lịch (chỉ áp dụng tại thời điểm chi trả)', field: 'lunar_new_year_bonus'},
                                 {label: 'Thưởng thành tích', field: 'performance_bonus'},
                                 {label: 'Thưởng chiến dịch/dự án', field: 'project_campaign_bonus'},
-                                {label: 'Thưởng đặc thù (dạy các môn đặc thù hoặc dạy các khối đặc thù)', field: 'todo'},
-                                {label: 'Thưởng KPIs khối 9/khối 12', field: 'todo'},
-                                {label: 'Thưởng trông trưa', field: 'todo'},
-                                {label: 'Thưởng khối trưởng/tổ trưởng', field: 'todo'},
-                                {label: 'Thưởng vượt tiết trợ giảng', field: 'todo'},
-                                {label: 'Thưởng doanh thu bác sỹ', field: 'todo'},
-                                {label: 'Thưởng số ca dịch vụ điều dưỡng', field: 'todo'},
-                                {label: 'Thưởng bồi dưỡng trực Vinmec', field: 'todo'},
-                                {label: 'Thưởng mạng lưới KSNK', field: 'todo'},
-                                {label: 'Thưởng Tracer JCI', field: 'todo'},
+                                {label: 'Thưởng đặc thù (dạy các môn đặc thù hoặc dạy các khối đặc thù)', field: 'special_bonus'},
+                                {label: 'Thưởng KPIs khối 9/khối 12', field: 'ninth_twelfth_grade_bonus'},
+                                {label: 'Thưởng trông trưa', field: 'nap_time_watching_bonus'},
+                                {label: 'Thưởng khối trưởng/tổ trưởng', field: 'key_leader_bonus'},
+                                {label: 'Thưởng vượt tiết trợ giảng', field: 'exceeding_required_number_of_period_bonus'},
+                                {label: 'Thưởng doanh thu bác sỹ', field: 'performance_based_incentive_for_doctor'},
+                                {label: 'Thưởng số ca dịch vụ điều dưỡng', field: 'performance_based_incentive_for_nurse'},
+                                {label: 'Thưởng bồi dưỡng trực Vinmec', field: 'vinmec_night_shift_on_duty_bonus'},
+                                {label: 'Thưởng mạng lưới KSNK', field: 'infection_control_network_allowance'},
+                                {label: 'Thưởng Tracer JCI', field: 'jci_tracer_bonus'},
                                 {label: 'Thưởng điều động', field: 'mobilizing_bonus'},
                                 {label: 'Thưởng giới thiệu ứng viên', field: 'reference_bonus'},
                                 {label: 'Thưởng đào tạo', field: 'trainning_bonus'},
-                                {label: 'Thưởng chuyển giao hàng', field: 'todo'},
-                                {label: 'Thưởng tăng cường Oncall', field: 'todo'},
-                                {label: 'Thưởng khác (NET)', field: 'todo'},
+                                {label: 'Thưởng chuyển giao hàng', field: 'goods_transportation_bonus'},
+                                {label: 'Thưởng tăng cường Oncall', field: 'oncall_bonus'},
+                                {label: 'Thưởng khác (NET)', field: 'other_net_bonus'},
                                 {label: 'Thưởng khác (GROSSUP từ khoản NET tương ứng)', field: 'other_gross_bonus'}
                             ]
                         },
@@ -306,13 +306,13 @@ export const IncomeTablesConfig = {
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
                                 {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
-                                {label: 'Hỗ trợ kết hôn', field: 'todo'},
-                                {label: 'Hỗ trợ ma chay', field: 'todo'},
+                                {label: 'Hỗ trợ kết hôn', field: 'marriage_subsidy'},
+                                {label: 'Hỗ trợ ma chay', field: 'funerral_subsidy'},
                                 {label: 'Hỗ trợ nhà ở', field: 'housing_allowance'},
                                 {label: 'Hỗ trợ đi lại, phương tiện di chuyển', field: 'transfer_allowance'},
                                 {label: 'Hỗ trợ điện thoại', field: 'phone_allowance'},
-                                {label: 'Hỗ trợ điều kiện sinh hoạt', field: 'todo'},
-                                {label: 'Hỗ trợ đối với chuyên ngành khó tuyển dụng', field: 'todo'},
+                                {label: 'Hỗ trợ điều kiện sinh hoạt', field: 'living_cost_subsidy'},
+                                {label: 'Hỗ trợ đối với chuyên ngành khó tuyển dụng', field: 'special_industry_subsidy'},
                                 {label: 'Hỗ trợ ca gãy', field: 'shifts_allowance'},
                                 {label: 'Tiền làm thêm ngoài giờ', field: 'overtime_payment'},
                                 {label: 'Tiền lương làm đêm', field: 'night_shift_allowance'},
@@ -321,10 +321,10 @@ export const IncomeTablesConfig = {
                                 {label: 'Trợ cấp thôi việc', field: 'severance_allowance'},
                                 {label: 'Truy lĩnh', field: 'back_pay'},
                                 {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
-                                {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'todo'},
-                                {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'todo'},
-                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'todo'},
-                                {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'todo'},
+                                {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance'},
+                                {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_allowance_tax_included'},
+                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance_welfare'},
+                                {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_allowance_welfare_tax_included'},
                                 {label: 'Các khoản chi khác', field: 'other_payment'},
                             ]
                         }
@@ -346,11 +346,11 @@ export const IncomeTablesConfig = {
                         {label: 'Truy thu', field: 'arrears'},
                         {label: 'Trừ thưởng YTCLCV', field: 'quality_of_work_reduction'},
                         {label: 'Khấu trừ/bồi thường thiệt hại vật chất', field: 'damages'},
-                        {label: 'Khấu trừ vay Quỹ Thiện Tâm', field: 'todo'},
-                        {label: 'Khấu trừ các khoản chi hộ', field: 'todo'},
+                        {label: 'Khấu trừ vay Quỹ Thiện Tâm', field: 'deduction_of_loan_from_kind_heart_foundation'},
+                        {label: 'Khấu trừ các khoản chi hộ', field: 'loan_reduction'},
                         {label: 'Khấu trừ tạm ứng thu nhập', field: 'advance_reduction'},
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
-                        {label: 'Khấu trừ tiền thuê xe VF', field: 'todo'},
+                        {label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction'},
                         {label: 'Bồi thường ưu đãi mua xe VF', field: 'compensative_car_purchased'},
                         {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
                     ]

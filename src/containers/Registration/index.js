@@ -28,10 +28,14 @@ class RegistrationComponent extends React.Component {
           <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
             <BusinessTrip />
           </Tab>
-          <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
+          {
+            localStorage.getItem("companyCode") == "V030" ?
+           <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
             <SubstitutionComponent />
-          </Tab>
-          <Tab eventKey="InOutTimeUpdate" title={'Sửa giờ vào-ra'}>
+          </Tab> : null
+
+          }
+          <Tab eventKey="InOutTimeUpdate" title={'Giải trình công'}>
             <InOutTimeUpdate />
           </Tab>
         </Tabs>
