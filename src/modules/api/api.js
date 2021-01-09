@@ -245,9 +245,10 @@ export default class Api {
     );
   };
 
-  fetchListNotifications = async (page, pageSize, level3, level4, level5, keyword) => {
+  fetchListNotifications = async (companyCode, page, pageSize, level3, level4, level5, keyword) => {
      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications`, {
-        params: {          
+        params: {     
+          companyCode: companyCode,     
           page: page,
           pageSize: pageSize,
           level3: level3,
@@ -258,9 +259,10 @@ export default class Api {
       });
   };
 
-  fetchNotificationsUnReadLimitation = async (level3, level4, level5) => {
+  fetchNotificationsUnReadLimitation = async (companyCode, level3, level4, level5) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
-      params: {          
+      params: {     
+        companyCode: companyCode,     
         level3: level3,
         level4: level4,
         level5: level5
@@ -274,9 +276,10 @@ export default class Api {
     });
   };
 
-  fetchNotificationsUnRead = async (page, pageSize, level3, level4, level5, keyword) => {
+  fetchNotificationsUnRead = async (companyCode, page, pageSize, level3, level4, level5, keyword) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread`, {
       params: {
+        companyCode: companyCode,
         page: page,
         pageSize: pageSize,
         level3: level3,

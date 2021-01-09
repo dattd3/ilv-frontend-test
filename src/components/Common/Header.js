@@ -27,6 +27,7 @@ function Header(props) {
     const guard = useGuardStore();
 
     let totalNotificationUnRead = 0;
+    const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
@@ -68,7 +69,7 @@ function Header(props) {
     }
 
     let dataNotificationsUnRead = "";
-    const result = usePreload([lv3, lv4, lv5]);
+    const result = usePreload([companyCode,lv3, lv4, lv5]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;

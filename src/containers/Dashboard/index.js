@@ -19,7 +19,7 @@ function Dashboard(props) {
       </div>
       <Row>
         <Col xl={6}>
-          <Card className="mb-4 news-home">
+          <Card className="mb-4 news-home shadow">
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>

@@ -38,7 +38,8 @@ function ListNotifications(props) {
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
     const region = localStorage.getItem('region');
-    const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
+    const companyCode = localStorage.getItem('companyCode');
+    const response = usePreload([companyCode, page, pageSize, lv3, lv4, lv5, keyword]);
     const phonesSupportForRegion = usePreloadGetPhoneSupport([region]);
     
     const onChangePage = (page) => {
