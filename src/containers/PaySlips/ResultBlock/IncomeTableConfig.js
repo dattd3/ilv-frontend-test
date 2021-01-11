@@ -424,7 +424,8 @@ export const IncomeTablesConfig = {
             level2: [
                 {
                     label: '(III.1) Trả vào tài khoản ngân hàng',
-                    field: 'net_salary_amount'
+                    field: 'net_salary_amount',
+                    level3: []
                 }
             ]
         }
