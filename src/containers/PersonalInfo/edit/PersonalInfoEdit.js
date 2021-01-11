@@ -440,6 +440,7 @@ class PersonalInfoEdit extends React.Component {
       bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
       bodyFormData.append('UpdateField', JSON.stringify(updateFields));
       bodyFormData.append('Region', localStorage.getItem('region'));
+      bodyFormData.append('CompanyCode', localStorage.getItem('companyCode'));
       bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataPostToSAP));
       const fileSelected = this.state.files;
       for(let key in fileSelected) {

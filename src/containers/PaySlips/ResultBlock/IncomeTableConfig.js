@@ -102,7 +102,7 @@ export const IncomeTablesConfig = {
             level2: [
                 {
                     label: 'CÁC KHOẢN KHẤU TRỪ',
-                    field: 'other_reduction',
+                    field: 'income_reduction_amount',
                     isSkipLevel4: true,
                     level3: [
                         {label: 'Truy thu', field: 'arrears'},
@@ -340,7 +340,7 @@ export const IncomeTablesConfig = {
             level2: [
                 {
                     label: 'CÁC KHOẢN KHẤU TRỪ',
-                    field: 'other_reduction',
+                    field: 'income_reduction_amount',
                     isSkipLevel4: true,
                     level3: [
                         {label: 'Truy thu', field: 'arrears'},
