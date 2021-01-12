@@ -127,7 +127,7 @@ class AddressModal extends React.Component {
 
     verifyInput() {
         let errors = {}
-        const RequiredFields = ['country', 'province', 'district', 'ward']
+        const RequiredFields = ['country', 'province']
         RequiredFields.forEach(name => {
             if (_.isNull(this.state[name])) {
                 errors[name] = '(Bắt buộc)'
@@ -168,34 +168,34 @@ class AddressModal extends React.Component {
                                 Quốc gia
                             </div>
                             <div className="col-7">
-                                <Select options={countries} onChange={this.updateCountry.bind(this)} value={this.state.country} />
+                                <Select options={countries} placeholder="Lựa chọn..." onChange={this.updateCountry.bind(this)} value={this.state.country} />
                                 {this.error('country')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Tỉnh / thành phố
+                                Tỉnh/ thành phố
                             </div>
                             <div className="col-7">
-                                <Select options={provinces} onChange={this.updateProvice.bind(this)} value={this.state.province} />
+                                <Select options={provinces} placeholder="Chọn Tỉnh/ Thành phố..." onChange={this.updateProvice.bind(this)} value={this.state.province} />
                                 {this.error('province')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Quận/Huyện
+                                Quận/ Huyện
                             </div>
                             <div className="col-7">
-                                <Select options={districts} onChange={this.updateDistrict.bind(this)} value={this.state.district} />
+                                <Select options={districts} placeholder="Chọn Quận/ Huyện..." onChange={this.updateDistrict.bind(this)} value={this.state.district} />
                                 {this.error('district')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Phường
+                                Phường/ Xã
                             </div>
                             <div className="col-7">
-                                <Select options={wards} onChange={this.updateWard.bind(this)} value={this.state.ward} />
+                                <Select options={wards} placeholder="Chọn Phường/ Xã..." onChange={this.updateWard.bind(this)} value={this.state.ward} />
                                 {this.error('ward')}
                             </div>
                         </div>

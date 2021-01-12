@@ -18,15 +18,18 @@ function WorkingDay(props) {
 }
 
 function Content(props) {
-  const [open, setOpen] = useState(false);
-  
+  const [open, setOpen] = useState(true);
+  let timeFail1 = (props.timesheet.start_time1_plan < props.timesheet.start_time1_fact || props.timesheet.end_time1_plan > props.timesheet.end_time1_fact)
+  let timeFail2 = (props.timesheet.start_time2_plan < props.timesheet.start_time2_fact || props.timesheet.end_time2_plan > props.timesheet.end_time2_fact)
+  let timeFail3 = (props.timesheet.start_time3_plan < props.timesheet.start_time3_fact || props.timesheet.end_time3_plan > props.timesheet.end_time3_fact)
+  let timeFail = timeFail1 || timeFail2 || timeFail3
   return (
     <>
       <Button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         variant="link"
-        className="text-left"
+        className= "text-left"
         block >
         <div className="row">
           <div className="col-3">
@@ -52,7 +55,7 @@ function Content(props) {
             <div className="card">
               <div className="card-body">
                 <h6 className="card-title text-center">Giờ kế hoạch</h6>
-                <WorkingDay index={1} startTime={props.timesheet.start_time1_plan} endTime={props.timesheet.end_time1_plan}/>
+                <WorkingDay index={1} startTime={props.timesheet.start_time1_plan} endTime={props.timesheet.end_time1_plan} />
                 {props.timesheet.start_time2_plan ? <WorkingDay index={2} startTime={props.timesheet.start_time2_plan} endTime={props.timesheet.end_time2_plan}/> : null}
                 {props.timesheet.start_time3_plan ? <WorkingDay index={3} startTime={props.timesheet.start_time3_plan} endTime={props.timesheet.end_time3_plan}/> : null}
               </div>
@@ -61,7 +64,7 @@ function Content(props) {
 
           <div className="col-md-3 time-item">
             <div className="card">
-              <div className="card-body">
+              <div className={ timeFail ? "card-body text-danger background-red" : "card-body"}>
                 <h6 className="card-title text-center">Giờ thực tế</h6>
                 <WorkingDay index={1} startTime={props.timesheet.start_time1_fact} endTime={props.timesheet.end_time1_fact}/>
                 {props.timesheet.start_time2_fact ? <WorkingDay index={1} startTime={props.timesheet.start_time2_fact} endTime={props.timesheet.end_time1_fact}/> : null}

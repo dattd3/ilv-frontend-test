@@ -254,10 +254,10 @@ class PersonalComponent extends React.Component {
         mainAddressFromModal.nation = country.label
         mainAddressFromModal.province_id = province.value
         mainAddressFromModal.province = province.label
-        mainAddressFromModal.district_id = district.value
-        mainAddressFromModal.district = district.label
-        mainAddressFromModal.ward_id = ward.value
-        mainAddressFromModal.wards = ward.label
+        mainAddressFromModal.district_id = district ? district.value : null
+        mainAddressFromModal.district = district ? district.label : null
+        mainAddressFromModal.ward_id = ward ? ward.value : null
+        mainAddressFromModal.wards = ward ? ward.label : null
         mainAddressFromModal.street_name = streetName
         this.setState({ mainAddressFromModal: mainAddressFromModal })
 
@@ -278,10 +278,10 @@ class PersonalComponent extends React.Component {
             CountryText: country.label,
             Province: province.value,
             ProvinceText: province.label,
-            District: district.value,
-            DistrictText: district.label,
-            Wards: ward.value,
-            WardsText: ward.label,
+            District: district ? district.value : null,
+            DistrictText: district ? district.label : null,
+            Wards: ward ? ward.value : null,
+            WardsText: ward ? ward.label : null,
             StreetName: streetName
         }
         this.props.updateAddress(oldMainAddress, newMainAddress)
@@ -293,10 +293,10 @@ class PersonalComponent extends React.Component {
         tempAddressFromModal.tmp_nation = country.label
         tempAddressFromModal.tmp_province_id = province.value
         tempAddressFromModal.tmp_province = province.label
-        tempAddressFromModal.tmp_district_id = district.value
-        tempAddressFromModal.tmp_district = district.label
-        tempAddressFromModal.tmp_ward_id = ward.value
-        tempAddressFromModal.tmp_wards = ward.label
+        tempAddressFromModal.tmp_district_id = district ? district.value : null
+        tempAddressFromModal.tmp_district = district ? district.label : null
+        tempAddressFromModal.tmp_ward_id = ward ? ward.value : null
+        tempAddressFromModal.tmp_wards = ward ? ward.label : null
         tempAddressFromModal.tmp_street_name = streetName
         this.setState({ tempAddressFromModal: tempAddressFromModal })
 
@@ -317,10 +317,10 @@ class PersonalComponent extends React.Component {
             TempCountryText: country.label,
             TempProvince: province.value,
             TempProvinceText: province.label,
-            TempDistrict: district.value,
-            TempDistrictText: district.label,
-            TempWards: ward.value,
-            TempWardsText: ward.label,
+            TempDistrict: district ? district.value : null,
+            TempDistrictText: district ? district.label : null,
+            TempWards: ward ? ward.value : null,
+            TempWardsText: ward ? ward.label : null,
             TempStreetName: streetName
         }
         this.props.updateAddress(oldTempAddress, newTempAddress)
