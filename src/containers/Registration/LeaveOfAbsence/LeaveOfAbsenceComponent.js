@@ -371,7 +371,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
         .catch(response => {
-            this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         })
     }
 

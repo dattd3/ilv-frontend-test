@@ -146,7 +146,6 @@ class BusinessTripComponent extends React.Component {
           const data = res.data
           const result = data.result
           if (result && result.code != Constants.API_ERROR_CODE) {
-            console.log(data.data)
             this.setState({totalTime: this.state.leaveType === FULL_DAY ? data.data.days : data.data.hours})
           }
         }
@@ -290,7 +289,7 @@ class BusinessTripComponent extends React.Component {
       }
     })
     .catch(response => {
-      this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
     })
   }
 

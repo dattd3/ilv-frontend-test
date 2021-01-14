@@ -127,7 +127,13 @@ class AddressModal extends React.Component {
 
     verifyInput() {
         let errors = {}
-        const RequiredFields = ['country', 'province']
+        const RequiredFields = ['country']
+        if(this.state.country.value === "VN")
+        {
+            RequiredFields.push('province');
+            RequiredFields.push('district');
+            RequiredFields.push('ward');
+        }
         RequiredFields.forEach(name => {
             if (_.isNull(this.state[name])) {
                 errors[name] = '(Bắt buộc)'

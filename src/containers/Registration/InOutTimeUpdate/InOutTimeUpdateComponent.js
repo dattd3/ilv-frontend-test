@@ -175,7 +175,7 @@ class InOutTimeUpdateComponent extends React.Component {
       }
     })
     .catch(response => {
-      this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
     })
   }
 
@@ -212,7 +212,10 @@ class InOutTimeUpdateComponent extends React.Component {
     }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          const timesheets = res.data.data.map(ts => {
+
+          let dataSort = res.data.data.sort((a, b) => moment(a.date,"DD-MM-YYYY").format("YYYYMMDD") < moment(b.date,"DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
+          
+          const timesheets = dataSort.map(ts => {
             return Object.assign({
               isEdit: false,
               note: null,

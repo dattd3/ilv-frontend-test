@@ -22,7 +22,8 @@ function Content(props) {
   let timeFail1 = (props.timesheet.start_time1_plan < props.timesheet.start_time1_fact || props.timesheet.end_time1_plan > props.timesheet.end_time1_fact)
   let timeFail2 = (props.timesheet.start_time2_plan < props.timesheet.start_time2_fact || props.timesheet.end_time2_plan > props.timesheet.end_time2_fact)
   let timeFail3 = (props.timesheet.start_time3_plan < props.timesheet.start_time3_fact || props.timesheet.end_time3_plan > props.timesheet.end_time3_fact)
-  let timeFail = timeFail1 || timeFail2 || timeFail3
+  let timeFail4 = (props.timesheet.start_time1_plan && (props.timesheet.start_time1_fact === null || props.timesheet.end_time1_fact === null))
+  let timeFail = timeFail1 || timeFail2 || timeFail3 || timeFail4
   return (
     <>
       <Button
@@ -67,8 +68,8 @@ function Content(props) {
               <div className={ timeFail ? "card-body text-danger background-red" : "card-body"}>
                 <h6 className="card-title text-center">Giờ thực tế</h6>
                 <WorkingDay index={1} startTime={props.timesheet.start_time1_fact} endTime={props.timesheet.end_time1_fact}/>
-                {props.timesheet.start_time2_fact ? <WorkingDay index={1} startTime={props.timesheet.start_time2_fact} endTime={props.timesheet.end_time1_fact}/> : null}
-                {props.timesheet.start_time3_fact ? <WorkingDay index={1} startTime={props.timesheet.start_time3_fact} endTime={props.timesheet.end_time3_fact}/> : null}
+                {props.timesheet.start_time2_fact ? <WorkingDay index={2} startTime={props.timesheet.start_time2_fact} endTime={props.timesheet.end_time2_fact}/> : null}
+                {props.timesheet.start_time3_fact ? <WorkingDay index={3} startTime={props.timesheet.start_time3_fact} endTime={props.timesheet.end_time3_fact}/> : null}
               </div>
             </div>
           </div>
@@ -85,7 +86,7 @@ function Content(props) {
           <div className="col-md-3 time-item">
             <div className="card">
               <div className="card-body">
-                <h6 className="card-title text-center">Nghỉ hường lương (giờ)</h6>
+                <h6 className="card-title text-center">Nghỉ hưởng lương (giờ)</h6>
                 <h5 className="card-text text-center">{props.timesheet.paid_leave || 0}</h5>
               </div>
             </div>

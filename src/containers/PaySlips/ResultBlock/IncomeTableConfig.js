@@ -113,7 +113,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
                         {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
                         {label: 'Khấu trừ KTX, BUS Vinpearl PQ', field: 'bus_reduction'},
-                        {label: 'Bồi thường ưu đãi mua xe VF', field: 'compensative_car_purchased'},
+                        {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
                         {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
                     ]
                 },
@@ -269,7 +269,7 @@ export const IncomeTablesConfig = {
                     field: 'other_income_amount',
                     level3: [
                         {
-                            label: 'Tiền thưởng',
+                            label: 'Tiền thưởng = Sum(I.2.1.1 : I.2.1.7) - I.2.1.6',
                             field: 'bonus_amount',
                             level4: [
                                 // {label: 'Thưởng tay nghề', field: 'todo'},
@@ -301,7 +301,7 @@ export const IncomeTablesConfig = {
                             ]
                         },
                         {
-                            label: 'Các khoản chi trả khác',
+                            label: 'Các khoản chi trả khác = Sum(I.2.2.1 : I.2.2.22) - I.2.2.18 - I.2.2.20',
                             field: 'other_payment_amount',
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
@@ -351,7 +351,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ tạm ứng thu nhập', field: 'advance_reduction'},
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
                         {label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction'},
-                        {label: 'Bồi thường ưu đãi mua xe VF', field: 'compensative_car_purchased'},
+                        {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
                         {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
                     ]
                 },
@@ -387,7 +387,7 @@ export const IncomeTablesConfig = {
                 },
 
                 {
-                    label: 'THUẾ TNCN',
+                    label: 'THUẾ TNCN = Sum(II.3.3.1 : II.3.3.2)',
                     field: 'personal_income_tax_amount',
                     level3: [
                         {
@@ -423,7 +423,7 @@ export const IncomeTablesConfig = {
             field: 'net_salary_amount',
             level2: [
                 {
-                    label: '(III.1) Trả vào tài khoản ngân hàng',
+                    label: 'Trả vào tài khoản ngân hàng',
                     field: 'net_salary_amount',
                     level3: []
                 }

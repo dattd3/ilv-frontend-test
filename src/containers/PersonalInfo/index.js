@@ -394,7 +394,7 @@ class MyComponent extends React.Component {
                             <p>&nbsp;{item.academic_level}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.major}</p>
+                          <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
                             <p>&nbsp;{item.from_time} - {item.to_time}</p>

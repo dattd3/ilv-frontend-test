@@ -33,7 +33,7 @@ class ConfirmationModal extends React.Component {
                 });
             } else {
                 this.setState({
-                    resultTitle: "Lỗi",
+                    resultTitle: "Thông Báo",
                     resultMessage: result.message,
                     isSuccess: false
                 });
