@@ -533,7 +533,7 @@ class BusinessTripComponent extends React.Component {
             </li>
           })}
         </ul>
-        <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
+        <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
       </div>
     )
   }

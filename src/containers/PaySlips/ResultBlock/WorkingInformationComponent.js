@@ -14,7 +14,7 @@ function WorkingInformationComponent(props) {
                 <tbody>
                     <tr className="second-title">
                         <td className="title title-second kcc" colSpan="2">Kỳ chấm công</td>
-                        <td className="title title-second" colSpan="3">Chi tiết thu nhập trên HĐLĐ</td>
+                        <td className="title title-second" colSpan={localStorage.getItem("companyCode") == "V030" ? 5 : 3}>Chi tiết thu nhập trên HĐLĐ</td>
                         <td className="title title-second cc" rowSpan="2">Công chuẩn</td>
                         <td className="title title-second" colSpan="4">Chi tiết ngày công</td>
                         <td className="title same-width title-second tchl" rowSpan="2">Tổng công hưởng lương</td>
@@ -53,8 +53,8 @@ function WorkingInformationComponent(props) {
                             <td className="same-width">{parseInt(workingInformation.behaviour_bonus).toLocaleString()}</td>
                             {
                                 localStorage.getItem("companyCode") == "V030" ? <>
-                                    <td className="same-width ttng">{parseInt(workingInformation.vp_proficiency_bonus).toLocaleString()}</td>
-                                    <td className="same-width">{parseInt(workingInformation.service_charge_bonus).toLocaleString()}</td>
+                                    <td className="same-width ttng">{workingInformation.vp_proficiency_bonus ? parseInt(workingInformation.vp_proficiency_bonus).toLocaleString() : 0}</td>
+                                    <td className="same-width">{workingInformation.service_charge_bonus ? parseInt(workingInformation.service_charge_bonus).toLocaleString() : 0}</td>
                                 </> : null
                             }
                             <td className="same-width ttn">{totalBaseSalary.toLocaleString()}</td>
