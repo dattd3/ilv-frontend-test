@@ -490,7 +490,8 @@ class PersonalInfoEdit extends React.Component {
             this.handleShowResultModal("Thông Báo", response.data.result.message, false);
           } else {
             this.handleShowResultModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true);
-            window.location.href = "/personal-info";
+            setTimeout(() => { window.location.href = "/personal-info"; }, 2000);
+            
           }
         }
       })
@@ -747,6 +748,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareEducationToSap = (data) => {
+    debugger
     let listObj = [];
     if (data && data.update) {
       const update = data.update;
@@ -755,17 +757,17 @@ class PersonalInfoEdit extends React.Component {
         for (let i = 0, len = educationUpdate.length; i < len; i++) {
           const item = educationUpdate[i];
           if (item.NewEducation.SchoolCode || item.NewEducation.DegreeType || item.NewEducation.MajorCode || item.NewEducation.FromTime || item.NewEducation.ToTime) {
-            const userEducation = this.state.userEducation;
-            const subItem = userEducation[i];
+            
+            let oldEducation = item.OldEducation
             const schoolCode = item.NewEducation.SchoolCode;
             const majorCode = item.NewEducation.MajorCode;
             let obj = { ...this.objectToSap };
             obj.actio = "MOD";
-            if (userEducation && userEducation.length > 0) {
-              obj.pre_begda = (subItem && subItem.from_time) ? moment(subItem.from_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
-              obj.pre_endda = (subItem && subItem.to_time) ? moment(subItem.to_time, 'DD-MM-YYYY').format('YYYYMMDD') : "";
-              obj.pre_seqnr = subItem ? subItem.seqnr : 0;
-              obj.pre_slart = subItem ? subItem.education_level_id : "";
+            if (oldEducation) {
+              obj.pre_begda = (oldEducation && oldEducation.PreBeginDate) ? moment(oldEducation.PreBeginDate, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+              obj.pre_endda = (oldEducation && oldEducation.PreEndDate) ? moment(oldEducation.PreEndDate, 'DD-MM-YYYY').format('YYYYMMDD') : "";
+              obj.pre_seqnr = oldEducation ? oldEducation.Seqnr : 0;
+              obj.pre_slart = oldEducation ? oldEducation.DegreeType : "";
             }
             obj.begda = item.NewEducation.FromTime ? moment(item.NewEducation.FromTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
             obj.endda = item.NewEducation.ToTime ? moment(item.NewEducation.ToTime, 'DD-MM-YYYY').format('YYYYMMDD') : "";
