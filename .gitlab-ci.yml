@@ -15,8 +15,8 @@ buildJob:
   tags:
     - hrms
   script:
-    - sudo echo "Building deploy package"
-    - sudo echo "Build successful"
+    - echo "Building deploy package"
+    - echo "Build successful"
   only:
     refs:
       - develop
@@ -27,8 +27,8 @@ deployJob:
   tags:
     - hrms
   script:
-    - sudo echo "Deploying to server"
-    - sudo echo "Deployed"
+    - echo "Deploying to server"
+    - echo "Deployed"
   artifacts:
     expire_in: 1 hour
     paths:
