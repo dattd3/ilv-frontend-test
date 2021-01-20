@@ -20,6 +20,8 @@ buildJob:
     - git reset --hard
     - git checkout $CI_COMMIT_REF_NAME
     - git pull origin $CI_COMMIT_REF_NAME
+    - npm cache clean --force
+    - yarn cache clean
     - yarn install
     - yarn build:staging 
     - echo "Build successful"
