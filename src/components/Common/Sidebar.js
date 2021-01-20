@@ -16,7 +16,7 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
-        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.indexOf(role) >= 0));
+        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.indexOf(role) >= 0 || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
 
@@ -25,6 +25,10 @@ function SideBar(props) {
         if (rootNav.length > 0) {
             for (let i = 0; i < rootNav.length; i++) {
                 rootNav[i].label = t(rootNav[i].label);
+                if(user.companyCode != "V030" && rootNav[i].label2)
+                {
+                    rootNav[i].label = t(rootNav[i].label2);
+                }
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
@@ -37,7 +41,7 @@ function SideBar(props) {
         <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block shadow' : 'bg-vp-blue sidebar shadow'}>
             <div className="text-center">
                 <a href="/">
-                    <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My Vin' /> 
+                    <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My VinGroup' /> 
                 </a>
             </div>
             <MetisMenu

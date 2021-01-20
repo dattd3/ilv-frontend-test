@@ -23,7 +23,6 @@ class ButtonComponent extends React.Component {
     }
 
     fileUploadInputChange() {
-        debugger
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
         const updateFiles = this.state.files.concat(files)
         this.setState({ files: updateFiles })

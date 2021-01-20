@@ -93,6 +93,8 @@ class PersonalComponent extends React.Component {
                 return "Tên đường - Địa chỉ thường trú";
             case "TempStreetName":
                 return "Tên đường - Địa chỉ tạm trú";
+            case "MarriageDate":
+                return "Ngày kết hôn";
         }
     }
 
@@ -105,7 +107,7 @@ class PersonalComponent extends React.Component {
                         <div className="col"><i className="note note-old"></i> Thông tin cũ</div>
                         <div className="col"><i className="note note-new"></i> Thông tin điều chỉnh</div>
                     </div>
-                    <hr/>
+                    <hr />
                     {
                         (userMainInfo || []).map((item, i) => {
                             const key = Object.keys(item)[0];

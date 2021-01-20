@@ -76,7 +76,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
-    const errors = {...this.state.errors}
+    const errors = { ...this.state.errors }
     if (!isApprover) {
       errors.approver = 'Người phê duyệt không có thẩm quyền!'
     } else {
@@ -104,7 +104,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
-    let errors = {...this.state.errors}
+    let errors = { ...this.state.errors }
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
       errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? '(Bắt buộc)' : null
       errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? '(Bắt buộc)' : null
@@ -131,7 +131,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
 
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
-    const approver = {...this.state.approver}
+    const approver = { ...this.state.approver }
     delete approver.avatar
     const data = {
       timesheets: timesheets,
@@ -146,8 +146,8 @@ class InOutTimeUpdateComponent extends React.Component {
       approver: approver,
     }
     const comments = timesheets
-    .filter(item => (item.note))
-    .map(item => item.note).join(" - ")
+      .filter(item => (item.note))
+      .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Sửa giờ vào-ra')
@@ -169,14 +169,14 @@ class InOutTimeUpdateComponent extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-    .then(response => {
-      if (response && response.data && response.data.result) {
-        this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
-      }
-    })
-    .catch(response => {
-      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-    })
+      .then(response => {
+        if (response && response.data && response.data.result) {
+          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+        }
+      })
+      .catch(response => {
+        this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      })
   }
 
   error(index, name) {
@@ -213,8 +213,8 @@ class InOutTimeUpdateComponent extends React.Component {
       .then(res => {
         if (res && res.data && res.data.data) {
 
-          let dataSort = res.data.data.sort((a, b) => moment(a.date,"DD-MM-YYYY").format("YYYYMMDD") < moment(b.date,"DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
-          
+          let dataSort = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
+
           const timesheets = dataSort.map(ts => {
             return Object.assign({
               isEdit: false,
@@ -248,7 +248,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   getIsUpdateStatus = (status) => {
-    this.setState({isUpdateFiles : status})
+    this.setState({ isUpdateFiles: status })
   }
 
   getClosingSalaryDatePreMonth = () => {
@@ -286,13 +286,13 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsStart
                     autoComplete="off"
                     selected={this.state.startDate}
-                    minDate={this.state.startDate}
                     maxDate={this.state.endDate}
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
+                    shouldCloseOnSelect = {true}
                     className="form-control input" />
                   <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                 </label>
@@ -309,8 +309,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={this.state.endDate}
-                    minDate={this.state.startDate}
-                    maxDate={this.state.endDate}
+                    minDate = {this.state.startDate}
+                    maxDate={new Date()}
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
@@ -337,14 +337,14 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-3"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-4">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
-                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ? 
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
                   <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
-                : null }
+                  : null}
               </div>
               <div className="col-4">
-                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ? 
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
                   <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
-                  : null }
+                  : null}
               </div>
               <div className="col-1">
                 {!timesheet.isEdit
@@ -490,9 +490,9 @@ class InOutTimeUpdateComponent extends React.Component {
             </div> : null}
           </div>
         })}
-        
+
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
-        
+
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
@@ -505,12 +505,12 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
-          <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
-          : null
+          this.state.timesheets.filter(t => t.isEdit).length > 0 ?
+            <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+            : null
         }
         {this.errorWithoutItem("files")}
-        
+
         {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
       </div>
     )

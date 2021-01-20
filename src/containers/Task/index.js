@@ -4,6 +4,7 @@ import RequestComponent from '../Task/Request/'
 import ApprovalComponent from '../Task/Approval/'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
+import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner'
 
 class Task extends React.Component {
     constructor(props) {
@@ -51,6 +52,7 @@ class Task extends React.Component {
                     : null
                 }
             </Tabs>
+
         )
     }
 }

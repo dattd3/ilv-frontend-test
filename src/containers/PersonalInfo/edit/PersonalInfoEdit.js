@@ -264,8 +264,9 @@ class PersonalInfoEdit extends React.Component {
   }
 
   isValidPhoneNumber = (phone) => {
-    const filter = /[^a-zA-Z]+/
-    return phone.search(filter) ? false : true
+    debugger
+    const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+    return phoneRegex.test(phone)
   }
 
   getValidationEducationItem = (education) => {
@@ -325,6 +326,10 @@ class PersonalInfoEdit extends React.Component {
         }
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
           errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
+        }
+        debugger
+        if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
+          errors.urgentContactNo = '(Số điện thoại khẩn cấp không đúng định dạng)'
         }
         if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
           errors.birthProvince = '(Nơi sinh là bắt buộc)'
@@ -532,7 +537,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareMaritalInfo = (newMainInfo, userDetail) => {
-    debugger
     let data = [];
     if(newMainInfo.MaritalStatus === "0")
     {
@@ -574,7 +578,6 @@ class PersonalInfoEdit extends React.Component {
           obj.natio = nationalityAndBirthCountry[1];
           obj.gblnd = nationalityAndBirthCountry[0];
           obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
-          debugger
           const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
           obj.famst = maritalInfo[0];
           obj.famdt = maritalInfo[1];
@@ -748,7 +751,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareEducationToSap = (data) => {
-    debugger
     let listObj = [];
     if (data && data.update) {
       const update = data.update;

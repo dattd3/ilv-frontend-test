@@ -344,12 +344,10 @@ class PersonalComponent extends React.Component {
 
     render() {
         const userDetail = this.props.userDetail
-        console.log(userDetail)
-        console.log(this.state)
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.TEXT } })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriage.TEXT } })
-        const nations = this.props.nations.map(nation => { return { value: nation.ID, label: nation.TEXT } })
+        const nations = this.props.nations.map(nation => { return { value: nation.ID, label: nation.TEXT + " (" + nation.ID + ")" } })
         const countries = this.props.countries.map(country => { return { value: country.ID, label: country.TEXT } })
         const banks = this.props.banks.map(bank => { return { value: bank.ID, label: bank.TEXT } })
         const marriage = this.props.marriages.find(m => m.ID == userDetail.marital_status_code)

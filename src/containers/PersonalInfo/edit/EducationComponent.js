@@ -220,7 +220,7 @@ class EducationComponent extends React.Component {
       })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
-    
+
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
@@ -258,8 +258,8 @@ class EducationComponent extends React.Component {
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="input-container">
-          <label>
+        <div className="row">
+          <div className="col-sm-6">
             <DatePicker
               name="from_time"
               key="from_time"
@@ -268,28 +268,40 @@ class EducationComponent extends React.Component {
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
-              className="form-control date" />&nbsp;-&nbsp;
-            <DatePicker
-              name="to_time"
-              key="to_time"
-              maxDate={new Date()}
-              selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
-              onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
-              dateFormat="dd-MM-yyyy"
-              locale="vi"
-              className="form-control date" />
-          </label>
-          {
-            (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-              <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].fromTime}</p> : null
-          }
-          {
-            (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-              <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].toTime}</p> : null
-          }
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="From"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
+          <div className="col-sm-6">
+          <DatePicker
+            name="to_time"
+            key="to_time"
+            maxDate={new Date()}
+            selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+            onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
+            dateFormat="dd-MM-yyyy"
+            locale="vi"
+            showMonthDropdown={true}
+            showYearDropdown={true}
+            autoComplete='off'
+            placeholderText="To"
+            popperPlacement="bottom-end"
+            className="form-control input" />
+        </div>
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].fromTime}</p> : null
+        }
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].toTime}</p> : null
+        }
         </div>
       </Col>
-    </Row>
+    </Row >
   }
 
   educationInput(item, index, name) {
@@ -302,8 +314,7 @@ class EducationComponent extends React.Component {
       })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
-    
-    
+
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
@@ -341,8 +352,8 @@ class EducationComponent extends React.Component {
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="input-container">
-          <label>
+        <div className="row">
+          <div className="col-sm-6">
             <DatePicker
               name="from_time"
               key="from_time"
@@ -351,7 +362,14 @@ class EducationComponent extends React.Component {
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
-              className="form-control date" />&nbsp;-&nbsp;
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="From"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
+          <div className="col-sm-6">
             <DatePicker
               name="to_time"
               key="to_time"
@@ -360,8 +378,13 @@ class EducationComponent extends React.Component {
               onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
-              className="form-control date" />
-          </label>
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="To"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
           {
             (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
               <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].fromTime}</p> : null
@@ -369,7 +392,7 @@ class EducationComponent extends React.Component {
           {
             (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
               <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].toTime}</p> : null
-          } 
+          }
         </div>
       </Col>
     </Row>
@@ -387,7 +410,7 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="detail">
-        {item.major_id === 0 ? item.other_major : item.major}
+          {item.major_id === 0 ? item.other_major : item.major}
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
