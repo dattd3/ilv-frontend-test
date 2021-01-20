@@ -16,8 +16,10 @@ buildJob:
     - hrms
   script:
     - cd /opt/hrms//myvinpearl-web
-    - yarn install
+    - git checkou $CI_COMMIT_REF_NAME
+    - git reset --hard
     - git pull origin $CI_COMMIT_REF_NAME
+    - yarn install
     - yarn build:staging 
     - echo "Build successful"
   only:
