@@ -24,7 +24,7 @@ build_dist:
     - npm cache clean --force
     - yarn cache clean
     - yarn install
-    - yarn build:staging 
+    - yarn build:staging:linux
     - echo "Build successful"
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
