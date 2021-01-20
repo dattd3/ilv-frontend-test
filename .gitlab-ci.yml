@@ -10,8 +10,9 @@ stages:
   - build
   - deploy
 
-buildJob:
+build_dist:
   stage: build
+  environment: development
   tags:
     - hrms
   script:
@@ -25,6 +26,11 @@ buildJob:
     - yarn install
     - yarn build:staging 
     - echo "Build successful"
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
+    paths:
+      - build/
+    expire_in: 3 days
   only:
     refs:
       - develop
