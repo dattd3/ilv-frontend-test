@@ -16,14 +16,7 @@ build_dist:
   tags:
     - hrms
   script:
-    - cd /opt/hrms//myvinpearl-web
-    - git fetch
-    - git reset --hard
-    - git checkout $CI_COMMIT_REF_NAME
-    - git pull origin $CI_COMMIT_REF_NAME
-    - yarn cache clean
-    - yarn install
-    - CI='' yarn build:staging:linux
+    - python3 /opt/hrms/deployment.py
     - echo "Build successful"
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
