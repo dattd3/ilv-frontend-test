@@ -35,6 +35,7 @@ deploy_to_development_environment:
   script:
     - python3 /opt/hrms/deployment/deployment.py deploy web dev
     - echo "Deployed"
+  when: manual
   artifacts:
     expire_in: 1 hour
     paths:
@@ -48,8 +49,9 @@ deploy_to_production_environment:
   tags:
     - hrms
   script:
-    - python3 /opt/hrms/deployment/deployment.py deploy web dev
+    - python3 /opt/hrms/deployment/deployment.py deploy web prod
     - echo "Deployed"
+  when: manual
   artifacts:
     expire_in: 1 hour
     paths:
