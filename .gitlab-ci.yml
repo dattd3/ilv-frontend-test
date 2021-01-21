@@ -28,12 +28,12 @@ build_dist:
       - develop
       - feature/rollout
 
-deployJob:
+deploy_to_dev:
   stage: deploy
   tags:
     - hrms
   script:
-    - echo "Deploying to server"
+    - python3 /opt/hrms/deployment/deployment.py deploy web dev
     - echo "Deployed"
   artifacts:
     expire_in: 1 hour
