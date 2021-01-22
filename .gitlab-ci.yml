@@ -16,7 +16,7 @@ build_dist:
   tags:
     - hrms
   script:
-    - python3 /opt/hrms/deployment/deployment.py build web dev
+    - python3 deployment.py build web dev
     - echo "Build successful"
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
@@ -33,7 +33,7 @@ deploy_to_development_environment:
   tags:
     - hrms
   script:
-    - python3 /opt/hrms/deployment/deployment.py deploy web dev
+    - python3 deployment.py deploy web dev
     - echo "Deployed"
   when: manual
   artifacts:
@@ -49,7 +49,7 @@ deploy_to_production_environment:
   tags:
     - hrms
   script:
-    - python3 /opt/hrms/deployment/deployment.py deploy web prod
+    - python3 deployment.py deploy web prod
     - echo "Deployed"
   when: manual
   artifacts:
