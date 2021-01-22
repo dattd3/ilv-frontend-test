@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import { debounce } from 'lodash';
 registerLocale("vi", vi)
 
 class PersonalComponent extends React.Component {
@@ -174,8 +175,9 @@ class PersonalComponent extends React.Component {
         return result;
     }
 
-    handleTextInputChange(event) {
-        const target = event.target
+    handleTextInputChange = (event) => {
+        let targetVal = event.target
+        const target = targetVal
         const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name;
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
@@ -185,6 +187,10 @@ class PersonalComponent extends React.Component {
                 [this.mappingFields[name]]: value
             }
         })
+    }
+
+    onChangeDebounced = (targetVal) => {
+        
     }
 
     handleSelectInputs = (e, name, textOld) => {
@@ -418,7 +424,7 @@ class PersonalComponent extends React.Component {
                             <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={birthProvinces} isClearable={true}
                                 value={birthProvinces.filter(p => p.value == this.state.userDetail.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.birthProvince) ? <p className="text-danger">{this.state.validationMessagesFromParent.birthProvince}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.birthProvince) ? <p className="text-danger">{this.state.validationMessagesFromParent.birthProvince}</p> : null
                             }
                         </div>
                     </div>
@@ -470,7 +476,7 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6 form-inline">
                             <input className="form-control" name="PersonalIdentifyNumber" type="text"
-                                value={this.state.userDetail.personal_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
+                                value={this.state.userDetail.personal_id_no || ""} onChange={(e) => this.handleTextInputChange(e)} />
                             {
                                 (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyNumber}</p> : null
                             }
@@ -750,7 +756,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="BankAccountNumber" type="text" value={this.state.userDetail.bank_number || ""}
                                 onChange={this.handleTextInputChange.bind(this)} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bankAccountNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.bankAccountNumber}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bankAccountNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.bankAccountNumber}</p> : null
                             }
                         </div>
                     </div>
@@ -765,7 +771,7 @@ class PersonalComponent extends React.Component {
                             <Select placeholder="Lựa chọn ngân hàng" name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
                                 onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
                             {
-                            (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bank) ? <p className="text-danger">{this.state.validationMessagesFromParent.bank}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bank) ? <p className="text-danger">{this.state.validationMessagesFromParent.bank}</p> : null
                             }
                         </div>
                     </div>

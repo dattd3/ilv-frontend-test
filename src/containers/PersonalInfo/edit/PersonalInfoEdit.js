@@ -172,16 +172,20 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value, textOld, textNew) {
+    debugger
     let textForSelectOption = name + "Text";
     let oldMainInfo = {};
     let newMainInfo = {};
-    if (textOld != null && textOld != "" && textNew != null && textNew != "") {
+    if (value != null && value != "") {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old, [textForSelectOption]: textOld };
-      newMainInfo = { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: textNew };
+      newMainInfo = { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: (textNew != null && textNew != "") ? textNew : null};
     } else {
-      oldMainInfo = { ...this.state.OldMainInfo, [name]: old };
-      newMainInfo = { ...this.state.NewMainInfo, [name]: value };
+      oldMainInfo = { ...this.state.OldMainInfo };
+      newMainInfo = { ...this.state.NewMainInfo };
+      delete newMainInfo[name]
+      delete newMainInfo[textForSelectOption]
     }
+    if(!newMainInfo[textForSelectOption] || newMainInfo[textForSelectOption] === "") delete newMainInfo[textForSelectOption]
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
       OldMainInfo: oldMainInfo,
@@ -204,6 +208,8 @@ class PersonalInfoEdit extends React.Component {
     });
     let personalUpdating = Object.assign(this.state.personalUpdating, userProfileHistoryMainInfo);
     this.setState({ personalUpdating: personalUpdating });
+    let dataClone = this.removeItemForValueNull({ ...this.state.data, update: updatedData })
+    this.verifyInput(dataClone)
   }
 
   removePersonalInfo(name) {
@@ -230,11 +236,16 @@ class PersonalInfoEdit extends React.Component {
   fileUploadInputChange() {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
     this.setState({ files: this.state.files.concat(files) })
+    let dataClone = this.removeItemForValueNull({ ...this.state.data })
+    const errors = this.verifyInput(dataClone, this.state.files.concat(files))
   }
 
   removeFile(index) {
     this.inputReference.current.value = ''
+    let newFiles = [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)]
     this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+    let dataClone = this.removeItemForValueNull({ ...this.state.data })
+    const errors = this.verifyInput(dataClone, newFiles)
   }
 
   error = (name) => {
@@ -245,13 +256,15 @@ class PersonalInfoEdit extends React.Component {
     return (errors && errors[name]) ? <p className="text-danger">{errors[name]}</p> : null
   }
 
-  isValidFileUpload = (data) => {
+  isValidFileUpload = (data, files) => {
+    debugger
     const dataPostToSAP = this.getDataPostToSap(data);
     if (dataPostToSAP && dataPostToSAP.contact && _.size(dataPostToSAP.contact) > 0 && _.size(dataPostToSAP.information) == 0 && _.size(dataPostToSAP.address) == 0
       && _.size(dataPostToSAP.bank) == 0 && _.size(dataPostToSAP.education) == 0 && _.size(dataPostToSAP.race) == 0 && _.size(dataPostToSAP.document) == 0) {
       return true
     } else {
-      if (_.size(this.state.files) === 0) {
+      files = files ? files : this.state.files
+      if (_.size(files) === 0) {
         return false
       }
       return true;
@@ -264,7 +277,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   isValidPhoneNumber = (phone) => {
-    debugger
     const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
     return phoneRegex.test(phone)
   }
@@ -303,10 +315,11 @@ class PersonalInfoEdit extends React.Component {
     return null
   }
 
-  verifyInput = (data) => {
+  verifyInput = (data, files = null) => {
+    debugger
     let errors = {}
     let newMainInfo = {}
-    const isValidFileUpload = this.isValidFileUpload(data)
+    const isValidFileUpload = this.isValidFileUpload(data, files)
 
     if ((data && !data.create && !data.update) || (data && !data.create && data.update && data.update.userProfileHistoryMainInfo
       && data.update.userProfileHistoryMainInfo.NewMainInfo && _.size(data.update.userProfileHistoryMainInfo.NewMainInfo) == 0)) {
@@ -327,7 +340,6 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
           errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
         }
-        debugger
         if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
           errors.urgentContactNo = '(Số điện thoại khẩn cấp không đúng định dạng)'
         }
@@ -393,6 +405,10 @@ class PersonalInfoEdit extends React.Component {
         errors.create = createErrors
       }
     }
+
+
+
+
     this.setState({ errors: errors })
     return errors
   }
@@ -422,6 +438,15 @@ class PersonalInfoEdit extends React.Component {
         }
       }
     }
+    if (data && data.update && data.update.userProfileHistoryEducation && data.update.userProfileHistoryEducation.length === 0) {
+      delete data.update.userProfileHistoryEducation
+      if (_.isEmpty(data.update)) delete data.update
+    }
+    if (data && data.create && data.create.educations) {
+      if (_.isEmpty(data.create.educations)) delete data.create.educations
+      if (_.isEmpty(data.create)) delete data.create
+    }
+    if(_.isEmpty(data.create)) delete data.create
     return data
   }
 
@@ -496,7 +521,7 @@ class PersonalInfoEdit extends React.Component {
           } else {
             this.handleShowResultModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true);
             setTimeout(() => { window.location.href = "/personal-info"; }, 2000);
-            
+
           }
         }
       })
@@ -538,8 +563,7 @@ class PersonalInfoEdit extends React.Component {
 
   prepareMaritalInfo = (newMainInfo, userDetail) => {
     let data = [];
-    if(newMainInfo.MaritalStatus === "0")
-    {
+    if (newMainInfo.MaritalStatus === "0") {
       data[0] = newMainInfo.MaritalStatus;
       data[1] = ""
       return data;
@@ -754,12 +778,12 @@ class PersonalInfoEdit extends React.Component {
     let listObj = [];
     if (data && data.update) {
       const update = data.update;
-      if (update && update.userProfileHistoryEducation && update.userProfileHistoryEducation[0].NewEducation) {
+      if (update && update.userProfileHistoryEducation && update.userProfileHistoryEducation[0] && update.userProfileHistoryEducation[0].NewEducation) {
         let educationUpdate = update.userProfileHistoryEducation;
         for (let i = 0, len = educationUpdate.length; i < len; i++) {
           const item = educationUpdate[i];
           if (item.NewEducation.SchoolCode || item.NewEducation.DegreeType || item.NewEducation.MajorCode || item.NewEducation.FromTime || item.NewEducation.ToTime) {
-            
+
             let oldEducation = item.OldEducation
             const schoolCode = item.NewEducation.SchoolCode;
             const majorCode = item.NewEducation.MajorCode;
@@ -852,7 +876,7 @@ class PersonalInfoEdit extends React.Component {
 
   preparePassportInfo = (data) => {
     const newMainInfo = data.NewMainInfo;
-    if (newMainInfo.PassportNumber || newMainInfo.PassportDate || newMainInfo.PassportPlace) {
+    if (newMainInfo && (newMainInfo.PassportNumber || newMainInfo.PassportDate || newMainInfo.PassportPlace)) {
       const userDetail = this.state.userDetail;
       const passportIdNo = userDetail.passport_id_no;
       let obj = { ...this.objectToSap };
@@ -878,7 +902,7 @@ class PersonalInfoEdit extends React.Component {
 
   preparePersonalIdentifyInfo = (data) => {
     const newMainInfo = data.NewMainInfo;
-    if (newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) {
+    if (newMainInfo && (newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace)) {
       const userDetail = this.state.userDetail;
       const personalIdNo = userDetail.personal_id_no;
       let obj = { ...this.objectToSap };
@@ -968,6 +992,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareEducationModel = (data, action, type) => {
+
     let obj = {
       SchoolCode: data.school_id || "",
       SchoolName: data.university_name,
@@ -980,6 +1005,8 @@ class PersonalInfoEdit extends React.Component {
     }
     let objClone = { ...obj };
     if (action === "insert" || (action === "update" && type === "new")) {
+      let isObjectEmpty = !Object.values(objClone).some(x => (x !== null && x !== ""));
+      if (isObjectEmpty) return null
       objClone.DegreeTypeText = data.degree_text || data.academic_level;
       objClone.MajorCodeText = data.major_name || "";
     } else {
@@ -995,7 +1022,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   preparePreEducation = (education) => {
-    if (education && _.size(education) > 0) {
+    if (education && _.size(education) > 0 && !_.isEmpty(education)) {
       return {
         schoolId: education.school_id,
         otherSchool: this.resetValueInValid(education.other_uni_name),
@@ -1020,38 +1047,44 @@ class PersonalInfoEdit extends React.Component {
       if (oldEdu != null && newEdu != null && !_.isEqual(oldEdu, newEdu)) {
         const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "old");
         const newObj = this.prepareEducationModel(element, "update", "new");
-        const obj =
-        {
-          OldEducation: oldObj,
-          NewEducation: newObj
+        if (newObj) {
+          const obj =
+          {
+            OldEducation: oldObj,
+            NewEducation: newObj
+          }
+          userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
         }
-        userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
-        this.setState({
-          userProfileHistoryEducation: userProfileHistoryEducation
-        }, () => {
-          this.setState({
-            update: {
-              ...this.state.update,
-              userProfileHistoryEducation: this.state.userProfileHistoryEducation
-            }
-          }, () => {
-            this.setState({
-              data: {
-                ...this.state.data,
-                update: this.state.update
-              }
-            });
-          })
-        });
       }
     });
+    this.setState({
+      userProfileHistoryEducation: userProfileHistoryEducation
+    }, () => {
+      this.setState({
+        update: {
+          ...this.state.update,
+          userProfileHistoryEducation: this.state.userProfileHistoryEducation
+        }
+      }, () => {
+        this.setState({
+          data: {
+            ...this.state.data,
+            update: this.state.update
+          }
+        });
+
+        let dataClone = this.removeItemForValueNull({ ...this.state.data, update: this.state.update })
+        this.verifyInput(dataClone)
+      })
+    });
+
   }
 
   addEducation(value) {
     let tempEducationArr = [];
     value.forEach(element => {
       const educations = this.prepareEducationModel(element, "insert", "");
-      tempEducationArr = tempEducationArr.concat(educations);
+      if (educations) tempEducationArr = tempEducationArr.concat(educations);
     });
     const educations = {
       educations: tempEducationArr
@@ -1065,6 +1098,8 @@ class PersonalInfoEdit extends React.Component {
           create: this.state.create
         }
       });
+      let dataClone = this.removeItemForValueNull({ ...this.state.data, create: this.state.create })
+      this.verifyInput(dataClone)
     });
   }
 

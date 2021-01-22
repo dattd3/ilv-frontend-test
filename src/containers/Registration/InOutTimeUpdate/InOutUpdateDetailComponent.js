@@ -28,7 +28,7 @@ class InOutUpdateDetailComponent extends React.Component {
       ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
         const endTimeName = `end_time${n}_fact_update`
-        if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
+        if (!this.isNullCustomize(timesheet[startTimeName])) {
           dataToSAP.push({
             MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
@@ -40,7 +40,7 @@ class InOutUpdateDetailComponent extends React.Component {
           })
         }
 
-        if (!this.isNullCustomize(timesheet[endTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+        if (!this.isNullCustomize(timesheet[endTimeName]) ) {
           dataToSAP.push({
             MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,

@@ -125,13 +125,11 @@ class BusinessTripComponent extends React.Component {
     const end = moment(endDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
     const config = {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
     
-    this.validationFromDB(start, end)
+    this.validationFromDB(start, end, startTimeInput, endTimeInput)
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/leave`, {
         perno: localStorage.getItem('employeeNo'),
@@ -163,7 +161,9 @@ class BusinessTripComponent extends React.Component {
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/validation-business-trip`, {
         from_date: startDate,
-        to_date: endDate
+        to_date: endDate,
+        from_time: startTime,
+        to_time: endTime
     }, config)
     .then(res => {
       if (res && res.data) {
