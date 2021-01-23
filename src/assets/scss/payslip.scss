@@ -106,18 +106,17 @@
     }
 
     .other-result-section {
-        overflow: hidden;
         .workday-information-table {
+            display: block;
+            overflow-x: auto;
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.5rem;
             background-color: #fff;
-   
             tbody {
                 border-spacing: 0; 
                 border: 1px solid #cccaca;
                 border-right: 2px solid #cccaca;
-          
                 .second-title {
                     td {
                         padding: 10px 0;
@@ -127,7 +126,7 @@
                     border: 1px solid #cccaca;
                 }
                 .same-width {
-                    width: 7.14%;
+                    //width: 7.14%;
                     padding: 10px 5px;
                 }
             }

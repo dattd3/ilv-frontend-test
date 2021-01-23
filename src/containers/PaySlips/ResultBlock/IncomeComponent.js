@@ -22,11 +22,14 @@ function IncomeComponent(props) {
         case 'V096':
             incomeTables = IncomeTablesConfig.Vinsoftware
             break
+        case 'V070':
+            incomeTables = IncomeTablesConfig.VinFast
+            break
         default:
             incomeTables = IncomeTablesConfig.Vinpearl
             break
     }
-    
+
     return (
         <>
             <table className="income-information-table">
