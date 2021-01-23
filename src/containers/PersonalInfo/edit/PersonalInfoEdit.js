@@ -491,6 +491,7 @@ class PersonalInfoEdit extends React.Component {
     }
 
     const updateFields = this.getFieldUpdates();
+    debugger
     const dataPostToSAP = this.getDataPostToSap(this.state.data);
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
@@ -562,6 +563,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareMaritalInfo = (newMainInfo, userDetail) => {
+    debugger
     let data = [];
     if (newMainInfo.MaritalStatus === "0") {
       data[0] = newMainInfo.MaritalStatus;
@@ -578,7 +580,7 @@ class PersonalInfoEdit extends React.Component {
         data[1] = this.getMaritalDateForStatus(userDetail.marital_status_code, newMainInfo.MarriageDate, userDetail.marital_date);
       } else {
         data[0] = userDetail.marital_status_code;
-        data[1] = userDetail.marital_date;
+        data[1] = this.isNullCustomize(userDetail.marital_date) ? "" : moment(userDetail.marital_date, 'DD-MM-YYYY').format('YYYYMMDD');
       }
     }
     return data;
@@ -602,6 +604,7 @@ class PersonalInfoEdit extends React.Component {
           obj.natio = nationalityAndBirthCountry[1];
           obj.gblnd = nationalityAndBirthCountry[0];
           obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
+          debugger
           const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
           obj.famst = maritalInfo[0];
           obj.famdt = maritalInfo[1];

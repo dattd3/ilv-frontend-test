@@ -354,7 +354,8 @@ class TaskList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {tasks.map((task, index) => {
+                            {tasks.length > 0 ?
+                            tasks.map((task, index) => {
                                 const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
                                 let isShowEditButton = this.isShowEditButton(task.status);
                                 let isShowEvictionButton = this.isShowEvictionButton(task.status);
@@ -414,7 +415,9 @@ class TaskList extends React.Component {
                                         </td>
                                     </tr>
                                 )
-                            })}
+                            })
+                        : <tr className="text-center"><th colSpan={9}>Không có dữ liệu</th></tr>
+                        }
                         </tbody>
                     </table>
                 </div>

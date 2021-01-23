@@ -8,7 +8,8 @@ class ApprovalComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      tasks: []
+      tasks: [],
+      dataResponse: {}
     }
   }
 
@@ -23,7 +24,7 @@ class ApprovalComponent extends React.Component {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
-          this.setState({tasks : res.data.data.listUserProfileHistories});
+          this.setState({tasks : res.data.data.listUserProfileHistories, dataResponse: res.data.data});
         }
       }
     }).catch(error => {
@@ -50,8 +51,9 @@ class ApprovalComponent extends React.Component {
   }
 
   render() {
+    console.log(this.state.tasks)
     return (
-      this.state.tasks && this.state.tasks.length  ?
+      this.state.dataResponse ?
       <div className="task-section">
         <div className="block-title">
           <h4 className="title text-uppercase">Quản lý thông tin yêu cầu</h4>
