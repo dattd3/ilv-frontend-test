@@ -26,7 +26,7 @@ build_development:
   only:
     refs:
       - develop
-      - feature/rollout
+      - /^feature/.*$/
 
 build_production:
   stage: build
