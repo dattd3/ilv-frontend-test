@@ -26,7 +26,7 @@ build_development:
   only:
     refs:
       - develop
-      - /^feature/.*$/
+      - /^feature1/.*$/
 
 build_production:
   stage: build
