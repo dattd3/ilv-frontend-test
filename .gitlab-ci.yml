@@ -30,7 +30,7 @@ build_development:
 
 build_production:
   stage: build
-  environment: Production
+  environment: development
   tags:
     - hrms-production
   script:
