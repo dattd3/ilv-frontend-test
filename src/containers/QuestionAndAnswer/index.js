@@ -160,7 +160,7 @@ class MyComponent extends React.Component {
                 </div>
                   : null
               }) : <div><p className="text-center">Không có kết quả phù hợp, vui lòng lựa chọn tìm từ khóa khác!</p></div>
-            ) : <LoadingSpinner />
+            ) : null
         }
       </div >
     )

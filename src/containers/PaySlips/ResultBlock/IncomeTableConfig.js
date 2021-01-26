@@ -271,6 +271,7 @@ export const IncomeTablesConfig = {
                         {
                             label: 'Tiền thưởng = Sum(I.2.1.1 : I.2.1.7) - I.2.1.6',
                             field: 'bonus_amount',
+                            isSkipSumLabel: true,
                             level4: [
                                 // {label: 'Thưởng tay nghề', field: 'todo'},
                                 // {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
@@ -303,6 +304,7 @@ export const IncomeTablesConfig = {
                         {
                             label: 'Các khoản chi trả khác = Sum(I.2.2.1 : I.2.2.22) - I.2.2.18 - I.2.2.20',
                             field: 'other_payment_amount',
+                            isSkipSumLabel: true,
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
                                 {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
@@ -387,8 +389,9 @@ export const IncomeTablesConfig = {
                 },
 
                 {
-                    label: 'THUẾ TNCN = Sum(II.3.3.1 : II.3.3.2)',
+                    label: 'THUẾ TNCN = Sum(II.3.3)',
                     field: 'personal_income_tax_amount',
+                    isSkipSumLabel: true,
                     level3: [
                         {
                             label: 'Tổng giảm trừ gia cảnh và các khoản giảm trừ khác',
@@ -434,7 +437,7 @@ export const IncomeTablesConfig = {
     VinFast: [
         {
             index: 'I',
-            label: 'CÁC KHOẢN PHÁT SINH TĂNG THU NHẬP = Sum (I.1 : I.3)',
+            label: 'CÁC KHOẢN PHÁT SINH TĂNG THU NHẬP = Sum (I.1 : I.2)',
             field: 'income_accrued_amount',
             level2: [
                 {
@@ -547,7 +550,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Trợ cấp thôi việc', field: 'severance_allowance'},
                                 {label: 'Truy lĩnh', field: 'back_pay'},
                                 {label: 'Hỗ trợ thuê xe VF', field: 'car_rent_allowance'},
-                                {label: 'Phúc lợi hỗ trợ xe VF', field: 'car_rent_allowance_welfare '},
+                                {label: 'Phúc lợi hỗ trợ xe VF', field: 'car_rent_allowance_welfare'},
                                 {label: 'Hỗ trợ lãi suất VF', field: 'interest_rate_allowance'},
                                 {label: 'Phúc lợi Net (GrossUp) (Vinmec, Vinschool, Thưởng tiền mặt,…)', field: 'welfare_net_allowance'},
                                 {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
@@ -575,10 +578,11 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ các khoản chi hộ (Vay quỹ thiện tâm, QTT NLĐ nộp thêm,...)', field: 'loan_reduction'},
                         {label: 'Khấu trừ tạm ứng thu nhập', field: 'advance_reduction'},
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
-                        {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction '},
+                        {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
                         {label: 'Khấu trừ KTX, BUS Vinpearl PQ', field: 'bus_reduction'},
                         // {label: 'Bồi thường ưu đãi giá/cấp bậc mua xe VinFast', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
                         {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                        {label: 'Khấu trừ thuê/vay mua xe VinFast', field: 'vf_car_and_electric_motobike_leasing_deduction'},
                     ]
                 },
                 {
@@ -613,8 +617,9 @@ export const IncomeTablesConfig = {
                 },
 
                 {
-                    label: 'THUẾ TNCN',
+                    label: 'THUẾ TNCN = Sum(II.3.3)',
                     field: 'personal_income_tax_amount',
+                    isSkipSumLabel: true,
                     level3: [
                         {
                             label: 'Tổng giảm trừ gia cảnh và các khoản giảm trừ khác',

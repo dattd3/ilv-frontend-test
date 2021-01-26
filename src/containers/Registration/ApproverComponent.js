@@ -1,7 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
-import _ , { debounce } from 'lodash'
+import _, { debounce } from 'lodash'
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -13,8 +13,8 @@ const MyOption = props => {
     <div ref={innerRef} {...innerProps} className="approver">
       <div className="d-block clearfix">
         <div className="float-left mr-2 w-20">
-            <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
-          </div>
+          <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
+        </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullname}</div>
           <div className="comment"><i>({props.data.userAccount}) {props.data.current_position}</i></div>
@@ -37,6 +37,43 @@ class ApproverComponent extends React.Component {
   }
 
   componentDidMount() {
+    let approverModel = {
+      label: "",
+      value: "",
+      fullname: "",
+      avatar: "",
+      employeeLevel: "",
+      pnl: "",
+      orglv2Id: "",
+      userAccount: "",
+      current_position: "",
+      department: ""
+    }
+    let config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+      .then(res => {
+        if (res && res.data && res.data.data && res.data.data.length > 0) {
+          let manager = res.data.data[0]
+          let managerApproval = {...approverModel, 
+            label : manager.fullname, 
+            value: manager.userid ,
+            fullname : manager.fullname, 
+            userAccount: manager.userid,
+            current_position: manager.title,
+            department: manager.department
+          }
+          this.setState({ approver: managerApproval})
+          this.props.updateApprover(managerApproval, true)
+        }
+      }).catch(error => {
+
+      });
+
+
     if (this.props.approver) {
       this.setState({ approver: this.props.approver })
     }
@@ -50,10 +87,10 @@ class ApproverComponent extends React.Component {
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel) => {
-    const levelApprover = ["P2", "P1", "T4", "T3", "T2", "T1"]
+    const levelApprover = ["C", "P2", "P1", "T4", "T3", "T2", "T1"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(levelApprover, function(item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(levelApprover, function(item) { return item == levelApproverFilter });
+    let indexCurrentUserLevel = _.findIndex(levelApprover, function (item) { return item == currentUserLevel });
+    let indexApproverFilterLevel = _.findIndex(levelApprover, function (item) { return item == levelApproverFilter });
 
     if (indexApproverFilterLevel == -1 || indexCurrentUserLevel >= indexApproverFilterLevel) {
       return false
@@ -62,7 +99,7 @@ class ApproverComponent extends React.Component {
     if (levelApprover.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
       return true
     }
-    
+
     return false
   }
 
@@ -75,28 +112,28 @@ class ApproverComponent extends React.Component {
           'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
-  
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value,  should_check_superviser: true}, config)
-      .then(res => {
-        if (res && res.data && res.data.data) {
-          const data = res.data.data || []
-          const users = data.map(res => {
-            return {
-              label: res.fullname,
-              value: res.user_account,
-              fullname: res.fullname,
-              avatar: res.avatar,
-              employeeLevel: res.employee_level,
-              pnl: res.pnl,
-              orglv2Id: res.orglv2_id,
-              userAccount: res.user_account,
-              current_position: res.title,
-              department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
-            }
-          })
-          this.setState({ users: users })
-        }
-      }).catch(error => { })
+
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value, should_check_superviser: true }, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+            const data = res.data.data || []
+            const users = data.map(res => {
+              return {
+                label: res.fullname,
+                value: res.user_account,
+                fullname: res.fullname,
+                avatar: res.avatar,
+                employeeLevel: res.employee_level,
+                pnl: res.pnl,
+                orglv2Id: res.orglv2_id,
+                userAccount: res.user_account,
+                current_position: res.title,
+                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+              }
+            })
+            this.setState({ users: users })
+          }
+        }).catch(error => { })
     }
   }
 
@@ -117,7 +154,7 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-
+    
     return <div className="approver">
       <div className="box shadow">
         <div className="row">

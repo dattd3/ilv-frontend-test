@@ -172,7 +172,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   updatePersonalInfo(name, old, value, textOld, textNew) {
-    debugger
     let textForSelectOption = name + "Text";
     let oldMainInfo = {};
     let newMainInfo = {};
@@ -257,7 +256,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   isValidFileUpload = (data, files) => {
-    debugger
     const dataPostToSAP = this.getDataPostToSap(data);
     if (dataPostToSAP && dataPostToSAP.contact && _.size(dataPostToSAP.contact) > 0 && _.size(dataPostToSAP.information) == 0 && _.size(dataPostToSAP.address) == 0
       && _.size(dataPostToSAP.bank) == 0 && _.size(dataPostToSAP.education) == 0 && _.size(dataPostToSAP.race) == 0 && _.size(dataPostToSAP.document) == 0) {
@@ -316,7 +314,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   verifyInput = (data, files = null) => {
-    debugger
     let errors = {}
     let newMainInfo = {}
     const isValidFileUpload = this.isValidFileUpload(data, files)
@@ -491,7 +488,6 @@ class PersonalInfoEdit extends React.Component {
     }
 
     const updateFields = this.getFieldUpdates();
-    debugger
     const dataPostToSAP = this.getDataPostToSap(this.state.data);
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
@@ -563,7 +559,6 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareMaritalInfo = (newMainInfo, userDetail) => {
-    debugger
     let data = [];
     if (newMainInfo.MaritalStatus === "0") {
       data[0] = newMainInfo.MaritalStatus;
@@ -604,7 +599,6 @@ class PersonalInfoEdit extends React.Component {
           obj.natio = nationalityAndBirthCountry[1];
           obj.gblnd = nationalityAndBirthCountry[0];
           obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
-          debugger
           const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
           obj.famst = maritalInfo[0];
           obj.famdt = maritalInfo[1];
