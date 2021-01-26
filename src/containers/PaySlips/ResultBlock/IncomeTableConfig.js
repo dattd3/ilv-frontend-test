@@ -446,22 +446,15 @@ export const IncomeTablesConfig = {
                             field: 'base_salary_and_quality_of_work_bonus',
                             level4: [
                                 {label: 'Lương cơ bản', field: 'base_salary'},
-                                {label: 'Thưởng YTCLCV', field: 'quality_of_work_bonus'},
-                                {label: 'Thưởng Tay nghề', field: 'professional_bonus'},
-                                {label: 'Thưởng Service Charge', field: 'service_charge_bonus'},
+                                {label: 'Thưởng YTCLCV', field: 'quality_of_work_bonus'}
                             ]
                         },
                         {
                             label: 'Các loại phụ cấp lương (nếu có)',
                             field: 'allowance_amount',
                             level4: [
-                                {label: 'Phụ cấp chuyên môn/ tay nghề', field: 'professional_allowance'},
                                 {label: 'Phụ cấp kiêm nhiệm', field: 'pluralism_allowance'},
-                                {label: 'Phụ cấp chức vụ', field: 'position_allowance'},
-                                {label: 'Phụ cấp nguy hiểm độc hại', field: 'dangerous_allowance'},
-                                {label: 'Phụ cấp trách nhiệm', field: 'responsibility_allowance'},
-                                // {label: 'Phụ cấp ngoại ngữ', field: 'foreign_language_allowance'},
-                                // {label: 'Phụ cấp ngoại hình', field: 'looking_allowance'}
+                                {label: 'Phụ cấp trách nhiệm', field: 'responsibility_allowance'}
                             ]
                         },
                         {
@@ -506,8 +499,6 @@ export const IncomeTablesConfig = {
                             field: 'bonus_amount',
                             level4: [
                                 // {label: 'Thưởng tay nghề', field: 'todo'},
-                                {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
-                                {label: 'Thưởng ngoại hình', field: 'good_looking_bonus'},
                                 // {label: 'Thưởng service charge', field: 'todo'},
                                 {label: 'Thưởng khoán/KPI', field: 'kpi_bonus'},
                                 {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus'},
@@ -530,10 +521,6 @@ export const IncomeTablesConfig = {
                                 // {label: 'Thưởng chuyển giao hàng', field: 'goods_transportation_bonus'},
                                 // {label: 'Thưởng tăng cường Oncall', field: 'oncall_bonus'},
                                 {label: 'Thưởng khác (GROSS)', field: 'other_gross_bonus'},
-                                {label: 'Thưởng vượt khoán phòng', field: 'overtarget_bonus'},
-                                {label: 'Thưởng Caddie Fee', field: 'caddie_fee_bonus'},
-                                {label: 'Thưởng Công Trường', field: 'construction_site_bonus'},
-                                {label: 'Quyết toán SC', field: 'SC_bonus'},
                                 {label: 'Thưởng khoán/KPI (Net)', field: 'kpi_bonus_net'},
                                 {label: 'Thưởng Net', field: 'other_net_bonus'}
                             ]
@@ -550,9 +537,9 @@ export const IncomeTablesConfig = {
                                 {label: 'Hỗ trợ điện thoại', field: 'phone_allowance'},
                                 {label: 'Hỗ trợ điều kiện sinh hoạt', field: 'region_allowance'},
                                 {label: 'Hỗ trợ chuyển vùng', field: 'region_displace_allowance'},
-                                {label: 'Hỗ trợ ca gãy', field: 'shifts_allowance'},
+                                // {label: 'Hỗ trợ ca gãy', field: 'shifts_allowance'},
                                 {label: 'Hỗ trợ công việc đặc thù VP', field: 'specific_work_allowance'},
-                                {label: 'Hỗ trợ làm việc trên đảo tại Nha Trang', field: 'work_on_island_allowance'},
+                                // {label: 'Hỗ trợ làm việc trên đảo tại Nha Trang', field: 'work_on_island_allowance'},
                                 {label: 'Tiền làm thêm ngoài giờ', field: 'overtime_payment'},
                                 {label: 'Trợ cấp làm đêm', field: 'night_shift_allowance'},
                                 {label: 'Tiền thanh toán phép năm/nghỉ bù (nếu có)', field: 'annual_leave_payment'},
@@ -590,7 +577,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
                         {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction '},
                         {label: 'Khấu trừ KTX, BUS Vinpearl PQ', field: 'bus_reduction'},
-                        {label: 'Bồi thường ưu đãi giá/cấp bậc mua xe VinFast', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
+                        // {label: 'Bồi thường ưu đãi giá/cấp bậc mua xe VinFast', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
                         {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
                     ]
                 },

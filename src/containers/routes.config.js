@@ -306,6 +306,14 @@ export default [
           component: lazy(() => import("./Corporation/Vinpearl")),
         },
         {
+          key: "about-vinfast",
+          routeProps: {
+            exact: true,
+            path: map.Vinfast,
+          },
+          component: lazy(() => import("./Corporation/Vinfast")),
+        },
+        {
           key: "notifications",
           routeProps: {
             exact: true,

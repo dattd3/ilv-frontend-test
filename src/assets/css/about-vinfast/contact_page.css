@@ -1,0 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap');
+.about_us_banner {
+    background-image: url('https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/vinfast/contact_page/banner.jpg');
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+    margin-top: 50px;
+    padding-bottom: 150px;
+    padding-top: 70px;
+}
+
+body {
+    background: #1F2125;
+}
+
+.about_us_banner .overview {
+    width: 60%;
+    margin: 0 auto;
+    margin-bottom: 44px;
+}
+
+.about_us_banner .overview .ov_title {
+    font-size: 35px;
+    font-weight: 300;
+    color: #ffffff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.about_us_banner .overview .des_text {
+    color: #E4E4E4;
+    text-align: center;
+    width: 85%;
+    margin: 0 auto;
+}
+
+body.path-ve-chung-toi #header:not(.header-fix) nav.navbar-we-mega-menu .we-mega-menu-ul li>span {
+    color: #ffffff;
+}
+
+body.path-ve-chung-toi #header:not(.header-fix) button.btn.btn-outline-warning {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+body.path-ve-chung-toi #header:not(.header-fix) .box-car-head a {
+    color: #ffffff;
+}
+
+.journey_block {
+    background-image: url('https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/vinfast/contact_page/bg_block2_contact_page.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: black;
+}
+
+.jou_logo .img_wrapper {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 26px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.jou_logo .img_wrapper::before {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 330px;
+    left: -360px;
+    background: linear-gradient(90deg, rgba(88, 89, 91, 0) 0.01%, rgba(121, 122, 125, 0) 33.01%, #B8BABC 66.01%, #FFFFFF 100.01%);
+}
+
+.jou_logo .img_wrapper::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 330px;
+    right: -360px;
+    background: linear-gradient(90deg, rgba(88, 89, 91, 0) 0.01%, rgba(121, 122, 125, 0) 33.01%, #B8BABC 66.01%, #FFFFFF 100.01%);
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+.jou_title>span {
+    font-size: 45px;
+    font-weight: 400;
+    font-family: 'Yeseva One', cursive;
+    color: #ffffff;
+}
+
+.jou_title {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 100px;
+    margin-top: 50px;
+}
+
+.jou_detail .jou_des_text>.col-md-6 {
+    padding: 40px;
+}
+
+.jou_detail .jou_des_text>.col-md-6 p {
+    color: #ffffff;
+}
+
+.jou_detail #myTab {
+    position: relative;
+    border-bottom: 1px solid transparent;
+    margin-bottom: 20px;
+}
+
+.jou_detail ul#myTab li.nav-item.hl a .dotted {
+    width: 18px;
+    height: 18px;
+    margin-top: -9px;
+    top: 0px;
+    margin: 0 auto;
+    z-index: 9;
+}
+
+.jou_detail .dotted.active-before::before,
+.jou_detail .dotted.active-after::after {
+    background-color: #CC9036;
+}
+
+.jou_detail .dotted::before {
+    position: absolute;
+    content: '';
+    width: 50%;
+    height: 2px;
+    left: 0;
+    top: 10px;
+}
+
+.jou_detail ul#myTab li.nav-item a .dotted {
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    margin-top: -5px;
+}
+
+.jou_detail ul#myTab li.nav-item a.active .dotted {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+    margin-top: -9px;
+}
+
+.jou_detail .dotted::after {
+    position: absolute;
+    content: '';
+    width: 50%;
+    height: 2px;
+    right: 0;
+    top: 10px;
+}
+
+.jou_detail .dotted span {
+    background-color: #CC9036;
+    border-radius: 50%;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.jou_detail ul#myTab li.nav-item a h5 {
+    color: #cc9036;
+}
+
+.jou_detail .fade.active {
+    opacity: 1;
+}
+
+.jou_detail .card-body {
+    color: #ffffff;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 144px;
+}
+
+.jou_detail .tab-content,
+.jou_detail .card.card-step {
+    background: none;
+    border: 0;
+}
+
+.imprint_block .ip_body .text {
+    position: absolute;
+    width: 400px;
+    padding: 40px;
+    background-color: #D2D2D2;
+    right: 30px;
+    top: -20px;
+}
+
+.imprint_block .ip_body .text h3 {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.imprint_block h2 {
+    font-size: 45px;
+    font-weight: 400;
+    font-family: 'Yeseva One', cursive;
+    text-align: center;
+    margin-bottom: 60px;
+    padding-top: 70px;
+    color: #ffffff;
+}
+
+body.path-ve-chung-toi .block_4 {
+    background: url('https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/namnb/Rectangle541-1.png') no-repeat 0 0;
+    background-size: cover;
+    height: 791px;
+    margin-top: -125px;
+}
+
+body.path-ve-chung-toi .block_4 .text {
+    width: 450px;
+    padding: 40px;
+    background-color: #1F2125;
+    margin-bottom: 125px;
+}
+
+body.path-ve-chung-toi .block_4 .text h3 {
+    font-size: 30px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+body.path-ve-chung-toi .block_4 .text p {
+    color: #ffffff;
+}
+
+body.path-ve-chung-toi .block_5 {
+    background-image: url('https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/vinfast/contact_page/block5_bg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-color: #000000;
+}
+
+body.path-ve-chung-toi .block_5 .future_destination_text {
+    width: 754px;
+    margin: 0 auto;
+}
+
+body.path-ve-chung-toi .block_5 .future_destination_text h3 {
+    font-size: 30px;
+    font-weight: 500;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 80px 0 30px 0;
+}
+
+body.path-ve-chung-toi .block_5 .future_destination_text .text p {
+    color: #ffffff;
+    text-align: center;
+}
+
+body.path-ve-chung-toi .block_5 .img_wrapper {
+    width: 40%;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding-bottom: 50px;
+}
+
+/* Responsive */
+
+@media (max-width: 480px) {
+    .jou_title>span {
+        font-size: 30px;
+    }
+    .jou_detail .jou_des_text>.col-md-6 {
+        padding: 15px;
+    }
+    .imprint_block h2 {
+        padding: 0;
+    }
+    .imprint_block .ip_body .text {
+        margin-right: 0;
+        width: 300px;
+        padding: 20px;
+        flex: auto;
+    }
+    body.path-ve-chung-toi .block_5 .future_destination_text,
+    body.path-ve-chung-toi .block_5 .img_wrapper {
+        width: 90%;
+    }
+}
+
+/* End Responsive */
+
+.block_5 {
+    height: 447px;
+}
+
+.block6 {
+    margin-top: -70px;
+    margin-bottom: 50px;
+    background-color: #1F2125;
+}
+
+.shadow-bg {
+    background: url('https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/namnb/shadow-bg.png') no-repeat right center;
+    background-size: contain;
+    height: 633px;
+    margin-top: -255px;
+    position: relative;
+}
+
+.imprint_block {
+    margin-top: -378px;
+    background: black;
+}
+
+.block_4 {
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
+.jou_detail .nav-tabs .nav-item {
+    margin: 0;
+    margin-bottom: 30px;
+}
+
+#myTab>li>a {
+    border: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 7px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 991px) {
+    .about_us_page .inner {
+        background: url(https://myvinpearl-dev.s3-ap-southeast-1.amazonaws.com/images/Vinfast/img/namnb/Rectangle5770-sp.png) no-repeat 0 0;
+        background-size: cover;
+        height: 272px;
+        margin-top: 0;
+    }
+    .about_us_banner {
+        background: black;
+        margin: 0;
+    }
+    .about_us_banner .overview {
+        width: 90%;
+        margin-top: 0;
+    }
+    .about_us_banner .overview .ov_title {
+        font-size: 22px;
+    }
+    .jou_title,
+    .imprint_block h2 {
+        font-size: 30px;
+        line-height: 35px;
+        margin: 0 0 20px;
+    }
+    .ip_body {
+        padding: 0;
+    }
+    .imprint_block .ip_body .text {
+        position: relative;
+        top: -40px;
+        right: unset;
+        width: calc(100% - 30px);
+        margin: 0 auto;
+    }
+    body.path-ve-chung-toi .block_4 {
+        margin: 0;
+        height: auto;
+        background: none;
+    }
+    body.path-ve-chung-toi .block_4 .text h3 {
+        font-weight: 500;
+        font-size: 30px;
+        line-height: 37px;
+    }
+    body.path-ve-chung-toi .block_4 .text {
+        width: 100%;
+        padding: 40px 10px 0;
+        margin-bottom: 0;
+    }
+    .block_5 {
+        height: auto;
+    }
+    .block6 {
+        margin-top: 0
+    }
+    .imprint_block .ip_body .text h3 {
+        font-size: 28px;
+        width: 110%;
+    }
+    body.path-ve-chung-toi .block_4 .text h3 {
+        font-size: 28px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    body.path-ve-chung-toi #header:not(.header-fix) .header-body .header-container.header-nav,
+    body.path-ve-chung-toi #header:not(.header-fix) .header-body {
+        background: transparent !important;
+    }
+    #header:not(.header-fix) .we-mega-menu-ul>.we-mega-menu-li>a {
+        color: #fff;
+    }
+    #header:not(.header-fix) .box-car-head .user i {
+        color: #fff;
+    }
+    #header:not(.header-fix) .button-register-drive {
+        border: 1px solid #fff;
+        color: #fff !important;
+    }
+    .logo-main {
+        display: none;
+    }
+    .logo-main-w {
+        display: block;
+    }
+    .header-fix .logo-main {
+        display: block;
+    }
+    .header-fix .logo-main-w {
+        display: none;
+    }
+    .imprint_block .ip_body .text h3 {
+        width: 110%;
+    }
+    #header:not(.header-fix) .button-register-drive:hover {
+        border: 1px solid #c47c18;
+        color: #c47c18 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .jou_detail #myTab {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
+}

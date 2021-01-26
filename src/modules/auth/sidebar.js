@@ -89,12 +89,20 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 15,
+    id: 101,
     parentId: 13,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
     role: ['V030']
+  },
+  {
+    id: 102,
+    parentId: 13,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_VinfastIntroduction",
+    to: map.Vinfast,
+    role: ['V070']
   },
   {
     id: 16,

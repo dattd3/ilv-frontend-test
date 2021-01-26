@@ -33,6 +33,7 @@ export default {
   //about us
   Vingroup: "/about-vingroup",
   Vinpearl: "/about-vinpearl",
+  Vinfast: "/about-vinfast",
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
