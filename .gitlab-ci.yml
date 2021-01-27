@@ -32,7 +32,7 @@ build_production:
   stage: build
   environment: development
   tags:
-    - hrms-production
+    - hrms-prod
   script:
     - ls
     - python3 ~/deployment.py build web prod
@@ -67,7 +67,7 @@ deploy_to_production_environment:
   stage: deploy
   environment: Production
   tags:
-    - hrms-production
+    - hrms-prod
   script:
     - python3 ~/deployment.py deploy web prod
     - echo "Deployed"
