@@ -10,7 +10,7 @@ stages:
   - build
   - deploy
 
-build_dist:
+build_development:
   stage: build
   environment: development
   tags:
@@ -26,6 +26,24 @@ build_dist:
   only:
     refs:
       - develop
+      - /^feature1/.*$/
+
+build_production:
+  stage: build
+  environment: development
+  tags:
+    - hrms-production
+  script:
+    - python3 ~/deployment.py build web prod
+    - echo "Build successful"
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
+    paths:
+      - build/
+    expire_in: 3 days
+  only:
+    refs:
+      - master
       - feature/rollout
 
 deploy_to_development_environment:

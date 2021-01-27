@@ -42,7 +42,7 @@
     "build": "react-scripts build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:staging:linux": "mv .env.staging .env.production.local && npm run-script build && mv .env.production.local .env.staging",
-    "build:production": "npm run-script build",
+    "build:production": "npm run-script --max_old_space_size=256 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
