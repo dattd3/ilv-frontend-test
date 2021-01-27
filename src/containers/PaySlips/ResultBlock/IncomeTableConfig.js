@@ -541,7 +541,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Hỗ trợ điều kiện sinh hoạt', field: 'region_allowance'},
                                 {label: 'Hỗ trợ chuyển vùng', field: 'region_displace_allowance'},
                                 // {label: 'Hỗ trợ ca gãy', field: 'shifts_allowance'},
-                                {label: 'Hỗ trợ công việc đặc thù VP', field: 'specific_work_allowance'},
+                                {label: 'Hỗ trợ công việc đặc thù', field: 'specific_work_allowance'},
                                 // {label: 'Hỗ trợ làm việc trên đảo tại Nha Trang', field: 'work_on_island_allowance'},
                                 {label: 'Tiền làm thêm ngoài giờ', field: 'overtime_payment'},
                                 {label: 'Trợ cấp làm đêm', field: 'night_shift_allowance'},

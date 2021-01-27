@@ -60,9 +60,9 @@ class ApproverComponent extends React.Component {
           let manager = res.data.data[0]
           let managerApproval = {...approverModel, 
             label : manager.fullname, 
-            value: manager.userid ,
+            value: manager.userid.toLowerCase() ,
             fullname : manager.fullname, 
-            userAccount: manager.userid,
+            userAccount: manager.userid.toLowerCase(),
             current_position: manager.title,
             department: manager.department
           }

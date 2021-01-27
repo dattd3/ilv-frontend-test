@@ -82,6 +82,7 @@ function ListNotifications(props) {
             const notifications = response.data.notifications ? response.data.notifications : [];
             dataBlock = <>
             {
+                notifications && notifications.length > 0 ?
                 notifications.map((item, i) => {
                     const timePost = getTimePost(item.createdDate);
                     return <div key={i} className="item">
@@ -107,12 +108,11 @@ function ListNotifications(props) {
                         </div>
                         </div>
                     </div>
-                })
+                }) : <p className='text-center'>Không có thông báo nội bộ !</p>
             }
             </>;
         }
     }
-
     return (
         <>
         <div className="list-notifications-section">

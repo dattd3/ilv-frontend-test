@@ -24,7 +24,8 @@ class ApprovalComponent extends React.Component {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
-          this.setState({tasks : res.data.data.listUserProfileHistories, dataResponse: res.data.data});
+          let tasksOrdered = res.data.data.listUserProfileHistories.sort((a, b) => a.id <= b.id ? 1 : -1)
+          this.setState({tasks : tasksOrdered, dataResponse: res.data.data});
         }
       }
     }).catch(error => {
@@ -51,7 +52,6 @@ class ApprovalComponent extends React.Component {
   }
 
   render() {
-    console.log(this.state.tasks)
     return (
       this.state.dataResponse ?
       <div className="task-section">

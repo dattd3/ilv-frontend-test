@@ -5,6 +5,7 @@ import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from '
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
+import { Animated } from "react-animated-css";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -52,7 +53,7 @@ function Header(props) {
         var data = '';
         var config = {
             method: 'post',
-            url:  `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/`+id,
+            url: `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/` + id,
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 'Content-Type': 'application/json'
@@ -61,7 +62,7 @@ function Header(props) {
         };
         axios(config)
             .then(function (response) {
-                
+
             })
             .catch(function (error) {
 
@@ -69,7 +70,7 @@ function Header(props) {
     }
 
     let dataNotificationsUnRead = "";
-    const result = usePreload([companyCode,lv3, lv4, lv5]);
+    const result = usePreload([companyCode, lv3, lv4, lv5]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
@@ -137,13 +138,13 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
-    
+
 
     return (
         isApp ? null :
             <div>
                 <Navbar expand="lg" className="navigation-top-bar-custom">
-                    <Button variant="outline-primary" className='d-block d-lg-none' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
+                    <Button variant="outline-danger" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
                     <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
                         <InputGroup className='d-none'>
                             <InputGroup.Prepend>
@@ -152,13 +153,17 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
+
+
                     <Dropdown id="notifications-block">
-                        <Dropdown.Toggle>
-                            <span className="notifications-block">
-                                <i className="far fa-bell ic-customize"></i>
-                                {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
-                            </span>
-                        </Dropdown.Toggle>
+                        <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
+                            <Dropdown.Toggle>
+                                <span className="notifications-block">
+                                    <i className="far fa-bell ic-customize"></i>
+                                    {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                                </span>
+                            </Dropdown.Toggle>
+                        </Animated>
                         {dataNotificationsUnRead != "" ?
                             <Dropdown.Menu className="list-notification-popup">
                                 <div className="title-block">thông báo nội bộ</div>

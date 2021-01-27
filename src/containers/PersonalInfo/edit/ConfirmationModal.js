@@ -93,7 +93,7 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .finally(() => {
-                        window.location.href = "/tasks?tab=approval";
+                        window.location.href = "/tasks";
                     })
 
                     setTimeout(() => { this.props.onHide() }, 600);

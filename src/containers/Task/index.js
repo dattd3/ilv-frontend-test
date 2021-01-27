@@ -27,7 +27,8 @@ class Task extends React.Component {
           if (res && res.data && res.data.data && res.data.result) {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
-              this.setState({tasks : res.data.data.listUserProfileHistories, isShowApprovalTab: true});
+              let tasksOrdered = res.data.data.listUserProfileHistories.sort((a, b) => a.id <= b.id ? 1 : -1)
+              this.setState({tasks : tasksOrdered, isShowApprovalTab: true});
             }
           }
         }).catch(error => {})

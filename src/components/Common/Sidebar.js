@@ -6,13 +6,14 @@ import MetisMenu from 'react-metismenu';
 import { Navigation } from '../../modules';
 import { useGuardStore } from '../../modules';
 import { useTranslation } from "react-i18next";
+import { Animated } from "react-animated-css";
 
 function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
     const user = guard.getCurentUser();
     const { companyLogoUrl } = props.user;
-    
+
     const { show } = props;
 
     const getNavigation = (role) => {
@@ -25,8 +26,7 @@ function SideBar(props) {
         if (rootNav.length > 0) {
             for (let i = 0; i < rootNav.length; i++) {
                 rootNav[i].label = t(rootNav[i].label);
-                if(user.companyCode != "V030" && rootNav[i].label2)
-                {
+                if (user.companyCode != "V030" && rootNav[i].label2) {
                     rootNav[i].label = t(rootNav[i].label2);
                 }
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
@@ -36,23 +36,29 @@ function SideBar(props) {
     }
 
     const content = getNavigation(user.jobType);
-    
+
     return (
-        <div className={show ? 'bg-vp-blue sidebar d-none d-lg-block shadow' : 'bg-vp-blue sidebar shadow'}>
-            <div className="text-center">
-                <a href="/">
-                    <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My VinGroup' /> 
-                </a>
+        <>
+            <div>
+                <div className={show ? 'bg-vp-blue sidebar shadow' : 'bg-vp-blue sidebar shadow d-none'}>
+                    <Animated animationIn="rubberBand" isVisible={show} >
+                        <div className="text-center">
+                            <a href="/">
+                                <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My VinGroup' />
+                            </a>
+                        </div>
+                    </Animated>
+                    <MetisMenu
+                        className='sidebar sidebar-dark'
+                        content={content}
+                        activeLinkFromLocation
+                        iconNameStateVisible="arrow_expand"
+                        iconNameStateHidden="arrow_collapse"
+                        iconNamePrefix="icon-"
+                    />
+                </div>
             </div>
-            <MetisMenu
-                className='sidebar sidebar-dark'
-                content={content}
-                activeLinkFromLocation
-                iconNameStateVisible="arrow_expand"
-                iconNameStateHidden="arrow_collapse"
-                iconNamePrefix="icon-"
-            />
-        </div>
+        </>
     );
 }
 export default SideBar;

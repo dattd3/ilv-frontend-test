@@ -247,7 +247,7 @@ class BusinessTripComponent extends React.Component {
     const data = {
       startDate: this.state.startDate,
       startTime: this.state.startTime,
-      endDate: this.state.startDate,
+      endDate: this.state.endDate,
       endTime: this.state.endTime,
       attendanceQuotaType: this.state.attendanceQuotaType,
       approver: approver,

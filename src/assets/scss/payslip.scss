@@ -109,7 +109,7 @@
         .workday-information-table {
             display: block;
             overflow-x: auto;
-            width: 100%;
+            width: 100% !important;
             border-collapse: collapse;
             margin-bottom: 1.5rem;
             background-color: #fff;
@@ -126,7 +126,7 @@
                     border: 1px solid #cccaca;
                 }
                 .same-width {
-                    //width: 7.14%;
+                    width: 7.14%;
                     padding: 10px 5px;
                 }
             }
