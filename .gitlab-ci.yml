@@ -30,7 +30,7 @@ build_development:
 
 build_production:
   stage: build
-  environment: development
+  environment: Production
   tags:
     - hrms-production
   script:
@@ -60,12 +60,12 @@ deploy_to_development_environment:
       - public
   only:
       - develop
-      - feature/rollout
+      - /^feature1/.*$/
 
 deploy_to_production_environment:
   stage: deploy
   tags:
-    - hrms
+    - hrms-production
   script:
     - python3 ~/deployment.py deploy web prod
     - echo "Deployed"
@@ -76,3 +76,4 @@ deploy_to_production_environment:
       - public
   only:
       - master
+      - feature/rollout
