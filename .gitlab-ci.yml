@@ -65,6 +65,7 @@ deploy_to_development_environment:
 
 deploy_to_production_environment:
   stage: deploy
+  environment: Production
   tags:
     - hrms-production
   script:
