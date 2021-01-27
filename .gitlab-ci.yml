@@ -16,7 +16,6 @@ build_development:
   tags:
     - hrms
   script:
-    - cd ~
     - python3 ~/deployment.py build web dev
     - echo "Build successful"
   artifacts:
@@ -35,7 +34,7 @@ build_production:
   tags:
     - hrms-production
   script:
-    - cd ~
+    - ls
     - python3 ~/deployment.py build web prod
     - echo "Build successful"
   artifacts:
@@ -53,7 +52,6 @@ deploy_to_development_environment:
   tags:
     - hrms
   script:
-    - cd ~
     - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
   when: manual
@@ -70,7 +68,6 @@ deploy_to_production_environment:
   tags:
     - hrms-production
   script:
-    - cd ~
     - python3 ~/deployment.py deploy web prod
     - echo "Deployed"
   when: manual
