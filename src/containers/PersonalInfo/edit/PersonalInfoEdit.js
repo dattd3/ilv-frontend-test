@@ -160,7 +160,7 @@ class PersonalInfoEdit extends React.Component {
       data.update.userProfileHistoryMainInfo.NewMainInfo = Object.assign(newMainInfo, newAddress)
       this.setState({ data: data })
     } else {
-      let data = { ...this.state.data }
+      data = { ...this.state.data }
       data.update = {
         userProfileHistoryMainInfo: {
           OldMainInfo: oldAddress,
@@ -169,6 +169,9 @@ class PersonalInfoEdit extends React.Component {
       }
       this.setState({ data: data })
     }
+
+    let dataClone = this.removeItemForValueNull(data)
+    this.verifyInput(dataClone)
   }
 
   updatePersonalInfo(name, old, value, textOld, textNew) {
@@ -177,14 +180,14 @@ class PersonalInfoEdit extends React.Component {
     let newMainInfo = {};
     if (value != null && value != "") {
       oldMainInfo = { ...this.state.OldMainInfo, [name]: old, [textForSelectOption]: textOld };
-      newMainInfo = { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: (textNew != null && textNew != "") ? textNew : null};
+      newMainInfo = { ...this.state.NewMainInfo, [name]: value, [textForSelectOption]: (textNew != null && textNew != "") ? textNew : null };
     } else {
       oldMainInfo = { ...this.state.OldMainInfo };
       newMainInfo = { ...this.state.NewMainInfo };
       delete newMainInfo[name]
       delete newMainInfo[textForSelectOption]
     }
-    if(!newMainInfo[textForSelectOption] || newMainInfo[textForSelectOption] === "") delete newMainInfo[textForSelectOption]
+    if (!newMainInfo[textForSelectOption] || newMainInfo[textForSelectOption] === "") delete newMainInfo[textForSelectOption]
     let userProfileHistoryMainInfo = {
       ...this.state.userProfileHistoryMainInfo,
       OldMainInfo: oldMainInfo,
@@ -257,10 +260,21 @@ class PersonalInfoEdit extends React.Component {
 
   isValidFileUpload = (data, files) => {
     const dataPostToSAP = this.getDataPostToSap(data);
-    if (dataPostToSAP && dataPostToSAP.contact && _.size(dataPostToSAP.contact) > 0 && _.size(dataPostToSAP.information) == 0 && _.size(dataPostToSAP.address) == 0
-      && _.size(dataPostToSAP.bank) == 0 && _.size(dataPostToSAP.education) == 0 && _.size(dataPostToSAP.race) == 0 && _.size(dataPostToSAP.document) == 0) {
+    let count = 0
+    if (dataPostToSAP){
+      count += _.size(dataPostToSAP.information) == 0 ? 0 : 1
+      count += (!dataPostToSAP.address || _.size(dataPostToSAP.address) <= 1 && dataPostToSAP.address[0].anssa === '2') ? 0 : 1
+      count += _.size(dataPostToSAP.bank) == 0 ? 0 : 1
+      count += _.size(dataPostToSAP.education) == 0 ? 0 : 1
+      count += _.size(dataPostToSAP.race) == 0 ? 0 : 1
+      count += _.size(dataPostToSAP.document) == 0 ? 0 : 1
+    } 
+
+    if(count === 0)
+    {
       return true
-    } else {
+    }
+    else {
       files = files ? files : this.state.files
       if (_.size(files) === 0) {
         return false
@@ -443,7 +457,7 @@ class PersonalInfoEdit extends React.Component {
       if (_.isEmpty(data.create.educations)) delete data.create.educations
       if (_.isEmpty(data.create)) delete data.create
     }
-    if(_.isEmpty(data.create)) delete data.create
+    if (_.isEmpty(data.create)) delete data.create
     return data
   }
 

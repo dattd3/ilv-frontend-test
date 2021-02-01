@@ -76,8 +76,8 @@ class BusinessTripComponent extends React.Component {
 
   setStartDate(startDate) {
     const start = moment(startDate).isValid() ? moment(startDate).format(DATE_FORMAT) : null
-    const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate) 
-    || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
+    const end = this.state.endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) > this.state.endDate)
+      || this.state.leaveType === DURING_THE_DAY ? moment(startDate).isValid() && moment(startDate).format(DATE_FORMAT) : this.state.endDate
     this.setState({
       startDate: start,
       endDate: end
@@ -89,18 +89,18 @@ class BusinessTripComponent extends React.Component {
     const start = moment(startTime).isValid() ? moment(startTime).format(TIME_FORMAT) : null
     const end = this.state.endTime === undefined || (moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) > this.state.endTime) ? moment(startTime).isValid() && moment(startTime).format(TIME_FORMAT) : this.state.endTime
     this.setState({
-        startTime: start,
-        endTime: end
+      startTime: start,
+      endTime: end
     })
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
   }
 
   setEndTime(endTime) {
     const start = this.state.startTime === undefined || (moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) < this.state.startTime) ? moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT) : this.state.startTime
-    const end =  moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
+    const end = moment(endTime).isValid() && moment(endTime).format(TIME_FORMAT)
     this.setState({
-        startTime: start,
-        endTime: end
+      startTime: start,
+      endTime: end
     })
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
   }
@@ -116,7 +116,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null) {
-    if ((this.state.leaveType === FULL_DAY && (!startDateInput || !endDateInput)) 
+    if ((this.state.leaveType === FULL_DAY && (!startDateInput || !endDateInput))
       || (this.state.leaveType === DURING_THE_DAY && (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput))) {
       return false
     }
@@ -128,28 +128,36 @@ class BusinessTripComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    
+
     this.validationFromDB(start, end, startTimeInput, endTimeInput)
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/leave`, {
-        perno: localStorage.getItem('employeeNo'),
-        from_date: start,
-        from_time: this.state.leaveType === FULL_DAY ? "" : moment(startTimeInput, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-        to_date: end,
-        to_time: this.state.leaveType === FULL_DAY ? "" : moment(endTimeInput, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-        leaveType: ""
+      perno: localStorage.getItem('employeeNo'),
+      from_date: start,
+      from_time: this.state.leaveType === FULL_DAY ? "" : moment(startTimeInput, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      to_date: end,
+      to_time: this.state.leaveType === FULL_DAY ? "" : moment(endTimeInput, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      leaveType: ""
     }, config)
-    .then(res => {
-      if (res && res.data && res.data.data) {
+      .then(res => {
+        if (res && res.data) {
           const data = res.data
           const result = data.result
-          if (result && result.code != Constants.API_ERROR_CODE) {
-            this.setState({totalTime: this.state.leaveType === FULL_DAY ? data.data.days : data.data.hours})
+          if (data.data && result && result.code != Constants.API_ERROR_CODE) {
+            this.setState({ totalTime: this.state.leaveType === FULL_DAY ? data.data.days : data.data.hours })
+          } else {
+            const errors = { ...this.state.errors }
+            if (!_.isNull(result) && result.code == Constants.API_ERROR_CODE) {
+              errors.startTimeAndEndTime = result.message
+            } else {
+              errors.startTimeAndEndTime = null
+            }
+            this.setState({ errors, errors })
           }
         }
-    }).catch(error => {
+      }).catch(error => {
 
-    })
+      })
   }
 
   validationFromDB = (startDate, endDate, startTime = null, endTime = null) => {
@@ -160,25 +168,25 @@ class BusinessTripComponent extends React.Component {
     }
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/validation-business-trip`, {
-        from_date: startDate,
-        to_date: endDate,
-        from_time: startTime,
-        to_time: endTime
+      from_date: startDate,
+      to_date: endDate,
+      from_time: startTime,
+      to_time: endTime
     }, config)
-    .then(res => {
-      if (res && res.data) {
-        const data = res.data
-        const errors = {...this.state.errors}
-        if (!_.isNull(data.result) && data.result.code == Constants.API_ERROR_CODE) {
-          errors.startTimeAndEndTime = data.result.message
-        } else {
-          errors.startTimeAndEndTime = null
+      .then(res => {
+        if (res && res.data) {
+          const data = res.data
+          const errors = { ...this.state.errors }
+          if (!_.isNull(data.result) && data.result.code == Constants.API_ERROR_CODE) {
+            errors.startTimeAndEndTime = data.result.message
+          } else {
+            errors.startTimeAndEndTime = null
+          }
+          this.setState({ errors, errors })
         }
-        this.setState({errors, errors})
-      }
-    }).catch(error => {
+      }).catch(error => {
 
-    })
+      })
   }
 
   updateFiles(files) {
@@ -187,7 +195,7 @@ class BusinessTripComponent extends React.Component {
 
   updateApprover(approver, isApprover) {
     this.setState({ approver: approver })
-    const errors = {...this.state.errors}
+    const errors = { ...this.state.errors }
     if (!isApprover) {
       errors.approver = 'Người phê duyệt không có thẩm quyền!'
     } else {
@@ -208,15 +216,15 @@ class BusinessTripComponent extends React.Component {
 
   handleSelectChange(name, value) {
     if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
-      this.setState({isShowAddressAndVehicle : false})
+      this.setState({ isShowAddressAndVehicle: false })
     } else {
-      this.setState({isShowAddressAndVehicle : true})
+      this.setState({ isShowAddressAndVehicle: true })
     }
     this.setState({ [name]: value })
   }
 
   verifyInput() {
-    let errors = {...this.state.errors}
+    let errors = { ...this.state.errors }
     let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
     if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
       requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
@@ -242,7 +250,7 @@ class BusinessTripComponent extends React.Component {
     if (hasErrors) {
       return
     }
-    const approver = {...this.state.approver}
+    const approver = { ...this.state.approver }
     delete approver.avatar
     const data = {
       startDate: this.state.startDate,
@@ -283,14 +291,14 @@ class BusinessTripComponent extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-    .then(response => {
-      if (response && response.data && response.data.result) {
-        this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
-      }
-    })
-    .catch(response => {
-      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-    })
+      .then(response => {
+        if (response && response.data && response.data.result) {
+          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+        }
+      })
+      .catch(response => {
+        this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      })
   }
 
   error(name) {
@@ -318,7 +326,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   getIsUpdateStatus = (status) => {
-    this.setState({isUpdateFiles : status})
+    this.setState({ isUpdateFiles: status })
   }
 
   showTotalTime = () => {
@@ -352,7 +360,7 @@ class BusinessTripComponent extends React.Component {
       { value: 'CT04', label: 'C/t (ko CTP, không ăn ca)' },
       { value: 'DT01', label: 'Đào tạo' },
     ]
-    
+
     return (
       <div className="business-trip">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -375,7 +383,7 @@ class BusinessTripComponent extends React.Component {
               <div className="col-5">
                 <p className="title">Ngày/giờ bắt đầu</p>
                 <div className="row">
-                  <div className="col">
+                  <div className="col-8">
                     <div className="content input-container">
                       <label>
                         <DatePicker
@@ -395,7 +403,7 @@ class BusinessTripComponent extends React.Component {
                     </div>
                     {this.error('startDate')}
                   </div>
-                  <div className="col">
+                  <div className="col-4">
                     <div className="content input-container">
                       <label>
                         <DatePicker
@@ -421,7 +429,7 @@ class BusinessTripComponent extends React.Component {
               <div className="col-5">
                 <p className="title">Ngày/giờ kết thúc</p>
                 <div className="row">
-                  <div className="col">
+                  <div className="col-8">
                     <div className="content input-container">
                       <label>
                         <DatePicker
@@ -442,7 +450,7 @@ class BusinessTripComponent extends React.Component {
                     </div>
                     {this.error('endDate')}
                   </div>
-                  <div className="col">
+                  <div className="col-4">
                     <div className="content input-container">
                       <label>
                         <DatePicker
@@ -466,7 +474,7 @@ class BusinessTripComponent extends React.Component {
               </div>
 
               <div className="col-2">
-                <p className="title">Tổng thời gian CT/ĐT</p>
+                <p className="title">Tổng thời gian</p>
                 <div>
                   <input type="text" className="form-control" value={this.showTotalTime()} readOnly />
                 </div>
@@ -480,34 +488,41 @@ class BusinessTripComponent extends React.Component {
                 <div>
                   <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>
-                <div className="business-type">
-                  <span className="text-info smaller">* Có CTP: được trả Công tác phí</span>
-                  <span className="text-info">* Không CTP: không được trả Công tác phí</span>
-                  <span className="text-info smaller">* Có ăn ca: được trả tiền ăn ca</span>
-                  <span className="text-info">* Không ăn ca: không được trả tiền ăn ca</span>
-                </div>
+
                 {this.error('attendanceQuotaType')}
               </div>
               {
                 this.state.isShowAddressAndVehicle ?
-                <>
-                <div className="col-5">
-                  <p className="title">Địa điểm</p>
-                  <div>
-                    <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
-                  </div>
-                  {this.error('place')}
-                </div>
-                <div className="col-2">
-                  <p className="title">Phương tiện</p>
-                  <div>
-                    <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
-                  </div>
-                  {this.error('vehicle')}
-                </div>
-                </>
-              : null
+                  <>
+                    <div className="col-5">
+                      <p className="title">Địa điểm</p>
+                      <div>
+                        <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+                      </div>
+                      {this.error('place')}
+                    </div>
+                    <div className="col-2">
+                      <p className="title">Phương tiện</p>
+                      <div>
+                        <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                      </div>
+                      {this.error('vehicle')}
+                    </div>
+                  </>
+                  : null
               }
+            </div>
+            <div className="row business-type">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 text-info smaller">* Có CTP: được trả Công tác phí</div>
+                  <div className="col-lg-4 col-md-6 text-info">* Không CTP: không được trả Công tác phí</div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 text-info smaller">* Có ăn ca: được trả tiền ăn ca</div>
+                  <div className="col-lg-4 col-md-6 text-info">* Không ăn ca: không được trả tiền ăn ca</div>
+                </div>
+              </div>
             </div>
 
             <div className="row">

@@ -54,25 +54,27 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
-      .then(res => {
-        if (res && res.data && res.data.data && res.data.data.length > 0) {
-          let manager = res.data.data[0]
-          let managerApproval = {...approverModel, 
-            label : manager.fullname, 
-            value: manager.userid.toLowerCase() ,
-            fullname : manager.fullname, 
-            userAccount: manager.userid.toLowerCase(),
-            current_position: manager.title,
-            department: manager.department
+    if (localStorage.getItem("companyCode") === "V070") {
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+        .then(res => {
+          if (res && res.data && res.data.data && res.data.data.length > 0) {
+            let manager = res.data.data[0]
+            let managerApproval = {
+              ...approverModel,
+              label: manager.fullname,
+              value: manager.userid.toLowerCase(),
+              fullname: manager.fullname,
+              userAccount: manager.userid.toLowerCase(),
+              current_position: manager.title,
+              department: manager.department
+            }
+            this.setState({ approver: managerApproval })
+            this.props.updateApprover(managerApproval, true)
           }
-          this.setState({ approver: managerApproval})
-          this.props.updateApprover(managerApproval, true)
-        }
-      }).catch(error => {
+        }).catch(error => {
 
-      });
-
+        });
+    }
 
     if (this.props.approver) {
       this.setState({ approver: this.props.approver })
@@ -82,17 +84,20 @@ class ApproverComponent extends React.Component {
   handleSelectChange(name, value) {
     const currentUserLevel = localStorage.getItem('employeeLevel')
     this.setState({ [name]: value })
-    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel)
+    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
     this.props.updateApprover(value, isApprover)
   }
 
-  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel) => {
-    const levelApprover = ["C", "P2", "P1", "T4", "T3", "T2", "T1"]
+  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, userAccount) => {
+    const levelApprover = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
     let indexCurrentUserLevel = _.findIndex(levelApprover, function (item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(levelApprover, function (item) { return item == levelApproverFilter });
 
-    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel >= indexApproverFilterLevel) {
+    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
+      return false
+    }
+    if (userAccount.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
       return false
     }
 
@@ -154,7 +159,7 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-    
+
     return <div className="approver">
       <div className="box shadow">
         <div className="row">

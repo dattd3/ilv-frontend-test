@@ -744,8 +744,10 @@ class PersonalComponent extends React.Component {
                             }
                         </div>
                     </div>
-
-                    <div className="row">
+                    {
+                        localStorage.getItem("companyCode") != "V070" ?
+                        <>
+                            <div className="row">
                         <div className="col-2">
                             <div className="label">Số TK ngân hàng</div>
                         </div>
@@ -775,6 +777,9 @@ class PersonalComponent extends React.Component {
                             }
                         </div>
                     </div>
+                        </> : null
+                    }
+                    
                 </div>
             </div>)
     }

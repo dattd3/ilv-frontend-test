@@ -65,11 +65,11 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        font-size: 12px;
         margin: 10px 0 5px 0;
         span {
             display: inline-block;
-            width: 54%;
-            font-size: 12px;
+            
             padding: 2px 0;
             &.smaller {
                 width: 46%;

@@ -126,7 +126,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "MyJob",
     to: map.Job,
-    role: ['V096', 'V030']
+    role: 'U'
   },
   {
     id: 30,
@@ -182,7 +182,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: "U"
+    role: ['V030','V096']
   },
   {
     id: 20,
