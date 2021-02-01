@@ -94,7 +94,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
-    role: 'U'
+    role: ['V030']
   },
   {
     id: 102,
@@ -102,7 +102,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinfastIntroduction",
     to: map.Vinfast,
-    role: 'U'
+    role: ['V070']
   },
   {
     id: 16,
