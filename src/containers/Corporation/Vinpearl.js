@@ -3,16 +3,6 @@ import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
 
-const usePreload = (params) => {
-    const api = useApi();
-    const [data = [], err] = useFetcher({
-        api: api.fetchArticleDetail,
-        autoRun: true,
-        params: params
-    });
-    return data;
-};
-
 function Vingroup(props) {
     const { t } = useTranslation();
 
