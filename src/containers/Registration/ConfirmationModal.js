@@ -73,12 +73,12 @@ class ConfirmationModal extends React.Component {
                 } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                     return window.location.href = map.NotFound
                 } else {
-                    this.showStatusModal("Lỗi", result.message, false)
+                    this.showStatusModal("Thông Báo", result.message, false)
                 }
             }
         })
         .catch(response => {
-            this.showStatusModal("Lỗi", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
         })
     }
 
@@ -109,12 +109,12 @@ class ConfirmationModal extends React.Component {
                 } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                     return window.location.href = map.NotFound
                 } else {
-                    this.showStatusModal("Lỗi", result.message, false)
+                    this.showStatusModal("Thông Báo", result.message, false)
                 }
             }
         })
         .catch(response => {
-            this.showStatusModal("Lỗi", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
         })
     }
 

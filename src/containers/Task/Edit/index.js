@@ -257,6 +257,9 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.country_id && !st.userDetail.province_id && !st.userDetail.street_name && !st.userDetail.district_id && !st.userDetail.ward_id) {
           actio = 'INS';
         }
+        if (localStorage.getItem("companyCode") != "V030") {
+          actio = 'INS';
+        }
         sapData.address.push({
           actio: actio,
           anssa: 1,
@@ -275,6 +278,9 @@ class PersonalInfoEdit extends React.Component {
       if (shouldUpdateAddressTemp) {
         let actio = 'MOD';
         if (!st.userDetail.tmp_province_id && !st.userDetail.tmp_street_name && !st.userDetail.temp_district_id && !st.userDetail.tmp_ward_id) {
+          actio = 'INS';
+        }
+        if (localStorage.getItem("companyCode") != "V030") {
           actio = 'INS';
         }
         sapData.address.push({
@@ -298,6 +304,9 @@ class PersonalInfoEdit extends React.Component {
       if (!st.userDetail.race_id) {
         actio = 'INS';
       }
+      if (localStorage.getItem("companyCode") != "V030") {
+        actio = 'INS';
+      }
       sapData.race = [{
         actio: actio,
         racky: dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic === undefined ? st.userDetail.race_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic,
@@ -316,6 +325,9 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.personal_email) {
           actio = 'INS';
         }
+        if (localStorage.getItem("companyCode") != "V030") {
+          actio = 'INS';
+        }
         sapData.contact.push({
           actio: actio,
           subty: '0030',
@@ -329,6 +341,9 @@ class PersonalInfoEdit extends React.Component {
       if (updatedFieldName_arr.some(u => u === 'CellPhoneNo')) {
         let actio = 'MOD';
         if (!st.userDetail.cell_phone_no) {
+          actio = 'INS';
+        }
+        if (localStorage.getItem("companyCode") != "V030") {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -346,6 +361,9 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.urgent_contact_no) {
           actio = 'INS';
         }
+        if (localStorage.getItem("companyCode") != "V030") {
+          actio = 'INS';
+        }
         sapData.contact.push({
           actio: actio,
           subty: 'V002',
@@ -360,6 +378,9 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateInformation = updatedFieldName_arr.some(u => informationKeyNames.indexOf(u) >= 0);
     if (shouldUpdateInformation) {
       let actio = 'MOD';
+      if (localStorage.getItem("companyCode") != "V030") {
+        actio = 'INS';
+      }
       // thông tin cá nhân luôn luôn là update
       // if (!st.userDetail.birthday && !st.userDetail.nationality_id && !st.userDetail.birth_country_id && !st.userDetail.race_id && !st.userDetail.birth_province_id && !st.userDetail.marital_status_code && !st.userDetail.gender) {
       //   actio = 'INS';
@@ -405,6 +426,9 @@ class PersonalInfoEdit extends React.Component {
     //let shouldUpdateEducation = updatedFieldName_arr.some(u => educationKeyNames.indexOf(u) >= 0);
     if ((dt.update.userProfileHistoryEducation && dt.update.userProfileHistoryEducation.length > 0) || (dt.create.educations && dt.create.educations.length > 0)) {
       let actio = 'MOD';
+      if (localStorage.getItem("companyCode") != "V030") {
+        actio = 'INS';
+      }
       sapData.education = [];
 
       if (dt.update.userProfileHistoryEducation && dt.update.userProfileHistoryEducation.length > 0) {
@@ -488,6 +512,9 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.personal_id_no || st.userDetail.pid_date_of_issue || st.userDetail.pid_place_of_issue) {
           actio = 'INS';
         }
+        if (localStorage.getItem("companyCode") != "V030") {
+          actio = 'INS';
+        }
         let _pid_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate === undefined ? st.userDetail.pid_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate;
         _pid_date_of_issue = moment(_pid_date_of_issue, 'DD-MM-YYYY');
         if (_pid_date_of_issue._isValid) {
@@ -514,6 +541,9 @@ class PersonalInfoEdit extends React.Component {
       if (updatedFieldName_arr.some(u => u === 'PassportNumber' || u === 'PassportDate' || u === 'PassportPlace')) {
         let actio = 'MOD';
         if (!st.userDetail.passport_id_no || !st.userDetail.passport_date_of_issue || !st.userDetail.passport_place_of_issue) {
+          actio = 'INS';
+        }
+        if (localStorage.getItem("companyCode") != "V030") {
           actio = 'INS';
         }
         let _passport_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate === undefined ? st.userDetail.passport_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate;
@@ -546,6 +576,9 @@ class PersonalInfoEdit extends React.Component {
       sapData.bank = [];
       let actio = 'MOD';
       if (!st.userDetail.bank_number) {
+        actio = 'INS';
+      }
+      if (localStorage.getItem("companyCode") != "V030") {
         actio = 'INS';
       }
       sapData.bank.push({
@@ -588,14 +621,14 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowModal("Lỗi", "Thông tin đang trong quá trình xử lý !", "error");
+            this.handleShowModal("Thông Báo", "Thông tin đang trong quá trình xử lý !", "error");
           } else {
             this.handleShowModal("Thành công", "Cập nhật thông tin đã được lưu !", "success");
           }
         }
       })
       .catch(response => {
-        this.handleShowModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+        this.handleShowModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
       });
   }
 
@@ -1022,7 +1055,7 @@ class PersonalInfoEdit extends React.Component {
               newMainInfo = changingData.data.data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo;
             }
           }
-          
+
         }
         if (changingData.data.data.userProfileInfo.update && changingData.data.data.userProfileInfo.update.userProfileHistoryEducation) {
           dt.education = changingData.data.data.userProfileInfo.update.userProfileHistoryEducation;
@@ -1031,7 +1064,7 @@ class PersonalInfoEdit extends React.Component {
           dt.newEducation = changingData.data.data.userProfileInfo.create.educations;
         }
         this.setState({
-          data: { ...this.state.data, create: {educations: dt.newEducation}, update: updatedData },
+          data: { ...this.state.data, create: { educations: dt.newEducation }, update: updatedData },
           update: updatedData,
           OldMainInfo: oldMainInfo,
           NewMainInfo: newMainInfo

@@ -28,26 +28,34 @@ class InOutUpdateDetailComponent extends React.Component {
       ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
         const endTimeName = `end_time${n}_fact_update`
-        if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
+        const startTimeNameOld = `start_time${n}_fact`
+        const endTimeNameOld = `end_time${n}_fact`
+        const startPlanTimeName = `from_time${n}`
+        const endPlanTimeName = `to_time${n}`
+        if(!timesheet[startTimeName] && !timesheet[endTimeName])return
+        if (true) {
+          let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
           dataToSAP.push({
             MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P10',
-            LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            LTIME: startTime,
+            DALLF: '+',
             ACTIO: 'INS'
           })
         }
 
-        if (!this.isNullCustomize(timesheet[endTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
+        if (true) {
+          let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
+
           dataToSAP.push({
             MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
             PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
             LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
             SATZA: 'P20',
-            LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-            DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
+            LTIME: endTime,
+            DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
             ACTIO: 'INS'
           })
         }

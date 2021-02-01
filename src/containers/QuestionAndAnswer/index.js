@@ -9,6 +9,11 @@ import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
+import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
+import Button from 'react-bootstrap/Button'
+import Fade from 'react-bootstrap/Fade'
+import Card from 'react-bootstrap/Card'
+import Accordion from 'react-bootstrap/Accordion'
 
 class MyComponent extends React.Component {
 
@@ -26,7 +31,8 @@ class MyComponent extends React.Component {
       commonTicketList: {},
       commonTicketListFilter: {},
       categories: {},
-      keySearch: ""
+      keySearch: "",
+      open: true
     };
   }
 
@@ -37,7 +43,7 @@ class MyComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common/` + localStorage.getItem("companyCode"), config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let commonTicketListRs = res.data.data.sort((a, b) => {
@@ -48,7 +54,7 @@ class MyComponent extends React.Component {
       }).catch(error => {
       });
 
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/` + localStorage.getItem("companyCode"), config)
       .then(res => {
         if (res && res.data && res.data.data) {
           this.setState({ categories: res.data.data })
@@ -99,9 +105,8 @@ class MyComponent extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  search = (keySearch) =>
-  {
-    this.setState({commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
+  search = (keySearch) => {
+    this.setState({ commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
   }
   handleKeyPress = (event) => {
     if (event.key === 'Enter' && event.shiftKey) {
@@ -112,6 +117,9 @@ class MyComponent extends React.Component {
       this.search(this.state.keySearch)
     }
   }
+  setOpen = (open) => {
+    this.setState({ open: !open })
+  }
 
   render() {
     const { t } = this.props;
@@ -120,6 +128,7 @@ class MyComponent extends React.Component {
         window.location.reload();
       }
     }
+    console.log(this.state.open)
     return (
       <div className="personal-info">
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
@@ -149,15 +158,28 @@ class MyComponent extends React.Component {
             </div>
           </div>
         </Container>
+        <h1 className="h4 text-uppercase text-center text-gray-800 mt-3 mb-3">{t("CÁC CÂU HỎI THƯỜNG GẶP")}</h1>
         {
-          (this.state.categories && this.state.categories.length > 0 && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length > 0) ? this.state.categories.map((category, index) => {
-            let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id)
-            return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index}>
-                <h4 className="text-uppercase text-gray-800">{category.name}</h4>
-                <CommonQuestionComponent questions = {commonticketFiler} />
-              </div>
-              : null
-          }) : <div><p className="text-center">Không có kết quả phù hợp, vui lòng lựa chọn tìm từ khóa khác!</p></div>
+          this.state.commonTicketList && this.state.commonTicketList.length ?
+            (
+              (this.state.categories && this.state.categories.length && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length) ? this.state.categories.map((category, index) => {
+                let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id)
+                return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="mb-2">
+                  <Accordion defaultActiveKey="0">
+                      <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                      <h4 className="text-uppercase text-gray-800 common-category pointer">{category.name}</h4>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey="0">
+                        <Card.Body>
+                        <CommonQuestionComponent questions={commonticketFiler} />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                  </Accordion>
+
+                </div>
+                  : null
+              }) : <div><p className="text-center">Không có kết quả phù hợp, vui lòng lựa chọn tìm từ khóa khác!</p></div>
+            ) : null
         }
       </div >
     )

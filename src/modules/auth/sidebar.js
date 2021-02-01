@@ -4,7 +4,7 @@ export const Navigation = [
   {
     id: 1,
     parentId: 0,
-    icon: "menu",
+    icon: "c-home",
     label: "Menu",
     to: "/",
     role: "U",
@@ -12,29 +12,29 @@ export const Navigation = [
   {
     id: 10,
     parentId: 0,
-    icon: "hr",
+    icon: "c-hr",
     label: "Menu_HumanResource",
     role: "U",
   },
   {
     id: 2,
     parentId: 0,
-    icon: "training",
+    icon: "c-dt",
     label: "Menu_Training",
     role: "U",
   },
   {
     id: 11,
     parentId: 0,
-    icon: 'recruitment',
+    icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
-    role: 'U'
+    role: ['V030']
   },
   {
     id: 12,
     parentId: 0,
-    icon: 'task',
+    icon: 'c-task',
     label: "Menu_Task",
     to: map.Task,
     role: 'U'
@@ -75,7 +75,7 @@ export const Navigation = [
   {
     id: 13,
     parentId: 0,
-    icon: "groupinfo",
+    icon: "c-group",
     label: "Menu_GroupInformation",
     to: "/announcement",
     role: "U",
@@ -89,11 +89,19 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 15,
+    id: 101,
     parentId: 13,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
+    role: 'U'
+  },
+  {
+    id: 102,
+    parentId: 13,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_VinfastIntroduction",
+    to: map.Vinfast,
     role: 'U'
   },
   {
@@ -160,26 +168,26 @@ export const Navigation = [
     to: map.PositionIntroduced,
     role: 'U'
   },
-  // {
-  //   id: 99,
-  //   parentId: 10,
-  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-  //   label: "Phúc lợi",
-  //   to: map.Benefit,
-  //   role: "U"
-  // },
+  {
+    id: 99,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "Phúc lợi",
+    to: map.Benefit,
+    role: ['V030']
+  },
   {
     id: 19,
     parentId: 18,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: "U"
+    role: ['V030','V096']
   },
   {
     id: 20,
     parentId: 0,
-    icon: "notification",
+    icon: "c-notification",
     label: "Notification",
     to: map.Notifications,
     role: "U"
@@ -217,17 +225,18 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 12,
+    id: 97,
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
+    label2: "RegistrationSeconds",
     to: map.Registration,
     role: 'U'
   },
   {
     id: 98,
     parentId: 0,
-    icon: 'qa',
+    icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: 'U'

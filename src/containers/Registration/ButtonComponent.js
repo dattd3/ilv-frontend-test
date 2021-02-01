@@ -17,6 +17,8 @@ class ButtonComponent extends React.Component {
     }
 
     fileUploadAction() {
+        this.setState({files: this.props.files})
+        this.inputReference.current.value = null
         this.inputReference.current.click()
     }
 

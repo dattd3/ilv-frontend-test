@@ -187,7 +187,7 @@ class SubstitutionComponent extends React.Component {
       }
     })
     .catch(response => {
-      this.showStatusModal("Lỗi", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
     })
   }
 
@@ -649,7 +649,7 @@ class SubstitutionComponent extends React.Component {
 
         {this.errorWithoutItem("files")}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} /> : null}
       </div >
     )
   }

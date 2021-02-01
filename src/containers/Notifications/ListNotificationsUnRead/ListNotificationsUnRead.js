@@ -27,7 +27,8 @@ function ListNotificationsUnRead(props) {
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
-    const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
+    const companyCode = localStorage.getItem('companyCode');
+    const response = usePreload([companyCode, page, pageSize, lv3, lv4, lv5, keyword]);
     
     const onChangePage = (page) => {
         SetPage(page);

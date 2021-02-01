@@ -9,13 +9,21 @@ class TimesheetSearch extends React.Component {
   constructor() {
     super();
     this.state = {
-      startDate: moment().startOf('month').toDate(),
+      startDate: moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
       endDate: new Date()
     }
 
     this.setStartDate = this.setStartDate.bind(this)
     this.setEndDate = this.setEndDate.bind(this)
     this.search = this.search.bind(this)
+  }
+
+  getClosingSalaryDatePreMonth = () => {
+    const now = moment()
+    let preMonth = now.month()
+    const currentYear = preMonth === 0 ? now.year() - 1 : now.year()
+    preMonth = preMonth === 0 ? 12 : preMonth
+    return `26/${preMonth}/${currentYear}`
   }
 
   setStartDate (startDate) {

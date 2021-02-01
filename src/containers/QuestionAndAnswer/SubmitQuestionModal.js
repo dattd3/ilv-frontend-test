@@ -23,7 +23,7 @@ class SubmitQuestionModal extends React.Component {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let categoriesResult = res.data.data;

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="42" height="42" viewBox="0 0 42 42">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#e52c08"/>
+      <stop offset="1" stop-color="#f93645"/>
+    </linearGradient>
+    <clipPath id="clip-Icon_trang_chủ">
+      <rect width="42" height="42"/>
+    </clipPath>
+  </defs>
+  <g id="Icon_trang_chủ" data-name="Icon trang chủ" clip-path="url(#clip-Icon_trang_chủ)">
+    <g id="Group_9240" data-name="Group 9240" transform="translate(-45 -207)">
+      <path id="Rectangle_46" data-name="Rectangle 46" d="M15.512,0h8.977A15.512,15.512,0,0,1,40,15.512v8.977A15.512,15.512,0,0,1,24.488,40H15.512A15.512,15.512,0,0,1,0,24.488V15.512A15.512,15.512,0,0,1,15.512,0Z" transform="translate(85.999 248) rotate(180)" fill="url(#linear-gradient)"/>
+      <g id="Group_9185" data-name="Group 9185" transform="translate(54.024 218.024)">
+        <path id="Path_11166" data-name="Path 11166" d="M3120.126,2007.3l-11.752-8.949-11.752,8.949" transform="translate(-3096.621 -1998.354)" fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1"/>
+        <path id="Path_11167" data-name="Path 11167" d="M3130.446,2045.383v11.261h-6.137s.007-6.292,0-6.3a2.347,2.347,0,0,0-2.6-2.52h.306a2.347,2.347,0,0,0-2.6,2.52c-.007.007,0,6.3,0,6.3h-6.137v-11.261" transform="translate(-3110.112 -2036.434)" fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -38,7 +38,8 @@ function ListNotifications(props) {
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
     const region = localStorage.getItem('region');
-    const response = usePreload([page, pageSize, lv3, lv4, lv5, keyword]);
+    const companyCode = localStorage.getItem('companyCode');
+    const response = usePreload([companyCode, page, pageSize, lv3, lv4, lv5, keyword]);
     const phonesSupportForRegion = usePreloadGetPhoneSupport([region]);
     
     const onChangePage = (page) => {
@@ -81,6 +82,7 @@ function ListNotifications(props) {
             const notifications = response.data.notifications ? response.data.notifications : [];
             dataBlock = <>
             {
+                notifications && notifications.length > 0 ?
                 notifications.map((item, i) => {
                     const timePost = getTimePost(item.createdDate);
                     return <div key={i} className="item">
@@ -106,12 +108,11 @@ function ListNotifications(props) {
                         </div>
                         </div>
                     </div>
-                })
+                }) : <p className='text-center'>Không có thông báo nội bộ !</p>
             }
             </>;
         }
     }
-
     return (
         <>
         <div className="list-notifications-section">

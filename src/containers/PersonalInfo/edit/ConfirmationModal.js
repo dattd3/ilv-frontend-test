@@ -33,7 +33,7 @@ class ConfirmationModal extends React.Component {
                 });
             } else {
                 this.setState({
-                    resultTitle: "Lỗi",
+                    resultTitle: "Thông Báo",
                     resultMessage: result.message,
                     isSuccess: false
                 });
@@ -93,7 +93,7 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .finally(() => {
-                        window.location.href = "/tasks?tab=approval";
+                        window.location.href = "/tasks";
                     })
 
                     setTimeout(() => { this.props.onHide() }, 600);

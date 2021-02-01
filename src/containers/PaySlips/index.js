@@ -37,6 +37,7 @@ class PaySlipsComponent extends React.Component {
     bodyFormData.append('year', `${year}`)
     bodyFormData.append('PayslipAuth', this.state.acessToken)
     bodyFormData.append('pernr', `${localStorage.getItem('employeeNo')}`)
+    bodyFormData.append('companyCode', `${localStorage.getItem('companyCode')}`)
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip`, bodyFormData, config)
     .then(res => {

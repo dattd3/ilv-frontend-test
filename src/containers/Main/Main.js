@@ -32,7 +32,7 @@ function MainLayout(props) {
 
   return (
     <>
-      <SideBar show={show} />
+      <SideBar show={show} user={user} />
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
           <Header user={user} setShow={setShow} isApp={isApp} />
