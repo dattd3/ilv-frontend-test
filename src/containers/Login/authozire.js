@@ -73,7 +73,7 @@ function Authorize(props) {
             var companyConfig = null
             axios.get(`${process.env.REACT_APP_REQUEST_URL}company/detail/${user.company_code}/${user.pnl}`, {
                 headers: {
-                    'Authorization': `${token}`
+                    'Authorization': `Bearer ${jwtToken}`
                 }
             })
                 .then(res => {
