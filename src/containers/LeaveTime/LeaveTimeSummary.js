@@ -71,7 +71,7 @@ function LeaveTimeSummary(props) {
     const unusedAnnualLeaveOfLastYear = props.data.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
 
     const usedCompensatoryLeaveOfThisYear = props.data.used_compensatory_leave ? props.data.used_compensatory_leave.find(a => a.year == thisYear) : undefined
-    const usedCompensatoryLeaveOfLastYear = props.data.used_compensatory_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
+    const usedCompensatoryLeaveOfLastYear = props.data.used_compensatory_leave ? props.data.used_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
 
     const unusedCompensatoryLeaveOfThisYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
     const unusedCompensatoryLeaveOfLastYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
@@ -89,7 +89,7 @@ function LeaveTimeSummary(props) {
                                         total:  (usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0),
                                         item1: {label: 'Đã sử dụng', total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
                                         item2: {label: 'Còn được sử dụng', total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
-                                        item3: {label: 'Hạn sử dụng', expiredDate: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
+                                        item3: {label: 'Hạn sử dụng', expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
                                     }
                                 }
                             />

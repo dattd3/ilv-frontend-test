@@ -20,7 +20,7 @@ class EducationComponent extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     if (nextProps.validationMessages !== this.props.validationMessages) {
       this.setState({ validationEducationMessagesFromParent: nextProps.validationMessages })
     }
@@ -210,28 +210,25 @@ class EducationComponent extends React.Component {
     </Row>
   }
 
-  educationInput(item, index, name) {
+  updateEducationInput(item, index, name) {
     const educationLevels = this.props.educationLevels.filter(educationLevel => {
-      return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA" 
-      && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
+      return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
+        && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
     })
-    .map(educationLevel => {
-      return { value: educationLevel.ID, label: educationLevel.TEXT }
-    })
+      .map(educationLevel => {
+        return { value: educationLevel.ID, label: educationLevel.TEXT }
+      })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
+
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
           <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
         {
-          (name === "newUserEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_create_" + index + "_degreeType"]}</p> : null
-        }
-        {
-          (name === "userEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_update_" + index + "_degreeType"]}</p> : null
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].degreeType}</p> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -243,12 +240,8 @@ class EducationComponent extends React.Component {
           <input className="form-control w-75 input" disabled={item.isLockOtherSchool} onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
         </div>
         {
-          (name === "newUserEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_create_" + index + "_school"]}</p> : null
-        }
-        {
-          (name === "userEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_update_" + index + "_school"]}</p> : null
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].school}</p> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -260,17 +253,13 @@ class EducationComponent extends React.Component {
           <input className="form-control w-75 input" disabled={item.isLockOtherMajor} onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
         </div>
         {
-          (name === "newUserEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_create_" + index + "_major"]}</p> : null
-        }
-        {
-          (name === "userEducation" && this.state.validationEducationMessagesFromParent) ? 
-          <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_update_" + index + "_major"]}</p> : null
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].major}</p> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="input-container">
-          <label>
+        <div className="row">
+          <div className="col-sm-6">
             <DatePicker
               name="from_time"
               key="from_time"
@@ -279,7 +268,108 @@ class EducationComponent extends React.Component {
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
-              className="form-control date" />&nbsp;-&nbsp;
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="From"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
+          <div className="col-sm-6">
+          <DatePicker
+            name="to_time"
+            key="to_time"
+            maxDate={new Date()}
+            selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+            onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
+            dateFormat="dd-MM-yyyy"
+            locale="vi"
+            showMonthDropdown={true}
+            showYearDropdown={true}
+            autoComplete='off'
+            placeholderText="To"
+            popperPlacement="bottom-end"
+            className="form-control input" />
+        </div>
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].fromTime}</p> : null
+        }
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].toTime}</p> : null
+        }
+        </div>
+      </Col>
+    </Row >
+  }
+
+  educationInput(item, index, name) {
+    const educationLevels = this.props.educationLevels.filter(educationLevel => {
+      return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
+        && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
+    })
+      .map(educationLevel => {
+        return { value: educationLevel.ID, label: educationLevel.TEXT }
+      })
+    const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
+    const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
+
+    return <Row className="info-value">
+      <Col xs={12} md={6} lg={3}>
+        <div>
+          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+        </div>
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].degreeType}</p> : null
+        }
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div className="mb-3">
+          <Select placeholder="Lựa chọn trường" name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+        </div>
+        <div className="form-inline other-field">
+          <label className="mr-3 label">Khác: </label>
+          <input className="form-control w-75 input" disabled={item.isLockOtherSchool} onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
+        </div>
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].school}</p> : null
+        }
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div className="mb-3">
+          <Select placeholder="Lựa chọn chuyên môn" name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+        </div>
+        <div className="form-inline other-field">
+          <label className="mr-3 label">Khác: </label>
+          <input className="form-control w-75 input" disabled={item.isLockOtherMajor} onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
+        </div>
+        {
+          (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
+            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].major}</p> : null
+        }
+      </Col>
+      <Col xs={12} md={6} lg={3}>
+        <div className="row">
+          <div className="col-sm-6">
+            <DatePicker
+              name="from_time"
+              key="from_time"
+              maxDate={new Date()}
+              selected={item && item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+              onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
+              dateFormat="dd-MM-yyyy"
+              locale="vi"
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="From"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
+          <div className="col-sm-6">
             <DatePicker
               name="to_time"
               key="to_time"
@@ -288,24 +378,20 @@ class EducationComponent extends React.Component {
               onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
-              className="form-control date" />
-          </label>
+              showMonthDropdown={true}
+              showYearDropdown={true}
+              autoComplete='off'
+              placeholderText="To"
+              popperPlacement="bottom-end"
+              className="form-control input" />
+          </div>
           {
-            (name === "newUserEducation" && this.state.validationEducationMessagesFromParent) ? 
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_create_" + index + "_fromTime"]}</p> : null
+            (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
+              <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].fromTime}</p> : null
           }
           {
-            (name === "newUserEducation" && this.state.validationEducationMessagesFromParent) ? 
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_create_" + index + "_toTime"]}</p> : null
-          }
-
-          {
-            (name === "userEducation" && this.state.validationEducationMessagesFromParent) ? 
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_update_" + index + "_fromTime"]}</p> : null
-          }
-          {
-            (name === "userEducation" && this.state.validationEducationMessagesFromParent) ? 
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent["education" + "_update_" + index + "_toTime"]}</p> : null
+            (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
+              <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].toTime}</p> : null
           }
         </div>
       </Col>
@@ -323,7 +409,9 @@ class EducationComponent extends React.Component {
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.major}</div>
+        <div className="detail">
+          {item.major_id === 0 ? item.other_major : item.major}
+        </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="detail">{item.from_time} - {item.to_time}</div>
@@ -353,7 +441,7 @@ class EducationComponent extends React.Component {
             return <div className="item" key={i}>
               {this.itemHeader()}
               {item ? this.educationItem(item) : null}
-              {this.state.userEducation[i] ? this.educationInput(this.state.userEducation[i], i, 'userEducation') : null}
+              {this.state.userEducation[i] ? this.updateEducationInput(this.state.userEducation[i], i, 'userEducation') : null}
             </div>
           })}
 

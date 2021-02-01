@@ -77,12 +77,13 @@ class MyComponent extends React.Component {
         });
     }
     filterBonus(bonuses, startDate, endDate) {
-        debugger;
-        return bonuses.filter(bonus => Date.parse(moment(bonus.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(bonus.effective_date) <= Date.parse(endDate));
+        return bonuses && bonuses.length > 0 ?
+        bonuses.filter(bonus => Date.parse(moment(bonus.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(bonus.effective_date) <= Date.parse(endDate))
+        : []
     }
 
     filterPenalties(penalties, startDate, endDate) {
-        return penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate));
+        return penalties && penalties.length > 0 ? penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate)) : [];
     }
 
     render() {

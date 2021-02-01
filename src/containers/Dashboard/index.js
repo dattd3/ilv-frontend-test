@@ -15,11 +15,11 @@ function Dashboard(props) {
   return (
     <div>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
+        <h1 className="h3 mb-0 text-gray-800"></h1>
       </div>
       <Row>
-        <Col xl={6}>
-          <Card className="mb-4 news-home">
+        {/* <Col xl={6}>
+          <Card className="mb-4 news-home shadow">
             <Card.Body className="card-body pd-0">
               <ListGroup variant="flush">
                 <ListGroup.Item>
@@ -43,8 +43,8 @@ function Dashboard(props) {
               </ListGroup>
             </Card.Body>
           </Card>
-        </Col>
-        <Col xl={6}>
+        </Col> */}
+        <Col xl={12}>
           <NewsOnHome />
         </Col>
       </Row>

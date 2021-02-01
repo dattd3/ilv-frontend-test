@@ -7,59 +7,75 @@ cache:
     - node_modules/
 
 stages:
-  - setup
   - build
   - deploy
 
-setupJob:
-  stage: setup
-  script:
-    - yarn install
-  tags:
-    - reactjs
-  only:
-    refs:
-      - develop
-  cache:
-    policy: push
-    paths:
-      - node_modules/
-
-
-buildJob:
+build_development:
   stage: build
+  environment: development
   tags:
-    - reactjs
+    - hrms
   script:
-    - echo "Building deploy package"
-    - yarn build
+    - python3 ~/deployment.py build web dev
     - echo "Build successful"
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
+    paths:
+      - build/
+    expire_in: 3 days
   only:
     refs:
       - develop
-  cache:
-    policy: pull
-    paths:
-      - node_modules/
+      - /^feature1/.*$/
 
-deployJob:
+build_production:
+  stage: build
+  environment: development
+  tags:
+    - hrms-production
+  script:
+    - ls
+    - python3 ~/deployment.py build web prod
+    - echo "Build successful"
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
+    paths:
+      - build/
+    expire_in: 3 days
+  only:
+    refs:
+      - master
+      - feature/rollout
+
+deploy_to_development_environment:
   stage: deploy
   tags:
-    - reactjs
+    - hrms
   script:
-    - echo "Deploying to server"
-    - mv .env.staging .env.production.local
-    - yarn build
-    - mv .env.production.local .env.staging
+    - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
+  when: manual
   artifacts:
     expire_in: 1 hour
     paths:
       - public
   only:
-    refs:
       - develop
-  cache:
-    policy: pull
+      - /^feature1/.*$/
+
+deploy_to_production_environment:
+  stage: deploy
+  environment: Production
+  tags:
+    - hrms-production
+  script:
+    - python3 ~/deployment.py deploy web prod
+    - echo "Deployed"
+  when: manual
+  artifacts:
+    expire_in: 1 hour
     paths:
-      - node_modules/
+      - public
+  only:
+      - master
+      - feature/rollout
