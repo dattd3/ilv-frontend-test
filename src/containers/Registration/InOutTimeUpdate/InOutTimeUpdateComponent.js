@@ -106,8 +106,10 @@ class InOutTimeUpdateComponent extends React.Component {
   verifyInput() {
     let errors = { ...this.state.errors }
     this.state.timesheets.filter(t => t.isEdit == true).forEach((timesheet, index) => {
-      errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? '(Bắt buộc)' : null
-      errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? '(Bắt buộc)' : null
+      if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
+        errors['start_time1_fact_update' + index] = '(Bắt buộc)' 
+        errors['end_time1_fact_update' + index] = '(Bắt buộc)' 
+      }
       // Optional
       if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
         errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
@@ -118,7 +120,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
-    errors['files'] = (_.isNull(this.state.files) || this.state.files.length === 0) ? '(*) File đính kèm là bắt buộc' : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && localStorage.getItem("companyCode") != "V070")? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
     return errors
   }
@@ -129,7 +131,6 @@ class InOutTimeUpdateComponent extends React.Component {
     if (hasErrors) {
       return
     }
-
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
     const approver = { ...this.state.approver }
     delete approver.avatar
@@ -292,7 +293,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
                     locale="vi"
-                    shouldCloseOnSelect = {true}
+                    shouldCloseOnSelect={true}
                     className="form-control input" />
                   <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                 </label>
@@ -309,7 +310,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={this.state.endDate}
-                    minDate = {this.state.startDate}
+                    minDate={this.state.startDate}
                     maxDate={new Date()}
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation

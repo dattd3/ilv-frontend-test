@@ -29,21 +29,21 @@ function Content(props) {
       <Button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        variant="link"
+        variant={props.timesheet.start_time1_plan == null ? "secondary" : "info"}
         className= "text-left"
         block >
         <div className="row">
           <div className="col-3">
             <i className={!open ? 'fa fa-plus-circle' : 'fa fa-minus-circle'}>&nbsp;</i>{props.timesheet.date.replace(/-/g, '/')}
           </div>
-          <div className="col-2">
-            <Fade in={!open}>
-              <div id={"timesheet-detail-" + props.index}>Giờ kế hoạch</div>
+          <div className="col-3">
+            <Fade in={props.timesheet.start_time1_plan == null}>
+              <div id={"timesheet-detail-" + props.index}>Ngày nghỉ</div>
             </Fade>
           </div>
-          <div className="col-2">
+          <div className="col-3">
             <Fade in={!open}>
-              <div id={"timesheet-detail-" + props.index}>Giờ thực tế</div>
+              <div id={"timesheet-detail-" + props.index}></div>
             </Fade>
           </div>
         </div>

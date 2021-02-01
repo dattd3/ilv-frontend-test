@@ -41,10 +41,10 @@ class TaskList extends React.Component {
         };
 
         this.requestRegistraion = {
-            2: {request: "Đăng ký nghỉ", requestUrl: "requestabsence"},
-            3: {request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance"},
-            4: {request: "Thay đổi phân ca", requestUrl: "requestsubstitution"},
-            5: {request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping"}
+            2: { request: "Đăng ký nghỉ", requestUrl: "requestabsence" },
+            3: { request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance" },
+            4: { request: "Thay đổi phân ca", requestUrl: "requestsubstitution" },
+            5: { request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping" }
         }
 
         this.typeFeedbackMapping = {
@@ -68,7 +68,7 @@ class TaskList extends React.Component {
             status: statusOriginal,
             userProfileInfo: taskData
         }
-        this.setState({ taskId: taskId, requestTypeId: request, dataToPrepareToSAP: {...registrationDataToPrepareToSAP} })
+        this.setState({ taskId: taskId, requestTypeId: request, dataToPrepareToSAP: { ...registrationDataToPrepareToSAP } })
         this.showModalConfirm(value, request)
     }
 
@@ -83,7 +83,7 @@ class TaskList extends React.Component {
             });
         } else {
             this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt", 
+                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
                 modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + this.requestRegistraion[requestId].request + " này ?",
                 isShowModalRegistrationConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
@@ -230,33 +230,38 @@ class TaskList extends React.Component {
     getInOutUpdateToSAp = data => {
         let dataToSAP = []
         data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-          ['1', '2'].forEach(n => {
-            const startTimeName = `start_time${n}_fact_update`
-            const endTimeName = `end_time${n}_fact_update`
-            if (!this.isNullCustomize(timesheet[startTimeName]) && timesheet[`start_time${n}_fact`] != timesheet[startTimeName]) {
-              dataToSAP.push({
-                MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                PERNR: data.userProfileInfo.user.employeeNo,
-                LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                SATZA: 'P10',
-                LTIME: timesheet[startTimeName] ? moment(timesheet[startTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
-                ACTIO: 'INS'
-              })
-            }
+            ['1', '2'].forEach(n => {
+                const startTimeName = `start_time${n}_fact_update`
+                const endTimeName = `end_time${n}_fact_update`
+                const startPlanTimeName = `from_time${n}`
+                const endPlanTimeName = `to_time${n}`
+                if(!timesheet[startTimeName] && !timesheet[endTimeName]) return
+                if (true) {
+                    let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : moment(timesheet[`start_time${n}_fact`], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
+                    dataToSAP.push({
+                        MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
+                        PERNR: data.userProfileInfo.user.employeeNo,
+                        LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+                        SATZA: 'P10',
+                        LTIME: startTime,
+                        DALLF:  '+' ,
+                        ACTIO: 'INS'
+                    })
+                }
 
-            if (!this.isNullCustomize(timesheet[endTimeName]) && timesheet[`end_time${n}_fact`] != timesheet[endTimeName]) {
-              dataToSAP.push({
-                MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                PERNR: data.userProfileInfo.user.employeeNo,
-                LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                SATZA: 'P20',
-                LTIME: timesheet[endTimeName] ? moment(timesheet[endTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                DALLF: timesheet[startTimeName] < timesheet[endTimeName] ? '+' : '-',
-                ACTIO: 'INS'
-              })
-            }
-          })
+                if (true) {
+                    let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : moment(timesheet[`end_time${n}_fact`], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
+                    dataToSAP.push({
+                        MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
+                        PERNR: data.userProfileInfo.user.employeeNo,
+                        LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+                        SATZA: 'P20',
+                        LTIME: endTime,
+                        DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
+                        ACTIO: 'INS'
+                    })
+                }
+            })
         })
         return dataToSAP
     }
@@ -283,7 +288,7 @@ class TaskList extends React.Component {
 
     calTime = (start, end) => {
         if (start == null || end == null) {
-          return ""
+            return ""
         }
         const differenceInMs = moment(end, Constants.SUBSTITUTION_TIME_FORMAT).diff(moment(start, Constants.SUBSTITUTION_TIME_FORMAT))
         return moment.duration(differenceInMs).asHours()
@@ -308,7 +313,7 @@ class TaskList extends React.Component {
         return dataToSAP
     }
 
-    getBusinessTripToSAp (data) {
+    getBusinessTripToSAp(data) {
         let dataToSAP = []
         if (data.status === 0) {
             dataToSAP.push(
@@ -336,7 +341,7 @@ class TaskList extends React.Component {
             <>
                 <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
                     taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
-                <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage} 
+                <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
@@ -355,69 +360,69 @@ class TaskList extends React.Component {
                         </thead>
                         <tbody>
                             {tasks.length > 0 ?
-                            tasks.map((task, index) => {
-                                const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
-                                let isShowEditButton = this.isShowEditButton(task.status);
-                                let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                let userId = "";
-                                let userManagerId = "";
-                                if (task.userId) {
-                                    userId = task.userId.split("@")[0];
-                                }
-                                if (task.userManagerId) {
-                                    userManagerId = task.userManagerId.split("@")[0];
-                                }
-                                return (
-                                    <tr key={index}>
-                                        <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                                        <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                        <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                        <td className="user-request">{userId}</td>
-                                        <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                                        <td className="user-approved">{userManagerId}</td>
-                                        <td className="approval-date">{approvalDate}</td>
-                                        <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
-                                        <td className="tool">
-                                            {task.comment ? <OverlayTrigger 
-                                                rootClose
-                                                trigger="click"
-                                                placement="left"
-                                                overlay={<Popover id={'note-task-' + index}>
-                                                    <Popover.Title as="h3">Ý kiến của CBNV</Popover.Title>
-                                                    <Popover.Content>
-                                                        {task.comment}
-                                                    </Popover.Content>
-                                                </Popover>}>
-                                                <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" />
-                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled" />}
-                                            {task.hrComment ? <OverlayTrigger 
-                                                rootClose
-                                                trigger="click"
-                                                placement="left"
-                                                overlay={<Popover id={'comment-task-' + index}>
-                                                    <Popover.Title as="h3">{this.typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
-                                                    <Popover.Content>
-                                                        {task.hrComment}
-                                                    </Popover.Content>
-                                                </Popover>}>
-                                                <img alt="comment task" src={commentButton} title={this.typeFeedbackMapping[task.requestTypeId]} />
-                                            </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={this.typeFeedbackMapping[task.requestTypeId]} />}
-                                            {
-                                                // isShowEditButton ?
-                                                //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                // : null
-                                            }
-                                            {
-                                                isShowEvictionButton ?
-                                                    <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                : null
-                                            }
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        : <tr className="text-center"><th colSpan={9}>Không có dữ liệu</th></tr>
-                        }
+                                tasks.map((task, index) => {
+                                    const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                                    let isShowEditButton = this.isShowEditButton(task.status);
+                                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
+                                    let userId = "";
+                                    let userManagerId = "";
+                                    if (task.userId) {
+                                        userId = task.userId.split("@")[0];
+                                    }
+                                    if (task.userManagerId) {
+                                        userManagerId = task.userManagerId.split("@")[0];
+                                    }
+                                    return (
+                                        <tr key={index}>
+                                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
+                                            <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                            <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
+                                            <td className="user-request">{userId}</td>
+                                            <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                                            <td className="user-approved">{userManagerId}</td>
+                                            <td className="approval-date">{approvalDate}</td>
+                                            <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
+                                            <td className="tool">
+                                                {task.comment ? <OverlayTrigger
+                                                    rootClose
+                                                    trigger="click"
+                                                    placement="left"
+                                                    overlay={<Popover id={'note-task-' + index}>
+                                                        <Popover.Title as="h3">Ý kiến của CBNV</Popover.Title>
+                                                        <Popover.Content>
+                                                            {task.comment}
+                                                        </Popover.Content>
+                                                    </Popover>}>
+                                                    <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" />
+                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled" />}
+                                                {task.hrComment ? <OverlayTrigger
+                                                    rootClose
+                                                    trigger="click"
+                                                    placement="left"
+                                                    overlay={<Popover id={'comment-task-' + index}>
+                                                        <Popover.Title as="h3">{this.typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
+                                                        <Popover.Content>
+                                                            {task.hrComment}
+                                                        </Popover.Content>
+                                                    </Popover>}>
+                                                    <img alt="comment task" src={commentButton} title={this.typeFeedbackMapping[task.requestTypeId]} />
+                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={this.typeFeedbackMapping[task.requestTypeId]} />}
+                                                {
+                                                    // isShowEditButton ?
+                                                    //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                    // : null
+                                                }
+                                                {
+                                                    isShowEvictionButton ?
+                                                        <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                        : null
+                                                }
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                                : <tr className="text-center"><th colSpan={9}>Không có dữ liệu</th></tr>
+                            }
                         </tbody>
                     </table>
                 </div>
