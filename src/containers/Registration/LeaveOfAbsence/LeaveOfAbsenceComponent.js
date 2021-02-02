@@ -355,6 +355,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
         bodyFormData.append('UserProfileInfoToSap', {})
         bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
+        bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         this.state.files.forEach(file => {
             bodyFormData.append('Files', file)
         })
