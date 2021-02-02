@@ -40,7 +40,7 @@ function SideBar(props) {
     return (
         <>
             <div>
-                <div className={show ? 'bg-vp-blue sidebar shadow' : 'bg-vp-blue sidebar shadow d-none'}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar shadow' : 'bg-vp-blue sidebar shadow d-none'}>
                     <Animated animationIn="rubberBand" isVisible={show} >
                         <div className="text-center">
                             <a href="/">

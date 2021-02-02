@@ -10611,10 +10611,10 @@ a:focus {
 }
 
 .scroll-to-top {
+  display: block;
   position: fixed;
   right: 1rem;
   bottom: 1rem;
-  display: none;
   width: 2.75rem;
   height: 2.75rem;
   text-align: center;
