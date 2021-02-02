@@ -59,6 +59,30 @@ a {
   }
 }
 
+.scroll-to-top2 {
+  position: fixed;
+  right: 1rem;
+  bottom: 4em;
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  text-align: center;
+  color: #e74a3b;
+  opacity: 0.5;
+  background: transparent;
+  line-height: 46px;
+  &:focus,
+  &:hover {
+    opacity: 1;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  i {
+    font-weight: 800;
+  }
+}
+
 .info-modal-common {
   font-family: Arial, Helvetica, sans-serif;
   .modal-content {

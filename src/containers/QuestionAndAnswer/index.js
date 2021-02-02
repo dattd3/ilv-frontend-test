@@ -10,10 +10,7 @@ import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
-import Button from 'react-bootstrap/Button'
-import Fade from 'react-bootstrap/Fade'
-import Card from 'react-bootstrap/Card'
-import Accordion from 'react-bootstrap/Accordion'
+
 
 class MyComponent extends React.Component {
 
@@ -35,7 +32,6 @@ class MyComponent extends React.Component {
       open: true
     };
   }
-
 
   componentDidMount() {
     let config = {
@@ -165,17 +161,7 @@ class MyComponent extends React.Component {
               (this.state.categories && this.state.categories.length && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length) ? this.state.categories.map((category, index) => {
                 let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id)
                 return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="mb-2">
-                  <Accordion defaultActiveKey="0">
-                      <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                      <h4 className="text-uppercase text-gray-800 common-category pointer">{category.name}</h4>
-                      </Accordion.Toggle>
-                      <Accordion.Collapse eventKey="0">
-                        <Card.Body>
-                        <CommonQuestionComponent questions={commonticketFiler} />
-                        </Card.Body>
-                      </Accordion.Collapse>
-                  </Accordion>
-
+                  <CommonQuestionComponent questions={commonticketFiler} categoryName={category.name} />
                 </div>
                   : null
               }) : <div><p className="text-center">Không có kết quả phù hợp, vui lòng lựa chọn tìm từ khóa khác!</p></div>

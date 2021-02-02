@@ -102,7 +102,8 @@ function Authorize(props) {
                             organizationLv5: user.organization_lv5,
                             region: user.department,
                             companyCode: user.company_code,
-                            companyLogoUrl: res.data.data.logoUrl
+                            companyLogoUrl: res.data.data.logoUrl,
+                            companyThemeColor: res.data.data.colorHexCode
                         });
                     }
                 })

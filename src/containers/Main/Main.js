@@ -5,6 +5,7 @@ import Header from '../../components/Common/Header';
 import SideBar from '../../components/Common/Sidebar';
 import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
+import ScrollToTop from '../../components/Common/ScrollToTop';
 import map from "../map.config";
 import { useTranslation } from "react-i18next";
 
@@ -39,6 +40,7 @@ function MainLayout(props) {
           <div className="container-fluid" id='main-content'>
             <NestedRoute routes={props.routes} />
           </div>
+          <ScrollToTop />
         </div>
         <Footer />
       </div>

@@ -144,7 +144,7 @@ function Header(props) {
         isApp ? null :
             <div>
                 <Navbar expand="lg" className="navigation-top-bar-custom">
-                    <Button variant="outline-danger" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
+                    <Button variant="outline-secondary" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
                     <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
                         <InputGroup className='d-none'>
                             <InputGroup.Prepend>
@@ -166,7 +166,7 @@ function Header(props) {
                         </Animated>
                         {dataNotificationsUnRead != "" ?
                             <Dropdown.Menu className="list-notification-popup">
-                                <div className="title-block">thông báo nội bộ</div>
+                                <div className="title-block text-center">thông báo nội bộ</div>
                                 <div className="all-items">
                                     {dataNotificationsUnRead}
                                 </div>
