@@ -36,7 +36,9 @@ class BusinessTripDetailComponent extends React.Component {
 
   render() {
     const businessTrip = this.props.businessTrip
+    console.log(businessTrip)
     const requestTypeId = this.props.businessTrip.requestTypeId
+    console.log(this.props.leaveOfAbsence)
 
     return (
       <div className="business-trip">
@@ -56,7 +58,7 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               Tổng thời gian CT/ĐT
-              <div className="detail">{businessTrip && businessTrip.userProfileInfo.totalTime ? this.props.leaveOfAbsence && this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? businessTrip.userProfileInfo.totalTime + ' ngày' : businessTrip && businessTrip.userProfileInfo.totalTime* 8 + ' giờ' : null}</div>
+              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ngày' : businessTrip.userProfileInfo.totalTime + ' giờ') : null}</div>
             </div>
           </div>
           <div className="row">
