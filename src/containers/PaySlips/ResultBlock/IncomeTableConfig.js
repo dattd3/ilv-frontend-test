@@ -591,7 +591,7 @@ export const IncomeTablesConfig = {
                     isSkipSumLabel: true,
                     level3: [
                         {
-                            label: 'Mức lương đóng Bảo hiểm bắt buộc = Sum(II.2.1.1 : II.2.1.2)',
+                            label: 'Mức lương đóng Bảo hiểm bắt buộc',
                             field: 'compulsary_insurance_amount_in_salary',
                             isSkipSumLabel: true,
                             level4: [
