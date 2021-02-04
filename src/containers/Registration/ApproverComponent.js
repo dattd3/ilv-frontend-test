@@ -166,7 +166,7 @@ class ApproverComponent extends React.Component {
           <div className="col-4">
             <p className="title">Người phê duyệt</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder="Lựa chọn" key="approver" options={this.state.users} />
+              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder="Tìm kiếm..." key="approver" options={this.state.users} />
             </div>
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
