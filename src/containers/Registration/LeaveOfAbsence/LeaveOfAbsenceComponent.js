@@ -193,8 +193,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                 const data = res.data
                 if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
                     const errors = {...this.state.errors}
-                    errors.totalDaysOff = null
-                    this.setState({totalTimes: data.data.hours || "", totalDays: data.data.days, errors: errors})
+                    errors.totalDaysOff = data.data.hours === 0 ? "Tổng thời gian nghỉ phải khác 0" : null
+                    this.setState({totalTimes: data.data.hours, totalDays: data.data.days, errors: errors})
                 } else {
                     const errors = {...this.state.errors}
                     errors.totalDaysOff = data.result.message
@@ -424,7 +424,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: '3', label: 'Bố đẻ, mẹ đẻ, bố vợ, mẹ vợ hoặc bố chồng, mẹ chồng chết; vợ chết hoặc chồng chết; con chết' },
         ]
         const annualLeaveSummary = this.state.annualLeaveSummary
-
         return (
             <div className="leave-of-absence">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -580,7 +579,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-2">
                                 <p className="title">Tổng thời gian nghỉ</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? this.state.totalDays ? this.state.totalDays + ' ngày' : "" : this.state.totalTimes ? this.state.totalTimes + ' giờ' : ""} readOnly />
+                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ' ngày' : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
                                 </div>
                                 {this.state.errors.totalDaysOff ? this.error('totalDaysOff') : null}
                             </div>
