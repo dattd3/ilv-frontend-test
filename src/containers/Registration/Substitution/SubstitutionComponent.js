@@ -359,8 +359,9 @@ class SubstitutionComponent extends React.Component {
     }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
+          let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
           const shifts = ['1', '2']
-          const timesheets = res.data.data.flatMap(timesheet => {
+          const timesheets = dataSorted.flatMap(timesheet => {
             return shifts.map(shiftIndex => {
               return timesheet[`from_time${shiftIndex}`] && timesheet[`from_time${shiftIndex}`] !== '#' ? {
                 date: timesheet.date,
@@ -453,7 +454,6 @@ class SubstitutionComponent extends React.Component {
       { value: '02', label: 'Phân ca gãy' },
       { value: '03', label: 'Phân ca bờ đảo full ngày' }
     ]
-
     return (
       <div className="shift-work">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />

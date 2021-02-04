@@ -36,9 +36,7 @@ class BusinessTripDetailComponent extends React.Component {
 
   render() {
     const businessTrip = this.props.businessTrip
-    console.log(businessTrip)
     const requestTypeId = this.props.businessTrip.requestTypeId
-    console.log(this.props.leaveOfAbsence)
 
     return (
       <div className="business-trip">
