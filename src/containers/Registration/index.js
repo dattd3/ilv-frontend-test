@@ -28,8 +28,8 @@ class RegistrationComponent extends React.Component {
           <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
             <BusinessTrip />
           </Tab>
-          {
-            localStorage.getItem("companyCode") == "V030" ?
+          { 
+            ['V030','V060'].includes(localStorage.getItem("companyCode")) ?
            <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
             <SubstitutionComponent />
           </Tab> : null

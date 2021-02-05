@@ -346,16 +346,16 @@ class TaskList extends React.Component {
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
-                            <tr>
+                            <tr className="text-center">
                                 <th scope="col" className="code">Mã yêu cầu</th>
                                 <th scope="col" className="request-type">Loại yêu cầu</th>
                                 <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
-                                <th scope="col" className="user-request">Người gửi yêu cầu</th>
-                                <th scope="col" className="request-date">Thời gian gửi yêu cầu</th>
-                                <th scope="col" className="user-approved">Người gửi phê duyệt</th>
+                                <th scope="col" className="user-request">Người gửi</th>
+                                <th scope="col" className="request-date">Thời gian</th>
+                                <th scope="col" className="user-approved">Người phê duyệt</th>
                                 <th scope="col" className="approval-date">Thời gian phê duyệt</th>
                                 <th scope="col" className="status">Trạng thái</th>
-                                <th scope="col" className="tool">Ý kiến/Phản hồi/Chỉnh sửa</th>
+                                <th scope="col" className="tool">Lý do/ Phản hồi/ Chỉnh sửa</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -377,10 +377,10 @@ class TaskList extends React.Component {
                                             <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
                                             <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                             <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                            <td className="user-request">{userId}</td>
-                                            <td className="request-date"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                                            <td className="user-approved">{userManagerId}</td>
-                                            <td className="approval-date">{approvalDate}</td>
+                                            <td className="user-request text-center">{userId}</td>
+                                            <td className="request-date text-center"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
+                                            <td className="user-approved text-center">{userManagerId}</td>
+                                            <td className="approval-date text-center">{approvalDate}</td>
                                             <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
                                             <td className="tool">
                                                 {task.comment ? <OverlayTrigger
@@ -388,13 +388,13 @@ class TaskList extends React.Component {
                                                     trigger="click"
                                                     placement="left"
                                                     overlay={<Popover id={'note-task-' + index}>
-                                                        <Popover.Title as="h3">Ý kiến của CBNV</Popover.Title>
+                                                        <Popover.Title as="h3">Lý do</Popover.Title>
                                                         <Popover.Content>
                                                             {task.comment}
                                                         </Popover.Content>
                                                     </Popover>}>
-                                                    <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Ý kiến của CBNV" className="disabled" />}
+                                                    <img alt="Note task" src={notetButton} title="Lý do" />
+                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Lý do" className="disabled" />}
                                                 {task.hrComment ? <OverlayTrigger
                                                     rootClose
                                                     trigger="click"

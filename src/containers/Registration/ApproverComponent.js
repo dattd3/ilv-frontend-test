@@ -54,7 +54,8 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    if (localStorage.getItem("companyCode") === "V070") {
+    const companiesUsing = ['V070', 'V060']
+    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
         .then(res => {
           if (res && res.data && res.data.data && res.data.data.length > 0) {
@@ -183,6 +184,9 @@ class ApproverComponent extends React.Component {
             </div>
           </div>
         </div>
+        {
+          localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*Lưu ý: Lựa chọn người phê duyệt theo đúng <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq">Cẩm Nang Phân Quyền</a></b></span></div> : null
+        }
       </div>
     </div>
   }
