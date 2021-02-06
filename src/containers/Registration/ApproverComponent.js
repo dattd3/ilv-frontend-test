@@ -54,7 +54,8 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    if (localStorage.getItem("companyCode") === "V070") {
+    const companiesUsing = ['V070', 'V060']
+    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
         .then(res => {
           if (res && res.data && res.data.data && res.data.data.length > 0) {
@@ -166,7 +167,7 @@ class ApproverComponent extends React.Component {
           <div className="col-4">
             <p className="title">Người phê duyệt</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder="Lựa chọn" key="approver" options={this.state.users} />
+              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder="Tìm kiếm..." key="approver" options={this.state.users} />
             </div>
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
@@ -183,6 +184,9 @@ class ApproverComponent extends React.Component {
             </div>
           </div>
         </div>
+        {
+          localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*Lưu ý: Lựa chọn người phê duyệt theo đúng <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >Cẩm Nang Phân Quyền</a></b></span></div> : null
+        }
       </div>
     </div>
   }

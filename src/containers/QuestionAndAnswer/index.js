@@ -124,7 +124,6 @@ class MyComponent extends React.Component {
         window.location.reload();
       }
     }
-    console.log(this.state.open)
     return (
       <div className="personal-info">
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />

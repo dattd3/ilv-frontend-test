@@ -110,7 +110,6 @@ class MyComponent extends React.Component {
     }
 
     const { t } = this.props;
-
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
@@ -209,7 +208,7 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("MaritalStatus")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.marital_status_code === "1" ? t("MaritalMarried") : t("MaritalSingle")}</p></td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.marital_status_code === "1" ? t("MaritalMarried") : (this.state.userDetail.marital_status_code === "2" ? "Ly hôn" : t("MaritalSingle"))}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("PersonalEmail")}</td>

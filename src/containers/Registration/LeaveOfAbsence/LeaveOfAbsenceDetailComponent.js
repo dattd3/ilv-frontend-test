@@ -4,6 +4,8 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import axios from 'axios'
+import _, { startsWith } from 'lodash'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -15,8 +17,30 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      isShowStatusModal: false
+      isShowStatusModal: false,
+      annualLeaveSummary: {}
     }
+  }
+  componentDidMount() {
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+    }
+
+    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/currentabsence`, {
+        perno: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
+        date: moment().format('YYYYMMDD')
+    }, config)
+    .then(res => {
+        if (res && res.data) {
+            const annualLeaveSummary = res.data.data
+            this.setState({ annualLeaveSummary: annualLeaveSummary })
+        }
+    }).catch(error => {
+    })
   }
 
   getTypeDetail = () => {
@@ -36,7 +60,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   render() {
     const userProfileInfo = this.props.leaveOfAbsence.userProfileInfo
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
-
+    const annualLeaveSummary = this.state.annualLeaveSummary
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -57,6 +81,24 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             <div className="col-3">
               Khối/Phòng/Bộ phận
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.department : ""}</div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-3">
+              Ngày phép tồn
+              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
+            </div>
+            <div className="col-3">
+              Ngày phép năm
+              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : 0}</div>
+            </div>
+            <div className="col-3">
+              Ngày phép tạm ứng
+              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
+            </div>
+            <div className="col-3">
+              Giờ nghỉ bù
+              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
             </div>
           </div>
         </div>

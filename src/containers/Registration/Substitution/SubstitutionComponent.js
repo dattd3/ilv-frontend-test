@@ -359,8 +359,9 @@ class SubstitutionComponent extends React.Component {
     }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
+          let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
           const shifts = ['1', '2']
-          const timesheets = res.data.data.flatMap(timesheet => {
+          const timesheets = dataSorted.flatMap(timesheet => {
             return shifts.map(shiftIndex => {
               return timesheet[`from_time${shiftIndex}`] && timesheet[`from_time${shiftIndex}`] !== '#' ? {
                 date: timesheet.date,
@@ -453,13 +454,17 @@ class SubstitutionComponent extends React.Component {
       { value: '02', label: 'Phân ca gãy' },
       { value: '03', label: 'Phân ca bờ đảo full ngày' }
     ]
-
     return (
       <div className="shift-work">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="row">
           <div className="col">
-            <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div>
+            {
+              localStorage.getItem("companyCode") === "V030" ? <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div> : null
+            }
+            {
+              localStorage.getItem("companyCode") === "V060" ? <div className="text-danger"><i className="fa fa-info-circle"></i> CBNV cần xin duyệt đổi ca trước tối thiểu 01 ngày.</div> : null
+            }
           </div>
         </div>
         <div className="box shadow">

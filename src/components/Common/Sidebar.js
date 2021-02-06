@@ -26,7 +26,7 @@ function SideBar(props) {
         if (rootNav.length > 0) {
             for (let i = 0; i < rootNav.length; i++) {
                 rootNav[i].label = t(rootNav[i].label);
-                if (user.companyCode != "V030" && rootNav[i].label2) {
+                if (user.companyCode === "V096" && rootNav[i].label2) {
                     rootNav[i].label = t(rootNav[i].label2);
                 }
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
