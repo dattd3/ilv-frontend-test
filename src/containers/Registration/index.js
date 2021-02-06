@@ -28,13 +28,13 @@ class RegistrationComponent extends React.Component {
           <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
             <BusinessTrip />
           </Tab>
-          {
-            localStorage.getItem("companyCode") == "V030" ?
+          { 
+            ['V030','V060'].includes(localStorage.getItem("companyCode")) ?
            <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
             <SubstitutionComponent />
           </Tab> : null
           }
-          <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") === "V030" ? 'Sửa giờ vào-ra' : 'Giải trình công'}>
+          <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") != "V096" ? 'Sửa giờ vào-ra' : 'Giải trình công'}>
             <InOutTimeUpdate />
           </Tab>
         </Tabs>
