@@ -105,6 +105,14 @@ export const Navigation = [
     role: ['V070']
   },
   {
+    id: 103,
+    parentId: 13,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Menu_VinmecIntroduction",
+    to: map.Vinmec,
+    role: ['V060']
+  },
+  {
     id: 16,
     parentId: 13,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",

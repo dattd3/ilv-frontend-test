@@ -34,6 +34,7 @@ export default {
   Vingroup: "/about-vingroup",
   Vinpearl: "/about-vinpearl",
   Vinfast: "/about-vinfast",
+  Vinmec: "/about-vinmec",
 
   NotFound: "/not-found",
   AccessDenied: "/access-denied",
