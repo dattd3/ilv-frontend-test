@@ -79,7 +79,8 @@ class SubstitutionComponent extends React.Component {
 
   verifyInput() {
     let errors = {...this.state.errors}
-    this.state.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+    this.state.timesheets.forEach((timesheet, index) => {
+      if(!timesheet.isEdit) return;
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
       }
