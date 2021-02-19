@@ -227,6 +227,10 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
                       </tr>
                       <tr>
+                        <td className="info-label">{t("Điện thoại khẩn cấp")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userDetail.urgent_contact_no}</p></td>
+                      </tr>
+                      <tr>
                         <td className="info-label">{t("BankAccountNumber")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_number}</p></td>
                       </tr>

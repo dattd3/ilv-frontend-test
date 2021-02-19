@@ -478,7 +478,7 @@ class PersonalComponent extends React.Component {
                             <input className="form-control" name="PersonalIdentifyNumber" type="text"
                                 value={this.state.userDetail.personal_id_no || ""} onChange={(e) => this.handleTextInputChange(e)} />
                             {
-                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyNumber}</p> : null
+                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.personalIdentifyNumber) ? <span className="text-danger">{this.state.validationMessagesFromParent.personalIdentifyNumber}</span> : null
                             }
                         </div>
                     </div>
