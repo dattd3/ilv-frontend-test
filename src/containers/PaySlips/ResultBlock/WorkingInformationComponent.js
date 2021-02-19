@@ -14,7 +14,7 @@ function WorkingInformationComponent(props) {
                 <tbody>
                     <tr className="second-title">
                         <td className="title title-second kcc" colSpan="2">Kỳ chấm công</td>
-                        <td className="title title-second" colSpan={localStorage.getItem("companyCode") != "V096" ? 5 : 3}>Chi tiết thu nhập trên HĐLĐ</td>
+                        <td className="title title-second" colSpan={ !['V096','V060'].includes(localStorage.getItem("companyCode")) ? 5 : 3}>Chi tiết thu nhập trên HĐLĐ</td>
                         <td className="title title-second cc" rowSpan="2">Công chuẩn</td>
                         <td className="title title-second" colSpan="4">Chi tiết ngày công</td>
                         <td className="title same-width title-second tchl" rowSpan="2">Tổng công hưởng lương</td>
@@ -24,7 +24,7 @@ function WorkingInformationComponent(props) {
                             </> : null
                         }
                         {
-                            localStorage.getItem("companyCode") != "V096" ? <>
+                            !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
                                 <td className="title same-width title-second sgcd" rowSpan="2">Số giờ công đêm</td>
                             </> : null
                         }
@@ -35,7 +35,7 @@ function WorkingInformationComponent(props) {
                         <td className="title same-width title-second lcb">Mức lương</td>
                         <td className="title same-width title-second">Thưởng YTCLCV</td>
                         {
-                            localStorage.getItem("companyCode") != "V096" ? <>
+                            !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
                                 <td className="title same-width title-second ttng">Thưởng tay nghề</td>
                                 <td className="title same-width title-second">Thưởng SC/Thưởng Caddie Fee</td>
                             </> : null
@@ -57,7 +57,7 @@ function WorkingInformationComponent(props) {
                             <td className="same-width lcb">{parseInt(workingInformation.base_salary).toLocaleString()}</td>
                             <td className="same-width">{parseInt(workingInformation.behaviour_bonus).toLocaleString()}</td>
                             {
-                                localStorage.getItem("companyCode") != "V096" ? <>
+                                !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
                                     <td className="same-width ttng">{workingInformation.vp_proficiency_bonus ? parseInt(workingInformation.vp_proficiency_bonus).toLocaleString() : 0}</td>
                                     <td className="same-width">{workingInformation.service_charge_bonus ? parseInt(workingInformation.service_charge_bonus).toLocaleString() : 0}</td>
                                 </> : null
@@ -75,7 +75,7 @@ function WorkingInformationComponent(props) {
                                 </> : null
                             }
                             {
-                                localStorage.getItem("companyCode") != "V096" ? <>
+                                !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
                                     <td className="same-width sgcd">{workingInformation.night_shift_hours ? workingInformation.night_shift_hours : 0}</td>
                                 </> : null
                             }
