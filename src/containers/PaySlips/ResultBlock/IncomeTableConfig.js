@@ -796,7 +796,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
                                 {label: 'Các khoản chi khác', field: 'other_payment'},
 
-                                {label: 'Bồi dưỡng trực Vinmec', field: 'vinmec_night_shift_on_duty_bonus'},
+                                {label: 'Bồi dưỡng trực Vinmec', field: 'tip_of_duty'},
                                 {label: 'Thưởng tiền mặt (không tăng thực lĩnh)', field: 'cash_bonus'},
                                 {label: 'Công tác phí', field: 'mission_fee'},
                                 {label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance'},
