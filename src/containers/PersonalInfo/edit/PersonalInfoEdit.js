@@ -261,17 +261,16 @@ class PersonalInfoEdit extends React.Component {
   isValidFileUpload = (data, files) => {
     const dataPostToSAP = this.getDataPostToSap(data);
     let count = 0
-    if (dataPostToSAP){
+    if (dataPostToSAP) {
       count += _.size(dataPostToSAP.information) == 0 ? 0 : 1
       count += (!dataPostToSAP.address || _.size(dataPostToSAP.address) <= 1 && dataPostToSAP.address[0].anssa === '2') ? 0 : 1
       count += _.size(dataPostToSAP.bank) == 0 ? 0 : 1
       count += _.size(dataPostToSAP.education) == 0 ? 0 : 1
       count += _.size(dataPostToSAP.race) == 0 ? 0 : 1
       count += _.size(dataPostToSAP.document) == 0 ? 0 : 1
-    } 
+    }
 
-    if(count === 0)
-    {
+    if (count === 0) {
       return true
     }
     else {
@@ -291,6 +290,11 @@ class PersonalInfoEdit extends React.Component {
   isValidPhoneNumber = (phone) => {
     const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
     return phoneRegex.test(phone)
+  }
+
+  isValidIdentifyNumber = (id) => {
+    const idRegex = /^(?:\d{9}|\d{12})$/
+    return idRegex.test(id)
   }
 
   getValidationEducationItem = (education) => {
@@ -381,6 +385,11 @@ class PersonalInfoEdit extends React.Component {
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
           errors.personalIdentifyNumber = '(Số CMND/CCCD là bắt buộc)'
+        }
+        if (localStorage.getItem("companyCode") === "V073") {
+          if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
+            errors.personalIdentifyNumber = '(Số CMND/CCCD không đúng định dạng (9 hoặc 12 số))'
+          }
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
           errors.personalIdentifyPlace = '(Nơi cấp CMND/CCCD là bắt buộc)'
