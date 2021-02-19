@@ -61,6 +61,7 @@ function IncomeComponent(props) {
                             {row.level2.map((row2, index2) => {
                                 const lv3Number = row2.isSkipLevel4 ? row2.level3.filter(rw3 => rw3.field && (payslipCalculate[rw3.field] || payslipCalculate[rw3.field + '_tax_included'] || payslipCalculate[rw3.field + '_without_tax'])).length : row2.level3.length
                                 const lv2Label = lv3Number > 0 && !row2.isSkipSumLabel ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
+                                let countIndex3 = 0
                                 return <>
                                     <TrTable
                                         row={row2}
@@ -73,11 +74,15 @@ function IncomeComponent(props) {
                                     {row2.level3.map((row3, index3) => {
                                         const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[rw4.field] || payslipCalculate[rw4.field + '_tax_included'] || payslipCalculate[rw4.field + '_without_tax'])).length : 0
                                         const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
+                                        if(row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']))
+                                        {
+                                            countIndex3++
+                                        }
                                         let countIndex4 = 0
                                         return <>
                                             {row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']) ? <TrTable
                                                 row={row3}
-                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '. ' + lv3Label}
+                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + countIndex3 + '. ' + lv3Label}
                                                 tdclsName={row3.level4 ? 'special bold color-black' : 'special'}
                                                 spanclsName="child-third"
                                                 clsName={row3.level4 ? 'second' : null}
