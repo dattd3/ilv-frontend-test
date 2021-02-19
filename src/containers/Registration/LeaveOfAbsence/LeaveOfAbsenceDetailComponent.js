@@ -86,19 +86,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
               Ngày phép tồn
-              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
             <div className="col-3">
               Ngày phép năm
-              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : 0}</div>
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
             </div>
             <div className="col-3">
               Ngày phép tạm ứng
-              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
             </div>
             <div className="col-3">
               Giờ nghỉ bù
-              <div className="detail">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COM ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
             </div>
           </div>
         </div>
