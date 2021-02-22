@@ -98,7 +98,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               Giờ nghỉ bù
-              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COM ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
             </div>
           </div>
         </div>
