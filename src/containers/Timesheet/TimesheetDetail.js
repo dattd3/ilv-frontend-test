@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Button from 'react-bootstrap/Button'
 import Fade from 'react-bootstrap/Fade'
+import moment from 'moment'
 
 function WorkingDay(props) {
   return (
@@ -17,6 +18,8 @@ function WorkingDay(props) {
   )
 }
 
+
+
 function Content(props) {
   const [open, setOpen] = useState(true);
   let timeFail1 = (props.timesheet.start_time1_plan < props.timesheet.start_time1_fact || props.timesheet.end_time1_plan > props.timesheet.end_time1_fact)
@@ -24,6 +27,15 @@ function Content(props) {
   let timeFail3 = (props.timesheet.start_time3_plan < props.timesheet.start_time3_fact || props.timesheet.end_time3_plan > props.timesheet.end_time3_fact)
   let timeFail4 = (props.timesheet.start_time1_plan && (props.timesheet.start_time1_fact === null || props.timesheet.end_time1_fact === null))
   let timeFail = timeFail1 || timeFail2 || timeFail3 || timeFail4
+
+  let getDayName = (date) => {
+    var days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+    var dayStr = moment(date, "DD-MM-YYYY").format("MM/DD/YYYY").toString()
+    var d = new Date(dayStr);
+    var dayName = days[d.getDay()];
+    return dayName
+  }
+
   return (
     <>
       <Button
@@ -33,17 +45,12 @@ function Content(props) {
         className= "text-left"
         block >
         <div className="row">
-          <div className="col-3">
-            <i className={!open ? 'fa fa-plus-circle' : 'fa fa-minus-circle'}>&nbsp;</i>{props.timesheet.date.replace(/-/g, '/')}
+          <div className="col-9">
+            <i className={!open ? 'fa fa-plus-circle' : 'fa fa-minus-circle'}>&nbsp;</i>{getDayName(props.timesheet.date) + ' ngày ' + props.timesheet.date.replace(/-/g, '/')}
           </div>
           <div className="col-3">
             <Fade in={props.timesheet.start_time1_plan == null}>
-              <div id={"timesheet-detail-" + props.index}>Ngày nghỉ</div>
-            </Fade>
-          </div>
-          <div className="col-3">
-            <Fade in={!open}>
-              <div id={"timesheet-detail-" + props.index}></div>
+              <div className="text-right" id={"timesheet-detail-" + props.index}>Ngày nghỉ</div>
             </Fade>
           </div>
         </div>
