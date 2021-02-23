@@ -341,7 +341,7 @@ class PersonalInfoEdit extends React.Component {
       errors.notChange = '(Không có thông tin được cập nhật)'
     }
 
-    if (!isValidFileUpload) {
+    if (!isValidFileUpload && !['V073'].includes(localStorage.getItem("companyCode"))) {
       errors.fileUpload = '(Thông tin file đính kèm là bắt buộc)'
     }
 

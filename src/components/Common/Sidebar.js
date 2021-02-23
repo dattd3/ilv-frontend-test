@@ -29,6 +29,11 @@ function SideBar(props) {
                 if (user.companyCode === "V096" && rootNav[i].label2) {
                     rootNav[i].label = t(rootNav[i].label2);
                 }
+                if(user.companyCode === "V073")
+                {
+                    if(rootNav[i].label === t('Menu_Task')) rootNav[i].label = t('Menu_RequestManage')  
+                    if(rootNav[i].label === t('Registration')) rootNav[i].label = t('Registration_V073')  
+                }
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }

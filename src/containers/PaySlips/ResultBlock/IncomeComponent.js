@@ -1,5 +1,6 @@
 import React from "react"
 import { IncomeTablesConfig } from './IncomeTableConfig';
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 function TrTable(props) {
     return (
@@ -35,10 +36,11 @@ function IncomeComponent(props) {
 
     return (
         <>
-            <table className="income-information-table">
+            <table id="payslip-download" className="income-information-table">
                 <thead>
                     <tr>
-                        <th className="title top-title" colSpan="4">c. thông tin thu nhập</th>
+                        <th className="title top-title" colSpan="4"> <span>C. THÔNG TIN THU NHẬP</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,8 +76,7 @@ function IncomeComponent(props) {
                                     {row2.level3.map((row3, index3) => {
                                         const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[rw4.field] || payslipCalculate[rw4.field + '_tax_included'] || payslipCalculate[rw4.field + '_without_tax'])).length : 0
                                         const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
-                                        if(row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']))
-                                        {
+                                        if (row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax'])) {
                                             countIndex3++
                                         }
                                         let countIndex4 = 0
@@ -89,9 +90,8 @@ function IncomeComponent(props) {
                                                 payslipCalculate={payslipCalculate}
                                             /> : null}
                                             {row3.level4 ? row3.level4.map((row4, index4) => {
-                                                if(row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax']))
-                                                {
-                                                    countIndex4 ++
+                                                if (row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax'])) {
+                                                    countIndex4++
                                                 }
                                                 return row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax']) ? <TrTable
                                                     row={row4}
@@ -111,6 +111,15 @@ function IncomeComponent(props) {
                     })}
                 </tbody>
             </table>
+            <span>
+                <ReactHTMLTableToExcel
+                    id="test-table-xls-button"
+                    className="btn btn-link pull-right mr-2"
+                    table="payslip-download"
+                    filename="SalaryInformation"
+                    sheet="SalaryInformation"
+                    buttonText="Tải xuống Excel"
+                /></span>
         </>
     );
 }

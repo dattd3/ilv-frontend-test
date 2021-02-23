@@ -36,6 +36,7 @@
   "Menu_Task_Request": "Yêu cầu",
   "Menu_Task_Approval": "Phê duyệt",
   "Menu_PaySlip": "Phiếu báo lương",
+  "Menu_RequestManage": "Quản lý yêu cầu",
   "Status_Done": "Hoàn thành",
   "Status_NotDoneYet": "Chưa hoàn thành",
   "Status_Used": "Đã sử dụng",
@@ -201,6 +202,7 @@
   "SearchLabel": "Tìm kiếm",
   "QuestionAndAnswer": "Hỗ trợ giải đáp",
   "Registration": "Đăng ký nghỉ, công tác, thay đổi phân ca, sửa giờ vào-ra",
+  "Registration_V073": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "RegistrationSeconds": "Đăng ký nghỉ, công tác, giải trình công",
   "BonusAndPenalty": "Khen thưởng & vi phạm",
   "QAAlreadyExist": "Nội dung câu trả lời đã có trong bộ Q&A của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên Myvinpearl"
