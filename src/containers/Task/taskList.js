@@ -235,7 +235,7 @@ class TaskList extends React.Component {
                 const endTimeName = `end_time${n}_fact_update`
                 const startPlanTimeName = `from_time${n}`
                 const endPlanTimeName = `to_time${n}`
-                if(!timesheet[startTimeName] && !timesheet[endTimeName]) return
+                if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
                 if (true) {
                     let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : moment(timesheet[`start_time${n}_fact`], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
                     dataToSAP.push({
@@ -244,7 +244,7 @@ class TaskList extends React.Component {
                         LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
                         SATZA: 'P10',
                         LTIME: startTime,
-                        DALLF:  '+' ,
+                        DALLF: '+',
                         ACTIO: 'INS'
                     })
                 }
@@ -349,8 +349,12 @@ class TaskList extends React.Component {
                             <tr className="text-center">
                                 <th scope="col" className="code">Mã yêu cầu</th>
                                 <th scope="col" className="request-type">Loại yêu cầu</th>
-                                <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
-                                <th scope="col" className="user-request">Người gửi</th>
+                                <th scope="col" className="content">ND chỉnh" sửa / Yêu cầu</th>
+                                {
+                                    !['V073'].includes(localStorage.getItem("companyCode"))
+                                        ? <th scope="col" className="user-request">Người gửi</th>
+                                        : null
+                                }
                                 <th scope="col" className="request-date">Thời gian</th>
                                 <th scope="col" className="user-approved">Người phê duyệt</th>
                                 <th scope="col" className="approval-date">Thời gian phê duyệt</th>
@@ -377,7 +381,7 @@ class TaskList extends React.Component {
                                             <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
                                             <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                             <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                            <td className="user-request text-center">{userId}</td>
+                                            {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center">{userId}</td> : null}
                                             <td className="request-date text-center"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
                                             <td className="user-approved text-center">{userManagerId}</td>
                                             <td className="approval-date text-center">{approvalDate}</td>

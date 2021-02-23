@@ -226,7 +226,7 @@ class BusinessTripComponent extends React.Component {
   verifyInput() {
     let errors = { ...this.state.errors }
     let requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver', 'place', 'vehicle']
-    if (this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) {
+    if ((this.state.attendanceQuotaType && this.state.attendanceQuotaType.value === TRAINING_OPTION_VALUE) || ['V073'].includes(localStorage.getItem("companyCode"))) {
       requiredFields = ['note', 'startDate', 'endDate', 'attendanceQuotaType', 'approver']
     }
     requiredFields.forEach(name => {
@@ -353,15 +353,22 @@ class BusinessTripComponent extends React.Component {
       { value: '1', label: 'Trong nước' },
       { value: '2', label: 'Nước ngoài' }
     ]
-
-    const attendanceQuotaTypes = [
+    
+    let attendanceQuotaTypes = [
       { value: 'CT01', label: 'C/t (có CTP, không ăn ca)' },
       { value: 'CT02', label: 'C/t (có CTP, có ăn ca)' },
       { value: 'CT03', label: 'C/t (không CTP, có ăn ca)' },
-      { value: 'CT04', label: 'C/t (ko CTP, không ăn ca)' },
+      { value: 'CT04', label: 'C/t (không CTP, không ăn ca)' },
       { value: 'DT01', label: 'Đào tạo' },
     ]
-
+    if(['V073'].includes(localStorage.getItem("companyCode")))
+    {
+      attendanceQuotaTypes = [
+        { value: 'CT03', label: 'C/t (không CTP, có ăn ca)' },
+        { value: 'CT04', label: 'C/t (không CTP, không ăn ca)' },
+        { value: 'DT01', label: 'Đào tạo' },
+      ]
+    }
     return (
       <div className="business-trip">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -493,7 +500,7 @@ class BusinessTripComponent extends React.Component {
                 {this.error('attendanceQuotaType')}
               </div>
               {
-                this.state.isShowAddressAndVehicle ?
+                this.state.isShowAddressAndVehicle && !['V073'].includes(localStorage.getItem("companyCode")) ?
                   <>
                     <div className="col-5">
                       <p className="title">Địa điểm</p>
