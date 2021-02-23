@@ -347,21 +347,20 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         </div>
         {this.state.timesheets.map((timesheet, index) => {
-          return <div className="box shadow" key={index}>
+          return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-3"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
-              <div className="col-4">
+              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-6">
                 {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
-                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
-                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
-                  : null}
-              </div>
-              <div className="col-4">
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
                   <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null}
+                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
+                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                  : null}
+                  
               </div>
-              <div className="col-1">
+              <div className="col-2 pr-0 pl-0">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
@@ -542,7 +541,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </div> : null}
 
             {timesheet.isEdit ? <div className="row block-note-item-edit">
-              <div className="col-12">
+              <div className="col-12 pb-2">
                 <p className="title">Lý do sửa giờ vào - ra</p>
                 <div>
                   <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
@@ -567,7 +566,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdit).length > 0 && localStorage.getItem("companyCode") != "V070") ?
+          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V073"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
             : null
         }

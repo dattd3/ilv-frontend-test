@@ -333,7 +333,7 @@ class TaskList extends React.Component {
     }
 
     render() {
-        const recordPerPage = 25
+        const recordPerPage = 15
         const tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
 
@@ -349,7 +349,7 @@ class TaskList extends React.Component {
                             <tr className="text-center">
                                 <th scope="col" className="code">Mã yêu cầu</th>
                                 <th scope="col" className="request-type">Loại yêu cầu</th>
-                                <th scope="col" className="content">ND chỉnh" sửa / Yêu cầu</th>
+                                <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
                                         ? <th scope="col" className="user-request">Người gửi</th>
