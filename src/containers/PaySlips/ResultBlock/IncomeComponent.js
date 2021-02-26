@@ -29,6 +29,9 @@ function IncomeComponent(props) {
         case 'V060':
             incomeTables = IncomeTablesConfig.Vinmec
             break
+        case 'V073':
+            incomeTables = IncomeTablesConfig.VinSmart
+            break
         default:
             incomeTables = IncomeTablesConfig.Vinpearl
             break
@@ -84,12 +87,13 @@ function IncomeComponent(props) {
 
                                         let lv3SplitLabel = "";
                                         if (lv4Number > 0) {
+                                            countIndex4 = 0
                                             row3.level4.map((row4, index4) => {
                                                 if (row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax'])) {
                                                     countIndex4++
-                                                }
-                                                if (row4.isSplit) {
-                                                    lv3SplitLabel = lv3SplitLabel + "-" + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4 + '. ' + row4.label
+                                                    if (row4.isSplit) {
+                                                        lv3SplitLabel += " - " + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4
+                                                    }
                                                 }
                                             })
                                         }
