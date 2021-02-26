@@ -862,5 +862,214 @@ export const IncomeTablesConfig = {
                 },
             ]
         }
+    ],
+
+    VinSmart: [
+        {
+            index: 'I',
+            label: 'CÁC KHOẢN PHÁT SINH TĂNG THU NHẬP = Sum (I.1 : I.3)',
+            field: 'income_accrued_amount',
+            level2: [
+                {
+                    label: 'THU NHẬP CƠ BẢN',
+                    field: 'base_income_amount',
+                    level3: [
+                        {
+                            label: 'Lương cơ bản  + Thưởng YTCLCV',
+                            field: 'base_salary_and_quality_of_work_bonus',
+                            level4: [
+                                {label: 'Lương cơ bản', field: 'base_salary'},
+                                {label: 'Thưởng YTCLCV', field: 'quality_of_work_bonus'},
+                            ]
+                        },
+                        {
+                            label: 'Các loại phụ cấp lương (nếu có)',
+                            field: 'allowance_amount',
+                            level4: [
+                                {label: 'Phụ cấp kiêm nhiệm', field: 'pluralism_allowance'},
+                                {label: 'Phụ cấp nguy hiểm độc hại', field: 'dangerous_allowance'}
+                            ]
+                        },
+                        {
+                            label: 'Các khoản bổ sung khác (nếu có)',
+                            field: 'additional_allowance',
+                            level4: []
+                        }
+                    ]
+                },
+                // {
+                //     label: 'THU NHẬP GIẢNG DẠY',
+                //     field: 'other_income_amount',
+                //     level3: [
+                //         {
+                //             label: 'Thu nhập tiết giảng dạy',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết theo ngày công',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết sự kiện đồng giá',
+                //             field: 'todo',
+                //             level4: []
+                //         },
+                //         {
+                //             label: 'Thu nhập tiết sự kiện không đồng giá',
+                //             field: 'todo',
+                //             level4: []
+                //         }
+                //     ]
+                // },
+                {
+                    label: 'CÁC KHOẢN THU NHẬP KHÁC',
+                    field: 'other_income_amount',
+                    level3: [
+                        {
+                            label: 'Tiền thưởng',
+                            field: 'bonus_amount',
+                            level4: [
+                                {label: 'Thưởng khoán/KPI', field: 'kpi_bonus'},
+                                {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus'},
+                                {label: 'Thưởng cuối năm Âm lịch (chỉ áp dụng tại thời điểm chi trả)', field: 'lunar_new_year_bonus'},
+                                {label: 'Thưởng thành tích', field: 'archievement_bonus'},
+                                {label: 'Thưởng chiến dịch/dự án', field: 'project_campaign_bonus'},
+
+                                {label: 'Thưởng giới thiệu ứng viên', field: 'reference_bonus'},
+                                {label: 'Thưởng đào tạo', field: 'trainning_bonus'},
+                                {label: 'Thưởng khác (GROSS)', field: 'other_gross_bonus'}
+                            ]
+                        },
+                        {
+                            label: 'Các khoản chi trả khác',
+                            field: 'other_payment_amount',
+                            level4: [
+                                {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
+                                {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
+                                {label: 'Hỗ trợ hiếu hỉ', field: 'funeral_wedding_allowance'},
+                                {label: 'Hỗ trợ nhà ở', field: 'housing_allowance'},
+                                {label: 'Hỗ trợ đi lại, phương tiện di chuyển', field: 'transfer_allowance'},
+                                {label: 'Hỗ trợ điện thoại', field: 'phone_allowance'},
+                                {label: 'Hỗ trợ chuyển vùng', field: 'region_displace_allowance'},
+                                {label: 'Tiền làm thêm ngoài giờ', field: 'overtime_payment'},
+                                {label: 'Trợ cấp làm đêm', field: 'night_shift_allowance'},
+                                {label: 'Tiền thanh toán phép năm/nghỉ bù (nếu có)', field: 'annual_leave_payment'},
+                                {label: 'Hỗ trợ/Thỏa thuận nghỉ việc', field: 'resignation_agreement_allowance'},
+                                {label: 'Trợ cấp thôi việc', field: 'severance_allowance'},
+                                {label: 'Truy lĩnh', field: 'back_pay'},
+                                {label: 'Hỗ trợ thuê xe VF', field: 'car_rent_allowance'},
+                                {label: 'Phúc lợi hỗ trợ xe VF', field: 'car_rent_allowance_welfare'},
+                                {label: 'Hỗ trợ lãi suất VF', field: 'interest_rate_allowance'},
+                                {label: 'Phúc lợi Net (GrossUp) (Vinmec, Vinschool, Thưởng tiền mặt,…)', field: 'welfare_net_allowance'},
+                                {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
+                                {label: 'Các khoản chi khác', field: 'other_payment'},
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+
+        {
+            index: 'II',
+            label: 'CÁC KHOẢN PHÁT SINH GIẢM THU NHẬP = Sum (II.1: II.3)',
+            field: 'income_reduction_incurred_amount',
+            level2: [
+                {
+                    label: 'CÁC KHOẢN KHẤU TRỪ',
+                    field: 'income_reduction_amount',
+                    isSkipLevel4: true,
+                    level3: [
+                        {label: 'Truy thu', field: 'arrears'},
+                        {label: 'Trừ thưởng YTCLCV', field: 'quality_of_work_reduction'},
+                        {label: 'Khấu trừ/bồi thường thiệt hại vật chất', field: 'damages'},
+                        {label: 'Khấu trừ các khoản chi hộ(Vay quỹ thiện tâm, QTT NLĐ nộp thêm,...)', field: 'loan_reduction'},
+                        {label: 'Khấu trừ tạm ứng thu nhập', field: 'advance_reduction'},
+                        {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
+
+
+                        {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
+
+                        {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
+                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                    ]
+                },
+                {
+                    label: 'TRÍCH NỘP BẢO HIỂM - CÔNG ĐOÀN = Sum (II.2.2 : II.2.3)',
+                    field: 'insurance_union_payment_amount',
+                    isSkipSumLabel: true,
+                    level3: [
+                        {
+                            label: 'Mức lương đóng Bảo hiểm bắt buộc',
+                            field: 'compulsary_insurance_amount_in_salary',
+                            isSkipSumLabel: true,
+                            level4: [
+                                {label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary'},
+                                {label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary'}
+                            ]
+                        },
+                        {
+                            label: 'Trích nộp Bảo hiểm bắt buộc',
+                            field: 'compulsary_insurance_amount_fee',
+                            level4: [
+                                {label: 'Bảo hiểm xã hội (8%)', field: 'social_insurance_fee'},
+                                {label: 'Bảo hiểm y tế (1.5%)', field: 'health_insurance_fee'},
+                                {label: 'Bảo hiểm thất nghiệp (1%)', field: 'unemployment_insurance_fee'},
+                            ]
+                        },
+                        {
+                            label: 'Trích nộp phí đoàn viên Công đoàn',
+                            field: 'union_fee',
+                            level4: []
+                        }
+                    ]
+                },
+
+                {
+                    label: 'THUẾ TNCN = Sum(II.3.3)',
+                    field: 'personal_income_tax_amount',
+                    isSkipSumLabel: true,
+                    level3: [
+                        {
+                            label: 'Tổng giảm trừ gia cảnh và các khoản giảm trừ khác',
+                            field: 'family_allowances_amount',
+                            level4: [
+                                {label: 'Giảm trừ bản thân', field: 'personal_allowance'},
+                                {label: 'Giảm trừ người phụ thuộc', field: 'dependant_allowance'},
+                                {label: 'Giảm trừ khác', field: 'other_allowance'}
+                            ]
+                        },
+                        {
+                            label: 'Tổng thu nhập tính thuế',
+                            field: 'income_tax_include_amount',
+                            level4: []
+                        },
+                        {
+                            label: 'Thuế TNCN phải nộp trong kỳ',
+                            field: 'personal_income_tax_in_period_amount',
+                            level4: [
+                                {label: 'Thuế TNCN do NLĐ chi trả', field: 'personal_income_tax_is_paid_by_employee'},
+                                {label: 'Thuế TNCN do Công ty chi trả', field: 'personal_income_tax_is_paid_by_employer'}
+                            ]
+                        }
+                    ]
+                },
+                
+            ]
+        },
+        {
+            index: 'III',
+            label: 'THỰC LĨNH = III.1 ',
+            field: 'net_salary_amount',
+            level2: [
+                {
+                    label: 'Trả vào tài khoản ngân hàng',
+                    field: 'net_salary_amount',
+                    level3: []
+                }
+            ]
+        }
     ]
 };
