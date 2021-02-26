@@ -38,7 +38,7 @@ class SubmitQuestionModal extends React.Component {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     this.setState({ supervise: res.data.data[0] })
