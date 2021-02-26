@@ -114,7 +114,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
                         {label: 'Khấu trừ KTX, BUS Vinpearl PQ', field: 'bus_reduction'},
                         {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
-                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                        {label: 'Các khoản khấu trừ khác', field: 'other_deduction'},
                     ]
                 },
                 {
@@ -335,7 +335,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ tạm ứng VinID Pay', field: 'vinid_pay_reduction'},
                         {label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction'},
                         {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
-                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                        {label: 'Các khoản khấu trừ khác', field: 'other_deduction'},
                     ]
                 },
                 {
@@ -548,7 +548,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
                         {label: 'Khấu trừ KTX, BUS Vinpearl PQ', field: 'bus_reduction'},
                         // {label: 'Bồi thường ưu đãi giá/cấp bậc mua xe VinFast', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
-                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                        {label: 'Các khoản khấu trừ khác', field: 'other_deduction'},
                         {label: 'Khấu trừ thuê/vay mua xe VinFast', field: 'vf_car_and_electric_motobike_leasing_deduction'},
                     ]
                 },
@@ -775,7 +775,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction'},
                         {label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction'},
                         {label: 'Bồi thường ưu đãi giá/cấp bậc mua xe VinFast', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
-                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'}
+                        {label: 'Các khoản khấu trừ khác', field: 'other_deduction'}
                     ]
                 },
                 {
@@ -993,7 +993,7 @@ export const IncomeTablesConfig = {
                         {label: 'Khấu trừ các khoản thưởng, phúc lợi đã hưởng (Vinmec, Vinschool, VinID,...)', field: 'bonus_received_reduction'},
 
                         {label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
-                        {label: 'Các khoản khấu trừ khác', field: 'other_reduction'},
+                        {label: 'Các khoản khấu trừ khác', field: 'other_deduction'},
                     ]
                 },
                 {
