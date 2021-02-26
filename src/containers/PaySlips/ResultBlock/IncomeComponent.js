@@ -76,14 +76,29 @@ function IncomeComponent(props) {
                                     {row2.level3.map((row3, index3) => {
                                         const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[rw4.field] || payslipCalculate[rw4.field + '_tax_included'] || payslipCalculate[rw4.field + '_without_tax'])).length : 0
                                         const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
+
                                         if (row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax'])) {
                                             countIndex3++
                                         }
                                         let countIndex4 = 0
+
+                                        let lv3SplitLabel = "";
+                                        if (lv4Number > 0) {
+                                            row3.level4.map((row4, index4) => {
+                                                if (row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax'])) {
+                                                    countIndex4++
+                                                }
+                                                if (row4.isSplit) {
+                                                    lv3SplitLabel = lv3SplitLabel + "-" + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4 + '. ' + row4.label
+                                                }
+                                            })
+                                        }
+                                        countIndex4 = 0;
+
                                         return <>
                                             {row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']) ? <TrTable
                                                 row={row3}
-                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + countIndex3 + '. ' + lv3Label}
+                                                rowIndex={row.index + '.' + (index2 + 1) + '.' + countIndex3 + '. ' + lv3Label + lv3SplitLabel}
                                                 tdclsName={row3.level4 ? 'special bold color-black' : 'special'}
                                                 spanclsName="child-third"
                                                 clsName={row3.level4 ? 'second' : null}
