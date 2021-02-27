@@ -37,11 +37,11 @@ class ConfirmPasswordModal extends React.Component {
                     this.props.onUpdateToken(res.data.data.access_token)
                     this.props.onHide()
                 } else {
-                    this.setState({error: 'Mật khẩu nhập không chính xác'})
+                    this.setState({error: 'Mật khẩu không chính xác hoặc cần xác thực 2FA'})
                 }
             }
         }).catch(error => {
-            this.setState({error: 'Mật khẩu nhập không chính xác'})
+            this.setState({error: 'Mật khẩu không chính xác hoặc cần xác thực 2FA'})
         })
     }
 
@@ -70,6 +70,9 @@ class ConfirmPasswordModal extends React.Component {
                             <Col xs={3}><Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)}>Xác nhận</Button></Col>
                         </Form.Row>
                         {this.state.error.length > 0 ? <Form.Row><Col xs={12} className="text-danger">{this.state.error}</Col></Form.Row> : null}
+                        <Form.Row >
+                            <Col xs={12}><i>Nhấn <a href="https://login.microsoftonline.com/ed6a2939-d153-4f92-94f8-3d790d96c9f8/oauth2/v2.0/authorize?client_id=f89571ee-2a3f-4670-9c47-dbee9b671523&response_type=code&redirect_uri=https%3A%2F%2Fmyvpapi.cloudvst.net%2Fuser%2Fauthorize&scope=user.read&state=login_myvgr">vào đây</a> nếu tài khoản của bạn đã bật xác thực 2FA</i></Col>
+                        </Form.Row>
                     </Form>
                 </Modal.Body>
             </Modal>
