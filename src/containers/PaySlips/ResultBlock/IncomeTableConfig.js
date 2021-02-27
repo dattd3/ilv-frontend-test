@@ -897,32 +897,6 @@ export const IncomeTablesConfig = {
                         }
                     ]
                 },
-                // {
-                //     label: 'THU NHẬP GIẢNG DẠY',
-                //     field: 'other_income_amount',
-                //     level3: [
-                //         {
-                //             label: 'Thu nhập tiết giảng dạy',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết theo ngày công',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết sự kiện đồng giá',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết sự kiện không đồng giá',
-                //             field: 'todo',
-                //             level4: []
-                //         }
-                //     ]
-                // },
                 {
                     label: 'CÁC KHOẢN THU NHẬP KHÁC',
                     field: 'other_income_amount',
@@ -947,6 +921,7 @@ export const IncomeTablesConfig = {
                             field: 'other_payment_amount',
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
+                                {label: 'Hỗ trợ xăng xe cho VSM', field: 'gas_allowance'},
                                 {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
                                 {label: 'Hỗ trợ hiếu hỉ', field: 'funeral_wedding_allowance'},
                                 {label: 'Hỗ trợ nhà ở', field: 'housing_allowance'},

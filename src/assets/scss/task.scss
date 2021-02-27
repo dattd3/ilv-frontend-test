@@ -1,7 +1,7 @@
 .task-tabs {
     &.nav-tabs {
         border: none;
-        padding: 0 0 50px 0;
+        padding: 0 0 5px 0;
         margin: 0 auto;
         .nav-item {
             border: 1px solid #ccc;
@@ -38,7 +38,6 @@
         display: block;
         overflow-x: auto;
         overflow-y: auto;
-        max-height: 450px;
         border-radius: 5px;
         &::-webkit-scrollbar {
             width: 10px;
