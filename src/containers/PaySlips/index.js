@@ -13,14 +13,27 @@ class PaySlipsComponent extends React.Component {
 
     this.state = {
       isShowConfirmPasswordModal: true,
-      acessToken: null,
+      acessToken: new URLSearchParams(props.history.location.search).get('accesstoken') || null,
       payslip: null,
       isSearch: false
     }
   }
 
+  
+
   componentWillMount() {
     
+  }
+
+  componentDidMount() {
+
+    const queryParams = new URLSearchParams(this.props.history.location.search)
+    if (queryParams.has('accesstoken')) {
+      queryParams.delete('accesstoken')
+      this.props.history.replace({
+        search: queryParams.toString(),
+      })
+    }
   }
 
   handleSubmitSearch = (month, year) => {
@@ -56,7 +69,8 @@ class PaySlipsComponent extends React.Component {
     this.setState({acessToken: acessToken})
   }
 
-  render() {
+  render() {  
+    console.log(this.state.acessToken)                                                                                                                                                                                                                                                
     return (
       <>
       <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
@@ -65,7 +79,7 @@ class PaySlipsComponent extends React.Component {
           <div className="card-body">
             <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
             {this.state.isSearch && this.state.acessToken && this.state.payslip ? <MainResultComponent personalInformation={this.state.payslip.personal_information} /> : null }
-            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">Dữ liệu không tìm thấy!</p> : null}
+            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">Không tìm thấy dữ liệu!</p> : null}
           </div>
         </div>
         <div className="other-result-section">

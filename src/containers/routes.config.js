@@ -247,7 +247,7 @@ export default [
             exact: true,
             path: map.PaySlips
           },
-          component: lazy(() => import("./PaySlips"))
+          component: lazy(() => import("./PaySlips/"))
         },
         {
           key: "working-process",
