@@ -27,16 +27,17 @@ class PaySlipsComponent extends React.Component {
 
   componentDidMount() {
 
-    const queryParams = new URLSearchParams(this.props.history.location.search)
-    if (queryParams.has('accesstoken')) {
-      queryParams.delete('accesstoken')
-      this.props.history.replace({
-        search: queryParams.toString(),
-      })
-    }
+    // const queryParams = new URLSearchParams(this.props.history.location.search)
+    // if (queryParams.has('accesstoken')) {
+    //   queryParams.delete('accesstoken')
+    //   this.props.history.replace({
+    //     search: queryParams.toString(),
+    //   })
+    // }
   }
 
   handleSubmitSearch = (month, year) => {
+    debugger
       this.setState({isSearch: false})
       const config = {
         headers: {
@@ -66,10 +67,12 @@ class PaySlipsComponent extends React.Component {
   }
 
   updateToken (acessToken) {
+    debugger
     this.setState({acessToken: acessToken})
   }
 
   render() {  
+    debugger
     console.log(this.state.acessToken)                                                                                                                                                                                                                                                
     return (
       <>
