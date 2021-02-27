@@ -212,8 +212,8 @@ class EducationComponent extends React.Component {
 
   updateEducationInput(item, index, name) {
     const educationLevels = this.props.educationLevels.filter(educationLevel => {
-      return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
-        && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
+      return !['V060'].includes(localStorage.getItem("companyCode")) ? (educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
+        && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD") : true
     })
       .map(educationLevel => {
         return { value: educationLevel.ID, label: educationLevel.TEXT }
