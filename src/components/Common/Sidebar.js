@@ -46,7 +46,7 @@ function SideBar(props) {
         <>
             <div>
                 <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar shadow' : 'bg-vp-blue sidebar shadow d-none'}>
-                    <Animated animationIn="rubberBand" isVisible={show} >
+                    <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">
                                 <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My VinGroup' />
