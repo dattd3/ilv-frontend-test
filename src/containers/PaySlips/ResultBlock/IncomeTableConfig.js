@@ -226,9 +226,6 @@ export const IncomeTablesConfig = {
                             level4: [
                                 {label: 'Phụ cấp chuyên môn/ tay nghề', field: 'professional_allowance'},
                                 {label: 'Phụ cấp kiêm nhiệm', field: 'pluralism_allowance'}
-                                // {label: 'Phụ cấp chức vụ', field: 'position_allowance'},
-                                // {label: 'Phụ cấp ngoại ngữ', field: 'foreign_language_allowance'},
-                                // {label: 'Phụ cấp ngoại hình', field: 'looking_allowance'}
                             ]
                         },
                         {
@@ -238,54 +235,26 @@ export const IncomeTablesConfig = {
                         }
                     ]
                 },
-                // {
-                //     label: 'THU NHẬP GIẢNG DẠY',
-                //     field: 'other_income_amount',
-                //     level3: [
-                //         {
-                //             label: 'Thu nhập tiết giảng dạy',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết theo ngày công',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết sự kiện đồng giá',
-                //             field: 'todo',
-                //             level4: []
-                //         },
-                //         {
-                //             label: 'Thu nhập tiết sự kiện không đồng giá',
-                //             field: 'todo',
-                //             level4: []
-                //         }
-                //     ]
-                // },
                 {
                     label: 'CÁC KHOẢN THU NHẬP KHÁC',
                     field: 'other_income_amount',
                     level3: [
                         {
-                            label: 'Tiền thưởng = Sum(I.2.1.1 : I.2.1.7) - I.2.1.6',
+                            label: 'Tiền thưởng',
                             field: 'bonus_amount',
-                            isSkipSumLabel: true,
                             level4: [
                                 {label: 'Thưởng khoán/KPI', field: 'kpi_bonus'},
                                 {label: 'Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)', field: 'thirteenth_month_bonus'},
                                 {label: 'Thưởng cuối năm Âm lịch (chỉ áp dụng tại thời điểm chi trả)', field: 'lunar_new_year_bonus'},
                                 {label: 'Thưởng thành tích', field: 'archievement_bonus'},
                                 {label: 'Thưởng chiến dịch/dự án', field: 'project_campaign_bonus'},
-                                {label: 'Thưởng khác (NET)', field: 'other_net_bonus'},
+                                {label: 'Thưởng khác (NET)', field: 'other_net_bonus', isSplit: true},
                                 {label: 'Thưởng khác (GROSSUP từ khoản NET tương ứng)', field: 'other_gross_bonus'}
                             ]
                         },
                         {
-                            label: 'Các khoản chi trả khác = Sum(I.2.2.1 : I.2.2.22) - I.2.2.18 - I.2.2.20',
+                            label: 'Các khoản chi trả khác',
                             field: 'other_payment_amount',
-                            isSkipSumLabel: true,
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
                                 {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
@@ -304,10 +273,10 @@ export const IncomeTablesConfig = {
                                 {label: 'Trợ cấp thôi việc', field: 'severance_allowance'},
                                 {label: 'Truy lĩnh', field: 'back_pay'},
                                 {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
-                                {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance'},
+                                {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true},
                                 {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_allowance_tax_included'},
-                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance_welfare'},
-                                {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_allowance_welfare_tax_included'},
+                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance', isSplit: true},
+                                {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance'},
                                 {label: 'Các khoản chi khác', field: 'other_payment'},
                             ]
                         }
