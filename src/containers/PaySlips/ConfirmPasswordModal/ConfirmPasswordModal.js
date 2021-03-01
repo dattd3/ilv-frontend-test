@@ -33,7 +33,6 @@ class ConfirmPasswordModal extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip/getaccesstoken`, bodyFormData, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    debugger
                     if (res.data.data.redirect_uri && res.data.data.redirect_uri != '') {
                         window.location.href = res.data.data.redirect_uri;
                     }
