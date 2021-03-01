@@ -17,7 +17,6 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
-        debugger
         let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
