@@ -291,16 +291,26 @@ export default class Api {
   };
 
   getPeriodKpiGeneral = async () => {
+    let config = {
+      headers: {
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
      return await this.request.get(      
-      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/period/general`, {
-        params: {                        
-        }
-      });
+      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/period/general`, config);
   };
   
   fetchListKpiGeneralAll = async () => {
+    let config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
      return await this.request.get(      
-      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`);
+      `${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`,config);
   };
 
   fetchNotificationDetail = async (notifyId) => {
