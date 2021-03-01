@@ -17,7 +17,8 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
-        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.indexOf(role) >= 0 || x.role.indexOf(user.companyCode) >= 0));
+        debugger
+        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
 
@@ -40,7 +41,7 @@ function SideBar(props) {
         return rootNav;
     }
 
-    const content = getNavigation(user.jobType);
+    const content = getNavigation(user.benefitLevel);
 
     return (
         <>
