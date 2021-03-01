@@ -54,7 +54,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Intruction",
     to: map.Instruction,
-    role: "U",
+    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
   },
   {
     id: 5,
@@ -62,7 +62,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_TrainingRoadmap",
     to: map.Roadmap,
-    role: ["P", "T"],
+    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
   },
   {
     id: 7,

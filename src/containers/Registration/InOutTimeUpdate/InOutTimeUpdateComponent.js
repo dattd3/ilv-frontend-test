@@ -104,7 +104,6 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
-    debugger
     let errors = { ...this.state.errors }
     this.state.timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdit) {
@@ -130,7 +129,6 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
-    debugger
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
     if (hasErrors) {
