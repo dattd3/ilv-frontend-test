@@ -49,7 +49,9 @@ class ShowKPIDetail extends React.Component {
     
     let config = {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general?Period=${Period}`, config)
