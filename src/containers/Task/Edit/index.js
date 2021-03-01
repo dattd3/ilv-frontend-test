@@ -965,9 +965,9 @@ class PersonalInfoEdit extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
-    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
-    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`;
+    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
+    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
+    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`;
     const requestProfile = axios.get(profileEndpoint, configWithinSecretKey);
     const requestPersonalInfo = axios.get(personalInfoEndpoint, configWithinSecretKey);
     const requestEducation = axios.get(personalEducationEnpoint, configWithinSecretKey);
@@ -986,7 +986,7 @@ class PersonalInfoEdit extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -997,7 +997,7 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/profileinfobase`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
