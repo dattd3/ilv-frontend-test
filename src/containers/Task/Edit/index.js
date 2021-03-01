@@ -981,7 +981,9 @@ class PersonalInfoEdit extends React.Component {
 
     let config = {
       headers: {
-        'Authorization': localStorage.getItem('accessToken')
+        'Authorization': localStorage.getItem('accessToken'),
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
     await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)

@@ -62,15 +62,15 @@ export default class Api {
   };
 
   // user
-  fetchUser = async () => {
-    return await this.request.get("user/me");
-  };
+  // fetchUser = async () => {
+  //   return await this.request.get("user/me");
+  // };
 
-  fetchSabaUser = async () => {
-    return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`
-    );
-  };
+  // fetchSabaUser = async () => {
+  //   return await this.request.get(
+  //     `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`
+  //   );
+  // };
 
   // training
   fetchSabaCredit = async () => {
