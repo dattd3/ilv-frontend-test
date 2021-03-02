@@ -210,7 +210,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const start = moment(this.state.startDate).format('YYYYMMDD').toString()
     const end = moment(this.state.endDate).format('YYYYMMDD').toString()
 
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/timeoverview`, {
+    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, {
       perno: localStorage.getItem('employeeNo'),
       from_date: start,
       to_date: end
