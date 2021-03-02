@@ -39,7 +39,7 @@ class ApplyPositionModal extends React.Component {
             }
           }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                 let profile = res.data.data[0];

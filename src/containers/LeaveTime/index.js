@@ -29,7 +29,7 @@ class LeaveTimePage extends React.Component {
 
         const thisYear = new Date().getFullYear()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence?current_year=${thisYear}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/leaveofabsence?current_year=${thisYear}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const annualLeaveSummary = res.data.data
@@ -83,7 +83,7 @@ class LeaveTimePage extends React.Component {
         const start = moment(startDate).format('YYYYMMDD').toString()
         const end = moment(endDate).format('YYYYMMDD').toString()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/leaveofabsence/detail?from_time=${start}&to_time=${end}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/leaveofabsence/detail?from_time=${start}&to_time=${end}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const months = this.getMonths(res.data.data)

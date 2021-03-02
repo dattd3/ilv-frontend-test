@@ -85,7 +85,7 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/profileinfobase`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
@@ -121,7 +121,7 @@ class PersonalInfoEdit extends React.Component {
 
       })
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           this.setState({ userEducation: res.data.data });
