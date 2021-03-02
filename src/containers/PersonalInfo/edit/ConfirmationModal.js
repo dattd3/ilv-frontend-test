@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 import ResultModal from '../../Task/ApprovalDetail/ResultModal';
 import Constants from '../../../commons/Constants'
 import _ from 'lodash'
+import Spinner from 'react-bootstrap/Spinner'
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class ConfirmationModal extends React.Component {
             resultTitle: "",
             resultMessage: "",
             manager: props.manager,
-            errors: {}
+            errors: {},
+            disabledSubmitButton: false
         }
 
         this.sendRequest = 4;
@@ -41,13 +43,19 @@ class ConfirmationModal extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (nextProps.manager !== this.props.manager) {
-          this.setState({ manager: nextProps.manager })
+            this.setState({ manager: nextProps.manager })
         }
     }
 
     ok = (e) => {
+
+        if (this.state.disabledSubmitButton) {
+            return;
+        }
+        this.setState({ disabledSubmitButton: true });
+
         const type = e.currentTarget.dataset.type;
         if (this.props.type == null || this.props.type == undefined) {
             if (this.props.confirmStatus == "error") {
@@ -62,7 +70,7 @@ class ConfirmationModal extends React.Component {
                     const message = this.state.message
                     const manager = JSON.stringify(this.state.manager)
                     if (!_.isEmpty(errors)) {
-                      return
+                        return
                     }
                     let formData = new FormData()
                     formData.append('HRComment', message)
@@ -70,47 +78,51 @@ class ConfirmationModal extends React.Component {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/disapproval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                    .finally(() => {
-                        window.location.href = "/tasks?tab=approval";
-                    })
+                        .finally(() => {
+                            window.location.href = "/tasks?tab=approval";
+                        })
                 } else if (this.props.type == Constants.STATUS_APPROVED) {
                     let formData = new FormData()
                     formData.append('ManagerInfo', JSON.stringify(this.state.manager))
-                    
+
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/approval`, formData, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                    .then(response => {
-                        this.showResultModal(response);
-                    })
-                    .catch(error => {
-                        window.location.href = "/tasks?tab=approval";
-                    });
+                        .then(response => {
+                            this.showResultModal(response);
+                        })
+                        .catch(error => {
+                            window.location.href = "/tasks?tab=approval";
+                        });
 
                     setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == Constants.STATUS_EVICTION) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                    .finally(() => {
-                        window.location.href = "/tasks";
-                    })
+                        .finally(() => {
+                            window.location.href = "/tasks";
+                        })
 
                     setTimeout(() => { this.props.onHide() }, 600);
                 } else if (this.props.type == this.sendRequest) {
                     this.props.sendData(this.state.message);
-                    setTimeout(() => { this.props.onHide() }, 400);
+                    setTimeout(() => { 
+                        this.props.onHide();
+                        this.setState({ disabledSubmitButton: false });
+                    }, 400);
+                    
                 }
             }
         }
     }
 
     handleChangeMessage = (e) => {
-        this.setState({message : e.target.value});
+        this.setState({ message: e.target.value });
     }
 
     onHideResultModal = () => {
-        this.setState({isShowResultConfirm: false});
+        this.setState({ isShowResultConfirm: false });
         window.location.reload();
     }
 
@@ -127,31 +139,38 @@ class ConfirmationModal extends React.Component {
         return errors
     }
 
-    render () {
+    render() {
         return (
             <>
-            <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
-            <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>{this.props.title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>{this.props.message}</p>
-                    {
-                        this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == this.sendRequest ?
-                        <div className="message">
-                            <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
-                            {this.error('message')}
-                        </div>
-                        : null
-                    }
+                <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
+                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                    <Modal.Header className='apply-position-modal' closeButton>
+                        <Modal.Title>{this.props.title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{this.props.message}</p>
+                        {
+                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == this.sendRequest ?
+                                <div className="message">
+                                    <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                    {this.error('message')}
+                                </div>
+                                : null
+                        }
 
-                    <div className="clearfix">
-                        <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok}>Có</button>
-                        <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
-                    </div>
-                </Modal.Body>
-            </Modal>
+                        <div className="clearfix">
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? "Có" :
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />}</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </>
         )
     }

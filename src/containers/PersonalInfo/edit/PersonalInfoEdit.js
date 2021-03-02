@@ -64,7 +64,7 @@ class PersonalInfoEdit extends React.Component {
       modalMessage: "",
       confirmStatus: "",
       isSuccess: true,
-      errors: {},
+      errors: {}
     }
     this.inputReference = React.createRef()
 

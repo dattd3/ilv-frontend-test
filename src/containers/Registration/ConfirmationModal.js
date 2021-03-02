@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap'
 import ResultModal from './ResultModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import Spinner from 'react-bootstrap/Spinner'
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -12,11 +13,16 @@ class ConfirmationModal extends React.Component {
             message: "",
             resultTitle: "",
             resultMessage: "",
-            isShowStatusModal: false
+            isShowStatusModal: false,
+            disabledSubmitButton: false
         }
     }
 
     ok = (e) => {
+        if (this.state.disabledSubmitButton) {
+            return;
+        }
+        this.setState({ disabledSubmitButton: true });
         const url = window.location.pathname
         const id = this.props.id
         let formData = new FormData()
@@ -37,19 +43,19 @@ class ConfirmationModal extends React.Component {
         axios.post(url, null, {
             headers: { Authorization: localStorage.getItem('accessToken') }
         })
-        .then(res => {
-            if (res && res.data) {
-                const data = res.data
-                if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                  return window.location.href = map.NotFound
-                } else {
-                    this.showStatusModal("Thành công", "Thu hồi yêu cầu thành công!", true)
+            .then(res => {
+                if (res && res.data) {
+                    const data = res.data
+                    if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal("Thành công", "Thu hồi yêu cầu thành công!", true)
+                    }
                 }
-            }
-        })
-        .catch(response => {
-            window.location.href = "/tasks?tab=approval"
-        })
+            })
+            .catch(response => {
+                window.location.href = "/tasks?tab=approval"
+            })
     }
 
     revocation = (id) => {
@@ -64,27 +70,27 @@ class ConfirmationModal extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-        .then(res => {
-            if (res && res.data) {
-                const result = res.data.result
-                const code = result.code
-                if (code == "000000") {
-                    this.showStatusModal("Thành công", result.message, true)
-                } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                    return window.location.href = map.NotFound
-                } else {
-                    this.showStatusModal("Thông Báo", result.message, false)
+            .then(res => {
+                if (res && res.data) {
+                    const result = res.data.result
+                    const code = result.code
+                    if (code == "000000") {
+                        this.showStatusModal("Thành công", result.message, true)
+                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal("Thông Báo", result.message, false)
+                    }
                 }
-            }
-        })
-        .catch(response => {
-            this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
-        })
+            })
+            .catch(response => {
+                this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            })
     }
 
     prepareDataForRevocation = () => {
         const dataToSap = [...this.props.dataToSap]
-        const result = dataToSap.map(item => ({...item, ACTIO: 'DEL'}))
+        const result = dataToSap.map(item => ({ ...item, ACTIO: 'DEL' }))
         return result
     }
 
@@ -100,22 +106,22 @@ class ConfirmationModal extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-        .then(res => {
-            if (res && res.data) {
-                const result = res.data.result
-                const code = result.code
-                if (code == "000000") {
-                    this.showStatusModal("Thành công", result.message, true)
-                } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                    return window.location.href = map.NotFound
-                } else {
-                    this.showStatusModal("Thông Báo", result.message, false)
+            .then(res => {
+                if (res && res.data) {
+                    const result = res.data.result
+                    const code = result.code
+                    if (code == "000000") {
+                        this.showStatusModal("Thành công", result.message, true)
+                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal("Thông Báo", result.message, false)
+                    }
                 }
-            }
-        })
-        .catch(response => {
-            this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
-        })
+            })
+            .catch(response => {
+                this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            })
     }
 
     disApprove = (formData, url) => {
@@ -123,19 +129,19 @@ class ConfirmationModal extends React.Component {
         axios.post(url, formData, {
             headers: { Authorization: localStorage.getItem('accessToken') }
         })
-        .then(res => {
-            if (res && res.data) {
-                const data = res.data
-                if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                  return window.location.href = map.NotFound
-                } else {
-                    this.showStatusModal("Thành công", "Hủy phê duyệt thành công!", true)
+            .then(res => {
+                if (res && res.data) {
+                    const data = res.data
+                    if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal("Thành công", "Hủy phê duyệt thành công!", true)
+                    }
                 }
-            }
-        })
-        .catch(response => {
-            window.location.href = "/tasks?tab=approval"
-        })
+            })
+            .catch(response => {
+                window.location.href = "/tasks?tab=approval"
+            })
     }
 
     handleChangeMessage = (e) => {
@@ -144,8 +150,9 @@ class ConfirmationModal extends React.Component {
 
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, resultTitle: title, resultMessage: message, isSuccess: isSuccess })
+        this.setState({ disabledSubmitButton: false });
     }
-    
+
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false })
         window.location.href = "/tasks?tab=approval"
@@ -160,26 +167,35 @@ class ConfirmationModal extends React.Component {
 
         return (
             <>
-            <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-            <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
-                    <Modal.Title>{this.props.title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>{this.props.message}</p>
-                    {
-                        this.props.type == Constants.STATUS_NOT_APPROVED ?
-                            <div className="message">
-                                <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
-                            </div>
-                            : null
-                    }
-                    <div className="clearfix">
-                        <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" onClick={this.ok.bind(this)}>Có</button>
-                        <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
-                    </div>
-                </Modal.Body>
-            </Modal>
+                <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                    <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
+                        <Modal.Title>{this.props.title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{this.props.message}</p>
+                        {
+                            this.props.type == Constants.STATUS_NOT_APPROVED ?
+                                <div className="message">
+                                    <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                </div>
+                                : null
+                        }
+                        <div className="clearfix">
+                            <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" disabled={this.state.disabledSubmitButton} onClick={this.ok.bind(this)}>
+                                {!this.state.disabledSubmitButton ? "Có" :
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />}
+                            </button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </>
         )
     }

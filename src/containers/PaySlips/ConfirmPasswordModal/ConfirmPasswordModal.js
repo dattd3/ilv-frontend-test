@@ -2,6 +2,7 @@ import React from "react"
 import axios from 'axios'
 import { Form, Button, Col, Modal } from 'react-bootstrap'
 import qs from 'qs'
+import Spinner from 'react-bootstrap/Spinner'
 
 class ConfirmPasswordModal extends React.Component {
 
@@ -25,7 +26,7 @@ class ConfirmPasswordModal extends React.Component {
         if (this.state.disabledSubmitButton) {
             return;
         }
-        this.setState({disabledSubmitButton: true});
+        this.setState({ disabledSubmitButton: true });
 
         const config = {
             headers: {
@@ -47,12 +48,12 @@ class ConfirmPasswordModal extends React.Component {
                             this.props.onHide()
                         } else {
                             this.setState({ error: 'Mật khẩu không chính xác!' })
-                            this.setState({disabledSubmitButton: false});
+                            this.setState({ disabledSubmitButton: false });
                         }
                     }
                 }
             }).catch(error => {
-                
+
             })
     }
 
@@ -79,7 +80,18 @@ class ConfirmPasswordModal extends React.Component {
                         </Form.Row>
                         <Form.Row>
                             <Col xs={9}><Form.Control placeholder="Nhập mật khẩu" type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
-                            <Col xs={3}><Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled = {this.state.disabledSubmitButton}>Xác nhận</Button></Col>
+                            <Col xs={3}>
+                                <Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled={this.state.disabledSubmitButton}>
+                                    {!this.state.disabledSubmitButton ? "Xác nhận" :
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />}
+                                </Button>
+                            </Col>
                         </Form.Row>
                         {this.state.error.length > 0 ? <Form.Row><Col xs={12} className="text-danger">{this.state.error}</Col></Form.Row> : null}
                     </Form>
