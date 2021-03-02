@@ -10,7 +10,8 @@ class ConfirmPasswordModal extends React.Component {
 
         this.state = {
             password: '',
-            error: ''
+            error: '',
+            disabledSubmitButton: false
         }
     }
 
@@ -21,6 +22,11 @@ class ConfirmPasswordModal extends React.Component {
     }
 
     checkPassword() {
+        if (this.state.disabledSubmitButton) {
+            return;
+        }
+        this.setState({disabledSubmitButton: true});
+
         const config = {
             headers: {
                 'Authorization': `${localStorage.getItem('accessToken')}`,
@@ -35,21 +41,23 @@ class ConfirmPasswordModal extends React.Component {
                 if (res && res.data && res.data.data) {
                     if (res.data.data.redirect_uri && res.data.data.redirect_uri != '') {
                         window.location.href = res.data.data.redirect_uri;
-                    }
-                    if (res.data.data.access_token && res.data.data.access_token != '') {
-                        this.props.onUpdateToken(res.data.data.access_token)
-                        this.props.onHide()
                     } else {
-                        
-                        this.setState({ error: 'Mật khẩu không chính xác!' })
+                        if (res.data.data.access_token && res.data.data.access_token != '') {
+                            this.props.onUpdateToken(res.data.data.access_token)
+                            this.props.onHide()
+                        } else {
+                            this.setState({ error: 'Mật khẩu không chính xác!' })
+                            this.setState({disabledSubmitButton: false});
+                        }
                     }
                 }
             }).catch(error => {
-                this.setState({ error: 'Đã có lỗi xảy ra, vui lòng liên hệ bộ phận IT' })
+                
             })
     }
 
     keyPress(e) {
+        this.setState({ error: "" })
         if (e.key == 'Enter') {
             this.checkPassword()
             e.preventDefault()
@@ -71,7 +79,7 @@ class ConfirmPasswordModal extends React.Component {
                         </Form.Row>
                         <Form.Row>
                             <Col xs={9}><Form.Control placeholder="Nhập mật khẩu" type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
-                            <Col xs={3}><Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)}>Xác nhận</Button></Col>
+                            <Col xs={3}><Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled = {this.state.disabledSubmitButton}>Xác nhận</Button></Col>
                         </Form.Row>
                         {this.state.error.length > 0 ? <Form.Row><Col xs={12} className="text-danger">{this.state.error}</Col></Form.Row> : null}
                     </Form>

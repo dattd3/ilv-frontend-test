@@ -274,7 +274,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Truy lĩnh', field: 'back_pay'},
                                 {label: 'Chi phúc lợi hàng năm', field: 'annual_welfare_allowance'},
                                 {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true},
-                                {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_allowance_tax_included'},
+                                {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance'},
                                 {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance', isSplit: true},
                                 {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance'},
                                 {label: 'Các khoản chi khác', field: 'other_payment'},
