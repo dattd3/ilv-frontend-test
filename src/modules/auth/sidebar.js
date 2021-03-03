@@ -29,7 +29,7 @@ export const Navigation = [
     icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
-    role: ['V030','V073']
+    role: ['V030']
   },
   {
     id: 12,
