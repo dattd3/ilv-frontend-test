@@ -409,6 +409,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: MATERNITY_LEAVE_KEY, label: 'Nghỉ thai sản' },
             { value: 'IN03', label: 'Nghỉ dưỡng sức (ốm, TS )' },
             { value: 'PN01', label: 'Nghỉ lễ người nước ngoài' },
+            { value: 'PN02', label: 'Nghỉ nuôi con dưới 1 tuổi' },
             { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
             { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
             { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
@@ -417,9 +418,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }
         ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))
-        if(!['V030'].includes(localStorage.getItem("companyCode")) ){
-            absenceTypes.push({ value: 'PN02', label: 'Nghỉ nuôi con dưới 1 tuổi' })
-        }
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
             { value: '2', label: 'Con kết hôn' },
