@@ -113,12 +113,12 @@ class MyComponent extends React.Component {
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
-          <div className="clearfix edit-button">
-            {
-              !['V070'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a> : null
-            }
-            <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> Xem lịch sử</a>
-          </div>
+        <div className="clearfix edit-button">
+          {
+            !['V070'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a> : null
+          }
+          <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> Xem lịch sử</a>
+        </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
             <Row >
@@ -138,14 +138,6 @@ class MyComponent extends React.Component {
                       <tr>
                         <td className="info-label">{t("SocialInsuranceNumber")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.insurance_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("HealthInsuranceNumber")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">Nơi đăng ký khám/ chữa bệnh</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.hospital_name}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">Số thẻ VINID</td>
@@ -324,6 +316,14 @@ class MyComponent extends React.Component {
                         <table>
                           <tbody>
                             <tr>
+                              <td className="info-label">{t("HealthInsuranceNumber")}</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
+                            </tr>
+                            <tr>
+                              <td className="info-label">Nơi đăng ký khám/ chữa bệnh</td>
+                              <td className="info-value"><p>&nbsp;{this.state.userProfile.hospital_name}</p></td>
+                            </tr>
+                            <tr>
                               <td className="info-label">{t("HealthCheckDate")}</td>
                               <td className="info-value"><p>&nbsp;{this.state.userHealth.examined_date}</p></td>
                             </tr>
@@ -411,7 +411,7 @@ class MyComponent extends React.Component {
                             <p>&nbsp;{item.academic_level}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                          <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
+                            <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
                           </Col>
                           <Col xs={12} md={6} lg={3}>
                             <p>&nbsp;{item.from_time} - {item.to_time}</p>
