@@ -50,7 +50,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             errors: {},
             isEdit: false,
             titleModal: "",
-            messageModal: ""
+            messageModal: "",
+            disabledSubmitButton: false
         }
     }
 
@@ -317,11 +318,18 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ errors: errors })
         return errors
     }
+    
+    setDisabledSubmitButton(status)
+    {
+        this.setState({ disabledSubmitButton: status });
+    }
 
     submit() {
+        this.setDisabledSubmitButton(true)
         const errors = this.verifyInput()
         const hasErrors = !Object.values(errors).every(item => item === null)
         if (hasErrors) {
+            this.setDisabledSubmitButton(false)
             return
         }
         const approver = {...this.state.approver}
@@ -369,10 +377,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         .then(response => {
             if (response && response.data && response.data.result) {
                 this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+                this.setDisabledSubmitButton(false)
             }
         })
         .catch(response => {
             this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
         })
     }
 
@@ -621,7 +631,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} />
+                <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
             </div>
         )
     }

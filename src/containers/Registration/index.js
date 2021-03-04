@@ -34,6 +34,9 @@ class RegistrationComponent extends React.Component {
             <SubstitutionComponent />
           </Tab> : null
           }
+          <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
+            <SubstitutionComponent />
+          </Tab>
           <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") != "V096" ? 'Sửa giờ vào-ra' : 'Giải trình công'}>
             <InOutTimeUpdate />
           </Tab>

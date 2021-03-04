@@ -134,6 +134,7 @@ class ConfirmationModal extends React.Component {
         let errors = {}
         if (_.isEmpty(this.state.message.trim())) {
             errors.message = '(Thông tin bắt buộc)'
+            this.setState({ disabledSubmitButton: false });
         }
         this.setState({ errors: errors })
         return errors

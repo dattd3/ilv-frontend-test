@@ -135,6 +135,10 @@ class MyComponent extends React.Component {
                       </tr>
                       <tr>
                         <td className="info-label">{t("SocialInsuranceNumber")}</td>
+                        <td className="info-value"><p>&nbsp;{this.state.userProfile.insurance_number}</p></td>
+                      </tr>
+                      <tr>
+                        <td className="info-label">{t("HealthInsuranceNumber")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
                       </tr>
                       <tr>
