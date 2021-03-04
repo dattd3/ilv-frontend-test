@@ -233,35 +233,41 @@ class TaskList extends React.Component {
             ['1', '2'].forEach(n => {
                 const startTimeName = `start_time${n}_fact_update`
                 const endTimeName = `end_time${n}_fact_update`
+                const startTimeNameOld = `start_time${n}_fact`
+                const endTimeNameOld = `end_time${n}_fact`
                 const startPlanTimeName = `from_time${n}`
                 const endPlanTimeName = `to_time${n}`
                 if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
                 if (true) {
-                    let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : moment(timesheet[`start_time${n}_fact`], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
+                  let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (timesheet[startTimeNameOld] ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+                  if (startTime) {
                     dataToSAP.push({
-                        MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                        PERNR: data.userProfileInfo.user.employeeNo,
-                        LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                        SATZA: 'P10',
-                        LTIME: startTime,
-                        DALLF: '+',
-                        ACTIO: 'INS'
+                      MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+                      PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+                      LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+                      SATZA: 'P10',
+                      LTIME: startTime,
+                      DALLF: '+',
+                      ACTIO: 'INS'
                     })
+                  }
                 }
-
+        
                 if (true) {
-                    let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : moment(timesheet[`end_time${n}_fact`], Constants.IN_OUT_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
+                  let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (timesheet[endTimeNameOld] ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+                  if (endTime) {
                     dataToSAP.push({
-                        MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                        PERNR: data.userProfileInfo.user.employeeNo,
-                        LDATE: moment(timesheet.date, Constants.IN_OUT_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                        SATZA: 'P20',
-                        LTIME: endTime,
-                        DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
-                        ACTIO: 'INS'
+                      MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+                      PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+                      LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+                      SATZA: 'P20',
+                      LTIME: endTime,
+                      DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
+                      ACTIO: 'INS'
                     })
+                  }
                 }
-            })
+              })
         })
         return dataToSAP
     }
