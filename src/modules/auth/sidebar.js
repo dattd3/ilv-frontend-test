@@ -247,6 +247,6 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: 'U'
+    role: ['V030','V096','V060','V073']
   },
 ];
