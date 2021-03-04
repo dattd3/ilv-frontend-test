@@ -14,6 +14,11 @@ import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 
+const TIME_FORMAT = 'HH:mm:ss'
+const DATE_FORMAT = 'DD-MM-YYYY'
+const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
+const TIME_OF_SAP_FORMAT = 'HHmm00'
+
 class TaskList extends React.Component {
     constructor() {
         super();
