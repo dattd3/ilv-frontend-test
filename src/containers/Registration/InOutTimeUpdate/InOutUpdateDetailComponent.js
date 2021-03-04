@@ -22,8 +22,8 @@ class InOutUpdateDetailComponent extends React.Component {
     return pathNameArr[pathNameArr.length - 1];
   }
 
-  dataToSap () {
-    let dataToSAP = []   
+  dataToSap() {
+    let dataToSAP = []
     this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
@@ -32,32 +32,35 @@ class InOutUpdateDetailComponent extends React.Component {
         const endTimeNameOld = `end_time${n}_fact`
         const startPlanTimeName = `from_time${n}`
         const endPlanTimeName = `to_time${n}`
-        if(!timesheet[startTimeName] && !timesheet[endTimeName])return
+        if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
         if (true) {
-          let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
-          dataToSAP.push({
-            MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-            PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
-            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-            SATZA: 'P10',
-            LTIME: startTime,
-            DALLF: '+',
-            ACTIO: 'INS'
-          })
+          let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (timesheet[startTimeNameOld] ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+          if (startTime) {
+            dataToSAP.push({
+              MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+              SATZA: 'P10',
+              LTIME: startTime,
+              DALLF: '+',
+              ACTIO: 'INS'
+            })
+          }
         }
 
         if (true) {
-          let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT)
-
-          dataToSAP.push({
-            MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-            PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
-            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-            SATZA: 'P20',
-            LTIME: endTime,
-            DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
-            ACTIO: 'INS'
-          })
+          let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (timesheet[endTimeNameOld] ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+          if (endTime) {
+            dataToSAP.push({
+              MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
+              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+              SATZA: 'P20',
+              LTIME: endTime,
+              DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
+              ACTIO: 'INS'
+            })
+          }
         }
       })
     })
@@ -161,41 +164,41 @@ class InOutUpdateDetailComponent extends React.Component {
 
         {
           this.getTypeDetail() === "request" ?
-          <>
-          <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
-          </> : 
-          <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
-            {
-              this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
-              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
-            }
-          </div>
+            <>
+              <h5>Thông tin phê duyệt</h5>
+              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+            </> :
+            <div className="block-status">
+              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+              {
+                this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
+                  <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
+              }
+            </div>
         }
 
         {
           this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
-          <>
-          <h5>Tài liệu chứng minh</h5>
-          <ul className="list-inline">
-            {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
-              return <li className="list-inline-item" key={index}>
-                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-              </li>
-            })}
-          </ul>
-          </>
-          : null
+            <>
+              <h5>Tài liệu chứng minh</h5>
+              <ul className="list-inline">
+                {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
+                  return <li className="list-inline-item" key={index}>
+                    <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                  </li>
+                })}
+              </ul>
+            </>
+            : null
         }
-        
+
         { this.props.inOutTimeUpdate.status === 0 || this.props.inOutTimeUpdate.status === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
           isShowRevocationOfApproval={this.props.inOutTimeUpdate.status === 2}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
-        /> : null }
+        /> : null}
       </div>
     )
   }
