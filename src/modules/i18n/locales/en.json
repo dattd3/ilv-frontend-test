@@ -89,6 +89,7 @@
   "AccountInformation": "Account information",
   "TaxCode": "Tax code",
   "SocialInsuranceNumber": "Social insurance number",
+  "HealthInsuranceNumber": "Health Insurance Number",
   "VinID": "VinID number",
   "BankAccountNumber": "Bank account number",
   "BankName": "Bank name",

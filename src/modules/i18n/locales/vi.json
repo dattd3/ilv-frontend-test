@@ -91,6 +91,7 @@
   "AccountInformation": "Thông tin tài khoản",
   "TaxCode": "Mã số thuế",
   "SocialInsuranceNumber": "Số BHXH",
+  "HealthInsuranceNumber": "Số BHYT",
   "VinID": "Số thẻ VinID",
   "BankAccountNumber": "Số TK ngân hàng",
   "BankName": "Ngân hàng",
