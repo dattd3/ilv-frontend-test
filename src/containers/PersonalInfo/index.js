@@ -29,7 +29,7 @@ class MyComponent extends React.Component {
       }
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
@@ -40,7 +40,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
@@ -51,7 +51,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userEducation = res.data.data;
@@ -62,7 +62,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userFamily = res.data.data;
@@ -73,7 +73,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/health`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userHealth = res.data.data[0];
