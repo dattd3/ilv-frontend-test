@@ -191,10 +191,11 @@ class LeaveOfAbsenceComponent extends React.Component {
         }, config)
         .then(res => {
             if (res && res.data) {
+                debugger
                 const data = res.data
                 if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
                     const errors = {...this.state.errors}
-                    errors.totalDaysOff = data.data.hours === 0 ? "Tổng thời gian nghỉ phải khác 0" : null
+                    errors.totalDaysOff = ((this.state.leaveType === FULL_DAY && data.data.days === 0)|| (this.state.leaveType === DURING_THE_DAY && data.data.hours === 0)) ? "Tổng thời gian nghỉ phải khác 0" : null
                     this.setState({totalTimes: data.data.hours, totalDays: data.data.days, errors: errors})
                 } else {
                     const errors = {...this.state.errors}
@@ -401,8 +402,9 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     updateLeaveType(leaveType) {
         if (leaveType !== this.state.leaveType) {
-            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTimes: null, totalDays: null })
+            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTimes: null, totalDays: null, absenceType: null })
         }
+
     }
 
     removeFile(index) {
@@ -427,7 +429,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
             // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: 'Nghỉ không lương' }
-        ].filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))
+        ]
+        
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
             { value: '2', label: 'Con kết hôn' },
@@ -599,7 +602,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-5">
                                 <p className="title">Loại nghỉ</p>
                                 <div>
-                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes} />
+                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes.filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
                                 </div>
                                 {this.state.errors.absenceType ? this.error('absenceType') : null}
 
