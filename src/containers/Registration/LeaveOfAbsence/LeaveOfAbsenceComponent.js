@@ -402,7 +402,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     updateLeaveType(leaveType) {
         if (leaveType !== this.state.leaveType) {
-            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTimes: null, totalDays: null })
+            this.setState({ leaveType: leaveType, startTime: null, endTime: null, startDate: null, endDate: null, totalTimes: null, totalDays: null, absenceType: null })
         }
 
     }
