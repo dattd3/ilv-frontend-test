@@ -3,7 +3,7 @@ import { Doughnut } from 'react-chartjs-2'
 import 'chart.piecelabel.js'
 
 function displayMeric(total) {
-    return total.toString().length == 1 ? '0' + total : total
+    return total.toString().length == 1 ? '0' + total : total.toFixed(2)
 }
 
 function LeaveTimeGraph(props) {
@@ -63,6 +63,7 @@ function LeaveTimeGraph(props) {
 }
 
 function LeaveTimeSummary(props) {
+    console.log(props.data)
     const thisYear = new Date().getFullYear()
     const usedAnnualLeaveOfThisYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == thisYear) : undefined
     const usedAnnualLeaveOfLastYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
