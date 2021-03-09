@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import Fade from 'react-bootstrap/Fade'
 
 function sumDays(days) {
-  return days.reduce((sum, day) => sum + day)
+   let total = days.reduce((sum, day) => sum + day)
+   return total.toString().length > 1 ? total.toFixed(2) : total
 }
 
 export default function LeaveTimeDetail(props) {
@@ -18,17 +19,17 @@ export default function LeaveTimeDetail(props) {
           {open ? <Fade in={open}>
             <div className="content">
               <div className="card-body">
-                <div className="row header text-left">
-                  <div className="col-md-2">
+                <div className="row header">
+                  <div className="col-md-2 text-left">
                     {props.headers.month}
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-3 text-center">
                     {props.headers.annualLeaveOfArising}
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-3 text-center">
                     {props.headers.usedAnnualLeave}
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-4 text-center">
                     {props.headers.daysOfAnnualLeave}
                   </div>
                 </div>
@@ -38,13 +39,13 @@ export default function LeaveTimeDetail(props) {
                         <div className="col-md-2">
                           {value.month}
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-3 text-center">
                           {value.arisingLeave.length > 0 ? sumDays(value.arisingLeave.map(al => al.days)) : 0}
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-3 text-center">
                           {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4 text-center">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
                           <p>{d.date.replace(/-/g, '/')} - {d.days} Ngày</p>
                         ) : ''}

@@ -23,24 +23,24 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
   componentDidMount() {
     const config = {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
     }
-
     axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/currentabsence`, {
         perno: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
         date: moment().format('YYYYMMDD')
+
     }, config)
-    .then(res => {
+      .then(res => {
         if (res && res.data) {
-            const annualLeaveSummary = res.data.data
-            this.setState({ annualLeaveSummary: annualLeaveSummary })
+          const annualLeaveSummary = res.data.data
+          this.setState({ annualLeaveSummary: annualLeaveSummary })
         }
-    }).catch(error => {
-    })
+      }).catch(error => {
+      })
   }
 
   getTypeDetail = () => {
@@ -66,11 +66,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
           <div className="row">
-            <div className="col-3">
+            <div className="col-2">
               Họ và tên
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.fullname : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-2">
               Mã nhân viên
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.employeeNo : ""}</div>
             </div>
@@ -78,17 +78,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               Chức danh
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.jobTitle : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-5">
               Khối/Phòng/Bộ phận
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.department : ""}</div>
             </div>
           </div>
           <div className="row">
-            <div className="col-3">
+            <div className="col-2">
               Ngày phép tồn
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
-            <div className="col-3">
+            <div className="col-2">
               Ngày phép năm
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
             </div>
@@ -96,9 +96,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               Ngày phép tạm ứng
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
             </div>
-            <div className="col-3">
-              Giờ nghỉ bù
-              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
+            <div className="col-5">
+              <div className="row">
+                <div className="col-6">
+                  Giờ bù tồn
+                  <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
+                </div>
+                <div className="col-6">
+                  Giờ nghỉ bù
+                  <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -136,35 +144,35 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        
+
         {
           this.getTypeDetail() === "request" ?
-          <>
-          <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
-          </> : 
-          <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
-            {
-              this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
-              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
-            }
-          </div>
+            <>
+              <h5>Thông tin phê duyệt</h5>
+              <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
+            </> :
+            <div className="block-status">
+              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+              {
+                this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
+                  <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
+              }
+            </div>
         }
 
         {
           this.props.leaveOfAbsence.userProfileInfoDocuments.length > 0 ?
-          <>
-          <h5>Tài liệu chứng minh</h5>
-          <ul className="list-inline">
-            {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
-              return <li className="list-inline-item" key={index}>
-                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-              </li>
-            })}
-          </ul>
-          </>
-          : null
+            <>
+              <h5>Tài liệu chứng minh</h5>
+              <ul className="list-inline">
+                {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
+                  return <li className="list-inline-item" key={index}>
+                    <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                  </li>
+                })}
+              </ul>
+            </>
+            : null
         }
 
         {this.props.leaveOfAbsence.status === 0 || this.props.leaveOfAbsence.status === 2 ? <DetailButtonComponent dataToSap={[{

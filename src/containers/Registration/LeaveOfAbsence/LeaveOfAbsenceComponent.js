@@ -495,7 +495,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-5">
+                            <div className="col-lg-4 col-xl-5">
                                 <p className="title">Ngày/giờ bắt đầu</p>
                                 <div className="row">
                                     <div className="col">
@@ -542,10 +542,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 </div>
                             </div>
 
-                            <div className="col-5">
+                            <div className="col-lg-4 col-xl-5">
                                 <p className="title">Ngày/giờ kết thúc</p>
                                 <div className="row">
-                                    <div className="col">
+                                    <div className="col-6">
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
@@ -566,7 +566,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                         {this.state.errors.endDate ? this.error('endDate') : null}
                                     </div>
-                                    <div className="col">
+                                    <div className="col-6">
                                         <div className="content input-container">
                                             <label>
                                                 <DatePicker
@@ -589,8 +589,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-2">
-                                <p className="title">Tổng thời gian nghỉ</p>
+                            <div className="col-lg-4 col-xl-2">
+                                <p className="title">Tổng thời gian</p>
                                 <div>
                                     <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ' ngày' : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
                                 </div>
