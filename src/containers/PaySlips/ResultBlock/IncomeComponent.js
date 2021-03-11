@@ -24,6 +24,7 @@ function IncomeComponent(props) {
             incomeTables = IncomeTablesConfig.Vinsoftware
             break
         case 'V070':
+        case 'V077':
             incomeTables = IncomeTablesConfig.VinFast
             break
         case 'V060':
@@ -32,8 +33,14 @@ function IncomeComponent(props) {
         case 'V073':
             incomeTables = IncomeTablesConfig.VinSmart
             break
+            case 'V040':
+            incomeTables = IncomeTablesConfig.VinHome
+            break
+            case 'V061':
+            incomeTables = IncomeTablesConfig.VinSchool
+            break
         default:
-            incomeTables = IncomeTablesConfig.Vinpearl
+            incomeTables = IncomeTablesConfig.VinGroup
             break
     }
 

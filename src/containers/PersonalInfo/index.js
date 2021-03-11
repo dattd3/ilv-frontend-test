@@ -115,7 +115,7 @@ class MyComponent extends React.Component {
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
           {
-            !['V070'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a> : null
+            !['V070','V077'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a> : null
           }
           <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> Xem lịch sử</a>
         </div>
