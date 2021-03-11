@@ -55,7 +55,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Thưởng giới thiệu ứng viên', field: 'reference_bonus'},
                                 {label: 'Thưởng đào tạo', field: 'trainning_bonus'},
                                 {label: 'Thưởng khác (GROSS)', field: 'other_gross_bonus'},
-                                {label: 'Thưởng vượt khoán phòng', field: 'overtarget_bonus'},
+                                {label: 'Thưởng vượt khoán phòng', field: 'over_contract_bonus'},
                                 {label: 'Thưởng Caddie Fee', field: 'caddie_fee_bonus'},
                                 {label: 'Thưởng Công Trường', field: 'construction_site_bonus'},
                                 {label: 'Quyết toán SC', field: 'SC_bonus'}
@@ -641,7 +641,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Thưởng tăng cường Oncall', field: 'oncall_bonus'},
                                 {label: 'Thưởng mạng lưới KSNK', field: 'ksnk_network_bonus'},
                                 {label: 'Thưởng tham gia tracer JCI', field: 'jci_tracer_enrollment_bonus'},
-                                {label: 'Thưởng vượt khung', field: 'overtarget_bonus'},
+                                {label: 'Thưởng vượt khung', field: 'over_frame_bonus'},
                                 {label: 'Thưởng điều động', field: 'mobilizing_bonus'},
                                 {label: 'Thưởng đào tạo', field: 'trainning_bonus'},
                                 {label: 'Thưởng hiệu suất', field: 'performance_bonus'},
@@ -1418,7 +1418,7 @@ export const IncomeTablesConfig = {
                             label: 'Tiền thưởng',
                             field: 'bonus_amount',
                             level4: [
-                                {label: 'Thưởng nghề', field: 'professional_bonus'},
+                                {label: 'Thưởng nghề', field: 'proficiency_bonus'},
                                 {label: 'Thưởng ngoại ngữ', field: 'lingo_bonus'},
                                 {label: 'Thưởng ngoại hình', field: 'good_looking_bonus'},
                                 {label: 'Thưởng khoán', field: 'kpi_bonus'},
