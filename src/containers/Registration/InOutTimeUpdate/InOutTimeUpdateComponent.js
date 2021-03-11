@@ -124,7 +124,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = '(Bắt buộc)'
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V073'].includes( localStorage.getItem("companyCode"))) ? '(*) File đính kèm là bắt buộc' : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
     return errors
   }
@@ -574,7 +574,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V073"].includes(localStorage.getItem("companyCode"))) ?
+          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V077","V073"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
             : null
         }

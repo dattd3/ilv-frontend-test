@@ -102,7 +102,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinfastIntroduction",
     to: map.Vinfast,
-    role: ['V070']
+    role: ['V070','V077']
   },
   {
     id: 103,
