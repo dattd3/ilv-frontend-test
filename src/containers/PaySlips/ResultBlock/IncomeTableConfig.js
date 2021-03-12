@@ -58,7 +58,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Thưởng vượt khoán phòng', field: 'over_contract_bonus'},
                                 {label: 'Thưởng Caddie Fee', field: 'caddie_fee_bonus'},
                                 {label: 'Thưởng Công Trường', field: 'construction_site_bonus'},
-                                {label: 'Quyết toán SC', field: 'SC_bonus'}
+                                {label: 'Quyết toán SC', field: 'sc_bonus'}
                             ]
                         },
                         {
@@ -1453,8 +1453,8 @@ export const IncomeTablesConfig = {
                                 {label: 'Thưởng vượt khoán phòng', field: 'over_contract_bonus'},
                                 {label: 'Thưởng Caddie Fee', field: 'caddie_fee_bonus'},
                                 {label: 'Thưởng công trường', field: 'construction_site_bonus'},
-                                {label: 'Quyết toán SC', field: 'SC_bonus'},
-                                {label: 'Thưởng KPI (NET - tiền mặt)', field: 'kpi_bonus'},
+                                {label: 'Quyết toán SC', field: 'sc_bonus'},
+                                {label: 'Thưởng KPI (NET - tiền mặt)', field: 'kpi_bonus_net'},
                                 {label: 'Thưởng KPI (GROSSUP từ khoản NET tương ứng)', field: 'kpi_grossup_bonus'},
                                 {label: 'Thưởng khác (NET)', field: 'other_net_bonus'},
                                 {label: 'Thưởng khác (GROSSUP từ khoản NET tương ứng)', field: 'other_gross_bonus'}
@@ -1493,7 +1493,7 @@ export const IncomeTablesConfig = {
                                 {label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance'},
                                 {label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance'},
                                 {label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance'},
-                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance_welfare'},
+                                {label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance'},
                                 {label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance'},
                                 {label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance'},
                                 {label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance'},
@@ -1625,7 +1625,7 @@ export const IncomeTablesConfig = {
                 },
                 {
                     label: 'Đợt n',
-                    field: 'pay_first',
+                    field: '',
                     level3: []
                 }
             ]
