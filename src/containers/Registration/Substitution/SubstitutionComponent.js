@@ -489,6 +489,7 @@ class SubstitutionComponent extends React.Component {
                     selected={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
+                    minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                     onChange={this.setStartDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
@@ -511,7 +512,7 @@ class SubstitutionComponent extends React.Component {
                     selected={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
                     startDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
                     endDate={this.state.endDate ? moment(this.state.endDate, DATE_FORMAT).toDate() : null}
-                    minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : null}
+                    minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                     onChange={this.setEndDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Lựa chọn"
