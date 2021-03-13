@@ -73,10 +73,9 @@
         .time-item {
             display: flex;
             flex-wrap: wrap;
-        }
-        .time-item > * {
-            flex: 1 1 160px;
-            margin: 10px;
+            padding-top: 10px;
+            padding-right: 3px;
+            padding-left: 3px;
         }
     }
     .color-red{
@@ -85,4 +84,8 @@
     .background-red {
         background-color: #f8d7da;
     }
+    .card{
+        width: 100% !important;
+    }
 }
+
