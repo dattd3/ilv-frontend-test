@@ -114,13 +114,13 @@ class MyComponent extends React.Component {
                                                 {t("LaborContractType")}
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                {t("LaborContractStartDate")}
+                                                {t("StartDate")}
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                {t("LaborContractEndDate")}
+                                                {t("EndDate")}
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                {t("LaborContractIssuesBy")}
+                                                {t("PAndL")}
                                             </Col>
                                         </Row>
                                         <Row className="info-value">

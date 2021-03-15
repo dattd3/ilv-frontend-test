@@ -85,7 +85,7 @@ function Create(props) {
                                             - Kiểm tra báo cáo các giao dịch sau ngày chốt sổ (closing date của Simphony)<br />
                                             - Kiểm tra giá vốn buffet tại các nhà hàng, kiểm tra báo cáo KK tồn kho cuối tháng, so sánh CL giữa phần chặn tồn và báo cáo bán hàng đối với phần bán hàng tự động<br />
                                             - Kiểm tra việc trừ hàng trên SAP đảm bảo kiểm soát được việc trừ theo BOM được chính xác (Áp dụng đối với các Site áp dung phần mềm bán hàng R-Keeper)<br />
-                                            --> Tiến hành trích trước cho các khoản chi phí cắt kỳ trước ngày cuối tháng đảm bảo ghi nhận đủ phát sinh cho 1 kỳ kế toán.
+                                            --&gt; Tiến hành trích trước cho các khoản chi phí cắt kỳ trước ngày cuối tháng đảm bảo ghi nhận đủ phát sinh cho 1 kỳ kế toán.
 
                                         </p>
                                     </td>
@@ -100,7 +100,7 @@ function Create(props) {
                                             + Kiểm tra việc tách, phân bổ giá vốn nội bộ giữa các khách sạn, bộ phận, dịch vụ<br />
                                             + Kiểm tra CF miễn phí cho khách: set up, khách VIP<br />
                                             + Kiểm tra định mức, hạn mức vật tư tiêu hao và báo cáo sử dụng vật tư của kỹ thuật<br />
-                                            --> Tiến hành trích trước cho các khoản chi phí, cắt kỳ trước ngày cuối tháng đảm bảo ghi nhận đủ phát sinh cho 1 kỳ kế toán.
+                                            --&gt; Tiến hành trích trước cho các khoản chi phí, cắt kỳ trước ngày cuối tháng đảm bảo ghi nhận đủ phát sinh cho 1 kỳ kế toán.
                                         </p>
                                     </td>
                                 </tr>

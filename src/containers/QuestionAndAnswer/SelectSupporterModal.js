@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { debounce } from 'lodash';
 import Select from 'react-select'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 
 const MyOption = props => {
@@ -89,6 +90,8 @@ class SelectSupporterModal extends React.Component {
         cursor: 'pointer',
       })
     }
+
+    const { t } = this.props;
     return (
       <Modal backdrop="static" keyboard={false}
         className='info-modal-common position-apply-modal'
@@ -101,7 +104,7 @@ class SelectSupporterModal extends React.Component {
         <Modal.Body>
           <div className="wrap-result text-left">
             <div className="form-group">
-              <label className="form-label">Họ và tên</label>
+              <label className="form-label">{t("FullName")}</label>
               <div className="content input-container ">
                 <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="supporter" onChange={supporter => this.handleSelectChange('supporter', supporter)} value={this.state.supporter} placeholder="Lựa chọn" key="supporter" options={this.state.users} />
               </div>
@@ -125,4 +128,4 @@ class SelectSupporterModal extends React.Component {
   }
 }
 
-export default SelectSupporterModal
+export default withTranslation()(SelectSupporterModal)

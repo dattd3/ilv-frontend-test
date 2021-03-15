@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 
 class FamilyComponent extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class FamilyComponent extends React.Component {
     render() {
         const userFamilyUpdate = this.props.userFamilyUpdate
         const userFamilyCreate = this.props.userFamilyCreate
+        const { t } = this.props;
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Quan hệ nhân thân</h4>
@@ -21,7 +23,7 @@ class FamilyComponent extends React.Component {
                             return <div className="item" key={i}>
                                 <Row className="info-label">
                                     <Col xs={12} md={6} lg={2}>
-                                        Họ và tên
+                                        {t("FullName")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
                                         Mối quan hệ
@@ -151,4 +153,4 @@ class FamilyComponent extends React.Component {
         )
     }
 }
-export default FamilyComponent
+export default withTranslation()(FamilyComponent)

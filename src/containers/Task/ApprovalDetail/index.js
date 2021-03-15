@@ -6,6 +6,7 @@ import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
+import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 
 class ApprovalDetail extends React.Component {
@@ -215,7 +216,8 @@ class ApprovalDetail extends React.Component {
       2: {label: 'Đã phê duyệt', className: 'success'},
       3: {label: 'Đã thu hồi', className: ''}
     }
-
+    const { t } = this.props
+    
     return (
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
@@ -225,7 +227,7 @@ class ApprovalDetail extends React.Component {
         <div className="box shadow">
           <div className="row item-info">
             <div className="col-3">
-              <div className="label">Họ và tên</div>
+              <div className="label">{t("FullName")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.fullName : ""}</div>
             </div>
             <div className="col-2">
@@ -304,4 +306,4 @@ class ApprovalDetail extends React.Component {
   }
 }
 
-export default ApprovalDetail
+export default withTranslation()(ApprovalDetail)

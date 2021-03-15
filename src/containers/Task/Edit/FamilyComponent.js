@@ -32,7 +32,7 @@ class FamilyComponent extends React.Component {
                             return <div className="item" key={i}>
                                 <Row className="info-label">
                                     <Col xs={12} md={6} lg={2}>
-                                        Họ và tên
+                                        {t("FullName")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
                                         Mối quan hệ
