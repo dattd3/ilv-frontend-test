@@ -19,11 +19,11 @@ const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
-class TaskList extends React.Component {
+class RequestTaskList extends React.Component {
     constructor() {
         super();
         this.state = {
-            approveTasks: [],
+            tasks: [],
             dataToModalConfirm: null,
             isShowModalConfirm: false,
             modalTitle: "",
@@ -59,11 +59,6 @@ class TaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
-    }
-
-    componentDidMount()
-    {
-        this.setState({approveTasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -348,22 +343,16 @@ class TaskList extends React.Component {
         return dataToSAP
     }
 
-    updateTaskStatus = (id, status) =>{
-        debugger
-        let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
-        this.setState({approveTasks: tasksUpdated})
-    }
-
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.approveTasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
                 <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
                     taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
-                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} updateTask = {this.updateTaskStatus} />
+                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
@@ -454,12 +443,12 @@ class TaskList extends React.Component {
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.approveTasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
                     </div>
-                    <div className="col-sm text-right">Total: {this.state.approveTasks.length}</div>
+                    <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
                 </div> : null}
             </>)
     }
 }
 
-export default TaskList
+export default RequestTaskList

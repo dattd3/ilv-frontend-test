@@ -40,6 +40,13 @@ class ConfirmationModal extends React.Component {
                     isSuccess: false
                 });
             }
+        }else
+        {
+            this.setState({
+                resultTitle: "Thông Báo",
+                resultMessage: "Có lỗi ngoại lệ xảy ra, liên hệ IT",
+                isSuccess: false
+            });
         }
     }
 
@@ -91,11 +98,13 @@ class ConfirmationModal extends React.Component {
                         .then(response => {
                             this.showResultModal(response);
                         })
+                        .finally(res => {
+                            this.props.onHide()
+                        })
                         .catch(error => {
-                            window.location.href = "/tasks?tab=approval";
+                            this.showResultModal(error);
                         });
-
-                    setTimeout(() => { this.props.onHide() }, 600);
+                        
                 } else if (this.props.type == Constants.STATUS_EVICTION) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
@@ -104,7 +113,7 @@ class ConfirmationModal extends React.Component {
                             window.location.href = "/tasks";
                         })
 
-                    setTimeout(() => { this.props.onHide() }, 600);
+                    setTimeout(() => { this.props.onHide()}, 600);
                 } else if (this.props.type == this.sendRequest) {
                     this.props.sendData(this.state.message);
                     setTimeout(() => { 
