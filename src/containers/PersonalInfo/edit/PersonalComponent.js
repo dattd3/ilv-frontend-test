@@ -6,6 +6,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import { debounce } from 'lodash';
 registerLocale("vi", vi)
@@ -349,6 +350,7 @@ class PersonalComponent extends React.Component {
     }
 
     render() {
+        const { t } = this.props
         const userDetail = this.props.userDetail
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.TEXT } })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
@@ -362,20 +364,20 @@ class PersonalComponent extends React.Component {
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
         return (
             <div className="info">
-                <h4 className="title text-uppercase">Thông tin cá nhân</h4>
+                <h4 className="title text-uppercase">{t("PersonalInformation")}</h4>
                 <div className="box shadow">
                     <div className="row">
                         <div className="col">
-                            <i className="note note-old"></i> Thông tin cũ
+                            <i className="note note-old"></i> {t("Record")}
                 </div>
                         <div className="col">
-                            <i className="note note-new"></i> Nhập thông tin điều chỉnh
+                            <i className="note note-new"></i> {t("NewInformation")}
                 </div>
                     </div>
                     <hr />
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Ngày sinh</div>
+                            <div className="label">{t("DateOfBirth")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.birthday || ""}</div>
@@ -400,13 +402,13 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Quốc gia sinh</div>
+                            <div className="label">{t("CountryOfBirth")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.birth_country_name || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="BirthCountry" placeholder="Lựa chọn quốc gia sinh" key="birthCountry"
+                            <Select name="BirthCountry" placeholder={t("SelectCountryOfBirth")} key="birthCountry"
                                 isClearable={true}
                                 options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : this.state.userDetail.birth_country_id))}
                                 onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
@@ -415,13 +417,13 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Nơi sinh</div>
+                            <div className="label">{t("PlaceOfBirth")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.birth_province || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="BirthProvince" placeholder="Lựa chọn nơi sinh" key="birthProvince" options={birthProvinces} isClearable={true}
+                            <Select name="BirthProvince" placeholder={t("SelectPlaceOfBirth")} key="birthProvince" options={birthProvinces} isClearable={true}
                                 value={birthProvinces.filter(p => p.value == this.state.userDetail.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                             {
                                 (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.birthProvince) ? <p className="text-danger">{this.state.validationMessagesFromParent.birthProvince}</p> : null
@@ -431,45 +433,45 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Giới tính</div>
+                            <div className="label">{t("Gender")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
+                            <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? t("Male") : t("Female")}</div>
                         </div>
                         <div className="col-6">
                             <Select name="Gender" placeholder="Lựa chọn giới tính" isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
-                                onChange={e => this.handleSelectInputs(e, 'Gender', (userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ')} />
+                                onChange={e => this.handleSelectInputs(e, 'Gender', (userDetail.gender !== undefined && userDetail.gender !== '2') ? t("Male") : t("Female"))} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Dân tộc</div>
+                            <div className="label">{t("Ethnics")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.ethinic || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Ethinic" placeholder="Lựa chọn dân tộc" isClearable={true} options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)}
+                            <Select name="Ethinic" placeholder={t("SelectEthnics")} isClearable={true} options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)}
                                 onChange={e => this.handleSelectInputs(e, "Ethinic", userDetail.ethinic || "")} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Tôn giáo</div>
+                            <div className="label">{t("Religion")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{userDetail.religion || 'Không'}</div>
+                            <div className="detail">{userDetail.religion || t("None")}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Religion" placeholder="Lựa chọn tôn giáo" isClearable={true} options={religions}
+                            <Select name="Religion" placeholder={t("SelectReligion")} isClearable={true} options={religions}
                                 value={religions.filter(r => r.value == (this.state.userDetail.religion_id))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion)} />
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Số CMND/CCCD</div>
+                            <div className="label">{t("IdNo")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.personal_id_no || ""}</div>
@@ -484,7 +486,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Ngày cấp CMND/CCCD</div>
+                            <div className="label">{t("IdDateOfIssue")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.pid_date_of_issue}</div>
@@ -511,7 +513,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Nơi cấp CMND/CCCD</div>
+                            <div className="label">{t("IdPlaceOfIssue")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.pid_place_of_issue || ""}</div>
@@ -526,7 +528,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Số Hộ chiếu</div>
+                            <div className="label">{t("PassportNo")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.passport_id_no || ""}</div>
@@ -541,7 +543,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Ngày cấp Hộ chiếu</div>
+                            <div className="label">{t("PassportDateOfIssue")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.passport_date_of_issue}</div>
@@ -568,7 +570,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Nơi cấp Hộ chiếu</div>
+                            <div className="label">{t('PassportPlaceOfIssue')}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.passport_place_of_issue || ""}</div>
@@ -584,27 +586,27 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Quốc tịch</div>
+                            <div className="label">{t("Nationality")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.nationality || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Nationality" placeholder="Lựa chọn quốc tịch" isClearable={true} options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)}
+                            <Select name="Nationality" placeholder={t("SelectNationality")} isClearable={true} options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)}
                                 onChange={e => this.handleSelectInputs(e, 'Nationality', userDetail.nationality || "")} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Địa chỉ thường trú</div>
+                            <div className="label">{t("PermanentAddress")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || "", userDetail.nation || ""])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isAddressEdit ? <AddressModal
-                                title="Địa chỉ thường trú"
+                                title={t("PermanentAddress")}
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
@@ -657,13 +659,13 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Tình trạng hôn nhân</div>
+                            <div className="label">{t("MaritalStatus")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{marriage ? marriage.TEXT : null}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="MaritalStatus" placeholder="Lựa chọn tình trạng hôn nhân" isClearable={true} options={marriages}
+                            <Select name="MaritalStatus" placeholder={t("SelectMaritalStatus")} isClearable={true} options={marriages}
                                 value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage ? marriage.TEXT : null)} />
                             {
                                 (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.maritalStatus) ? <p className="text-danger">{this.state.validationMessagesFromParent.maritalStatus}</p> : null
@@ -672,7 +674,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Ngày của TT hôn nhân</div>
+                            <div className="label">{t("DateOfChange")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.marital_date}</div>
@@ -699,7 +701,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Email cá nhân</div>
+                            <div className="label">{t("PersonalEmail")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.personal_email || ""}</div>
@@ -715,7 +717,7 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Điện thoại di động</div>
+                            <div className="label">{t('MobileNo')}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.cell_phone_no || ""}</div>
@@ -731,7 +733,7 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Điện thoại khẩn cấp</div>
+                            <div className="label">{t("EmergencyPhoneNo")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{this.isNotNull(userDetail.urgent_contact_no) ? userDetail.urgent_contact_no : ""}</div>
@@ -749,7 +751,7 @@ class PersonalComponent extends React.Component {
                         <>
                             <div className="row">
                         <div className="col-2">
-                            <div className="label">Số TK ngân hàng</div>
+                            <div className="label">{t("BankAccountNumber")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.bank_number || ""}</div>
@@ -764,13 +766,13 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Ngân hàng</div>
+                            <div className="label">{t("BankName")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.bank_name || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select placeholder="Lựa chọn ngân hàng" name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
+                            <Select placeholder={t("SelectBank")} name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
                                 onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
                             {
                                 (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bank) ? <p className="text-danger">{this.state.validationMessagesFromParent.bank}</p> : null
@@ -785,4 +787,4 @@ class PersonalComponent extends React.Component {
     }
 }
 
-export default PersonalComponent
+export default withTranslation()(PersonalComponent)

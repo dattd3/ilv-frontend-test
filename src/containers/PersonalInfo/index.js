@@ -176,7 +176,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_id_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("IdDateOfIsssue")}</td>
+                        <td className="info-label">{t("IdDateOfIssue")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_date_of_issue}</p></td>
                       </tr>
                       <tr>
@@ -382,11 +382,11 @@ class MyComponent extends React.Component {
               </Col>
             </Row>
           </Tab>
-          <Tab eventKey="Diploma" title={t("Diploma") + `/` + t("Certificate")}>
+          <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")}>
             <Container fluid className="info-tab-content shadow">
               {
                 (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
-                  <><h4>{t("Diploma")}</h4>
+                  <><h4>{t("Degree")}</h4>
                     {this.state.userEducation.map((item, i) => {
                       return <div key={i}>
                         <Row className="info-label">
@@ -394,7 +394,7 @@ class MyComponent extends React.Component {
                             {t("SchoolName")}
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            {t("DiplomaType")}
+                            {t("TypeOfDegree")}
                           </Col>
                           <Col xs={12} md={6} lg={3}>
                             {t("Specialty")}

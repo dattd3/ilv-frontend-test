@@ -1,10 +1,11 @@
 import React from "react";
 import { Button, Card } from 'react-bootstrap';
 import readXlsxFile from 'read-excel-file'
+import { useTranslation } from "react-i18next"
 
 
 function Create(props) {
-
+    const { t } = useTranslation()
     let hiddenInputFile = null;
     let displayInputFile = null;
 
@@ -32,22 +33,22 @@ function Create(props) {
 
     return (
         <>
-            <h1 className="h3 mb-2 text-gray-800">Check list</h1>            
+            <h1 className="h3 mb-2 text-gray-800">{t("CheckList")}</h1>            
             <Card className="shadow mb-4">
                 <Card.Header className="py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Upload check list</h6>
+                    <h6 className="m-0 font-weight-bold text-primary">{t("UploadCheckList")}</h6>
                 </Card.Header>
                 <Card.Body>
                     <div className="form-group upload-form">
                         <input type="file" name="fileCheckList" accept=".xls, .xlsx" className="file-upload" id="fileUpload" ref={(input) => { hiddenInputFile = input; }} onChange={FileOnChange} />
                         <div className="input-group col-xs-12">
                             <span className="input-group-addon"><i className="glyphicon glyphicon-picture"></i></span>
-                            <input type="text" className="form-control input-lg" disabled placeholder="Select file..." ref={(i) => { displayInputFile = i; }} />
+                            <input type="text" className="form-control input-lg" disabled placeholder={t("SelectFilePlaceHolder")} ref={(i) => { displayInputFile = i; }} />
                             <span className="input-group-btn">
-                                <button className="browse btn btn-success input-lg" type="button" onClick={ChooseFile}><i className="fa fa-folder-open"></i> Chọn</button>
+                                <button className="browse btn btn-success input-lg" type="button" onClick={ChooseFile}><i className="fa fa-folder-open"></i> {t("SelectFile")}</button>
                             </span>
                             <span className="input-group-btn ml-2">
-                                <button className="btn btn-primary input-lg" type="button" onClick={ReadFileContent}><i className="fa fa-cloud-upload-alt"></i> Tải lên</button>
+                                <button className="btn btn-primary input-lg" type="button" onClick={ReadFileContent}><i className="fa fa-cloud-upload-alt"></i> {t("Upload")}</button>
                             </span>
                         </div>
                     </div>
@@ -56,10 +57,10 @@ function Create(props) {
                         <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Nội dung checklist</th>
-                                    <th>Công việc chi tiết</th>
-                                </tr>2
+                                    <th>{t("NumberOrder")}</th>
+                                    <th>{t("CheckListContent")}</th>
+                                    <th>{t("TaskDetail")}</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <tr>
@@ -108,8 +109,8 @@ function Create(props) {
                             <tfoot>     
                                 <tr>
                                     <td colSpan={3}>
-                                        <Button variant="primary" className="mr-2">Xác nhận</Button>
-                                        <Button variant="secondary">Huỷ bỏ</Button>
+                                        <Button variant="primary" className="mr-2">{t("Confirm")}</Button>
+                                        <Button variant="secondary">{t("Cancel")}</Button>
                                     </td>
                                 </tr>
                             </tfoot>

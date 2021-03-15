@@ -52,10 +52,10 @@ class FamilyComponent extends React.Component {
         const { t } = this.props
         return (
             <div className="education">
-                <h4 className="title text-uppercase">Quan hệ nhân thân</h4>
+                <h4 className="title text-uppercase">{t("Family")}</h4>
                 <div className="box shadow">
-                    <span className="mr-5"><i className="note note-old"></i> Thông tin cũ </span>
-                    <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
+                    <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
+                    <span><i className="note note-new"></i> {t("NewInformation")}</span>
                     <hr/>
 
                        { this.state.userFamily.map((item, i) => {
@@ -65,19 +65,19 @@ class FamilyComponent extends React.Component {
                                         {t("FullName")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Mối QH
+                                        {t("Relationship")}
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        Ngày sinh
+                                        {t("DateOfBirth")}
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
-                                        Mã số thuế NPT
+                                        {t("PitNoNpt")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Giảm / Trừ
+                                        {t("FamilyAllowances")}
                                     </Col>
                                     <Col xs={12} md={6} lg={3}>
-                                        Hiệu lực giảm trừ
+                                        {t("EffectiveReductionDate")}
                                     </Col>
                                 </Row>
 
@@ -134,23 +134,23 @@ class FamilyComponent extends React.Component {
                         })
                     }
 
-                    <button type="button" className="btn btn-primary add" onClick={this.addFamily.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
+                    <button type="button" className="btn btn-primary add" onClick={this.addFamily.bind(this)}><i className="fas fa-plus"></i> {t("Add")}</button>
 
                     { this.state.newuserFamily.map((item, i) => {
                             return <div className="clearfix new-item" key={i}>
                             <div className="float-left input-table">
                                     <Row className="info-label">
                                         <Col xs={12} md={6} lg={3}>
-                                            Họ và tên
+                                            {t("FullName")}
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
-                                            Mối QH
+                                            {t("Relationship")}
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
-                                            Ngày sinh
+                                            {t("DateOfBirth")}
                                         </Col>
                                         <Col xs={12} md={6} lg={3}>
-                                            Mã số thuế NPT
+                                            {t("PitNoNpt")}
                                         </Col>
                                     </Row>
 
