@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
@@ -52,11 +53,12 @@ class ApprovalComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     return (
       this.state.dataResponse ?
       <div className="task-section">
         <div className="block-title">
-          <h4 className="title text-uppercase">Quản lý thông tin yêu cầu</h4>
+          <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
           {/* <button type="button" className="btn btn-outline-primary" onClick={this.exportToExcel}><i className='fas fa-file-export ic-export'></i>Export</button> */}
         </div>
         <TaskList tasks={this.state.tasks} page="request" />         
@@ -66,4 +68,4 @@ class ApprovalComponent extends React.Component {
   }
 }
 
-export default ApprovalComponent
+export default withTranslation()(ApprovalComponent)

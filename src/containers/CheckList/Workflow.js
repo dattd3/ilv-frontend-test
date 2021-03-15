@@ -1,14 +1,15 @@
 import React from "react";
 import { Card, Button, OverlayTrigger, Tooltip, Badge } from 'react-bootstrap';
+import { useTranslation } from "react-i18next"
 
 
 function Create(props) {
-
+    const { t } = useTranslation()
     return (
         <>
             <Card className="shadow mb-4">
                 <Card.Header className="py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Check list</h6>
+                    <h6 className="m-0 font-weight-bold text-primary">{t("CheckList")}</h6>
                 </Card.Header>
                 <Card.Body>
                     <div className="table-responsive">
@@ -16,11 +17,11 @@ function Create(props) {
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th width={'50px'}>STT</th>
-                                    <th width={'60%'}>Công việc</th>
+                                    <th width={'50px'}>{t("NumberOrder")}</th>
+                                    <th width={'60%'}>{t("Task")}</th>
                                     <th>Người phụ trách</th>
                                     <th></th>
-                                    <th>Xác nhận</th>
+                                    <th>{t("Confirm")}</th>
                                 </tr>
                             </thead>
                             <tbody>

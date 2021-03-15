@@ -6,6 +6,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import { withTranslation } from "react-i18next"
 registerLocale("vi", vi)
 
 class EducationComponent extends React.Component {
@@ -194,23 +195,25 @@ class EducationComponent extends React.Component {
   }
 
   itemHeader() {
+    const {t } = this.props;
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>
-        Loại bằng cấp
-        </Col>
+        {t("TypeOfDegree")}
+      </Col>
       <Col xs={12} md={6} lg={3}>
-        Trường
-        </Col>
+        {t("UniversityAndCollege")}
+      </Col>
       <Col xs={12} md={6} lg={3}>
-        Chuyên môn
-        </Col>
+        {t("Major")}
+      </Col>
       <Col xs={12} md={6} lg={3}>
-        Thời gian theo học
-        </Col>
+        {t("Cohort")}
+      </Col>
     </Row>
   }
 
   updateEducationInput(item, index, name) {
+    const { t } = this.props
     const educationLevels = this.props.educationLevels.filter(educationLevel => {
       return !['V060'].includes(localStorage.getItem("companyCode")) ? (educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
         && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD") : true
@@ -224,7 +227,7 @@ class EducationComponent extends React.Component {
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectTypeOfDegree")} name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
@@ -233,10 +236,10 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectUniversityAndCollege")} name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
         </div>
         <div className="form-inline other-field">
-          <label className="mr-3 label">Khác: </label>
+          <label className="mr-3 label">{t("Other")}: </label>
           <input className="form-control w-75 input" disabled={item.isLockOtherSchool} onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
         </div>
         {
@@ -246,10 +249,10 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn chuyên môn" name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectMajor")} name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
         </div>
         <div className="form-inline other-field">
-          <label className="mr-3 label">Khác: </label>
+          <label className="mr-3 label">{t("Other")}: </label>
           <input className="form-control w-75 input" disabled={item.isLockOtherMajor} onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
         </div>
         {
@@ -305,6 +308,7 @@ class EducationComponent extends React.Component {
   }
 
   educationInput(item, index, name) {
+    const { t } = this.props;
     const educationLevels = this.props.educationLevels.filter(educationLevel => {
       return educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
         && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD";
@@ -318,7 +322,7 @@ class EducationComponent extends React.Component {
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectTypeOfDegree")} name="academic_level" isClearable={true} value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
@@ -327,10 +331,10 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectUniversityAndCollege")} name="university_name" isClearable={true} value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
         </div>
         <div className="form-inline other-field">
-          <label className="mr-3 label">Khác: </label>
+          <label className="mr-3 label">{t("Other")}: </label>
           <input className="form-control w-75 input" disabled={item.isLockOtherSchool} onChange={this.otherInputChange.bind(this, index, name, "other_uni_name")} name="other_uni_name" type="text" value={this.resetValueInValid(item.other_uni_name) || ''} />
         </div>
         {
@@ -340,10 +344,10 @@ class EducationComponent extends React.Component {
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn chuyên môn" name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectMajor")} name="major" isClearable={true} value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
         </div>
         <div className="form-inline other-field">
-          <label className="mr-3 label">Khác: </label>
+          <label className="mr-3 label">{t("Other")}: </label>
           <input className="form-control w-75 input" disabled={item.isLockOtherMajor} onChange={this.otherInputChange.bind(this, index, name, "other_major")} name="other_major" type="text" value={this.resetValueInValid(item.other_major) || ''} />
         </div>
         {
@@ -429,12 +433,13 @@ class EducationComponent extends React.Component {
 
   render() {
     const userEducation = this.props.userEducation
+    const { t } = this.props;
     return (
       <div className="education">
-        <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
+        <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
-          <span className="mr-5"><i className="note note-old"></i> Thông tin cũ </span>
-          <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
+          <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
+          <span><i className="note note-new"></i> {t("NewInformation")}</span>
           <hr />
 
           {userEducation.map((item, i) => {
@@ -445,7 +450,7 @@ class EducationComponent extends React.Component {
             </div>
           })}
 
-          <button type="button" className="btn btn-primary add" onClick={this.addEducation.bind(this)}><i className="fas fa-plus"></i> Thêm mới</button>
+          <button type="button" className="btn btn-primary add" onClick={this.addEducation.bind(this)}><i className="fas fa-plus"></i> {t("Add")}</button>
 
           {this.state.newUserEducation && this.state.newUserEducation.map((item, i) => {
             return <div className="clearfix new-item" key={i}>
@@ -468,4 +473,4 @@ class EducationComponent extends React.Component {
   }
 }
 
-export default EducationComponent
+export default withTranslation()(EducationComponent)

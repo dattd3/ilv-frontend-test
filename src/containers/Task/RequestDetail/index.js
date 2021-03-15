@@ -203,9 +203,9 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const status = {
-      0: {label: 'Đang chờ xử lý', className: ''},
+      0: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
-      2: {label: 'Đã phê duyệt', className: 'success'},
+      2: {label: t("Approved"), className: 'success'},
       3: {label: 'Đã thu hồi', className: ''}
     }
 
@@ -222,15 +222,15 @@ class RequestDetail extends React.Component {
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.fullName : ""}</div>
             </div>
             <div className="col-2">
-              <div className="label">Mã nhân viên</div>
+              <div className="label">{t("EmployeeNo")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.code : ""}</div>
             </div>
             <div className="col-2">
-              <div className="label">Chức danh</div>
+              <div className="label">{t("Title")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.title : ""}</div>
             </div>
             <div className="col-5">
-              <div className="label">Khối/Phòng/Bộ phận</div>
+              <div className="label">{t("DepartmentManage")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.department : ""}</div>
             </div>
           </div>
@@ -246,15 +246,15 @@ class RequestDetail extends React.Component {
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
-                <div className="label">Người phê duyệt</div>
+                <div className="label">{t("Approver")}</div>
                 <div className="detail">{this.state.userInfo.manager.fullName || ""}</div>
               </div>
               <div className="col-4">
-                <div className="label">Chức danh</div>
+                <div className="label">{t("Title")}</div>
                 <div className="detail">{this.state.userInfo.manager.title || ""}</div>
               </div>
               <div className="col-4">
-                <div className="label">Khối/Phòng/Bộ phận</div>
+                <div className="label">{t("DepartmentManage")}</div>
                 <div className="detail">{this.state.userInfo.manager.department || ""}</div>
               </div>
             </div>

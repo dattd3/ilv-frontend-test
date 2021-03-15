@@ -37,7 +37,7 @@ class ConfirmationModal extends React.Component {
                 });
             } else {
                 this.setState({
-                    resultTitle: "Thông Báo",
+                    resultTitle: t("Notification"),
                     resultMessage: result.message,
                     isSuccess: false
                 });
@@ -143,6 +143,7 @@ class ConfirmationModal extends React.Component {
     }
 
     render() {
+        const { t } = this.props
         return (
             <>
                 <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
@@ -162,7 +163,7 @@ class ConfirmationModal extends React.Component {
                         }
 
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? "Có" :
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? t("Confirm") :
                                 <Spinner
                                     as="span"
                                     animation="border"
@@ -170,7 +171,7 @@ class ConfirmationModal extends React.Component {
                                     role="status"
                                     aria-hidden="true"
                                 />}</button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("Cancel")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
