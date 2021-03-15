@@ -59,7 +59,7 @@ function Content(props) {
       {open ? <Fade in={open}>
         <div id={"timesheet-detail-" + props.index} className="content">
           <div className="row pr-4 pl-4 pb-4">
-              <div className="col-md-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Giờ kế hoạch</h6>
@@ -70,7 +70,7 @@ function Content(props) {
                 </div>
               </div>
 
-              <div className="col-md-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className={timeFail ? "card-body text-danger background-red" : "card-body"}>
                     <h6 className="card-title text-center">Giờ thực tế</h6>
@@ -81,7 +81,7 @@ function Content(props) {
                 </div>
               </div>
 
-              <div className="col-md-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Giờ công thực tế</h6>
@@ -89,7 +89,7 @@ function Content(props) {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Nghỉ hưởng lương (giờ)</h6>
@@ -97,7 +97,7 @@ function Content(props) {
                   </div>
                 </div>
               </div>
-              <div className="col-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Nghỉ không hưởng lương</h6>
@@ -106,7 +106,7 @@ function Content(props) {
                 </div>
               </div>
 
-              <div className="col-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Công tác (giờ)</h6>
@@ -115,7 +115,7 @@ function Content(props) {
                 </div>
               </div>
 
-              <div className="col-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Giờ đào tạo</h6>
@@ -124,7 +124,7 @@ function Content(props) {
                 </div>
               </div>
 
-              <div className="col-3 time-item">
+              <div className="col-md-6 col-xl-3 time-item">
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title text-center">Giờ OT chuyển thành nghỉ bù</h6>
