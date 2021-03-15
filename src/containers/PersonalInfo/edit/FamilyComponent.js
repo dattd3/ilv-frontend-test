@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 
 class FamilyComponent extends React.Component {
     constructor() {
@@ -48,6 +49,7 @@ class FamilyComponent extends React.Component {
 
     render() {
         const userFamily = this.props.userFamily
+        const { t } = this.props
         return (
             <div className="education">
                 <h4 className="title text-uppercase">Quan hệ nhân thân</h4>
@@ -60,7 +62,7 @@ class FamilyComponent extends React.Component {
                             return <div className="item" key={i}>
                                 <Row className="info-label">
                                     <Col xs={12} md={6} lg={3}>
-                                        Họ và tên
+                                        {t("FullName")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
                                         Mối QH
@@ -188,4 +190,4 @@ class FamilyComponent extends React.Component {
         )
     }
 }
-export default FamilyComponent
+export default withTranslation()(FamilyComponent)

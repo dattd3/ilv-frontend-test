@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import axios from 'axios'
@@ -593,8 +594,10 @@ class PersonalInfoEdit extends React.Component {
     }
     return sapData;
   }
+  
   sendRequest = () => {
     const updateFields = this.getFieldUpdates();
+    const { t } = this.props;
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
     bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
@@ -623,7 +626,7 @@ class PersonalInfoEdit extends React.Component {
           if (code == "999") {
             this.handleShowModal("Thông Báo", "Thông tin đang trong quá trình xử lý !", "error");
           } else {
-            this.handleShowModal("Thành công", "Cập nhật thông tin đã được lưu !", "success");
+            this.handleShowModal(t("Successful"), "Cập nhật thông tin đã được lưu !", "success");
           }
         }
       })
@@ -1135,4 +1138,4 @@ class PersonalInfoEdit extends React.Component {
     )
   }
 }
-export default PersonalInfoEdit
+export default withTranslation()(PersonalInfoEdit)

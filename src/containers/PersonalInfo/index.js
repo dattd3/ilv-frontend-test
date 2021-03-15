@@ -115,9 +115,9 @@ class MyComponent extends React.Component {
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
           {
-            !['V070','V077'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> Sửa thông tin</a> : null
+            !['V070','V077'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
           }
-          <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> Xem lịch sử</a>
+          <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> {t("History")}</a>
         </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
@@ -140,7 +140,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.insurance_number}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">Số thẻ VINID</td>
+                        <td className="info-label">{t("VinID")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.vinid}</p></td>
                       </tr>
                       <tr>
@@ -172,28 +172,28 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? this.state.userDetail.religion : t("None")}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Số CMND/CCCD")}</td>
+                        <td className="info-label">{t("IdNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_id_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Ngày cấp CMND/CCCD")}</td>
+                        <td className="info-label">{t("IdDateOfIsssue")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_date_of_issue}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Nơi cấp CMND/CCCD")}</td>
+                        <td className="info-label">{t("IdPlaceOfIssue")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_place_of_issue}</p></td>
                       </tr>
 
                       <tr>
-                        <td className="info-label">{t("Số Hộ chiếu")}</td>
+                        <td className="info-label">{t("PassportNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_id_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Ngày cấp Hộ chiếu")}</td>
+                        <td className="info-label">{t("PassportDateOfIssue")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_date_of_issue}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Nơi cấp Hộ chiếu")}</td>
+                        <td className="info-label">{t("PassportPlaceOfIssue")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_place_of_issue}</p></td>
                       </tr>
                       <tr>
@@ -225,7 +225,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Điện thoại khẩn cấp")}</td>
+                        <td className="info-label">{t("EmergencyPhoneNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.urgent_contact_no}</p></td>
                       </tr>
                       <tr>

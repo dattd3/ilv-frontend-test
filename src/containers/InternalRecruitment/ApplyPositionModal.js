@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 import axios from 'axios'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class ApplyPositionModal extends React.Component {
     constructor(props) {
@@ -134,6 +135,7 @@ class ApplyPositionModal extends React.Component {
 
 
     render () {
+        const { t } = this.props
         return (
             <>
             <Modal size="lg" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
@@ -207,4 +209,4 @@ class ApplyPositionModal extends React.Component {
         )
     }
 }
-export default ApplyPositionModal;
+export default withTranslation()(ApplyPositionModal);

@@ -4,6 +4,7 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _, { startsWith } from 'lodash'
 
@@ -61,13 +62,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const userProfileInfo = this.props.leaveOfAbsence.userProfileInfo
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
     const annualLeaveSummary = this.state.annualLeaveSummary
+    const { t } = this.props
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-2">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.fullname : ""}</div>
             </div>
             <div className="col-2">
@@ -195,4 +197,4 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 }
 
-export default LeaveOfAbsenceDetailComponent
+export default withTranslation()(LeaveOfAbsenceDetailComponent)

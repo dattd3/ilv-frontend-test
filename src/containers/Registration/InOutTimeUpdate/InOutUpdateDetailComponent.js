@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import Constants from '../.../../../../commons/Constants'
@@ -82,14 +83,15 @@ class InOutUpdateDetailComponent extends React.Component {
 
   render() {
     const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
-
+    const { t } = this.props
+  
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.fullname}</div>
             </div>
             <div className="col-3">
@@ -205,4 +207,4 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 }
 
-export default InOutUpdateDetailComponent
+export default withTranslation()(InOutUpdateDetailComponent)

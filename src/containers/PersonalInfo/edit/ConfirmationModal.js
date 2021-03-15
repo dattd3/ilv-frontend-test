@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import ResultModal from '../../Task/ApprovalDetail/ResultModal';
+import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import _ from 'lodash'
 import Spinner from 'react-bootstrap/Spinner'
@@ -23,13 +24,14 @@ class ConfirmationModal extends React.Component {
     }
 
     showResultModal = (res) => {
+        const { t } = this.props;
         this.setState({ isShowResultConfirm: true });
         if (res && res.data) {
             const result = res.data.result;
             const code = result.code;
             if (code == "000000") {
                 this.setState({
-                    resultTitle: "Thành công",
+                    resultTitle: t("Successful"),
                     resultMessage: result.message,
                     isSuccess: true
                 });
@@ -177,4 +179,4 @@ class ConfirmationModal extends React.Component {
     }
 }
 
-export default ConfirmationModal
+export default withTranslation()(ConfirmationModal)

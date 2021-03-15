@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -62,6 +63,7 @@ class SubstitutionDetailComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
 
     return (
@@ -70,7 +72,7 @@ class SubstitutionDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{this.props.substitution.userProfileInfo.user.fullname}</div>
             </div>
             <div className="col-3">
@@ -198,4 +200,4 @@ class SubstitutionDetailComponent extends React.Component {
     )
   }
 }
-export default SubstitutionDetailComponent
+export default withTranslation()(SubstitutionDetailComponent)
