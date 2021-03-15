@@ -1050,7 +1050,7 @@ export const IncomeTablesConfig = {
                             field: 'other_payment_amount',
                             level4: [
                                 {label: 'Hỗ trợ ăn ca', field: 'shift_eating_allowance'},
-                                {label: 'Hỗ trợ đặc thù', field: 'specific_work_allowance '},
+                                {label: 'Hỗ trợ đặc thù', field: 'specific_work_allowance'},
                                 {label: 'Hỗ trợ ốm đau, tai nạn', field: 'sick_accident_allowance'},
                                 {label: 'Hỗ trợ hiếu hỉ', field: 'funeral_wedding_allowance'},
                                 {label: 'Hỗ trợ nhà ở', field: 'housing_allowance'},
