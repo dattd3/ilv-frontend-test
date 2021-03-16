@@ -58,7 +58,7 @@ class ButtonComponent extends React.Component {
                         {t('Send')}
                 </button>
                 <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
-                <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+                <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t('AttachmentFile')}</button>
             </div>
         </div>
     }
