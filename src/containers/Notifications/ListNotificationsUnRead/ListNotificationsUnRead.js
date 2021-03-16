@@ -3,7 +3,8 @@ import { useApi, useFetcher } from "../../../modules";
 import moment from 'moment';
 import Constants from '../../../commons/Constants';
 import CustomPaging from '../../../components/Common/CustomPaging';
-import FormSearchComponent from '../SearchBlock/FormSearchComponent'
+import FormSearchComponent from '../SearchBlock/FormSearchComponent';
+import { useTranslation } from "react-i18next"
 
 const usePreload = (params) => {
     const api = useApi();
@@ -20,6 +21,7 @@ const getOrganizationLevelByRawLevel = level => {
 }
  
 function ListNotificationsUnRead(props) {
+    const { t } = useTranslation();
     const [page, SetPage] = useState(Constants.NOTIFICATION_PAGE_INDEX_DEFAULT);
     const [pageSize, SetPageSize] = useState(Constants.NOTIFICATION_PAGE_SIZE_DEFAULT);
     const [keyword, SetKeyword] = useState("");
