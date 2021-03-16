@@ -191,7 +191,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         }, config)
             .then(res => {
                 if (res && res.data) {
-                    debugger
                     const data = res.data
                     if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
                         const errors = { ...this.state.errors }

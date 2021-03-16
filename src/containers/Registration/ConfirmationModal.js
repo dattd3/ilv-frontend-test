@@ -110,7 +110,6 @@ class ConfirmationModal extends React.Component {
         })
             .then(res => {
                 if (res && res.data) {
-                    debugger
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
