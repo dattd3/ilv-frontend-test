@@ -5,6 +5,7 @@ import { Modal, Image, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import axios from 'axios';
 import _ from 'lodash'
+import { withTranslation } from 'react-i18next';
 
 class SubmitQuestionModal extends React.Component {
     constructor(props) {
@@ -140,6 +141,7 @@ class SubmitQuestionModal extends React.Component {
     }
 
     render() {
+        const {t} = this.props;
         let categoriesDisplay = [];
         if (this.state.categories && this.state.categories.length > 0) {
             categoriesDisplay = this.state.categories.map(category => {
@@ -154,13 +156,13 @@ class SubmitQuestionModal extends React.Component {
                 onHide={this.props.onHide}
                 onShow={() => this.updateEditDate(this.props.editQuestion, this.props.isEdit)}>
                 <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>ĐẶT CÂU HỎI</Modal.Title>
+                    <Modal.Title>{t("CreateQuestions")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
                         <div className="wrap-result text-left">
                             <div className="form-group">
-                                <label className="form-label">Nhóm câu hỏi</label>
+                                <label className="form-label">{t("Categoryques")}</label>
                                 <div className="content input-container ">
                                     <Select
                                         defaultValue={categoriesDisplay[0]}
@@ -170,9 +172,9 @@ class SubmitQuestionModal extends React.Component {
                                 </div>
                             </div>
                             <Form.Group controlId="QuestionContent">
-                                <Form.Label>Nội dung câu hỏi</Form.Label>
+                                <Form.Label>{t("Question")}</Form.Label>
                                 <Form.Control type="text"
-                                    placeholder="Nội dung câu hỏi"
+                                    placeholder={t("Question")}
                                     required name="questionContent"
                                     value={this.state.questionContent}
                                     onChange={this.handleChange.bind(this)} />
@@ -181,15 +183,15 @@ class SubmitQuestionModal extends React.Component {
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.CBQL">
-                                <Form.Label>CBQL trực tiếp</Form.Label>
+                                <Form.Label>{t("LineManager")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.fullname} readOnly />
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.Title">
-                                <Form.Label>Chức danh</Form.Label>
+                                <Form.Label>{t("Title")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.title} readOnly />
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.Department">
-                                <Form.Label>Khối/ Phòng/ Bộ phận</Form.Label>
+                                <Form.Label>{t("DepartmentManage")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.department} readOnly />
                             </Form.Group>
                         </div>
@@ -204,4 +206,4 @@ class SubmitQuestionModal extends React.Component {
     }
 }
 
-export default SubmitQuestionModal
+export default withTranslation()(SubmitQuestionModal)
