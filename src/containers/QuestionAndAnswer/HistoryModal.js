@@ -7,6 +7,7 @@ import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import axios from 'axios';
 import ConfirmModal from './ConfirmModal'
+import { withTranslation } from 'react-i18next';
 
 class HistoryModal extends React.Component {
     constructor(props) {
@@ -78,6 +79,7 @@ class HistoryModal extends React.Component {
     render() {
         const recordPerPage = 5
         const questions = this.state.questions
+        const {t} = this.props;
         return (
             <>
                 <ConfirmModal 
@@ -92,7 +94,7 @@ class HistoryModal extends React.Component {
                 />
                 <Modal size="xl" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className='apply-position-modal' closeButton>
-                        <Modal.Title>LỊCH SỬ GIẢI ĐÁP</Modal.Title>
+                        <Modal.Title>{t("HistoryAnswer")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <HistoryTable showConfirms={this.showConfirmModal.bind(this)} 
@@ -111,4 +113,4 @@ class HistoryModal extends React.Component {
     }
 }
 
-export default HistoryModal
+export default withTranslation()(HistoryModal)

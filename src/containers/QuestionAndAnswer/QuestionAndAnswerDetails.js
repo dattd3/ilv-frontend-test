@@ -10,7 +10,7 @@ import ConfirmModal from './ConfirmModal'
 import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 import Constants from '../../commons/Constants';
-import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -473,4 +473,4 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 }
 
-export default useTranslation()(QuestionAndAnswerDetails) 
+export default withTranslation()(QuestionAndAnswerDetails) 
