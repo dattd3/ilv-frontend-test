@@ -23,7 +23,6 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 
   dataToSap() {
-    debugger
     let dataToSAP = []
     this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2'].forEach(n => {

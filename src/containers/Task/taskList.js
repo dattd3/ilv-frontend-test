@@ -353,7 +353,6 @@ class TaskList extends React.Component {
     }
 
     updateTaskStatus = (id, status) =>{
-        debugger
         let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
         this.setState({approveTasks: tasksUpdated})
     }
