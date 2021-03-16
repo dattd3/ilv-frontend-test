@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 import _ from 'lodash';
+import { useTranslation } from "react-i18next";
 
 function FormSearchComponent(props) {
+    const {t} = useTranslation();
     const sendQuery = query => {
         props.handler(query);
     }
@@ -33,8 +35,8 @@ function FormSearchComponent(props) {
     return (
         <div className="search-block">
             <div className="block-left">
-                <h4 className="h4 title-search-block">thông báo nội bộ</h4>
-                <input type="text" name="textSearch" className="text-search shadow" placeholder="Tìm kiếm ..." onChange={onChangeTextSearch} />
+                <h4 className="h4 title-search-block">{t("AnnouncementInternal")}</h4>
+                <input type="text" name="textSearch" className="text-search shadow" placeholder={t("SearchTextPlaceholder")} onChange={onChangeTextSearch} />
             </div>
             <div className="block-right shadow">
                 {dataBlock}

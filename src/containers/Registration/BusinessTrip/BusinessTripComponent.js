@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import moment from 'moment'
+import { withTranslation  } from "react-i18next";
 
 registerLocale("vi", vi)
 
@@ -232,15 +233,15 @@ class BusinessTripComponent extends React.Component {
     }
     requiredFields.forEach(name => {
       if (_.isNull(this.state[name]) || !this.state[name]) {
-        errors[name] = '(Bắt buộc)'
+        errors[name] = this.props.t('Required')
       } else {
         if (name !== "approver") {
           errors[name] = null
         }
       }
     })
-    errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
-    errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
+    errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? this.props.t('Required') : null
+    errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? this.props.t('Required') : null
     this.setState({ errors: errors })
     return errors
   }
@@ -351,32 +352,33 @@ class BusinessTripComponent extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
     const vehicles = [
-      { value: '1', label: 'Xe cá nhân' },
-      { value: '2', label: 'Taxi' },
-      { value: '3', label: 'Tàu hỏa' },
-      { value: '4', label: 'Máy bay' },
-      { value: '5', label: 'Các phương thức vận chuyển khác' }
+      { value: '1', label: t('PrivateVehicles') },
+      { value: '2', label: t('Taxi') },
+      { value: '3', label: t('Train') },
+      { value: '4', label: t('Flight') },
+      { value: '5', label: t('Others') }
     ]
 
     const places = [
-      { value: '1', label: 'Trong nước' },
-      { value: '2', label: 'Nước ngoài' }
+      { value: '1', label: t('Domestic') },
+      { value: '2', label: t('Foreign') }
     ]
     
     let attendanceQuotaTypes = [
-      { value: 'CT01', label: 'C/t (có CTP, không ăn ca)' },
-      { value: 'CT02', label: 'C/t (có CTP, có ăn ca)' },
-      { value: 'CT03', label: 'C/t (không CTP, có ăn ca)' },
-      { value: 'CT04', label: 'C/t (không CTP, không ăn ca)' },
-      { value: 'DT01', label: 'Đào tạo' },
+      { value: 'CT01', label: t('BizTripHasPerDiemNoMeals') },
+      { value: 'CT02', label: t('BizTripHasPerDiemHasMeals') },
+      { value: 'CT03', label: t('BizTripNoPerDiemHasMeals') },
+      { value: 'CT04', label: t('BizTripNoPerDiemNoMeals') },
+      { value: 'DT01', label: t('Menu_Training') },
     ]
     if(['V073'].includes(localStorage.getItem("companyCode")))
     {
       attendanceQuotaTypes = [
-        { value: 'CT03', label: 'C/t (không CTP, có ăn ca)' },
-        { value: 'CT04', label: 'C/t (không CTP, không ăn ca)' },
-        { value: 'DT01', label: 'Đào tạo' },
+        { value: 'CT03', label: t('BizTripNoPerDiemHasMeals') },
+        { value: 'CT04', label: t('BizTripNoPerDiemNoMeals') },
+        { value: 'DT01', label: t('Menu_Training') },
       ]
     }
     return (
@@ -386,7 +388,7 @@ class BusinessTripComponent extends React.Component {
           <div className="form">
             <div className="row">
               <div className="col-7">
-                <p className="text-uppercase"><b>Lựa chọn thời gian công tác/đào tạo</b></p>
+                <p className="text-uppercase"><b>{t('BizTrip_TrainingTime')}</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                   <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                     Cả ngày
@@ -399,7 +401,7 @@ class BusinessTripComponent extends React.Component {
             </div>
             <div className="row">
               <div className="col-5">
-                <p className="title">Ngày/giờ bắt đầu</p>
+                <p className="title">{t('StartDateTime')}</p>
                 <div className="row">
                   <div className="col-8">
                     <div className="content input-container">
@@ -414,7 +416,7 @@ class BusinessTripComponent extends React.Component {
                           minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                           onChange={this.setStartDate.bind(this)}
                           dateFormat="dd/MM/yyyy"
-                          placeholderText="Lựa chọn"
+                          placeholderText= {t('Select')}
                           locale="vi"
                           className="form-control input" />
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
@@ -435,7 +437,7 @@ class BusinessTripComponent extends React.Component {
                           timeCaption="Giờ"
                           dateFormat="HH:mm"
                           timeFormat="HH:mm"
-                          placeholderText="Lựa chọn"
+                          placeholderText={t('Select')}
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
                       </label>
@@ -446,7 +448,7 @@ class BusinessTripComponent extends React.Component {
               </div>
 
               <div className="col-5">
-                <p className="title">Ngày/giờ kết thúc</p>
+                <p className="title">{t('EndDateTime')}</p>
                 <div className="row">
                   <div className="col-8">
                     <div className="content input-container">
@@ -461,7 +463,7 @@ class BusinessTripComponent extends React.Component {
                           minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                           onChange={this.setEndDate.bind(this)}
                           dateFormat="dd/MM/yyyy"
-                          placeholderText="Lựa chọn"
+                          placeholderText={t('Select')}
                           locale="vi"
                           className="form-control input" />
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
@@ -482,7 +484,7 @@ class BusinessTripComponent extends React.Component {
                           timeCaption="Giờ"
                           dateFormat="HH:mm"
                           timeFormat="HH:mm"
-                          placeholderText="Lựa chọn"
+                          placeholderText={t('Select')}
                           className="form-control input"
                           disabled={this.state.leaveType == FULL_DAY ? true : false} />
                       </label>
@@ -503,9 +505,9 @@ class BusinessTripComponent extends React.Component {
 
             <div className="row">
               <div className="col-5">
-                <p className="title">Loại chuyến Công tác/Đào tạo</p>
+                <p className="title">{t('TypeOfBizTripAndTraining')}</p>
                 <div>
-                  <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder="Lựa chọn" key="attendanceQuotaType" options={attendanceQuotaTypes} />
+                  <Select name="attendanceQuotaType" value={this.state.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType)} placeholder={t('Select')} key="attendanceQuotaType" options={attendanceQuotaTypes} />
                 </div>
 
                 {this.error('attendanceQuotaType')}
@@ -514,16 +516,16 @@ class BusinessTripComponent extends React.Component {
                 this.state.isShowAddressAndVehicle && !['V073'].includes(localStorage.getItem("companyCode")) ?
                   <>
                     <div className="col-5">
-                      <p className="title">Địa điểm</p>
+                      <p className="title">{t('Location')}</p>
                       <div>
-                        <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder="Lựa chọn" key="place" options={places} />
+                        <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder={t('Select')} key="place" options={places} />
                       </div>
                       {this.error('place')}
                     </div>
                     <div className="col-2">
-                      <p className="title">Phương tiện</p>
+                      <p className="title">{t('MeansOfTransportation')}</p>
                       <div>
-                        <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder="Lựa chọn" key="vehicle" options={vehicles} />
+                        <Select name="vehicle" value={this.state.vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle)} placeholder={t('Select')} key="vehicle" options={vehicles} />
                       </div>
                       {this.error('vehicle')}
                     </div>
@@ -534,21 +536,21 @@ class BusinessTripComponent extends React.Component {
             <div className="row business-type">
               <div className="col-12">
                 <div className="row">
-                  <div className="col-lg-3 col-md-6 text-info smaller">* Có CTP: được trả Công tác phí</div>
-                  <div className="col-lg-4 col-md-6 text-info">* Không CTP: không được trả Công tác phí</div>
+                  <div className="col-lg-3 col-md-6 text-info smaller">* {t('PerDiemIncluded')}</div>
+                  <div className="col-lg-4 col-md-6 text-info">* {t('NoPerDiem')}</div>
                 </div>
                 <div className="row">
-                  <div className="col-lg-3 col-md-6 text-info smaller">* Có ăn ca: được trả tiền ăn ca</div>
-                  <div className="col-lg-4 col-md-6 text-info">* Không ăn ca: không được trả tiền ăn ca</div>
+                  <div className="col-lg-3 col-md-6 text-info smaller">* {t('MealsIncluded')}</div>
+                  <div className="col-lg-4 col-md-6 text-info">* {t('NoMeals')}</div>
                 </div>
               </div>
             </div>
 
             <div className="row">
               <div className="col-12">
-                <p className="title">Lý do đăng ký Công tác/Đào tạo</p>
+                <p className="title">{t('ReasonTripAndTrainning')}</p>
                 <div>
-                  <textarea className="form-control" name="note" value={this.state.note || ""} onChange={this.handleInputChange.bind(this)} placeholder="Nhập lý do" rows="3"></textarea>
+                  <textarea className="form-control" name="note" value={this.state.note || ""} onChange={this.handleInputChange.bind(this)} placeholder={t('EnterReason')} rows="3"></textarea>
                 </div>
                 {this.error('note')}
               </div>
@@ -572,4 +574,4 @@ class BusinessTripComponent extends React.Component {
     )
   }
 }
-export default BusinessTripComponent
+export default withTranslation()(BusinessTripComponent)

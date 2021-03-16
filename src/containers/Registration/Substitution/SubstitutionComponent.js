@@ -12,6 +12,7 @@ import Constants from '../.../../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import { withTranslation  } from "react-i18next";
 registerLocale("vi", vi)
 
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -458,6 +459,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
     const substitutionTypes = [
       { value: '01', label: 'Phân ca làm việc' },
       { value: '02', label: 'Phân ca gãy' },
@@ -479,7 +481,7 @@ class SubstitutionComponent extends React.Component {
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
-              <p className="title">Từ ngày</p>
+              <p className="title">{t('From')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -670,4 +672,4 @@ class SubstitutionComponent extends React.Component {
     )
   }
 }
-export default SubstitutionComponent
+export default withTranslation()(SubstitutionComponent)
