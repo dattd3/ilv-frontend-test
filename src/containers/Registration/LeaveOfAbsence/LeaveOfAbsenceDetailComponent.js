@@ -154,7 +154,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{t(Constants.mappingStatus[this.props.leaveOfAbsence.status].label)}</span>
               {
                 this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null

@@ -89,7 +89,7 @@ class BusinessTripDetailComponent extends React.Component {
           <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
+            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{t(Constants.mappingStatus[businessTrip.status].label)}</span>
             {
               businessTrip.status == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
