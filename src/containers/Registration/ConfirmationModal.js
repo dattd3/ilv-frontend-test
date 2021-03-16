@@ -206,7 +206,7 @@ class ConfirmationModal extends React.Component {
                                         aria-hidden="true"
                                     />}
                             </button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" disabled = {this.state.disabledSubmitButton} onClick={this.props.onHide} data-type="no">Không</button>
                         </div>
                     </Modal.Body>
                 </Modal>

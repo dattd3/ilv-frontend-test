@@ -73,6 +73,10 @@ class TaskList extends React.Component {
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
         const value = option.value
         const label = option.label
+        if(value === Constants.STATUS_PENDING)
+        {
+            return;
+        }
         const registrationDataToPrepareToSAP = {
             id: taskId,
             status: statusOriginal,
@@ -150,7 +154,7 @@ class TaskList extends React.Component {
 
         if (this.props.page === "approval") {
             if (statusOriginal == 0) {
-                return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
+                return <Select defaultValue={options[0]} value = {options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
