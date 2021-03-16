@@ -461,7 +461,7 @@ class QuestionAndAnswerDetails extends React.Component {
             </Container>
             {this.state.question && this.state.isShowCommentEditor ?
               <div className="dannger-note">
-                <p>*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn "Từ chối" để yêu cầu CBNV tự tra cứu trên MyVinpearl</p>
+                <p>*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn "Từ chối" để yêu cầu CBNV tự tra cứu trên MyVingroup</p>
               </div> : null
             }
           </div>

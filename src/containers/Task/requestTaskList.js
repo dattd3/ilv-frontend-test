@@ -19,11 +19,11 @@ const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
-class TaskList extends React.Component {
+class RequestTaskList extends React.Component {
     constructor() {
         super();
         this.state = {
-            approveTasks: [],
+            tasks: [],
             dataToModalConfirm: null,
             isShowModalConfirm: false,
             modalTitle: "",
@@ -61,11 +61,6 @@ class TaskList extends React.Component {
         }
     }
 
-    componentDidMount()
-    {
-        this.setState({approveTasks: this.props.tasks})
-    }
-
     onChangePage = index => {
         this.setState({ pageNumber: index })
     }
@@ -73,10 +68,6 @@ class TaskList extends React.Component {
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
         const value = option.value
         const label = option.label
-        if(value === Constants.STATUS_PENDING)
-        {
-            return;
-        }
         const registrationDataToPrepareToSAP = {
             id: taskId,
             status: statusOriginal,
@@ -154,7 +145,7 @@ class TaskList extends React.Component {
 
         if (this.props.page === "approval") {
             if (statusOriginal == 0) {
-                return <Select defaultValue={options[0]} value = {options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
+                return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
@@ -297,10 +288,10 @@ class TaskList extends React.Component {
                 BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 VTART: timesheet.substitutionType.value,
-                PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime  ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+                PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+                PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
                 PBEZ1: '',
-                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  && timesheet.endBreakTime  ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
                 TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
             }
         })
@@ -352,22 +343,16 @@ class TaskList extends React.Component {
         return dataToSAP
     }
 
-    updateTaskStatus = (id, status) =>{
-        debugger
-        let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
-        this.setState({approveTasks: tasksUpdated})
-    }
-
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.approveTasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
                 <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
                     taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
-                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} updateTask = {this.updateTaskStatus} />
+                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
@@ -458,12 +443,12 @@ class TaskList extends React.Component {
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.approveTasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
                     </div>
-                    <div className="col-sm text-right">Total: {this.state.approveTasks.length}</div>
+                    <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
                 </div> : null}
             </>)
     }
 }
 
-export default TaskList
+export default RequestTaskList

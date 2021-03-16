@@ -138,7 +138,7 @@ function Authorize(props) {
                     });
                 })
                 .finally(result => {
-                    history.push(map.Dashboard);
+                    //history.push(map.Dashboard);
                 })
         }
     }
