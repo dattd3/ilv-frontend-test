@@ -103,7 +103,7 @@ class SelectSupporterModal extends React.Component {
             <div className="form-group">
               <label className="form-label">Họ và tên</label>
               <div className="content input-container ">
-                <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="supporter" onChange={supporter => this.handleSelectChange('supporter', supporter)} value={this.state.supporter} placeholder="Lựa chọn" key="supporter" options={this.state.users} />
+                <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="supporter" onChange={supporter => this.handleSelectChange('supporter', supporter)} value={this.state.supporter} placeholder="Tìm kiếm..." key="supporter" options={this.state.users} />
               </div>
             </div>
             <Form.Group controlId="submitQuestionForm.Title">

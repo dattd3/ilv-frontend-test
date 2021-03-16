@@ -54,7 +54,7 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    const companiesUsing = ['V070', 'V060']
+    const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
         .then(res => {
