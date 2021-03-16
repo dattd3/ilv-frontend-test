@@ -110,16 +110,16 @@ class SelectSupporterModal extends React.Component {
               </div>
             </div>
             <Form.Group controlId="submitQuestionForm.Title">
-              <Form.Label>Chức danh</Form.Label>
+              <Form.Label>{t("Title")}</Form.Label>
               <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.current_position : ''} readOnly />
             </Form.Group>
             <Form.Group controlId="submitQuestionForm.Department">
-              <Form.Label>Khối/ Phòng/ Bộ phận</Form.Label>
+              <Form.Label>{t("DepartmentManage")}</Form.Label>
               <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.department : ''} readOnly />
             </Form.Group>
           </div>
           <div className="clearfix edit-button text-right">
-            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>Không</Button>{' '}
+            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("None")}</Button>{' '}
             <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>Có</Button>
           </div>
         </Modal.Body>
