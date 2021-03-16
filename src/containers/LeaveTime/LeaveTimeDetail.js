@@ -13,7 +13,7 @@ export default function LeaveTimeDetail(props) {
     <div className="leave-time-detail">
       <div className="card shadow">
           <div className={'card-header clearfix text-white ' + 'bg-' + props.bg } onClick={() => setOpen(!open)}>
-            <div className="float-left">{props.headerTitle}</div>
+            <div className="float-left text-uppercase">{props.headerTitle}</div>
             <div className="float-right"><i className={open ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i></div>
           </div>
           {open ? <Fade in={open}>

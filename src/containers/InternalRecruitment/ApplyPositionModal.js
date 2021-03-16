@@ -76,12 +76,14 @@ class ApplyPositionModal extends React.Component {
             file: ''
         }
 
+        const { t } = this.props
+
         if (_.isEmpty(this.state['fullname'])) {
-            errors['fullname'] = '(Bắt buộc)'
+            errors['fullname'] = t("Required")
         }
 
         if (_.isEmpty(this.state['cell_phone_no'])) {
-            errors['cell_phone_no'] = '(Bắt buộc)'
+            errors['cell_phone_no'] = t("Required")
         }
 
         if (!/^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i.test(this.state.personal_email)) {
@@ -89,7 +91,7 @@ class ApplyPositionModal extends React.Component {
         }
            
         if(!this.fileInput.current.files[0]) {
-            errors['file'] = '(Bắt buộc)'
+            errors['file'] = t("Required")
         }
 
         if (!_.isEmpty(errors['fullname']) || !_.isEmpty(errors['personal_email']) || !_.isEmpty(errors['cell_phone_no']) || !_.isEmpty(errors['file']))

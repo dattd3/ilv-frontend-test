@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import TimesheetSearch from './timesheetSearch'
 import TimesheetSummary from './TimesheetSummary'
 import TimesheetDetail from './TimesheetDetail'
@@ -53,6 +54,7 @@ class Timesheet extends React.Component {
     }
 
     render() {
+      const { t } = this.props
       return (
       <div className="timesheet-section">
         <TimesheetSearch clickSearch={this.searchTimesheetByDate.bind(this)}/>
@@ -62,10 +64,10 @@ class Timesheet extends React.Component {
           <TimesheetDetail timesheets={this.state.timesheets}/>
         </>
         : this.state.isSearch ? 
-          <div className="alert alert-warning shadow" role="alert">Không tìm thấy dữ liệu</div> 
+          <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> 
         : null
       }
       </div>)
     }
   }
-export default Timesheet;
+export default withTranslation()(Timesheet);

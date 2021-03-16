@@ -3,6 +3,8 @@ import DatePicker, {registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import { withTranslation } from "react-i18next"
+import { t } from 'i18next'
 registerLocale("vi", vi)
 
 class LeaveTimeSearch extends React.Component {
@@ -36,12 +38,13 @@ class LeaveTimeSearch extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return <>
-    <h5 className="searchTitle">KIỂM TRA SỐ NGÀY PHÉP / SỐ GIỜ NGHỈ BÙ / ĐÃ SỬ DỤNG</h5>
+    <h5 className="searchTitle">{t("CheckLeaveAndToilBalance")}</h5>
     <div className="search-box shadow">
       <div className="row">
         <div className="col">
-          <div className="title">Từ ngày</div>
+          <div className="title">{t("From")}</div>
           <div className="content input-container">
             <label>
               <DatePicker 
@@ -59,7 +62,7 @@ class LeaveTimeSearch extends React.Component {
           </div>
         </div>
         <div className="col">
-          <div className="title">Đến ngày</div>
+          <div className="title">{t("To")}</div>
           <div className="content input-container">
           <label>
             <DatePicker 
@@ -80,7 +83,7 @@ class LeaveTimeSearch extends React.Component {
         <div className="col">
         <div className="title">&nbsp;</div>
           <div className="content">
-          <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>Tìm kiếm</button>
+          <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>
@@ -88,4 +91,4 @@ class LeaveTimeSearch extends React.Component {
     </>
   }
 }
-export default LeaveTimeSearch
+export default withTranslation()(LeaveTimeSearch)
