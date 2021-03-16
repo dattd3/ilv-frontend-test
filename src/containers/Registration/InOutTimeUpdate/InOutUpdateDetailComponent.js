@@ -24,7 +24,6 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 
   dataToSap() {
-    debugger
     let dataToSAP = []
     this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2'].forEach(n => {
@@ -95,15 +94,15 @@ class InOutUpdateDetailComponent extends React.Component {
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.fullname}</div>
             </div>
             <div className="col-3">
-              Mã nhân viên
+              {t("EmployeeCode")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo}</div>
             </div>
             <div className="col-3">
-              Chức danh
+              {t("Title")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.jobTitle}</div>
             </div>
             <div className="col-3">
-              Khối/Phòng/Bộ phận
+              {t("DepartmentManage")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.department}</div>
             </div>
           </div>
@@ -115,7 +114,7 @@ class InOutUpdateDetailComponent extends React.Component {
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thực tế</p>
+                  <p className="text-center">{t('ActualTime')}</p>
                   <div className="row">
                     <div className="col-6">
                       Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
@@ -156,7 +155,7 @@ class InOutUpdateDetailComponent extends React.Component {
                 </div>
               </div>
             </div>
-            <p>Lý do sửa giờ vào - ra</p>
+            <p>{t('ReasonModifyInOut')}</p>
             <div className="row">
               <div className="col">
                 <div className="detail">{timesheet.note || ""}</div>

@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import { withTranslation  } from "react-i18next";
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -295,13 +296,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
     return (
       <div className="in-out-time-update">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
-              <p className="title">Từ ngày</p>
+              <p className="title">{t('From')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -313,7 +315,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t('Select')}
                     locale="vi"
                     shouldCloseOnSelect={true}
                     className="form-control input" />
@@ -324,7 +326,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
 
             <div className="col-4">
-              <p className="title">Đến ngày</p>
+              <p className="title">{t('To')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -337,7 +339,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t('Select')}
                     locale="vi"
                     className="form-control input" />
                   <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
@@ -349,7 +351,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
+                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
               </div>
             </div>
           </div>
@@ -377,7 +379,7 @@ class InOutTimeUpdateComponent extends React.Component {
             {timesheet.isEdit ? <div className="row block-time-item-edit">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thực tế</p>
+                  <p className="text-center">{t('ActualTime')}</p>
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
@@ -446,7 +448,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Sửa giờ vào ra</p>
+                  <p className="text-center">{t('InOutChangeRequest')}</p>
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
@@ -550,9 +552,9 @@ class InOutTimeUpdateComponent extends React.Component {
 
             {timesheet.isEdit ? <div className="row block-note-item-edit">
               <div className="col-12 pb-2">
-                <p className="title">Lý do sửa giờ vào - ra</p>
+                <p className="title">{t('ReasonModifyInOut')}</p>
                 <div>
-                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder={t('EnterReason')} rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>
@@ -575,7 +577,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {
           (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V077","V073"].includes(localStorage.getItem("companyCode"))) ?
-            <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+            <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}
@@ -586,4 +588,4 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 }
 
-export default InOutTimeUpdateComponent
+export default withTranslation()(InOutTimeUpdateComponent)
