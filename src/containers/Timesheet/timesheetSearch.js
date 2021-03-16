@@ -1,5 +1,6 @@
 import React from 'react'
 import DatePicker, {registerLocale} from 'react-datepicker'
+import { withTranslation } from "react-i18next"
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
@@ -44,12 +45,13 @@ class TimesheetSearch extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return <>
-    <h5 className="searchTitle">LỰA CHỌN HIỂN THỊ NGÀY CÔNG</h5>
+    <h5 className="searchTitle">{t("SelectTimesheetPeriod")}</h5>
     <div className="timesheet-box shadow">
       <div className="row">
         <div className="col">
-          <div className="title">Từ ngày</div>
+          <div className="title">{t("From")}</div>
           <div className="content input-container">
             <label>
               <DatePicker 
@@ -67,7 +69,7 @@ class TimesheetSearch extends React.Component {
           </div>
         </div>
         <div className="col">
-          <div className="title">Đến ngày</div>
+          <div className="title">{t("To")}</div>
           <div className="content input-container">
           <label>
               <DatePicker 
@@ -88,7 +90,7 @@ class TimesheetSearch extends React.Component {
         <div className="col">
         <div className="title">&nbsp;</div>
           <div className="content">
-          <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>Tìm kiếm</button>
+          <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>
@@ -96,4 +98,4 @@ class TimesheetSearch extends React.Component {
     </>
   }
 }
-export default TimesheetSearch;
+export default withTranslation()(TimesheetSearch);

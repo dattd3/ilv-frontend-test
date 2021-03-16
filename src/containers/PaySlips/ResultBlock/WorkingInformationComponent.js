@@ -1,50 +1,52 @@
+import { t } from "i18next";
 import React from "react"
+import { useTranslation } from "react-i18next"
 
 function WorkingInformationComponent(props) {
     const workingInformations = props.payslip.working_information
-
+    const { t } = useTranslation()
     return (
         <>
             <table className="table workday-information-table">
                 <thead>
                     <tr>
-                        <th className="title top-title" colSpan={localStorage.getItem("companyCode") === "V070" ? 15 : 14}>a. thông tin công</th>
+                        <th className="title top-title" colSpan={localStorage.getItem("companyCode") === "V070" ? 15 : 14}>a. {t("TimesheetDetails")}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr className="second-title">
-                        <td className="title title-second kcc" colSpan="2">Kỳ chấm công</td>
-                        <td className="title title-second" colSpan={ !['V096','V060'].includes(localStorage.getItem("companyCode")) ? 5 : 3}>Chi tiết thu nhập trên HĐLĐ</td>
-                        <td className="title title-second cc" rowSpan="2">Công chuẩn</td>
-                        <td className="title title-second" colSpan="4">Chi tiết ngày công</td>
-                        <td className="title same-width title-second tchl" rowSpan="2">Tổng công hưởng lương</td>
+                        <td className="title title-second kcc" colSpan="2">{t("Period")}</td>
+                        <td className="title title-second" colSpan={ !['V096','V060'].includes(localStorage.getItem("companyCode")) ? 5 : 3}>{t("IncomeInContract")}</td>
+                        <td className="title title-second cc" rowSpan="2">{t("StandardWorkingDays")}</td>
+                        <td className="title title-second" colSpan="4">{t("TimesheetDetailsOfDay")}</td>
+                        <td className="title same-width title-second tchl" rowSpan="2">{t("TotalPaidDays")}</td>
                         {
                             localStorage.getItem("companyCode") === "V070" ? <>
-                                <td className="title same-width title-second sgcd" rowSpan="2">Số ngày hưởng ăn ca</td>
+                                <td className="title same-width title-second sgcd" rowSpan="2">{t("TotalPaidMeals")}</td>
                             </> : null
                         }
                         {
                             !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
-                                <td className="title same-width title-second sgcd" rowSpan="2">Số giờ công đêm</td>
+                                <td className="title same-width title-second sgcd" rowSpan="2">{t("NightWorkingHours")}</td>
                             </> : null
                         }
                     </tr>
                     <tr className="three-title">
-                        <td className="title same-width title-second tn">Từ ngày</td>
-                        <td className="title same-width title-second dn">Đến ngày</td>
-                        <td className="title same-width title-second lcb">Mức lương</td>
-                        <td className="title same-width title-second">Thưởng YTCLCV</td>
+                        <td className="title same-width title-second tn">{t("From")}</td>
+                        <td className="title same-width title-second dn">{t("To")}</td>
+                        <td className="title same-width title-second lcb">{t("BaseSalary")}</td>
+                        <td className="title same-width title-second">{t("BehaviorAndAttitudeBonus")}</td>
                         {
                             !['V096','V060'].includes(localStorage.getItem("companyCode")) ? <>
-                                <td className="title same-width title-second ttng">Thưởng tay nghề</td>
-                                <td className="title same-width title-second">Thưởng SC/Thưởng Caddie Fee</td>
+                                <td className="title same-width title-second ttng">{t("ProficiencyBonus")}</td>
+                                <td className="title same-width title-second">{t("ServiceChargeAndCaddieFee")}</td>
                             </> : null
                         }
-                        <td className="title same-width title-second ttn">Tổng</td>
-                        <td className="title same-width title-second clvtt">Công làm việc thực tế</td>
-                        <td className="title same-width title-second snnchl">Số ngày nghỉ có hưởng lương</td>
-                        <td className="title same-width title-second cnv">Công ngừng việc</td>
-                        <td className="title same-width title-second snnkhl">Số ngày nghỉ không hưởng lương</td>
+                        <td className="title same-width title-second ttn">{t("Total")}</td>
+                        <td className="title same-width title-second clvtt">{t("ActualWorkingDays")}</td>
+                        <td className="title same-width title-second snnchl">{t("PaidLeaveDays")}</td>
+                        <td className="title same-width title-second cnv">{t("SuspensionDay")}</td>
+                        <td className="title same-width title-second snnkhl">{t("UnpaidLeaveDays")}</td>
                     </tr>
                     {workingInformations.map((workingInformation, key) => {
                         let totalBaseSalary = parseInt(workingInformation.base_salary)
