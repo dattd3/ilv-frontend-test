@@ -107,8 +107,9 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   rejectComment = () => {
+    const { t } = this.props
     let userId = localStorage.getItem('email')
-    const rejectReason = Constants.QAAlreadyExist
+    const rejectReason = t("Constants.QAAlreadyExist")
     this.completeQuestion(this.state.question.id)
     this.submitComment(rejectReason, userId, this.state.question.id, this.showStatusModal)
   }

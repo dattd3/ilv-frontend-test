@@ -171,7 +171,7 @@ class InOutUpdateDetailComponent extends React.Component {
               <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.status].label)}</span>
               {
                 this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null

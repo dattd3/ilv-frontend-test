@@ -22,7 +22,7 @@ function ApproverDetailComponent(props) {
     <div className="row">
       <div className="col-4">
         Tình trạng
-        <div className="detail">{props.status != null ? Constants.mappingStatus[props.status].label : ""}</div>
+        <div className="detail">{props.status != null ? t(Constants.mappingStatus[props.status].label) : ""}</div>
       </div>
       {
         props.status == Constants.STATUS_NOT_APPROVED ?

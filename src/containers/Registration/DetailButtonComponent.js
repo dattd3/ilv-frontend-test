@@ -13,27 +13,31 @@ class DetailButtonComponent extends React.Component {
         }
 
         this.requestRegistraion = {
-            2: "Đăng ký nghỉ",
-            3: "Đăng ký Công tác/Đào tạo",
-            4: "Thay đổi phân ca",
-            5: "Sửa giờ vào - ra"
+            2: "LeaveRequest",
+            3: "BizTrip_TrainingRequest",
+            4: "ShiftChange",
+            5: "ModifyInOut"
         }
     }
 
     approval = () => {
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt " + this.requestRegistraion[this.props.requestTypeId] + " này ?", typeRequest: Constants.STATUS_APPROVED })
+        const { t } = this.props
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_APPROVED })
     }
 
     disApproval = () => {
+        const { t } = this.props
         this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NOT_APPROVED })
     }
 
     revocationApproval = () => {
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi phê duyệt", modalMessage: "Bạn có đồng ý thu hồi phê duyệt " + this.requestRegistraion[this.props.requestTypeId] + " này ?", typeRequest: Constants.STATUS_REVOCATION })
+        const { t } = this.props
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi phê duyệt", modalMessage: "Bạn có đồng ý thu hồi phê duyệt " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_REVOCATION })
     }
 
     evictionRequest = () => {
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi yêu cầu", modalMessage: "Bạn có đồng ý thu hồi yêu cầu " + this.requestRegistraion[this.props.requestTypeId] + " này ?", typeRequest: Constants.STATUS_EVICTION })
+        const { t } = this.props
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi yêu cầu", modalMessage: "Bạn có đồng ý thu hồi yêu cầu " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_EVICTION })
     }
 
     onHideModalConfirm() {
