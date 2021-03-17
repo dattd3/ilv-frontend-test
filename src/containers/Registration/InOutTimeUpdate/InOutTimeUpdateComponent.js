@@ -110,20 +110,20 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdit) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
-          errors['start_time1_fact_update' + index] = '(Bắt buộc)'
-          errors['end_time1_fact_update' + index] = '(Bắt buộc)'
+          errors['start_time1_fact_update' + index] = this.props.t("Required")
+          errors['end_time1_fact_update' + index] = this.props.t("Required")
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
-          errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
-          errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? '(Bắt buộc)' : null
+          errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? this.props.t("Required") : null
+          errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? this.props.t("Required") : null
         }
-        errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
+        errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? this.props.t("Required") : null
       }
     })
 
     if (_.isNull(this.state.approver)) {
-      errors['approver'] = '(Bắt buộc)'
+      errors['approver'] = this.props.t("Required")
     }
     errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? '(*) File đính kèm là bắt buộc' : null
     this.setState({ errors: errors })
@@ -185,12 +185,12 @@ class InOutTimeUpdateComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+          this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
           this.setDisabledSubmitButton(false)
         }
       })
       .catch(response => {
-        this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         this.setDisabledSubmitButton(false)
       })
   }
@@ -288,7 +288,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   getDayName = (date) => {
-    var days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+    var days = [this.props.t("Sun"), this.props.t("Mon"), this.props.t("Tue"), this.props.t("Wed"), this.props.t("Thu"), this.props.t("Fri"), this.props.t("Sat")];
     var dayStr = moment(date, "DD-MM-YYYY").format("MM/DD/YYYY").toString()
     var d = new Date(dayStr);
     var dayName = days[d.getDay()];
@@ -361,12 +361,12 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="row">
               <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
-                {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdit ? <p>{t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
-                  <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
+                  <p>{t("Start")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
-                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                  <p>{t("Start")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("End")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                   : null}
                   
               </div>
@@ -383,13 +383,13 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">{t("Start")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time1_fact)}</b></div>
                       </div>
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">{t("End")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></div>
                       </div>
                     </div>
@@ -397,14 +397,14 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">{t("Start")} 2:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time2_fact)}</b></div>
                       </div>
 
                     </div>
                     <div className="col-lg-12 col-xl-6 ">
                       <div className="row">
-                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">{t("End")} 2:</div>
                         <div className="col-6"> <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></div>
                       </div>
                     </div>
@@ -415,14 +415,14 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Bắt đầu 1:</div>
+                          <div className="col-6">{t("Start")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time1)}</b></div>
                         </div>
 
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Kết thúc 1:</div>
+                          <div className="col-6">{t("End")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time1)}</b></div>
                         </div>
                       </div>
@@ -430,13 +430,13 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Bắt đầu 2:</div>
+                          <div className="col-6">{t("Start")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time2)}</b></div>
                         </div>
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Kết thúc 2:</div>
+                          <div className="col-6">{t("End")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time2)}</b></div>
                         </div>
                       </div>
@@ -452,7 +452,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">{t("Start")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -475,7 +475,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">{t("End")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -501,7 +501,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">{t("Start")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -524,7 +524,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">{t("End")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>

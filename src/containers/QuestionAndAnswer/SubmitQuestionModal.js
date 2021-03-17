@@ -196,7 +196,7 @@ class SubmitQuestionModal extends React.Component {
                             </Form.Group>
                         </div>
                         <div className="clearfix edit-button text-right">
-                            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onHide}>Hủy</Button>{' '}
+                            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onHide}>{t("Cancel")}</Button>{' '}
                             <Button type="Submit" variant="primary" className="pr-4 pl-4">Gửi</Button>
                         </div>
                     </Form>

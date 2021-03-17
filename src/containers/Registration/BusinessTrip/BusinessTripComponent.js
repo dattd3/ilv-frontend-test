@@ -199,7 +199,7 @@ class BusinessTripComponent extends React.Component {
     this.setState({ approver: approver })
     const errors = { ...this.state.errors }
     if (!isApprover) {
-      errors.approver = 'Người phê duyệt không có thẩm quyền!'
+      errors.approver = this.props.t("InvalidApprover")
     } else {
       errors.approver = null
     }
@@ -303,12 +303,12 @@ class BusinessTripComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+          this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
           this.setDisabledSubmitButton(false)
         }
       })
       .catch(response => {
-        this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         this.setDisabledSubmitButton(false)
       })
   }
@@ -344,9 +344,9 @@ class BusinessTripComponent extends React.Component {
   showTotalTime = () => {
     if (this.state.totalTime) {
       if (this.state.leaveType == FULL_DAY) {
-        return this.state.totalTime + ' ngày'
+        return this.state.totalTime + ' ' + this.props.t("Day")
       }
-      return this.state.totalTime + ' giờ'
+      return this.state.totalTime + ' ' + this.props.t("Hour")
     }
     return ""
   }
