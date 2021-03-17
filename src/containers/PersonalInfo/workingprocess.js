@@ -163,7 +163,7 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.cash ? 'Tiền mặt | ' : '');
                                     bonusTitle += (item.merit_and_cash ? 'Giấy khen & tiền mặt | ' : '');
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
-                                    bonusTitle += (item.other_rewards ? 'Khác | ' : '');
+                                    bonusTitle += (item.other_rewards ? `${t("Other")} | ` : '');
                                     bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
                                     return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                         <form className="info-value pb-0"><div >
@@ -208,10 +208,10 @@ class MyComponent extends React.Component {
                                     this.state.userPenalties.map((item, i) => {
                                         let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
                                         penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
-                                        penaltiesTitle += (item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc | ' : '');
+                                        penaltiesTitle += (item.deduction_from_bonus ? `${t("DeductionOnBehaviorAndAttitudeBonus")} | ` : '');
                                         penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
-                                        penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
-                                        penaltiesTitle += (item.other ? 'Khác | ' : '');
+                                        penaltiesTitle += (item.compensation ? `${t("DeductionOnLoss")} | ` : '');
+                                        penaltiesTitle += (item.other ? `${t("Other")} | ` : '');
                                         penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
                                         return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                             <form className="info-value pb-0">
@@ -250,7 +250,7 @@ class MyComponent extends React.Component {
                                                             <p className="mb-0">{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
                                                         <div className="form-group col-md-4">
-                                                            <div className="info-label mb-2">% trừ thưởng</div>
+                                                            <div className="info-label mb-2">{t("PercentDeductionOfBonus")}</div>
                                                             <p className="mb-0">{item.deduction_bonus_percent ? item.deduction_bonus_percent + '%' : ''} &nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-4">

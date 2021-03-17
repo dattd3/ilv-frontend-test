@@ -326,6 +326,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
+        const { t } = this.props
         this.setDisabledSubmitButton(true)
         const errors = this.verifyInput()
         const hasErrors = !Object.values(errors).every(item => item === null)
@@ -377,12 +378,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
             .then(response => {
                 if (response && response.data && response.data.result) {
-                    this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
             })
             .catch(response => {
-                this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                 this.setDisabledSubmitButton(false)
             })
     }
@@ -444,7 +445,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
-                            <div className="title">Ngày phép tồn</div>
+                            <div className="title">{t("LeaveBalance")}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
@@ -530,7 +531,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     showTimeSelect
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
-                                                    timeCaption="Giờ"
+                                                    timeCaption={t("Hour")}
                                                     dateFormat="HH:mm"
                                                     timeFormat="HH:mm"
                                                     placeholderText={t('Select')}
@@ -578,7 +579,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     autoComplete="off"
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
-                                                    timeCaption="Giờ"
+                                                    timeCaption={t("Hour")}
                                                     dateFormat="HH:mm"
                                                     timeFormat="HH:mm"
                                                     placeholderText={t('Select')}
@@ -594,7 +595,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             <div className="col-lg-4 col-xl-2">
                                 <p className="title">{t('TotalLeaveTime')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ' ngày' : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
+                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ` ${"day"}` : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
                                 </div>
                             </div>
                         </div>

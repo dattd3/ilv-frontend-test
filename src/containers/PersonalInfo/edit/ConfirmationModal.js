@@ -133,9 +133,10 @@ class ConfirmationModal extends React.Component {
     }
 
     verifyInput = () => {
+        const { t } = this.props;
         let errors = {}
         if (_.isEmpty(this.state.message.trim())) {
-            errors.message = '(Thông tin bắt buộc)'
+            errors.message = t("Required")
             this.setState({ disabledSubmitButton: false });
         }
         this.setState({ errors: errors })
@@ -163,7 +164,7 @@ class ConfirmationModal extends React.Component {
                         }
 
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? t("Confirm") :
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? t("Yes") :
                                 <Spinner
                                     as="span"
                                     animation="border"
@@ -171,7 +172,7 @@ class ConfirmationModal extends React.Component {
                                     role="status"
                                     aria-hidden="true"
                                 />}</button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("Cancel")}</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>

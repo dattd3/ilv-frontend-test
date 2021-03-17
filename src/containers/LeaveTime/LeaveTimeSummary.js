@@ -100,7 +100,7 @@ function LeaveTimeSummary(props) {
 
                         <div className="col-md-6">
                         <LeaveTimeGraph 
-                                title="NGÀY PHÉP NĂM NAY"
+                                title={t("LeavesThisYear")}
                                 data={
                                     {
                                         total: (usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0),

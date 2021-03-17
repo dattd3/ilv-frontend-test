@@ -5,12 +5,14 @@ import { Modal, Image, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import axios from 'axios';
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class ConfirmModal extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
+        const { t } = this.props
         return (
             <Modal backdrop="static" keyboard={false}
                 className='info-modal-common position-apply-modal'
@@ -25,8 +27,8 @@ class ConfirmModal extends React.Component {
                         {this.props.confirmContent}
                     </p>
                     <div className="clearfix edit-button text-right">
-                        <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>Không</Button>{' '}
-                        <Button variant="primary" className="pr-4 pl-4" onClick={this.props.onAcceptClick}>Có</Button>
+                        <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("No")}</Button>{' '}
+                        <Button variant="primary" className="pr-4 pl-4" onClick={this.props.onAcceptClick}>{t("Yes")}</Button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -34,4 +36,4 @@ class ConfirmModal extends React.Component {
     }
 }
 
-export default ConfirmModal
+export default withTranslation()(ConfirmModal)

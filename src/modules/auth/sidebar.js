@@ -172,7 +172,7 @@ export const Navigation = [
     id: 26,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "Các vị trí đã giới thiệu",
+    label: "ReferredPositions",
     to: map.PositionIntroduced,
     role: 'U'
   },

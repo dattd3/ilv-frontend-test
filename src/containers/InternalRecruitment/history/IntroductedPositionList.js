@@ -81,7 +81,7 @@ class PositionAppliedList extends React.Component {
                   <td role="cell" data-title={t("Position")}>
                     <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                   </td>
-                  <td role="cell" className="name" data-title={t("FullName")}>
+                  <td role="cell" className="name" data-title={t("NameOfApplicant")}>
                     <p>{applicant.fullName}</p>
                   </td>
                   <td role="cell" className="phone" data-title={t("MobileNo")}>

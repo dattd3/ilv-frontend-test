@@ -48,11 +48,11 @@ class BusinessTripDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
-              Từ ngày/giờ
+              {t("StartDateTime")}
               <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
-              Đến ngày/giờ
+              {t("EndDateTime")}
               <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">

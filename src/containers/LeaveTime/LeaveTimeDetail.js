@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import Fade from 'react-bootstrap/Fade'
+import { useTranslation } from "react-i18next"
 
 function sumDays(days) {
    let total = days.reduce((sum, day) => sum + day)
@@ -7,6 +8,7 @@ function sumDays(days) {
 }
 
 export default function LeaveTimeDetail(props) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false);
   return (
   
@@ -45,9 +47,9 @@ export default function LeaveTimeDetail(props) {
                         <div className="col-md-3 text-center">
                           {value.usedLeave.length > 0 ? sumDays(value.usedLeave.map(ul => ul.days)) : 0}
                         </div>
-                        <div className="col-md-4 text-center">
+                        <div className="col-md-4 text-center text-capitalize">
                         {value.usedLeave.length > 0 ? value.usedLeave.map((d, k) => 
-                          <p>{d.date.replace(/-/g, '/')} - {d.days} Ngày</p>
+                          <p>{d.date.replace(/-/g, '/')} - {d.days} {t("Day")}</p>
                         ) : ''}
                         </div>
                       </div> :  null}

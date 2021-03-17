@@ -110,7 +110,7 @@ class InOutUpdateDetailComponent extends React.Component {
         <h5>Thông tin sửa giờ vào - ra</h5>
         {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
-            <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+            <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">

@@ -371,7 +371,7 @@ class PersonalComponent extends React.Component {
                             <i className="note note-old"></i> {t("Record")}
                 </div>
                         <div className="col">
-                            <i className="note note-new"></i> {t("NewInformation")}
+                            <i className="note note-new"></i> {t("AdjustmentInformation")}
                 </div>
                     </div>
                     <hr />
@@ -439,7 +439,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? t("Male") : t("Female")}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Gender" placeholder="Lựa chọn giới tính" isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
+                            <Select name="Gender" placeholder={t("SelectGender")} isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
                                 onChange={e => this.handleSelectInputs(e, 'Gender', (userDetail.gender !== undefined && userDetail.gender !== '2') ? t("Male") : t("Female"))} />
                         </div>
                     </div>

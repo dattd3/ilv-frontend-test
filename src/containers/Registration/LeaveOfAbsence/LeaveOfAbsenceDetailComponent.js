@@ -87,7 +87,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col-2">
-              Ngày phép tồn
+              {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
             <div className="col-2">
@@ -117,11 +117,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Từ ngày/giờ
+              {t("StartDateTime")}
               <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
-              Đến ngày/giờ
+              {t("EndDateTime")}
               <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
