@@ -119,8 +119,8 @@ class SelectSupporterModal extends React.Component {
             </Form.Group>
           </div>
           <div className="clearfix edit-button text-right">
-            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("None")}</Button>{' '}
-            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>Có</Button>
+            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("No")}</Button>{' '}
+            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>{t("Yes")}</Button>
           </div>
         </Modal.Body>
       </Modal>

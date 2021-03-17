@@ -266,7 +266,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ approver: approver })
         const errors = { ...this.state.errors }
         if (!isApprover) {
-            errors.approver = 'Người phê duyệt không có thẩm quyền!'
+            errors.approver = this.props.t("InvalidApprover")
         } else {
             errors.approver = null
         }

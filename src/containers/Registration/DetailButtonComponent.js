@@ -1,6 +1,7 @@
 import React from 'react'
 import ConfirmationModal from './ConfirmationModal'
 import Constants from '../.../../../commons/Constants'
+import { withTranslation  } from "react-i18next"
 
 class DetailButtonComponent extends React.Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class DetailButtonComponent extends React.Component {
 
     render() {
         const action = this.getAction()
+        const {t} = this.props
 
         return <div className="bottom">
             <ConfirmationModal
@@ -76,7 +78,7 @@ class DetailButtonComponent extends React.Component {
                     !this.props.isShowRevocationOfApproval ?
                     <>
                     <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
-                        <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+                        <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
                     <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Không duyệt</button>
                     </>
                     : null
@@ -100,4 +102,4 @@ class DetailButtonComponent extends React.Component {
     }
 }
 
-export default DetailButtonComponent
+export default withTranslation()(DetailButtonComponent)

@@ -5,6 +5,7 @@ import ResultModal from './ResultModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import Spinner from 'react-bootstrap/Spinner'
+import { withTranslation  } from "react-i18next"
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -49,7 +50,7 @@ class ConfirmationModal extends React.Component {
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal("Thành công", "Thu hồi yêu cầu thành công!", true)
+                        this.showStatusModal(this.props.t("Successful"), "Thu hồi yêu cầu thành công!", true)
                     }
                 }
             })
@@ -75,16 +76,16 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal("Thành công", result.message, true)
+                        this.showStatusModal(this.props.t("Successful"), result.message, true)
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal("Thông Báo", result.message, false)
+                        this.showStatusModal(this.props.t("Notification"), result.message, false)
                     }
                 }
             })
             .catch(response => {
-                this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
@@ -111,16 +112,16 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal("Thành công", result.message, true)
+                        this.showStatusModal(this.props.t("Successful"), result.message, true)
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal("Thông Báo", result.message, false)
+                        this.showStatusModal(this.props.t("Notification"), result.message, false)
                     }
                 }
             })
             .catch(response => {
-                this.showStatusModal("Thông Báo", "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
@@ -135,7 +136,7 @@ class ConfirmationModal extends React.Component {
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal("Thành công", "Hủy phê duyệt thành công!", true)
+                        this.showStatusModal(this.props.t("Successful"), "Hủy phê duyệt thành công!", true)
                     }
                 }
             })
@@ -164,7 +165,7 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         }
-
+        const {t} = this.props
         return (
             <>
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -192,7 +193,7 @@ class ConfirmationModal extends React.Component {
                                         aria-hidden="true"
                                     />}
                             </button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -201,4 +202,4 @@ class ConfirmationModal extends React.Component {
     }
 }
 
-export default ConfirmationModal
+export default withTranslation()(ConfirmationModal)

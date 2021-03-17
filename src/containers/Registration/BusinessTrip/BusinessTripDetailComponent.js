@@ -57,7 +57,7 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               {t('TotalTimeForBizTripAndTraining')}
-              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ngày' : businessTrip.userProfileInfo.totalTime + ' giờ') : null}</div>
+              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ' + t("Day") : businessTrip.userProfileInfo.totalTime + ' ' + t("Hour")) : null}</div>
             </div>
           </div>
           <div className="row">
