@@ -127,6 +127,7 @@ class AddressModal extends React.Component {
     }
 
     verifyInput() {
+        const { t } = this.props
         let errors = {}
         const RequiredFields = ['country']
         if(this.state.country.value === "VN")
@@ -137,7 +138,7 @@ class AddressModal extends React.Component {
         }
         RequiredFields.forEach(name => {
             if (_.isNull(this.state[name])) {
-                errors[name] = '(Bắt buộc)'
+                errors[name] = t("Required")
             }
         })
 
@@ -176,7 +177,7 @@ class AddressModal extends React.Component {
                                 {t("Nation")}
                             </div>
                             <div className="col-7">
-                                <Select options={countries} placeholder="Lựa chọn..." onChange={this.updateCountry.bind(this)} value={this.state.country} />
+                                <Select options={countries} placeholder={`${t('Select')}...`} onChange={this.updateCountry.bind(this)} value={this.state.country} />
                                 {this.error('country')}
                             </div>
                         </div>
@@ -185,7 +186,7 @@ class AddressModal extends React.Component {
                                 {t("Province")}
                             </div>
                             <div className="col-7">
-                                <Select options={provinces} placeholder="Chọn Tỉnh/ Thành phố..." onChange={this.updateProvice.bind(this)} value={this.state.province} />
+                                <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvice.bind(this)} value={this.state.province} />
                                 {this.error('province')}
                             </div>
                         </div>
@@ -194,7 +195,7 @@ class AddressModal extends React.Component {
                                 {t("District")}
                             </div>
                             <div className="col-7">
-                                <Select options={districts} placeholder="Chọn Quận/ Huyện..." onChange={this.updateDistrict.bind(this)} value={this.state.district} />
+                                <Select options={districts} placeholder={`${t("SelectDistrict")}...`} onChange={this.updateDistrict.bind(this)} value={this.state.district} />
                                 {this.error('district')}
                             </div>
                         </div>
@@ -203,7 +204,7 @@ class AddressModal extends React.Component {
                                 {t("Ward")}
                             </div>
                             <div className="col-7">
-                                <Select options={wards} placeholder="Chọn Phường/ Xã..." onChange={this.updateWard.bind(this)} value={this.state.ward} />
+                                <Select options={wards} placeholder={`${t("SelectWard")}...`} onChange={this.updateWard.bind(this)} value={this.state.ward} />
                                 {this.error('ward')}
                             </div>
                         </div>

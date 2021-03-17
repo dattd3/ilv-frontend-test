@@ -252,6 +252,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   submit() {
+    const { t } = this.props 
     this.setDisabledSubmitButton(true)
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
@@ -281,7 +282,7 @@ class BusinessTripComponent extends React.Component {
     }
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', 'Đăng ký Công tác/Đào tạo')
+    bodyFormData.append('Name', t("BizTrip_TrainingRequest"))
     bodyFormData.append('RequestTypeId', Constants.BUSINESS_TRIP)
     bodyFormData.append('Comment', this.state.note)
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))

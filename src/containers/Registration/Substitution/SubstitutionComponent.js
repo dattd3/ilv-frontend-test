@@ -473,7 +473,7 @@ class SubstitutionComponent extends React.Component {
             {
               localStorage.getItem("companyCode") === "V030" ? <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div> : null
             }
-            {
+          {
               localStorage.getItem("companyCode") === "V060" ? <div className="text-danger"><i className="fa fa-info-circle"></i> CBNV cần xin duyệt đổi ca trước tối thiểu 01 ngày.</div> : null
             }
           </div>

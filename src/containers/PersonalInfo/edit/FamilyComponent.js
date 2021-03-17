@@ -55,7 +55,7 @@ class FamilyComponent extends React.Component {
                 <h4 className="title text-uppercase">{t("Family")}</h4>
                 <div className="box shadow">
                     <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
-                    <span><i className="note note-new"></i> {t("NewInformation")}</span>
+                    <span><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
                     <hr/>
 
                        { this.state.userFamily.map((item, i) => {

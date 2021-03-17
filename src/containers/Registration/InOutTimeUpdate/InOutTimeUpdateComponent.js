@@ -106,6 +106,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
+    const { t } = this.props
     let errors = { ...this.state.errors }
     this.state.timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdit) {
@@ -125,7 +126,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? '(*) File đính kèm là bắt buộc' : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
@@ -137,6 +138,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   submit() {
     this.setDisabledSubmitButton(true)
+    const { t } = this.props
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
     if (hasErrors) {
@@ -163,7 +165,7 @@ class InOutTimeUpdateComponent extends React.Component {
       .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', 'Sửa giờ vào-ra')
+    bodyFormData.append('Name', t("ModifyInOut"))
     bodyFormData.append('RequestTypeId', '5')
     bodyFormData.append('Comment', comments)
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
@@ -296,7 +298,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
     return (
       <div className="in-out-time-update">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -359,7 +361,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
                 {!timesheet.isEdit ? <p>{t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
@@ -373,7 +375,7 @@ class InOutTimeUpdateComponent extends React.Component {
               <div className="col-2 pr-0 pl-0">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
-                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
             {timesheet.isEdit ? <div className="row block-time-item-edit">
