@@ -4,6 +4,7 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _, { startsWith } from 'lodash'
 
@@ -61,49 +62,50 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const userProfileInfo = this.props.leaveOfAbsence.userProfileInfo
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
     const annualLeaveSummary = this.state.annualLeaveSummary
+    const { t } = this.props
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-2">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.fullname : ""}</div>
             </div>
             <div className="col-2">
-              Mã nhân viên
+              {t("EmployeeNo")}
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.employeeNo : ""}</div>
             </div>
             <div className="col-3">
-              Chức danh
+              {t("Title")}
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.jobTitle : ""}</div>
             </div>
             <div className="col-5">
-              Khối/Phòng/Bộ phận
+              {t('DepartmentManage')}
               <div className="detail">{userProfileInfo.user ? userProfileInfo.user.department : ""}</div>
             </div>
           </div>
           <div className="row">
             <div className="col-2">
-              Ngày phép tồn
+              {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
             <div className="col-2">
-              Ngày phép năm
+              {t("LeavesThisYear")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
             </div>
             <div className="col-3">
-              Ngày phép tạm ứng
+              {t("AdvancecdAnnualLeave")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
             </div>
             <div className="col-5">
               <div className="row">
                 <div className="col-6">
-                  Giờ bù tồn
+                  {t("ToilHoursBalance")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
                 </div>
                 <div className="col-6">
-                  Giờ nghỉ bù
+                  {t("ToilHours")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
                 </div>
               </div>
@@ -115,19 +117,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Từ ngày/giờ
+              {t("StartDateTime")}
               <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
-              Đến ngày/giờ
+              {t("EndDateTime")}
               <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-3">
-              Tổng thời gian nghỉ
+              {t("TotalLeaveTime")}
               <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalDays ? this.props.leaveOfAbsence.userProfileInfo.totalDays + ' ngày' : "" : this.props.leaveOfAbsence.userProfileInfo.totalTimes ? this.props.leaveOfAbsence.userProfileInfo.totalTimes + ' giờ' : ""}</div>
             </div>
             <div className="col-3">
-              Loại nghỉ
+              {t("LeaveCategory")}
               <div className="detail">{userProfileInfo.absenceType ? userProfileInfo.absenceType.label : ""}</div>
             </div>
           </div>
@@ -139,7 +141,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div> : null}
           <div className="row">
             <div className="col">
-              Lý do đăng ký nghỉ
+              {t("ReasonRequestLeave")}
               <div className="detail">{this.props.leaveOfAbsence.comment}</div>
             </div>
           </div>
@@ -152,7 +154,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{Constants.mappingStatus[this.props.leaveOfAbsence.status].label}</span>
+              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{t(Constants.mappingStatus[this.props.leaveOfAbsence.status].label)}</span>
               {
                 this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
@@ -195,4 +197,4 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 }
 
-export default LeaveOfAbsenceDetailComponent
+export default withTranslation()(LeaveOfAbsenceDetailComponent)

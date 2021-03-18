@@ -2,6 +2,7 @@ import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
+import { withTranslation  } from "react-i18next";
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -160,25 +161,25 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-
+    const {t} = this.props;
     return <div className="approver">
       <div className="box shadow">
         <div className="row">
           <div className="col-4">
-            <p className="title">Người phê duyệt</p>
+            <p className="title">{t('Approver')}</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder="Tìm kiếm..." key="approver" options={this.state.users} />
+              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder={t('Search') + '...'} key="approver" options={this.state.users} />
             </div>
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
           <div className="col-4">
-            <p className="title">Chức danh</p>
+            <p className="title">{t('Title')}</p>
             <div>
               <input type="text" className="form-control" value={this.state.approver ? this.state.approver.current_position : ""} readOnly />
             </div>
           </div>
           <div className="col-4">
-            <p className="title">Khối/Phòng/Bộ phận</p>
+            <p className="title">{t('DepartmentManage')}</p>
             <div>
               <input type="text" className="form-control" value={this.state.approver ? this.state.approver.department : ""} readOnly />
             </div>
@@ -192,4 +193,4 @@ class ApproverComponent extends React.Component {
   }
 }
 
-export default ApproverComponent
+export default withTranslation()(ApproverComponent)

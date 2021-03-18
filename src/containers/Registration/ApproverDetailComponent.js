@@ -1,26 +1,28 @@
 import React from 'react'
 import Constants from '../../commons/Constants'
+import { useTranslation } from "react-i18next";
 
 function ApproverDetailComponent(props) {
+  const { t } = useTranslation();
     return <div className="box shadow cbnv">
     <div className="row">
       <div className="col-4">
-        Người phê duyệt
+        {t('Approver')}
         <div className="detail">{props.approver ? props.approver.fullname : null}</div>
       </div>
       <div className="col-4">
-        Chức danh
+        {t('Title')}
         <div className="detail">{props.approver ? props.approver.current_position : null}</div>
       </div>
       <div className="col-4">
-        Khối/Phòng/Bộ phận
+        {t('DepartmentManage')}
         <div className="detail">{props.approver ? props.approver.department : null}</div>
       </div>
     </div>
     <div className="row">
       <div className="col-4">
         Tình trạng
-        <div className="detail">{props.status != null ? Constants.mappingStatus[props.status].label : ""}</div>
+        <div className="detail">{props.status != null ? t(Constants.mappingStatus[props.status].label) : ""}</div>
       </div>
       {
         props.status == Constants.STATUS_NOT_APPROVED ?

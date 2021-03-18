@@ -1,36 +1,38 @@
 import React from "react"
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class TimesheetSummary extends React.Component {
   render() {
+    const { t } = this.props
     return <div className="summary">
       <div className="card shadow">
-        <div className="card-header bg-primary text-white">TỔNG HỢP NGÀY CÔNG</div>
+        <div className="card-header bg-primary text-white">{t("TimesheetSummary")}</div>
         <div className="card-body">
           <div className="row">
             <div className="col">
-              <div className="title text-center">Công chuẩn</div>
+              <div className="title text-center">{t("StandardWorkingDays")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Công thực tế</div>
+              <div className="title text-center">{t("ActualWorkingDays")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Nghỉ có hưởng lương</div>
+              <div className="title text-center">{t("PaidLeave")}</div>
             </div>
             <div className="col">
-              <div className="title text-center text-sm">Đào tạo/Công tác</div>
+              <div className="title text-center text-sm">{t("TrainingAndBizTrip")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Công nghỉ ngừng việc</div>
+              <div className="title text-center">{t("SuspensionDay")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Công không hưởng lương</div>
+              <div className="title text-center">{t("UnpaidLeaveWork")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Tổng OT sau quy đổi</div>
+              <div className="title text-center">{t("TotalOtHours")}</div>
             </div>
             <div className="col">
-              <div className="title text-center">Tổng công hưởng lương</div>
+              <div className="title text-center">{t("TotalPaidDays")}</div>
             </div>
           </div>
 
@@ -67,4 +69,4 @@ class TimesheetSummary extends React.Component {
   }
 }
 
-export default TimesheetSummary
+export default withTranslation()(TimesheetSummary)

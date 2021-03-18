@@ -1,5 +1,6 @@
 import React from 'react'
 import {Tabs, Tab} from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 import RequestComponent from '../Task/Request/'
 import ApprovalComponent from '../Task/Approval/'
 import axios from 'axios'
@@ -40,14 +41,15 @@ class Task extends React.Component {
     }
 
     render() {
+      const { t } = this.props
         return (
             <Tabs defaultActiveKey={this.state.tabActive} className="task-tabs" onSelect={(key) => this.updateTabLink(key)}>
-                <Tab eventKey="request" title="Yêu cầu">
+                <Tab eventKey="request" title={t("Request")}>
                     <RequestComponent />
                 </Tab>
                 {
                     this.state.isShowApprovalTab == true ?
-                    <Tab eventKey="approval" title="Phê duyệt">
+                    <Tab eventKey="approval" title={t("Approval")}>
                         <ApprovalComponent tasks={this.state.tasks} />
                     </Tab>
                     : null
@@ -58,4 +60,4 @@ class Task extends React.Component {
     }
 }
 
-export default Task
+export default withTranslation()(Task)

@@ -12,6 +12,7 @@ import Constants from '../.../../../../commons/Constants'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import { withTranslation  } from "react-i18next";
 registerLocale("vi", vi)
 
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -83,12 +84,12 @@ class SubstitutionComponent extends React.Component {
     this.state.timesheets.forEach((timesheet, index) => {
       if(!timesheet.isEdit) return;
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
-        errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? '(Bắt buộc)' : null
+        errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? this.props.t('Required') : null
       }
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
         const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
         shiftRequiredFields.forEach(name => {
-          errors[name + index] = _.isNull(timesheet[name]) ? '(Bắt buộc)' : null
+          errors[name + index] = _.isNull(timesheet[name]) ? this.props.t('Required') : null
         })
 
         // Validation for broken shift
@@ -105,13 +106,13 @@ class SubstitutionComponent extends React.Component {
           errors['totalHours' + index] = null
         }
       }
-      errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? '(Bắt buộc)' : null
+      errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? this.props.t('Required') : null
       errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
         && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)' : null
-      errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? '(Bắt buộc)' : null
+      errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? this.props.t('Required') : null
     })
     if (_.isNull(this.state.approver)) {
-      errors['approver'] = '(Bắt buộc)'
+      errors['approver'] = this.props.t('Required')
     }
 
     this.setState({ errors: errors })
@@ -191,12 +192,12 @@ class SubstitutionComponent extends React.Component {
     })
     .then(response => {
       if (response && response.data && response.data.result) {
-        this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+        this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
         this.setDisabledSubmitButton(false)
       }
     })
     .catch(response => {
-      this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
       this.setDisabledSubmitButton(false)
     })
   }
@@ -259,7 +260,7 @@ class SubstitutionComponent extends React.Component {
     this.setState({ approver: approver })
     const errors = {...this.state.errors}
     if (!isApprover) {
-        errors.approver = 'Người phê duyệt không có thẩm quyền!'
+        errors.approver = this.props.t("InvalidApprover")
     } else {
         errors.approver = null
     }
@@ -458,6 +459,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
     const substitutionTypes = [
       { value: '01', label: 'Phân ca làm việc' },
       { value: '02', label: 'Phân ca gãy' },
@@ -471,7 +473,7 @@ class SubstitutionComponent extends React.Component {
             {
               localStorage.getItem("companyCode") === "V030" ? <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div> : null
             }
-            {
+          {
               localStorage.getItem("companyCode") === "V060" ? <div className="text-danger"><i className="fa fa-info-circle"></i> CBNV cần xin duyệt đổi ca trước tối thiểu 01 ngày.</div> : null
             }
           </div>
@@ -479,7 +481,7 @@ class SubstitutionComponent extends React.Component {
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
-              <p className="title">Từ ngày</p>
+              <p className="title">{t('From')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -492,7 +494,7 @@ class SubstitutionComponent extends React.Component {
                     minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                     onChange={this.setStartDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t("Select")}
                     locale="vi"
                     className="form-control input" />
                   <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
@@ -502,7 +504,7 @@ class SubstitutionComponent extends React.Component {
             </div>
 
             <div className="col-4">
-              <p className="title">Đến ngày</p>
+              <p className="title">{t('To')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -515,7 +517,7 @@ class SubstitutionComponent extends React.Component {
                     minDate={this.state.startDate ? moment(this.state.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                     onChange={this.setEndDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t("Select")}
                     locale="vi"
                     className="form-control input" />
                   <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
@@ -526,7 +528,7 @@ class SubstitutionComponent extends React.Component {
 
             <div className="col-4">
               <p className="title">&nbsp;</p>
-              <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
+              <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
             </div>
           </div>
         </div>
@@ -536,8 +538,8 @@ class SubstitutionComponent extends React.Component {
             <div className="row">
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
-                <p className="text-uppercase"><b>Giờ kế hoạch</b></p>
-                <p>Bắt đầu {timesheet.shiftIndex}: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | Kết thúc {timesheet.shiftIndex}: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
+                <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
+                <p>{t("Start")} {timesheet.shiftIndex}: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} {timesheet.shiftIndex}: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
@@ -593,7 +595,7 @@ class SubstitutionComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm"
                               timeFormat="HH:mm"
-                              placeholderText="Lựa chọn"
+                              placeholderText={t("Select")}
                               className="form-control input" />
                           </label>
                         </div>
@@ -612,7 +614,7 @@ class SubstitutionComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm"
                               timeFormat="HH:mm"
-                              placeholderText="Lựa chọn"
+                              placeholderText={t("Select")}
                               className="form-control input" />
                           </label>
                         </div>
@@ -670,4 +672,4 @@ class SubstitutionComponent extends React.Component {
     )
   }
 }
-export default SubstitutionComponent
+export default withTranslation()(SubstitutionComponent)

@@ -4,6 +4,7 @@ import LeaveTimeSearch from './LeaveTimeSearch'
 import LeaveTimeDetail from './LeaveTimeDetail'
 import axios from 'axios'
 import moment from 'moment'
+import { withTranslation } from "react-i18next"
 
 class LeaveTimePage extends React.Component {
 
@@ -112,20 +113,21 @@ class LeaveTimePage extends React.Component {
     }
 
     render() {
+      const { t } = this.props
         return <div className="leave-time-page">
             <LeaveTimeSummary data={this.state.annualLeaveSummary}/>
             <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={this.state.errorMessage}/>
             {this.state.isSearch ? 
             <><LeaveTimeDetail 
                 bg="primary" 
-                headerTitle="NGÀY PHÉP NĂM"
-                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày phép phát sinh', usedAnnualLeave: 'Số ngày phép đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headerTitle={t("LeavesYear")}
+                headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableLeaves"), usedAnnualLeave: t("UsedLeaves"), daysOfAnnualLeave: t("DateOfLeaves")}}
                 data={this.state.annualLeaves} 
             />
             <LeaveTimeDetail 
                 bg="success" 
-                headerTitle="NGÀY NGHỈ BÙ" 
-                headers={{month: 'Tháng', annualLeaveOfArising: 'Số ngày bù phát sinh', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: 'Ngày đã sử dụng'}}
+                headerTitle={t("ToilDay")}
+                headers={{month: t("Month"), annualLeaveOfArising: 'Số ngày bù phát sinh', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: t("DateOfLeaves")}}
                 data={this.state.compensatoryLeaves} 
             />
             </> : null}
@@ -134,4 +136,4 @@ class LeaveTimePage extends React.Component {
 
 }
 
-export default LeaveTimePage
+export default withTranslation()(LeaveTimePage)

@@ -1,6 +1,7 @@
 import React from "react"
 import { IncomeTablesConfig } from './IncomeTableConfig';
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import { useTranslation } from "react-i18next"
 
 function TrTable(props) {
     return (
@@ -14,51 +15,51 @@ function TrTable(props) {
 }
 
 function IncomeComponent(props) {
+    const { t } = useTranslation()
     const payslipCalculate = props.payslip.payslip_calculate
     let incomeTables = []
     switch (localStorage.getItem('companyCode')) {
         case 'V030':
-            incomeTables = IncomeTablesConfig.Vinpearl
+            incomeTables = IncomeTablesConfig(t).Vinpearl
             break;
         case 'V096':
-            incomeTables = IncomeTablesConfig.Vinsoftware
+            incomeTables = IncomeTablesConfig(t).Vinsoftware
             break
         case 'V070':
         case 'V077':
-            incomeTables = IncomeTablesConfig.VinFast
+            incomeTables = IncomeTablesConfig(t).VinFast
             break
         case 'V060':
-            incomeTables = IncomeTablesConfig.Vinmec
+            incomeTables = IncomeTablesConfig(t).Vinmec
             break
         case 'V073':
-            incomeTables = IncomeTablesConfig.VinSmart
+            incomeTables = IncomeTablesConfig(t).VinSmart
             break
             case 'V040':
-            incomeTables = IncomeTablesConfig.VinHome
+            incomeTables = IncomeTablesConfig(t).VinHome
             break
             case 'V061':
-            incomeTables = IncomeTablesConfig.VinSchool
+            incomeTables = IncomeTablesConfig(t).VinSchool
             break
         default:
-            incomeTables = IncomeTablesConfig.VinGroup
+            incomeTables = IncomeTablesConfig(t).VinGroup
             break
     }
-
     return (
         <>
             <table id="payslip-download" className="income-information-table">
                 <thead>
                     <tr>
-                        <th className="title top-title" colSpan="4"> <span>C. THÔNG TIN THU NHẬP</span>
+                        <th className="title top-title text-uppercase" colSpan="4"> <span>c. {t("Income")}</span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td className="same-width title special color-black">Tên mục</td>
-                        <td className="same-width title color-black">Tổng thu nhập tháng</td>
-                        <td className="same-width title color-black">Chịu thuế</td>
-                        <td className="same-width title color-black">Không chịu thuế</td>
+                        <td className="same-width title special color-black">{t("Items")}</td>
+                        <td className="same-width title color-black">{t("TotalMonthlyIncome")}</td>
+                        <td className="same-width title color-black">{t("Taxable")}</td>
+                        <td className="same-width title color-black">{t("NonTaxable")}</td>
                     </tr>
                     {incomeTables.map((row, index) => {
                         return <>

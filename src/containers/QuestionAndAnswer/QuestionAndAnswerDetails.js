@@ -10,6 +10,7 @@ import ConfirmModal from './ConfirmModal'
 import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 import Constants from '../../commons/Constants';
+import { withTranslation } from 'react-i18next';
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -106,8 +107,9 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   rejectComment = () => {
+    const { t } = this.props
     let userId = localStorage.getItem('email')
-    const rejectReason = Constants.QAAlreadyExist
+    const rejectReason = t("Constants.QAAlreadyExist")
     this.completeQuestion(this.state.question.id)
     this.submitComment(rejectReason, userId, this.state.question.id, this.showStatusModal)
   }
@@ -268,12 +270,12 @@ class QuestionAndAnswerDetails extends React.Component {
               showEditModal={this.showEditModal.bind(this)}
             />
             <div className="clearfix edit-button mb-2">
-              <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
-              <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>Lịch sử giải đáp</button>
+              <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
+              <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
 
             </div>
             <div className="row mb-2 mt-1">
-              <h1 className="col-6 h3 text-uppercase text-gray-800">HỖ TRỢ GIẢI ĐÁP</h1>
+              <h1 className="col-6 h3 text-uppercase text-gray-800">{t("QuestionAndAnswer")}</h1>
               {
                 this.state.question && this.state.isShowCommentEditor ?
                   <div className="col-6 pull-right text-right">
@@ -405,11 +407,11 @@ class QuestionAndAnswerDetails extends React.Component {
                   <div className="media-body text-left">
                     <h6 className="mt-1 avt-color font-weight-bold">{question.fullName}</h6>
                     <p className="mb-0">
-                      <b>Nhóm câu hỏi: </b>
+                      <b>{t("Categoryques")}: </b>
                       {question.ticketCategoryName}
                     </p>
                     <p className="mb-0 text-break">
-                      <b>Nội dung câu hỏi: </b>
+                      <b>{t("Question")}: </b>
                       {question.content}
                     </p>
                   </div>
@@ -428,7 +430,7 @@ class QuestionAndAnswerDetails extends React.Component {
                           <div className="media-body text-left multiline">
                             <h6 className="mt-1 avt-color font-weight-bold pt-1">{item.fullName}</h6>
                             <p className="mb-0 text-break">
-                              <b className="text-left">Trả lời: </b>
+                              <b className="text-left">{t('Answer')}: </b>
                               {item.content}
                             </p>
                           </div>
@@ -446,13 +448,13 @@ class QuestionAndAnswerDetails extends React.Component {
                           <img className="align-self-center" src={`data:image/png;base64,${localStorage.getItem('avatar')}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                         </span>
                         <div className="media-body text-left">
-                          <FormControl placeholder="Viết trả lời..." as="textarea" name="comment" onChange={this.handleChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} />
+                          <FormControl placeholder={t("EnterAnswer")} as="textarea" name="comment" onChange={this.handleChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} />
                         </div>
                       </div>
                     </div>
                     <div className="mt-2 text-right">
-                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>Từ chối</Button>{' '}
-                      <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>Trả lời</Button>{' '}
+                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("Rejected")}</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
                     </div>
                   </div>
                   : null
@@ -472,4 +474,4 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 }
 
-export default QuestionAndAnswerDetails 
+export default withTranslation()(QuestionAndAnswerDetails) 

@@ -5,6 +5,7 @@ import axios from 'axios'
 import unescape from 'lodash/unescape'
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
+import { withTranslation} from "react-i18next"
 
 class PositionRecruitingDetail extends React.Component {
   static contextTypes = {
@@ -60,6 +61,7 @@ class PositionRecruitingDetail extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     return (
       this.state.isLoading ? <>
       <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -71,11 +73,11 @@ class PositionRecruitingDetail extends React.Component {
         </div>
         <div className="clearfix">
           <div className="float-left">
-            <button className="btn btn-outline-primary" onClick={this.props.history.goBack}><i className="fa fa-arrow-left"/> Back</button>
+            <button className="btn btn-outline-primary" onClick={this.props.history.goBack}><i className="fa fa-arrow-left"/> {t("Back")}</button>
           </div>
           <div className="float-right">
             <span className="btn-apply-block" onClick={this.showApplyPositionModal}>
-              <span className="btn-apply" >Ứng tuyển/Giới thiệu <i className="metismenu-state-icon icon-arrow_right"></i></span>
+              <span className="btn-apply" >{t("Application_Referral")} <i className="metismenu-state-icon icon-arrow_right"></i></span>
             </span>
           </div>
         </div>
@@ -83,15 +85,15 @@ class PositionRecruitingDetail extends React.Component {
           <div className="card-body">
             <div className="content">
               <div className="title position">{this.state.job.jobTitle}</div>
-              <div className="date">Ngày: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
-              <div className="address">Địa điểm: {this.state.job.placeOfWorkName}</div>
-              <div className="company">Công ty: Vinpearl</div>
+              <div className="date text-capitalize">{t("Day")}: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
+              <div className="address">{t("Location")}: {this.state.job.placeOfWorkName}</div>
+              <div className="company">{t("Company")}: Vinpearl</div>
               {this.state.job.jobDescription && this.state.job.jobDescription != 'undefined' ? <div className="cate description-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Mô tả công việc</div>}
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobDetail")}</div>}
                 <div  dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobDescription)}} />
               </div> : null}
               {this.state.job.jobRequirement && this.state.job.jobRequirement != 'undefined' ? <div className="cate condition-position">
-              {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Yêu cầu công việc</div>}
+              {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobRequire")}</div>}
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobRequirement)}} />
               </div> : null }
               {this.state.job.benefit && this.state.job.benefit != 'undefined' ? <div className="cate benefit-position">
@@ -111,4 +113,4 @@ class PositionRecruitingDetail extends React.Component {
   }
 }
 
-export default withRouter(PositionRecruitingDetail)
+export default withRouter(withTranslation()(PositionRecruitingDetail))

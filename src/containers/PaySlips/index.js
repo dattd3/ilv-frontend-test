@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import ConfirmPasswordModal from './ConfirmPasswordModal/ConfirmPasswordModal'
 import FormSearchComponent from './SearchBlock/FormSearchComponent'
 import MainResultComponent from './ResultBlock/MainResultComponent'
@@ -69,7 +70,8 @@ class PaySlipsComponent extends React.Component {
     this.setState({acessToken: acessToken})
   }
 
-  render() {                                                                                                                                                                                                                                              
+  render() {            
+    const { t } = this.props
     return (
       <>
       <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
@@ -78,7 +80,7 @@ class PaySlipsComponent extends React.Component {
           <div className="card-body">
             <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
             {this.state.isSearch && this.state.acessToken && this.state.payslip ? <MainResultComponent personalInformation={this.state.payslip.personal_information} /> : null }
-            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">Không tìm thấy dữ liệu!</p> : null}
+            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
           </div>
         </div>
         <div className="other-result-section">
@@ -92,4 +94,4 @@ class PaySlipsComponent extends React.Component {
   }
 }
 
-export default PaySlipsComponent
+export default withTranslation()(PaySlipsComponent)
