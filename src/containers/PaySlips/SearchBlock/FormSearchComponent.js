@@ -48,7 +48,7 @@ class FormSearchComponent extends React.Component {
             <Form className="search-form">
                 <Form.Group as={Row}>
                 <Col sm={4}>
-                    <Form.Control as="select" name={t("Month")} value={this.state.month} onChange={this.setMonthYear.bind(this)}>
+                    <Form.Control as="select" name="month" value={this.state.month} onChange={this.setMonthYear.bind(this)}>
                         {months.map((month, index) => {
                             return <option key={index} value={month.value}>{t(month.label)}</option>
                         })}
