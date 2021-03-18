@@ -60,7 +60,6 @@ class ConfirmationModal extends React.Component {
     }
 
     revocation = (id) => {
-        this.props.onHide()
         const dataToSap = this.prepareDataForRevocation()
         let bodyFormData = new FormData()
         bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
@@ -77,12 +76,16 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
                         this.showStatusModal(this.props.t("Notification"), result.message, false)
                     }
                 }
+            })
+            .finally(res=> {
+                this.props.onHide()
             })
             .catch(response => {
                 this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
@@ -96,7 +99,6 @@ class ConfirmationModal extends React.Component {
     }
 
     approve = (id) => {
-        this.props.onHide()
         const dataToSap = this.props.dataToSap
         let bodyFormData = new FormData()
         bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
@@ -113,20 +115,26 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        this.props.updateTask(id,2)
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
                         this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.props.updateTask(id,0)
                     }
                 }
             })
+            .finally(res => {
+                this.props.onHide()
+            })
             .catch(response => {
                 this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.props.updateTask(id,0)
             })
     }
 
-    disApprove = (formData, url) => {
-        this.props.onHide();
+    disApprove = (formData, url, id) => {
         axios.post(url, formData, {
             headers: { Authorization: localStorage.getItem('accessToken') }
         })
@@ -137,8 +145,13 @@ class ConfirmationModal extends React.Component {
                         return window.location.href = map.NotFound
                     } else {
                         this.showStatusModal(this.props.t("Successful"), "Hủy phê duyệt thành công!", true)
+                        this.props.updateTask(id,1)
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
                     }
                 }
+            })
+            .finally(res => {
+                this.props.onHide();
             })
             .catch(response => {
                 window.location.href = "/tasks?tab=approval"
@@ -156,7 +169,7 @@ class ConfirmationModal extends React.Component {
 
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false })
-        window.location.href = "/tasks?tab=approval"
+        //window.location.href = "/tasks?tab=approval"
     }
 
     render() {
@@ -184,7 +197,7 @@ class ConfirmationModal extends React.Component {
                         }
                         <div className="clearfix">
                             <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" disabled={this.state.disabledSubmitButton} onClick={this.ok.bind(this)}>
-                                {!this.state.disabledSubmitButton ? "Có" :
+                                {!this.state.disabledSubmitButton ? t("Yes") :
                                     <Spinner
                                         as="span"
                                         animation="border"
@@ -193,7 +206,7 @@ class ConfirmationModal extends React.Component {
                                         aria-hidden="true"
                                     />}
                             </button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("No")}</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" disabled = {this.state.disabledSubmitButton} onClick={this.props.onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>

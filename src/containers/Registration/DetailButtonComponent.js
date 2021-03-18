@@ -54,6 +54,10 @@ class DetailButtonComponent extends React.Component {
         const pathNameArr = pathName.split('/')
         return pathNameArr[pathNameArr.length - 1]
     }
+    updateTaskStatus = (id, status) =>{
+        setTimeout(() => {  window.location.reload(); }, 1000);
+       
+    }
 
     render() {
         const action = this.getAction()
@@ -70,6 +74,7 @@ class DetailButtonComponent extends React.Component {
                 updateData={this.updateData.bind(this)}
                 message={this.state.modalMessage}
                 onHide={this.onHideModalConfirm.bind(this)}
+                updateTask = {this.updateTaskStatus}
             />
             {
             action === "approval" ?

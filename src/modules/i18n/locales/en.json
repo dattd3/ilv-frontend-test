@@ -44,7 +44,7 @@
   "VPNightBenefitBeUsed": "Used Vinpearl Room Night",
   "TermPolicy": "Policy",
   "CompanyAnnouncement": "Announcement",
-  "Hour": "hour",
+  "Hour": "Hour",
   "Year": "year",
   "Day": "day",
   "Night": "night",
@@ -696,5 +696,9 @@
   "ReligionCode" : "Religion Code",
   "NationalityCode" : "Nationality Code",
   "MaritalStatusCode" : "Marital Status Code",
-  "BankCode" : "Bank Code"
+  "BankCode" : "Bank Code",
+  "Skill": "Skill",
+  "LeadershipSkill": "Leadership Skill",
+  "SpecializedSkill": "Specialized Skill",
+  "Experience": "Experience"
 }

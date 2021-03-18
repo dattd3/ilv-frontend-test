@@ -779,7 +779,7 @@ class PersonalInfoEdit extends React.Component {
       PlaceOfIssue: "Nơi cấp",
       Nationality: t("Nationality"),
       MaritalStatus: t("MaritalStatus"),
-      WorkPermitNo: "Số giấy phép lao động",
+      WorkPermitNo: t("WorkPermitNo"),
       ExpiryDate: t("ExpiryDate"),
       PersonalEmail: t("PersonalEmail"),
       CellPhoneNo: t("MobileNo"),

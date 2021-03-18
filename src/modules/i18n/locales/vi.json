@@ -46,7 +46,7 @@
   "VPNightBenefitBeUsed": "Đêm nghỉ dưỡng đã sử dụng",
   "TermPolicy": "Quy định / quy chế",
   "CompanyAnnouncement": "Thông tin tập đoàn",
-  "Hour": "giờ",
+  "Hour": "Giờ",
   "Year": "năm",
   "Day": "ngày",
   "Quarter": "Quý",
@@ -103,7 +103,7 @@
   "CurrentTitle": "Chức danh hiện tại",
   "LevelByTitle": "Cấp bậc theo chức danh",
   "ActualLevel": "Cấp bậc thực tế",
-  "BenefitLevel": "Cấp hàm hưởng phúc lợi",
+  "BenefitLevel": "Cấp phúc lợi",
   "Ethnic": "Dân tộc",
   "DivisionName": "Ban/Chuỗi/Khối",
   "DepartmentName": "Bộ phận",
@@ -636,7 +636,7 @@
   "WorkAddress": "Địa chỉ làm việc",
   "WorkHistory": "Quá trình làm việc",
   "WorkInformation": "Thông tin công việc",
-  "WorkPermitNo": "Giấy phép lao động",
+  "WorkPermitNo": "Số giấy phép lao động",
   "WorkPhoneNo": "Điện thoại công ty",
   "WorkingDaysDetail": "Chi tiết ngày công",
   "ExisLeaveRequestMsg": "Bạn đã có 1 yêu cầu Nghỉ lễ người nước ngoài vào ngày ",
@@ -712,5 +712,9 @@
   "BankCode" : "Mã ngân hàng",
   "SelectProvince_City": "Chọn Tỉnh/TP",
   "SelectDistrict": "Chọn Quận/Huyện",
-  "SelectWard": "Chọn Xã/Phường"
+  "SelectWard": "Chọn Xã/Phường",
+  "Skill": "Kỹ năng",
+  "LeadershipSkill": "Kỹ năng lãnh đạo",
+  "SpecializedSkill": "Kỹ năng chuyên môn",
+  "Experience": "Kinh nghiệp làm việc"
 }
