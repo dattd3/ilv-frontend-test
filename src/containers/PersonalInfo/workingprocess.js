@@ -5,7 +5,6 @@ import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
 import map from '../map.config';
 import WorkingProcessSearch from './workingProcessSearch';
-
 class MyComponent extends React.Component {
 
     constructor(props) {
@@ -114,13 +113,13 @@ class MyComponent extends React.Component {
                                                 {t("LaborContractType")}
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                {t("LaborContractStartDate")}
+                                                {t("StartDate")}
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                {t("LaborContractEndDate")}
+                                                {t("EndDate")}
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                {t("LaborContractIssuesBy")}
+                                                {t("PAndL")}
                                             </Col>
                                         </Row>
                                         <Row className="info-value">
@@ -154,7 +153,7 @@ class MyComponent extends React.Component {
                                 </div>
                             </Container>
                             <Col>
-                                <h4 className="pl-0 pt-0">QUYẾT ĐỊNH KHEN THƯỞNG</h4>
+                                <h4 className="pl-0 pt-0">{t("Awards")}</h4>
                             </Col>
 
                             {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
@@ -164,31 +163,31 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.cash ? 'Tiền mặt | ' : '');
                                     bonusTitle += (item.merit_and_cash ? 'Giấy khen & tiền mặt | ' : '');
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
-                                    bonusTitle += (item.other_rewards ? 'Khác | ' : '');
+                                    bonusTitle += (item.other_rewards ? `${t("Other")} | ` : '');
                                     bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
                                     return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                         <form className="info-value pb-0"><div >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6 ">
-                                                    <div className="info-label mb-2">Số quyết định</div>
+                                                    <div className="info-label mb-2">{t("DecisionNo")}</div>
                                                     <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <div className="info-label mb-2">Ngày hiệu lực</div>
+                                                    <div className="info-label mb-2">{t("EffectiveDate")}</div>
                                                     <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-12">
-                                                    <div className="info-label mb-2">Lý do khen thưởng</div>
+                                                    <div className="info-label mb-2">{t("ReasonReward")}</div>
                                                     <p className="mb-0">{item.compliment_reason}&nbsp;</p>
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <div className="info-label mb-2">Hình thức khen thưởng</div>
+                                                    <div className="info-label mb-2">{t("FormOfCompliment")}</div>
                                                     <p className="mb-0">
                                                         {bonusTitle}&nbsp;
                                                     </p>
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <div className="info-label mb-2">Số tiền khen thưởng</div>
+                                                    <div className="info-label mb-2">{t("AmountOfBonus")}</div>
                                                     <p className="mb-0">{item.bonus_amount ? item.bonus_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                 </div>
                                             </div>
@@ -201,7 +200,7 @@ class MyComponent extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                <h4>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h4>
+                                <h4>{t("Penalties")}</h4>
                             </Col>
                             <>
 
@@ -209,37 +208,37 @@ class MyComponent extends React.Component {
                                     this.state.userPenalties.map((item, i) => {
                                         let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
                                         penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
-                                        penaltiesTitle += (item.deduction_from_bonus ? 'Trừ thưởng YTCL công việc | ' : '');
+                                        penaltiesTitle += (item.deduction_from_bonus ? `${t("DeductionOnBehaviorAndAttitudeBonus")} | ` : '');
                                         penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
-                                        penaltiesTitle += (item.compensation ? 'Bồi thường thiệt hại | ' : '');
-                                        penaltiesTitle += (item.other ? 'Khác | ' : '');
+                                        penaltiesTitle += (item.compensation ? `${t("DeductionOnLoss")} | ` : '');
+                                        penaltiesTitle += (item.other ? `${t("Other")} | ` : '');
                                         penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
                                         return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
                                             <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">
                                                         <div className="form-group col-md-6">
-                                                            <div className="info-label mb-2">Số quyết định</div>
+                                                            <div className="info-label mb-2">{t("DecisionNo")}</div>
                                                             <p className="mb-0">{item.decision_number}&nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-6">
-                                                            <div className="info-label mb-2">Ngày hiệu lực</div>
+                                                            <div className="info-label mb-2">{t("EffectiveDate")}</div>
                                                             <p className="mb-0">{moment(item.effective_date).format('DD/MM/YYYY').toString()}</p>
                                                         </div>
                                                         <div className="form-group col-md-12">
-                                                            <div className="info-label mb-2">Nhóm lỗi</div>
+                                                            <div className="info-label mb-2">{t("ViolationGroup")}</div>
                                                             <p className="mb-0">{item.violation_group}&nbsp;</p>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
                                                         <div className="form-group col-12">
-                                                            <div className="info-label mb-2">Lý do kỷ luật</div>
+                                                            <div className="info-label mb-2">{t("ReasonPenalty")}</div>
                                                             <p className="mb-0">{item.disciplinary_reason}&nbsp;</p>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
                                                         <div className="form-group col-12">
-                                                            <div className="info-label mb-2">Nội dung kỷ luật</div>
+                                                            <div className="info-label mb-2">{t("TypeOfPenalty")}</div>
                                                             <p className="mb-0">
                                                                 {penaltiesTitle}
                                                             </p>
@@ -247,15 +246,15 @@ class MyComponent extends React.Component {
                                                     </div>
                                                     <div className="form-row">
                                                         <div className="form-group col-md-4">
-                                                            <div className="info-label mb-2">Số tiền kỷ luật</div>
+                                                            <div className="info-label mb-2">{t("Amountpenalty")}</div>
                                                             <p className="mb-0">{item.bonus_deducted_amount ? item.bonus_deducted_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
                                                         <div className="form-group col-md-4">
-                                                            <div className="info-label mb-2">% trừ thưởng</div>
+                                                            <div className="info-label mb-2">{t("PercentDeductionOfBonus")}</div>
                                                             <p className="mb-0">{item.deduction_bonus_percent ? item.deduction_bonus_percent + '%' : ''} &nbsp;</p>
                                                         </div>
                                                         <div className="form-group col-md-4">
-                                                            <div className="info-label mb-2">Số tiền bồi thường</div>
+                                                            <div className="info-label mb-2">{t("CompensatedAmount")}</div>
                                                             <p className="mb-0">{item.compensation_amount ? item.compensation_amount.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") : '0'} VND</p>
                                                         </div>
                                                     </div>

@@ -2,9 +2,11 @@ import React,{ useState } from "react";
 import { useApi, useFetcher } from "../../modules";
 import Select from 'react-select';
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function KPISearch(props) {   
   //const [showAlert, setShowAlert] = useState(false);  
+  const { t } = useTranslation();
   const selectRef = React.createRef();
   var years = []; 
   
@@ -34,7 +36,7 @@ function KPISearch(props) {
     return (    
         <div className="kpi-staff-info">
           <div className="text-uppercase title-group">
-              LỰA CHỌN HIỂN THỊ KỲ ĐÁNH GIÁ
+              {t("SelectPeriod")}
           </div>
           <div className="card border shadow mb-4 mt-2">
               <table className="table table-borderless" >  
@@ -55,7 +57,7 @@ function KPISearch(props) {
                                     />
                             </td>
                             <td>
-                               <button type="button" className="search-button" onClick={searchOnClick}>Tìm kiếm</button>                                
+                               <button type="button" className="search-button" onClick={searchOnClick}>{t("Search")}</button>                                
                             </td>
                         </tr>            
                         {/*

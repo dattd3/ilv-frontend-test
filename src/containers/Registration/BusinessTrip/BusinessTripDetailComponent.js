@@ -5,6 +5,7 @@ import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import { withTranslation } from "react-i18next"
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -37,7 +38,7 @@ class BusinessTripDetailComponent extends React.Component {
   render() {
     const businessTrip = this.props.businessTrip
     const requestTypeId = this.props.businessTrip.requestTypeId
-
+    const {t} = this.props
     return (
       <div className="business-trip">
         <h5>Thông tin CBNV đăng ký</h5>
@@ -47,35 +48,35 @@ class BusinessTripDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
-              Từ ngày/giờ
+              {t("StartDateTime")}
               <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
-              Đến ngày/giờ
+              {t("EndDateTime")}
               <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
-              Tổng thời gian CT/ĐT
-              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ngày' : businessTrip.userProfileInfo.totalTime + ' giờ') : null}</div>
+              {t('TotalTimeForBizTripAndTraining')}
+              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ' + t("Day") : businessTrip.userProfileInfo.totalTime + ' ' + t("Hour")) : null}</div>
             </div>
           </div>
           <div className="row">
             <div className="col-4">
-              Loại chuyến Công tác/Đào tạo
+              {t('TypeOfBizTripAndTraining')}
               <div className="detail">{businessTrip.userProfileInfo.attendanceQuotaType.label}</div>
             </div>
             <div className="col-4">
-              Địa điểm
+              {t('Location')}
               <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.place.label}</div>
             </div>
             <div className="col-4">
-              Phương tiện
+              {t('MeansOfTransportation')}
               <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.vehicle.label}</div>
             </div>
           </div>
           <div className="row">
             <div className="col">
-              Lý do đăng ký Công tác/Đào tạo
+              {t('ReasonTripAndTrainning')}
               <div className="detail">{businessTrip.comment}</div>
             </div>
           </div>
@@ -88,7 +89,7 @@ class BusinessTripDetailComponent extends React.Component {
           <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{Constants.mappingStatus[businessTrip.status].label}</span>
+            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{t(Constants.mappingStatus[businessTrip.status].label)}</span>
             {
               businessTrip.status == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
@@ -132,4 +133,4 @@ class BusinessTripDetailComponent extends React.Component {
   }
 }
 
-export default BusinessTripDetailComponent
+export default withTranslation()(BusinessTripDetailComponent)

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from "react-i18next"
 
 class ReportLeaderComponent extends React.Component {
 
@@ -7,12 +8,13 @@ class ReportLeaderComponent extends React.Component {
     
   }
 
-  render() {        
+  render() {   
+      const {t} = this.props;     
       if(this.props.kpiInfo == null || this.props.kpiInfo.Score == null) {
         return (              
               <div className="nodata-kpi" style={{'border': '1px solid ' + this.props.Color}}>
                 <div style={{'marginTop':'10px'}}>
-                  Không có dữ liệu về kì đánh giá này
+                {t("NoData")}
                 </div>                                  
              </div>               
             );
@@ -29,14 +31,14 @@ class ReportLeaderComponent extends React.Component {
                                   <table className="table table-bordered" >
                                      <tbody>         
                                          <tr>                
-                                              <td className="text-left text-primary item-row"><strong>STT</strong></td>
-                                              <td className="text-left text-primary item-row"><strong>Hạng mục đánh giá</strong></td>
-                                              <td className="text-center text-primary item-row"><strong>CBNV tự đánh giá</strong></td>
-                                              <td className="text-center text-primary item-row"><strong>CBQL đánh giá</strong></td>              
+                                              <td className="text-left text-primary item-row"><strong>{t("NumberOrder")}</strong></td>
+                                              <td className="text-left text-primary item-row"><strong>{t("EvaluationItems")}</strong></td>
+                                              <td className="text-center text-primary item-row"><strong>{t("SelfEvaluation")}</strong></td>
+                                              <td className="text-center text-primary item-row"><strong>{t("LineManagerSEvaluation")}</strong></td>              
                                           </tr> 
                                           <tr>
                                               <td className="item-row">01</td>   
-                                              <td className="text-left item-row">Tinh thần thái độ</td>
+                                              <td className="text-left item-row">{t("SpiritualAttitude")}</td>
                                               <td className="item-row"> {this.props.kpiInfo.TTTDself} </td>
                                               <td className="item-row"> {this.props.kpiInfo.TTTDmanager} </td>
                                           </tr>
@@ -54,13 +56,13 @@ class ReportLeaderComponent extends React.Component {
                                           </tr> 
                                           <tr>
                                               <td className="item-row">04</td>   
-                                              <td className="item-row" className="text-left">Nội dung công việc</td>
+                                              <td className="item-row" className="text-left">{t("JobPerformance")}</td>
                                               <td className="item-row">{this.props.kpiInfo.NDCVself}</td>
                                               <td className="item-row">{this.props.kpiInfo.NDCVmanager}</td>
                                           </tr>
                                           <tr>                
                                               <td className="item-row"><strong>05</strong></td>
-                                              <td className="item-row" className="text-left"><strong>Điểm tổng thể</strong></td>
+                                              <td className="item-row" className="text-left"><strong>{t("OverallScore")}</strong></td>
                                               <td className="item-row"><strong>{this.props.kpiInfo.SelfOverAll}</strong></td>
                                               <td className="item-row"><strong>{this.props.kpiInfo.Score}</strong></td>              
                                           </tr>   
@@ -73,10 +75,10 @@ class ReportLeaderComponent extends React.Component {
                     <div className="col-4 panel" style={{'paddingRight':'0px'}}>                    
                     {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
                           <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}> 
-                               <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">ĐÁNH GIÁ & PHÊ DUYỆT</div> 
+                               <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">{t("EvaluationAndApproval")}</div> 
                                 <div className="card-body" style={{'padding':'0px'}}>
                                     <br/>
-                                    <div className="text-center" style={{'color':'#FF0000'}}>Kết quả đánh giá tổng thể</div>   
+                                    <div className="text-center" style={{'color':'#FF0000'}}>{t("FinalScore")}</div>   
                                     <br/>                         
                                     <div className="text-center font-weight-bold" style={{'color':'#FF0000','fontSize':'60px'}}>{this.props.kpiInfo.Score}</div>                            
                                  </div>
@@ -101,4 +103,4 @@ class ReportLeaderComponent extends React.Component {
   }
 }
 
-export default ReportLeaderComponent;
+export default withTranslation()(ReportLeaderComponent);

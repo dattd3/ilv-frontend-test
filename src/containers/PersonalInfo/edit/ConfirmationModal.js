@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import ResultModal from '../../Task/ApprovalDetail/ResultModal';
+import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import _ from 'lodash'
 import Spinner from 'react-bootstrap/Spinner'
@@ -23,19 +24,20 @@ class ConfirmationModal extends React.Component {
     }
 
     showResultModal = (res) => {
+        const { t } = this.props;
         this.setState({ isShowResultConfirm: true });
         if (res && res.data) {
             const result = res.data.result;
             const code = result.code;
             if (code == "000000") {
                 this.setState({
-                    resultTitle: "Thành công",
+                    resultTitle: t("Successful"),
                     resultMessage: result.message,
                     isSuccess: true
                 });
             } else {
                 this.setState({
-                    resultTitle: "Thông Báo",
+                    resultTitle: t("Notification"),
                     resultMessage: result.message,
                     isSuccess: false
                 });
@@ -140,9 +142,10 @@ class ConfirmationModal extends React.Component {
     }
 
     verifyInput = () => {
+        const { t } = this.props;
         let errors = {}
         if (_.isEmpty(this.state.message.trim())) {
-            errors.message = '(Thông tin bắt buộc)'
+            errors.message = t("Required")
             this.setState({ disabledSubmitButton: false });
         }
         this.setState({ errors: errors })
@@ -150,6 +153,7 @@ class ConfirmationModal extends React.Component {
     }
 
     render() {
+        const { t } = this.props
         return (
             <>
                 <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
@@ -169,7 +173,7 @@ class ConfirmationModal extends React.Component {
                         }
 
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? "Có" :
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? t("Yes") :
                                 <Spinner
                                     as="span"
                                     animation="border"
@@ -177,7 +181,7 @@ class ConfirmationModal extends React.Component {
                                     role="status"
                                     aria-hidden="true"
                                 />}</button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">Không</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -186,4 +190,4 @@ class ConfirmationModal extends React.Component {
     }
 }
 
-export default ConfirmationModal
+export default withTranslation()(ConfirmationModal)

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class EducationComponent extends React.Component {
   constructor(props) {
@@ -12,12 +13,13 @@ class EducationComponent extends React.Component {
   }
 
   itemHeader = () => {
+    const { t } = this.props
     return <Row className="info-label">
-      <Col xs={12} md={6} lg={3}>Trường đào tạo</Col>
-      <Col xs={12} md={6} lg={2}>Loại bằng cấp</Col>
-      <Col xs={12} md={6} lg={3}>Chuyên ngành</Col>
-      <Col xs={12} md={6} lg={2}>Từ thời gian</Col>
-      <Col xs={12} md={6} lg={2}>Đến thời gian</Col>
+      <Col xs={12} md={6} lg={3}>{t("UniversityAndCollege")}</Col>
+      <Col xs={12} md={6} lg={2}>{t("TypeOfDegree")}</Col>
+      <Col xs={12} md={6} lg={3}>{t("Major")}</Col>
+      <Col xs={12} md={6} lg={2}>{t("From")}</Col>
+      <Col xs={12} md={6} lg={2}>{t("To")}</Col>
     </Row>
   }
 
@@ -44,13 +46,14 @@ class EducationComponent extends React.Component {
   render() {
     const userEducationUpdate = _.uniqWith(this.props.userEducationUpdate, _.isEqual);
     const userEducationCreate = _.uniqWith(this.props.userEducationCreate, _.isEqual);
+    const { t } = this.props
     return (
       <div className="education">
-        <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
+        <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
-            <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
-            <span className="mr-5"><i className="note note-new"></i> Thông tin điều chỉnh</span>
-            <span><i className="note note-create"></i> Thông tin mới</span>
+            <span className="mr-5"><i className="note note-old"></i> {t("Record")}</span>
+            <span className="mr-5"><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
+            <span><i className="note note-create"></i> {t("NewInformation")}</span>
             <hr/>
             {(userEducationUpdate || []).map((item, i) => {
               return <div className="item" key={i}>
@@ -72,4 +75,4 @@ class EducationComponent extends React.Component {
     )
   }
 }
-export default EducationComponent
+export default withTranslation()(EducationComponent)

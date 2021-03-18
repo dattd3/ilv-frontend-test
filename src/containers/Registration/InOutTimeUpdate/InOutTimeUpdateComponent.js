@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
+import { withTranslation  } from "react-i18next";
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -105,26 +106,27 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
+    const { t } = this.props
     let errors = { ...this.state.errors }
     this.state.timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdit) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
-          errors['start_time1_fact_update' + index] = '(Bắt buộc)'
-          errors['end_time1_fact_update' + index] = '(Bắt buộc)'
+          errors['start_time1_fact_update' + index] = this.props.t("Required")
+          errors['end_time1_fact_update' + index] = this.props.t("Required")
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
-          errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? '(Bắt buộc)' : null
-          errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? '(Bắt buộc)' : null
+          errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? this.props.t("Required") : null
+          errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? this.props.t("Required") : null
         }
-        errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? '(Bắt buộc)' : null
+        errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? this.props.t("Required") : null
       }
     })
 
     if (_.isNull(this.state.approver)) {
-      errors['approver'] = '(Bắt buộc)'
+      errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? '(*) File đính kèm là bắt buộc' : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
@@ -136,6 +138,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   submit() {
     this.setDisabledSubmitButton(true)
+    const { t } = this.props
     const errors = this.verifyInput()
     const hasErrors = !Object.values(errors).every(item => item === null)
     if (hasErrors) {
@@ -162,7 +165,7 @@ class InOutTimeUpdateComponent extends React.Component {
       .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', 'Sửa giờ vào-ra')
+    bodyFormData.append('Name', t("ModifyInOut"))
     bodyFormData.append('RequestTypeId', '5')
     bodyFormData.append('Comment', comments)
     bodyFormData.append('UserProfileInfo', JSON.stringify(data))
@@ -184,12 +187,12 @@ class InOutTimeUpdateComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+          this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
           this.setDisabledSubmitButton(false)
         }
       })
       .catch(response => {
-        this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
         this.setDisabledSubmitButton(false)
       })
   }
@@ -287,7 +290,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   getDayName = (date) => {
-    var days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+    var days = [this.props.t("Sun"), this.props.t("Mon"), this.props.t("Tue"), this.props.t("Wed"), this.props.t("Thu"), this.props.t("Fri"), this.props.t("Sat")];
     var dayStr = moment(date, "DD-MM-YYYY").format("MM/DD/YYYY").toString()
     var d = new Date(dayStr);
     var dayName = days[d.getDay()];
@@ -295,13 +298,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <div className="in-out-time-update">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
-              <p className="title">Từ ngày</p>
+              <p className="title">{t('From')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -313,7 +317,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t('Select')}
                     locale="vi"
                     shouldCloseOnSelect={true}
                     className="form-control input" />
@@ -324,7 +328,7 @@ class InOutTimeUpdateComponent extends React.Component {
             </div>
 
             <div className="col-4">
-              <p className="title">Đến ngày</p>
+              <p className="title">{t('To')}</p>
               <div className="content input-container">
                 <label>
                   <DatePicker
@@ -337,7 +341,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Lựa chọn"
+                    placeholderText={t('Select')}
                     locale="vi"
                     className="form-control input" />
                   <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
@@ -349,7 +353,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>Tìm kiếm</button>
+                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
               </div>
             </div>
           </div>
@@ -357,37 +361,37 @@ class InOutTimeUpdateComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
-                {!timesheet.isEdit ? <p>Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdit ? <p>{t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
-                  <p>Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
+                  <p>{t("Start")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
-                  <p>Bắt đầu 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | Kết thúc 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                  <p>{t("Start")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("End")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                   : null}
                   
               </div>
               <div className="col-2 pr-0 pl-0">
                 {!timesheet.isEdit
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
-                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
             {timesheet.isEdit ? <div className="row block-time-item-edit">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thực tế</p>
+                  <p className="text-center">{t('ActualTime')}</p>
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">{t("Start")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time1_fact)}</b></div>
                       </div>
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">{t("End")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></div>
                       </div>
                     </div>
@@ -395,14 +399,14 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">{t("Start")} 2:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time2_fact)}</b></div>
                       </div>
 
                     </div>
                     <div className="col-lg-12 col-xl-6 ">
                       <div className="row">
-                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">{t("End")} 2:</div>
                         <div className="col-6"> <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></div>
                       </div>
                     </div>
@@ -413,14 +417,14 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Bắt đầu 1:</div>
+                          <div className="col-6">{t("Start")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time1)}</b></div>
                         </div>
 
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Kết thúc 1:</div>
+                          <div className="col-6">{t("End")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time1)}</b></div>
                         </div>
                       </div>
@@ -428,13 +432,13 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Bắt đầu 2:</div>
+                          <div className="col-6">{t("Start")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time2)}</b></div>
                         </div>
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">Kết thúc 2:</div>
+                          <div className="col-6">{t("End")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time2)}</b></div>
                         </div>
                       </div>
@@ -446,11 +450,11 @@ class InOutTimeUpdateComponent extends React.Component {
 
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Sửa giờ vào ra</p>
+                  <p className="text-center">{t('InOutChangeRequest')}</p>
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 1:</div>
+                        <div className="col-6">{t("Start")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -473,7 +477,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 1:</div>
+                        <div className="col-6">{t("End")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -499,7 +503,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Bắt đầu 2:</div>
+                        <div className="col-6">{t("Start")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -522,7 +526,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">Kết thúc 2:</div>
+                        <div className="col-6">{t("End")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -550,9 +554,9 @@ class InOutTimeUpdateComponent extends React.Component {
 
             {timesheet.isEdit ? <div className="row block-note-item-edit">
               <div className="col-12 pb-2">
-                <p className="title">Lý do sửa giờ vào - ra</p>
+                <p className="title">{t('ReasonModifyInOut')}</p>
                 <div>
-                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder="Nhập lý do" rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
+                  <textarea className="form-control" value={timesheet.note || ""} name="note" placeholder={t('EnterReason')} rows="3" onChange={this.handleInputChange.bind(this, index)}></textarea>
                 </div>
                 {this.error(index, 'note')}
               </div>
@@ -575,7 +579,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {
           (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V077","V073"].includes(localStorage.getItem("companyCode"))) ?
-            <div className="p-3 mb-2 bg-warning text-dark">Yêu cầu bắt buộc có tài liệu chứng minh (Biên bản vi phạm, dữ liệu in-out từ máy chấm công, biên bản ghi nhận của Bảo vệ ...)</div>
+            <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}
@@ -586,4 +590,4 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 }
 
-export default InOutTimeUpdateComponent
+export default withTranslation()(InOutTimeUpdateComponent)

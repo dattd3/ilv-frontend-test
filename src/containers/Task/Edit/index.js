@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import axios from 'axios'
@@ -13,6 +14,7 @@ import { updatePersonalDataAction } from '../../../actions'
 import { convertObjectkeyToCamelCase } from '../../Utils/ObjectHelpers'
 import moment from 'moment'
 import * as actions from '../../../actions'
+import { t } from 'i18next'
 
 class PersonalInfoEdit extends React.Component {
   constructor() {
@@ -157,7 +159,7 @@ class PersonalInfoEdit extends React.Component {
   disApproval = () => {
     this.setState({
       modalTitle: "Xác nhận không duyệt",
-      modalMessage: "Thêm ghi chú (Không bắt buộc)",
+      modalMessage: `${t("Note")} ${t("NonRequired")}`,
       typeRequest: 1
     });
     this.onShowModalConfirm();
@@ -593,8 +595,10 @@ class PersonalInfoEdit extends React.Component {
     }
     return sapData;
   }
+  
   sendRequest = () => {
     const updateFields = this.getFieldUpdates();
+    const { t } = this.props;
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
     bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
@@ -621,14 +625,14 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowModal("Thông Báo", "Thông tin đang trong quá trình xử lý !", "error");
+            this.handleShowModal(t("Notification"), "Thông tin đang trong quá trình xử lý !", "error");
           } else {
-            this.handleShowModal("Thành công", "Cập nhật thông tin đã được lưu !", "success");
+            this.handleShowModal(t("Successful"), "Cập nhật thông tin đã được lưu !", "success");
           }
         }
       })
       .catch(response => {
-        this.handleShowModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+        this.handleShowModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
       });
   }
 
@@ -761,25 +765,26 @@ class PersonalInfoEdit extends React.Component {
   }
 
   getNameFromData = (data) => {
+    const { t } = this.props
     const nameArray = {
-      FullName: "Họ và tên",
+      FullName: t("FullName"),
       InsuranceNumber: "Số sổ bảo hiểm",
-      TaxNumber: "Mã số thuế",
-      Birthday: "Ngày sinh",
-      Gender: "Giới tính",
-      Ethinic: "Dân tộc",
-      Religion: "Tôn giáo",
+      TaxNumber: t('PitNo'),
+      Birthday: t("DateOfBirth"),
+      Gender: t("Gender"),
+      Ethinic: t("Ethnic"),
+      Religion: t("Religion"),
       PassportNo: "Số CMND/CCCD/Hộ chiếu",
       DateOfIssue: "Ngày cấp",
       PlaceOfIssue: "Nơi cấp",
-      Nationality: "Quốc tịch",
-      MaritalStatus: "Tình trạng hôn nhân",
-      WorkPermitNo: "Số giấy phép lao động",
-      ExpiryDate: "Ngày hết hạn",
-      PersonalEmail: "Email cá nhân",
-      CellPhoneNo: "Điện thoại di động",
-      UrgentContactNo: "Điện thoại khẩn cấp",
-      BankAccountNumber: "Số tài khoản ngân hàng"
+      Nationality: t("Nationality"),
+      MaritalStatus: t("MaritalStatus"),
+      WorkPermitNo: t("WorkPermitNo"),
+      ExpiryDate: t("ExpiryDate"),
+      PersonalEmail: t("PersonalEmail"),
+      CellPhoneNo: t("MobileNo"),
+      UrgentContactNo: t("EmergencyPhoneNo"),
+      BankAccountNumber: t("BankAccountNumber")
     }
     const userProfileHistoryMainInfo = data.update.userProfileHistoryMainInfo || {};
     const newItems = userProfileHistoryMainInfo.NewMainInfo || {};
@@ -797,9 +802,10 @@ class PersonalInfoEdit extends React.Component {
   }
 
   approval = () => {
+    const { t } = this.props
     this.setState({
-      modalTitle: "Xác nhận gửi yêu cầu",
-      modalMessage: "Lý do sửa đổi",
+      modalTitle: t("ConfirmSend"),
+      modalMessage: t("ReasonModify"),
       typeRequest: 2
     });
     this.onShowModalConfirm();
@@ -1135,4 +1141,4 @@ class PersonalInfoEdit extends React.Component {
     )
   }
 }
-export default PersonalInfoEdit
+export default withTranslation()(PersonalInfoEdit)

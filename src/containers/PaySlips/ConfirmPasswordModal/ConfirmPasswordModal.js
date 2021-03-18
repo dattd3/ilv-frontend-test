@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Form, Button, Col, Modal } from 'react-bootstrap'
 import qs from 'qs'
 import Spinner from 'react-bootstrap/Spinner'
+import { withTranslation } from "react-i18next"
 
 class ConfirmPasswordModal extends React.Component {
 
@@ -66,6 +67,7 @@ class ConfirmPasswordModal extends React.Component {
     }
 
     render() {
+        const { t } = this.props
         return (
             <Modal className='confirm-password-modal' backdrop="static" centered show={this.props.show}>
                 <Modal.Header>
@@ -76,13 +78,13 @@ class ConfirmPasswordModal extends React.Component {
                 <Modal.Body>
                     <Form>
                         <Form.Row>
-                            <Col xs={12}><Form.Label className="label">Nhập mật khẩu để xem bảng lương</Form.Label></Col>
+                            <Col xs={12}><Form.Label className="label">{t("EnterPasswordToSeePayslip")}</Form.Label></Col>
                         </Form.Row>
                         <Form.Row>
-                            <Col xs={9}><Form.Control placeholder="Nhập mật khẩu" type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
+                            <Col xs={9}><Form.Control placeholder={t("EnterPasswordToSeePayslip")} type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
                             <Col xs={3}>
                                 <Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled={this.state.disabledSubmitButton}>
-                                    {!this.state.disabledSubmitButton ? "Xác nhận" :
+                                    {!this.state.disabledSubmitButton ? t("Confirm") :
                                         <Spinner
                                             as="span"
                                             animation="border"
@@ -101,4 +103,4 @@ class ConfirmPasswordModal extends React.Component {
     }
 }
 
-export default ConfirmPasswordModal;
+export default withTranslation()(ConfirmPasswordModal);

@@ -4,12 +4,12 @@ import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Popover from 'react-bootstrap/Popover'
+import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap'
 import Select from 'react-select'
 import Moment from 'react-moment'
 import moment from 'moment'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
@@ -35,7 +35,7 @@ class TaskList extends React.Component {
             requestUrl: "",
             requestTypeId: null,
             dataToPrepareToSAP: {},
-            isShowModalRegistrationConfirm: false
+            isShowModalRegistrationConfirm: false,
         }
 
         this.manager = {
@@ -45,20 +45,6 @@ class TaskList extends React.Component {
             department: localStorage.getItem('department') || ""
         };
 
-        this.requestRegistraion = {
-            2: { request: "Đăng ký nghỉ", requestUrl: "requestabsence" },
-            3: { request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance" },
-            4: { request: "Thay đổi phân ca", requestUrl: "requestsubstitution" },
-            5: { request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping" }
-        }
-
-        this.typeFeedbackMapping = {
-            1: "Phản hồi của Nhân sự",
-            2: "Phản hồi của CBLĐ",
-            3: "Phản hồi của CBLĐ",
-            4: "Phản hồi của CBLĐ",
-            5: "Phản hồi của CBLĐ"
-        }
     }
 
     componentDidMount()
@@ -86,7 +72,15 @@ class TaskList extends React.Component {
         this.showModalConfirm(value, request)
     }
 
+
     showModalConfirm = (status, requestId) => {
+        const { t } = this.props
+        const requestRegistraion = {
+            2: { request: t("LeaveRequest"), requestUrl: "requestabsence" },
+            3: { request: t("BizTrip_TrainingRequest"), requestUrl: "requestattendance" },
+            4: { request: t("ShiftChange"), requestUrl: "requestsubstitution" },
+            5: { request: t("ModifyInOut"), requestUrl: "requesttimekeeping" }
+        }
         const requestUpdateProfile = 1
         if (requestId == requestUpdateProfile) {
             this.setState({
@@ -98,10 +92,10 @@ class TaskList extends React.Component {
         } else {
             this.setState({
                 modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + this.requestRegistraion[requestId].request + " này ?",
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + requestRegistraion[requestId].request + " này ?",
                 isShowModalRegistrationConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
-                requestUrl: this.requestRegistraion[requestId].requestUrl
+                requestUrl: requestRegistraion[requestId].requestUrl
             });
         }
     }
@@ -125,6 +119,7 @@ class TaskList extends React.Component {
     }
 
     showStatus = (taskId, statusOriginal, request, taskData) => {
+        const { t } = this.props
         const customStylesStatus = {
             control: base => ({
                 ...base,
@@ -140,16 +135,16 @@ class TaskList extends React.Component {
         }
 
         const status = {
-            0: { label: 'Đang chờ xử lý', className: 'request-status' },
-            1: { label: 'Từ chối', className: 'request-status fail' },
-            2: { label: 'Đã phê duyệt', className: 'request-status success' },
+            0: { label: t("Waiting"), className: 'request-status' },
+            1: { label: t("Rejected"), className: 'request-status fail' },
+            2: { label: t("Approved"), className: 'request-status success' },
             3: { label: 'Đã thu hồi', className: 'request-status' }
         }
 
         const options = [
-            { value: 0, label: 'Đang chờ xử lý' },
-            { value: 1, label: 'Từ chối' },
-            { value: 2, label: 'Phê duyệt' }
+            { value: 0, label: t("Waiting") },
+            { value: 1, label: t("Rejected") },
+            { value: 2, label: t("Approval") }
         ]
 
         if (this.props.page === "approval") {
@@ -361,6 +356,16 @@ class TaskList extends React.Component {
         const recordPerPage = 10
         let tasks = TableUtil.updateData(this.state.approveTasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        const { t } = this.props
+
+        const typeFeedbackMapping = {
+            1: t("HrSResponse"),
+            2: t("LineManagerSResponse"),
+            3: t("LineManagerSResponse"),
+            4: t("LineManagerSResponse"),
+            5: t("LineManagerSResponse")
+        }
+
         return (
             <>
                 <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -371,18 +376,18 @@ class TaskList extends React.Component {
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
                             <tr className="text-center">
-                                <th scope="col" className="code">Mã yêu cầu</th>
-                                <th scope="col" className="request-type">Loại yêu cầu</th>
-                                <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
+                                <th scope="col" className="code">{t("RequestNo")}</th>
+                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                <th scope="col" className="content">{t("Changecontent")}</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="user-request">Người gửi</th>
+                                        ? <th scope="col" className="user-request">{t("Requestor")}</th>
                                         : null
                                 }
-                                <th scope="col" className="request-date">Thời gian</th>
-                                <th scope="col" className="user-approved">Người phê duyệt</th>
-                                <th scope="col" className="approval-date">Thời gian phê duyệt</th>
-                                <th scope="col" className="status">Trạng thái</th>
+                                <th scope="col" className="request-date">{t("DateOfRequest")}</th>
+                                <th scope="col" className="user-approved">{t("Approver")}</th>
+                                <th scope="col" className="approval-date">{t("DateOfApproval")}</th>
+                                <th scope="col" className="status">{t("Status")}</th>
                                 <th scope="col" className="tool text-center">Lý do/ Phản hồi/ Chỉnh sửa</th>
                             </tr>
                         </thead>
@@ -416,25 +421,25 @@ class TaskList extends React.Component {
                                                     trigger="click"
                                                     placement="left"
                                                     overlay={<Popover id={'note-task-' + index}>
-                                                        <Popover.Title as="h3">Lý do</Popover.Title>
+                                                        <Popover.Title as="h3">{t("Reason")}</Popover.Title>
                                                         <Popover.Content>
                                                             {task.comment}
                                                         </Popover.Content>
                                                     </Popover>}>
-                                                    <img alt="Note task" src={notetButton} title="Lý do" />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Lý do" className="disabled" />}
+                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
                                                 {task.hrComment ? <OverlayTrigger
                                                     rootClose
                                                     trigger="click"
                                                     placement="left"
                                                     overlay={<Popover id={'comment-task-' + index}>
-                                                        <Popover.Title as="h3">{this.typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
+                                                        <Popover.Title as="h3">{typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
                                                         <Popover.Content>
                                                             {task.hrComment}
                                                         </Popover.Content>
                                                     </Popover>}>
-                                                    <img alt="comment task" src={commentButton} title={this.typeFeedbackMapping[task.requestTypeId]} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={this.typeFeedbackMapping[task.requestTypeId]} />}
+                                                    <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestTypeId]} />
+                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestTypeId]} />}
                                                 {
                                                     // isShowEditButton ?
                                                     //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
@@ -449,7 +454,7 @@ class TaskList extends React.Component {
                                         </tr>
                                     )
                                 })
-                                : <tr className="text-center"><th colSpan={9}>Không có dữ liệu</th></tr>
+                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
                     </table>
@@ -459,10 +464,10 @@ class TaskList extends React.Component {
                     <div className="col-sm">
                         <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.approveTasks.length} />
                     </div>
-                    <div className="col-sm text-right">Total: {this.state.approveTasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.state.approveTasks.length}</div>
                 </div> : null}
             </>)
     }
 }
 
-export default TaskList
+export default withTranslation()(TaskList)

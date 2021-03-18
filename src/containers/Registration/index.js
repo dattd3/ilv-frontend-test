@@ -4,7 +4,7 @@ import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
-
+import { withTranslation  } from "react-i18next";
 class RegistrationComponent extends React.Component {
   constructor(props) {
     super();
@@ -19,22 +19,23 @@ class RegistrationComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <div className="registration-section personal-info">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
-          <Tab eventKey="LeaveOfAbsenceRegistration" title={'Đăng ký nghỉ'}>
+          <Tab eventKey="LeaveOfAbsenceRegistration" title={t('LeaveRequest')}>
             <LeaveOfAbsence />
           </Tab>
-          <Tab eventKey="BusinessTripRegistration" title={'Đăng ký Công tác/Đào tạo'}>
+          <Tab eventKey="BusinessTripRegistration" title={t('BizTrip_TrainingRequest')}>
             <BusinessTrip />
           </Tab>
           { 
             ['V030','V060'].includes(localStorage.getItem("companyCode")) ?
-           <Tab eventKey="SubstitutionRegistration" title={'Thay đổi phân ca'}>
+           <Tab eventKey="SubstitutionRegistration" title={t('ShiftChange')}>
             <SubstitutionComponent />
           </Tab> : null
           }
-          <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") != "V096" ? 'Sửa giờ vào-ra' : 'Giải trình công'}>
+          <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") != "V096" ? t('InOutChangeRequest') : t('Explanation')}>
             <InOutTimeUpdate />
           </Tab>
         </Tabs>
@@ -42,4 +43,4 @@ class RegistrationComponent extends React.Component {
     )
   }
 }
-export default RegistrationComponent
+export default withTranslation()(RegistrationComponent)
