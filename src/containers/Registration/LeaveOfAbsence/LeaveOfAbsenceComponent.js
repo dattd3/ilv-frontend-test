@@ -443,31 +443,31 @@ class LeaveOfAbsenceComponent extends React.Component {
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <div className="row summary">
                     <div className="col">
-                        <div className="item">
+                        <div className="item pl-0 pr-0">
                             <div className="title">{t("LeaveBalance")}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
+                        <div className="item pl-0 pr-0">
                             <div className="title">{t('LeavesThisYear')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
+                        <div className="item pl-0 pr-0">
                             <div className="title">{t('AdvancecdAnnualLeave')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
+                        <div className="item pl-0 pr-0">
                             <div className="title">{t('ToilHoursBalance')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
+                        <div className="item pl-0 pr-0">
                             <div className="title">{t('ToilHours')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
                         </div>
