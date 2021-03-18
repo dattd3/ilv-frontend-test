@@ -55,8 +55,10 @@ class DetailButtonComponent extends React.Component {
         return pathNameArr[pathNameArr.length - 1]
     }
     updateTaskStatus = (id, status) =>{
-        setTimeout(() => {  window.location.reload(); }, 1000);
-       
+        if(status && status === 2)
+        {
+            setTimeout(() => {  window.location.reload(); }, 1000)
+        }
     }
 
     render() {
