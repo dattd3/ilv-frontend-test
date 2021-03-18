@@ -74,7 +74,7 @@ class PaySlipsComponent extends React.Component {
     const { t } = this.props
     return (
       <>
-      <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
+      {/* <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} /> */}
       <div className="payslips-section">
         <div className="card shadow mb-4">
           <div className="card-body">
