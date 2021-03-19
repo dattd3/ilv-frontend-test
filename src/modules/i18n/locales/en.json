@@ -700,5 +700,6 @@
   "Skill": "Skill",
   "LeadershipSkill": "Leadership Skill",
   "SpecializedSkill": "Specialized Skill",
-  "Experience": "Experience"
+  "Experience": "Experience",
+  "TotalIncomeTaxInclude": "Total Income Tax Include"
 }
