@@ -1147,6 +1147,11 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
+                                label: t("TotalIncomeTaxInclude"),
+                                field: 'total_income_tax_include',
+                                level4: []
+                            },
+                            {
                                 label: t("TotalTaxable"),
                                 field: 'income_tax_include_amount',
                                 level4: []

@@ -716,5 +716,6 @@
   "Skill": "Kỹ năng",
   "LeadershipSkill": "Kỹ năng lãnh đạo",
   "SpecializedSkill": "Kỹ năng chuyên môn",
-  "Experience": "Kinh nghiệp làm việc"
+  "Experience": "Kinh nghiệp làm việc",
+  "TotalIncomeTaxInclude": "Tổng thu nhập chịu thuế"
 }
