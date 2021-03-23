@@ -1,98 +1,97 @@
 import React from 'react'
-
+import { withTranslation } from "react-i18next"
 class PersonalComponent extends React.Component {
     constructor(props) {
         super();
     }
 
     getLabel = (key) => {
+        const { t } = this.props
         switch (key) {
             case "Birthday":
-                return "Ngày sinh";
+                return t("DateOfBirth");
             case "BirthCountry":
-                return "Mã quốc gia sinh";
+                return t("CountryCodeOfBirth");
             case "BirthCountryText":
-                return "Quốc gia sinh";
+                return t("CountryOfBirth");
             case "BirthProvince":
-                return "Mã nơi sinh";
+                return t("PlaceOfBirthCode");
             case "BirthProvinceText":
-                return "Nơi sinh";
+                return t("PlaceOfBirth");
             case "Gender":
-                return "Mã giới tính";
+                return t("GenderCode");
             case "GenderText":
-                return "Giới tính";
+                return t("Gender");
             case "Ethinic":
-                return "Mã dân tộc";
+                return t("EthnicCode");
             case "EthinicText":
-                return "Dân tộc";
+                return t("Ethnic");
             case "Religion":
-                return "Mã tôn giáo";
+                return  t("ReligionCode");
             case "ReligionText":
-                return "Tôn giáo";
+                return t("Religion");
             case "PersonalIdentifyNumber":
-                return "Số CMND/CCCD";
+                return t("IdNo");
             case "PersonalIdentifyDate":
-                return "Ngày cấp CMND/CCCD";
+                return t("IdDateOfIssue");
             case "PersonalIdentifyPlace":
-                return "Nơi cấp CMND/CCCD";
+                return t("IdPlaceOfIssue");
             case "PassportNumber":
-                return "Số Hộ chiếu";
+                return t("PassportNo");
             case "PassportDate":
-                return "Ngày cấp Hộ chiếu";
+                return t("PassportDateOfIssue");
             case "PassportPlace":
-                return "Nơi cấp Hộ chiếu";
+                return t("PassporPlaceOfIssue");
             case "Nationality":
-                return "Mã quốc tịch";
+                return t("NationalityCode");
             case "NationalityText":
-                return "Quốc tịch";
+                return t("Nationality");
             case "MaritalStatus":
-                return "Mã tình trạng hôn nhân";
+                return t("MaritalStatusCode");
             case "MaritalStatusText":
-                return "Tình trạng hôn nhân";
+                return t("MaritalStatus");
             case "PersonalEmail":
-                return "Email cá nhân";
+                return t("PersonalEmail");
             case "CellPhoneNo":
-                return "Điện thoại di động";
+                return t("MobileNo");
             case "UrgentContactNo":
-                return "Điện thoại khẩn cấp";
+                return t("EmergencyPhoneNo");
             case "BankAccountNumber":
-                return "Số tài khoản ngân hàng";
+                return t("BankAccountNumber");
             case "Bank":
-                return "Mã ngân hàng";
+                return t("BankCode");
             case "BankText":
-                return "Tên ngân hàng";
+                return t("Bank");
             case "Education":
-                return "Bằng cấp/Chứng chỉ chuyên môn";
+                return t("Certification");
             case "Province":
-                return "Mã Tỉnh/TP - Địa chỉ thường trú";
+                return `${t("Province_City_Code")} - ${t("PermanentAddress")}`;
             case "ProvinceText":
-                return "Tỉnh/TP - Địa chỉ thường trú";
+                return `${t("Province_City")} - ${t("PermanentAddress")}`;
             case "District":
-                return "Mã Quận/Huyện - Địa chỉ thường trú";
+                return `${t("District_Code")} - ${t("PermanentAddress")}`;
             case "DistrictText":
-                return "Quận/Huyện - Địa chỉ thường trú";
+                return `${t("District")} - ${t("PermanentAddress")}`;
             case "Wards":
-                return "Mã Xã/Phường - Địa chỉ thường trú";
+                return `${t("Ward_Code")} - ${t("PermanentAddress")}`;
             case "WardsText":
-                return "Xã/Phường - Địa chỉ thường trú";
+                return `${t("Ward")} - ${t("PermanentAddress")}`;
             case "StreetName":
-                return "Tên đường - Địa chỉ thường trú";
+                return `${t("Street")} - ${t("PermanentAddress")}`;
             case "TempProvince":
-                return "Mã Tỉnh/TP - Địa chỉ tạm trú";
+                return `${t("Province_City_Code")} - ${t("TemporaryAddress")}`;
             case "TempProvinceText":
-                return "Tỉnh/TP - Địa chỉ tạm trú";
+                return `${t("Province_City")} - ${t("TemporaryAddress")}`;
             case "TempDistrict":
-                return "Mã Quận/Huyện - Địa chỉ tạm trú";
+                return `${t("District_Code")} - ${t("TemporaryAddress")}`;
             case "TempDistrictText":
-                return "Quận/Huyện - Địa chỉ tạm trú";
+                return `${t("District")} - ${t("TemporaryAddress")}`;
             case "TempWards":
-                return "Mã Xã/Phường - Địa chỉ tạm trú";
+                return `${t("Ward_Code")} - ${t("TemporaryAddress")}`;
             case "TempWardsText":
-                return "Xã/Phường - Địa chỉ tạm trú";
-            case "StreetName":
-                return "Tên đường - Địa chỉ thường trú";
-            case "TempStreetName":
-                return "Tên đường - Địa chỉ tạm trú";
+                return `${t("Ward")} - ${t("TemporaryAddress")}`;
+            case "TempStreetNameText":
+                return `${t("Street")} - ${t("TemporaryAddress")}`;
             case "MarriageDate":
                 return "Ngày kết hôn";
         }
@@ -100,12 +99,13 @@ class PersonalComponent extends React.Component {
 
     render() {
         const userMainInfo = this.props.userMainInfo;
+        const { t } = this.props;
         return (
             <div className="info">
                 <div className="box shadow wrap-item">
                     <div className="row">
-                        <div className="col"><i className="note note-old"></i> Thông tin cũ</div>
-                        <div className="col"><i className="note note-new"></i> Thông tin điều chỉnh</div>
+                        <div className="col"><i className="note note-old"></i> {t("Record")}</div>
+                        <div className="col"><i className="note note-new"></i> {t("AdjustmentInformation")}</div>
                     </div>
                     <hr />
                     {
@@ -151,4 +151,4 @@ class PersonalComponent extends React.Component {
     }
 }
 
-export default PersonalComponent
+export default withTranslation()(PersonalComponent)

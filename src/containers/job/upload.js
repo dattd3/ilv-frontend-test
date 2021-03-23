@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ApiContext } from "../../modules";
 import FileUtil from "../Benefit/file-util";
+import { useTranslation } from 'react-i18next';
 
 const types = [
   "application/vnd.ms-excel",
@@ -11,8 +12,9 @@ const types = [
 ];
 
 function UploadJobDescPage() {
+  const {t} = useTranslation();
   return (
-    <ApiContext.Consumer>{api => <JobDesc api={api} />}</ApiContext.Consumer>
+    <ApiContext.Consumer>{api => <JobDesc api={api} t = {t} />}</ApiContext.Consumer>
   );
 }
 
@@ -112,6 +114,7 @@ class JobDesc extends React.Component {
   };
 
   render() {
+    const {t} = this.props;
     return (
       <div className="container bg-white">
         <div className="row">
@@ -139,7 +142,7 @@ class JobDesc extends React.Component {
               className="btn btn-success btn-block"
               onClick={this.onClickHandler}
             >
-              Upload
+              {t("Upload")}
             </button>
           </div>
           <div style={{ marginTop: 40 }} className="offset-md-3 col-md-6">
@@ -170,7 +173,7 @@ class JobDesc extends React.Component {
               className="btn btn-success btn-block"
               onClick={this.onClickJobIdsHandler}
             >
-              Upload
+              {t("Upload")}
             </button>
           </div>
         </div>

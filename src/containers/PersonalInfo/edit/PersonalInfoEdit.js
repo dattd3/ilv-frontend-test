@@ -8,7 +8,8 @@ import ResultModal from './ResultModal'
 import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
-
+import { withTranslation } from "react-i18next"
+import { t } from 'i18next'
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
 const title = localStorage.getItem('jobTitle') || "";
@@ -298,21 +299,22 @@ class PersonalInfoEdit extends React.Component {
   }
 
   getValidationEducationItem = (education) => {
+    const { t } = this.props
     let obj = {}
     if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-      obj.degreeType = '(Loại bằng cấp là bắt buộc)'
+      obj.degreeType = t("TypeOfDegreeRequired")
     }
     if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-      obj.fromTime = '(Thời gian bắt đầu là bắt buộc)'
+      obj.fromTime = t("StartDateRequired")
     }
     if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-      obj.toTime = '(Thời gian kết thúc là bắt buộc)'
+      obj.toTime = t("EndDateRequired")
     }
     if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-      obj.school = '(Trường học là bắt buộc)'
+      obj.school = t("UniversityAndCollegeRequired")
     }
     if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-      obj.major = '(Chuyên môn là bắt buộc)'
+      obj.major = t("MajorRequired")
     }
     return obj
   }
@@ -334,15 +336,16 @@ class PersonalInfoEdit extends React.Component {
   verifyInput = (data, files = null) => {
     let errors = {}
     let newMainInfo = {}
+    const { t } = this.props;
     const isValidFileUpload = this.isValidFileUpload(data, files)
 
     if ((data && !data.create && !data.update) || (data && !data.create && data.update && data.update.userProfileHistoryMainInfo
       && data.update.userProfileHistoryMainInfo.NewMainInfo && _.size(data.update.userProfileHistoryMainInfo.NewMainInfo) == 0)) {
-      errors.notChange = '(Không có thông tin được cập nhật)'
+      errors.notChange = `(${t("NoInformationUpdated")})`
     }
 
     if (!isValidFileUpload && !['V073'].includes(localStorage.getItem("companyCode"))) {
-      errors.fileUpload = '(Thông tin file đính kèm là bắt buộc)'
+      errors.fileUpload = t("AttachmentRequired")
     }
 
     if (data && data.update) {
@@ -350,41 +353,41 @@ class PersonalInfoEdit extends React.Component {
       if (update.userProfileHistoryMainInfo) {
         newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo
         if (newMainInfo.PersonalEmail && !this.isValidEmail(newMainInfo.PersonalEmail)) {
-          errors.personalEmail = '(Email cá nhân không đúng định dạng)'
+          errors.personalEmail = t("IncorrectEmail")
         }
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
-          errors.cellPhoneNo = '(Điện thoại di động không đúng định dạng)'
+          errors.cellPhoneNo = t("IncorrectMobileNo")
         }
         if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
-          errors.urgentContactNo = '(Số điện thoại khẩn cấp không đúng định dạng)'
+          errors.urgentContactNo = t("IncorrectEmergencyNo")
         }
         if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
-          errors.birthProvince = '(Nơi sinh là bắt buộc)'
+          errors.birthProvince = t("PlaceOfBirthRequired")
         }
         if ((newMainInfo.MaritalStatus && newMainInfo.MaritalStatus !== "" && newMainInfo.MaritalStatus != 0) && !newMainInfo.MarriageDate) {
-          errors.maritalDate = '(Ngày của TT hôn nhân là bắt buộc)'
+          errors.maritalDate = t("DateOfChangeRequired")
         } else if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "") && newMainInfo.MarriageDate) {
-          errors.maritalStatus = '(Tình trạng hôn nhân là bắt buộc)'
+          errors.maritalStatus = t("MaritalStatusRequired")
         }
         if (newMainInfo.Bank && !newMainInfo.BankAccountNumber) {
-          errors.bankAccountNumber = '(Số TK ngân hàng là bắt buộc)'
+          errors.bankAccountNumber = t("BankAccountRequired")
         } else if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
-          errors.bank = '(Tên ngân hàng là bắt buộc)'
+          errors.bank = t("BankNameRequired")
         }
         if ((newMainInfo.PassportNumber || newMainInfo.PassportPlace) && !newMainInfo.PassportDate) {
-          errors.passportDate = '(Ngày cấp hộ chiếu là bắt buộc)'
+          errors.passportDate = t("DateOfIssueRequiredPassport")
         }
         if ((newMainInfo.PassportDate || newMainInfo.PassportPlace) && !newMainInfo.PassportNumber) {
-          errors.passportNumber = '(Số hộ chiếu là bắt buộc)'
+          errors.passportNumber = t("PassportRequired")
         }
         if ((newMainInfo.PassportDate || newMainInfo.PassportNumber) && !newMainInfo.PassportPlace) {
-          errors.passportPlace = '(Nơi cấp hộ chiếu là bắt buộc)'
+          errors.passportPlace = t("PlaceOfIssueRequiredPassport")
         }
         if ((newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyDate) {
-          errors.personalIdentifyDate = '(Ngày cấp CMND/CCCD là bắt buộc)'
+          errors.personalIdentifyDate = t("DateOfIssueRequiredIdCard")
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
-          errors.personalIdentifyNumber = '(Số CMND/CCCD là bắt buộc)'
+          errors.personalIdentifyNumber = t("IdRequired")
         }
         if (localStorage.getItem("companyCode") === "V073") {
           if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
@@ -392,7 +395,7 @@ class PersonalInfoEdit extends React.Component {
           }
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
-          errors.personalIdentifyPlace = '(Nơi cấp CMND/CCCD là bắt buộc)'
+          errors.personalIdentifyPlace = t("PlaceOfIssueRequiredIdCard")
         }
       }
       if (update.userProfileHistoryEducation) {
@@ -500,13 +503,14 @@ class PersonalInfoEdit extends React.Component {
   }
 
   submitRequest = (comment) => {
+    const { t } = this.props;
     let dataClone = this.removeItemForValueNull({ ...this.state.data })
     const errors = this.verifyInput(dataClone)
 
     if (!this.isEmptyCustomize(errors)) {
       let errorMessage = (errors && !errors.notChange) ? this.errorNonState('fileUpload', errors) : this.errorNonState('notChange', errors)
       errorMessage = (errorMessage === null) ? "Lỗi nhập thiếu thông tin bắt buộc!" : errorMessage
-      this.handleShowResultModal("Thông Báo", errorMessage, false);
+      this.handleShowResultModal(t("Notification"), errorMessage, false);
       return
     }
 
@@ -537,16 +541,16 @@ class PersonalInfoEdit extends React.Component {
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
           if (code == "999") {
-            this.handleShowResultModal("Thông Báo", response.data.result.message, false);
+            this.handleShowResultModal(t("Notification"), response.data.result.message, false);
           } else {
-            this.handleShowResultModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true);
+            this.handleShowResultModal(t("Successful"), t("RequestSent"), true);
             setTimeout(() => { window.location.href = "/personal-info"; }, 2000);
 
           }
         }
       })
       .catch(response => {
-        this.handleShowResultModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin !", false);
+        this.handleShowResultModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin !", false);
       });
   }
 
@@ -1156,30 +1160,31 @@ class PersonalInfoEdit extends React.Component {
   }
 
   getNameFromData = (data) => {
+    const { t } = this.props
     const nameArray = {
-      Birthday: "Ngày sinh",
-      BirthCountry: "Quốc gia sinh",
-      BirthProvince: "Nơi sinh",
-      Gender: "Giới tính",
-      Ethinic: "Dân tộc",
-      Religion: "Tôn giáo",
-      Nationality: "Quốc tịch",
-      PermanentAddress: "Địa chỉ thường trú",
-      TemporaryAddress: "Địa chỉ tạm trú",
-      MaritalStatus: "Tình trạng hôn nhân",
-      MarriageDate: "Ngày TT hôn nhân",
-      PersonalEmail: "Email cá nhân",
-      CellPhoneNo: "Điện thoại di động",
-      UrgentContactNo: "Điện thoại khẩn cấp",
-      BankAccountNumber: "Số tài khoản ngân hàng",
-      Bank: "Tên ngân hàng",
-      Education: "Bằng cấp/Chứng chỉ chuyên môn",
-      PersonalIdentifyNumber: "Số CMND/CCCD",
-      PersonalIdentifyDate: "Ngày cấp CMND/CCCD",
-      PersonalIdentifyPlace: "Nơi cấp CMND/CCCD",
-      PassportNumber: "Số Hộ chiếu",
-      PassportDate: "Ngày cấp Hộ chiếu",
-      PassportPlace: "Nơi cấp Hộ chiếu"
+      Birthday: t("DateOfBirth"),
+      BirthCountry: t("CountryOfBirth"),
+      BirthProvince: t("PlaceOfBirth"),
+      Gender: t("Gender"),
+      Ethinic: t("Ethnic"),
+      Religion: t("Religion"),
+      Nationality: t("Nationality"),
+      PermanentAddress: t("PermanentAddress"),
+      TemporaryAddress: t("TemporaryAddress"),
+      MaritalStatus: t("MaritalStatus"),
+      MarriageDate: t("MarriageDate"),
+      PersonalEmail: t("PersonalEmail"),
+      CellPhoneNo: t("MobileNo"),
+      UrgentContactNo: t("EmergencyPhoneNo"),
+      BankAccountNumber: t("BankAccountNumber"),
+      Bank: t("BankName"),
+      Education: t("Certification"),
+      PersonalIdentifyNumber: t('IdNo'),
+      PersonalIdentifyDate: t("IdDateOfIssue"),
+      PersonalIdentifyPlace: t("IdPlaceOfIssue"),
+      PassportNumber: t("PassportNo"),
+      PassportDate: t("PassportDateOfIssue"),
+      PassportPlace: t("PassportPlaceOfIssue")
     }
     let labelArray = [];
     if (data) {
@@ -1209,9 +1214,10 @@ class PersonalInfoEdit extends React.Component {
   }
 
   sendRequest = () => {
+    const { t } = this.props
     this.setState({
-      modalTitle: "Xác nhận gửi yêu cầu",
-      modalMessage: "Lý do sửa đổi",
+      modalTitle: t("ConfirmSend"),
+      modalMessage: t("ReasonModify"),
       typeRequest: 4
     });
     this.onShowModalConfirm();
@@ -1226,6 +1232,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className="edit-personal">
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} confirmStatus={this.state.confirmStatus}
@@ -1279,12 +1286,12 @@ class PersonalInfoEdit extends React.Component {
 
           <div className="clearfix mb-5">
             {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  {t("Send")}</button>
             <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
-            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
           </div>
         </Form>
       </div>)
   }
 }
-export default PersonalInfoEdit
+export default withTranslation()(PersonalInfoEdit)

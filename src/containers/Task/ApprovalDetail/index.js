@@ -6,6 +6,7 @@ import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
+import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 
 class ApprovalDetail extends React.Component {
@@ -209,13 +210,15 @@ class ApprovalDetail extends React.Component {
   }
 
   render() {
+    const { t } = this.props
+
     const status = {
-      0: {label: 'Đang chờ xử lý', className: ''},
+      0: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
-      2: {label: 'Đã phê duyệt', className: 'success'},
+      2: {label: t("Approved"), className: 'success'},
       3: {label: 'Đã thu hồi', className: ''}
     }
-
+    
     return (
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
@@ -225,19 +228,19 @@ class ApprovalDetail extends React.Component {
         <div className="box shadow">
           <div className="row item-info">
             <div className="col-3">
-              <div className="label">Họ và tên</div>
+              <div className="label">{t("FullName")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.fullName : ""}</div>
             </div>
             <div className="col-2">
-              <div className="label">Mã nhân viên</div>
+              <div className="label">{t("EmployeeNo")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.code : ""}</div>
             </div>
             <div className="col-2">
-              <div className="label">Chức danh</div>
+              <div className="label">{t("Title")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.title : ""}</div>
             </div>
             <div className="col-5">
-              <div className="label">Khối/Phòng/Bộ phận</div>
+              <div className="label">{t("DepartmentManage")}</div>
               <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.department : ""}</div>
             </div>
           </div>
@@ -253,15 +256,15 @@ class ApprovalDetail extends React.Component {
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
-                <div className="label">Người phê duyệt</div>
+                <div className="label">{t("Approver")}</div>
                 <div className="detail">{this.state.userInfo.manager.fullName || ""}</div>
               </div>
               <div className="col-4">
-                <div className="label">Chức danh</div>
+                <div className="label">{t("Title")}</div>
                 <div className="detail">{this.state.userInfo.manager.title || ""}</div>
               </div>
               <div className="col-4">
-                <div className="label">Khối/Phòng/Bộ phận</div>
+                <div className="label">{t("DepartmentManage")}</div>
                 <div className="detail">{this.state.userInfo.manager.department || ""}</div>
               </div>
             </div>
@@ -293,7 +296,7 @@ class ApprovalDetail extends React.Component {
           this.state.status == 0 ?
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
-              <i className="fas fa-check" aria-hidden="true"></i> Phê duyệt</button>
+              <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
             <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
           </div>
           : null
@@ -304,4 +307,4 @@ class ApprovalDetail extends React.Component {
   }
 }
 
-export default ApprovalDetail
+export default withTranslation()(ApprovalDetail)

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from "react-i18next";
 
 class StaffInfo extends React.Component {
 
@@ -10,12 +11,13 @@ class StaffInfo extends React.Component {
     
   }
 
-  render() {    
+  render() {   
+    const {t} = this.props;
     return (
       <div className="kpi-staff-info">            
           <div className="float-left w-100">
               <span className="float-left text-uppercase title-group">
-                  THÔNG TIN NHÂN VIÊN
+                  {t("EmployeeInfo")}
               </span>              
           </div>
           <br style={{'clear': 'both'}} />
@@ -23,21 +25,21 @@ class StaffInfo extends React.Component {
               <table className="table table-borderless" style={{'marginBottom':'4px'}}>
                  <tbody>
                     <tr>                
-                        <td style={{'width': '200px'}}><div className="content-title"> Họ và tên </div></td>  
+                        <td style={{'width': '200px'}}><div className="content-title"> {t("FullName")} </div></td>  
                         <td ><div className="content-bg"> 
                               <span className="content-value"> {this.props.UserInfo.fullName} </span>
                             </div>
                         </td>
                     </tr>                    
                     <tr>                
-                        <td><div className="content-title"> Chức danh </div></td>  
+                        <td><div className="content-title"> {t("Title")} </div></td>  
                         <td><div className="content-bg"> 
                                <span className="content-value"> {this.props.UserInfo.jobTitle} </span>
                             </div>
                         </td>
                     </tr>
                     <tr>                
-                        <td><div className="content-title"> Bộ phận </div></td>  
+                        <td><div className="content-title"> {t("DepartmentName")} </div></td>  
                         <td>
                           <div className="content-bg"> 
                               <span className="content-value"> {this.props.UserInfo.department} </span>
@@ -64,4 +66,4 @@ class StaffInfo extends React.Component {
   }
 }
 
-export default StaffInfo;
+export default withTranslation()(StaffInfo);

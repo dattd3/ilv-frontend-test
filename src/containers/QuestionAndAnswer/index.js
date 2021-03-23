@@ -136,24 +136,24 @@ class MyComponent extends React.Component {
           showEditModal={this.showEditModal.bind(this)}
         />
         <div className="clearfix edit-button mb-2">
-          <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
-          <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>Lịch sử giải đáp</button>
+          <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </button>
+          <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
         </div>
-        <h1 className="h3 text-uppercase text-gray-800 mt-3 mb-3">{t("HỖ TRỢ GIẢI ĐÁP")}</h1>
+        <h1 className="h3 text-uppercase text-gray-800 mt-3 mb-3">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">
           <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Tìm kiếm từ khóa cần giải đáp</label>
+            <label htmlFor="exampleInputEmail1">{t("SearchKeywords")}</label>
             <div className="form-group row">
               <div className="col-sm-12 col-md-9 mb-2">
                 <input type="text" className="form-control" placeholder="Nhập tìm kiếm" id="txt-search" name="keySearch" aria-describedby="emailHelp" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChange.bind(this)} />
               </div>
               <div className="col-sm-12 col-md-3 mb-2">
-                <button type="button" className="btn btn-warning pr-5 pl-5" onClick={() => this.search(this.state.keySearch)}><i className="icon-search mr-1"></i>Tìm kiếm</button>
+                <button type="button" className="btn btn-warning pr-5 pl-5" onClick={() => this.search(this.state.keySearch)}><i className="icon-search mr-1"></i>{t("Search")}</button>
               </div>
             </div>
           </div>
         </Container>
-        <h1 className="h4 text-uppercase text-center text-gray-800 mt-3 mb-3">{t("CÁC CÂU HỎI THƯỜNG GẶP")}</h1>
+        <h1 className="h4 text-uppercase text-center text-gray-800 mt-3 mb-3">{t("Faqs")}</h1>
         {
           this.state.commonTicketList && this.state.commonTicketList.length ?
             (

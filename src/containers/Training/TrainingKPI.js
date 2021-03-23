@@ -62,8 +62,8 @@ function TrainingKPI(props) {
                                 <div className="kpi-learning kpi-training">
                                     <i className="icon-kpi-learning"></i>
                                 </div>
-                                <p className="mb-2">Số tín chỉ yêu cầu</p>
-                                <strong>{teachingKpi.totalHours} tín chỉ / năm</strong>
+                                <p className="mb-2">{t("RequiredCredit")}</p>
+                                <strong>{teachingKpi.totalHours} {t("ClassCredit")} / {t("Year")}</strong>
                             </div>
                         </Card.Body>
                     </Card>
@@ -93,8 +93,8 @@ function TrainingKPI(props) {
                                 <div className="kpi-teaching kpi-training">
                                     <i className="icon-kpi-teaching"></i>
                                 </div>
-                                <p className="mb-2">Số tín chỉ yêu cầu</p>
-                                <strong>{learningKpi.totalHours} tín chỉ / năm</strong>
+                                <p className="mb-2">{t("RequiredCredit")}</p>
+                                <strong>{learningKpi.totalHours} {t("ClassCredit")} / {t("Year")}</strong>
                             </div>
                         </Card.Body>
                     </Card>

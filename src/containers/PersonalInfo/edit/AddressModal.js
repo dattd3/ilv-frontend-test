@@ -3,6 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Select from 'react-select'
 import axios from 'axios'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class AddressModal extends React.Component {
     constructor(props) {
@@ -126,6 +127,7 @@ class AddressModal extends React.Component {
     }
 
     verifyInput() {
+        const { t } = this.props
         let errors = {}
         const RequiredFields = ['country']
         if(this.state.country.value === "VN")
@@ -136,7 +138,7 @@ class AddressModal extends React.Component {
         }
         RequiredFields.forEach(name => {
             if (_.isNull(this.state[name])) {
-                errors[name] = '(Bắt buộc)'
+                errors[name] = t("Required")
             }
         })
 
@@ -158,6 +160,7 @@ class AddressModal extends React.Component {
     }
 
     render() {
+        const { t } = this.props
         const provinces = this.state.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const districts = this.state.districts.map(district => { return { value: district.ID, label: district.TEXT } })
         const wards = this.state.wards.map(ward => { return { value: ward.ID, label: ward.TEXT } })
@@ -171,52 +174,52 @@ class AddressModal extends React.Component {
                     <Modal.Body>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Quốc gia
+                                {t("Nation")}
                             </div>
                             <div className="col-7">
-                                <Select options={countries} placeholder="Lựa chọn..." onChange={this.updateCountry.bind(this)} value={this.state.country} />
+                                <Select options={countries} placeholder={`${t('Select')}...`} onChange={this.updateCountry.bind(this)} value={this.state.country} />
                                 {this.error('country')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Tỉnh/ thành phố
+                                {t("Province")}
                             </div>
                             <div className="col-7">
-                                <Select options={provinces} placeholder="Chọn Tỉnh/ Thành phố..." onChange={this.updateProvice.bind(this)} value={this.state.province} />
+                                <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvice.bind(this)} value={this.state.province} />
                                 {this.error('province')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Quận/ Huyện
+                                {t("District")}
                             </div>
                             <div className="col-7">
-                                <Select options={districts} placeholder="Chọn Quận/ Huyện..." onChange={this.updateDistrict.bind(this)} value={this.state.district} />
+                                <Select options={districts} placeholder={`${t("SelectDistrict")}...`} onChange={this.updateDistrict.bind(this)} value={this.state.district} />
                                 {this.error('district')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Phường/ Xã
+                                {t("Ward")}
                             </div>
                             <div className="col-7">
-                                <Select options={wards} placeholder="Chọn Phường/ Xã..." onChange={this.updateWard.bind(this)} value={this.state.ward} />
+                                <Select options={wards} placeholder={`${t("SelectWard")}...`} onChange={this.updateWard.bind(this)} value={this.state.ward} />
                                 {this.error('ward')}
                             </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                Đường phố
+                                {t("Street")}
                             </div>
                             <div className="col-7">
-                                <input className="form-control" value={this.state.street_name} onChange={this.updateStreetName.bind(this)} type="text" placeholder="Nhập đường phố" />
+                                <input className="form-control" value={this.state.street_name} onChange={this.updateStreetName.bind(this)} type="text" placeholder={t("EnterStreet")} />
                             </div>
                         </div>
                         <hr />
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary float-right mr-2 w-25" onClick={this.save.bind(this)}>Lưu</button>
-                            <button type="button" className="btn btn-secondary float-right mr-2 w-25" onClick={this.props.onHide}>Thoát</button>
+                            <button type="button" className="btn btn-primary float-right mr-2 w-25" onClick={this.save.bind(this)}>{t("Save")}</button>
+                            <button type="button" className="btn btn-secondary float-right mr-2 w-25" onClick={this.props.onHide}>{t("Back")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -224,4 +227,4 @@ class AddressModal extends React.Component {
         )
     }
 }
-export default AddressModal
+export default withTranslation()(AddressModal)

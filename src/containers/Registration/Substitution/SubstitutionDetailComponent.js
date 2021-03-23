@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -62,6 +63,7 @@ class SubstitutionDetailComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
 
     return (
@@ -70,19 +72,19 @@ class SubstitutionDetailComponent extends React.Component {
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{this.props.substitution.userProfileInfo.user.fullname}</div>
             </div>
             <div className="col-3">
-              Mã nhân viên
+              {t("EmployeeNo")}
               <div className="detail">{this.props.substitution.userProfileInfo.user.employeeNo}</div>
             </div>
             <div className="col-3">
-              Chức danh
+              {t("Title")}
               <div className="detail">{this.props.substitution.userProfileInfo.user.jobTitle}</div>
             </div>
             <div className="col-3">
-              Khối/Phòng/Bộ phận
+              {t("DepartmentManage")}
               <div className="detail">{this.props.substitution.userProfileInfo.user.department}</div>
             </div>
           </div>
@@ -91,17 +93,17 @@ class SubstitutionDetailComponent extends React.Component {
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
         {this.props.substitution.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow cbnv" key={index}>
-            <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+            <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ kế hoạch</p>
+                  <p className="text-center">{t("ScheduledTime")}</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu {timesheet.shiftIndex}: <b>{timesheet.fromTime ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
+                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.fromTime ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc {timesheet.shiftIndex}: <b>{timesheet.toTime ? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
+                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.toTime ? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
                     </div>
                   </div>
                 </div>
@@ -111,10 +113,10 @@ class SubstitutionDetailComponent extends React.Component {
                   <p className="text-center">Giờ thay đổi phân ca</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu {timesheet.shiftIndex}: <b>{timesheet.startTime}</b>
+                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.startTime}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc {timesheet.shiftIndex}: <b>{timesheet.endTime}</b>
+                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.endTime}</b>
                     </div>
                   </div>
                 </div>
@@ -132,7 +134,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
               <div className="col">
                 <p>Giờ nghỉ giữa ca</p>
-                <div className="detail">Không hưởng lương</div>
+                <div className="detail">{t("Unpaid")}</div>
               </div>
             </div> : null}
 
@@ -163,7 +165,7 @@ class SubstitutionDetailComponent extends React.Component {
           <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{Constants.mappingStatus[this.props.substitution.status].label}</span>
+            <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{t(Constants.mappingStatus[this.props.substitution.status].label)}</span>
             {
               this.props.substitution.status == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
@@ -198,4 +200,4 @@ class SubstitutionDetailComponent extends React.Component {
     )
   }
 }
-export default SubstitutionDetailComponent
+export default withTranslation()(SubstitutionDetailComponent)
