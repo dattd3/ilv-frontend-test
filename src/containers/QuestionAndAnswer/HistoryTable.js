@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Modal, Image, Form, Button } from 'react-bootstrap'
+import { Modal, Image, Form, Button } from 'react-bootstrap';
+import { withTranslation } from "react-i18next"
 
 class HistoryTable extends React.Component {
   constructor(props) {
@@ -13,9 +14,9 @@ class HistoryTable extends React.Component {
   generateStatus(questionStatus) {
     switch (questionStatus) {
       case 2:
-        return <span className="align-self-center question-status inprogress">Đã giải đáp</span>
+        return <span className="align-self-center question-status inprogress">{this.props.t("Replied")}</span>
       case 1:
-        return <span className="align-self-center question-status cancelled">Đang chờ xử lý</span>
+        return <span className="align-self-center question-status cancelled">{this.props.t("Waiting")}</span>
       case 3:
         return <span className="align-self-center question-status overdue">Quá hạn</span>;
       default:
@@ -29,6 +30,7 @@ class HistoryTable extends React.Component {
     this.props.showEditModal(question);
   }
   render() {
+    const { t } = this.props;
     return <div className="wrap-result text-left">
       { this.props.questions && this.props.questions.length > 0 ?
       this.props.questions.map((question, index) => {
@@ -70,10 +72,10 @@ class HistoryTable extends React.Component {
           <hr />
         </div>
       }) :
-      <div className="text-center mt-5"><p>Không tìm thấy dữ liệu!</p></div>
+      <div className="text-center mt-5"><p>{t("NoDataFound")}!</p></div>
       }
     </div>
   }
 }
 
-export default HistoryTable
+export default withTranslation()(HistoryTable)

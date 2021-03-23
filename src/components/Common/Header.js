@@ -166,7 +166,7 @@ function Header(props) {
                         </Animated>
                         {dataNotificationsUnRead != "" ?
                             <Dropdown.Menu className="list-notification-popup">
-                                <div className="title-block text-center">thông báo nội bộ</div>
+                                <div className="title-block text-center">{t("AnnouncementInternal")}</div>
                                 <div className="all-items">
                                     {dataNotificationsUnRead}
                                 </div>

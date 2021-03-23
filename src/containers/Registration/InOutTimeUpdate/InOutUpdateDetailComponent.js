@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import Constants from '../.../../../../commons/Constants'
@@ -81,26 +82,27 @@ class InOutUpdateDetailComponent extends React.Component {
 
   render() {
     const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
-
+    const { t } = this.props
+  
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-3">
-              Họ và tên
+             {t("FullName")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.fullname}</div>
             </div>
             <div className="col-3">
-              Mã nhân viên
+              {t("EmployeeCode")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo}</div>
             </div>
             <div className="col-3">
-              Chức danh
+              {t("Title")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.jobTitle}</div>
             </div>
             <div className="col-3">
-              Khối/Phòng/Bộ phận
+              {t("DepartmentManage")}
               <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.department}</div>
             </div>
           </div>
@@ -108,25 +110,25 @@ class InOutUpdateDetailComponent extends React.Component {
         <h5>Thông tin sửa giờ vào - ra</h5>
         {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
-            <div className="col"><p><i className="fa fa-clock-o"></i> <b>Ngày {timesheet.date.replace(/-/g, '/')}</b></p></div>
+            <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thực tế</p>
+                  <p className="text-center">{t('ActualTime')}</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
+                      {t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
+                      {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
+                      {t("Start")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
+                      {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b>
                     </div>
                   </div>
                 </div>
@@ -136,24 +138,24 @@ class InOutUpdateDetailComponent extends React.Component {
                   <p className="text-center">Giờ chỉnh sửa</p>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu 1: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
+                      {t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc 1: <b>{this.printTimeFormat(timesheet.end_time1_fact_update)}</b>
+                      {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact_update)}</b>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      Bắt đầu 2: <b>{this.printTimeFormat(timesheet.start_time2_fact_update)}</b>
+                      {t("Start")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact_update)}</b>
                     </div>
                     <div className="col-6 text-right">
-                      Kết thúc 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
+                      {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <p>Lý do sửa giờ vào - ra</p>
+            <p>{t('ReasonModifyInOut')}</p>
             <div className="row">
               <div className="col">
                 <div className="detail">{timesheet.note || ""}</div>
@@ -169,7 +171,7 @@ class InOutUpdateDetailComponent extends React.Component {
               <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{Constants.mappingStatus[this.props.inOutTimeUpdate.status].label}</span>
+              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.status].label)}</span>
               {
                 this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
@@ -204,4 +206,4 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 }
 
-export default InOutUpdateDetailComponent
+export default withTranslation()(InOutUpdateDetailComponent)

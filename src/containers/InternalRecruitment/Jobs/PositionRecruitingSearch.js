@@ -1,6 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 
 class PositionRecruitingSearch extends React.Component {
   constructor() {
@@ -67,6 +68,7 @@ class PositionRecruitingSearch extends React.Component {
  }
 
   render() {
+    const { t } = this.props
     const all = { value: '0', label: 'Tất cả' }
 
     const placeOfWorks = [all].concat(this.state.placeOfWorks.map(placeOfWork => {
@@ -85,25 +87,25 @@ class PositionRecruitingSearch extends React.Component {
     };
 
     return <>
-    <h5 className="searchTitle">tìm kiếm</h5>
+    <h5 className="searchTitle">{t("Search")}</h5>
     <div className="recruiting-search-box shadow">
       <div className="row">
         <div className="col">
-          <div className="title">Vị trí</div>
+          <div className="title">{t("Position")}</div>
           <div className="content input-container">
-            <input placeholder="Nhập vị trí tìm kiếm" onKeyPress={this.keyPress.bind(this)} className="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
+            <input placeholder={t("EnterPositionSearch")} onKeyPress={this.keyPress.bind(this)} className="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
           </div>
         </div>
         <div className="col">
-          <div className="title">Địa điểm</div>
+          <div className="title">{t("Location")}</div>
           <div className="content input-container">
-            <Select placeholder="Tất cả" options={placeOfWorks} styles={customStyles} onChange={this.setPlaceOfWork.bind(this)}/>
+            <Select placeholder={t("All")} options={placeOfWorks} styles={customStyles} onChange={this.setPlaceOfWork.bind(this)}/>
           </div>
         </div>
         <div className="col block-button">
           <div className="title">&nbsp;</div>
           <div className="content">
-            <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>Tìm kiếm</button>
+            <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>
@@ -111,4 +113,4 @@ class PositionRecruitingSearch extends React.Component {
     </>
   }
 }
-export default PositionRecruitingSearch;
+export default withTranslation()(PositionRecruitingSearch);

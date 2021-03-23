@@ -2,6 +2,7 @@ import React from "react"
 import axios from 'axios'
 import moment from 'moment'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 
 class PositionAppliedList extends React.Component {
   constructor(props) {
@@ -53,46 +54,46 @@ class PositionAppliedList extends React.Component {
 
   render() {
     const UNG_TUYEN = 1
-    
+    const { t } = this.props;
     return (
       <>
       <div className="summary position-applied-block">
-        <h5 className="result-label">các vị trí đã ứng tuyển</h5>
+        <h5 className="result-label">{t("AppliedPositions")}</h5>
         <div className="card shadow">
           <div className="card-body">
             <table className="table" role="table">
               <thead className="position-applied-title-row" role="rowgroup">
                 <tr role="row">
-                  <th role="columnheader">Vị trí</th>
-                  <th role="columnheader">Bộ phận / Cơ sở</th>
-                  <th role="columnheader">Địa điểm</th>
-                  <th role="columnheader">Thời gian</th>
-                  <th role="columnheader" className="result">Kết quả</th>
-                  <th role="columnheader" className="note" >Tải CV</th>
-                  <th role="columnheader" className="note" >Ghi chú</th>
+                  <th role="columnheader">{t("Position")}</th>
+                  <th role="columnheader">{t("DepartmentBase")}</th>
+                  <th role="columnheader">{t("Location")}</th>
+                  <th role="columnheader">{t("Time")}</th>
+                  <th role="columnheader" className="result">{t("Result")}</th>
+                  <th role="columnheader" className="note" >{t("DownloadCV")}</th>
+                  <th role="columnheader" className="note" >{t("Note")}</th>
                 </tr>
               </thead>
               <tbody role="rowgroup">
               {this.state.jobs.map(job => {
                 return job.applicants.filter(app => app.applicationFormId == UNG_TUYEN).map((applicant, index) => {
                 return <tr role="row" key={index}>
-                  <td role="cell" data-title="Vị trí">
+                  <td role="cell" data-title={t("Position")}>
                     <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                   </td>
-                  <td role="cell" className="department" data-title="Bộ phận / Cơ sở">
+                  <td role="cell" className="department" data-title={t("DepartmentBase")}>
                     <p>{job.departmentName}</p>
                   </td>
-                  <td role="cell" className="placeOfWork" data-title="Địa điểm">
+                  <td role="cell" className="placeOfWork" data-title={t("Location")}>
                     <p>{job.placeOfWorkName}</p>
                   </td>
-                  <td role="cell" data-title="Thời gian">
+                  <td role="cell" data-title={t("Time")}>
                     <p>{moment(applicant.applicationDate).format('DD/MM/YYYY')}</p>
                   </td>
-                  <td role="cell" className="result" data-title="Kết quả">
+                  <td role="cell" className="result" data-title={t("Result")}>
                     <p className={'recruiting-status ' + this.showColor(applicant.applicantStatusId)}>{this.showStatus(applicant.applicantStatusId)}</p>
                   </td>
                   <td role="cell" className="note">
-                    <p><a className="download text-success" title="Tải về CV" href={applicant.cvFileLink} target="_blank"><i className="fas fa-download" aria-hidden="true"></i></a></p>
+                    <p><a className="download text-success" title={t("DownloadCV")} href={applicant.cvFileLink} target="_blank"><i className="fas fa-download" aria-hidden="true"></i></a></p>
                   </td>
                   <td role="cell" className="note">
                   <p>
@@ -112,4 +113,4 @@ class PositionAppliedList extends React.Component {
   }
 }
 
-export default PositionAppliedList
+export default withTranslation()(PositionAppliedList)

@@ -22,9 +22,9 @@ const Constants = {
   STATUS_EVICTION: 3,
   STATUS_REVOCATION: 4,
   mappingStatus: {
-    0: {label: 'Đang chờ xử lý', className: ''},
+    0: {label: 'Waiting', className: ''},
     1: {label: 'Không phê duyệt', className: 'fail'},
-    2: {label: 'Đã phê duyệt', className: 'success'},
+    2: {label: 'Approved', className: 'success'},
     3: {label: 'Đã thu hồi', className: ''}
   },
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
@@ -44,6 +44,6 @@ const Constants = {
   BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
   SUBSTITUTION_TPKLA_FULL_DAY: 1,
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
-  QAAlreadyExist: "Nội dung câu trả lời đã có trong bộ Q&A của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên Myvinpearl"
+  QAAlreadyExist: "QAAlreadyExist"
 };
 export default Constants

@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { debounce } from 'lodash';
 import Select from 'react-select'
 import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 
 const MyOption = props => {
@@ -89,6 +90,8 @@ class SelectSupporterModal extends React.Component {
         cursor: 'pointer',
       })
     }
+
+    const { t } = this.props;
     return (
       <Modal backdrop="static" keyboard={false}
         className='info-modal-common position-apply-modal'
@@ -101,23 +104,23 @@ class SelectSupporterModal extends React.Component {
         <Modal.Body>
           <div className="wrap-result text-left">
             <div className="form-group">
-              <label className="form-label">Họ và tên</label>
+              <label className="form-label">{t("FullName")}</label>
               <div className="content input-container ">
                 <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="supporter" onChange={supporter => this.handleSelectChange('supporter', supporter)} value={this.state.supporter} placeholder="Tìm kiếm..." key="supporter" options={this.state.users} />
               </div>
             </div>
             <Form.Group controlId="submitQuestionForm.Title">
-              <Form.Label>Chức danh</Form.Label>
+              <Form.Label>{t("Title")}</Form.Label>
               <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.current_position : ''} readOnly />
             </Form.Group>
             <Form.Group controlId="submitQuestionForm.Department">
-              <Form.Label>Khối/ Phòng/ Bộ phận</Form.Label>
+              <Form.Label>{t("DepartmentManage")}</Form.Label>
               <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.department : ''} readOnly />
             </Form.Group>
           </div>
           <div className="clearfix edit-button text-right">
-            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>Không</Button>{' '}
-            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>Có</Button>
+            <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("No")}</Button>{' '}
+            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>{t("Yes")}</Button>
           </div>
         </Modal.Body>
       </Modal>
@@ -125,4 +128,4 @@ class SelectSupporterModal extends React.Component {
   }
 }
 
-export default SelectSupporterModal
+export default withTranslation()(SelectSupporterModal)

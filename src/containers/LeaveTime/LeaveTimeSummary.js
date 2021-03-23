@@ -1,33 +1,34 @@
 import React from 'react'
 import { Doughnut } from 'react-chartjs-2'
 import 'chart.piecelabel.js'
+import { useTranslation } from "react-i18next"
 
 function displayMeric(total) {
     return total.toString().length == 1 ? '0' + total : total.toFixed(2)
 }
 
 function LeaveTimeGraph(props) {
-      const leaveTimeData = (canvas) => {
-        const ctx = canvas.getContext("2d")
-        const bg1 = ctx.createLinearGradient(500, 0, 100, 0);
-        bg1.addColorStop(0, props.data.item1.color);
-        bg1.addColorStop(0.5, props.data.item1.color);
-        bg1.addColorStop(1, props.data.item1.color);
-    
-        const bg2 = ctx.createLinearGradient(400, 0, 0, 0);
-        bg2.addColorStop(0, props.data.item2.color);
-        bg2.addColorStop(0.5, props.data.item2.color);
-        bg2.addColorStop(1, props.data.item2.color);
-    
-        return {
-          labels: [props.data.item1.label, props.data.item2.label],
-          datasets: [{
-            data: [props.data.item1.total, props.data.item2.total],
-            title: { display: false },
-            backgroundColor: [bg1, bg2]
-          }]
-        }
-      }
+    const leaveTimeData = (canvas) => {
+    const ctx = canvas.getContext("2d")
+    const bg1 = ctx.createLinearGradient(500, 0, 100, 0);
+    bg1.addColorStop(0, props.data.item1.color);
+    bg1.addColorStop(0.5, props.data.item1.color);
+    bg1.addColorStop(1, props.data.item1.color);
+
+    const bg2 = ctx.createLinearGradient(400, 0, 0, 0);
+    bg2.addColorStop(0, props.data.item2.color);
+    bg2.addColorStop(0.5, props.data.item2.color);
+    bg2.addColorStop(1, props.data.item2.color);
+
+    return {
+        labels: [props.data.item1.label, props.data.item2.label],
+        datasets: [{
+        data: [props.data.item1.total, props.data.item2.total],
+        title: { display: false },
+        backgroundColor: [bg1, bg2]
+        }]
+    }
+    }
 
     const chartOption = {
         legend: { display: false },
@@ -43,7 +44,7 @@ function LeaveTimeGraph(props) {
       }
 
     return <>
-        <div className="title">{props.title}</div>
+        <div className="title text-uppercase">{props.title}</div>
         {/* <div className="content relative">
             <Doughnut
                 data={leaveTimeData}
@@ -63,7 +64,8 @@ function LeaveTimeGraph(props) {
 }
 
 function LeaveTimeSummary(props) {
-    console.log(props.data)
+    const { t } = useTranslation()
+
     const thisYear = new Date().getFullYear()
     const usedAnnualLeaveOfThisYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == thisYear) : undefined
     const usedAnnualLeaveOfLastYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
@@ -84,13 +86,13 @@ function LeaveTimeSummary(props) {
                     <div className="row">
                         <div className="col-md-6 border-right">
                             <LeaveTimeGraph 
-                                title="NGÀY PHÉP TỒN NĂM TRƯỚC"
+                                title={t("RemainingLeavesFromLastYear")}
                                 data={
                                     {
                                         total:  (usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0),
-                                        item1: {label: 'Đã sử dụng', total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
-                                        item2: {label: 'Còn được sử dụng', total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
-                                        item3: {label: 'Hạn sử dụng', expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
+                                        item1: {label: t("Used"), total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
+                                        item2: {label: t("Available"), total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
+                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
                                     }
                                 }
                             />
@@ -98,21 +100,21 @@ function LeaveTimeSummary(props) {
 
                         <div className="col-md-6">
                         <LeaveTimeGraph 
-                                title="NGÀY PHÉP NĂM NAY"
+                                title={t("LeavesThisYear")}
                                 data={
                                     {
                                         total: (usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0),
                                         item1: {
-                                            label: 'Đã sử dụng',
+                                            label: t("Used"),
                                             total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0,
                                             color: '#B9B8B8'
                                         },
                                         item2: {
-                                            label: 'Còn được sử dụng',
+                                            label: t("Available"),
                                             total: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0,
                                             color: '#4e73df'
                                         },
-                                        item3: {label: 'Hạn sử dụng', expiredDate: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.expire_date : '', color: '#28a745'},
+                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.expire_date : '', color: '#28a745'},
                                     }
                                 }
                             />
@@ -120,8 +122,8 @@ function LeaveTimeSummary(props) {
                         
                     </div>
                     <hr/>
-                    <div className="d-block text-center">
-                        <b>TỔNG SỐ NGÀY PHÉP CÒN ĐƯỢC SỬ DỤNG</b>
+                    <div className="d-block text-center text-uppercase">
+                        <b>{t("TotalAvaiableLeaves")}</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
                         {displayMeric((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0))}
@@ -131,21 +133,21 @@ function LeaveTimeSummary(props) {
                 <div className="row">
                         <div className="col-md-6 border-right">
                             <LeaveTimeGraph 
-                                    title="GIỜ BÙ TỒN NĂM TRƯỚC"
+                                    title={t("RemaingToilHoursLastYear")}
                                     data={
                                         {
                                             total: (usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0),
                                             item1: {
-                                                label: 'Đã sử dụng',
+                                                label: t("Used"),
                                                 total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0,
                                                 color: '#B9B8B8'
                                             },
                                             item2: {
-                                                label: 'Còn được sử dụng',
+                                                label: t("Available"),
                                                 total: unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0,
                                                 color: '#f6c23e'
                                             },
-                                            item3: {label: 'Hạn sử dụng', expiredDate: unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.expire_date : '', color: '#28a745'},
+                                            item3: {label: t("ExpireDate"), expiredDate: unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.expire_date : '', color: '#28a745'},
                                         }
                                     }
                                 />
@@ -153,21 +155,21 @@ function LeaveTimeSummary(props) {
 
                         <div className="col-md-6">
                             <LeaveTimeGraph 
-                                    title="GIỜ BÙ TỒN NĂM NAY"
+                                    title={t("ToilHoursThisYear")}
                                     data={
                                         {
                                             total: (usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0),
                                             item1: {
-                                                label: 'Đã sử dụng',
+                                                label: t("Used"),
                                                 total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0,
                                                 color: '#B9B8B8'
                                             },
                                             item2: {
-                                                label: 'Còn được sử dụng',
+                                                label: t("Available"),
                                                 total: unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0,
                                                 color: '#4e73df'
                                             },
-                                            item3: {label: 'Hạn sử dụng', expiredDate: unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.expire_date : '', color: '#28a745'},
+                                            item3: {label: t("ExpireDate"), expiredDate: unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.expire_date : '', color: '#28a745'},
                                         }
                                     }
                                 />
@@ -175,8 +177,8 @@ function LeaveTimeSummary(props) {
                         
                     </div>
                     <hr/>
-                    <div className="d-block text-center">
-                        <b>TỔNG SỐ GIỜ BÙ CÒN ĐƯỢC SỬ DỤNG</b>
+                    <div className="d-block text-center text-uppercase">
+                        <b>{t("TotalAvailableToilHours")}</b>
                     </div>
                     <div className="d-block text-center text-danger"><h3>
                         {displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}

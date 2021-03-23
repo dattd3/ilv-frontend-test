@@ -6,6 +6,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
+import { withTranslation } from "react-i18next"
 import { connect } from 'react-redux'
 import * as actions from '../../../actions'
 
@@ -97,23 +98,25 @@ class EducationComponent extends React.Component {
   }
 
   itemHeader() {
+    const { t } = this.props
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>
-        Loại bằng cấp
+        {t("TypeOfDegree")}
         </Col>
       <Col xs={12} md={6} lg={3}>
-        Trường
+        {t("UniversityAndCollege")}
         </Col>
       <Col xs={12} md={6} lg={3}>
-        Chuyên môn
+        {t("Major")}
         </Col>
       <Col xs={12} md={6} lg={3}>
-        Thời gian theo học
+        {t("LearningTime")}
         </Col>
     </Row>
   }
 
   educationInput(item, index, name) {
+    const { t } = this.props
     const educationLevels = this.props.educationLevels.map(educationLevel => { return { value: educationLevel.ID, label: educationLevel.TEXT } })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.props.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
@@ -121,21 +124,21 @@ class EducationComponent extends React.Component {
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn bằng cấp" name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectTypeOfDegree")} name="academic_level" value={educationLevels.filter(e => e.value == item.education_level_id)} options={educationLevels} onChange={this.educationLevelChange.bind(this, index, name)} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div className="mb-3">
-          <Select placeholder="Lựa chọn trường" name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectUniversityAndCollege")} name="university_name" value={schools.filter(s => s.value == item.school_id)} options={schools} onChange={this.schoolChange.bind(this, index, name)} />
         </div>
         <div className="form-inline float-right">
-          <label className="mr-3">Khác: </label>
+          <label className="mr-3">{t("Other")}: </label>
           <input className="form-control w-75 float-right" onChange={this.otherUniInputChange.bind(this, index, name)} name="other_uni_name" type="text" value={item.other_uni_name !== '#' ? (item.other_uni_name || '') : ''} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
         <div>
-          <Select placeholder="Lựa chọn chuyên môn" name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
+          <Select placeholder={t("SelectMajor")} name="major" value={majors.filter(m => m.value == item.major_id)} options={majors} onChange={this.majorChange.bind(this, index, name)} />
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -202,12 +205,13 @@ class EducationComponent extends React.Component {
 
   render() {
     const userEducation = this.props.userEducation;
+    const { t } = this.props
     return (
       <div className="education">
-        <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
+        <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
-          <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
-          <span><i className="note note-new"></i> Nhập thông tin điều chỉnh</span>
+          <span className="mr-5"><i className="note note-old"></i> {t("Record")}</span>
+          <span><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
           <hr />
           {this.props.education.map((item, i) => {
             let ed = [];
@@ -263,4 +267,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 }
 
-export default connect(mapStateToProps)(EducationComponent);
+export default connect(mapStateToProps)(withTranslation()(EducationComponent));

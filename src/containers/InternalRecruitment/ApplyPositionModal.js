@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 import axios from 'axios'
 import _ from 'lodash'
+import { withTranslation } from "react-i18next"
 
 class ApplyPositionModal extends React.Component {
     constructor(props) {
@@ -75,12 +76,14 @@ class ApplyPositionModal extends React.Component {
             file: ''
         }
 
+        const { t } = this.props
+
         if (_.isEmpty(this.state['fullname'])) {
-            errors['fullname'] = '(Bắt buộc)'
+            errors['fullname'] = t("Required")
         }
 
         if (_.isEmpty(this.state['cell_phone_no'])) {
-            errors['cell_phone_no'] = '(Bắt buộc)'
+            errors['cell_phone_no'] = t("Required")
         }
 
         if (!/^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i.test(this.state.personal_email)) {
@@ -88,7 +91,7 @@ class ApplyPositionModal extends React.Component {
         }
            
         if(!this.fileInput.current.files[0]) {
-            errors['file'] = '(Bắt buộc)'
+            errors['file'] = t("Required")
         }
 
         if (!_.isEmpty(errors['fullname']) || !_.isEmpty(errors['personal_email']) || !_.isEmpty(errors['cell_phone_no']) || !_.isEmpty(errors['file']))
@@ -134,22 +137,23 @@ class ApplyPositionModal extends React.Component {
 
 
     render () {
+        const { t } = this.props
         return (
             <>
             <Modal size="lg" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                 <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>Ứng tuyển</Modal.Title>
+                    <Modal.Title>{t("Application")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <div key={`inline-radio`} className="apply-option">
-                            <Form.Check className="option-apply" inline label="Ứng tuyển" onChange={this.handleChange.bind(this)} value="1" type={`radio`} id={`inline-radio-1`}  name='optionApply' defaultChecked />
-                            <Form.Check className="option-apply" inline label="Giới thiệu" onChange={this.handleChange.bind(this)} value="2" type={`radio`} id={`inline-radio-2`} name='optionApply' />
+                            <Form.Check className="option-apply" inline label={t("Application")} onChange={this.handleChange.bind(this)} value="1" type={`radio`} id={`inline-radio-1`}  name='optionApply' defaultChecked />
+                            <Form.Check className="option-apply" inline label={t("Referral")} onChange={this.handleChange.bind(this)} value="2" type={`radio`} id={`inline-radio-2`} name='optionApply' />
                         </div>
                         <Form.Group as={Row} controlId="formHorizontalName">
-                            <Form.Label column sm={3}>Họ và tên ứng viên</Form.Label>
+                            <Form.Label column sm={3}>{t("FullName")}</Form.Label>
                             <Col sm={9}>
-                            <Form.Control type="text" placeholder="Họ và tên ứng viên" name="fullname" onChange={this.handleChange.bind(this)} value={this.state.fullname} required />
+                            <Form.Control type="text" placeholder={t("FullName")} name="fullname" onChange={this.handleChange.bind(this)} value={this.state.fullname} required />
                             {!_.isEmpty(this.state.errors.fullname) ? <div className="text-danger">{this.state.errors.fullname}</div> : null}
                             </Col>
                         </Form.Group>
@@ -161,17 +165,17 @@ class ApplyPositionModal extends React.Component {
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formHorizontalPhone">
-                            <Form.Label column sm={3}>Số điện thoại</Form.Label>
+                            <Form.Label column sm={3}>{t("MobileNo")}</Form.Label>
                             <Col sm={9}>
-                            <Form.Control type="text" placeholder="Số điện thoại" name="cell_phone_no" onChange={this.handleChange.bind(this)} value={this.state.cell_phone_no} required />
+                            <Form.Control type="text" placeholder={t("MobileNo")} name="cell_phone_no" onChange={this.handleChange.bind(this)} value={this.state.cell_phone_no} required />
                             {!_.isEmpty(this.state.errors.cell_phone_no) ? <div className="text-danger">{this.state.errors.cell_phone_no}</div> : null}
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="file-block">
-                            <Form.Label column sm={3}>Tải lên CV</Form.Label>
+                            <Form.Label column sm={3}>{t("AttachmentCV")}</Form.Label>
                             <Col sm={9}>
                             <Form.Label htmlFor="file-upload" className="custom-file-upload" column sm={9}>
-                                <i className="fa fa-cloud-upload"></i><span id="file-name-upload" className="file-name-upload">Chọn file ...</span>
+                                <i className="fa fa-cloud-upload"></i><span id="file-name-upload" className="file-name-upload">{t("SelectFilePlaceHolder")}</span>
                             </Form.Label>
                             {!_.isEmpty(this.state.errors.file) ? <div className="text-danger">{this.state.errors.file}</div> : null}
                             </Col>
@@ -188,16 +192,16 @@ class ApplyPositionModal extends React.Component {
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formHorizontalPassword">
-                            <Form.Label column sm={3}>Ghi chú</Form.Label>
-                            <Form.Control.Feedback>(Không bắt buộc)</Form.Control.Feedback>
+                            <Form.Label column sm={3}>{t("Note")}</Form.Label>
+                            <Form.Control.Feedback>{t("NonRequired")}</Form.Control.Feedback>
                             <Col sm={9}>
-                            <Form.Control as="textarea" rows="4" placeholder="Nhập ghi chú ..." name="note" onChange={this.handleChange.bind(this)} value={this.state.note} />
+                            <Form.Control as="textarea" rows="4" placeholder={t("EnterNote")} name="note" onChange={this.handleChange.bind(this)} value={this.state.note} />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row}>
                             <Col sm={{ span: 9, offset: 3 }} className="buttons-block">
-                                <Button type="button" className="btn-close" onClick={this.props.onHide}>Hủy</Button>
-                                <Button type="button" className="btn-send" onClick={this.handleSubmit.bind(this)}>Nộp hồ sơ</Button>
+                                <Button type="button" className="btn-close" onClick={this.props.onHide}>{t("Cancel")}</Button>
+                                <Button type="button" className="btn-send" onClick={this.handleSubmit.bind(this)}>{t("Submit")}</Button>
                             </Col>
                         </Form.Group>
                     </Form>
@@ -207,4 +211,4 @@ class ApplyPositionModal extends React.Component {
         )
     }
 }
-export default ApplyPositionModal;
+export default withTranslation()(ApplyPositionModal);

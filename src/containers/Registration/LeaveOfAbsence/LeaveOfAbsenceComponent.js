@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _, { startsWith } from 'lodash'
 import Constants from '../../../commons/Constants'
+import { withTranslation  } from "react-i18next";
 
 registerLocale("vi", vi)
 
@@ -264,7 +265,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ approver: approver })
         const errors = { ...this.state.errors }
         if (!isApprover) {
-            errors.approver = 'Người phê duyệt không có thẩm quyền!'
+            errors.approver = this.props.t("InvalidApprover")
         } else {
             errors.approver = null
         }
@@ -304,16 +305,16 @@ class LeaveOfAbsenceComponent extends React.Component {
         const requiredFields = ['note', 'startDate', 'endDate', 'absenceType', 'approver']
         requiredFields.forEach(name => {
             if (_.isNull(this.state[name]) || !this.state[name]) {
-                errors[name] = '(Bắt buộc)'
+                errors[name] = this.props.t('Required')
             } else {
                 if (name !== "approver") {
                     errors[name] = null
                 }
             }
         })
-        errors['pn03'] = (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) ? '(Bắt buộc)' : null
-        errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? '(Bắt buộc)' : null
-        errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? '(Bắt buộc)' : null
+        errors['pn03'] = (this.state.absenceType && this.state.absenceType.value === 'PN03' && _.isNull(this.state['pn03'])) ? this.props.t('Required') : null
+        errors['startTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['startTime'])) ? this.props.t('Required') : null
+        errors['endTime'] = (this.state.leaveType == DURING_THE_DAY && _.isNull(this.state['endTime'])) ? this.props.t('Required') : null
 
         this.setState({ errors: errors })
         return errors
@@ -324,6 +325,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
+        const { t } = this.props
         this.setDisabledSubmitButton(true)
         const errors = this.verifyInput()
         const hasErrors = !Object.values(errors).every(item => item === null)
@@ -375,12 +377,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
             .then(response => {
                 if (response && response.data && response.data.result) {
-                    this.showStatusModal("Thành công", "Yêu cầu của bạn đã được gửi đi!", true)
+                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
             })
             .catch(response => {
-                this.showStatusModal("Thông Báo", "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                 this.setDisabledSubmitButton(false)
             })
     }
@@ -414,19 +416,20 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
+        const { t } = this.props;
         let absenceTypes = [
-            { value: 'IN01', label: 'Nghỉ ốm' },
-            { value: MATERNITY_LEAVE_KEY, label: 'Nghỉ thai sản' },
-            { value: 'IN03', label: 'Nghỉ dưỡng sức (ốm, TS )' },
-            { value: 'PN01', label: 'Nghỉ lễ người nước ngoài' },
+            { value: 'IN01', label: t('SickLeave') },
+            { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
+            { value: 'IN03', label: t('RecoveryLeave') },
+            { value: 'PN01', label: t('LeaveForExpats') },
             { value: 'PN02', label: 'Nghỉ nuôi con dưới 1 tuổi' },
-            { value: 'PN03', label: 'Nghỉ việc riêng(hiếu, hỉ)' },
-            { value: 'PN04', label: 'Nghỉ tai nạn lao động/BNN' },
-            { value: ANNUAL_LEAVE_KEY, label: 'Nghỉ phép năm' },
+            { value: 'PN03', label: t('LeaveForMarriageFuneral') },
+            { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
+            { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
             { value: ADVANCE_ABSENCE_LEAVE_KEY, label: 'Nghỉ phép tạm ứng' },
-            { value: COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù (Nếu có)' },
+            { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
             // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
-            { value: 'UN01', label: 'Nghỉ không lương' }
+            { value: 'UN01', label: t('UnpaidLeave') }
         ]
 
         const PN03List = [
@@ -440,32 +443,32 @@ class LeaveOfAbsenceComponent extends React.Component {
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <div className="row summary">
                     <div className="col">
-                        <div className="item">
-                            <div className="title">Ngày phép tồn</div>
+                        <div className="item pl-0 pr-0">
+                            <div className="title">{t("LeaveBalance")}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
-                            <div className="title">Ngày phép năm</div>
+                        <div className="item pl-0 pr-0">
+                            <div className="title">{t('LeavesThisYear')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
-                            <div className="title">Ngày phép tạm ứng</div>
+                        <div className="item pl-0 pr-0">
+                            <div className="title">{t('AdvancecdAnnualLeave')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
-                            <div className="title">Giờ bù tồn</div>
+                        <div className="item pl-0 pr-0">
+                            <div className="title">{t('ToilHoursBalance')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : 0}</div>
                         </div>
                     </div>
                     <div className="col">
-                        <div className="item">
-                            <div className="title">Giờ nghỉ bù</div>
+                        <div className="item pl-0 pr-0">
+                            <div className="title">{t('ToilHours')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : 0}</div>
                         </div>
                     </div>
@@ -481,20 +484,20 @@ class LeaveOfAbsenceComponent extends React.Component {
                     <div className="form">
                         <div className="row">
                             <div className="col-7">
-                                <p className="text-uppercase"><b>Lựa chọn thời gian nghỉ</b></p>
+                                <p className="text-uppercase"><b>{t('SelectLeaveDate')}</b></p>
                                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                                     <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                        Nghỉ cả ngày
+                                        {t('FullDay')}
                                     </label>
                                     <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                        Nghỉ theo giờ
+                                        {t('ByHours')}
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-lg-4 col-xl-5">
-                                <p className="title">Ngày/giờ bắt đầu</p>
+                                <p className="title">{t('StartDateTime')}</p>
                                 <div className="row">
                                     <div className="col">
                                         <div className="content input-container">
@@ -509,7 +512,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                     onChange={this.setStartDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Lựa chọn"
+                                                    placeholderText={t('Select')}
                                                     locale="vi"
                                                     className="form-control input" />
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
@@ -527,10 +530,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     showTimeSelect
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
-                                                    timeCaption="Giờ"
+                                                    timeCaption={t("Hour")}
                                                     dateFormat="HH:mm"
                                                     timeFormat="HH:mm"
-                                                    placeholderText="Lựa chọn"
+                                                    placeholderText={t('Select')}
                                                     className="form-control input"
                                                     disabled={this.state.leaveType == FULL_DAY ? true : false}
                                                 />
@@ -542,7 +545,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             </div>
 
                             <div className="col-lg-4 col-xl-5">
-                                <p className="title">Ngày/giờ kết thúc</p>
+                                <p className="title">{t('EndDateTime')}</p>
                                 <div className="row">
                                     <div className="col-6">
                                         <div className="content input-container">
@@ -557,7 +560,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     minDate={this.state.startDate ? moment(this.state.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                     onChange={this.setEndDate.bind(this)}
                                                     dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Lựa chọn"
+                                                    placeholderText={t('Select')}
                                                     locale="vi"
                                                     className="form-control input" />
                                                 <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
@@ -575,10 +578,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     autoComplete="off"
                                                     showTimeSelectOnly
                                                     timeIntervals={15}
-                                                    timeCaption="Giờ"
+                                                    timeCaption={t("Hour")}
                                                     dateFormat="HH:mm"
                                                     timeFormat="HH:mm"
-                                                    placeholderText="Lựa chọn"
+                                                    placeholderText={t('Select')}
                                                     className="form-control input"
                                                     disabled={this.state.leaveType == FULL_DAY ? true : false}
                                                 />
@@ -589,9 +592,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 </div>
                             </div>
                             <div className="col-lg-4 col-xl-2">
-                                <p className="title">Tổng thời gian</p>
+                                <p className="title">{t('TotalLeaveTime')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ' ngày' : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
+                                    <input type="text" className="form-control" value={this.state.leaveType == FULL_DAY ? (this.state.totalDays ? this.state.totalDays + ` ${"day"}` : "") : (this.state.totalTimes != null ? this.state.totalTimes + ' giờ' : "")} readOnly />
                                 </div>
                             </div>
                         </div>
@@ -609,23 +612,23 @@ class LeaveOfAbsenceComponent extends React.Component {
 
                         <div className="row">
                             <div className="col-5">
-                                <p className="title">Loại nghỉ</p>
+                                <p className="title">{t('LeaveCategory')}</p>
                                 <div>
-                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder="Lựa chọn" key="absenceType" options={absenceTypes.filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                    <Select name="absenceType" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (this.state.leaveType === FULL_DAY) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
                                 </div>
                                 {this.state.errors.absenceType ? this.error('absenceType') : null}
 
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
                                 {this.state.absenceType && this.state.absenceType.value === 'PN03' ? <div>
-                                    <Select name="PN03" value={this.state.pn03} onChange={pn03 => this.handleSelectChange('pn03', pn03)} placeholder="Lựa chọn" key="absenceType" options={PN03List} />
+                                    <Select name="PN03" value={this.state.pn03} onChange={pn03 => this.handleSelectChange('pn03', pn03)} placeholder={t('Select')} key="absenceType" options={PN03List} />
                                 </div> : null}
                                 {this.state.errors.pn03 ? this.error('pn03') : null}
                             </div>
 
                             <div className="col-7">
-                                <p className="title">Lý do đăng ký nghỉ</p>
+                                <p className="title">{t('ReasonRequestLeave')}</p>
                                 <div>
-                                    <textarea className="form-control" value={this.state.note || ""} name="note" placeholder="Nhập lý do" rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
+                                    <textarea className="form-control" value={this.state.note || ""} name="note" placeholder={t('EnterReason')} rows="5" onChange={this.handleInputChange.bind(this)}></textarea>
                                 </div>
                                 {this.state.errors.note ? this.error('note') : null}
                             </div>
@@ -649,4 +652,4 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 }
 
-export default LeaveOfAbsenceComponent
+export default withTranslation()(LeaveOfAbsenceComponent)
