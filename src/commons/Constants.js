@@ -21,6 +21,8 @@ const Constants = {
   STATUS_APPROVED: 2,
   STATUS_EVICTION: 3,
   STATUS_REVOCATION: 4,
+  STATUS_CONSENTED: 6,
+  STATUS_NO_CONSENTED: 7,
   mappingStatus: {
     0: {label: 'Waiting', className: ''},
     1: {label: 'Không phê duyệt', className: 'fail'},
