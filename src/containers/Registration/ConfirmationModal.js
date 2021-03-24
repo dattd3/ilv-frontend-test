@@ -179,6 +179,7 @@ class ConfirmationModal extends React.Component {
     render() {
         const backgroundColorMapping = {
             [Constants.STATUS_NOT_APPROVED]: "bg-not-approved",
+            [Constants.STATUS_NO_CONSENTED]: "bg-not-approved",
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         }
@@ -193,7 +194,7 @@ class ConfirmationModal extends React.Component {
                     <Modal.Body>
                         <p>{this.props.message}</p>
                         {
-                            this.props.type == Constants.STATUS_NOT_APPROVED ?
+                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                                 </div>
