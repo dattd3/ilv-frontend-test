@@ -6,7 +6,7 @@ import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 
-class ApprovalComponent extends React.Component {
+class RequestComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
@@ -69,4 +69,4 @@ class ApprovalComponent extends React.Component {
   }
 }
 
-export default withTranslation()(ApprovalComponent)
+export default withTranslation()(RequestComponent)
