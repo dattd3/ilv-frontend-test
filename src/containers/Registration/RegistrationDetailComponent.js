@@ -28,13 +28,14 @@ class RegistrationDetailComponent extends React.Component {
 
   componentDidMount() {
     const taskId = this.props.match.params.id
+    const childId = this.props.match.params.childId
     let config = {
       headers: {
         'Authorization': localStorage.getItem('accessToken')
       }
     }
   
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${taskId}?typeDetail=${this.getTypeDetail()}`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/${taskId}/${childId}`, config)
     .then(res => {
       if (res && res.data) {
         const data = res.data
