@@ -13,6 +13,7 @@ import { withTranslation } from "react-i18next"
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import TaskDetailModal from './TaskDetailModal'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -24,8 +25,10 @@ class TaskList extends React.Component {
         super();
         this.state = {
             approveTasks: [],
+            taskChecked: [],
             dataToModalConfirm: null,
             isShowModalConfirm: false,
+            isShowTaskDetailModal: false,
             modalTitle: "",
             modalMessage: "",
             typeRequest: 1,
@@ -36,6 +39,7 @@ class TaskList extends React.Component {
             requestTypeId: null,
             dataToPrepareToSAP: {},
             isShowModalRegistrationConfirm: false,
+            action: null
         }
 
         this.manager = {
@@ -44,6 +48,7 @@ class TaskList extends React.Component {
             title: localStorage.getItem('jobTitle') || "",
             department: localStorage.getItem('department') || ""
         };
+        // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
 
@@ -72,6 +77,19 @@ class TaskList extends React.Component {
         this.showModalConfirm(value, request)
     }
 
+    showModalTaskDetail = (id) => {
+        this.setState({isShowTaskDetailModal: true ,taskId: id });
+        switch (this.props.page) {
+            case "approval":
+                this.setState({action:"approval"})
+                break;
+            case "consent":
+                this.setState({action:"consent"})
+                break;
+            default:
+                break;
+        }
+    }
 
     showModalConfirm = (status, requestId) => {
         const { t } = this.props
@@ -99,7 +117,7 @@ class TaskList extends React.Component {
             });
         }
     }
-
+    
     evictionRequest = id => {
         this.setState({
             modalTitle: "Xác nhận thu hồi",
@@ -118,7 +136,11 @@ class TaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData) => {
+    onHideisShowTaskDetailModal= () => {
+        this.setState({ isShowTaskDetailModal: false });
+    }
+
+    showStatus = (taskId, statusOriginal = 0, request, taskData) => {
         const { t } = this.props
         const customStylesStatus = {
             control: base => ({
@@ -135,10 +157,13 @@ class TaskList extends React.Component {
         }
 
         const status = {
-            0: { label: t("Waiting"), className: 'request-status' },
-            1: { label: t("Rejected"), className: 'request-status fail' },
-            2: { label: t("Approved"), className: 'request-status success' },
-            3: { label: 'Đã thu hồi', className: 'request-status' }
+            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
+            2: { label: this.props.t('Approved'), className: 'request-status success' },
+            3: { label: this.props.t('Đã thu hồi'), className: 'request-status' },
+            4: { label: this.props.t('Đã hủy'), className: 'request-status' },
+            5: { label: this.props.t("Waiting"), className: 'request-status' },
+            6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
+            7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
         }
 
         const options = [
@@ -151,17 +176,17 @@ class TaskList extends React.Component {
             if (statusOriginal == 0) {
                 return <Select defaultValue={options[0]} value = {options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
             }
-            return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+            return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
-        return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
     getLinkUserProfileHistory = (id) => {
         return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
     }
 
-    getLinkRegistration(id) {
-        return this.props.page === "approval" ? `/registration/${id}/approval` : `/registration/${id}/request`
+    getLinkRegistration(id,childId) {
+        return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
     }
 
     getTaskCode = code => {
@@ -205,6 +230,51 @@ class TaskList extends React.Component {
         }
         return isShow;
     }
+
+    handleAllChecked = event => {
+        let tasks = this.props.tasks;
+        tasks.forEach((task,index) => {
+            task.isChecked = event.target.checked
+            // task.requestInfo.forEach(child=>{
+            //     child.isChecked = event.target.checked;
+                if(task.isChecked)
+                {
+                    this.state.taskChecked.push(task);
+                }
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+                }      
+            // })
+        });
+        this.setState({ approveTasks: tasks });
+        this.props.handleChange(this.state.taskChecked);
+    };
+    
+    handleCheckChieldElement = event => {
+        let tasks = this.props.tasks;
+        
+        tasks.forEach((task,index) => {
+            task.isAllChecked = false;
+            // task.requestInfo.forEach(child=>{
+                let id = task.id;
+                if (id == event.target.value)
+                {
+                    task.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                    if(task.isChecked)
+                    {
+                        this.state.taskChecked.push(task);
+                    }
+                    else
+                    {
+                        this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+                    }
+                }
+            // })
+        });
+        // this.setState({ approveTasks: tasks });
+        this.props.handleChange(this.state.taskChecked);
+    };
 
     getTaskLink = id => {
         if (this.props.page == "approval") {
@@ -354,7 +424,7 @@ class TaskList extends React.Component {
 
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.approveTasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const { t } = this.props
 
@@ -372,88 +442,94 @@ class TaskList extends React.Component {
                     taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} updateTask = {this.updateTaskStatus} />
-                <div className="task-list shadow">
+                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} action={this.state.action}/>
+                <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
                             <tr className="text-center">
+                                <th scope="col" className="check-box">
+                                    <input type="checkbox" onClick={this.handleAllChecked} value="checkedall"/>{" "}
+                                </th>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
-                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="content">{t("Changecontent")}</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
                                         ? <th scope="col" className="user-request">{t("Requestor")}</th>
                                         : null
                                 }
-                                <th scope="col" className="request-date">{t("DateOfRequest")}</th>
-                                <th scope="col" className="user-approved">{t("Approver")}</th>
-                                <th scope="col" className="approval-date">{t("DateOfApproval")}</th>
+                                <th scope="col" className="user-title">{t("Title")}</th>
+                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                <th scope="col" className="day-off">{t("DayOff")}</th>
+                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="appraiser">{t("Consenter")}</th>
                                 <th scope="col" className="status">{t("Status")}</th>
-                                <th scope="col" className="tool text-center">Lý do/ Phản hồi/ Chỉnh sửa</th>
+                                <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {tasks.length > 0 ?
-                                tasks.map((task, index) => {
-                                    const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                                tasks.map((task) => {
                                     let isShowEditButton = this.isShowEditButton(task.status);
                                     let isShowEvictionButton = this.isShowEvictionButton(task.status);
                                     let userId = "";
                                     let userManagerId = "";
-                                    if (task.userId) {
+                                    if (task.user.userId) {
                                         userId = task.userId.split("@")[0];
                                     }
-                                    if (task.userManagerId) {
-                                        userManagerId = task.userManagerId.split("@")[0];
-                                    }
                                     return (
-                                        <tr key={index}>
-                                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                                            <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                            <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                            {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center">{userId}</td> : null}
-                                            <td className="request-date text-center"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                                            <td className="user-approved text-center">{userManagerId}</td>
-                                            <td className="approval-date text-center">{approvalDate}</td>
-                                            <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
-                                            <td className="tool">
-                                                {task.comment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'note-task-' + index}>
-                                                        <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.comment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                {task.hrComment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'comment-task-' + index}>
-                                                        <Popover.Title as="h3">{typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.hrComment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestTypeId]} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestTypeId]} />}
-                                                {
-                                                    // isShowEditButton ?
-                                                    //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                    // : null
-                                                }
-                                                {
-                                                    isShowEvictionButton ?
-                                                        <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                        : null
-                                                }
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                        task.requestInfo.map((child, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td scope="col" className="check-box">
+                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
+                                                    </td>
+                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)+"."+child.id}</a></td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id+"/"+child.id)}><a href="#" className="task-title">{userId}</a></td> : null}
+                                                    <td className="user-title">{task.user.jobTitle}</td>
+                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    <td className="day-off text-center">{child.startDate}</td>
+                                                    <td className="break-time text-center">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày"+ child.totalTimes + " giờ" : null}</td>
+                                                    <td className="appraiser text-center">{task.appraiser.fullname}</td>
+                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
+                                                    <td className="tool">
+                                                        {child.comment ? <OverlayTrigger
+                                                            rootClose
+                                                            trigger="click"
+                                                            placement="left"
+                                                            overlay={<Popover id={'note-task-' + index}>
+                                                                <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                                                <Popover.Content>
+                                                                    {child.comment}
+                                                                </Popover.Content>
+                                                            </Popover>}>
+                                                            <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                        {task.hrComment ? <OverlayTrigger
+                                                            rootClose
+                                                            trigger="click"
+                                                            placement="left"
+                                                            overlay={<Popover id={'comment-task-' + index}>
+                                                                <Popover.Title as="h3">{typeFeedbackMapping[task.requestType.id]}</Popover.Title>
+                                                                <Popover.Content>
+                                                                    {task.hrComment}
+                                                                </Popover.Content>
+                                                            </Popover>}>
+                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestType.id]} />
+                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestType.id]} />}
+                                                        {
+                                                            // isShowEditButton ?
+                                                            //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                            // : null
+                                                        }
+                                                        {
+                                                            isShowEvictionButton ?
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                                : null
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    )})
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
@@ -461,10 +537,12 @@ class TaskList extends React.Component {
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
+                    <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.approveTasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={tasks.length} />
                     </div>
-                    <div className="col-sm text-right">{t("Total")}: {this.state.approveTasks.length}</div>
+                    <div className="col-sm"></div>
+                    <div className="col-sm text-right">{t("Total")}: {tasks.length}</div>
                 </div> : null}
             </>)
     }
