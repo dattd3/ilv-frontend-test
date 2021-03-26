@@ -73,7 +73,7 @@ class SubstitutionDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.substitution.user.fullName}</div>
+              <div className="detail">{this.props.substitution.user.fullname}</div>
             </div>
             <div className="col-3">
               {t("EmployeeNo")}
