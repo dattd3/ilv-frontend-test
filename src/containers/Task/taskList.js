@@ -1,19 +1,20 @@
 import React from 'react'
-import editButton from '../../assets/img/Icon-edit.png'
+// import editButton from '../../assets/img/Icon-edit.png'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap'
 import Select from 'react-select'
-import Moment from 'react-moment'
 import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
-import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
+// import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
-import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+// import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import TaskDetailModal from './TaskDetailModal'
+import {InputGroup, FormControl} from 'react-bootstrap'
+import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -26,20 +27,16 @@ class TaskList extends React.Component {
         this.state = {
             approveTasks: [],
             taskChecked: [],
-            dataToModalConfirm: null,
-            isShowModalConfirm: false,
             isShowTaskDetailModal: false,
-            modalTitle: "",
-            modalMessage: "",
-            typeRequest: 1,
             messageModalConfirm: "",
             pageNumber: 1,
             taskId: null,
+            subId: null,
             requestUrl: "",
             requestTypeId: null,
             dataToPrepareToSAP: {},
-            isShowModalRegistrationConfirm: false,
-            action: null
+            action: null,
+            disabled: "disabled",
         }
 
         this.manager = {
@@ -77,8 +74,8 @@ class TaskList extends React.Component {
         this.showModalConfirm(value, request)
     }
 
-    showModalTaskDetail = (id) => {
-        this.setState({isShowTaskDetailModal: true ,taskId: id });
+    showModalTaskDetail = (tasskId, subId) => {
+        this.setState({isShowTaskDetailModal: true ,taskId: tasskId, subId: subId});
         switch (this.props.page) {
             case "approval":
                 this.setState({action:"approval"})
@@ -91,42 +88,15 @@ class TaskList extends React.Component {
         }
     }
 
-    showModalConfirm = (status, requestId) => {
-        const { t } = this.props
-        const requestRegistraion = {
-            2: { request: t("LeaveRequest"), requestUrl: "requestabsence" },
-            3: { request: t("BizTrip_TrainingRequest"), requestUrl: "requestattendance" },
-            4: { request: t("ShiftChange"), requestUrl: "requestsubstitution" },
-            5: { request: t("ModifyInOut"), requestUrl: "requesttimekeeping" }
-        }
-        const requestUpdateProfile = 1
-        if (requestId == requestUpdateProfile) {
-            this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt thay đổi này ?",
-                isShowModalConfirm: true,
-                typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED
-            });
-        } else {
-            this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + requestRegistraion[requestId].request + " này ?",
-                isShowModalRegistrationConfirm: true,
-                typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
-                requestUrl: requestRegistraion[requestId].requestUrl
-            });
-        }
-    }
-    
-    evictionRequest = id => {
-        this.setState({
-            modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
-            isShowModalConfirm: true,
-            typeRequest: Constants.STATUS_EVICTION,
-            taskId: id
-        });
-    }
+    // evictionRequest = id => {
+    //     this.setState({
+    //         modalTitle: "Xác nhận thu hồi",
+    //         modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+    //         isShowModalConfirm: true,
+    //         typeRequest: Constants.STATUS_EVICTION,
+    //         taskId: id
+    //     });
+    // }
 
     onHideModalConfirm = () => {
         this.setState({ isShowModalConfirm: false });
@@ -235,20 +205,17 @@ class TaskList extends React.Component {
         let tasks = this.props.tasks;
         tasks.forEach((task,index) => {
             task.isChecked = event.target.checked
-            // task.requestInfo.forEach(child=>{
-            //     child.isChecked = event.target.checked;
-                if(task.isChecked)
-                {
-                    this.state.taskChecked.push(task);
-                }
-                else
-                {
-                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
-                }      
-            // })
+            if(task.isChecked)
+            {
+                this.state.taskChecked.push(task);
+            }
+            else
+            {
+                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+            }      
         });
         this.setState({ approveTasks: tasks });
-        this.props.handleChange(this.state.taskChecked);
+        this.enableBtn(this.state.taskChecked);
     };
     
     handleCheckChieldElement = event => {
@@ -256,7 +223,6 @@ class TaskList extends React.Component {
         
         tasks.forEach((task,index) => {
             task.isAllChecked = false;
-            // task.requestInfo.forEach(child=>{
                 let id = task.id;
                 if (id == event.target.value)
                 {
@@ -270,11 +236,21 @@ class TaskList extends React.Component {
                         this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
                     }
                 }
-            // })
         });
-        // this.setState({ approveTasks: tasks });
-        this.props.handleChange(this.state.taskChecked);
+        // this.props.handleChange(this.state.taskChecked);
+        this.enableBtn(this.state.taskChecked);
     };
+
+    enableBtn = (taskChecked) => {
+        if(taskChecked.length)
+        {
+            this.setState({ disabled:"", dataToSap:taskChecked})
+        }
+        else
+        {
+            this.setState({ disabled:"disabled", dataToSap:[]})
+        }
+    }
 
     getTaskLink = id => {
         if (this.props.page == "approval") {
@@ -283,93 +259,93 @@ class TaskList extends React.Component {
         return `/tasks-request/${id}`;
     }
 
-    getDataToSAP = (request, data) => {
-        let jsonData = []
-        switch (request) {
-            case Constants.LEAVE_OF_ABSENCE:
-                jsonData = this.getLeaveOfAbsenceToSAp(data)
-                break;
-            case Constants.BUSINESS_TRIP:
-                jsonData = this.getBusinessTripToSAp(data)
-                break;
-            case Constants.SUBSTITUTION:
-                jsonData = this.getSubstitutionToSAp(data)
-                break;
-            case Constants.IN_OUT_TIME_UPDATE:
-                jsonData = this.getInOutUpdateToSAp(data)
-                break;
-        }
-        return jsonData
-    }
+    // getDataToSAP = (request, data) => {
+    //     let jsonData = []
+    //     switch (request) {
+    //         case Constants.LEAVE_OF_ABSENCE:
+    //             jsonData = this.getLeaveOfAbsenceToSAp(data)
+    //             break;
+    //         case Constants.BUSINESS_TRIP:
+    //             jsonData = this.getBusinessTripToSAp(data)
+    //             break;
+    //         case Constants.SUBSTITUTION:
+    //             jsonData = this.getSubstitutionToSAp(data)
+    //             break;
+    //         case Constants.IN_OUT_TIME_UPDATE:
+    //             jsonData = this.getInOutUpdateToSAp(data)
+    //             break;
+    //     }
+    //     return jsonData
+    // }
 
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
 
-    getInOutUpdateToSAp = data => {
-        let dataToSAP = []
-        data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-            ['1', '2'].forEach(n => {
-                const startTimeName = `start_time${n}_fact_update`
-                const endTimeName = `end_time${n}_fact_update`
-                const startTimeNameOld = `start_time${n}_fact`
-                const endTimeNameOld = `end_time${n}_fact`
-                const startPlanTimeName = `from_time${n}`
-                const endPlanTimeName = `to_time${n}`
-                if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
-                if (true) {
-                    let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[startTimeNameOld]) ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-                    if (startTime) {
-                        dataToSAP.push({
-                            MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                            PERNR: data.userProfileInfo.user.employeeNo,
-                            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-                            SATZA: 'P10',
-                            LTIME: startTime,
-                            DALLF: '+',
-                            ACTIO: 'INS'
-                        })
-                    }
-                }
+    // getInOutUpdateToSAp = data => {
+    //     let dataToSAP = []
+    //     data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+    //         ['1', '2'].forEach(n => {
+    //             const startTimeName = `start_time${n}_fact_update`
+    //             const endTimeName = `end_time${n}_fact_update`
+    //             const startTimeNameOld = `start_time${n}_fact`
+    //             const endTimeNameOld = `end_time${n}_fact`
+    //             const startPlanTimeName = `from_time${n}`
+    //             const endPlanTimeName = `to_time${n}`
+    //             if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
+    //             if (true) {
+    //                 let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[startTimeNameOld]) ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+    //                 if (startTime) {
+    //                     dataToSAP.push({
+    //                         MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
+    //                         PERNR: data.userProfileInfo.user.employeeNo,
+    //                         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+    //                         SATZA: 'P10',
+    //                         LTIME: startTime,
+    //                         DALLF: '+',
+    //                         ACTIO: 'INS'
+    //                     })
+    //                 }
+    //             }
 
-                if (true) {
-                    let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[endTimeNameOld]) ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-                    if (endTime) {
-                        dataToSAP.push({
-                            MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                            PERNR: data.userProfileInfo.user.employeeNo,
-                            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-                            SATZA: 'P20',
-                            LTIME: endTime,
-                            DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
-                            ACTIO: 'INS'
-                        })
-                    }
-                }
-            })
-        })
-        return dataToSAP
-    }
+    //             if (true) {
+    //                 let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[endTimeNameOld]) ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
+    //                 if (endTime) {
+    //                     dataToSAP.push({
+    //                         MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
+    //                         PERNR: data.userProfileInfo.user.employeeNo,
+    //                         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+    //                         SATZA: 'P20',
+    //                         LTIME: endTime,
+    //                         DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
+    //                         ACTIO: 'INS'
+    //                     })
+    //                 }
+    //             }
+    //         })
+    //     })
+    //     return dataToSAP
+    // }
 
-    getSubstitutionToSAp = data => {
-        return data.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
-            return {
-                MYVP_ID: 'SUB' + '0'.repeat(8 - data.id.toString().length) + data.id + index,
-                PERNR: data.userProfileInfo.user.employeeNo,
-                BEGDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                ENDDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
-                BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                VTART: timesheet.substitutionType.value,
-                PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime  ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                PBEZ1: '',
-                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  && timesheet.endBreakTime  ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
-                TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
-            }
-        })
-    }
+    // getSubstitutionToSAp = data => {
+    //     return data.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
+    //         return {
+    //             MYVP_ID: 'SUB' + '0'.repeat(8 - data.id.toString().length) + data.id + index,
+    //             PERNR: data.userProfileInfo.user.employeeNo,
+    //             BEGDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //             ENDDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //             TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
+    //             BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+    //             ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+    //             VTART: timesheet.substitutionType.value,
+    //             PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+    //             PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
+    //             PBEZ1: '',
+    //             PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
+    //             TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
+    //         }
+    //     })
+    // }
 
     calTime = (start, end) => {
         if (start == null || end == null) {
@@ -379,53 +355,57 @@ class TaskList extends React.Component {
         return moment.duration(differenceInMs).asHours()
     }
 
-    getLeaveOfAbsenceToSAp = data => {
-        let dataToSAP = []
-        if (data.status === 0) {
-            dataToSAP.push(
-                {
-                    MYVP_ID: 'ABS' + '0'.repeat(9 - data.id.toString().length) + data.id,
-                    PERNR: data.userProfileInfo.user ? data.userProfileInfo.user.employeeNo : "",
-                    BEGDA: moment(data.userProfileInfo.startDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    ENDDA: moment(data.userProfileInfo.endDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    SUBTY: data.userProfileInfo.absenceType ? data.userProfileInfo.absenceType.value : "",
-                    BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ACTIO: 'INS'
-                }
-            )
-        }
-        return dataToSAP
-    }
+    // getLeaveOfAbsenceToSAp = data => {
+    //     let dataToSAP = []
+    //     if (data.status === 0) {
+    //         dataToSAP.push(
+    //             {
+    //                 MYVP_ID: 'ABS' + '0'.repeat(9 - data.id.toString().length) + data.id,
+    //                 PERNR: data.userProfileInfo.user ? data.userProfileInfo.user.employeeNo : "",
+    //                 BEGDA: moment(data.userProfileInfo.startDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //                 ENDDA: moment(data.userProfileInfo.endDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //                 SUBTY: data.userProfileInfo.absenceType ? data.userProfileInfo.absenceType.value : "",
+    //                 BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+    //                 ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+    //                 ACTIO: 'INS'
+    //             }
+    //         )
+    //     }
+    //     return dataToSAP
+    // }
 
-    getBusinessTripToSAp(data) {
-        let dataToSAP = []
-        if (data.status === 0) {
-            dataToSAP.push(
-                {
-                    MYVP_ID: 'ATT' + '0'.repeat(9 - data.id.toString().length) + data.id,
-                    PERNR: data.userProfileInfo.user.employeeNo,
-                    BEGDA: moment(data.userProfileInfo.startDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    ENDDA: moment(data.userProfileInfo.endDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    SUBTY: data.userProfileInfo.attendanceQuotaType.value,
-                    BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ACTIO: 'INS'
-                }
-            )
-        }
-        return dataToSAP
-    }
+    // getBusinessTripToSAp(data) {
+    //     let dataToSAP = []
+    //     if (data.status === 0) {
+    //         dataToSAP.push(
+    //             {
+    //                 MYVP_ID: 'ATT' + '0'.repeat(9 - data.id.toString().length) + data.id,
+    //                 PERNR: data.userProfileInfo.user.employeeNo,
+    //                 BEGDA: moment(data.userProfileInfo.startDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //                 ENDDA: moment(data.userProfileInfo.endDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
+    //                 SUBTY: data.userProfileInfo.attendanceQuotaType.value,
+    //                 BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+    //                 ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
+    //                 ACTIO: 'INS'
+    //             }
+    //         )
+    //     }
+    //     return dataToSAP
+    // }
 
     updateTaskStatus = (id, status) =>{
         let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
         this.setState({approveTasks: tasksUpdated})
     }
 
+    handleSelectChange(name, value) {
+        this.setState({ [name]: value })
+    }
+    
     render() {
         const recordPerPage = 10
         let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, recordPerPage)
-        const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        // const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const { t } = this.props
 
         const typeFeedbackMapping = {
@@ -436,13 +416,39 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
 
+        let statusFiler = [
+            { value: Constants.STATUS_WAITING, label: t("Waiting") },
+            { value: Constants.STATUS_APPROVED, label: t("Approved") },
+            { value: Constants.STATUS_EVICTION , label: t("Đã thu hồi") }
+          ]
         return (
             <>
-                <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
-                    taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
-                <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
-                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} updateTask = {this.updateTaskStatus} />
-                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} action={this.state.action}/>
+                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <div className="row w-50 mt-2 mb-3">
+                <div className="col-xl-6">
+                    <InputGroup className="d-flex">
+                    <InputGroup.Prepend className="">
+                        <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Select name="absenceType" className="w-75" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} />
+                    </InputGroup>
+                </div>
+                <div className="col-xl-6">
+                <InputGroup className="">
+                    <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl
+                    placeholder={t('SearchRequester')}
+                    aria-label="SearchRequester"
+                    aria-describedby="basic-addon2"
+                    />
+                </InputGroup>
+                </div>
+                </div> 
+                <div className="block-title">
+                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                </div>
                 <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
@@ -482,12 +488,12 @@ class TaskList extends React.Component {
                                                     <td scope="col" className="check-box">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                     </td>
-                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)+"."+child.id}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id+"/"+child.id)}><a href="#" className="task-title">{userId}</a></td> : null}
+                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id)} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{userId}</a></td> : null}
                                                     <td className="user-title">{task.user.jobTitle}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off text-center">{child.startDate}</td>
-                                                    <td className="break-time text-center">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày"+ child.totalTimes + " giờ" : null}</td>
+                                                    <td className="break-time text-center">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày "+ child.totalTimes + " giờ" : null}</td>
                                                     <td className="appraiser text-center">{task.appraiser.fullname}</td>
                                                     <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
@@ -544,6 +550,7 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {tasks.length}</div>
                 </div> : null}
+                <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
     }
 }
