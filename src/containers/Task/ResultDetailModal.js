@@ -2,6 +2,7 @@ import React from "react";
 import IconSuccess from '../../assets/img/ic-success.svg';
 import IconFailed from '../../assets/img/ic-failed.svg';
 import { Modal, Image } from 'react-bootstrap';
+import { withTranslation  } from "react-i18next"
 
 class ResultDetailModal extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class ResultDetailModal extends React.Component {
     }
 
     render () {
+        const {t} = this.props
         const resultDetail = this.props.resultDetail;
         let total = 0;
         let sucessReqs = 0;
@@ -36,9 +38,9 @@ class ResultDetailModal extends React.Component {
                     <table className="table table-sm">
                         <thead>
                             <tr>
-                                <th scope="col">Mã yêu cầu</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col">Lý do</th>
+                                <th scope="col">{t("RequestNo")}</th>
+                                <th scope="col">{t("Status")}</th>
+                                <th scope="col">{t("Reason")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,7 +61,7 @@ class ResultDetailModal extends React.Component {
                             }   
                         </tbody>
                     </table>
-                    <p><span className="text-success">Thành công:</span><strong>{sucessReqs}/{total}</strong></p>
+                    <p><span className="text-success">{t("Successful")}:</span><strong>{sucessReqs}/{total}</strong></p>
                 </Modal.Body>
             </Modal>
             </>
@@ -67,4 +69,4 @@ class ResultDetailModal extends React.Component {
     }
 }
 
-export default ResultDetailModal
+export default withTranslation()(ResultDetailModal)
