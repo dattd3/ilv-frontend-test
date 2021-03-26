@@ -27,15 +27,18 @@ class TaskDetailModal extends React.Component {
     }
   
     componentDidMount() {
-      const taskId = this.props.taskId
       let config = {
         headers: {
           'Authorization': localStorage.getItem('accessToken')
+        },
+        params:{
+          id: this.props.taskId,
+          subid: this.props.subId
         }
       }
-      if(taskId)
+      if(this.props.taskId)
       {
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/${taskId}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
         .then(res => {
           if (res && res.data) {
             const data = res.data
@@ -64,9 +67,9 @@ class TaskDetailModal extends React.Component {
                 <Modal.Body>
                     <div className="registration-section">
                         {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent action={this.props.action} leaveOfAbsence={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={this.props.action} businessTrip={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={this.props.action} substitution={this.state.data}/> : null}
                     </div>
                 </Modal.Body>
             </Modal>
