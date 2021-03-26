@@ -540,7 +540,6 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     let bodyFormData = new FormData();
     bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
-    bodyFormData.append('userId', localStorage.getItem("email"))
     bodyFormData.append('fullName', localStorage.getItem('fullName'))
     bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
     bodyFormData.append('department', localStorage.getItem('department'))
