@@ -40,9 +40,9 @@ class BusinessTripComponent extends React.Component {
         {
           groupItem: 1,
           startDate: null,
-          startTime: 0,
+          startTime: null,
           endDate: null,
-          endTime: 0,
+          endTime: null,
           comment: null,
           totalTimes: 0,
           totalDays: 0,
@@ -189,6 +189,10 @@ class BusinessTripComponent extends React.Component {
       return
     }
 
+    const isVerifiedDateTime = this.validateTimeRequest(requestInfo)
+
+    if(!isVerifiedDateTime) return
+
     const start = moment(startDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
     const end = moment(endDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
     const config = {
@@ -221,7 +225,7 @@ class BusinessTripComponent extends React.Component {
             requestInfo[indexReq].totalTimes = data.data.hours
             this.setState({ requestInfo })
           } else {
-            if (!_.isNull(result) && result.code == Constants.API_ERROR_CODE) {
+            if (!_.isNull(result) && result.code === Constants.API_ERROR_CODE) {
               errors.startTimeAndEndTime = result.message
             } else {
               errors.startTimeAndEndTime = null
@@ -233,6 +237,47 @@ class BusinessTripComponent extends React.Component {
       }).catch(error => {
 
       })
+  }
+
+  validateTimeRequest(requestInfo){
+    let newRequestInfo = []
+    const times = requestInfo.map(req => ({
+      id: req.groupItem,
+      from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+      from_time: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+      to_date: req.isAllDay ? "" : moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      to_time: req.isAllDay ? "" : moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      leave_type: req.absenceType?.value || ""
+    }))
+
+    let verifiedDateTime = true
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
+      perno: localStorage.getItem('employeeNo'),
+      times: times,
+    })
+    .then(res => {
+      if(res && res.data && res.data.data){
+        newRequestInfo = requestInfo.map((req, index) => {
+          res.data.data.forEach(time => {
+            if(!time.is_valid && time.groupId === req.groupId &&  time.id === req.groupItem){
+              verifiedDateTime = false
+              return ({
+                ...req,
+                errors: {
+                  ...req.errors,
+                  startTimeAndEndTime: time.message
+                }
+              })
+            }
+          })
+          return req
+        })
+      }
+    })
+    .then(error => console.log(error))
+
+    this.setState({ requestInfo: newRequestInfo })
+    return verifiedDateTime;
   }
 
   isOverlapDateTime(startDateTime, endDateTime, indexReq) {
@@ -266,7 +311,7 @@ class BusinessTripComponent extends React.Component {
       .then(res => {
         if (res && res.data) {
           const data = res.data
-          if (!_.isNull(data.result) && data.result.code == Constants.API_ERROR_CODE) {
+          if (!_.isNull(data.result) && data.result.code === Constants.API_ERROR_CODE) {
             errors.startTimeAndEndTime = data.result.message
           } else {
             errors.startTimeAndEndTime = null
@@ -341,7 +386,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   verifyInput() {
-    let { requestInfo, approver, appraiser } = this.state
+    let { requestInfo, approver, appraiser, errors } = this.state
     const employeeLevel = localStorage.getItem("employeeLevel")
 
     requestInfo.forEach((req, indexReq) => {
@@ -358,12 +403,12 @@ class BusinessTripComponent extends React.Component {
     this.setState({
       requestInfo,
       errors: {
-        approver: !approver ? this.props.t('Required') : null,
-        appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
+        approver: !approver ? this.props.t('Required') : errors.approver,
+        appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.approver
       }
     })
     const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-    if(listError.length > 0 || !approver || (!appraiser && employeeLevel === "N0")){
+    if(listError.length > 0 || errors.approver || (errors.appraiser && employeeLevel === "N0")){
       return false
     }
     return true
@@ -376,6 +421,7 @@ class BusinessTripComponent extends React.Component {
 
   submit() {
     const { t } = this.props 
+    const { requestInfo } = this.state
     this.setDisabledSubmitButton(true)
     const err = this.verifyInput()
     this.setDisabledSubmitButton(true)
@@ -383,41 +429,50 @@ class BusinessTripComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    const dataRequestInfo = requestInfo.map(req => {
+      return ({
+        startDate: req.startDate,
+        startTime: req.startTime,
+        endDate: req.endDate,
+        endTime: req.endTime,
+        comment: req.comment,
+        totalTimes: req.totalTimes,
+        totalDays: req.totalDays,
+        attendanceQuotaType: req.attendanceQuotaType,
+        isAllDay: req.isAllDay,
+        funeralWeddingInfo: req.funeralWeddingInfo,
+        groupId: req.groupId,
+        leaveType: "",
+        vehicle: req.vehicle,
+        place: req.place,
+      })
+    })
+
     const approver = { ...this.state.approver }
+    const appraiser = { ...this.state.appraiser }
     delete approver.avatar
-    const data = {
-      startDate: this.state.startDate,
-      startTime: this.state.startTime,
-      endDate: this.state.endDate,
-      endTime: this.state.endTime,
-      attendanceQuotaType: this.state.attendanceQuotaType,
-      approver: approver,
-      totalTime: this.state.totalTime,
-      vehicle: this.state.vehicle,
-      place: this.state.place,
-      leaveType: this.state.leaveType,
-      user: {
-        fullname: localStorage.getItem('fullName'),
-        jobTitle: localStorage.getItem('jobTitle'),
-        department: localStorage.getItem('department'),
-        employeeNo: localStorage.getItem('employeeNo')
-      }
-    }
+    delete appraiser.avatar
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', t("BizTrip_TrainingRequest"))
-    bodyFormData.append('RequestTypeId', Constants.BUSINESS_TRIP)
-    bodyFormData.append('Comment', this.state.note)
-    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
-    bodyFormData.append('UpdateField', JSON.stringify({}))
-    bodyFormData.append('Region', localStorage.getItem('region'))
-    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
-    bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
-    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
+
+    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+    bodyFormData.append('userId', localStorage.getItem("email"))
+    bodyFormData.append('fullName', localStorage.getItem('fullName'))
+    bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
+    bodyFormData.append('department', localStorage.getItem('department'))
+    bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
+    bodyFormData.append('approver', JSON.stringify(approver))
+    bodyFormData.append('appraiser', JSON.stringify(appraiser))
+    bodyFormData.append('RequestType', JSON.stringify({
+      requestType: {
+        id: 3,
+        name: "Đăng ký công tác/đào tạo"
+      }
+    }))
+    bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
 
     axios({
       method: 'POST',
@@ -464,9 +519,9 @@ class BusinessTripComponent extends React.Component {
     newRequestInfo.push({
       groupItem: 1,
       startDate: null,
-      startTime: 0,
+      startTime: null,
       endDate: null,
-      endTime: 0,
+      endTime: null,
       comment: null,
       totalTimes: 0,
       totalDays: 0,
@@ -495,9 +550,9 @@ class BusinessTripComponent extends React.Component {
       groupItem: maxIndex + 1,
       groupId: groupId,
       startDate: null,
-      startTime: 0,
+      startTime: null,
       endDate: null,
-      endTime: 0,
+      endTime: null,
       comment: null,
       totalTimes: 0,
       totalDays: 0,
@@ -529,9 +584,9 @@ class BusinessTripComponent extends React.Component {
     requestInfo.push({
         groupItem: 1,
         startDate: null,
-        startTime: 0,
+        startTime: null,
         endDate: null,
-        endTime: 0,
+        endTime: null,
         comment: null,
         totalTimes: 0,
         totalDays: 0,
@@ -798,9 +853,7 @@ class BusinessTripComponent extends React.Component {
             }
           </div>
         )})}
-        {/* {employeeLevel === "N0" && */}
-          <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
-        {/* } */}
+        <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
         <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
         <ul className="list-inline">
           {this.state.files.map((file, index) => {

@@ -48,9 +48,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         {
           groupItem: 1,
           startDate: null,
-          startTime: 0,
+          startTime: null,
           endDate: null,
-          endTime: 0,
+          endTime: null,
           comment: null,
           totalTimes: 0,
           totalDays: 0,
@@ -233,6 +233,10 @@ class LeaveOfAbsenceComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
+    const isVerifiedDateTime = this.validateTimeRequest(requestInfo)
+
+    if(!isVerifiedDateTime) return
+  
     const start = moment(startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
     const end = moment(endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
 
@@ -268,49 +272,49 @@ class LeaveOfAbsenceComponent extends React.Component {
       })
   }
 
+  async validateTimeRequest(requestInfo){
+    let newRequestInfo = []
+    const times = requestInfo.map(req => ({
+      id: req.groupItem,
+      from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+      from_time: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+      to_date: req.isAllDay ? "" : moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      to_time: req.isAllDay ? "" : moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+      leave_type: req.absenceType?.value || ""
+    }))
+
+    let verifiedDateTime = true
+    await axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
+      perno: localStorage.getItem('employeeNo'),
+      times: times,
+    })
+    .then(res => {
+      if(res && res.data && res.data.data){
+        newRequestInfo = requestInfo.map(req => {
+          res.data.data.forEach(time => {
+            if(!time.is_valid && time.groupId === req.groupId &&  time.id === req.groupItem){
+              verifiedDateTime = false
+              return ({
+                ...req,
+                errors: {
+                  ...req.errors,
+                  totalDaysOff: time.message
+                }
+              })
+            }
+          })
+          return req
+        })
+      }
+    })
+    this.setState({ requestInfo: newRequestInfo })
+    return verifiedDateTime;
+  }
+
   calFullDay(timesheets) {
     const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
       return accumulator + parseFloat(currentValue.hours)
     }, 0)
-
-    return hours ? (hours / 8) : 0
-  }
-
-  calDuringTheDay(timesheets, startTime, endTime) {
-    if (!startTime || !endTime) return
-
-    let startTimeSAP = moment(startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
-    let endTimeSAP = moment(endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT)
-    let hours = 0
-
-    if (timesheets.length > 0) {
-      const timesheet = timesheets[0]
-      const shiftIndex = ['1', '2']
-
-      shiftIndex.forEach(index => {
-        if (timesheet['from_time' + index] && endTimeSAP > timesheet['from_time' + index] && startTimeSAP < timesheet['to_time' + index]) {
-
-          // correct time if startTime < from_time and endTime > to_time
-          startTimeSAP = startTimeSAP < timesheet['from_time' + index] ? timesheet['from_time' + index] : startTimeSAP
-          endTimeSAP = endTimeSAP > timesheet['to_time' + index] ? timesheet['to_time' + index] : endTimeSAP
-
-          // the startTime and the endTime are setted in the break time
-          startTimeSAP = startTimeSAP >= timesheet['break_from_time_' + index] && startTimeSAP <= timesheet['break_to_time' + index] ? timesheet['break_to_time' + 1] : startTimeSAP
-          endTimeSAP = endTimeSAP >= timesheet['break_from_time_' + index] && endTimeSAP <= timesheet['break_to_time' + index] ? timesheet['break_from_time_' + index] : endTimeSAP
-
-          // endtime < startime ex: starTime = 23:00:00 endTime = 06:00:00 
-          endTimeSAP = endTimeSAP < startTimeSAP ? moment(endTimeSAP, Constants.TIME_OF_SAP_FORMAT).add(1, 'days').format(Constants.TIME_OF_SAP_FORMAT) : endTimeSAP
-
-          const differenceInMs = moment(endTimeSAP, Constants.TIME_OF_SAP_FORMAT).diff(moment(startTimeSAP, Constants.TIME_OF_SAP_FORMAT))
-          hours = hours + Math.abs(moment.duration(differenceInMs).asHours())
-
-          if (startTimeSAP < timesheet['break_from_time_' + index] && endTimeSAP > timesheet['break_to_time' + index]) {
-            const differenceInMsBreakTime = moment(timesheet['break_to_time' + index], Constants.TIME_OF_SAP_FORMAT).diff(moment(timesheet['break_from_time_' + index], Constants.TIME_OF_SAP_FORMAT))
-            hours = hours - Math.abs(moment.duration(differenceInMsBreakTime).asHours())
-          }
-        }
-      })
-    }
 
     return hours ? (hours / 8) : 0
   }
@@ -378,7 +382,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         return {...req}
       })
-      this.setState({ requestInfo: newRequestInfo })
     } else if (name === "funeralWeddingInfo") {
       newRequestInfo = requestInfo.map(req => {
         let errors = req.errors
@@ -400,10 +403,11 @@ class LeaveOfAbsenceComponent extends React.Component {
       })
     }
     this.setState({requestInfo: newRequestInfo})
+    this.validateTimeRequest(newRequestInfo)
   }
 
   verifyInput() {
-    let { requestInfo, approver, appraiser } = this.state;
+    let { requestInfo, approver, appraiser, errors } = this.state;
     requestInfo.forEach((req, indexReq) => {
       if(!req.startDate){
         req.errors["startDate"] = this.props.t('Required')
@@ -426,16 +430,17 @@ class LeaveOfAbsenceComponent extends React.Component {
       requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === 'PN03' && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
     })
     const employeeLevel = localStorage.getItem("employeeLevel")
+
     this.setState({
       requestInfo,
       errors: {
-        approver: !approver ? this.props.t('Required') : null,
-        appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
+        approver: !approver ? this.props.t('Required') : errors.approver,
+        appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
       }
     })
 
     const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-    if(listError.length > 0 || !approver || (!appraiser && employeeLevel === "N0")){
+    if(listError.length > 0 || errors.approver || (!errors.appraiser && employeeLevel === "N0")){
       return false
     }
     return true
@@ -451,9 +456,9 @@ class LeaveOfAbsenceComponent extends React.Component {
     requestInfo.push({
       groupItem: maxIndex + 1,
       startDate: null,
-      startTime: 0,
+      startTime: null,
       endDate: null,
-      endTime: 0,
+      endTime: null,
       comment: null,
       totalTimes: 0,
       totalDays: 0,
@@ -471,9 +476,9 @@ class LeaveOfAbsenceComponent extends React.Component {
     const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
     requestInfo.push({
         startDate: null,
-        startTime: 0,
+        startTime: null,
         endDate: null,
-        endTime: 0,
+        endTime: null,
         comment: null,
         totalTimes: 0,
         totalDays: 0,
@@ -600,9 +605,9 @@ class LeaveOfAbsenceComponent extends React.Component {
     newRequestInfo.push({
       groupItem: 1,
       startDate: null,
-      startTime: 0,
+      startTime: null,
       endDate: null,
-      endTime: 0,
+      endTime: null,
       comment: null,
       totalTimes: 0,
       totalDays: 0,
@@ -892,9 +897,8 @@ class LeaveOfAbsenceComponent extends React.Component {
           </div>
         )})}
         
-        {employeeLevel === "N0" &&
-          <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
-        }
+        <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
+
         <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
         <ul className="list-inline">
           {files.map((file, index) => {

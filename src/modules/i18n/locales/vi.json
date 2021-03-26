@@ -735,5 +735,6 @@
   "OK": "Đã hiểu",
   "InvalidAppraiser": "Người thẩm định không có thẩm quyền!",
   "AddBizTrip": "Thêm CT/ĐT",
-  "RemoveBizTrip": "Hủy CT/ĐT"
+  "RemoveBizTrip": "Hủy CT/ĐT",
+  "IfAny": "(nếu có)"
 }
