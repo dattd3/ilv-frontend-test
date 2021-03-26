@@ -64,7 +64,7 @@
                 background-color: #eaecf4;
                 th {
                     vertical-align: middle;
-                    position: sticky; 
+                    // position: sticky; 
                     top: 0;
                     background-color: #eaecf4;
                     z-index: 10;
@@ -95,7 +95,7 @@
             }
             td:last-child {
                 display: flex;
-                justify-content: space-evenly;
+                // justify-content: space-evenly;
                 align-items: center;
             }
             .status {
