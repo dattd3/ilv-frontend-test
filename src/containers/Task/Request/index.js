@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
-import RequestTaskList from '../requestTaskList';
+import RequestTaskList from '../taskList';
 
 class RequestComponent extends React.Component {
   constructor(props) {
@@ -21,12 +21,12 @@ class RequestComponent extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/request`, config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
-          let tasksOrdered = res.data.data.listUserProfileHistories.sort((a, b) => a.id <= b.id ? 1 : -1)
+          let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
           this.setState({tasks : tasksOrdered, dataResponse: res.data.data});
         }
       }
@@ -58,11 +58,11 @@ class RequestComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        <div className="block-title">
+        {/* <div className="block-title">
           <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-          {/* <button type="button" className="btn btn-outline-primary" onClick={this.exportToExcel}><i className='fas fa-file-export ic-export'></i>Export</button> */}
-        </div>
-        <RequestTaskList tasks={this.state.tasks} page="request" />         
+          
+        </div> */}
+        <RequestTaskList tasks={this.state.tasks} page="request" title={t("RequestManagement")}/>         
       </div> : 
       <LoadingSpinner />
     )
