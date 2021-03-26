@@ -26,16 +26,36 @@ class ConfirmationModal extends React.Component {
         this.setState({ disabledSubmitButton: true });
         const url = window.location.pathname
         const id = this.props.id
-        let formData = new FormData()
-        if (this.props.type === Constants.STATUS_NOT_APPROVED) {
-            formData.append('HRComment', this.state.message)
-            this.disApprove(formData, `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-disapprove`, id)
-        } else if (this.props.type === Constants.STATUS_APPROVED) {
-            this.approve(id)
-        } else if (this.props.type === Constants.STATUS_REVOCATION) {
-            this.revocation(id)
-        } else if (this.props.type === Constants.STATUS_EVICTION) {
-            this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
+        let formData = new FormData();
+        switch (this.props.type) {
+            case Constants.STATUS_NOT_APPROVED: // không phê duyệt
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
+                this.props.dataToSap[0].sub[0].ApproverComment = this.state.message;
+                console.log(this.props.dataToSap);
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
+                break;
+            case Constants.STATUS_APPROVED: // phê duyệt
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
+                this.approve(this.props.dataToSap,id)
+                break;
+            case Constants.STATUS_REVOCATION:
+                this.revocation(id)
+                break;
+            case Constants.STATUS_EVICTION:
+                this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
+                break;
+            case Constants.STATUS_CONSENTED: // thẩm định
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_CONSENTED;
+                console.log(this.props.dataToSap);
+                this.consent();
+                break;
+            case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
+                this.props.dataToSap[0].sub[0].AppraiserComment = this.state.message;
+                this.reject();
+                break;
+            default:
+                break;
         }
     }
 
@@ -98,15 +118,14 @@ class ConfirmationModal extends React.Component {
         return result
     }
 
-    approve = (id) => {
-        const dataToSap = this.props.dataToSap
-        let bodyFormData = new FormData()
-        bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-
+    approve = (dataToSap,id) => {
+        // const dataToSap = this.props.dataToSap
+        // let bodyFormData = new FormData()
+        // bodyFormData.append(JSON.stringify(dataToSap))
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-approve`,
-            data: bodyFormData,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/approve`,
+            data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(res => {
@@ -156,6 +175,14 @@ class ConfirmationModal extends React.Component {
             .catch(response => {
                 this.showStatusModal(this.props.t("Notification"), "Hủy phê duyệt thành công!", true)
             })
+    }
+
+    consent = () => {
+        console.log("consented");
+    }
+
+    reject = () => {
+        console.log("rejected");
     }
 
     handleChangeMessage = (e) => {
