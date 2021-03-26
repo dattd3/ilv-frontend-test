@@ -520,6 +520,7 @@
   "TaskManagement": "Quản lý công việc",
   "RequestManagement": "Quản lý thông tin yêu cầu",
   "ConsentManagement": "Quản lý thông tin thẩm định",
+  "ApprovalManagement": "Quản lý thông tin phê duyệt",
   "RequestNo": "Mã yêu cầu",
   "RequestSent": "Yêu cầu của bạn đã được gửi đi !",
   "Requestor": "Người gửi yêu cầu",
