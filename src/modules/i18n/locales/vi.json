@@ -717,5 +717,16 @@
   "LeadershipSkill": "Kỹ năng lãnh đạo",
   "SpecializedSkill": "Kỹ năng chuyên môn",
   "Experience": "Kinh nghiệp làm việc",
-  "TotalIncomeTaxInclude": "Tổng thu nhập chịu thuế"
+  "TotalIncomeTaxInclude": "Tổng thu nhập chịu thuế",
+  "locale": "vi",
+  "AddMore": "Thêm",
+  "AddLeave": "Thêm kỳ nghỉ",
+  "CancelLeave": "Hủy kỳ nghỉ",
+  "Consenter": "CBQL thẩm định (nếu có)",
+  "GuideAddLeave": "Chọn dấu '+' để thêm thời gian nghỉ.",
+  "GuideAddLeave2": "Áp dụng cho trường hợp muốn xin nghỉ nhiều ngày với",
+  "OK": "Đã hiểu",
+  "InvalidAppraiser": "Người thẩm định không có thẩm quyền!",
+  "AddBizTrip": "Thêm CT/ĐT",
+  "RemoveBizTrip": "Hủy CT/ĐT"
 }

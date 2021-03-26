@@ -22,7 +22,7 @@
   "Menu_TrainingKPI": "Training KPI",
   "Menu_Timesheet": "Timesheet",
   "Menu_LeaveTime": "Leave time",
-  "Menu_HumanResource": "Personal Information",
+  "Menu_HumanResource": "HR",
   "Menu_TermPolicy": "Policy",
   "Menu_CompanyAnnouncement": "Announcement",
   "Menu_ContactAddress": "Contact",
@@ -701,5 +701,16 @@
   "LeadershipSkill": "Leadership Skill",
   "SpecializedSkill": "Specialized Skill",
   "Experience": "Experience",
-  "TotalIncomeTaxInclude": "Total Income Tax Include"
+  "TotalIncomeTaxInclude": "Total Income Tax Include",
+  "locale": "en-US",
+  "AddMore": "Add",
+  "AddLeave": "Add Leave",
+  "CancelLeave": "Cancel Leave",
+  "Consenter": "Consenter (If any)",
+  "GuideAddLeave": "Select '+' to add leave",
+  "GuideAddLeave2": "Applicable for leaves of same type and reason",
+  "Ok": "OK",
+  "InvalidAppraiser": "Invalid Appraiser",
+  "AddBizTrip": "Add Bussiness/Trip",
+  "RemoveBizTrip": "Cancel Bussiness/Trip"
 }

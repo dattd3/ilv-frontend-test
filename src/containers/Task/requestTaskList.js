@@ -147,9 +147,11 @@ class RequestTaskList extends React.Component {
             if (statusOriginal == 0) {
                 return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
             }
+            console.log(status[statusOriginal])
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
-        return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        // return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        return <div></div>
     }
 
     getLinkUserProfileHistory = (id) => {
