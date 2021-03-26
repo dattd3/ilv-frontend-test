@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
-import RequestTaskList from '../taskList';
+import RequestTaskList from '../requestTaskList';
 
 class RequestComponent extends React.Component {
   constructor(props) {
@@ -58,11 +58,10 @@ class RequestComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        {/* <div className="block-title">
+        <div className="block-title">
           <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-          
-        </div> */}
-        <RequestTaskList tasks={this.state.tasks} page="request" title={t("RequestManagement")}/>         
+        </div>
+        <RequestTaskList tasks={this.state.tasks} page="request"/>         
       </div> : 
       <LoadingSpinner />
     )

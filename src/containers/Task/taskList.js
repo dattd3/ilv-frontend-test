@@ -430,7 +430,19 @@ class TaskList extends React.Component {
                     <InputGroup.Prepend className="">
                         <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Select name="absenceType" className="w-75" value={this.state.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} />
+                    <Select name="absenceType" 
+                            className="w-75" 
+                            value={this.state.absenceType} 
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                            placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} 
+                            theme={theme => ({
+                            ...theme,
+                            colors: {
+                                ...theme.colors,
+                                primary25: '#F9C20A',
+                                primary: '#F9C20A',
+                            },
+                            })}/>
                     </InputGroup>
                 </div>
                 <div className="col-xl-6">
@@ -488,8 +500,8 @@ class TaskList extends React.Component {
                                                     <td scope="col" className="check-box">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                     </td>
-                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id)} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{userId}</a></td> : null}
+                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullname}</a></td> : null}
                                                     <td className="user-title">{task.user.jobTitle}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off text-center">{child.startDate}</td>
