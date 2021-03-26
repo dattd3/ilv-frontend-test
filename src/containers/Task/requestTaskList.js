@@ -1,5 +1,6 @@
 import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
+import deleteButton from '../../assets/img/icon-delete.svg'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
@@ -13,6 +14,7 @@ import _ from 'lodash'
 import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import { withTranslation } from "react-i18next"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -24,6 +26,7 @@ class RequestTaskList extends React.Component {
         super();
         this.state = {
             tasks: [],
+            taskChecked: [],
             dataToModalConfirm: null,
             isShowModalConfirm: false,
             modalTitle: "",
@@ -107,6 +110,16 @@ class RequestTaskList extends React.Component {
         });
     }
 
+    deleteRequest = id => {
+        this.setState({
+            modalTitle: "Yêu cầu hủy phê duyệt",
+            modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
+            isShowModalConfirm: true,
+            typeRequest: Constants.STATUS_EVICTION,
+            taskId: id
+        });
+    }
+
     onHideModalConfirm = () => {
         this.setState({ isShowModalConfirm: false });
     }
@@ -131,10 +144,13 @@ class RequestTaskList extends React.Component {
         }
 
         const status = {
-            0: { label: 'Đang chờ xử lý', className: 'request-status' },
-            1: { label: 'Từ chối', className: 'request-status fail' },
-            2: { label: 'Đã phê duyệt', className: 'request-status success' },
-            3: { label: 'Đã thu hồi', className: 'request-status' }
+            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
+            2: { label: this.props.t('Approved'), className: 'request-status success' },
+            3: { label: this.props.t('Đã thu hồi'), className: 'request-status' },
+            4: { label: this.props.t('Đã hủy'), className: 'request-status' },
+            5: { label: this.props.t("Waiting"), className: 'request-status' },
+            6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
+            7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
         }
 
         const options = [
@@ -149,15 +165,15 @@ class RequestTaskList extends React.Component {
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
-        return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
     getLinkUserProfileHistory = (id) => {
         return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
     }
 
-    getLinkRegistration(id) {
-        return this.props.page === "approval" ? `/registration/${id}/approval` : `/registration/${id}/request`
+    getLinkRegistration(id,childId) {
+        return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
     }
 
     getTaskCode = code => {
@@ -188,6 +204,10 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
+    isShowDeleteButton = status => {
+        return status == Constants.STATUS_APPROVED ? true : false;
+        
+    }
     isShowEvictionButton = status => {
         let isShow = true;
         if (this.props.page == "approval") {
@@ -201,6 +221,43 @@ class RequestTaskList extends React.Component {
         }
         return isShow;
     }
+
+    handleAllChecked = event => {
+        let tasks = this.props.tasks;
+        tasks.forEach((task,index) => {
+            task.isChecked = event.target.checked
+            if(task.isChecked)
+            {
+                this.state.taskChecked.push(task.id);
+            }
+            else
+            {
+                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+            }
+        });
+        this.setState({ tasks: tasks });
+        this.props.handleChange(this.state.taskChecked);
+    };
+    
+    handleCheckChieldElement = event => {
+        let tasks = this.props.tasks;
+        tasks.forEach((task,index) => {
+          if (task.id == event.target.value)
+          {
+            task.isChecked = event.target.checked;
+            if(task.isChecked)
+            {
+                this.state.taskChecked.push(task.id);
+            }
+            else
+            {
+                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+            }
+          }
+        });
+        this.setState({ tasks: tasks });
+        this.props.handleChange(this.state.taskChecked);
+    };
 
     getTaskLink = id => {
         if (this.props.page == "approval") {
@@ -345,6 +402,7 @@ class RequestTaskList extends React.Component {
 
     render() {
         const recordPerPage = 10
+        const { t } = this.props
         let tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
@@ -356,99 +414,80 @@ class RequestTaskList extends React.Component {
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
-                            <tr className="text-center">
-                                <th scope="col" className="code">Mã yêu cầu</th>
-                                <th scope="col" className="request-type">Loại yêu cầu</th>
-                                <th scope="col" className="content">ND chỉnh sửa / Yêu cầu</th>
-                                {
-                                    !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="user-request">Người gửi</th>
-                                        : null
-                                }
-                                <th scope="col" className="request-date">Thời gian</th>
-                                <th scope="col" className="user-approved">Người phê duyệt</th>
-                                <th scope="col" className="approval-date">Thời gian phê duyệt</th>
-                                <th scope="col" className="status">Trạng thái</th>
-                                <th scope="col" className="tool text-center">Lý do/ Phản hồi/ Chỉnh sửa</th>
+                            <tr>
+                                <th scope="col" className="check-box">
+                                    <input type="checkbox" onClick={this.handleAllChecked} value="checkedall"/>{" "}
+                                </th>
+                                <th scope="col" className="code">{t("RequestNo")}</th>
+                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                <th scope="col" className="day-off">{t("DayOff")}</th>
+                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="status text-center">{t("Status")}</th>
+                                <th scope="col" className="tool"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {tasks.length > 0 ?
-                                tasks.map((task, index) => {
-                                    const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
+                        {tasks.length > 0 ?
+                                tasks.map((task) => {
                                     let isShowEditButton = this.isShowEditButton(task.status);
                                     let isShowEvictionButton = this.isShowEvictionButton(task.status);
+                                    let isShowDeleteButton = this.isShowDeleteButton(task.status);
                                     let userId = "";
                                     let userManagerId = "";
-                                    if (task.userId) {
+                                    if (task.user.userId) {
                                         userId = task.userId.split("@")[0];
                                     }
-                                    if (task.userManagerId) {
-                                        userManagerId = task.userManagerId.split("@")[0];
-                                    }
                                     return (
-                                        <tr key={index}>
-                                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                                            <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                            <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                            {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center">{userId}</td> : null}
-                                            <td className="request-date text-center"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                                            <td className="user-approved text-center">{userManagerId}</td>
-                                            <td className="approval-date text-center">{approvalDate}</td>
-                                            <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
-                                            <td className="tool">
-                                                {task.comment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'note-task-' + index}>
-                                                        <Popover.Title as="h3">Lý do</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.comment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="Note task" src={notetButton} title="Lý do" />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title="Lý do" className="disabled" />}
-                                                {task.hrComment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'comment-task-' + index}>
-                                                        <Popover.Title as="h3">{this.typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.hrComment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="comment task" src={commentButton} title={this.typeFeedbackMapping[task.requestTypeId]} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={this.typeFeedbackMapping[task.requestTypeId]} />}
-                                                {
-                                                    // isShowEditButton ?
-                                                    //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                    // : null
-                                                }
-                                                {
-                                                    isShowEvictionButton ?
-                                                        <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                        : null
-                                                }
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                                : <tr className="text-center"><th colSpan={9}>Không có dữ liệu</th></tr>
+                                        task.requestInfo.map((child, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td scope="col" className="check-box">
+                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
+                                                    </td>
+                                                    <td className="code">{this.getTaskCode(child.id)}</td>
+                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    <td className="day-off">{child.startDate}</td>
+                                                    <td className="break-time">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày "+ child.totalTimes + " giờ" : null}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
+                                                    <td className="tool">
+                                                        {
+                                                            isShowEditButton ? <>
+                                                                <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                                
+                                                                </>
+                                                            : null
+                                                        }
+                                                        {
+                                                            isShowEvictionButton ?
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                                : null
+                                                        }
+                                                        {
+                                                            isShowDeleteButton ?
+                                                                <span title="Xóa" onClick={e => this.deleteRequest(task.id)}><img alt="Edit task" src={deleteButton} /></span>
+                                                                : null
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    )})
+                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
                     </table>
                 </div>
-                {tasks.length > 0 ? <div className="row paging mt-2">
+                {tasks.length > 0 ? <div className="row paging mt-4">
+                    <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
                         <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
                     </div>
-                    <div className="col-sm text-right">Total: {this.props.tasks.length}</div>
+                    <div className="col-sm"></div>
+                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
                 </div> : null}
             </>)
     }
 }
 
-export default RequestTaskList
+export default withTranslation()(RequestTaskList)
