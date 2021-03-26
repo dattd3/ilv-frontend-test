@@ -21,7 +21,7 @@ class RegistrationComponent extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="registration-section personal-info">
+      <div className="registration-section personal-info justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="LeaveOfAbsenceRegistration" title={t('LeaveRequest')}>
             <LeaveOfAbsence />

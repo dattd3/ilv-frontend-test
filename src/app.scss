@@ -1488,3 +1488,17 @@ span.badge-notification[data-badge]::after {
 .border-radius-10{
   border-radius: 10px;
 }
+
+.icon-box-note{
+  width: 40px;
+  height: 40px;
+  border: 2px solid #347EF9;
+  background-color: #ffffff;
+  font-size: 1.5rem;
+  color: #347EF9;
+  text-align: center;
+  padding: 0.2rem;
+  border-radius: 100%;
+  top: -20px;
+  left: 46%;
+}
