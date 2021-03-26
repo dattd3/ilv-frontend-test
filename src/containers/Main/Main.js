@@ -6,15 +6,15 @@ import SideBar from '../../components/Common/Sidebar';
 import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
 import ScrollToTop from '../../components/Common/ScrollToTop';
-import map from "../map.config";
-import { useTranslation } from "react-i18next";
+// import map from "../map.config";
+// import { useTranslation } from "react-i18next";
 
 
 function MainLayout(props) {
   const [show, SetShow] = useState(true);
   const guard = useGuardStore();
   const user = guard.getCurentUser();
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const setShow = (show) => {
     SetShow(show);
