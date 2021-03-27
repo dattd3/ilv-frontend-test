@@ -6,7 +6,7 @@ import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
-import _, { startsWith } from 'lodash'
+import _ from 'lodash'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
