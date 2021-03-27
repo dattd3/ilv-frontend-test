@@ -22,7 +22,7 @@
   "Menu_TrainingKPI": "Training KPI",
   "Menu_Timesheet": "Timesheet",
   "Menu_LeaveTime": "Leave time",
-  "Menu_HumanResource": "Personal Information",
+  "Menu_HumanResource": "HR",
   "Menu_TermPolicy": "Policy",
   "Menu_CompanyAnnouncement": "Announcement",
   "Menu_ContactAddress": "Contact",
@@ -707,5 +707,17 @@
   "SortByStatus":"Sort by status",
   "Reject": "Reject",
   "Consenter": "Consenter",
-  "Reason/Feedback/Edit":"Reason/Feedback/Edit"
+  "Reason/Feedback/Edit":"Reason/Feedback/Edit",
+  "locale": "en-US",
+  "AddMore": "Add",
+  "AddLeave": "Add Leave",
+  "CancelLeave": "Cancel Leave",
+  "Consenter": "Consenter",
+  "GuideAddLeave": "Select '+' to add leave",
+  "GuideAddLeave2": "Applicable for leaves of same type and reason",
+  "Ok": "OK",
+  "InvalidAppraiser": "Invalid Appraiser",
+  "AddBizTrip": "Add Bussiness/Trip",
+  "RemoveBizTrip": "Cancel Bussiness/Trip",
+  "IfAny": "If any"
 }
