@@ -63,6 +63,7 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({
       timesheets: [...this.state.timesheets]
     })
+    this.verifyInput()
   }
 
   setEndTime(index, name, endTime) {
@@ -70,10 +71,13 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({
       timesheets: [...this.state.timesheets]
     })
+    let errors = this.verifyInput()
+    
   }
 
   updateFiles(files) {
     this.setState({ files: files })
+    this.verifyInput(files)
   }
 
   updateApprover(approver, isApprover) {
@@ -96,6 +100,7 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({
       timesheets: [...this.state.timesheets]
     })
+    this.verifyInput()
   }
 
   handleSelectChange(index, name, value) {
@@ -105,7 +110,7 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
-  verifyInput() {
+  verifyInput(files = []) {
     const { t } = this.props
     let errors = { ...this.state.errors }
     this.state.timesheets.forEach((timesheet, index) => {
@@ -113,11 +118,19 @@ class InOutTimeUpdateComponent extends React.Component {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
+        }else
+        {
+          errors['start_time1_fact_update' + index] = null;
+          errors['end_time1_fact_update' + index] = null
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
           errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? this.props.t("Required") : null
           errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? this.props.t("Required") : null
+        }else
+        {
+          errors['start_time2_fact_update' + index] = null
+          errors['end_time2_fact_update' + index] = null
         }
         errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? this.props.t("Required") : null
       }
@@ -126,7 +139,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    errors['files'] = ((_.isNull(files) || files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }

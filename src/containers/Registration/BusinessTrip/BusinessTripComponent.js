@@ -83,8 +83,8 @@ class BusinessTripComponent extends React.Component {
     this.setState({
       startDate: start,
       endDate: end
-    })
-    this.calculateTotalTime(start, end)
+    }, () => {this.verifyInput()})
+    this.calculateTotalTime(start, end, this.state.startTime, this.state.endTime)
   }
 
   setStartTime(startTime) {
@@ -93,7 +93,7 @@ class BusinessTripComponent extends React.Component {
     this.setState({
       startTime: start,
       endTime: end
-    })
+    }, () => {this.verifyInput()})
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
   }
 
@@ -103,7 +103,7 @@ class BusinessTripComponent extends React.Component {
     this.setState({
       startTime: start,
       endTime: end
-    })
+    }, () => {this.verifyInput()})
     this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
   }
 
@@ -113,8 +113,8 @@ class BusinessTripComponent extends React.Component {
     this.setState({
       startDate: start,
       endDate: end
-    })
-    this.calculateTotalTime(start, end)
+    }, () => {this.verifyInput()})
+    this.calculateTotalTime(start, end, this.state.startTime, this.state.endTime)
   }
 
   calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null) {
@@ -213,7 +213,7 @@ class BusinessTripComponent extends React.Component {
 
     this.setState({
       [name]: value
-    })
+    }, () => {this.verifyInput()})
   }
 
   handleSelectChange(name, value) {
@@ -222,7 +222,7 @@ class BusinessTripComponent extends React.Component {
     } else {
       this.setState({ isShowAddressAndVehicle: true })
     }
-    this.setState({ [name]: value })
+    this.setState({ [name]: value }, () => {this.verifyInput()})
   }
 
   verifyInput() {
