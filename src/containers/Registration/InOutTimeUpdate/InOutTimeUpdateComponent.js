@@ -62,18 +62,20 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
+    }, () => {this.verifyInput()})
+    
   }
 
   setEndTime(index, name, endTime) {
     this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
+    }, () => {this.verifyInput()})
+    
   }
 
   updateFiles(files) {
-    this.setState({ files: files })
+    this.setState({ files: files },() => {this.verifyInput()})
   }
 
   updateApprover(approver, isApprover) {
@@ -95,7 +97,7 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = value
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
+    },() => {this.verifyInput()})
   }
 
   handleSelectChange(index, name, value) {
@@ -113,11 +115,19 @@ class InOutTimeUpdateComponent extends React.Component {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
+        }else
+        {
+          errors['start_time1_fact_update' + index] = null;
+          errors['end_time1_fact_update' + index] = null
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
           errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? this.props.t("Required") : null
           errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? this.props.t("Required") : null
+        }else
+        {
+          errors['start_time2_fact_update' + index] = null
+          errors['end_time2_fact_update' + index] = null
         }
         errors['note' + index] = (_.isNull(timesheet.note) || !timesheet.note) ? this.props.t("Required") : null
       }
