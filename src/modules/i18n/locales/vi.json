@@ -519,6 +519,8 @@
   "DupplicateRequestModifyBirthDayMsg": "Bạn đã cập nhật thông tin (Ngày sinh) trước đó. Thông tin này đang được chờ phê duyệt.",
   "TaskManagement": "Quản lý công việc",
   "RequestManagement": "Quản lý thông tin yêu cầu",
+  "ConsentManagement": "Quản lý thông tin thẩm định",
+  "ApprovalManagement": "Quản lý thông tin phê duyệt",
   "RequestNo": "Mã yêu cầu",
   "RequestSent": "Yêu cầu của bạn đã được gửi đi !",
   "Requestor": "Người gửi yêu cầu",
@@ -716,6 +718,12 @@
   "Skill": "Kỹ năng",
   "LeadershipSkill": "Kỹ năng lãnh đạo",
   "SpecializedSkill": "Kỹ năng chuyên môn",
-  "Experience": "Kinh nghiệp làm việc",
-  "TotalIncomeTaxInclude": "Tổng thu nhập chịu thuế"
+  "TotalIncomeTaxInclude": "Tổng thu nhập chịu thuế",
+  "Experience": "Kinh nghiệm làm việc",
+  "SearchRequester": "Tìm kiếm người yêu cầu",
+  "SortByStatus": "Lọc theo trạng thái",
+  "Reject": "Không phê duyệt",
+  "Consenter": "Cán bộ thẩm định",
+  "Consent" : "Thẩm định",
+  "Reason/Feedback/Edit": "Lý do/Phản hồi/Chỉnh sửa"
 }

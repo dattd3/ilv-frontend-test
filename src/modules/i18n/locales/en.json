@@ -504,6 +504,7 @@
   "DupplicateRequestModifyBirthDayMsg": "Request has been sent. Waiting for Approval.",
   "TaskManagement": "Request Management",
   "RequestManagement": "Request Management",
+  "ConsentManagement": "Consent Management",
   "RequestNo": "Request No.",
   "RequestSent": "Request Sent",
   "Requestor": "Requestor",
@@ -701,5 +702,10 @@
   "LeadershipSkill": "Leadership Skill",
   "SpecializedSkill": "Specialized Skill",
   "Experience": "Experience",
-  "TotalIncomeTaxInclude": "Total Income Tax Include"
+  "TotalIncomeTaxInclude": "Total Income Tax Include",
+  "SearchRequester": "Search requester",
+  "SortByStatus":"Sort by status",
+  "Reject": "Reject",
+  "Consenter": "Consenter",
+  "Reason/Feedback/Edit":"Reason/Feedback/Edit"
 }
