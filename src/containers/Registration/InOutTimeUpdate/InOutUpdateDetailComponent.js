@@ -25,7 +25,7 @@ class InOutUpdateDetailComponent extends React.Component {
 
   dataToSap() {
     let dataToSAP = []
-    this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+    this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
         const endTimeName = `end_time${n}_fact_update`
@@ -39,7 +39,7 @@ class InOutUpdateDetailComponent extends React.Component {
           if (startTime) {
             dataToSAP.push({
               MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              PERNR: this.props.inOutTimeUpdate.user.employeeNo,
               LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
               SATZA: 'P10',
               LTIME: startTime,
@@ -54,7 +54,7 @@ class InOutUpdateDetailComponent extends React.Component {
           if (endTime) {
             dataToSAP.push({
               MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              PERNR: this.props.inOutTimeUpdate.user.employeeNo,
               LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
               SATZA: 'P20',
               LTIME: endTime,
@@ -91,24 +91,24 @@ class InOutUpdateDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.fullname}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.fullname}</div>
             </div>
             <div className="col-3">
               {t("EmployeeCode")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.employeeNo}</div>
             </div>
             <div className="col-3">
               {t("Title")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.jobTitle}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.jobTitle}</div>
             </div>
             <div className="col-3">
               {t("DepartmentManage")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.department}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.department}</div>
             </div>
           </div>
         </div>
         <h5>Thông tin sửa giờ vào - ra</h5>
-        {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
@@ -168,23 +168,23 @@ class InOutUpdateDetailComponent extends React.Component {
           this.getTypeDetail() === "request" ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.status].label)}</span>
+              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].label)}</span>
               {
-                this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
+                this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
               }
             </div>
         }
 
         {
-          this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
+          this.props.inOutTimeUpdate.requestDocuments.length > 0 ?
             <>
               <h5>Tài liệu chứng minh</h5>
               <ul className="list-inline">
-                {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
+                {this.props.inOutTimeUpdate.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
                     <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
                   </li>
@@ -194,10 +194,10 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
 
-        { this.props.inOutTimeUpdate.status === 0 || this.props.inOutTimeUpdate.status === 2 ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 0 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
-          isShowRevocationOfApproval={this.props.inOutTimeUpdate.status === 2}
+          isShowRevocationOfApproval={this.props.inOutTimeUpdate.requestInfo.processStatusId === 2}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
         /> : null}

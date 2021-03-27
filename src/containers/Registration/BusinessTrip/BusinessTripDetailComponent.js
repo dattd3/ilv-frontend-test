@@ -42,42 +42,42 @@ class BusinessTripDetailComponent extends React.Component {
     return (
       <div className="business-trip">
         <h5>Thông tin CBNV đăng ký</h5>
-        <RequesterDetailComponent user={businessTrip.userProfileInfo.user} />
+        <RequesterDetailComponent user={businessTrip.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký Công tác/Đào tạo</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
               {t("StartDateTime")}
-              <div className="detail">{businessTrip.userProfileInfo.startDate + (businessTrip.userProfileInfo.startTime ? ' ' + moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{businessTrip.requestInfo.startDate + (businessTrip.requestInfo.startTime ? ' ' + moment(businessTrip.requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               {t("EndDateTime")}
-              <div className="detail">{businessTrip.userProfileInfo.endDate + (businessTrip.userProfileInfo.endTime ? ' ' + moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{businessTrip.requestInfo.endDate + (businessTrip.requestInfo.endTime ? ' ' + moment(businessTrip.requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               {t('TotalTimeForBizTripAndTraining')}
-              <div className="detail">{(businessTrip && businessTrip.userProfileInfo.totalTime) ? ((businessTrip.userProfileInfo.leaveType == FULL_DAY) ? businessTrip.userProfileInfo.totalTime + ' ' + t("Day") : businessTrip.userProfileInfo.totalTime + ' ' + t("Hour")) : null}</div>
+              <div className="detail">{(businessTrip && businessTrip.requestInfo.totalTimes) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo.totalTimes + ' ' + t("Day") : businessTrip.requestInfo.totalTimes + ' ' + t("Hour")) : null}</div>
             </div>
           </div>
           <div className="row">
             <div className="col-4">
               {t('TypeOfBizTripAndTraining')}
-              <div className="detail">{businessTrip.userProfileInfo.attendanceQuotaType.label}</div>
+              <div className="detail">{businessTrip.requestInfo.attendanceQuotaType.label}</div>
             </div>
             <div className="col-4">
               {t('Location')}
-              <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.place.label}</div>
+              <div className="detail">{businessTrip.requestInfo.place && businessTrip.requestInfo.place.label}</div>
             </div>
             <div className="col-4">
               {t('MeansOfTransportation')}
-              <div className="detail">{businessTrip.userProfileInfo.place && businessTrip.userProfileInfo.vehicle.label}</div>
+              <div className="detail">{businessTrip.requestInfo.vehicle && businessTrip.requestInfo.vehicle.label}</div>
             </div>
           </div>
           <div className="row">
             <div className="col">
               {t('ReasonTripAndTrainning')}
-              <div className="detail">{businessTrip.comment}</div>
+              <div className="detail">{businessTrip.requestInfo.comment}</div>
             </div>
           </div>
         </div>
@@ -86,23 +86,23 @@ class BusinessTripDetailComponent extends React.Component {
           this.getTypeDetail() === "request" ?
           <>
           <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={businessTrip.userProfileInfo.approver} status={businessTrip.status} hrComment={businessTrip.hrComment} />
+          <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.status].className}`}>{t(Constants.mappingStatus[businessTrip.status].label)}</span>
+            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
             {
-              businessTrip.status == Constants.STATUS_NOT_APPROVED ?
+              businessTrip.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
             }
           </div>
         }
 
         {
-          businessTrip.userProfileInfoDocuments.length > 0 ?
+          businessTrip.requestDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
           <ul className="list-inline">
-            {businessTrip.userProfileInfoDocuments.map((file, index) => {
+            {businessTrip.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
                 <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
               </li>
@@ -112,18 +112,18 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
 
-        {businessTrip.status === 0 || businessTrip.status === 2 ? <DetailButtonComponent 
+        {businessTrip.requestInfo.processStatusId === 0 || businessTrip.requestInfo.processStatusId === 2 ? <DetailButtonComponent 
         dataToSap={[{
           MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
-          PERNR: businessTrip.userProfileInfo.user.employeeNo,
-          BEGDA: moment(businessTrip.userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          ENDDA: moment(businessTrip.userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          SUBTY: businessTrip.userProfileInfo.attendanceQuotaType.value,
-          BEGUZ: businessTrip.userProfileInfo.startTime ? moment(businessTrip.userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: businessTrip.userProfileInfo.endTime ? moment(businessTrip.userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          PERNR: businessTrip.user.employeeNo,
+          BEGDA: moment(businessTrip.requestInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          ENDDA: moment(businessTrip.requestInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          SUBTY: businessTrip.requestInfo.attendanceQuotaType.value,
+          BEGUZ: businessTrip.requestInfo.startTime ? moment(businessTrip.requestInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          ENDUZ: businessTrip.requestInfo.endTime ? moment(businessTrip.requestInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           ACTIO: 'INS'
         }]}
-        isShowRevocationOfApproval={businessTrip.status === 2}
+        isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}

@@ -35,10 +35,10 @@ class SubstitutionDetailComponent extends React.Component {
   }
 
   getData() {
-    return this.props.substitution.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
+    return this.props.substitution.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
       return {
         MYVP_ID: 'SUB' + '0'.repeat(8 - this.props.substitution.id.toString().length) + this.props.substitution.id + index,
-        PERNR: this.props.substitution.userProfileInfo.user.employeeNo,
+        PERNR: this.props.substitution.user.employeeNo,
         BEGDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
         ENDDA: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
         TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
@@ -73,25 +73,25 @@ class SubstitutionDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.substitution.userProfileInfo.user.fullname}</div>
+              <div className="detail">{this.props.substitution.user.fullname}</div>
             </div>
             <div className="col-3">
               {t("EmployeeNo")}
-              <div className="detail">{this.props.substitution.userProfileInfo.user.employeeNo}</div>
+              <div className="detail">{this.props.substitution.user.employeeNo}</div>
             </div>
             <div className="col-3">
               {t("Title")}
-              <div className="detail">{this.props.substitution.userProfileInfo.user.jobTitle}</div>
+              <div className="detail">{this.props.substitution.user.jobTitle}</div>
             </div>
             <div className="col-3">
               {t("DepartmentManage")}
-              <div className="detail">{this.props.substitution.userProfileInfo.user.department}</div>
+              <div className="detail">{this.props.substitution.user.department}</div>
             </div>
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
-        {this.props.substitution.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.substitution.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow cbnv" key={index}>
             <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
@@ -162,23 +162,23 @@ class SubstitutionDetailComponent extends React.Component {
           this.getTypeDetail() === "request" ?
           <>
           <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={this.props.substitution.userProfileInfo.approver} status={this.props.substitution.status} hrComment={this.props.substitution.hrComment} />
+          <ApproverDetailComponent approver={this.props.substitution.approver} status={this.props.substitution.requestInfo.processStatusId} hrComment={this.props.substitution.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[this.props.substitution.status].className}`}>{t(Constants.mappingStatus[this.props.substitution.status].label)}</span>
+            <span className={`status ${Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].label)}</span>
             {
-              this.props.substitution.status == Constants.STATUS_NOT_APPROVED ?
+              this.props.substitution.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
             }
           </div>
         }
 
         {
-          this.props.substitution.userProfileInfoDocuments.length > 0 ?
+          this.props.substitution.requestDocuments.length > 0 ?
           <>
           <h5>Tài liệu chứng minh</h5>
           <ul className="list-inline">
-            {this.props.substitution.userProfileInfoDocuments.map((file, index) => {
+            {this.props.substitution.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
                 <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
               </li>
@@ -188,10 +188,10 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
 
-        {this.props.substitution.status == 0 || this.props.substitution.status == 2 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.requestInfo.processStatusId == 0 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
-          isShowRevocationOfApproval={this.props.substitution.status == 2}
-          isShowEvictionRequest={this.props.substitution.status == 0}
+          isShowRevocationOfApproval={this.props.substitution.requestInfo.processStatusId == 2}
+          isShowEvictionRequest={this.props.substitution.requestInfo.processStatusId == 0}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
           hiddenRevocationOfApprovalButton={1}
