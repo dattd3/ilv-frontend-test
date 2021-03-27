@@ -30,7 +30,7 @@ class RegistrationComponent extends React.Component {
             <BusinessTrip />
           </Tab>
           { 
-            ['V030','V060'].includes(localStorage.getItem("companyCode")) ?
+            !['V096','V073'].includes(localStorage.getItem("companyCode")) ?
            <Tab eventKey="SubstitutionRegistration" title={t('ShiftChange')}>
             <SubstitutionComponent />
           </Tab> : null

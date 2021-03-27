@@ -111,7 +111,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({
             startDate: start,
             endDate: end
-        })
+        }, () => {this.verifyInput()})
         this.calculateTotalTime(start, end)
     }
 
@@ -133,7 +133,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({
             startTime: start,
             endTime: end
-        })
+        }, () => {this.verifyInput()})
         this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
@@ -155,18 +155,20 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({
             startTime: start,
             endTime: end
-        })
+        }, () => {this.verifyInput()})
         this.calculateTotalTime(this.state.startDate, this.state.endDate, start, end)
     }
 
     setEndDate(endDate) {
         const start = this.state.leaveType === DURING_THE_DAY ? moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : this.state.startDate
-        const end = moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT)
+        const end = moment(endDate).isValid() ? moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : null
         this.setState({
             startDate: start,
             endDate: end
-        })
+        }, () => {this.verifyInput()})
         this.calculateTotalTime(start, end)
+        
+        
     }
 
     calculateTotalTime(startDate, endDate, startTime = this.state.startTime, endTime = this.state.endTime) {
@@ -279,7 +281,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         this.setState({
             [name]: value
-        })
+        }, () => {this.verifyInput()})
     }
 
     handleSelectChange(name, value) {
@@ -296,6 +298,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
                 this.setState({ errors: errors })
             }
+           this.verifyInput()
         })
     }
 
