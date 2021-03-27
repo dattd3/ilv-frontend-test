@@ -62,22 +62,20 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
-    this.verifyInput()
+    }, () => {this.verifyInput()})
+    
   }
 
   setEndTime(index, name, endTime) {
     this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
-    let errors = this.verifyInput()
+    }, () => {this.verifyInput()})
     
   }
 
   updateFiles(files) {
-    this.setState({ files: files })
-    this.verifyInput(files)
+    this.setState({ files: files },() => {this.verifyInput()})
   }
 
   updateApprover(approver, isApprover) {
@@ -99,8 +97,7 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = value
     this.setState({
       timesheets: [...this.state.timesheets]
-    })
-    this.verifyInput()
+    },() => {this.verifyInput()})
   }
 
   handleSelectChange(index, name, value) {
@@ -110,7 +107,7 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
-  verifyInput(files = []) {
+  verifyInput() {
     const { t } = this.props
     let errors = { ...this.state.errors }
     this.state.timesheets.forEach((timesheet, index) => {
@@ -139,7 +136,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(files) || files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
