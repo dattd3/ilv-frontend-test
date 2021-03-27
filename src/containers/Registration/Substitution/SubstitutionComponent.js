@@ -80,7 +80,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   verifyInput() {
-    let errors = {...this.state.errors}
+    let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
       if(!timesheet.isEdit) return;
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
@@ -228,7 +228,7 @@ class SubstitutionComponent extends React.Component {
     timesheets[index][name] = value
     this.setState({
       timesheets: [...timesheets]
-    })
+    }, () => {this.verifyInput()})
   }
 
   updateNote(index, e) {
@@ -236,7 +236,7 @@ class SubstitutionComponent extends React.Component {
     timesheets[index].note = e.currentTarget.value
     this.setState({
       timesheets: [...timesheets]
-    })
+    }, () => {this.verifyInput()})
   }
 
   updateSubstitution(index, item) {
@@ -249,7 +249,7 @@ class SubstitutionComponent extends React.Component {
     timesheets[index].substitutionType = item
     this.setState({
       timesheets: [...timesheets]
-    })
+    }, () => {this.verifyInput()})
   }
 
   updateFiles(files) {
@@ -272,7 +272,7 @@ class SubstitutionComponent extends React.Component {
     timesheets[index].isEdit = !this.state.timesheets[index].isEdit
     this.setState({
       timesheets: [...timesheets]
-    })
+    }, () => {this.verifyInput()})
   }
 
   updateShiftType(shiftType, index) {
@@ -295,7 +295,7 @@ class SubstitutionComponent extends React.Component {
         timesheets: [...timesheets],
         errors: {},
         isShowStartBreakTimeAndEndBreakTime: false
-      })
+      }, () => {this.verifyInput()})
     }
   }
 
@@ -307,14 +307,14 @@ class SubstitutionComponent extends React.Component {
     timesheets[index].endTime = moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
     this.setState({
       timesheets: [...timesheets]
-    })
+    }, () => {this.verifyInput()})
   }
 
   updateTotalHours(index, totalHours) {
     const timesheets = [...this.state.timesheets]
     timesheets[index].shiftHours = moment.duration(totalHours).asHours()
 
-    this.setState({totalHours: totalHours, timesheets: timesheets})
+    this.setState({totalHours: totalHours, timesheets: timesheets}, () => {this.verifyInput()})
   }
 
   showStatusModal = (title, message, isSuccess = false) => {
@@ -340,14 +340,14 @@ class SubstitutionComponent extends React.Component {
       i == index ? { ...item, [type]: time } : item
     );
 
-    this.setState({ timesheets: timesheets })
+    this.setState({ timesheets: timesheets }, () => {this.verifyInput()})
   }
 
   onChangeShiftCodeFilter = (index, e) => {
     const timesheets = [...this.state.timesheets].map((item, i) =>
       i == index ? { ...item, "shiftCodeFilter": e.target.value ? e.target.value : ""} : item
     );
-    this.setState({ timesheets: timesheets })
+    this.setState({ timesheets: timesheets }, () => {this.verifyInput()})
   }
 
   search() {
