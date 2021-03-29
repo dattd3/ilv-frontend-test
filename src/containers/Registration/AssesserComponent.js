@@ -174,7 +174,7 @@ class AssesserComponent extends React.Component {
             {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
           </div>
           <div className="col-12 col-xl-4">
-            <p className="title">{t('Title')}</p>
+            <p className="title">{t('Position')}</p>
             <div>
               <input type="text" className="form-control" value={this.state.appraiser ? this.state.appraiser.current_position : ""} readOnly />
             </div>

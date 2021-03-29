@@ -42,6 +42,8 @@ class FormSearchComponent extends React.Component {
         const thisYear = (new Date()).getFullYear()
         const years = [0,1,2,3,4,5,6,7,8,9].map(index => thisYear - index)
 
+        const lang = localStorage.getItem("locale")
+
         return (
             <div className="search-block">
             <h4 className="h4 title-search-block">{t("SelectMonth")}</h4>
@@ -57,7 +59,7 @@ class FormSearchComponent extends React.Component {
                 <Col sm={4}>
                     <Form.Control as="select" name="year" value={this.state.year} className="text-capitalize" onChange={this.setMonthYear.bind(this)}>
                         {years.map((year, index) => {
-                            return <option key={index} value={year} className="text-capitalize">{`${t("Year")} ` + year}</option>
+                            return <option key={index} value={year} className="text-capitalize">{`${lang === "vi-VN" ? t("Year") : ""} ` + year}</option>
                         })}
                     </Form.Control>
                 </Col>

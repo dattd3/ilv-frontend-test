@@ -353,7 +353,7 @@ class BusinessTripComponent extends React.Component {
   }
 
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
     const vehicles = [
       { value: '1', label: t('PrivateVehicles') },
       { value: '2', label: t('Taxi') },
@@ -392,10 +392,10 @@ class BusinessTripComponent extends React.Component {
                 <p className="text-uppercase"><b>{t('BizTrip_TrainingTime')}</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
                   <label onClick={this.updateLeaveType.bind(this, FULL_DAY)} className={this.state.leaveType === FULL_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                    Cả ngày
+                    {t("FullDayBizTrip")}
                   </label>
                   <label onClick={this.updateLeaveType.bind(this, DURING_THE_DAY)} className={this.state.leaveType === DURING_THE_DAY ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                    Theo giờ
+                    {t("ByHoursBizTrip")}
                   </label>
                 </div>
               </div>
@@ -496,7 +496,7 @@ class BusinessTripComponent extends React.Component {
               </div>
 
               <div className="col-2">
-                <p className="title">Tổng thời gian</p>
+                <p className="title">{t("TotalBizTrip")}</p>
                 <div>
                   <input type="text" className="form-control" value={this.showTotalTime()} readOnly />
                 </div>
@@ -517,7 +517,7 @@ class BusinessTripComponent extends React.Component {
                 this.state.isShowAddressAndVehicle && !['V073'].includes(localStorage.getItem("companyCode")) ?
                   <>
                     <div className="col-5">
-                      <p className="title">{t('Location')}</p>
+                      <p className="title">{t('Destination')}</p>
                       <div>
                         <Select name="place" value={this.state.place} onChange={place => this.handleSelectChange('place', place)} placeholder={t('Select')} key="place" options={places} />
                       </div>
