@@ -166,7 +166,7 @@ class SubmitQuestionModal extends React.Component {
                                 <div className="content input-container ">
                                     <Select
                                         defaultValue={categoriesDisplay[0]}
-                                        placeholder="Chọn nhóm câu hỏi..."
+                                        placeholder={t("SelectCategory")}
                                         options={categoriesDisplay}
                                         onChange={this.setCategory.bind(this)} />
                                 </div>
@@ -179,7 +179,7 @@ class SubmitQuestionModal extends React.Component {
                                     value={this.state.questionContent}
                                     onChange={this.handleChange.bind(this)} />
                                 <Form.Control.Feedback type="invalid">
-                                    Điền nội dung câu hỏi !
+                                    {t("EnterQuestion")}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.CBQL">

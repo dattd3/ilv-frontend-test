@@ -133,7 +133,7 @@ class QuestionAndAnswerDetails extends React.Component {
     };
     axios(config)
       .then(function (response) {
-        callBack("Gửi trả lời thành công!", true);
+        callBack(this.props.t("ResponseSentSuccessfully"), true);
       })
       .catch(function (error) {
         callBack("Rất tiếc, có lỗi xảy ra!");

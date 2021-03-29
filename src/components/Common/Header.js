@@ -26,6 +26,7 @@ function Header(props) {
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
     const guard = useGuardStore();
+    const {t} = useTranslation();
 
     let totalNotificationUnRead = 0;
     const companyCode = localStorage.getItem('companyCode');
@@ -41,9 +42,9 @@ function Header(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-            timePost = Math.floor(minutes) + " phút trước";
+            timePost = Math.floor(minutes) + t("minutesAgo");
         } else if (hours < 24) {
-            timePost = Math.floor(hours) + " giờ trước";
+            timePost = Math.floor(hours) + t("hoursAgo");
         }
         return timePost;
     }
@@ -104,7 +105,7 @@ function Header(props) {
                                 <p className="description">{item.description != null ? item.description : ""}</p>
                                 <div className="time-file">
                                     <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span> : ""}
+                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
                                 </div>
                             </div>
                         })
@@ -124,7 +125,6 @@ function Header(props) {
         }
     }
 
-    const { t } = useTranslation();
 
     Auth.currentUserInfo().then(currentAuthUser => {
         if (currentAuthUser === undefined || currentAuthUser === null) {
