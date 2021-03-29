@@ -242,7 +242,7 @@ class LeaveOfAbsenceComponent extends React.Component {
       }
     }
     const isVerifiedDateTime = this.validateTimeRequest(requestInfo)
-
+return
     if(!isVerifiedDateTime) return
   
     const start = moment(startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
@@ -280,42 +280,40 @@ class LeaveOfAbsenceComponent extends React.Component {
       })
   }
 
-  async validateTimeRequest(requestInfo){
-    let newRequestInfo = []
+  validateTimeRequest(requestInfo){
     const times = requestInfo.map(req => ({
       id: req.groupItem,
       from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
       from_time: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
       to_date: req.isAllDay ? "" : moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
       to_time: req.isAllDay ? "" : moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-      leave_type: req.absenceType?.value || ""
+      leave_type: req.absenceType?.value || "",
+      group_id: req.groupItem
     }))
 
     let verifiedDateTime = true
-    await axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
       perno: localStorage.getItem('employeeNo'),
       times: times,
     })
     .then(res => {
-      if(res && res.data && res.data.data){
-        newRequestInfo = requestInfo.map(req => {
-          res.data.data.forEach(time => {
-            if(!time.is_valid && time.groupId === req.groupId &&  time.id === req.groupItem){
+      if(res && res.data && res.data.data && res.data.data.times.length > 0){
+        const newRequestInfo = requestInfo.map(req => {
+          const errors = req.errors
+          res.data.data.times.map(time => {
+            if(!time.is_valid && parseInt(time.group_id) === req.groupId &&  parseInt(time.id) === req.groupItem){
               verifiedDateTime = false
-              return ({
-                ...req,
-                errors: {
-                  ...req.errors,
-                  totalDaysOff: time.message
-                }
-              })
+              errors.totalDaysOff = time.message
             }
           })
-          return req
+          return {
+            ...req,
+            errors
+          }
         })
+        this.setState({ requestInfo: newRequestInfo })
       }
     })
-    this.setState({ requestInfo: newRequestInfo })
     return verifiedDateTime;
   }
 
@@ -641,7 +639,6 @@ class LeaveOfAbsenceComponent extends React.Component {
 
   render() {
     const { t, leaveOfAbsence } = this.props;
-    const employeeLevel = localStorage.getItem("employeeLevel")
     let absenceTypes = [
       { value: 'IN01', label: t('SickLeave') },
       { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
