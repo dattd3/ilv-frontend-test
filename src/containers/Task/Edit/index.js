@@ -632,7 +632,7 @@ class PersonalInfoEdit extends React.Component {
         }
       })
       .catch(response => {
-        this.handleShowModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+        this.handleShowModal(t("Notification"), t("Error"), "error");
       });
   }
 
@@ -1131,7 +1131,7 @@ class PersonalInfoEdit extends React.Component {
 
             <div className="clearfix mb-5">
               {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-              <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+              <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}</button>
               <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
               <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
             </div>
