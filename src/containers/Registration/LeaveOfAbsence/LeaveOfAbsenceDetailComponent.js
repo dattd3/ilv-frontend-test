@@ -202,7 +202,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             : null
         }
 
-        {requestInfo && (requestInfo.processStatusId === 0 || requestInfo.processStatusId === 2) ? <DetailButtonComponent dataToSap={
+        {requestInfo && (requestInfo.processStatusId === 5 || requestInfo.processStatusId === 2) ? <DetailButtonComponent dataToSap={
           // [{
           // MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
           // PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",
@@ -225,6 +225,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ]
         }
           isShowRevocationOfApproval={requestInfo.processStatusId === 2}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === 6}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}
