@@ -120,7 +120,7 @@ class JobDesc extends React.Component {
         <div className="row">
           <div className="offset-md-3 col-md-6">
             <div className="form-group">
-              <label>Upload Job Description</label>
+              <label>{t("UploadJobDescription")}</label>
               <input
                 type="file"
                 className="form-control"
@@ -147,7 +147,7 @@ class JobDesc extends React.Component {
           </div>
           <div style={{ marginTop: 40 }} className="offset-md-3 col-md-6">
             <div className="form-group">
-              <label>Upload Job Ids</label>
+              <label>{t("UploadJobIds")}</label>
               <input
                 type="file"
                 className="form-control"

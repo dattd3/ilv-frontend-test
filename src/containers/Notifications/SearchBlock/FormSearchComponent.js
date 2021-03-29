@@ -18,7 +18,7 @@ function FormSearchComponent(props) {
     if (props && props.phones && props.phones.length > 0) {
         dataBlock = <>
         <div className="contact-block">
-            <p className="title">Thắc mắc vui lòng liên hệ</p>
+            <p className="title">{t("ForAssistance")}</p>
             <div className="phone">
                 <ul>
                 {

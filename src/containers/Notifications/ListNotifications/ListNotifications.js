@@ -3,7 +3,8 @@ import { useApi, useFetcher } from "../../../modules";
 import moment from 'moment';
 import Constants from '../../../commons/Constants';
 import CustomPaging from '../../../components/Common/CustomPaging';
-import FormSearchComponent from '../SearchBlock/FormSearchComponent'
+import FormSearchComponent from '../SearchBlock/FormSearchComponent';
+import { useTranslation } from "react-i18next";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -33,6 +34,7 @@ function ListNotifications(props) {
     const [page, SetPage] = useState(Constants.NOTIFICATION_PAGE_INDEX_DEFAULT);
     const [pageSize, SetPageSize] = useState(Constants.NOTIFICATION_PAGE_SIZE_DEFAULT);
     const [keyword, SetKeyword] = useState("");
+    const { t } = useTranslation();
 
     const lv3 = localStorage.getItem('organizationLv3')
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
@@ -61,9 +63,9 @@ function ListNotifications(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-            timePost = Math.floor(minutes) + " phút trước";
+            timePost = Math.floor(minutes) + t("minutesAgo");
         } else if (hours < 24) {
-            timePost = Math.floor(hours) + " giờ trước";
+            timePost = Math.floor(hours) + t("hoursAgo");
         }
         return timePost;
     }
@@ -99,16 +101,16 @@ function ListNotifications(props) {
                             {item.hasAttachmentFiles ?
                             <span className="attachment-block">
                                 <i className="fas fa-paperclip ic-attachment"></i>
-                                <span>Có tệp tin đính kèm</span>
+                                <span>{t("HasAttachments")}</span>
                             </span>
                             : null
                             }
                             </div>
-                            <a href={`/notifications/${item.id}`} title="Xem chi tiết" className="detail-link">Xem chi tiết</a>
+                            <a href={`/notifications/${item.id}`} title="Xem chi tiết" className="detail-link">{t("Details")}</a>
                         </div>
                         </div>
                     </div>
-                }) : <p className='text-center'>Không có thông báo nội bộ !</p>
+                }) : <p className='text-center'>{t("NoNotifications")} !</p>
             }
             </>;
         }
