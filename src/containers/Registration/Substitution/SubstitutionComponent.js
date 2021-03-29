@@ -197,7 +197,7 @@ class SubstitutionComponent extends React.Component {
       }
     })
     .catch(response => {
-      this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
       this.setDisabledSubmitButton(false)
     })
   }

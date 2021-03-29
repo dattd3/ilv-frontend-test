@@ -59,7 +59,7 @@ function NewsDetailElement({ match, location }) {
                 <div className="news-detail" dangerouslySetInnerHTML={{ __html: content }}>
                 </div>
                 <div className="news-source text-right small">
-                    <a href={detail.sourceUrl} className="text-gray-600" target='_blank'>Xem bài gốc</a>
+                    <a href={detail.sourceUrl} className="text-gray-600" target='_blank'>{t("SeeOriginalArticle")}</a>
                 </div>
                 <hr />
                 <NewsRelationApp id={Id} />
