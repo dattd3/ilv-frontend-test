@@ -447,7 +447,7 @@ class RequestTaskList extends React.Component {
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off">{child.startDate}</td>
-                                                    <td className="break-time">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày "+ child.totalTimes + " giờ" : null}</td>
+                                                    <td className="break-time">{(child.totalDays ||  child.hours) ? child.totalDays +" ngày "+ child.hours + " giờ" : 0}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
                                                         {
