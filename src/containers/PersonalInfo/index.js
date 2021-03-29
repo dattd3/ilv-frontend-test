@@ -128,11 +128,11 @@ class MyComponent extends React.Component {
                   <table>
                     <tbody>
                       <tr>
-                        <td className="info-label">{t("FirstAndLastName")}</td>
+                        <td className="info-label">{t("FullName")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.fullname}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("EmployeeCode")}</td>
+                        <td className="info-label">{t("EmployeeNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.uid}</p></td>
                       </tr>
                       <tr>
@@ -144,7 +144,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.vinid}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("TaxCode")}</td>
+                        <td className="info-label">{t("PitNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.tax_number}</p></td>
                       </tr>
                       <tr>
@@ -156,11 +156,11 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.birth_province}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Sex")}</td>
+                        <td className="info-label">{t("Gender")}</td>
                         <td className="info-value"><p>&nbsp;{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("Nationality")}</td>
+                        <td className="info-label">{t("Country")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.nationality}</p></td>
                       </tr>
                       <tr>
@@ -201,7 +201,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.work_permit_no}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("WorkPermitExpireDate")}</td>
+                        <td className="info-label">{t("ExpiryDate")}</td>
                         <td className="info-value"><p>&nbsp;</p></td>
                       </tr>
                       <tr>
@@ -221,7 +221,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_email}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("MobilePhone")}</td>
+                        <td className="info-label">{t("MobileNo")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
                       </tr>
                       <tr>
@@ -250,11 +250,11 @@ class MyComponent extends React.Component {
                   <table>
                     <tbody>
                       <tr>
-                        <td className="info-label">{t("GroupJoinedDate")}</td>
+                        <td className="info-label">{t("VingroupOnboardDate")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_inc}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("CompanyJoinedDate")}</td>
+                        <td className="info-label">{t("PAndLOnboardDate")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_co}</p></td>
                       </tr>
                       <tr>
@@ -266,11 +266,11 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp; {this.state.userProfile.current_position}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("LevelByTitle")}</td>
+                        <td className="info-label">{t("GradeByTitle")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name_title}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("ActualLevel")}</td>
+                        <td className="info-label">{t("ActualGrade")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name}</p></td>
                       </tr>
                       <tr>
@@ -286,7 +286,7 @@ class MyComponent extends React.Component {
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
                       </tr>
                       <tr>
-                        <td className="info-label">{t("DepartmentName")}</td>
+                        <td className="info-label">{t("Team")}</td>
                         <td className="info-value"><p>&nbsp;{this.state.userProfile.part}</p></td>
                       </tr>
                       <tr>
@@ -397,10 +397,10 @@ class MyComponent extends React.Component {
                             {t("TypeOfDegree")}
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            {t("Specialty")}
+                            {t("Major")}
                           </Col>
                           <Col xs={12} md={6} lg={3}>
-                            {t("LearningTime")}
+                            {t("Cohort")}
                           </Col>
                         </Row>
                         <Row className="info-value">
@@ -443,14 +443,14 @@ class MyComponent extends React.Component {
               }
             </Container>
           </Tab>
-          <Tab eventKey="PersonalRelations" title={t("PersonalRelations")}>
+          <Tab eventKey="PersonalRelations" title={t("Family")}>
             <Container fluid className="info-tab-content shadow">
               {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
                 this.state.userFamily.map((item, i) => {
                   return <div key={i}>
                     <Row className="info-label">
                       <Col xs={12} md={6} lg={3}>
-                        {t("FirstAndLastName")}
+                        {t("FullName")}
                       </Col>
                       <Col xs={12} md={6} lg={1}>
                         {t("Relationship")}

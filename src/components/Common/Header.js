@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
 import { Animated } from "react-animated-css";
+import VILangIcon from '../../../src/assets/img/vi_lang.jpg';
+import ENLangIcon from '../../../src/assets/img/en_lang.jpg';
+import { useLocalizeStore } from '../../modules';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -22,9 +25,11 @@ const getOrganizationLevelByRawLevel = level => {
 }
 
 function Header(props) {
+    const localizeStore = useLocalizeStore();
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
+    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"))
     const guard = useGuardStore();
     const {t} = useTranslation();
 
@@ -138,7 +143,14 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
+    
+    const onChangeLocale = lang => {
+        setActiveLang(lang)
+    }
 
+    useEffect(() => { 
+        localizeStore.setLocale(activeLang || "vi-VN") 
+      }, [activeLang, localizeStore]);
 
     return (
         isApp ? null :
@@ -188,7 +200,17 @@ function Header(props) {
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
-                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
+                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")} className={activeLang === "vi-VN" ? "bg-primary text-light" : "" }>
+                                <img src={VILangIcon} className="mr-2" width={25} height={15}/>
+                                {t("LangViet")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => onChangeLocale("en-US")} className={activeLang === "en-US" ? "bg-primary text-light" : "" }>
+                                <img src={ENLangIcon} className="mr-2" width={25} height={15}/>
+                                {t("LangEng")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                {t("Logout")}
+                            </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Navbar>

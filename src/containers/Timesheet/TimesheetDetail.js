@@ -9,11 +9,11 @@ function WorkingDay(props) {
   return (
     <div className="content">
       <div className="item">
-        <p>{t("Start")} {props.index}</p>
+        <p>{t("StartTime")} {props.index}</p>
         <p className="data"><b>{props.startTime || ""}</b>&nbsp;</p>
       </div>
       <div className="item">
-        <p>{t("End")} {props.index}</p>
+        <p>{t("EndTime")} {props.index}</p>
         <p className="data"><b>{props.endTime || ""}</b>&nbsp;</p>
       </div>
     </div>
@@ -39,6 +39,8 @@ function Content(props) {
     return dayName
   }
 
+  const lang = localStorage.getItem("locale")
+
   return (
     <>
       <Button
@@ -49,7 +51,7 @@ function Content(props) {
         block >
         <div className="row">
           <div className="col-9">
-            <i className={!open ? 'fa fa-plus-circle text-lowercase' : 'fa fa-minus-circle text-lowercase'}>&nbsp;</i>{getDayName(props.timesheet.date) + ` ${t("Day")} ` + props.timesheet.date.replace(/-/g, '/')}
+            <i className={!open ? 'fa fa-plus-circle text-lowercase' : 'fa fa-minus-circle text-lowercase'}>&nbsp;</i>{getDayName(props.timesheet.date) + `${lang === "vi-VN" ? " ngày " : ", "}` + props.timesheet.date.replace(/-/g, '/')}
           </div>
           <div className="col-3">
             <Fade in={props.timesheet.start_time1_plan == null}>
