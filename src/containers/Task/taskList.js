@@ -505,8 +505,8 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{task.user.jobTitle}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off text-center">{child.startDate}</td>
-                                                    <td className="break-time text-center">{(child.totalDays ||  child.totalTimes) ? child.totalDays +" ngày "+ child.totalTimes + " giờ" : null}</td>
-                                                    <td className="appraiser text-center">{task.appraiser.fullname}</td>
+                                                    <td className="break-time text-center">{(child.totalDays ||  child.hours) ? child.totalDays +" ngày "+ child.hours + " giờ" : 0}</td>
+                                                    <td className="appraiser text-center">{task.appraiser?.fullname}</td>
                                                     <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
                                                         {child.comment ? <OverlayTrigger
@@ -557,10 +557,10 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
