@@ -183,7 +183,7 @@ class AddressModal extends React.Component {
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                {t("Province")}
+                                {t("City")}
                             </div>
                             <div className="col-7">
                                 <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvice.bind(this)} value={this.state.province} />
