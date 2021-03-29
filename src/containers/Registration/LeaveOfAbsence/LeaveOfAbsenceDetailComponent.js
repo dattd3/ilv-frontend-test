@@ -72,7 +72,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-2">
              {t("FullName")}
-              <div className="detail">{userProfileInfo? userProfileInfo.fullname : ""}</div>
+              <div className="detail">{userProfileInfo? userProfileInfo.fullName : ""}</div>
             </div>
             <div className="col-2">
               {t("EmployeeNo")}
@@ -120,15 +120,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
               {t("StartDateTime")}
-              <div className="detail">{requestInfo ? requestInfo.startDate + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-3">
               {t("EndDateTime")}
-              <div className="detail">{requestInfo ? requestInfo.endDate + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-3">
               {t("TotalLeaveTime")}
-              <div className="detail">{ requestInfo && requestInfo.totalDays ? requestInfo.totalDays + ' ngày' : "" } { requestInfo && requestInfo.totalTimes ? requestInfo.totalTimes + ' giờ' :""}</div>
+              <div className="detail">{ requestInfo && requestInfo.days ? requestInfo.days + ' ngày' : 0 } { requestInfo && requestInfo.hours ? requestInfo.hours + ' giờ' : null}</div>
             </div>
             <div className="col-3">
               {t("LeaveCategory")}
@@ -202,7 +202,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             : null
         }
 
-        {requestInfo && (requestInfo.processStatusId === 5 || requestInfo.processStatusId === 2) ? <DetailButtonComponent dataToSap={
+        {requestInfo && (requestInfo.processStatusId === 8 || requestInfo.processStatusId === 5 || requestInfo.processStatusId === 2 ) ? <DetailButtonComponent dataToSap={
           // [{
           // MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
           // PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",

@@ -134,6 +134,7 @@ class TaskList extends React.Component {
             5: { label: this.props.t("Waiting"), className: 'request-status' },
             6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
             7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
+            8: { label: this.props.t("Waiting"), className: 'request-status' },
         }
 
         const options = [
@@ -501,11 +502,11 @@ class TaskList extends React.Component {
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                     </td>
                                                     <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullname}</a></td> : null}
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
                                                     <td className="user-title">{task.user.jobTitle}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                                    <td className="day-off text-center">{child.startDate}</td>
-                                                    <td className="break-time text-center">{(child.totalDays ||  child.hours) ? child.totalDays +" ngày "+ child.hours + " giờ" : 0}</td>
+                                                    <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
+                                                    <td className="break-time text-center">{(child.days ||  child.hours) ? (child.days ? child.days : 0 ) +" ngày "+ (child.hours ? child.hours : 0)  + " giờ" : 0}</td>
                                                     <td className="appraiser text-center">{task.appraiser?.fullname}</td>
                                                     <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
