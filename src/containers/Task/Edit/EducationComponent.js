@@ -110,7 +110,7 @@ class EducationComponent extends React.Component {
         {t("Major")}
         </Col>
       <Col xs={12} md={6} lg={3}>
-        {t("LearningTime")}
+        {t("Cohort")}
         </Col>
     </Row>
   }
@@ -211,7 +211,7 @@ class EducationComponent extends React.Component {
         <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
           <span className="mr-5"><i className="note note-old"></i> {t("Record")}</span>
-          <span><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
+          <span><i className="note note-new"></i> {t("NewInformation")}</span>
           <hr />
           {this.props.education.map((item, i) => {
             let ed = [];

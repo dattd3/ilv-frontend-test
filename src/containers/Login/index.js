@@ -34,9 +34,11 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [langCode, setLangCode] = useState('vi-VN');
+  const [langCode, setLangCode] = useState(localStorage.getItem("locale"));
 
-  useEffect(() => { localizeStore.setLocale(langCode); }, [langCode, localizeStore]);
+  useEffect(() => { 
+    localizeStore.setLocale(langCode || "vi-VN") 
+  }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
     const authConfig = Auth.configure();

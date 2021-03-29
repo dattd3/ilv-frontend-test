@@ -103,7 +103,7 @@ class PersonalComponent extends React.Component {
                 <div className="box shadow wrap-item">
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> {t("Record")}</div>
-                        <div className="col"><i className="note note-new"></i> {t("AdjustmentInformation")}</div>
+                        <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>
                     </div>
                     <hr/>
                     {
