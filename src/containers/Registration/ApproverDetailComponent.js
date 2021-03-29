@@ -11,7 +11,7 @@ function ApproverDetailComponent(props) {
         <div className="detail">{props.approver ? props.approver.fullname : null}</div>
       </div>
       <div className="col-4">
-        {t('Title')}
+        {t('Position')}
         <div className="detail">{props.approver ? props.approver.current_position : null}</div>
       </div>
       <div className="col-4">
