@@ -151,6 +151,7 @@ class RequestTaskList extends React.Component {
             5: { label: this.props.t("Waiting"), className: 'request-status' },
             6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
             7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
+            8: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
         const options = [
@@ -446,8 +447,8 @@ class RequestTaskList extends React.Component {
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                                    <td className="day-off">{child.startDate}</td>
-                                                    <td className="break-time">{(child.totalDays ||  child.hours) ? child.totalDays +" ngày "+ child.hours + " giờ" : 0}</td>
+                                                    <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
+                                                    <td className="break-time">{(child.days ||  child.hours) ? child.days +" ngày "+ child.hours + " giờ" : 0}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
                                                         {

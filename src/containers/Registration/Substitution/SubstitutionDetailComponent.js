@@ -73,7 +73,7 @@ class SubstitutionDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.substitution.user.fullname}</div>
+              <div className="detail">{this.props.substitution.user.fullName}</div>
             </div>
             <div className="col-3">
               {t("EmployeeNo")}
@@ -188,13 +188,15 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
 
-        {this.props.substitution.requestInfo.processStatusId == 0 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.requestInfo.processStatusId == 8 || this.props.substitution.requestInfo.processStatusId == 5 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
           isShowRevocationOfApproval={this.props.substitution.requestInfo.processStatusId == 2}
           isShowEvictionRequest={this.props.substitution.requestInfo.processStatusId == 0}
+          isShowRevocationOfConsent = {this.props.substitution.requestInfo.processStatusId === 6}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
           hiddenRevocationOfApprovalButton={1}
+          action={this.props.action}
         /> : null}
       </div>
     )

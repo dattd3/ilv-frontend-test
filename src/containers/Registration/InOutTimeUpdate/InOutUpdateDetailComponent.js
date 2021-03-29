@@ -91,7 +91,7 @@ class InOutUpdateDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.inOutTimeUpdate.user.fullname}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.fullName}</div>
             </div>
             <div className="col-3">
               {t("EmployeeCode")}
@@ -194,12 +194,14 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
 
-        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 0 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 8 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 5 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
           isShowRevocationOfApproval={this.props.inOutTimeUpdate.requestInfo.processStatusId === 2}
+          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.requestInfo.processStatusId === 6}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
+          action={this.props.action}
         /> : null}
       </div>
     )
