@@ -242,7 +242,6 @@ class LeaveOfAbsenceComponent extends React.Component {
       }
     }
     const isVerifiedDateTime = this.validateTimeRequest(requestInfo)
-
     if(!isVerifiedDateTime) return
   
     const start = moment(startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
@@ -280,43 +279,70 @@ class LeaveOfAbsenceComponent extends React.Component {
       })
   }
 
-  async validateTimeRequest(requestInfo){
-    let newRequestInfo = []
-    const times = requestInfo.map(req => ({
-      id: req.groupItem,
-      from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-      from_time: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-      to_date: req.isAllDay ? "" : moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-      to_time: req.isAllDay ? "" : moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-      leave_type: req.absenceType?.value || ""
-    }))
-
-    let verifiedDateTime = true
-    await axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
-      perno: localStorage.getItem('employeeNo'),
-      times: times,
-    })
-    .then(res => {
-      if(res && res.data && res.data.data){
-        newRequestInfo = requestInfo.map(req => {
-          res.data.data.forEach(time => {
-            if(!time.is_valid && time.groupId === req.groupId &&  time.id === req.groupItem){
-              verifiedDateTime = false
-              return ({
-                ...req,
-                errors: {
-                  ...req.errors,
-                  totalDaysOff: time.message
-                }
-              })
-            }
-          })
-          return req
+  validateTimeRequest(requestInfo){
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+    const times = [];
+    requestInfo.forEach(req => {
+      const startTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+      const endTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+      if (req.startDate && req.endDate && ((!req.isAllDay && startTime && startTime) || req.isAllDay)) {
+        times.push({
+          id: req.groupItem,
+          from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+          from_time: !req.isAllDay ? startTime : "",
+          to_date:  moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
+          to_time: !req.isAllDay ? endTime : "",
+          leave_type: req.absenceType?.value || "",
+          group_id: req.groupItem
         })
       }
     })
-    this.setState({ requestInfo: newRequestInfo })
-    return verifiedDateTime;
+
+    if(times.length === 0) return
+
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
+      perno: localStorage.getItem('employeeNo'),
+      times: times,
+    }, config)
+    .then(res => {
+      if(res && res.data && res.data.data && res.data.data.times.length > 0){
+        const newRequestInfo = requestInfo.map(req => {
+          const errors = req.errors
+          let totalTimes
+          let totalDays
+          res.data.data.times.map(time => {
+            if(parseInt(time.group_id) === req.groupId &&  parseInt(time.id) === req.groupItem){
+              errors.totalDaysOff = !time.is_valid ? time.message : null
+              totalTimes = time.hours
+              totalDays = time.days
+            }
+            
+          })
+          return {
+            ...req,
+            errors,
+            totalTimes,
+            totalDays
+          }
+        })
+        this.setState({ requestInfo: newRequestInfo })
+      }
+    }).catch(error => {
+      
+      const newRequestInfo = requestInfo.map(req => {
+        const errors = req.errors
+        errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+        return {
+          ...req,
+          errors,
+        }
+      })
+      this.setState({ newRequestInfo })
+    })
   }
 
   calFullDay(timesheets) {
@@ -641,7 +667,6 @@ class LeaveOfAbsenceComponent extends React.Component {
 
   render() {
     const { t, leaveOfAbsence } = this.props;
-    const employeeLevel = localStorage.getItem("employeeLevel")
     let absenceTypes = [
       { value: 'IN01', label: t('SickLeave') },
       { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
