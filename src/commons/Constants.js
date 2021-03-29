@@ -28,7 +28,12 @@ const Constants = {
     0: {label: 'Waiting', className: ''},
     1: {label: 'Không phê duyệt', className: 'fail'},
     2: {label: 'Approved', className: 'success'},
-    3: {label: 'Đã thu hồi', className: ''}
+    3: {label: 'Đã thu hồi', className: ''},
+    4: {label: 'Đã thu hồi', className: ''},
+    5: {label: 'Đang chờ phê duyệt', className: ''},
+    6: {label: 'Đã thẩm định', className: ''},
+    7: {label: 'Từ chối', className: ''},
+    8: {label: 'Đang chờ thẩm định', className: ''}
   },
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',
