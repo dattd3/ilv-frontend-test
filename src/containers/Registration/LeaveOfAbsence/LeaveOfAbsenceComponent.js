@@ -598,7 +598,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
       })
       .catch(response => {
-        this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(t("Notification"), t("Error"), false)
         this.setDisabledSubmitButton(false)
       })
   }

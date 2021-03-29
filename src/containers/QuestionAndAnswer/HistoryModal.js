@@ -90,7 +90,7 @@ class HistoryModal extends React.Component {
                 onAcceptClick = {() => this.deleteQuestion(this.state.questionSelectedID)}
                 onCancelClick = {() => this.showConfirmModal(false)}
                 confirmHeader = "XÁC NHẬN THU HỒI"
-                confirmContent = "Bạn xác nhận muốn thu hồi nội dung này?"
+                confirmContent = {t("recall")}
                 />
                 <Modal size="xl" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className='apply-position-modal' closeButton>

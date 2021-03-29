@@ -391,7 +391,7 @@ class PersonalInfoEdit extends React.Component {
         }
         if (localStorage.getItem("companyCode") === "V073") {
           if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
-            errors.personalIdentifyNumber = '(Số CMND/CCCD không đúng định dạng (9 hoặc 12 số))'
+            errors.personalIdentifyNumber = '('+t("Invalid format (9 or 12 digits)")+')'
           }
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
@@ -509,7 +509,7 @@ class PersonalInfoEdit extends React.Component {
 
     if (!this.isEmptyCustomize(errors)) {
       let errorMessage = (errors && !errors.notChange) ? this.errorNonState('fileUpload', errors) : this.errorNonState('notChange', errors)
-      errorMessage = (errorMessage === null) ? "Lỗi nhập thiếu thông tin bắt buộc!" : errorMessage
+      errorMessage = (errorMessage === null) ? t("RequiredInformationNeeded") : errorMessage
       this.handleShowResultModal(t("Notification"), errorMessage, false);
       return
     }
@@ -550,7 +550,7 @@ class PersonalInfoEdit extends React.Component {
         }
       })
       .catch(response => {
-        this.handleShowResultModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin !", false);
+        this.handleShowResultModal(t("Notification"), t("Error"), false);
       });
   }
 

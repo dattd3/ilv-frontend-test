@@ -68,7 +68,7 @@ class PositionRecruitingDetail extends React.Component {
       {this.state.isShowApplyPositionModal ? <ApplyPositionModal id={this.props.match.params.id} show={this.state.isShowApplyPositionModal} onHide={this.hideApplyPositionModal} showStatusModal={this.showStatusModal.bind(this)} /> : null }
       <div className="summary position-recruiting-detail-block">
         <div className="header-block">
-          <h5 className="result-label">thông tin tuyển dụng</h5>
+          <h5 className="result-label">{t("VacancyInfomation")}</h5>
           
         </div>
         <div className="clearfix">
@@ -97,11 +97,11 @@ class PositionRecruitingDetail extends React.Component {
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobRequirement)}} />
               </div> : null }
               {this.state.job.benefit && this.state.job.benefit != 'undefined' ? <div className="cate benefit-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Quyền lợi</div> }
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Benefit")}</div> }
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.benefit)}} />
               </div> : null}
               {this.state.job.contactInfo && this.state.job.contactInfo != 'undefined' ? <div className="cate contact-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">Liên hệ</div>}
+                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Contact")}</div>}
                 <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.contactInfo)}} />
               </div> : null}
             </div>

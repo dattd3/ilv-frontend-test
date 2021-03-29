@@ -1,13 +1,14 @@
 import React,{ useState } from "react";
 import LinkIcon from '../../assets/img/link-success-factor.svg';
+import { useTranslation } from "react-i18next"
 
 function SuccessFactorInfo(props) {   
 
   const SuccessFactorLink = "https://performancemanager10.successfactors.com/sf/home?bplte_company=vingroupjsP2&_s.crb=J2LEhIVBHNB4E6kPde5U9e5PWb0pKfYtEGwtPJoLaM0%253d#Shell-home";
-   
+  const {t} = useTranslation();
   return (
       <div>
-          <div>* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor</div>
+          <div>* {t("ForMakingEvaluation")}</div>
           <div>              
               <img className="success-factor-link-icon" src={LinkIcon} alt="Link success factor"/>
                 &nbsp;
