@@ -173,7 +173,7 @@ class ApproverComponent extends React.Component {
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
           <div className="col-4">
-            <p className="title">{t('Title')}</p>
+            <p className="title">{t('Position')}</p>
             <div>
               <input type="text" className="form-control" value={this.state.approver ? this.state.approver.current_position : ""} readOnly />
             </div>

@@ -25,22 +25,42 @@ function SideBar(props) {
         let rootNav = allNav.filter(x => x.parentId === parentId);
         if (rootNav.length > 0) {
             for (let i = 0; i < rootNav.length; i++) {
-                rootNav[i].label = t(rootNav[i].label);
+                rootNav[i].label = rootNav[i].label;
                 if (user.companyCode === "V096" && rootNav[i].label2) {
-                    rootNav[i].label = t(rootNav[i].label2);
+                    rootNav[i].label = rootNav[i].label2;
                 }
                 if(user.companyCode === "V073")
                 {
-                    if(rootNav[i].label === t('Menu_Task')) rootNav[i].label = t('Menu_RequestManage')  
-                    if(rootNav[i].label === t('Registration')) rootNav[i].label = t('Registration_V073')  
+                    if(
+                        rootNav[i].label === 'Menu_Task')
+                        rootNav[i].label = 'Menu_RequestManage'
+                    if(rootNav[i].label === 'Registration') 
+                    rootNav[i].label = 'Registration_V073'
                 }
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
         return rootNav;
     }
-
-    const content = getNavigation(user.benefitLevel);
+    const contents = getNavigation(user.benefitLevel).map(c => {
+        const contentsChild = c.content.map(contentChild => {
+            const contentGrandChildren = contentChild && contentChild.content && contentChild.content.map(cg => ({
+                ...cg,
+                label: t(cg.label)
+            }))
+            return ({
+            ...contentChild,
+            content: contentGrandChildren,
+            label: t(contentChild.label)
+            })
+        })
+        
+        return {
+            ...c,
+            content: contentsChild,
+            label: t(c.label)
+        }
+    });
 
     return (
         <>
@@ -55,7 +75,7 @@ function SideBar(props) {
                     </Animated>
                     <MetisMenu
                         className='sidebar sidebar-dark'
-                        content={content}
+                        content={contents}
                         activeLinkFromLocation
                         iconNameStateVisible="arrow_expand"
                         iconNameStateHidden="arrow_collapse"
