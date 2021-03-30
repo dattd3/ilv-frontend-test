@@ -100,7 +100,7 @@ class BusinessTripDetailComponent extends React.Component {
         {
           businessTrip.requestDocuments.length > 0 ?
           <>
-          <h5>Tài liệu chứng minh</h5>
+          <h5>{t("Evidence")}</h5>
           <ul className="list-inline">
             {businessTrip.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>

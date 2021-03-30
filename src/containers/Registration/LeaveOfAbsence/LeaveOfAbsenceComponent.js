@@ -671,11 +671,11 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
             { value: 'IN03', label: t('RecoveryLeave') },
             { value: 'PN01', label: t('LeaveForExpats') },
-            { value: 'PN02', label: 'Nghỉ nuôi con dưới 1 tuổi' },
+            { value: 'PN02', label: t("LeaveForMother") },
             { value: 'PN03', label: t('LeaveForMarriageFuneral') },
             { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
             { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
-            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: 'Nghỉ phép tạm ứng' },
+            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: t("AdvancedLeave") },
             { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
             // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
             { value: 'UN01', label: t('UnpaidLeave') }

@@ -33,12 +33,12 @@ class DetailButtonComponent extends React.Component {
 
     revocationApproval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi phê duyệt", modalMessage: "Bạn có đồng ý thu hồi phê duyệt " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_REVOCATION })
+        this.setState({ isConfirmShow: true, modalTitle: t("ConfirmApprovalRecall"), modalMessage: t("SureApprovalRecall") + t(this.requestRegistraion[this.props.requestTypeId]), typeRequest: Constants.STATUS_REVOCATION })
     }
 
     evictionRequest = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thu hồi yêu cầu", modalMessage: "Bạn có đồng ý thu hồi yêu cầu " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_EVICTION })
+        this.setState({ isConfirmShow: true, modalTitle: t("ConfirmRequestRecall"), modalMessage: t("SureRequestRecall") + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_EVICTION })
     }
     consent = () => {
         const { t } = this.props
@@ -99,7 +99,7 @@ class DetailButtonComponent extends React.Component {
                 }
                 {
                     this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton ?
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi phê duyệt</button>
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> {t("ApproralRecall")}</button>
                     : null
                 }
             </div>

@@ -93,7 +93,7 @@ class PersonalComponent extends React.Component {
             case "TempStreetNameText":
                 return `${t("Street")} - ${t("TemporaryAddress")}`;
             case "MarriageDate":
-                return "Ngày kết hôn";
+                return t("MarriageDate");
         }
     }
 
