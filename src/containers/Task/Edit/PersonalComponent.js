@@ -165,7 +165,7 @@ class PersonalComponent extends React.Component {
                             <i className="note note-old"></i> {t("Record")}
                 </div>
                         <div className="col">
-                            <i className="note note-new"></i> {t("AdjustmentInformation")}
+                            <i className="note note-new"></i> {t("NewInformation")}
                 </div>
                     </div>
                     <hr />

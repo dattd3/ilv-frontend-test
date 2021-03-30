@@ -309,6 +309,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   render() {
     const { t } = this.props;
+    const lang = localStorage.getItem("locale")
     return (
       <div className="in-out-time-update">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -371,20 +372,20 @@ class InOutTimeUpdateComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
-                {!timesheet.isEdit ? <p>{t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("End")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdit ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
-                  <p>{t("Start")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
+                  <p>{t("StartTime")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | {t("EndTime")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null}
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
-                  <p>{t("Start")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("End")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
+                  <p>{t("StartTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("EndTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                   : null}
                   
               </div>
               <div className="col-2 pr-0 pl-0">
                 {!timesheet.isEdit
-                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
+                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
@@ -395,13 +396,13 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("Start")} 1:</div>
+                        <div className="col-6">{t("StartTime")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time1_fact)}</b></div>
                       </div>
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("End")} 1:</div>
+                        <div className="col-6">{t("EndTime")} 1:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></div>
                       </div>
                     </div>
@@ -409,14 +410,14 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("Start")} 2:</div>
+                        <div className="col-6">{t("StartTime")} 2:</div>
                         <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time2_fact)}</b></div>
                       </div>
 
                     </div>
                     <div className="col-lg-12 col-xl-6 ">
                       <div className="row">
-                        <div className="col-6">{t("End")} 2:</div>
+                        <div className="col-6">{t("EndTime")} 2:</div>
                         <div className="col-6"> <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></div>
                       </div>
                     </div>
@@ -427,14 +428,14 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">{t("Start")} 1:</div>
+                          <div className="col-6">{t("StartTime")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time1)}</b></div>
                         </div>
 
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">{t("End")} 1:</div>
+                          <div className="col-6">{t("EndTime")} 1:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time1)}</b></div>
                         </div>
                       </div>
@@ -442,13 +443,13 @@ class InOutTimeUpdateComponent extends React.Component {
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">{t("Start")} 2:</div>
+                          <div className="col-6">{t("StartTime")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time2)}</b></div>
                         </div>
                       </div>
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
-                          <div className="col-6">{t("End")} 2:</div>
+                          <div className="col-6">{t("EndTime")} 2:</div>
                           <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time2)}</b></div>
                         </div>
                       </div>
@@ -464,7 +465,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("Start")} 1:</div>
+                        <div className="col-6">{t("StartTime")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -487,7 +488,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("End")} 1:</div>
+                        <div className="col-6">{t("EndTime")} 1:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -513,7 +514,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   <div className="row">
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("Start")} 2:</div>
+                        <div className="col-6">{t("StartTime")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
@@ -536,7 +537,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     </div>
                     <div className="col-lg-12 col-xl-6">
                       <div className="row">
-                        <div className="col-6">{t("End")} 2:</div>
+                        <div className="col-6">{t("EndTime")} 2:</div>
                         <div className="col-6">
                           <div className="content input-container">
                             <label>
