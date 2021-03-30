@@ -245,8 +245,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         const times = [];
         requestInfo.forEach(req => {
-            const startTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
-            const endTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+            const startTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+            const endTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
             if (req.startDate && req.endDate && ((!req.isAllDay && startTime && startTime) || req.isAllDay)) {
                 times.push({
                     id: req.groupItem,
