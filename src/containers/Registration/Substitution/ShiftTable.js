@@ -35,8 +35,8 @@ class ShiftTable extends React.Component {
                                 </th>
                                 <td>{shift.shift_id}</td>
                                 <td>{shift.hours}</td>
-                                <td>{moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</td>
-                                <td>{moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</td>
+                                <td>{shift.from_time ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
+                                <td>{shift.to_time ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
                             </tr>
                         })}
                     </tbody>
