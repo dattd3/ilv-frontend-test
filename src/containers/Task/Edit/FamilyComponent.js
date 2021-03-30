@@ -46,7 +46,7 @@ class FamilyComponent extends React.Component {
                                         {t("PitNoNpt")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Có tính giảm trừ gia cảnh (Tích x)
+                                        {t("PITReduction")} (Tích x)
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
                                         {t("StartDate")}
@@ -122,7 +122,7 @@ class FamilyComponent extends React.Component {
                                             {t("PitNoNpt")}
                                         </Col>
                                         <Col xs={12} md={6} lg={1}>
-                                            Có tính giảm trừ gia cảnh (Tích x)
+                                            {t("PITReduction")} (Tích x)
                                         </Col>
                                         <Col xs={12} md={6} lg={2}>
                                             {t("StartDate")}

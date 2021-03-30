@@ -206,7 +206,7 @@ class PersonalComponent extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Thành phố sinh</div>
+                            <div className="label">{t("BirthCity")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.birth_province || ""}</div>
