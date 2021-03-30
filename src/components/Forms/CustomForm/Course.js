@@ -4,11 +4,12 @@ import icon from "../../Logo/IconBooks56x56.png"
 import CourseStatus from "./CourseStatus"
 import map from '../../../containers/map.config';
 import { Link } from 'react-router-dom';
+import { withTranslation } from "react-i18next";
 
 class Course extends React.Component {
 
   render() {
-
+    const {t} = this.props;
     return (
       <div>
         <div className="row align-items-center white-background">
@@ -23,7 +24,7 @@ class Course extends React.Component {
             <CourseStatus status={this.props.status} />
           </div>
           <div className="col-sm-2 col-md-2 col-lg-2 text-center">
-            <Link to={"/training/roadmap-detail/" + this.props.id} className="red-button">Xem chi tiết</Link>
+            <Link to={"/training/roadmap-detail/" + this.props.id} className="red-button">{t("Details")}</Link>
           </div>
         </div>
       </div>
@@ -31,4 +32,4 @@ class Course extends React.Component {
 
   }
 }
-export default Course;
+export default withTranslation()(Course);

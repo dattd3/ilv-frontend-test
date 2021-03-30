@@ -133,7 +133,7 @@ class QuestionAndAnswerDetails extends React.Component {
     };
     axios(config)
       .then(function (response) {
-        callBack("Gửi trả lời thành công!", true);
+        callBack(this.props.t("ResponseSentSuccessfully"), true);
       })
       .catch(function (error) {
         callBack("Rất tiếc, có lỗi xảy ra!");
@@ -249,7 +249,7 @@ class QuestionAndAnswerDetails extends React.Component {
             onHide={() => this.showConfirmModal(false)}
             onAcceptClick={() => this.submit(true)}
             onCancelClick={() => this.submit(false)}
-            confirmHeader="KẾT THÚC GIẢI ĐÁP"
+            confirmHeader={t("CloseQA")}
             confirmContent="Bạn xác nhận muốn kết thúc giải đáp này?"
           />
           <SelectSupporterModal

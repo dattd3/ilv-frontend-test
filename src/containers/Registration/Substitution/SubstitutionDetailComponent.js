@@ -73,7 +73,7 @@ class SubstitutionDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.substitution.user.fullname}</div>
+              <div className="detail">{this.props.substitution.user.fullName}</div>
             </div>
             <div className="col-3">
               {t("EmployeeNo")}
@@ -110,7 +110,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ thay đổi phân ca</p>
+                  <p className="text-center">{t("ShiftChangeTime")}</p>
                   <div className="row">
                     <div className="col-6">
                       {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.startTime}</b>
@@ -125,22 +125,22 @@ class SubstitutionDetailComponent extends React.Component {
 
             {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? <div className="row">
               <div className="col">
-                <p>Thời gian bắt đầu nghỉ ca</p>
+                <p>{t("BreakStartTime")}</p>
                 <div className="detail">{timesheet.startBreakTime}</div>
               </div>
               <div className="col">
-                <p>Thời gian kết thúc nghỉ ca</p>
+                <p>{t("BreakEndTime")}</p>
                 <div className="detail">{timesheet.endBreakTime}</div>
               </div>
               <div className="col">
-                <p>Giờ nghỉ giữa ca</p>
+                <p>{t("ShiftBreak")}</p>
                 <div className="detail">{t("Unpaid")}</div>
               </div>
             </div> : null}
 
             {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? <div className="row">
               <div className="col">
-                <p>Mã ca thay đổi</p>
+                <p>{t("ChangedShiftCode")}</p>
                 <div className="detail">{timesheet.shiftId}</div>
               </div>
               <div className="col">
@@ -151,7 +151,7 @@ class SubstitutionDetailComponent extends React.Component {
 
             <div className="row">
               <div className="col">
-                Lý do đăng ký thay đổi phân ca
+                {t("ShiftChangeReason")}
               <div className="detail">{timesheet.note}</div>
               </div>
             </div>
@@ -176,7 +176,7 @@ class SubstitutionDetailComponent extends React.Component {
         {
           this.props.substitution.requestDocuments.length > 0 ?
           <>
-          <h5>Tài liệu chứng minh</h5>
+          <h5>{t("Evidence")}</h5>
           <ul className="list-inline">
             {this.props.substitution.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
@@ -188,13 +188,15 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
 
-        {this.props.substitution.requestInfo.processStatusId == 0 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
+        {this.props.substitution.requestInfo.processStatusId == 8 || this.props.substitution.requestInfo.processStatusId == 5 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
           id={this.props.substitution.id}
           isShowRevocationOfApproval={this.props.substitution.requestInfo.processStatusId == 2}
           isShowEvictionRequest={this.props.substitution.requestInfo.processStatusId == 0}
+          isShowRevocationOfConsent = {this.props.substitution.requestInfo.processStatusId === 6}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
           hiddenRevocationOfApprovalButton={1}
+          action={this.props.action}
         /> : null}
       </div>
     )

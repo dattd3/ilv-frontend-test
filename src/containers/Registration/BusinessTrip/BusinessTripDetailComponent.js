@@ -49,25 +49,25 @@ class BusinessTripDetailComponent extends React.Component {
           <div className="row">
             <div className="col-4">
               {t("StartDateTime")}
-              <div className="detail">{businessTrip.requestInfo.startDate + (businessTrip.requestInfo.startTime ? ' ' + moment(businessTrip.requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(businessTrip.requestInfo?.startDate).format('DD/MM/YYYY') + (businessTrip.requestInfo?.startTime ? ' ' + moment(businessTrip.requestInfo?.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               {t("EndDateTime")}
-              <div className="detail">{businessTrip.requestInfo.endDate + (businessTrip.requestInfo.endTime ? ' ' + moment(businessTrip.requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(businessTrip.requestInfo?.endDate).format('DD/MM/YYYY') + (businessTrip.requestInfo?.endTime ? ' ' + moment(businessTrip.requestInfo?.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-4">
               {t('TotalTimeForBizTripAndTraining')}
-              <div className="detail">{(businessTrip && businessTrip.requestInfo.totalTimes) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo.totalTimes + ' ' + t("Day") : businessTrip.requestInfo.totalTimes + ' ' + t("Hour")) : null}</div>
+              <div className="detail">{(businessTrip && businessTrip.requestInfo?.hours) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.days + ' ' + t("Day") +' '+businessTrip.requestInfo?.hours + ' ' + t("Hour")) : null}</div>
             </div>
           </div>
           <div className="row">
             <div className="col-4">
               {t('TypeOfBizTripAndTraining')}
-              <div className="detail">{businessTrip.requestInfo.attendanceQuotaType.label}</div>
+              <div className="detail">{businessTrip.requestInfo.attendanceType?.label}</div>
             </div>
             <div className="col-4">
               {t('Location')}
-              <div className="detail">{businessTrip.requestInfo.place && businessTrip.requestInfo.place.label}</div>
+              <div className="detail">{businessTrip.requestInfo.location && businessTrip.requestInfo.location?.label}</div>
             </div>
             <div className="col-4">
               {t('MeansOfTransportation')}
@@ -100,7 +100,7 @@ class BusinessTripDetailComponent extends React.Component {
         {
           businessTrip.requestDocuments.length > 0 ?
           <>
-          <h5>Tài liệu chứng minh</h5>
+          <h5>{t("Evidence")}</h5>
           <ul className="list-inline">
             {businessTrip.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
@@ -112,21 +112,23 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
 
-        {businessTrip.requestInfo.processStatusId === 0 || businessTrip.requestInfo.processStatusId === 2 ? <DetailButtonComponent 
+        {(businessTrip.requestInfo.processStatusId === 8 || businessTrip.requestInfo.processStatusId === 5 || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
         dataToSap={[{
-          MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
-          PERNR: businessTrip.user.employeeNo,
-          BEGDA: moment(businessTrip.requestInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          ENDDA: moment(businessTrip.requestInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          SUBTY: businessTrip.requestInfo.attendanceQuotaType.value,
-          BEGUZ: businessTrip.requestInfo.startTime ? moment(businessTrip.requestInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: businessTrip.requestInfo.endTime ? moment(businessTrip.requestInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ACTIO: 'INS'
+          // MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
+          // PERNR: businessTrip.user.employeeNo,
+          // BEGDA: moment(businessTrip.requestInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          // ENDDA: moment(businessTrip.requestInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
+          // SUBTY: businessTrip.requestInfo.attendanceQuotaType.value,
+          // BEGUZ: businessTrip.requestInfo.startTime ? moment(businessTrip.requestInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          // ENDUZ: businessTrip.requestInfo.endTime ? moment(businessTrip.requestInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
+          // ACTIO: 'INS'
         }]}
         isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 6}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}
+        action={this.props.action}
         /> : null}
       </div>
     )

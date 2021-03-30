@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import KPIDetailGroupItem from './KPIDetailGroupItem';
-import SuccessFactorInfo from "./SuccessFactorInfo"
+import SuccessFactorInfo from "./SuccessFactorInfo";
+import { withTranslation } from 'react-i18next';
 
 class KPIDetail extends React.Component {
 
@@ -71,10 +72,11 @@ class KPIDetail extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
     return (
       <div className="kpi-detail">
         <div className="title-group mb-4">
-          LỰA CHỌN KỲ ĐÁNH GIÁ
+          {t("SelectEvaluationPeriod")}
           </div>
 
         <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
@@ -93,4 +95,4 @@ class KPIDetail extends React.Component {
   }
 }
 
-export default KPIDetail;
+export default withTranslation()(KPIDetail);

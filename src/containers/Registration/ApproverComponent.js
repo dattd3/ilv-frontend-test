@@ -186,7 +186,7 @@ class ApproverComponent extends React.Component {
           </div>
         </div>
         {
-          localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*Lưu ý: Lựa chọn người phê duyệt theo đúng <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >Cẩm Nang Phân Quyền</a></b></span></div> : null
+          localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
         }
       </div>
     </div>
