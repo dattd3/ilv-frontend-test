@@ -6,8 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
 import { Animated } from "react-animated-css";
-import VILangIcon from '../../../src/assets/img/vi_lang.jpg';
-import ENLangIcon from '../../../src/assets/img/en_lang.jpg';
 import { useLocalizeStore } from '../../modules';
 
 const usePreload = (params) => {
@@ -200,12 +198,12 @@ function Header(props) {
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
-                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")} className={activeLang === "vi-VN" ? "bg-primary text-light" : "" }>
-                                <img src={VILangIcon} className="mr-2" width={25} height={15}/>
+                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
                                 {t("LangViet")}
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => onChangeLocale("en-US")} className={activeLang === "en-US" ? "bg-primary text-light" : "" }>
-                                <img src={ENLangIcon} className="mr-2" width={25} height={15}/>
+                            <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
                                 {t("LangEng")}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

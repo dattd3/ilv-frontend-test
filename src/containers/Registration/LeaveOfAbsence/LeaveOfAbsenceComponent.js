@@ -222,7 +222,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
         const { requestInfo } = this.state
-        const { isAllDay, errors } = requestInfo[indexReq]
+        const { isAllDay } = requestInfo[indexReq]
         if (isAllDay && (!startDate || !endDate)) return
         if (!isAllDay && (!startDate || !endDate || !startTime || !endTime)) return
 
@@ -234,48 +234,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.setState({ requestInfo })
             return
         }
-        const absenceType = requestInfo[indexReq].absenceType ? requestInfo[indexReq].absenceType.value : ""
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
-        const isVerifiedDateTime = this.validateTimeRequest(requestInfo)
-        if (!isVerifiedDateTime) return
-
-        const start = moment(startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
-        const end = moment(endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString()
-
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}user/leave`, {
-            perno: localStorage.getItem('employeeNo'),
-            from_date: start,
-            from_time: isAllDay ? "" : moment(startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-            to_date: end,
-            to_time: isAllDay ? "" : moment(endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-            leaveType: (absenceType === ANNUAL_LEAVE_KEY || absenceType === COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_COMPENSATORY_LEAVE_KEY || absenceType === ADVANCE_ABSENCE_LEAVE_KEY || absenceType === MATERNITY_LEAVE_KEY) ? absenceType : ""
-        }, config)
-            .then(res => {
-                if (res && res.data) {
-                    const data = res.data
-
-                    if (data.data && data.result && data.result.code != Constants.API_ERROR_CODE) {
-                        errors.totalDaysOff =
-                            ((isAllDay && data.data.days === 0) || (!isAllDay && data.data.hours === 0))
-                                ? "Tổng thời gian nghỉ phải khác 0"
-                                : null
-                        requestInfo[indexReq].totalDays = data.data.days
-                        requestInfo[indexReq].totalTimes = data.data.hours
-
-                        this.setState({ requestInfo })
-                    } else {
-                        errors.totalDaysOff = data.result.message
-                        this.setState({ requestInfo })
-                    }
-                }
-            }).catch(error => {
-                errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
-                this.setState({ requestInfo })
-            })
+        this.validateTimeRequest(requestInfo)
     }
 
     validateTimeRequest(requestInfo) {
