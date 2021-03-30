@@ -256,7 +256,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     to_time: !req.isAllDay ? endTime : "",
                     leave_type: req.absenceType?.value || "",
-                    group_id: req.groupItem
+                    group_id: req.groupId
                 })
             }
         })
