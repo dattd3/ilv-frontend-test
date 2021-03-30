@@ -94,7 +94,7 @@ class InOutUpdateDetailComponent extends React.Component {
               <div className="detail">{this.props.inOutTimeUpdate.user.fullName}</div>
             </div>
             <div className="col-3">
-              {t("EmployeeCode")}
+              {t("EmployeeNo")}
               <div className="detail">{this.props.inOutTimeUpdate.user.employeeNo}</div>
             </div>
             <div className="col-3">

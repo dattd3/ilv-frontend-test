@@ -8,13 +8,13 @@ function MainResultComponent(props) {
         <div className="main-result-section">
             <div className="block-title">
                 <h4 className="title bold special">{t("PaySlipMonth")}</h4>
-                <h4 className="title">{`kỳ lương tháng ${props.personalInformation.month}/${props.personalInformation.year}`}</h4>
+                <h4 className="title">{`${t("PeriodMonth")} ${props.personalInformation.month}/${props.personalInformation.year}`}</h4>
             </div>
             <Row>
                 <Col sm={5} className="column">
                     <ul className="column-item first-column">
                         <li><span className="label">{t("FullName")}:</span><span>{props.personalInformation.name}</span></li>
-                        <li><span className="label">{t("EmployeeCode")}:</span><span>{props.personalInformation.personal_number}</span></li>
+                        <li><span className="label">{t("EmployeeNo")}:</span><span>{props.personalInformation.personal_number}</span></li>
                         <li><span className="label">{t("ActualGrade")}:</span><span>{props.personalInformation.employee_level}</span></li>
                         <li><span className="label">{t("Title")}:</span><span>{props.personalInformation.position}</span></li>
                         <li><span className="label">{t("BankAccountNumber")}:</span><span>{props.personalInformation.bank_number}</span></li>
