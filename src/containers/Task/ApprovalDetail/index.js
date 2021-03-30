@@ -216,7 +216,7 @@ class ApprovalDetail extends React.Component {
       0: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
-      3: {label: 'Đã thu hồi', className: ''}
+      3: {label: t("Recalled"), className: ''}
     }
     
     return (

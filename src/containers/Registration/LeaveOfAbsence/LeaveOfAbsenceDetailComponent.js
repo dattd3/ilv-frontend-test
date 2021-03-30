@@ -137,7 +137,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
           {(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? <div className="row">
             <div className="col">
-              Thông tin hiếu hỉ
+              {t("MarriageFuneral")}
               <div className="detail">{requestInfo.pn03.label}</div>
             </div>
           </div> : null}
@@ -190,7 +190,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         {
           this.props.leaveOfAbsence.requestDocuments.length > 0 ?
             <>
-              <h5>Tài liệu chứng minh</h5>
+              <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
                 {this.props.leaveOfAbsence.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>

@@ -424,7 +424,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   </div>
                   <>
                     <hr />
-                    <p className="text-center">Giờ phân ca kế hoạch</p>
+                    <p className="text-center">{t("PlannedShift")}</p>
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">
