@@ -202,7 +202,7 @@ class InOutTimeUpdateComponent extends React.Component {
         }
       })
       .catch(response => {
-        this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
         this.setDisabledSubmitButton(false)
       })
   }
@@ -424,7 +424,7 @@ class InOutTimeUpdateComponent extends React.Component {
                   </div>
                   <>
                     <hr />
-                    <p className="text-center">Giờ phân ca kế hoạch</p>
+                    <p className="text-center">{t("PlannedShift")}</p>
                     <div className="row">
                       <div className="col-lg-12 col-xl-6">
                         <div className="row">

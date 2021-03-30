@@ -91,7 +91,7 @@ class InOutUpdateDetailComponent extends React.Component {
           <div className="row">
             <div className="col-3">
              {t("FullName")}
-              <div className="detail">{this.props.inOutTimeUpdate.user.fullname}</div>
+              <div className="detail">{this.props.inOutTimeUpdate.user.fullName}</div>
             </div>
             <div className="col-3">
               {t("EmployeeNo")}
@@ -107,7 +107,7 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        <h5>Thông tin sửa giờ vào - ra</h5>
+        <h5>{t("InOutChangeRequestInfo")}</h5>
         {this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
@@ -135,7 +135,7 @@ class InOutUpdateDetailComponent extends React.Component {
               </div>
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ chỉnh sửa</p>
+                  <p className="text-center">{t("ChangedTime")}</p>
                   <div className="row">
                     <div className="col-6">
                       {t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
@@ -182,7 +182,7 @@ class InOutUpdateDetailComponent extends React.Component {
         {
           this.props.inOutTimeUpdate.requestDocuments.length > 0 ?
             <>
-              <h5>Tài liệu chứng minh</h5>
+              <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
                 {this.props.inOutTimeUpdate.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
@@ -194,12 +194,14 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
 
-        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 0 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 8 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 5 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
           dataToSap={this.dataToSap()}
           id={this.props.inOutTimeUpdate.id}
           isShowRevocationOfApproval={this.props.inOutTimeUpdate.requestInfo.processStatusId === 2}
+          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.requestInfo.processStatusId === 6}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
+          action={this.props.action}
         /> : null}
       </div>
     )

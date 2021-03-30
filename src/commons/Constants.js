@@ -25,10 +25,14 @@ const Constants = {
   STATUS_NO_CONSENTED: 7,
   STATUS_WAITING: 5,
   mappingStatus: {
-    0: {label: 'Waiting', className: ''},
-    1: {label: 'Không phê duyệt', className: 'fail'},
-    2: {label: 'Approved', className: 'success'},
-    3: {label: 'Đã thu hồi', className: ''}
+    1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
+    2: {label: 'Approved', className: 'success'},// đã phê duyệt
+    3: {label: 'Đã hủy', className: ''}, // đã thu hồi
+    4: {label: 'Đã hủy', className: ''}, // đã hủy
+    5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
+    6: {label: 'Đã thẩm định', className: ''},
+    7: {label: 'Từ chối', className: ''},// từ chối thẩm định
+    8: {label: 'Waiting', className: ''} // đang chờ thẩm định
   },
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',

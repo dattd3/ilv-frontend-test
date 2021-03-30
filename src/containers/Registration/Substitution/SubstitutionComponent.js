@@ -13,6 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation  } from "react-i18next";
+import { t } from 'i18next'
 registerLocale("vi", vi)
 
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -99,16 +100,16 @@ class SubstitutionComponent extends React.Component {
         const totalHoursBreak = duration.asHours()
 
         if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && totalHoursBreak < 2) {
-          errors['totalHours' + index] = '(Tổng số thời gian nghỉ phải lớn hơn hoặc bằng 2h)'
+          errors['totalHours' + index] = this.props.t("WarningTotalBreakTime")
         } else if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && moment.duration(this.state.totalHours).asHours() > 10) {
-          errors['totalHours' + index] = '(Tổng số thời gian đăng ký không được vượt quá 10h)'
+          errors['totalHours' + index] = this.props.t("WarningTotalRegisTime")
         } else {
           errors['totalHours' + index] = null
         }
       }
       errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? this.props.t('Required') : null
       errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime']) 
-        && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? '(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)' : null
+        && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? this.props.t("WarningRequiredBreakTime") : null
       errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? this.props.t('Required') : null
     })
     if (_.isNull(this.state.approver)) {
@@ -197,7 +198,7 @@ class SubstitutionComponent extends React.Component {
       }
     })
     .catch(response => {
-      this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+      this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
       this.setDisabledSubmitButton(false)
     })
   }
@@ -431,16 +432,16 @@ class SubstitutionComponent extends React.Component {
     const endBreakTime =  moment(timesheets[0].endBreakTime, "HH:mm:ss").isValid() ? moment(timesheets[0].endBreakTime, "HH:mm:ss") : null
 
     if (startTime && endTime && startTime > endTime) {
-      errors['startTime' + index] = '(Thời gian Bắt đầu 1 không được lớn hơn Kết thúc 1)'
+      errors['startTime' + index] = this.props.t("WarningStartTimeEndTime1")
     } else {
       errors['startTime' + index] = null
     }
 
     if (startBreakTime) {
       if (startBreakTime < startTime || startBreakTime > endTime) {
-        errors['startBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)'
+        errors['startBreakTime' + index] = this.props.t("ErrorBreakTime")
       } else if (endBreakTime && startBreakTime > endBreakTime) {
-        errors['startBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca không được lớn hơn Thời gian kết thúc nghỉ ca)'
+        errors['startBreakTime' + index] = this.props.t("WarningBreakStartTimeEndTime")
       } else {
         errors['startBreakTime' + index] = null
       }
@@ -448,9 +449,9 @@ class SubstitutionComponent extends React.Component {
 
     if (endBreakTime) {
       if (endBreakTime < startTime || endBreakTime > endTime) {
-        errors['endBreakTime' + index] = '(Thời gian kết thúc nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)'
+        errors['endBreakTime' + index] = this.props.t("WarningBreakEndTime");
       } else if (startBreakTime && startBreakTime > endBreakTime) {
-        errors['endBreakTime' + index] = '(Thời gian bắt đầu nghỉ ca không được lớn hơn Thời gian kết thúc nghỉ ca)'
+        errors['endBreakTime' + index] = this.props.t("WarningBreakStartTimeEndTime")
       } else {
         errors['endBreakTime' + index] = null
       }
@@ -461,9 +462,9 @@ class SubstitutionComponent extends React.Component {
   render() {
     const {t} = this.props;
     const substitutionTypes = [
-      { value: '01', label: 'Phân ca làm việc' },
-      { value: '02', label: 'Phân ca gãy' },
-      { value: '03', label: 'Phân ca bờ đảo full ngày' }
+      { value: '01', label: t("Shiftchange") },
+      { value: '02', label: t("IntermittenShift") },
+      { value: '03', label: t("CoastShoreShiftChange") }
     ]
     return (
       <div className="shift-work">
@@ -471,10 +472,10 @@ class SubstitutionComponent extends React.Component {
         <div className="row">
           <div className="col">
             {
-              localStorage.getItem("companyCode") === "V030" ? <div className="text-danger"><i className="fa fa-info-circle"></i> Không áp dụng đối với CBNV thuộc HO và CBNV Vận hành làm ca Hành chính</div> : null
+              localStorage.getItem("companyCode") === "V030" ? <div className="text-danger"><i className="fa fa-info-circle"></i> {t("NotApplicable")}</div> : null
             }
           {
-              localStorage.getItem("companyCode") === "V060" ? <div className="text-danger"><i className="fa fa-info-circle"></i> CBNV cần xin duyệt đổi ca trước tối thiểu 01 ngày.</div> : null
+              localStorage.getItem("companyCode") === "V060" ? <div className="text-danger"><i className="fa fa-info-circle"></i> {t("ShiftChangeApplied")}</div> : null
             }
           </div>
         </div>
@@ -552,18 +553,18 @@ class SubstitutionComponent extends React.Component {
 
             {timesheet.isEdit ? 
             <div>
-              <p className="text-uppercase"><b>Lựa chọn hình thức thay đổi phân ca</b></p>
+              <p className="text-uppercase"><b>{t("SelectShiftType")}</b></p>
               <div className="btn-group btn-group-toggle" data-toggle="buttons">
                 <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                  Chọn mã ca làm việc
+                  {t("SelectShiftCode")}
                 </label>
                 <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                  Nhập giờ thay đổi phân ca
+                  {t("EndNewTime")}
                 </label>
               </div>
               <div className="row">
                 <div className="col-6">
-                  <p className="title">Loại phân ca</p>
+                  <p className="title">{t("ShiftCategory")}</p>
                   <div>
                       <Select name="substitutionType" value={timesheet.substitutionType} onChange={substitutionType => this.updateSubstitution(index, substitutionType)} placeholder="Lựa chọn" key="substitutionType" options={substitutionTypes} />
                   </div>
@@ -573,16 +574,16 @@ class SubstitutionComponent extends React.Component {
               { timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <div>
                 <fieldset className="col-12 block-filter-shift">
-                  <legend>Tìm kiếm thông tin mã ca</legend>
+                  <legend>{t("SearchShiftCode")}</legend>
                     <div className="row">
                       <div className="col-2">
-                        <p>Mã ca</p>
+                        <p>{t("ShiftCode")}</p>
                         <div>
                           <input type="text" className="form-control" value={timesheet.shiftCodeFilter || ""} onChange={val => this.onChangeShiftCodeFilter(index, val)} />
                         </div>
                       </div>
                       <div className="col-3">
-                        <p>Giờ bắt đầu</p>
+                        <p>{t("StartTime")}</p>
                         <div>
                           <label className="time-filter">
                             <DatePicker
@@ -601,7 +602,7 @@ class SubstitutionComponent extends React.Component {
                         </div>
                       </div>
                       <div className="col-3">
-                        <p>Giờ kết thúc</p>
+                        <p>{t("Endtime")}</p>
                         <div>
                           <label className="time-filter">
                             <DatePicker
@@ -645,7 +646,7 @@ class SubstitutionComponent extends React.Component {
               : null}
 
             {timesheet.isEdit ? <div>
-              <p>Lý do đăng ký thay đổi phân ca</p>
+              <p>{t("ShiftChangeReason")}</p>
               <textarea placeholder="Nhập lý do" value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
               {this.error(index, 'note')}
             </div> : null}

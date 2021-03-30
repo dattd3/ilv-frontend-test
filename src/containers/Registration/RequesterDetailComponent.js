@@ -7,7 +7,7 @@ function RequesterDetailComponent(props) {
     <div className="row">
       <div className="col-3">
         {t("FullName")}
-        <div className="detail">{props.user.fullname}</div>
+        <div className="detail">{props.user.fullName}</div>
       </div>
       <div className="col-3">
         {t("EmployeeNo")}

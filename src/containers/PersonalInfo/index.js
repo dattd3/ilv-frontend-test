@@ -320,7 +320,7 @@ class MyComponent extends React.Component {
                               <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
                             </tr>
                             <tr>
-                              <td className="info-label">Nơi đăng ký khám/ chữa bệnh</td>
+                              <td className="info-label">{t("RegisteredHospital")}</td>
                               <td className="info-value"><p>&nbsp;{this.state.userProfile.hospital_name}</p></td>
                             </tr>
                             <tr>
