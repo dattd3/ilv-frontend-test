@@ -744,8 +744,16 @@ class LeaveOfAbsenceComponent extends React.Component {
                     </div> */}
                 </div>
                 {requestInfoArr.map((req, index) => {
-                    const totalDay = req.length > 1 ? req.reduce((acc, cur) => acc.totalDays + cur.totalDays) : req[0].totalDays
-                    const totalTime = req.length > 1 ? req.reduce((acc, cur) => acc.totalTimes + cur.totalTimes) : req[0].totalTimes
+                    let totalDay = 0
+                    let totalTime = 0
+                    req.forEach(r => {
+                        if(r.totalDays){
+                            totalDay += r.totalDays
+                        }
+                        if(r.totalTimes){
+                            totalTime += r.totalTimes
+                        }
+                    })
                     return (
                         <div className="box shadow position-relative" key={index}>
                             <div className="form">
