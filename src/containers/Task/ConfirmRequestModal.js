@@ -37,10 +37,10 @@ class ConfirmRequestModal extends React.Component {
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
                 break;
-            case Constants.STATUS_REVOCATION:
+            case Constants.STATUS_REVOCATION: // hủy
                 this.revocation(id)
                 break;
-            case Constants.STATUS_EVICTION:
+            case Constants.STATUS_EVICTION: // thu hồi phê duyệt
                 this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
