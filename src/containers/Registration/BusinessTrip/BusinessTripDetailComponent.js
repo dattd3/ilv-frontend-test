@@ -124,7 +124,7 @@ class BusinessTripDetailComponent extends React.Component {
           // ACTIO: 'INS'
         }]}
         isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
-        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 6}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}
