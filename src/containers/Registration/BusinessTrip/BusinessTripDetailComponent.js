@@ -83,7 +83,7 @@ class BusinessTripDetailComponent extends React.Component {
         </div>
 
         {
-          this.getTypeDetail() === "request" ?
+          this.getTypeDetail() === "request" || businessTrip.requestInfo.processStatusId == 2 ?
           <>
           <h5>Thông tin phê duyệt</h5>
           <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
