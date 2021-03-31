@@ -439,7 +439,7 @@ class RequestTaskList extends React.Component {
                                         userId = task.userId.split("@")[0];
                                     }
                                     return (
-                                        task.requestInfo && task.requestInfo.map((child, index) => {
+                                        task.requestInfo?.map((child, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
