@@ -26,6 +26,7 @@ class TaskList extends React.Component {
         super();
         this.state = {
             approveTasks: [],
+            tasks: [],
             taskChecked: [],
             isShowTaskDetailModal: false,
             messageModalConfirm: "",
@@ -37,6 +38,7 @@ class TaskList extends React.Component {
             dataToPrepareToSAP: {},
             action: null,
             disabled: "disabled",
+            query: ""
         }
 
         this.manager = {
@@ -48,10 +50,14 @@ class TaskList extends React.Component {
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
-
     componentDidMount()
     {
-        this.setState({approveTasks: this.props.tasks})
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps()
+    {
+        this.setState({tasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -401,11 +407,28 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
+        let result = [];
+        debugger
+        result = this.props.tasks.filter( function(item) {
+            item.requestInfo.filter(req => req.processStatusId == value.value);
+          });
+        // console.log(result);
+        this.setState({tasks:result});
+        console.log('a');
     }
     
+    handleInputChange = (event) => {
+        let data = null;
+        this.setState({
+            query: event.target.value
+          }, () => {
+            data = this.state.query ?  this.props.tasks.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+            this.setState({tasks:data});
+          })
+    }
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
         // const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const { t } = this.props
 
@@ -434,6 +457,7 @@ class TaskList extends React.Component {
                     <Select name="absenceType" 
                             className="w-75" 
                             value={this.state.absenceType} 
+                            isClearable={true}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                             placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} 
                             theme={theme => ({
@@ -455,6 +479,7 @@ class TaskList extends React.Component {
                     placeholder={t('SearchRequester')}
                     aria-label="SearchRequester"
                     aria-describedby="basic-addon2"
+                    onChange={this.handleInputChange}
                     />
                 </InputGroup>
                 </div>
@@ -558,10 +583,10 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
