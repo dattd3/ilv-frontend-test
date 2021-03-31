@@ -173,7 +173,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           : null
         }
         {
-          this.getTypeDetail() === "request" ?
+          // this.getTypeDetail() === "request" ?
+          requestInfo.processStatusId === 2 ?
             <>
               <h5>Thông tin phê duyệt</h5>
               <ApproverDetailComponent approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.hrComment} />
