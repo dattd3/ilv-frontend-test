@@ -150,7 +150,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         {
-          requestInfo && requestInfo.processStatusId === Constants.STATUS_CONSENTED ? 
+          requestInfo && requestInfo.processStatusId === Constants.STATUS_WAITING ? 
           <>
           <h5>Thông tin CBQL thẩm định</h5>
           <div className="box shadow cbnv">
