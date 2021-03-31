@@ -445,7 +445,7 @@ class TaskList extends React.Component {
           ]
         return (
             <>
-                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="row w-50 mt-2 mb-3">
                 <div className="col-xl-6">
                     <InputGroup className="d-flex">
@@ -521,9 +521,13 @@ class TaskList extends React.Component {
                                         task.requestInfo.map((child, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td scope="col" className="check-box">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
-                                                    </td>
+                                                    {
+                                                        (child.processStatusId == 5 || child.processStatusId == 8) ?
+                                                        <td scope="col" className="check-box">
+                                                            <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
+                                                        </td>
+                                                        : <td scope="col" className="check-box"></td>
+                                                    }
                                                     <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
                                                     <td className="user-title">{task.user.jobTitle}</td>
