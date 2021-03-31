@@ -181,7 +181,7 @@ class ConfirmRequestModal extends React.Component {
         this.props.dataToSap.forEach(element => {
             let taskObj = {"id":element.id,"sub":[]};
             element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_CONSENTED})
+              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_WAITING})
             });
             dataToSap.push(taskObj)
           });
