@@ -225,7 +225,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ]
         }
           isShowRevocationOfApproval={requestInfo.processStatusId === 2}
-          isShowRevocationOfConsent = {requestInfo.processStatusId === 6}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === 2}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}
