@@ -407,14 +407,12 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        let result = [];
-        debugger
-        result = this.props.tasks.filter( function(item) {
-            item.requestInfo.filter(req => req.processStatusId == value.value);
-          });
-        // console.log(result);
-        this.setState({tasks:result});
-        console.log('a');
+        // let result = [];
+        // result = this.props.tasks.filter( function(item) {
+        //     item.requestInfo.filter(req => req.processStatusId == value.value);
+        //   });
+        // // console.log(result);
+        // this.setState({tasks:result});
     }
     
     handleInputChange = (event) => {
