@@ -123,7 +123,7 @@ class RequestTaskList extends React.Component {
     }
 
     deleteRequest = (requestTypeId, child) => {
-        let prepareDataForCancel = [
+        let prepareDataForCancel =
             {
                 id: parseInt(child.id.split(".")[0]),
                 requestTypeId: requestTypeId,
@@ -133,7 +133,6 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        ]
         console.log(prepareDataForCancel);
         this.setState({
             modalTitle: "Yêu cầu hủy phê duyệt",
@@ -232,7 +231,7 @@ class RequestTaskList extends React.Component {
 
     isShowDeleteButton = status => {
 
-        return status == Constants.STATUS_APPROVED ? true : false;
+        return status == 5 || status == 8 ? true : false;
         
     }
     isShowEvictionButton = status => {
@@ -240,7 +239,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 5 || status == 8){
+            if (status == 2){
                 isShow = true;
             } else {
                 isShow = false;
