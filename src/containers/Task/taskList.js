@@ -26,6 +26,7 @@ class TaskList extends React.Component {
         super();
         this.state = {
             approveTasks: [],
+            tasks: [],
             taskChecked: [],
             isShowTaskDetailModal: false,
             messageModalConfirm: "",
@@ -37,6 +38,7 @@ class TaskList extends React.Component {
             dataToPrepareToSAP: {},
             action: null,
             disabled: "disabled",
+            query: ""
         }
 
         this.manager = {
@@ -48,10 +50,14 @@ class TaskList extends React.Component {
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
-
     componentDidMount()
     {
-        this.setState({approveTasks: this.props.tasks})
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps()
+    {
+        this.setState({tasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -401,11 +407,26 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
+        // let result = [];
+        // result = this.props.tasks.filter( function(item) {
+        //     item.requestInfo.filter(req => req.processStatusId == value.value);
+        //   });
+        // // console.log(result);
+        // this.setState({tasks:result});
     }
     
+    handleInputChange = (event) => {
+        let data = null;
+        this.setState({
+            query: event.target.value
+          }, () => {
+            data = this.state.query ?  this.props.tasks.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+            this.setState({tasks:data});
+          })
+    }
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
         // const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const { t } = this.props
 
@@ -424,7 +445,7 @@ class TaskList extends React.Component {
           ]
         return (
             <>
-                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="row w-50 mt-2 mb-3">
                 <div className="col-xl-6">
                     <InputGroup className="d-flex">
@@ -434,6 +455,7 @@ class TaskList extends React.Component {
                     <Select name="absenceType" 
                             className="w-75" 
                             value={this.state.absenceType} 
+                            isClearable={true}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                             placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} 
                             theme={theme => ({
@@ -455,6 +477,7 @@ class TaskList extends React.Component {
                     placeholder={t('SearchRequester')}
                     aria-label="SearchRequester"
                     aria-describedby="basic-addon2"
+                    onChange={this.handleInputChange}
                     />
                 </InputGroup>
                 </div>
@@ -498,9 +521,13 @@ class TaskList extends React.Component {
                                         task.requestInfo.map((child, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td scope="col" className="check-box">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
-                                                    </td>
+                                                    {
+                                                        (child.processStatusId == 5 || child.processStatusId == 8) ?
+                                                        <td scope="col" className="check-box">
+                                                            <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
+                                                        </td>
+                                                        : <td scope="col" className="check-box"></td>
+                                                    }
                                                     <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
                                                     <td className="user-title">{task.user.jobTitle}</td>
@@ -558,10 +585,10 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
