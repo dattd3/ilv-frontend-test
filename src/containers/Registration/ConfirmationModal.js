@@ -45,14 +45,14 @@ class ConfirmationModal extends React.Component {
                 this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_CONSENTED;
-                console.log(this.props.dataToSap);
-                this.consent();
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
+                // console.log(this.props.dataToSap);
+                this.consent(this.props.dataToSap);
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
                 this.props.dataToSap[0].sub[0].AppraiserComment = this.state.message;
-                this.reject();
+                this.reject(this.props.dataToSap);
                 break;
             default:
                 break;
@@ -177,12 +177,64 @@ class ConfirmationModal extends React.Component {
             })
     }
 
-    consent = () => {
-        console.log("consented");
+    consent = (dataToSap) => {
+        console.log(dataToSap);
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            data: dataToSap,
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+        })
+            .then(res => {
+                if (res && res.data) {
+                    const result = res.data.result
+                    const code = result.code
+                    if (code == "000000") {
+                        this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                    }
+                }
+            })
+            .finally(res => {
+                this.props.onHide()
+            })
+            .catch(response => {
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            })
     }
 
-    reject = () => {
-        console.log("rejected");
+    reject = (dataToSap) => {
+        console.log(dataToSap);
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            data: dataToSap,
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+        })
+            .then(res => {
+                if (res && res.data) {
+                    const result = res.data.result
+                    const code = result.code
+                    if (code == "000000") {
+                        this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        // setTimeout(() => { this.hideStatusModal() }, 1000);
+                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                    }
+                }
+            })
+            .finally(res => {
+                this.props.onHide()
+            })
+            .catch(response => {
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            })
     }
 
     handleChangeMessage = (e) => {

@@ -128,7 +128,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               {t("TotalLeaveTime")}
-              <div className="detail">{ requestInfo && requestInfo.days ? requestInfo.days + ' ngày' : 0 } { requestInfo && requestInfo.hours ? requestInfo.hours + ' giờ' : null}</div>
+              <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value == "PQ02" ? requestInfo.days + ' ngày' : 0 } { requestInfo && requestInfo.hours ? requestInfo.hours && requestInfo.absenceType.value != "PQ02" + ' giờ' : null}</div>
             </div>
             <div className="col-3">
               {t("LeaveCategory")}
@@ -150,7 +150,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         {
-          requestInfo && requestInfo.processStatusId === Constants.STATUS_CONSENTED ? 
+          requestInfo && requestInfo.processStatusId === Constants.STATUS_WAITING ? 
           <>
           <h5>Thông tin CBQL thẩm định</h5>
           <div className="box shadow cbnv">
@@ -173,7 +173,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           : null
         }
         {
-          this.getTypeDetail() === "request" ?
+          // this.getTypeDetail() === "request" ?
+          requestInfo.processStatusId === 2 ?
             <>
               <h5>Thông tin phê duyệt</h5>
               <ApproverDetailComponent approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.hrComment} />
@@ -225,7 +226,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ]
         }
           isShowRevocationOfApproval={requestInfo.processStatusId === 2}
-          isShowRevocationOfConsent = {requestInfo.processStatusId === 6}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === 2}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}

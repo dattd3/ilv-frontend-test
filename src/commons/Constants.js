@@ -17,13 +17,15 @@ const Constants = {
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
   STATUS_PENDING: 0,
-  STATUS_NOT_APPROVED: 1,
-  STATUS_APPROVED: 2,
-  STATUS_EVICTION: 3,
-  STATUS_REVOCATION: 4,
-  STATUS_CONSENTED: 6,
-  STATUS_NO_CONSENTED: 7,
-  STATUS_WAITING: 5,
+  STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
+  STATUS_APPROVED: 2, // phê duyệt
+  STATUS_EVICTION: 3, // thu hồi
+  STATUS_REVOCATION: 4, // hủy
+  STATUS_WAITING: 5, // chờ phê duyệt
+  STATUS_CONSENTED: 6,// thẩm định
+  STATUS_NO_CONSENTED: 7, // từ chối thẩm định
+  STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
+
   mappingStatus: {
     1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt

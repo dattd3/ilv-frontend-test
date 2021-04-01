@@ -83,7 +83,7 @@ class BusinessTripDetailComponent extends React.Component {
         </div>
 
         {
-          this.getTypeDetail() === "request" ?
+          this.getTypeDetail() === "request" || businessTrip.requestInfo.processStatusId == 2 ?
           <>
           <h5>Thông tin phê duyệt</h5>
           <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
@@ -124,7 +124,7 @@ class BusinessTripDetailComponent extends React.Component {
           // ACTIO: 'INS'
         }]}
         isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
-        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 6}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}
