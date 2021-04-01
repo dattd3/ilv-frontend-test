@@ -49,8 +49,8 @@ class ConfirmationModal extends React.Component {
                 this.reject(this.props.dataToSap);
                 break;
             case Constants.STATUS_REVOCATION: // hủy
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_REVOCATION;
-                this.props.dataToSap[0].sub[0].comment = this.state.message;
+                this.props.dataToSap.sub.processStatusId = Constants.STATUS_REVOCATION;
+                this.props.dataToSap.sub.comment = this.state.message;
                 this.cancel(this.props.dataToSap);
                 break;
             case Constants.STATUS_EVICTION: // thu hồi
