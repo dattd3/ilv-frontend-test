@@ -94,6 +94,8 @@ class MyComponent extends React.Component {
     const result = {status: data.status, documents: []};
     let count = 0;
     const mapping = {};
+    if(!data.staffDocumentTypeList)
+      return;
     data.staffDocumentTypeList.forEach((item, index) => {
       let timeExpire = item.note; 
       if(mapping[timeExpire] == undefined){
@@ -104,7 +106,7 @@ class MyComponent extends React.Component {
       const subItem = result.documents[mapping[timeExpire]];
       subItem.documentList.push({
                 index: index + 1,
-                 name: item.documentName,
+                 name: item.description,
                  number: '0' + item.quantity,
                  timExpire: item.note,
                  status: item.haveProfile
@@ -522,61 +524,66 @@ class MyComponent extends React.Component {
               }
             </Container>
           </Tab>
-          <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
-          <Row >
-              {documents &&  documents.length > 0 ? <>
-              <Col xs={12} md={12} lg={12}>
-                <p className="status">Tình trạng: {this.state.userDocument.status ? <span className="color-success">Đủ</span> : <span className="color-fail">Thiếu</span>}</p>
-                <div className="document-content shadow">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th style={{width: '2%'}}>STT</th>
-                        <th style={{width: '66%'}}>Danh mục hồ sơ CBNV</th>
-                        <th style={{width: '2%'}}>SL</th>
-                        <th style={{width: '11%'}}>Thời hạn nộp</th>
-                        <th style={{width: '8%'}}>Tình trạng</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                      {
-                        (documents || []).map((obj) => {
-                          if(!obj || !obj.documentList || obj.documentList.length === 0)
-                            return null;
-
-                          return obj.documentList.map((item, index) => {
-                            if(index === 0){
-                              return <tr key={index}>
-                                <td >{item.index}</td>
-                                <td className="name">{item.name}</td>
-                                <td >{item.number}</td>
-                                <td rowSpan={obj.documentList.length}>{item.timExpire}</td>
-                                <td> <input type="checkbox" checked={item.status} readOnly/> </td>
-                              </tr>
-                            }else{
-                              return <tr key={index}>
-                                <td >{item.index}</td>
-                                <td className="name">{item.name}</td>
-                                <td >{item.number}</td>
-                                
-                                <td> <input type="checkbox" checked={item.status} readOnly/> </td>
-                              </tr>
-                            }
+          {
+            ['V030'].includes(localStorage.getItem("companyCode")) ? 
+            <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
+            <Row >
+                {documents &&  documents.length > 0 ? <>
+                <Col xs={12} md={12} lg={12}>
+                  <p className="status">Tình trạng: {this.state.userDocument.status ? <span className="color-success">Đủ</span> : <span className="color-fail">Thiếu</span>}</p>
+                  <div className="document-content shadow">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style={{width: '2%'}}>STT</th>
+                          <th style={{width: '66%'}}>Danh mục hồ sơ CBNV</th>
+                          <th style={{width: '2%'}}>SL</th>
+                          <th style={{width: '11%'}}>Thời hạn nộp</th>
+                          <th style={{width: '8%'}}>Tình trạng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                        {
+                          (documents || []).map((obj) => {
+                            if(!obj || !obj.documentList || obj.documentList.length === 0)
+                              return null;
+  
+                            return obj.documentList.map((item, index) => {
+                              if(index === 0){
+                                return <tr key={index}>
+                                  <td >{item.index}</td>
+                                  <td className="name">{item.name}</td>
+                                  <td >{item.number}</td>
+                                  <td rowSpan={obj.documentList.length}>{item.timExpire}</td>
+                                  <td> <input type="checkbox" checked={item.status} readOnly/> </td>
+                                </tr>
+                              }else{
+                                return <tr key={index}>
+                                  <td >{item.index}</td>
+                                  <td className="name">{item.name}</td>
+                                  <td >{item.number}</td>
+                                  
+                                  <td> <input type="checkbox" checked={item.status} readOnly/> </td>
+                                </tr>
+                              }
+                            })
                           })
-                        })
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              </Col>
-              </> : 
-              <Container fluid className="info-tab-content shadow">
-               {t("NoDataFound")}
-            </Container>
-              }
-            </Row>
-          </Tab>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </Col>
+                </> : 
+                <Container fluid className="info-tab-content shadow">
+                 {t("NoDataFound")}
+              </Container>
+                }
+              </Row>
+            </Tab>
+            : null
+          }
+          
         </Tabs>
       </div >
     )

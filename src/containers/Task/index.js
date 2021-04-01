@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next"
 import RequestComponent from '../Task/Request/'
 import ConsentComponent from '../Task/Consent/'
 import ApprovalComponent from '../Task/Approval/'
+import PrepareComponent from '../Task/Prepare';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner'
@@ -13,6 +14,7 @@ class Task extends React.Component {
         super();
         this.state = {
             isShowApprovalTab: false,
+            isShowPrepareTab: false,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: []
         }
@@ -30,7 +32,8 @@ class Task extends React.Component {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-              this.setState({tasks : tasksOrdered, isShowApprovalTab: true});
+              const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
+              this.setState({tasks : tasksOrdered, isShowApprovalTab: true, isShowPrepareTab: shouldShowPrepareJob});
             }
           }
         }).catch(error => {})
@@ -55,6 +58,13 @@ class Task extends React.Component {
                     this.state.isShowApprovalTab == true ?
                     <Tab eventKey="approval" title={t("Approval")}>
                         <ApprovalComponent tasks={this.state.tasks} />
+                    </Tab>
+                    : null
+                }
+                {
+                    this.state.isShowPrepareTab == true ?
+                    <Tab eventKey="prepare" title="Hỗ trợ chuẩn bị nhận việc">
+                        <PrepareComponent />
                     </Tab>
                     : null
                 }

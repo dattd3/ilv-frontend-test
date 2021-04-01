@@ -674,9 +674,11 @@
 
 .page-link {
   color: #515151;
+  z-index: inherit !important;
 }
 .page-item.active {
   .page-link {
+    z-index: inherit !important;
     background-color: #f8c20b !important;
     border-color: #f8c20b !important;
   }
