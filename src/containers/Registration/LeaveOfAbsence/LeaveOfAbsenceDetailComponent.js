@@ -128,7 +128,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-3">
               {t("TotalLeaveTime")}
-              <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value == "PQ02" ? requestInfo.days + ' ngày' : 0 } { requestInfo && requestInfo.hours ? requestInfo.hours && requestInfo.absenceType.value != "PQ02" + ' giờ' : null}</div>
+              <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div>
             </div>
             <div className="col-3">
               {t("LeaveCategory")}
@@ -217,9 +217,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           [
             {
               "id": this.props.leaveOfAbsence.id,
+              "requestTypeId":2,
               "sub": [
                 {
-                  "id": parseInt(requestInfo.id.split(".")[1]),
+                  "id": requestInfo.id,
                 }
               ]
             }
