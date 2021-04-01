@@ -519,6 +519,13 @@ class TaskList extends React.Component {
                                     }
                                     return (
                                         task.requestInfo.map((child, index) => {
+                                            let totalTime = null;
+                                            if (task.requestType == 2) {
+                                                totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
+                                            }
+                                            else {
+                                                totalTime = child.hours || child.days ? child.days + " ngày" + child.hours + " giờ" : null;
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     {
@@ -533,7 +540,7 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{task.user.jobTitle}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time text-center">{(child.days ||  child.hours) ? (child.days ? child.days : 0 ) +" ngày "+ (child.hours ? child.hours : 0)  + " giờ" : 0}</td>
+                                                    <td className="break-time text-center">{totalTime}</td>
                                                     <td className="appraiser text-center">{task.appraiser?.fullname}</td>
                                                     <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
