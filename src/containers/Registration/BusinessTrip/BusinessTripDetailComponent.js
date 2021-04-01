@@ -81,7 +81,29 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
+        {
+          businessTrip.requestInfo && (businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING || businessTrip.requestInfo.processStatusId === Constants.STATUS_APPROVED) ? 
+          <>
+          <h5>Thông tin CBQL thẩm định</h5>
+          <div className="box shadow cbnv">
+            <div className="row">
+              <div className="col-4">
+                {t("Approver")}
+                <div className="detail">{businessTrip.appraiser.fullname}</div>
+              </div>
+              <div className="col-4">
+                {t("Title")}
+                <div className="detail">{businessTrip.appraiser.current_position}</div>
+              </div>
+              <div className="col-4">
+                {t("DepartmentManage")}
+                <div className="detail">{businessTrip.appraiser.department}</div>
+              </div>
+            </div>
+          </div>
+          </>
+          : null
+        }
         {
           this.getTypeDetail() === "request" || businessTrip.requestInfo.processStatusId == 2 ?
           <>
