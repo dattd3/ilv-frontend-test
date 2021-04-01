@@ -95,7 +95,7 @@ class ChangeReqBtnComponent extends React.Component {
                         <>
                         {
                             <>
-                             <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>Không phê duyệt</button>
+                             <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>{t("Reject")}</button>
                             <button type="button" className="btn btn-success"  onClick={this.approval.bind(this)} disabled={this.props.disabled}><i className='fas fa-check mr-2'></i>{t("Approval")}</button>
                             </>
                         }
