@@ -543,6 +543,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
         bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
+        bodyFormData.append("region", localStorage.getItem('region'))
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
