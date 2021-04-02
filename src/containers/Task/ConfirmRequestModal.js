@@ -95,9 +95,11 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
+            let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"requestTypeId":element.requestTypeId,"processStatusId": Constants.STATUS_APPROVED})
+                if(sub.processStatusId == Constants.STATUS_WAITING){
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_APPROVED})
+                }
             });
             dataToSap.push(taskObj)
           });
@@ -111,9 +113,11 @@ class ConfirmRequestModal extends React.Component {
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
+            let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"requestTypeId":element.requestTypeId,"processStatusId": Constants.STATUS_NOT_APPROVED,"ApproverComment":this.state.message})
+                if(sub.processStatusId == Constants.STATUS_WAITING){
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"ApproverComment":this.state.message})
+                }
             });
             dataToSap.push(taskObj)
           });
@@ -126,30 +130,30 @@ class ConfirmRequestModal extends React.Component {
     consent = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
+            let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"requestTypeId":element.requestTypeId,"processStatusId": Constants.STATUS_WAITING})
+                if(sub.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_WAITING})
+                }
             });
             dataToSap.push(taskObj)
           });
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
+          console.log(dataToSap);
+        // this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
+            let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"requestTypeId":element.requestTypeId,"processStatusId": Constants.STATUS_NO_CONSENTED,"AppraiserComment":this.state.message})
+                if(sub.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"AppraiserComment":this.state.message})
+                }        
             });
             dataToSap.push(taskObj)
           });
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
+        
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
     }
     
