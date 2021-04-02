@@ -48,11 +48,15 @@ class Task extends React.Component {
                <Tab eventKey="request" title={t("Request")}>
                     <RequestComponent />
                 </Tab>
-                <Tab eventKey="consent" title={t("Consent")}>
-                    <ConsentComponent />
-                </Tab>
                 {
-                    this.state.isShowApprovalTab == true ?
+                  Constants.CONSENTER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ? 
+                  <Tab eventKey="consent" title={t("Consent")}>
+                    <ConsentComponent />
+                  </Tab>
+                  : null
+                }
+                {
+                    this.state.isShowApprovalTab == true && Constants.APPROVER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ?
                     <Tab eventKey="approval" title={t("Approval")}>
                         <ApprovalComponent tasks={this.state.tasks} />
                     </Tab>
