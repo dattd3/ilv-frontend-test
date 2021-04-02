@@ -139,7 +139,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
           console.log(dataToSap);
-        // this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
