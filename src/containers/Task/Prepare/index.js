@@ -14,51 +14,52 @@ class RequestComponent extends React.Component {
     {value: true, label: 'Đã xong'},
     {value: false, label: 'Chưa xong'},
   ]
-
+  _isMounted = false;
   constructor(props) {
     super();
     this.state = {
       tasks: [],
       dataResponse: {},
-      isShowDevices: true,
-      isShowAccount: true,
-      isShowVoucher: true,
-      isShowDonitory: true,
+      isShowDevices: false,
+      isShowAccount: false,
+      isShowVoucher: false,
+      isShowDonitory: false,
       listCandidate: {
 				data: [
-					{
-							employeeNo: '31222',
-							name: 'Nguyeen Van Tuan',
-							region: 'Head Office',
-							unit: 'Cơ sở',
-							department: 'Hành chính',
-							rank: 'Chuyên viên nhân sự',
-							startWork: '2021-03-18',
-							timeExpire: '2021-05-24',
-							devices: {
-									status: false,
-									note: 'Nhân viên hiện đang nghỉ việc',
-                  isEditable: true
-							},
-							account: {
-									status: true,
-									note: 'Đã cấp tài khoản cho nhân viên',
-                  isEditable: true
-							},
-							voucher: {
-									status: true,
-									note: '',
-                  isEditable: true
-							},
-							dormitory: {
-									status: true,
-									note: '',
-                  isEditable: true
-							},
+					// {
+          //     id: 1,
+					// 		employeeNo: '31222',
+					// 		name: 'Nguyeen Van Tuan',
+					// 		region: 'Head Office',
+					// 		unit: 'Cơ sở',
+					// 		department: 'Hành chính',
+					// 		rank: 'Chuyên viên nhân sự',
+					// 		startWork: '2021-03-18',
+					// 		timeExpire: '2021-05-24',
+					// 		devices: {
+					// 				status: false,
+					// 				note: 'Nhân viên hiện đang nghỉ việc',
+          //         isEditable: true
+					// 		},
+					// 		account: {
+					// 				status: true,
+					// 				note: 'Đã cấp tài khoản cho nhân viên',
+          //         isEditable: true
+					// 		},
+					// 		voucher: {
+					// 				status: true,
+					// 				note: '',
+          //         isEditable: true
+					// 		},
+					// 		dormitory: {
+					// 				status: true,
+					// 				note: '',
+          //         isEditable: true
+					// 		},
 
-					}
+					// }
 				],
-				total: 1
+				total: 0
 			},
       searchingDataToFilter: {
         pageIndex: 1,
@@ -75,28 +76,132 @@ class RequestComponent extends React.Component {
   }
 
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`
-      }
-    }
+    this._isMounted = true;
     const searchingDataToFilter = {...this.state.searchingDataToFilter}
     searchingDataToFilter.pageIndex = Constants.PAGE_INDEX_DEFAULT
     this.setState({searchingDataToFilter: searchingDataToFilter})
-
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?companyCode=`+localStorage.getItem("companyCode"), config)
-    .then(res => {
-      if (res && res.data && res.data.data && res.data.result) {
-        const result = res.data.result;
-        if (result.code != Constants.API_ERROR_CODE) {
-          let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-          this.setState({tasks : tasksOrdered, dataResponse: res.data.data});
-        }
-      }
-    }).catch(error => {
-      this.setState({tasks : []});
-    });
+    const params = {
+      pageIndex: page || Constants.PAGE_INDEX_DEFAULT,
+      pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
+    }
+    this.fetchCandidateData(params);
   }
+
+  componentWillUnmount(){
+    this._isMounted = false;
+  }
+
+  fetchCandidateData = params => {
+    this.setState({
+        modal: {
+            ...this.state.modal,
+            isShowLoadingModal: true
+        }
+    })
+    const config = {
+        headers: {
+          'Authorization': `${localStorage.getItem('accessToken')}`
+        },
+        params: params
+    }
+
+    axios.get(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}api/managementPoints/listPreparingOnboardCandidate`, config)
+    .then(res => {
+        if (this._isMounted) {
+          if (res.result.code != Constants.API_ERROR_CODE) {
+            this.prepareListDocumentRequest(res);
+          }
+        }
+    })
+}
+
+  prepareDatatoSubmit = (data) => {
+    return data.map(item => ( {
+      id: item.id,
+      employeeCode: item.employeeNo,
+      fullName: item.name,
+      regionName: item.region,
+      unitName: item.unit,
+      divisionName: item.department,
+      positionName: item.rank,
+      dateStartWork: item.startWork,
+      expireDate: item.timeExpire,
+      managerToolStatus: item.devices.status,
+      managerToolDesc: item.devices.note,
+      managerToolIndicator: item.devices.isEditable,
+      managerAccountStatus: item.account.status,
+      managerAccountDesc: item.account.note,
+      managerAccountIndicator: item.account.isEditable,
+      managerFingerStatus: item.voucher.status,
+      managerFingerDesc: item.voucher.note,
+      managerFingerIndicator: item.voucher.isEditable,
+      managerDormitoryStatus: item.dormitory.status,
+      managerDormitoryDesc: item.dormitory.note,
+      managerDormitoryIndicator: item.dormitory.isEditable
+    }))
+  }
+  prepareListDocumentRequest = res => {
+    if (!res || !res.data || !res.data.data || res.data.data.LstManagementPoint.length == 0) {
+        return []
+    }
+    const status = {
+      isShowDevices: false,
+      isShowAccount: false,
+      isShowVoucher: false,
+      isShowDonitory: false,
+    };
+
+
+    const listCandidatesRemote = res.data.data.LstManagementPoint.map(item => {
+      status.isShowDevices = status.isShowDevices ||  item.managerToolIndicator;
+      status.isShowAccount = status.isShowAccount || item.managerAccountIndicator;
+      status.isShowVoucher = status.isShowVoucher || item.managerFingerIndicator;
+      status.isShowDonitory = status.isShowDonitory || item.managerDormitoryIndicator;
+        return {
+            id: item.id,
+            employeeNo: item.employeeCode,
+            name: item.fullName,
+            region: item.regionName,
+            unit: item.unitName,
+            department: item.divisionName,
+            rank: item.positionName,
+            startWork: item.dateStartWork,
+            timeExpire: item.expireDate,
+            devices: {
+                status: item.managerToolStatus,
+                note: item.managerToolDesc,
+                isEditable: item.managerToolIndicator
+            },
+            account: {
+                status: item.managerAccountStatus,
+                note: item.managerAccountDesc,
+                isEditable: item.managerAccountIndicator
+            },
+            voucher: {
+                status: item.managerFingerStatus,
+                note: item.managerFingerDesc,
+                isEditable: item.managerFingerIndicator
+            },
+            dormitory: {
+                status: item.managerDormitoryStatus,
+                note: item.managerDormitoryDesc,
+                isEditable: item.managerDormitoryIndicator
+            }
+        }
+    });
+
+    let result = {
+        data: listCandidatesRemote,
+        total:res.data.data.totalRecord || this.state.searchingDataToFilter.pageSize
+    }
+    this.setState({modal: {
+      ...this.state.modal,
+      isShowLoadingModal: false
+      },
+      listCandidate: result,
+       ...status
+      });
+}
 
   onChangePage = page => {
     const searchingDataToFilter = {...this.state.searchingDataToFilter}
@@ -104,12 +209,12 @@ class RequestComponent extends React.Component {
     searchingDataToFilter.needRefresh = false
     this.setState({ searchingDataToFilter: searchingDataToFilter })
 
-    // const params = {
-    //     pageIndex: page || Constants.PAGE_INDEX_DEFAULT,
-    //     pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
-    // }
+    const params = {
+        pageIndex: page || Constants.PAGE_INDEX_DEFAULT,
+        pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
+    }
 
-    // this.fetchCandidateData(params)
+    this.fetchCandidateData(params)
 }
 
   onChangeDropDownStatus = (candidateId, fieldName, fieldValue, isDropDown) => {
@@ -138,7 +243,7 @@ class RequestComponent extends React.Component {
           boxShadow: 'none',
           height: 35,
           minHeight: 35
-      }),
+      })
     }
     return isShow ? 
       <td className="col-devices text-center">
@@ -157,7 +262,8 @@ class RequestComponent extends React.Component {
             [stateName]: false
         }
     })
-    window.location.reload()
+    if(this.state.modal.isReload)
+      window.location.reload()
 }
 
   handleCancel = (e) => {
@@ -166,36 +272,44 @@ class RequestComponent extends React.Component {
   }
   handleSubmit = e => {
     e.preventDefault()
-    const result = (this.state.listCandidate && this.state.listCandidate.data || []).filter(item => item.isEdited);
+    let result = (this.state.listCandidate && this.state.listCandidate.data || []).filter(item => item.isEdited);
     if(!result || result.length == 0)
         return;
-    let message = this.isRecruiment ? 'Cập nhật hồ sơ': 'Chuyển SAP';
-    const typeCode = this.isRecruiment ? 'TD' : 'NS';
-  //  CandidateAjax.updateStaffDocument(typeCode, result)
-  //   .then(response => {
-  //       message = message + ' thành công.';
-  //       this.setState({
-  //           modal: {
-  //               ...this.state.modal,
-  //               isShowLoadingModal: false,
-  //               isShowStatusModal: true,
-  //               isSuccessStatusModal: true,
-  //               textContentStatusModal: message
-  //           }
-  //       })
-  //   })
-  //   .catch(error => {
-  //       let messages = message + ' không thành công. Xin vui lòng thử lại !'
-  //       this.setState({
-  //           modal: {
-  //               ...this.state.modal,
-  //               isShowLoadingModal: false,
-  //               isShowStatusModal: true,
-  //               isSuccessStatusModal: false,
-  //               textContentStatusModal: messages
-  //           }
-  //       })
-  //   })
+    result = this.prepareDatatoSubmit(result);
+
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+
+    axios.post(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}api/managementPoints`, result, config)
+    .then( response => {
+      let message = 'Lưu thông tin thành công.';
+        this.setState({
+            modal: {
+                ...this.state.modal,
+                isShowLoadingModal: false,
+                isShowStatusModal: true,
+                isSuccessStatusModal: true,
+                isReload: true,
+                textContentStatusModal: message
+            }
+        })
+    })
+    .catch( error => {
+      let messages = 'Lưu không thành công.'
+        this.setState({
+            modal: {
+                ...this.state.modal,
+                isShowLoadingModal: false,
+                isShowStatusModal: true,
+                isSuccessStatusModal: false,
+                isReload: false,
+                textContentStatusModal: messages
+            }
+        })
+    })
 }
   render() {
     const { t } = this.props
@@ -203,17 +317,9 @@ class RequestComponent extends React.Component {
     const modal = this.state.modal;
     const listCandidate = this.state.listCandidate;
     const total = listCandidate && listCandidate.total || 0
-    const customStylesStatus = {
-        control: (base, { isDisabled}) => ({
-            ...base,
-            boxShadow: 'none',
-            height: 35,
-            minHeight: 35
-        }),
-      }
     return (
       <>
-      <ResultModal show={modal.isShowStatusModal} message={modal.textContentStatusModal} isSuccess={modal.isSuccessStatusModal} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
+      <ResultModal show={modal.isShowStatusModal} title="Thông báo" message={modal.textContentStatusModal} isSuccess={modal.isSuccessStatusModal} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
       {this.state.dataResponse ?
       <>
       <div className="task-section">
