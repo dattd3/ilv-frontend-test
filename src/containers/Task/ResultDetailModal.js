@@ -50,9 +50,9 @@ class ResultDetailModal extends React.Component {
                                         req.sub.map((child,index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td>{req.id+"."+child.id}</td>
+                                                    <td>{child.id}</td>
                                                     <td>{child.status == "S" ? <i className="fas fa-check text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
-                                                    <td>{child.status == "E" ? child.message : ""}</td>
+                                                    <td>{child.status == "E" ? child.comment : ""}</td>
                                                 </tr>
                                             )
                                         })
