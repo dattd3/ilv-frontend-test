@@ -99,6 +99,8 @@ function Header(props) {
                                         return `/registration/${item.userProfileHistoryId}/approval`
                                     case 5:
                                         return item.url
+                                    case 6:
+                                        return '/personal-info?tab=document'
                                     default:
                                         return `${item.url}`
                                 }

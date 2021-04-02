@@ -3,7 +3,7 @@ import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import map from '../map.config';
 
 class MyComponent extends React.Component {
@@ -117,6 +117,8 @@ class MyComponent extends React.Component {
   }
 
   render() {
+    let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
+    defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
     function SummaryAddress(obj) {
       let result = '';
@@ -150,7 +152,7 @@ class MyComponent extends React.Component {
           }
           <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> {t("History")}</a>
         </div>
-        <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
             <Row >
               <Col xs={12} md={12} lg={6}>
@@ -590,7 +592,7 @@ class MyComponent extends React.Component {
   }
 }
 
-const PersonInfo = withTranslation()(MyComponent)
+const PersonInfo = withTranslation()(withRouter(MyComponent))
 
 export default function App() {
   return (
