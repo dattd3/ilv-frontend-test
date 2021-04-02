@@ -144,6 +144,13 @@ class BusinessTripDetailComponent extends React.Component {
           // BEGUZ: businessTrip.requestInfo.startTime ? moment(businessTrip.requestInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           // ENDUZ: businessTrip.requestInfo.endTime ? moment(businessTrip.requestInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           // ACTIO: 'INS'
+          "id": businessTrip.id,
+          "requestTypeId": Constants.BUSINESS_TRIP,
+          "sub": [
+            {
+              "id": businessTrip.requestInfo.id,
+            }
+          ]
         }]}
         isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
         isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
