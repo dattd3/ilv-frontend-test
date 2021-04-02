@@ -27,7 +27,6 @@ class BusinessTripComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      note: null,
       approver: null,
       files: [],
       isUpdateFiles: false,
@@ -333,15 +332,24 @@ class BusinessTripComponent extends React.Component {
     this.setState({ errors: errors })
   }
 
-  handleInputChange(event) {
-    const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
-    const name = target.name
-
-    this.setState({
-      [name]: value
+  handleInputChange(event, groupId) {
+    let { requestInfo } = this.state
+    const newRequestInfo = requestInfo.map(req => {
+        const errors = {
+            ...req.errors,
+            comment: null
+        }
+        if (req.groupId === groupId) {
+            return {
+                ...req,
+                comment: event.target.value,
+                errors
+            }
+        }
+        return { ...req }
     })
-  }
+    this.setState({ requestInfo: newRequestInfo })
+}
 
   handleSelectChange(name, value, groupId) {
     const { requestInfo } = this.state
@@ -405,6 +413,7 @@ class BusinessTripComponent extends React.Component {
 
   submit() {
     const { t } = this.props 
+    const { requestInfo, files } = this.state
     this.setDisabledSubmitButton(true)
     const err = this.verifyInput()
     this.setDisabledSubmitButton(true)
@@ -412,45 +421,50 @@ class BusinessTripComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    const dataRequestInfo = requestInfo.map(req => {
+      return ({
+          startDate: req.startDate,
+          startTime: req.startTime,
+          endDate: req.endDate,
+          endTime: req.endTime,
+          comment: req.comment,
+          totalTimes: req.totalTimes,
+          totalDays: req.totalDays,
+          absenceType: req.absenceType,
+          isAllDay: req.isAllDay,
+          groupId: req.groupId,
+      })
+    })
+
     const approver = { ...this.state.approver }
+    const appraiser = { ...this.state.appraiser }
     delete approver.avatar
-    const data = {
-      startDate: this.state.startDate,
-      startTime: this.state.startTime,
-      endDate: this.state.endDate,
-      endTime: this.state.endTime,
-      attendanceQuotaType: this.state.attendanceQuotaType,
-      approver: approver,
-      totalTime: this.state.totalTime,
-      vehicle: this.state.vehicle,
-      place: this.state.place,
-      leaveType: this.state.leaveType,
-      user: {
-        fullname: localStorage.getItem('fullName'),
-        jobTitle: localStorage.getItem('jobTitle'),
-        department: localStorage.getItem('department'),
-        employeeNo: localStorage.getItem('employeeNo')
-      }
-    }
+    delete appraiser.avatar
 
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', t("BizTrip_TrainingRequest"))
-    bodyFormData.append('RequestTypeId', Constants.BUSINESS_TRIP)
-    bodyFormData.append('Comment', this.state.note)
-    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
-    bodyFormData.append('UpdateField', JSON.stringify({}))
-    bodyFormData.append('Region', localStorage.getItem('region'))
-    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
-    bodyFormData.append('UserProfileInfoToSap', JSON.stringify({}))
-    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
-    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
-    this.state.files.forEach(file => {
-      bodyFormData.append('Files', file)
-    })
+        bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+        bodyFormData.append('fullName', localStorage.getItem('fullName'))
+        bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
+        bodyFormData.append('department', localStorage.getItem('department'))
+        bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
+        bodyFormData.append("region", localStorage.getItem('region'))
+        bodyFormData.append('approver', JSON.stringify(approver))
+        bodyFormData.append('appraiser', JSON.stringify(appraiser))
+        bodyFormData.append('RequestType', JSON.stringify({
+            requestType: {
+                id: 3,
+                name: "Đăng ký công tác đào tạo"
+            }
+        }))
+        bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
+
+        files.forEach(file => {
+            bodyFormData.append('Files', file)
+        })
 
     axios({
       method: 'POST',
-      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}request/attendance/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
@@ -823,9 +837,9 @@ class BusinessTripComponent extends React.Component {
                 <div className="col-12">
                   <p className="title">{t('ReasonTripAndTrainning')}</p>
                   <div>
-                    <textarea className="form-control" name="note" value={this.state.note || ""} onChange={this.handleInputChange.bind(this)} placeholder={t('EnterReason')} rows="3"></textarea>
+                    <textarea className="form-control" name="comment" value={req[0].comment || ""} onChange={e => this.handleInputChange(e, req[0].groupId)} placeholder={t('EnterReason')} rows="3"></textarea>
                   </div>
-                  {this.error('comment', req[0].groupId)}
+                  {req[0].errors.comment ? this.error('comment', req[0].groupId) : null}
                 </div>
               </div>
             </div>
