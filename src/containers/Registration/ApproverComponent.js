@@ -85,10 +85,15 @@ class ApproverComponent extends React.Component {
   }
 
   handleSelectChange(name, value) {
-    const currentUserLevel = localStorage.getItem('employeeLevel')
-    this.setState({ [name]: value })
-    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
-    this.props.updateApprover(value, isApprover)
+    if (value) {
+      const currentUserLevel = localStorage.getItem('employeeLevel')
+      this.setState({ [name]: value })
+      const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
+      this.props.updateApprover(value, isApprover)
+    } else {
+      this.setState({ [name]: value, users: [] })
+      this.props.updateApprover(value, true)
+    }
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, userAccount) => {
@@ -170,7 +175,18 @@ class ApproverComponent extends React.Component {
           <div className="col-4">
             <p className="title">{t('Approver')}</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder={t('Search') + '...'} key="approver" options={this.state.users} />
+              <Select
+                isClearable={true}
+                styles={customStyles}
+                components={{ Option: MyOption }}
+                onInputChange={this.onInputChange.bind(this)}
+                name="approver"
+                onChange={approver => this.handleSelectChange('approver', approver)}
+                value={this.state.approver}
+                placeholder={t('Search') + '...'}
+                key="approver"
+                options={this.state.users}
+               />
             </div>
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
