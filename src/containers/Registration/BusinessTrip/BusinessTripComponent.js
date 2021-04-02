@@ -269,7 +269,7 @@ class BusinessTripComponent extends React.Component {
       const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
       const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
 
-      if((startDateTime >= start && startDateTime <= end) || (endDateTime >= start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end)){
+      if((startDateTime > start && startDateTime < end) || (endDateTime > start && endDateTime < end) || (startDateTime < start && endDateTime > end)){
         return req
       }
     })
