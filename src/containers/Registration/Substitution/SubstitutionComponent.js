@@ -459,8 +459,16 @@ class SubstitutionComponent extends React.Component {
     this.setState({errors : errors})
   }
 
+  getDayName = (date) => {
+    var days = [this.props.t("Sun"), this.props.t("Mon"), this.props.t("Tue"), this.props.t("Wed"), this.props.t("Thu"), this.props.t("Fri"), this.props.t("Sat")];
+    var dayStr = moment(date, "DD-MM-YYYY").format("MM/DD/YYYY").toString()
+    var d = new Date(dayStr);
+    var dayName = days[d.getDay()];
+    return dayName
+  }
+
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
     const substitutionTypes = [
       { value: '01', label: t("Shiftchange") },
       { value: '02', label: t("IntermittenShift") },
@@ -538,15 +546,15 @@ class SubstitutionComponent extends React.Component {
         {this.state.timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
-              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{lang === "vi-VN" && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
                 <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
                 <p>{t("Start")} {timesheet.shiftIndex}: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} {timesheet.shiftIndex}: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdit
-                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> Sửa</p>
-                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> Hủy</p>}
+                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
+                  : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
 
@@ -567,7 +575,7 @@ class SubstitutionComponent extends React.Component {
                 <div className="col-6">
                   <p className="title">{t("ShiftCategory")}</p>
                   <div>
-                      <Select name="substitutionType" value={timesheet.substitutionType} onChange={substitutionType => this.updateSubstitution(index, substitutionType)} placeholder="Lựa chọn" key="substitutionType" options={substitutionTypes} />
+                      <Select name="substitutionType" value={timesheet.substitutionType} onChange={substitutionType => this.updateSubstitution(index, substitutionType)} placeholder={t("Select")} key="substitutionType" options={substitutionTypes} />
                   </div>
                   {this.error(index, 'substitutionType')}
                 </div>
@@ -594,7 +602,7 @@ class SubstitutionComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm"
                               timeFormat="HH:mm"
                               placeholderText={t("Select")}
@@ -613,7 +621,7 @@ class SubstitutionComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm"
                               timeFormat="HH:mm"
                               placeholderText={t("Select")}
@@ -624,7 +632,7 @@ class SubstitutionComponent extends React.Component {
                       <div className="col-4">
                         <p>&nbsp;</p>
                         <div className="row justify-content-around">
-                          <button type="button" className="col-6 btn btn-primary" onClick={e => this.filterShiftInfo(index, e)}>Tìm kiếm</button>
+                          <button type="button" className="col-6 btn btn-primary" onClick={e => this.filterShiftInfo(index, e)}>{t("Search")}</button>
                           <button type="button" className="col-5 md-col-right btn btn-secondary" onClick={e => this.resetFilterShiftInfo(index, e)}>Xóa tìm kiếm</button>
                         </div>
                       </div>
@@ -648,7 +656,7 @@ class SubstitutionComponent extends React.Component {
 
             {timesheet.isEdit ? <div>
               <p>{t("ShiftChangeReason")}</p>
-              <textarea placeholder="Nhập lý do" value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
+              <textarea placeholder={t("EnterReason")} value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
               {this.error(index, 'note')}
             </div> : null}
           </div>

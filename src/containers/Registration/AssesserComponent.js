@@ -3,6 +3,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
+import CONSENTER_LIST_LEVEL from "../../commons/Constants"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -91,10 +92,9 @@ class AssesserComponent extends React.Component {
   }
 
   isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, userAccount) => {
-    const levelAppraiser = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(levelAppraiser, function (item) { return item == currentUserLevel });
-    let indexAppraiserFilterLevel = _.findIndex(levelAppraiser, function (item) { return item == levelAppraiserFilter });
+    let indexCurrentUserLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+    let indexAppraiserFilterLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter });
 
     if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
       return false
@@ -103,7 +103,7 @@ class AssesserComponent extends React.Component {
       return false
     }
 
-    if (levelAppraiser.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+    if (CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
       return true
     }
 
@@ -111,6 +111,7 @@ class AssesserComponent extends React.Component {
   }
 
   getAppraiser = (value) => {
+    const { approver } = this.props
     if (value !== "") {
       const config = {
         headers: {
@@ -138,7 +139,7 @@ class AssesserComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: users })
+            this.setState({ users: approver ? users.filter(user => user.userAccount !== approver.userAccount) : users })
           }
         }).catch(error => { })
     }
@@ -162,12 +163,12 @@ class AssesserComponent extends React.Component {
       })
     }
     const { t } = this.props;
-    const employeeLevel = localStorage.getItem("employeeLevel")
+
     return <div className="appraiser">
       <div className="box shadow">
         <div className="row">
           <div className="col-12 col-xl-4">
-            <p className="title">{employeeLevel === "N0" ? `${t('Consenter')} ${t("Required")}` : `${t('Consenter')} ${t("IfAny")}`}</p>
+            <p className="title">{t('Consenter')}</p>
             <div>
               <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="appraiser" onChange={appraiser => this.handleSelectChange('appraiser', appraiser)} value={this.state.appraiser} placeholder={t('Search') + '...'} key="appraiser" options={this.state.users} />
             </div>

@@ -3,6 +3,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
+import APPROVER_LIST_LEVEL from "../../commons/Constants"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -93,8 +94,8 @@ class ApproverComponent extends React.Component {
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, userAccount) => {
     const levelApprover = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(levelApprover, function (item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(levelApprover, function (item) { return item == levelApproverFilter });
+    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
 
     if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
       return false
@@ -103,7 +104,7 @@ class ApproverComponent extends React.Component {
       return false
     }
 
-    if (levelApprover.includes(levelApproverFilter)) {
+    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter)) {
       return true
     }
 
@@ -111,6 +112,7 @@ class ApproverComponent extends React.Component {
   }
 
   getApproverInfo = (value) => {
+    const { appraiser } = this.props
     if (value !== "") {
       const config = {
         headers: {
@@ -138,7 +140,7 @@ class ApproverComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: users })
+            this.setState({ users: appraiser.userAccount ? users.filter(user => user.userAccount !== appraiser.userAccount) : users })
           }
         }).catch(error => { })
     }

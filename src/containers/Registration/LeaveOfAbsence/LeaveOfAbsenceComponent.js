@@ -131,7 +131,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].startDate = start
         requestInfo[indexReq].endDate = end
         requestInfo[indexReq].errors.startDate = null
-        requestInfo[indexReq].errors.overlapDateTime = null
+        requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
@@ -148,7 +148,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].startDate = start
         requestInfo[indexReq].endDate = end
         requestInfo[indexReq].errors.endDate = null
-        requestInfo[indexReq].errors.overlapDateTime = null
+        requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
@@ -174,7 +174,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].startTime = start
         requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.startTime = null
-        requestInfo[indexReq].errors.overlapDateTime = null
+        requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(startDate, endDate, start, end, indexReq)
     }
@@ -201,7 +201,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].startTime = start
         requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.endTime = null
-        requestInfo[indexReq].errors.overlapDateTime = null
+        requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(startDate, endDate, start, end, indexReq)
     }
@@ -423,6 +423,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         const employeeLevel = localStorage.getItem("employeeLevel")
 
+        // if{
+        //     appraiser.id 
+        // }
         this.setState({
             requestInfo,
             errors: {
@@ -480,6 +483,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             groupId: maxGroup + 1,
             errors: {},
         })
+        document.querySelector('.list-inline').scrollIntoView({
+            behavior: 'smooth'
+        });
         this.setState({ requestInfo })
     }
 
@@ -632,7 +638,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             { value: 'PN01', label: t('LeaveForExpats') },
             { value: 'PN02', label: t("LeaveForMother") },
             { value: 'PN03', label: t('LeaveForMarriageFuneral') },
-            { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
+            // { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
             { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
             { value: ADVANCE_ABSENCE_LEAVE_KEY, label: t("AdvancedLeave") },
             { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
@@ -656,6 +662,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             isShowStatusModal,
             isSuccess,
             isShowNoteModal,
+            appraiser,
+            approver
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -898,9 +906,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                     )
                 })}
 
-                <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
+                <AssesserComponent errors={errors} approver={approver} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
 
-                <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
+                <ApproverComponent errors={errors} appraiser={appraiser} updateApprover={this.updateApprover.bind(this)} approver={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
                 <ul className="list-inline">
                     {files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>
