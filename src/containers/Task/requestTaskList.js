@@ -475,7 +475,7 @@ class RequestTaskList extends React.Component {
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId);
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId);
                                             let totalTime = null;
-                                            if (task.requestType == 2) {
+                                            if (task.requestTypeId == 2) {
                                                 totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
                                             }
                                             else {
@@ -495,7 +495,7 @@ class RequestTaskList extends React.Component {
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
-                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(task.requestTypeId)) ? `/tasks-request/${task.id}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${task.id}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                                 </>
                                                             : null
                                                         }
