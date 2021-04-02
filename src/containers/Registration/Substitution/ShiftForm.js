@@ -81,14 +81,14 @@ class ShiftForm extends React.Component {
     }
 
     render() {
-        const {t} = this.props;
+        const { t } = this.props;
         return (
             <div className="shift-form mt-3">
                 <div className="row">
                     <div className="col-5">
                         <div className="row">
                             <div className="col">
-                                <p>Bắt đầu 1 - Thay đổi</p>
+                                <p>{t("StartTime")} 1 - Thay đổi</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -110,7 +110,7 @@ class ShiftForm extends React.Component {
                                 {this.error(this.props.timesheet.index, 'startTime')}
                             </div>
                             <div className="col">
-                                <p>Kết thúc 1 - Thay đổi</p>
+                                <p>{t("EndTime")} 1 - Thay đổi</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -177,10 +177,10 @@ class ShiftForm extends React.Component {
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
-                                                timeCaption="Giờ"
+                                                timeCaption={t("Hour")}
                                                 dateFormat="HH:mm"
                                                 timeFormat="HH:mm"
-                                                placeholderText="Lựa chọn"
+                                                placeholderText={t("Select")}
                                                 className="form-control input"
                                             />
                                         </label>
