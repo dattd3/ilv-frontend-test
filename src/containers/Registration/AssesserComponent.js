@@ -85,10 +85,15 @@ class AssesserComponent extends React.Component {
   }
 
   handleSelectChange(name, value) {
-    const currentUserLevel = localStorage.getItem('employeeLevel')
-    this.setState({ [name]: value })
-    const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
-    this.props.updateAppraiser(value, isAppraiser)
+    if (value) {
+      const currentUserLevel = localStorage.getItem('employeeLevel')
+      this.setState({ [name]: value })
+      const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
+      this.props.updateAppraiser(value, isAppraiser)
+    } else {
+      this.setState({ [name]: value, users: [] })
+      this.props.updateAppraiser(value, true)
+    }
   }
 
   isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, userAccount) => {
@@ -170,7 +175,17 @@ class AssesserComponent extends React.Component {
           <div className="col-12 col-xl-4">
             <p className="title">{t('Consenter')}</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="appraiser" onChange={appraiser => this.handleSelectChange('appraiser', appraiser)} value={this.state.appraiser} placeholder={t('Search') + '...'} key="appraiser" options={this.state.users} />
+              <Select 
+                isClearable={true} styles={customStyles}
+                components={{ Option: MyOption }}
+                onInputChange={this.onInputChange.bind(this)}
+                name="appraiser"
+                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
+                value={this.state.appraiser}
+                placeholder={t('Search') + '...'}
+                key="appraiser"
+                options={this.state.users}
+              />
             </div>
             {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
           </div>
