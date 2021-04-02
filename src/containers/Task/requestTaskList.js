@@ -11,7 +11,7 @@ import Select from 'react-select'
 import Moment from 'react-moment'
 import moment from 'moment'
 import _ from 'lodash'
-import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
+import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { withTranslation } from "react-i18next"
@@ -38,6 +38,7 @@ class RequestTaskList extends React.Component {
             requestUrl: "",
             requestTypeId: null,
             dataToPrepareToSAP: {},
+            dataToUpdate: [],
             isShowModalRegistrationConfirm: false
         }
 
@@ -100,23 +101,45 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    evictionRequest = id => {
+    evictionRequest = (requestTypeId, child) => {
+        let prepareDataForRevoke = [
+            {
+                id: parseInt(child.id.split(".")[0]),
+                requestTypeId: requestTypeId,
+                sub: [
+                    {
+                        id: child.id,
+                    }
+                ]
+            }
+        ]
         this.setState({
             modalTitle: "Xác nhận thu hồi",
             modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
-            taskId: id
+            dataToUpdate: prepareDataForRevoke
         });
     }
 
-    deleteRequest = id => {
+    deleteRequest = (requestTypeId, child) => {
+        let prepareDataForCancel =
+            {
+                id: parseInt(child.id.split(".")[0]),
+                requestTypeId: requestTypeId,
+                sub: [
+                    {
+                        id: child.id,
+                    }
+                ]
+            }
+        console.log(prepareDataForCancel);
         this.setState({
             modalTitle: "Yêu cầu hủy phê duyệt",
             modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
             isShowModalConfirm: true,
-            typeRequest: Constants.STATUS_EVICTION,
-            taskId: id
+            typeRequest: Constants.STATUS_REVOCATION,
+            dataToUpdate: prepareDataForCancel
         });
     }
 
@@ -193,20 +216,22 @@ class RequestTaskList extends React.Component {
 
     isShowEditButton = status => {
         let isShow = true;
+        console.log(status);
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 0 || status == 2 || status == 3) {
-                isShow = false;
-            } else {
+            if (status == 5 || status == 8 || status == 2 || status == 3) {
                 isShow = true;
+            } else {
+                isShow = false;
             }
         }
         return isShow;
     }
 
     isShowDeleteButton = status => {
-        return status == Constants.STATUS_APPROVED ? true : false;
+
+        return status == 5 || status == 8 ? true : false;
         
     }
     isShowEvictionButton = status => {
@@ -214,7 +239,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 0) {
+            if (status == 2){
                 isShow = true;
             } else {
                 isShow = false;
@@ -408,8 +433,17 @@ class RequestTaskList extends React.Component {
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
-                <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
-                    taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
+                {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
+                    taskId={this.state.taskId} onHide={this.onHideModalConfirm} /> */}
+                     <ConfirmationModal
+                        dataToSap={this.state.dataToUpdate}
+                        id={this.props.id}
+                        show={this.state.isShowModalConfirm}
+                        title={this.state.modalTitle}
+                        type={this.state.typeRequest}
+                        message={this.state.modalMessage}
+                        onHide={this.onHideModalConfirm.bind(this)}
+                    />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="task-list shadow">
@@ -430,9 +464,6 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                                 tasks.map((task) => {
-                                    let isShowEditButton = this.isShowEditButton(task.status);
-                                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                    let isShowDeleteButton = this.isShowDeleteButton(task.status);
                                     let userId = "";
                                     let userManagerId = "";
                                     if (task.user.userId) {
@@ -440,6 +471,16 @@ class RequestTaskList extends React.Component {
                                     }
                                     return (
                                         task.requestInfo?.map((child, index) => {
+                                            let isShowEditButton = this.isShowEditButton(child.processStatusId);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId);
+                                            let totalTime = null;
+                                            if (task.requestTypeId == 2) {
+                                                totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
+                                            }
+                                            else {
+                                                totalTime = child.hours || child.days ? child.days + " ngày " + child.hours + " giờ" : null;
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
@@ -448,24 +489,24 @@ class RequestTaskList extends React.Component {
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time">{(child.days ||  child.hours) ? child.days +" ngày "+ child.hours + " giờ" : 0}</td>
+                                                    <td className="break-time">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
                                                     <td className="tool">
                                                         {
-                                                            isShowEditButton ? <>
-                                                                <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                                
+                                                            isShowEditButton ? 
+                                                                <>
+                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${task.id}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                                 </>
                                                             : null
                                                         }
                                                         {
                                                             isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)} className="eviction"><i className='fas fa-undo-alt'></i></span>
                                                                 : null
                                                         }
                                                         {
                                                             isShowDeleteButton ?
-                                                                <span title="Xóa" onClick={e => this.deleteRequest(task.id)}><img alt="Edit task" src={deleteButton} /></span>
+                                                                <span title="Hủy" onClick={e => this.deleteRequest(task.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
                                                                 : null
                                                         }
                                                     </td>

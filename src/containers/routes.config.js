@@ -199,7 +199,7 @@ export default [
             exact: true,
             path: map.RequestTaskEdit
           },
-          component: lazy(() => import("./PersonalInfo/edit/PersonalInfoRequestEdit"))
+          component: lazy(() => import("./Task/TaskEdit"))
         },
         {
           key: "request-task-detail",
