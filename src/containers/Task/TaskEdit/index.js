@@ -1,5 +1,6 @@
 import React from 'react'
 import LeaveOfAbsenceEdit from './LeaveOfAbsenceEdit'
+import map from "../../map.config"
 // import BusinessTripComponent from './BusinessTrip/BusinessTripComponent'
 // import InOutTimeUpdateComponent from './InOutTimeUpdate/InOutTimeUpdateComponent'
 // import SubstitutionComponent from './Substitution/SubstitutionComponent'
@@ -29,10 +30,14 @@ class TaskEditComponent extends React.Component {
       
         axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
           .then(res => {
-            if (res && res.data) {
-              const response = res.data.data
-              this.setState({data: response })
-            }
+             const response = res.data.data
+             const result = res.data.result
+             const code = result.code
+              if (code == "000000") {
+                this.setState({data: response })
+              } else if (code == Constants.API_ERROR_NOT_FOUND_CODE || code == Constants.API_ERROR_CODE) {
+                return window.location.href = map.NotFound
+              }
           }).catch(error => {
             console.log(error)
           });
@@ -41,7 +46,7 @@ class TaskEditComponent extends React.Component {
     render() {
       return (
       <div className="registration-section">
-        {this.state.data.requestTypeId === Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceEdit leaveOfAbsence={this.state.data}/> : null}
+        {(this.state.data && this.state.data.requestTypeId === Constants.LEAVE_OF_ABSENCE) ? <LeaveOfAbsenceEdit leaveOfAbsence={this.state.data}/> : null}
         {/* {this.state.data.requestTypeId === Constants.BUSINESS_TRIP ? <BusinessTripComponent businessTrip={this.state.data}/> : null}
         {this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutTimeUpdateComponent inOutTimeUpdate={this.state.data}/> : null}
         {this.state.data.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionComponent substitution={this.state.data}/> : null} */}
