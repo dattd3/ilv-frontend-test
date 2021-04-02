@@ -216,7 +216,6 @@ class RequestTaskList extends React.Component {
 
     isShowEditButton = status => {
         let isShow = true;
-        console.log(status);
         if (this.props.page == "approval") {
             isShow = false;
         } else {
