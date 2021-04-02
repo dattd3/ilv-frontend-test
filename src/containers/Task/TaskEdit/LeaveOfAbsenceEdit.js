@@ -93,12 +93,13 @@ class LeaveOfAbsenceEdit extends React.Component {
                 }
             }).catch(error => {
             })
+
         if (leaveOfAbsence) {
             this.setState({
                 isEdit: true,
                 id: leaveOfAbsence.id,
-                startDate: leaveOfAbsence.requestInfo.startDate,
-                startTime: leaveOfAbsence.requestInfo.startTime,
+                startDate: moment(leaveOfAbsence.requestInfo.startDate).format("DD/MM/YYYY"),
+                startTime: moment(leaveOfAbsence.requestInfo.startDate).format("DD/MM/YYYY"),
                 endDate: leaveOfAbsence.requestInfo.endDate,
                 endTime: leaveOfAbsence.requestInfo.endTime,
                 totalTimes: leaveOfAbsence.requestInfo.totalTimes,
@@ -116,6 +117,23 @@ class LeaveOfAbsenceEdit extends React.Component {
                         fileUrl: file.fileUrl
                     }
                 }),
+                requestInfo: [
+                    {
+                        groupItem: 1,
+                        startDate: moment(leaveOfAbsence.requestInfo.startDate).format("DD/MM/YYYY"),
+                        startTime: null,
+                        endDate: moment(leaveOfAbsence.requestInfo.endDate).format("DD/MM/YYYY"),
+                        endTime: null,
+                        comment: leaveOfAbsence.requestInfo.comment,
+                        totalTimes: 0,
+                        totalDays: 0,
+                        absenceType: leaveOfAbsence.requestInfo.absenceType,
+                        isAllDay: leaveOfAbsence.requestInfo.isAllDay,
+                        funeralWeddingInfo: null,
+                        groupId: 1,
+                        errors: {},
+                    }
+                ],
             })
             console.log(leaveOfAbsence);
         }
@@ -538,7 +556,7 @@ class LeaveOfAbsenceEdit extends React.Component {
     }
 
     submit() {
-        const { t } = this.props
+        const { t, leaveOfAbsence } = this.props
         const {
             files,
             isEdit,
@@ -588,19 +606,20 @@ class LeaveOfAbsenceEdit extends React.Component {
             }
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
+        bodyFormData.append('id', JSON.stringify(leaveOfAbsence.id))
 
         files.forEach(file => {
             bodyFormData.append('Files', file)
         })
 
-
         axios({
             method: 'POST',
-            url: isEdit && id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
+            url: `${process.env.REACT_APP_REQUEST_URL}Request/edit`,
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
+                debugger
                 if (response && response.data && response.data.result) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
@@ -620,7 +639,7 @@ class LeaveOfAbsenceEdit extends React.Component {
         } else {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
-        const errorMsg = requestInfo[indexReq].errors[name]
+        const errorMsg = requestInfo[indexReq]?.errors[name]
         return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
@@ -637,21 +656,21 @@ class LeaveOfAbsenceEdit extends React.Component {
         const { requestInfo } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
         newRequestInfo.push({
-            groupItem: 1,
-            startDate: null,
-            startTime: null,
-            endDate: null,
-            endTime: null,
-            comment: null,
-            totalTimes: 0,
-            totalDays: 0,
-            absenceType: null,
-            isAllDay: isAllDay,
-            funeralWeddingInfo: null,
-            groupId: groupId,
-            errors: {},
-        })
-        this.setState({ requestInfo: newRequestInfo })
+                groupItem: 1,
+                startDate: requestInfo[0].startDate,
+                startTime: null,
+                endDate: requestInfo[0].endDate,
+                endTime: null,
+                comment: requestInfo[0].comment,
+                totalTimes: 0,
+                totalDays: 0,
+                absenceType: requestInfo[0].absenceType,
+                isAllDay: isAllDay,
+                funeralWeddingInfo: null,
+                groupId: groupId,
+                errors: {},
+            })
+            this.setState({ requestInfo: newRequestInfo })
     }
 
     removeFile(index) {
@@ -668,7 +687,6 @@ class LeaveOfAbsenceEdit extends React.Component {
 
     render() {
         const { t, leaveOfAbsence } = this.props;
-        console.log(moment(leaveOfAbsence.requestInfo.startDate).format("MM/DD/YYYY"));
         let absenceTypes = [
             { value: 'IN01', label: t('SickLeave') },
             { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
@@ -741,7 +759,7 @@ class LeaveOfAbsenceEdit extends React.Component {
                                                                             name="startDate"
                                                                             selectsStart
                                                                             autoComplete="off"
-                                                                            selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : Date.parse(moment(leaveOfAbsence.requestInfo.startDate).format("MM/DD/YYYY"))}
+                                                                            selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -861,7 +879,7 @@ class LeaveOfAbsenceEdit extends React.Component {
                                     <div className="col-5">
                                         <p className="title">{t('LeaveCategory')}</p>
                                         <div>
-                                            <Select name="absenceType" defaultValue={leaveOfAbsence.requestInfo.absenceType} value={leaveOfAbsence.requestInfo.absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                            <Select name="absenceType" value={req[0].absenceType || ""} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
                                         </div>
                                         {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
 
@@ -878,9 +896,9 @@ class LeaveOfAbsenceEdit extends React.Component {
                                     <div className="col-7">
                                         <p className="title">{t('ReasonRequestLeave')}</p>
                                         <div>
-                                            <textarea className="form-control" value={leaveOfAbsence.requestInfo.comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
+                                            <textarea className="form-control" value={req[0].comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
                                         </div>
-                                        {req[0].errors.comment ? this.error('comment', leaveOfAbsence.requestInfo.groupID) : null}
+                                        {req[0].errors.comment ? this.error('comment', req[0].groupId) : null}
                                     </div>
                                 </div>
                             </div>
