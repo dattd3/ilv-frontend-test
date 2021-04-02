@@ -140,7 +140,7 @@ class ApproverComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: appraiser.userAccount ? users.filter(user => user.userAccount !== appraiser.userAccount) : users })
+            this.setState({ users: appraiser ? users.filter(user => user.userAccount !== appraiser.userAccount) : users })
           }
         }).catch(error => { })
     }

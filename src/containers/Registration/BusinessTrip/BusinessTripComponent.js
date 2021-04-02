@@ -31,6 +31,7 @@ class BusinessTripComponent extends React.Component {
       approver: null,
       files: [],
       isUpdateFiles: false,
+      appraiser: null,
       errors: {},
       titleModal: "",
       messageModal: "",
@@ -586,7 +587,7 @@ class BusinessTripComponent extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { requestInfo, errors } = this.state
+    const { requestInfo, errors, approver, appraiser } = this.state
     const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) =>  reqPrev.groupId - reqNext.groupId)
     const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
     const vehicles = [
@@ -836,9 +837,9 @@ class BusinessTripComponent extends React.Component {
           </div>
         )})}
         {/* {employeeLevel === "N0" && */}
-          <AssesserComponent errors={errors} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
+          <AssesserComponent errors={errors} approver={approver} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
         {/* } */}
-        <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
+        <ApproverComponent errors={errors} appraiser={appraiser} updateApprover={this.updateApprover.bind(this)} approver={this.props.businessTrip ? this.props.businessTrip.userProfileInfo.approver : null} />
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
