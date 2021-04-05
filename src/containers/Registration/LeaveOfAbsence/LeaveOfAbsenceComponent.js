@@ -631,27 +631,23 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(isAllDay, groupId) {
-        const { requestInfo, isEdit } = this.state
+        const { requestInfo } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
-        if (!isEdit) {
-            newRequestInfo.push({
-                groupItem: 1,
-                startDate: null,
-                startTime: null,
-                endDate: null,
-                endTime: null,
-                comment: null,
-                totalTimes: 0,
-                totalDays: 0,
-                absenceType: null,
-                isAllDay: isAllDay,
-                funeralWeddingInfo: null,
-                groupId: groupId,
-                errors: {},
-            })
-        } else {
-            newRequestInfo = requestInfo.map(req => ({ ...req, isAllDay: isAllDay }))
-        }
+        newRequestInfo.push({
+            groupItem: 1,
+            startDate: null,
+            startTime: null,
+            endDate: null,
+            endTime: null,
+            comment: null,
+            totalTimes: 0,
+            totalDays: 0,
+            absenceType: null,
+            isAllDay: isAllDay,
+            funeralWeddingInfo: null,
+            groupId: groupId,
+            errors: {},
+        })
 
         this.setState({ requestInfo: newRequestInfo })
     }
