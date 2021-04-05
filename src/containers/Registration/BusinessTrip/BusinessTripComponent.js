@@ -452,6 +452,7 @@ class BusinessTripComponent extends React.Component {
         }
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem =  {
+<<<<<<< HEAD
                 startDate: moment(req.startDate, DATE_FORMAT).format('YYYYMMDD').toString(),
                 startTime:  moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
                 endDate: moment(req.endDate, DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -462,6 +463,16 @@ class BusinessTripComponent extends React.Component {
                 attendanceType: req.attendanceQuotaType,
                 vehicle: req.vehicle,
                 location: req.place,
+=======
+                startDate: req.startDate,
+                startTime: req.startTime,
+                endDate: req.endDate,
+                endTime: req.endTime,
+                comment: req.comment,
+                totalTimes: req.totalTimes,
+                totalDays: req.totalDays,
+                absenceType: req.absenceType,
+>>>>>>> edit leave biz and trip
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }
@@ -527,6 +538,7 @@ class BusinessTripComponent extends React.Component {
         }
         const errorMsg = requestInfo[indexReq].errors[name]
         return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
+<<<<<<< HEAD
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -590,6 +602,71 @@ class BusinessTripComponent extends React.Component {
         this.setState({ requestInfo })
     }
 
+=======
+    }
+
+    showStatusModal = (title, message, isSuccess = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    };
+
+    hideStatusModal = () => {
+        this.setState({ isShowStatusModal: false });
+        window.location.reload();
+    }
+
+    updateLeaveType(isAllDay, groupId) {
+        const { requestInfo } = this.state
+        const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
+        newRequestInfo.push({
+            groupItem: 1,
+            startDate: null,
+            startTime: 0,
+            endDate: null,
+            endTime: 0,
+            comment: null,
+            totalTimes: 0,
+            totalDays: 0,
+            isAllDay: isAllDay,
+            attendanceQuotaType: null,
+            place: null,
+            vehicle: null,
+            groupId: groupId,
+            errors: {},
+        })
+        this.setState({ requestInfo: newRequestInfo })
+    }
+
+    removeFile(index) {
+        this.setState({ files: [...this.state.files.slice(0, index), ...this.state.files.slice(index + 1)] })
+    }
+
+    getIsUpdateStatus = (status) => {
+        this.setState({ isUpdateFiles: status })
+    }
+
+    addMultiDateTime(groupId, requestItem, isAllDay) {
+        const { requestInfo } = this.state;
+        const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
+        requestInfo.push({
+            groupItem: maxIndex + 1,
+            groupId: groupId,
+            startDate: null,
+            startTime: 0,
+            endDate: null,
+            endTime: 0,
+            comment: null,
+            totalTimes: 0,
+            totalDays: 0,
+            isAllDay: isAllDay,
+            attendanceQuotaType: null,
+            place: null,
+            vehicle: null,
+            errors: {},
+        })
+        this.setState({ requestInfo })
+    }
+
+>>>>>>> edit leave biz and trip
     removeIndex(index, indexDetail) {
         let { requestList } = this.state;
         requestList[index].requestDetails.splice(indexDetail, 1)
