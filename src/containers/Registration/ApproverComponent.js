@@ -56,6 +56,7 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
+    const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
@@ -79,8 +80,14 @@ class ApproverComponent extends React.Component {
         });
     }
 
-    if (this.props.approver) {
-      this.setState({ approver: this.props.approver })
+    if (approver) {
+      this.setState({
+        approver: {
+          ...approver,
+          label: approver.fullname,
+          value: approver.account,
+        }
+      })
     }
   }
 
@@ -168,7 +175,7 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-    const {t} = this.props;
+    const { t, isEdit } = this.props;
     return <div className="approver">
       <div className="box shadow">
         <div className="row">
@@ -177,6 +184,7 @@ class ApproverComponent extends React.Component {
             <div>
               <Select
                 isClearable={true}
+                isDisabled={isEdit}
                 styles={customStyles}
                 components={{ Option: MyOption }}
                 onInputChange={this.onInputChange.bind(this)}
@@ -193,13 +201,13 @@ class ApproverComponent extends React.Component {
           <div className="col-4">
             <p className="title">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver ? this.state.approver.current_position : ""} readOnly />
+              <input type="text" className="form-control" value={this.state.approver?.current_position || ""} readOnly />
             </div>
           </div>
           <div className="col-4">
             <p className="title">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver ? this.state.approver.department : ""} readOnly />
+              <input type="text" className="form-control" value={this.state.approver?.department || ""} readOnly />
             </div>
           </div>
         </div>
