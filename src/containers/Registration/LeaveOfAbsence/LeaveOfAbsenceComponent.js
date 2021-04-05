@@ -33,7 +33,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            id: null,
             approver: null,
             appraiser: null,
             annualLeaveSummary: null,
@@ -65,6 +64,17 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { leaveOfAbsence } = nextProps
+        if (leaveOfAbsence) {
+            return ({
+                approver: leaveOfAbsence.approver,
+                appraiser: leaveOfAbsence.appraiser
+            })
+        }
+        return prevState
+    }
+
     componentDidMount() {
         const config = {
             headers: {
@@ -93,21 +103,34 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             }).catch(error => {
             })
-        if (leaveOfAbsence) {
+        if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
+            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo
+            const { appraiser, approver, requestDocuments } = leaveOfAbsence
             this.setState({
                 isEdit: true,
-                id: leaveOfAbsence.id,
-                startDate: leaveOfAbsence.userProfileInfo.startDate,
-                startTime: leaveOfAbsence.userProfileInfo.startTime,
-                endDate: leaveOfAbsence.userProfileInfo.endDate,
-                endTime: leaveOfAbsence.userProfileInfo.endTime,
-                totalTimes: leaveOfAbsence.userProfileInfo.totalTimes,
-                absenceType: leaveOfAbsence.userProfileInfo.absenceType,
-                leaveType: leaveOfAbsence.userProfileInfo.leaveType,
-                pn03: leaveOfAbsence.userProfileInfo.pn03,
-                note: leaveOfAbsence.comment,
-                approver: leaveOfAbsence.userProfileInfo.approver,
-                files: leaveOfAbsence.userProfileInfoDocuments.map(file => {
+                approver: approver,
+                appraiser: appraiser,
+                requestInfo: [
+                    {
+                        id: id,
+                        groupItem: 0,
+                        startDate: moment(startDate, 'YYYYMMDD').format('DD/MM/YYYY'),
+                        startTime: startTime ? moment(startTime, 'HHmm00').format('HH:mm') : null,
+                        endDate: moment(endDate, 'YYYYMMDD').format('DD/MM/YYYY'),
+                        endTime: endTime ? moment(endTime, 'HHmm00').format('HH:mm') : null,
+                        totalTimes: hours,
+                        totalDays: days,
+                        processStatusId: processStatusId,
+                        absenceType: absenceType,
+                        leaveType: leaveType,
+                        comment: comment,
+                        isAllDay: isAllDay,
+                        funeralWeddingInfo: null,
+                        groupId: parseInt(groupID),
+                        errors: {},
+                    }
+                ],
+                files: requestDocuments.length > 0 ? requestDocuments.map(file => {
                     return {
                         id: file.id,
                         name: file.fileName,
@@ -115,7 +138,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         fileType: file.fileType,
                         fileUrl: file.fileUrl
                     }
-                }),
+                }) : [],
             })
         }
     }
@@ -320,7 +343,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ appraiser: appraiser })
         const errors = { ...this.state.errors }
         if (!isAppraiser) {
-            errors.appraiser = this.props.t("InvalidApprover")
+            errors.appraiser = this.props.t("InvalidAppraiser")
         } else {
             errors.appraiser = null
         }
@@ -506,7 +529,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const {
             files,
             isEdit,
-            id,
             requestInfo
         } = this.state
         const err = this.verifyInput()
@@ -517,19 +539,27 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
 
         const dataRequestInfo = requestInfo.map(req => {
-            return ({
+            let reqItem =  {
                 startDate: req.startDate,
                 startTime: req.startTime,
                 endDate: req.endDate,
                 endTime: req.endTime,
                 comment: req.comment,
-                totalTimes: req.totalTimes,
-                totalDays: req.totalDays,
+                days: req.totalTimes,
+                times: req.totalDays,
                 absenceType: req.absenceType,
                 isAllDay: req.isAllDay,
                 funeralWeddingInfo: req.funeralWeddingInfo,
                 groupId: req.groupId,
-            })
+            }
+            if(isEdit){
+                reqItem = {
+                    ...reqItem,
+                    processStatusId: req.processStatusId,
+                    id: req.id
+                }
+            }
+            return reqItem
         })
 
         const approver = { ...this.state.approver }
@@ -558,10 +588,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             bodyFormData.append('Files', file)
         })
 
-
         axios({
             method: 'POST',
-            url: isEdit && id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
+            url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
@@ -594,8 +623,13 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     hideStatusModal = () => {
+        const { isEdit } = this.state;
         this.setState({ isShowStatusModal: false });
-        window.location.reload();
+        if(isEdit){
+            window.location.replace("/tasks")
+        } else {
+            window.location.reload();
+        }
     }
 
     updateLeaveType(isAllDay, groupId) {
@@ -632,7 +666,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
-        const { t, leaveOfAbsence } = this.props;
+        const { t } = this.props;
         let absenceTypes = [
             { value: 'IN01', label: t('SickLeave') },
             { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
@@ -656,6 +690,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const {
             requestInfo,
             annualLeaveSummary,
+            isEdit,
             files,
             errors,
             titleModal,
@@ -667,6 +702,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver
         } = this.state
+
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         return (
@@ -715,10 +751,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                     let totalDay = 0
                     let totalTime = 0
                     req.forEach(r => {
-                        if(r.totalDays){
+                        if (r.totalDays) {
                             totalDay += r.totalDays
                         }
-                        if(r.totalTimes){
+                        if (r.totalTimes) {
                             totalTime += r.totalTimes
                         }
                     })
@@ -757,7 +793,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            minDate={moment(new Date((new Date()).valueOf() - 1000*60*60*24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                                                                            minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
                                                                             onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
@@ -805,7 +841,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                             // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : moment(new Date((new Date()).valueOf() - 1000*60*60*24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
                                                                             onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
@@ -842,12 +878,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 </div>
 
                                                 {!indexDetail ?
+                                                    !isEdit && 
                                                     <React.Fragment>
                                                         <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
                                                     </React.Fragment>
                                                     :
-                                                    <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                    !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.totalDaysOff ?
@@ -898,19 +935,17 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                 </div>
                             </div>
-
                             {!index ?
-                                <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddLeave(req[0].groupId)}><i className="fas fa-plus"></i> {t("AddLeave")}</button>
+                                !isEdit && <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddLeave(req[0].groupId)}><i className="fas fa-plus"></i> {t("AddLeave")}</button>
                                 :
-                                <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(req[0].groupId)}><i className="fas fa-times"></i> {t("CancelLeave")}</button>
+                                !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(req[0].groupId)}><i className="fas fa-times"></i> {t("CancelLeave")}</button>
                             }
                         </div>
                     )
                 })}
+                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
 
-                <AssesserComponent errors={errors} approver={approver} updateAppraiser={this.updateAppraiser.bind(this)} appraiser={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
-
-                <ApproverComponent errors={errors} appraiser={appraiser} updateApprover={this.updateApprover.bind(this)} approver={leaveOfAbsence ? leaveOfAbsence.userProfileInfo.approver : null} />
+                <ApproverComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
                 <ul className="list-inline">
                     {files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>
