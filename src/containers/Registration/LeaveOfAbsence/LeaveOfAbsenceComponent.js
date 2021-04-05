@@ -539,11 +539,11 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
 
         const dataRequestInfo = requestInfo.map(req => {
-            let reqItem =  {
+            let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime:  moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+                startTime: req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+                endTime: req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
@@ -552,7 +552,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 funeralWeddingInfo: req.funeralWeddingInfo,
                 groupId: req.groupId,
             }
-            if(isEdit){
+            if (isEdit) {
                 reqItem = {
                     ...reqItem,
                     processStatusId: req.processStatusId,
@@ -623,7 +623,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     hideStatusModal = () => {
         const { isEdit } = this.state;
         this.setState({ isShowStatusModal: false });
-        if(isEdit){
+        if (isEdit) {
             window.location.replace("/tasks")
         } else {
             window.location.reload();
@@ -631,23 +631,28 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(isAllDay, groupId) {
-        const { requestInfo } = this.state
+        const { requestInfo, isEdit } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
-        newRequestInfo.push({
-            groupItem: 1,
-            startDate: null,
-            startTime: null,
-            endDate: null,
-            endTime: null,
-            comment: null,
-            totalTimes: 0,
-            totalDays: 0,
-            absenceType: null,
-            isAllDay: isAllDay,
-            funeralWeddingInfo: null,
-            groupId: groupId,
-            errors: {},
-        })
+        if (!isEdit) {
+            newRequestInfo.push({
+                groupItem: 1,
+                startDate: null,
+                startTime: null,
+                endDate: null,
+                endTime: null,
+                comment: null,
+                totalTimes: 0,
+                totalDays: 0,
+                absenceType: null,
+                isAllDay: isAllDay,
+                funeralWeddingInfo: null,
+                groupId: groupId,
+                errors: {},
+            })
+        } else {
+            newRequestInfo = requestInfo.map(req => ({ ...req, isAllDay: isAllDay }))
+        }
+
         this.setState({ requestInfo: newRequestInfo })
     }
 
@@ -876,7 +881,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 </div>
 
                                                 {!indexDetail ?
-                                                    !isEdit && 
+                                                    !isEdit &&
                                                     <React.Fragment>
                                                         <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
