@@ -95,11 +95,11 @@ class BusinessTripComponent extends React.Component {
                         attendanceQuotaType: attendanceType,
                         place: {
                             ...location,
-                            label: _.upperFirst(location.label)
+                            label: location ? _.upperFirst(location.label) : null
                         },
                         vehicle: {
                             ...vehicle,
-                            label: _.upperFirst(vehicle.label)
+                            label: vehicle ? _.upperFirst(vehicle.label) : null
                         },
                     }
                 ],
@@ -452,10 +452,10 @@ class BusinessTripComponent extends React.Component {
         }
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem =  {
-                startDate: moment(req.startDate, DATE_FORMAT).format('YYYYMMDD').toString(),
-                startTime:  moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-                endDate: moment(req.endDate, DATE_FORMAT).format('YYYYMMDD').toString(),
-                endTime: moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+                startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                startTime: req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                endTime: req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
