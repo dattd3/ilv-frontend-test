@@ -109,7 +109,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   verifyInput() {
     const { t } = this.props
-    let errors = { ...this.state.errors }
+    let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdit) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
