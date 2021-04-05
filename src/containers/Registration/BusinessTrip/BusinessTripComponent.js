@@ -95,11 +95,11 @@ class BusinessTripComponent extends React.Component {
                         attendanceQuotaType: attendanceType,
                         place: {
                             ...location,
-                            label: _.upperFirst(location.label)
+                            label: location ? _.upperFirst(location.label) : null
                         },
                         vehicle: {
                             ...vehicle,
-                            label: _.upperFirst(vehicle.label)
+                            label: vehicle ? _.upperFirst(vehicle.label) : null
                         },
                     }
                 ],
@@ -442,7 +442,7 @@ class BusinessTripComponent extends React.Component {
 
     submit() {
         const { t } = this.props
-        const { requestInfo, files, isEdit } = this.state
+        const { requestInfo, files, isEdit, isShowAddressAndVehicle } = this.state
         this.setDisabledSubmitButton(true)
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -452,16 +452,16 @@ class BusinessTripComponent extends React.Component {
         }
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem =  {
-                startDate: moment(req.startDate, DATE_FORMAT).format('YYYYMMDD').toString(),
-                startTime:  moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
-                endDate: moment(req.endDate, DATE_FORMAT).format('YYYYMMDD').toString(),
-                endTime: moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION),
+                startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                startTime: req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                endTime: req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
                 attendanceType: req.attendanceQuotaType,
-                vehicle: req.vehicle,
-                location: req.place,
+                vehicle: !isShowAddressAndVehicle ? req.vehicle : null,
+                location: !isShowAddressAndVehicle ? req.place: null,
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }
