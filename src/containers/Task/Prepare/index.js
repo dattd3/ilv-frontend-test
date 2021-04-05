@@ -81,7 +81,7 @@ class RequestComponent extends React.Component {
     searchingDataToFilter.pageIndex = Constants.PAGE_INDEX_DEFAULT
     this.setState({searchingDataToFilter: searchingDataToFilter})
     const params = {
-      pageIndex: page || Constants.PAGE_INDEX_DEFAULT,
+      pageIndex: searchingDataToFilter.pageIndex || Constants.PAGE_INDEX_DEFAULT,
       pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
     }
     this.fetchCandidateData(params);
