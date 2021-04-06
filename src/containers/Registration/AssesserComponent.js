@@ -19,7 +19,7 @@ const MyOption = props => {
                 </div>
                 <div className="float-left text-wrap w-75">
                     <div className="title">{props.data.fullname}</div>
-                    <div className="comment"><i>({props.data.userAccount}) {props.data.current_position}</i></div>
+                    <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@ class AssesserComponent extends React.Component {
             employeeLevel: "",
             pnl: "",
             orglv2Id: "",
-            userAccount: "",
+            account: "",
             current_position: "",
             department: ""
         }
@@ -67,7 +67,7 @@ class AssesserComponent extends React.Component {
                             label: manager.fullname,
                             value: manager.userid.toLowerCase(),
                             fullname: manager.fullname,
-                            userAccount: manager.userid.toLowerCase(),
+                            account: manager.userid.toLowerCase(),
                             current_position: manager.title,
                             department: manager.department
                         }
@@ -95,7 +95,7 @@ class AssesserComponent extends React.Component {
         if (value) {
             const currentUserLevel = localStorage.getItem('employeeLevel')
             this.setState({ [name]: value })
-            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
+            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
             this.props.updateAppraiser(value, isAppraiser)
         } else {
             this.setState({ [name]: value, users: [] })
@@ -103,7 +103,7 @@ class AssesserComponent extends React.Component {
         }
     }
 
-    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, userAccount) => {
+    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
         const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
         let indexCurrentUserLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
         let indexAppraiserFilterLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter });
@@ -111,7 +111,7 @@ class AssesserComponent extends React.Component {
         if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
             return false
         }
-        if (userAccount.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+        if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
             return false
         }
 
@@ -146,12 +146,12 @@ class AssesserComponent extends React.Component {
                                 employeeLevel: res.employee_level,
                                 pnl: res.pnl,
                                 orglv2Id: res.orglv2_id,
-                                userAccount: res.user_account,
+                                account: res.user_account,
                                 current_position: res.title,
                                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
                             }
                         })
-                        this.setState({ users: approver ? users.filter(user => user.userAccount !== approver.userAccount) : users })
+                        this.setState({ users: approver ? users.filter(user => user.account !== approver.account) : users })
                     }
                 }).catch(error => { })
         }
