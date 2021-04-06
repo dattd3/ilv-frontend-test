@@ -116,7 +116,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
                 if(sub.processStatusId == Constants.STATUS_WAITING){
-                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"ApproverComment":this.state.message})
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
                 }
             });
             dataToSap.push(taskObj)
@@ -148,7 +148,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {"id":element.id,"requestTypeId":element.requestTypeId,"sub":[]};
             element.requestInfo.forEach(sub => {
                 if(sub.processStatusId == Constants.STATUS_WAITING_CONSENTED){
-                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"AppraiserComment":this.state.message})
+                    taskObj.sub.push({"id":sub.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
                 }        
             });
             dataToSap.push(taskObj)
