@@ -57,7 +57,8 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               {t('TotalTimeForBizTripAndTraining')}
-              <div className="detail">{(businessTrip && businessTrip.requestInfo?.hours) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.days + ' ' + t("Day") +' '+businessTrip.requestInfo?.hours + ' ' + t("Hour")) : null}</div>
+              {/* <div className="detail">{(businessTrip && businessTrip.requestInfo?.hours) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.days + ' ' + t("Day") +' '+businessTrip.requestInfo?.hours + ' ' + t("Hour")) : null}</div> */}
+              <div className="detail">{(businessTrip && businessTrip.requestInfo?.days >=1) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.hours + ' ' + t("Hour")}</div>
             </div>
           </div>
           <div className="row">
