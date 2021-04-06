@@ -41,7 +41,7 @@ const Constants = {
     3: {label: 'Đã hủy', className: ''}, // đã thu hồi
     4: {label: 'Đã hủy', className: ''}, // đã hủy
     5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    // 6: {label: 'Đã thẩm định', className: ''},
+    6: {label: 'Đã thẩm định', className: ''},
     7: {label: 'Từ chối', className: ''},// từ chối thẩm định
     8: {label: 'Waiting', className: ''} // đang chờ thẩm định
   },
