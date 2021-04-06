@@ -111,7 +111,7 @@ class BusinessTripDetailComponent extends React.Component {
           <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
+            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && businessTrip.requestInfo.processStatusId == 5 && businessTrip.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
             {
               businessTrip.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
@@ -134,7 +134,7 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
 
-        {(businessTrip.requestInfo.processStatusId === 8 || businessTrip.requestInfo.processStatusId === 5 || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
+        {(businessTrip.requestInfo.processStatusId === 8 || (this.props.action != "consent" && businessTrip.requestInfo.processStatusId === 5) || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
         dataToSap={[{
           // MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
           // PERNR: businessTrip.user.employeeNo,

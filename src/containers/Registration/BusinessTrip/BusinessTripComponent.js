@@ -453,9 +453,9 @@ class BusinessTripComponent extends React.Component {
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem =  {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime: req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endTime: !req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
@@ -474,7 +474,6 @@ class BusinessTripComponent extends React.Component {
             }
             return reqItem
         })
-
         const approver = { ...this.state.approver }
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
@@ -506,8 +505,13 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result) {
+                if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
+                    this.setDisabledSubmitButton(false)
+                }
+                else
+                {
+                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                     this.setDisabledSubmitButton(false)
                 }
             })
