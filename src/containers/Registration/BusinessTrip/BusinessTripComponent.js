@@ -506,8 +506,13 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result) {
+                if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
+                    this.setDisabledSubmitButton(false)
+                }
+                else
+                {
+                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                     this.setDisabledSubmitButton(false)
                 }
             })
