@@ -474,12 +474,12 @@ class RequestTaskList extends React.Component {
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId);
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId);
                                             let totalTime = null;
-                                            if (task.requestTypeId == 2) {
-                                                totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
-                                            }
-                                            else {
-                                                totalTime = child.hours || child.days ? child.days + " ngày " + child.hours + " giờ" : null;
-                                            }
+                                            // if (task.requestTypeId == 2) {
+                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
+                                            // }
+                                            // else {
+                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                            // }
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
