@@ -155,6 +155,9 @@ class TaskList extends React.Component {
             }
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
+        if(this.props.page === "consent" && taskData && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -407,7 +410,7 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        let cloneTask = this.state.tasks;
+        let cloneTask = this.props.tasks;
         let result = [];
         if(value && value.value)
         {
@@ -541,7 +544,7 @@ class TaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     {
-                                                        (child.processStatusId == 5 || child.processStatusId == 8) ?
+                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
                                                         <td scope="col" className="check-box">
                                                             <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                         </td>
@@ -558,7 +561,7 @@ class TaskList extends React.Component {
                                                             <td className="appraiser text-center">{task.appraiser?.fullname}</td>
                                                         :null
                                                     }
-                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
+                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
                                                     <td className="tool">
                                                         {child.comment ? <OverlayTrigger
                                                             rootClose
