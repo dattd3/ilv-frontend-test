@@ -167,7 +167,8 @@ class ConfirmRequestModal extends React.Component {
     }
 
     hideStatusModal = () => {
-        this.setState({ isShowStatusModal: false })
+        this.setState({ isShowStatusModal: false });
+        window.location.reload();
     }
 
     render() {

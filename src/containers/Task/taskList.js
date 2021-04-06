@@ -155,6 +155,9 @@ class TaskList extends React.Component {
             }
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
+        if(this.props.page === "consent" && taskData && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -407,20 +410,28 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        // let result = [];
-        // result = this.props.tasks.filter( function(item) {
-        //     item.requestInfo.filter(req => req.processStatusId == value.value);
-        //   });
-        // // console.log(result);
-        // this.setState({tasks:result});
+        let cloneTask = this.props.tasks;
+        let result = [];
+        if(value && value.value)
+        {
+            result = cloneTask.filter(element => {
+                let ele = element.requestInfo.filter(req => req.processStatusId == value.value);
+                return ele.length > 0
+           });
+            this.setState({tasks:result});
+        }
+        else{
+            this.setState({tasks:this.props.tasks});
+        }
     }
     
     handleInputChange = (event) => {
         let data = null;
+        let cloneTask = this.props.tasks;
         this.setState({
             query: event.target.value
           }, () => {
-            data = this.state.query ?  this.props.tasks.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+            data = this.state.query ? cloneTask.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
             this.setState({tasks:data});
           })
     }
@@ -516,11 +527,11 @@ class TaskList extends React.Component {
                                 tasks.map((task) => {
                                     let isShowEditButton = this.isShowEditButton(task.status);
                                     let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                    let userId = "";
-                                    let userManagerId = "";
-                                    if (task.user.userId) {
-                                        userId = task.userId.split("@")[0];
-                                    }
+                                    // let userId = "";
+                                    // let userManagerId = "";
+                                    // if (task.user.userId) {
+                                    //     userId = task.userId.split("@")[0];
+                                    // }
                                     return (
                                         task.requestInfo.map((child, index) => {
                                             let totalTime = null;
@@ -533,7 +544,7 @@ class TaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     {
-                                                        (child.processStatusId == 5 || child.processStatusId == 8) ?
+                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
                                                         <td scope="col" className="check-box">
                                                             <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                         </td>
@@ -550,7 +561,7 @@ class TaskList extends React.Component {
                                                             <td className="appraiser text-center">{task.appraiser?.fullname}</td>
                                                         :null
                                                     }
-                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
+                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
                                                     <td className="tool">
                                                         {child.comment ? <OverlayTrigger
                                                             rootClose

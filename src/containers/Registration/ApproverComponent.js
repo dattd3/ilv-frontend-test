@@ -19,7 +19,7 @@ const MyOption = props => {
         </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullname}</div>
-          <div className="comment"><i>({props.data.userAccount}) {props.data.current_position}</i></div>
+          <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
         </div>
       </div>
     </div>
@@ -47,7 +47,7 @@ class ApproverComponent extends React.Component {
       employeeLevel: "",
       pnl: "",
       orglv2Id: "",
-      userAccount: "",
+      account: "",
       current_position: "",
       department: ""
     }
@@ -68,7 +68,7 @@ class ApproverComponent extends React.Component {
               label: manager.fullname,
               value: manager.userid.toLowerCase(),
               fullname: manager.fullname,
-              userAccount: manager.userid.toLowerCase(),
+              account: manager.userid.toLowerCase(),
               current_position: manager.title,
               department: manager.department
             }
@@ -95,7 +95,7 @@ class ApproverComponent extends React.Component {
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
-      const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
+      const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       this.props.updateApprover(value, isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
@@ -103,7 +103,7 @@ class ApproverComponent extends React.Component {
     }
   }
 
-  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, userAccount) => {
+  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
     const APPROVER_LIST_LEVEL = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
     let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
@@ -112,7 +112,7 @@ class ApproverComponent extends React.Component {
     if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
       return false
     }
-    if (userAccount.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
       return false
     }
 
@@ -147,12 +147,12 @@ class ApproverComponent extends React.Component {
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
                 orglv2Id: res.orglv2_id,
-                userAccount: res.user_account,
+                account: res.user_account,
                 current_position: res.title,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: appraiser ? users.filter(user => user.userAccount !== appraiser.userAccount) : users })
+            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users })
           }
         }).catch(error => { })
     }
