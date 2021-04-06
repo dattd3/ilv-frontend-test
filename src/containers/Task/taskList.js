@@ -519,7 +519,11 @@ class TaskList extends React.Component {
                                     : null
                                 }
                                 <th scope="col" className="status">{t("Status")}</th>
-                                <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                {
+                                    this.props.page != "consent" ?
+                                        <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                    : null
+                                }
                             </tr>
                         </thead>
                         <tbody>
@@ -548,7 +552,7 @@ class TaskList extends React.Component {
                                                         <td scope="col" className="check-box">
                                                             <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
                                                         </td>
-                                                        : <td scope="col" className="check-box"></td>
+                                                        : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
                                                     }
                                                     <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
@@ -562,7 +566,9 @@ class TaskList extends React.Component {
                                                         :null
                                                     }
                                                     <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
-                                                    <td className="tool">
+                                                    {
+                                                        this.props.page != "consent" ?
+                                                        <td className="tool">
                                                         {child.comment ? <OverlayTrigger
                                                             rootClose
                                                             trigger="click"
@@ -598,6 +604,8 @@ class TaskList extends React.Component {
                                                                 : null
                                                         }
                                                     </td>
+                                                        :null
+                                                    }
                                                 </tr>
                                             )
                                         })
