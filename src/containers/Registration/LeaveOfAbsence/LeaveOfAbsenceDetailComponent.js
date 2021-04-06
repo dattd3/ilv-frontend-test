@@ -180,7 +180,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <ApproverDetailComponent approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.hrComment} />
             </> :
             <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
+              <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
               {
                 requestInfo && requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
                   <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
@@ -203,7 +203,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             : null
         }
 
-        {requestInfo && (requestInfo.processStatusId === 8 || requestInfo.processStatusId === 5 || requestInfo.processStatusId === 2 ) ? <DetailButtonComponent dataToSap={
+        {requestInfo && (requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 ) ? <DetailButtonComponent dataToSap={
           // [{
           // MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
           // PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",
