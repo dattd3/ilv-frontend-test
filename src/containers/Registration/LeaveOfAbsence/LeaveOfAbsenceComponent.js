@@ -541,9 +541,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime: req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endTime: !req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
