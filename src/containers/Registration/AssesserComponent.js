@@ -3,7 +3,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
-import CONSENTER_LIST_LEVEL from "../../commons/Constants"
+import Constants from "../../commons/Constants"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -96,6 +96,7 @@ class AssesserComponent extends React.Component {
             const currentUserLevel = localStorage.getItem('employeeLevel')
             this.setState({ [name]: value })
             const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+            console.log(value);
             this.props.updateAppraiser(value, isAppraiser)
         } else {
             this.setState({ [name]: value, users: [] })
@@ -105,8 +106,9 @@ class AssesserComponent extends React.Component {
 
     isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
         const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        let indexAppraiserFilterLevel = _.findIndex(CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter });
+        let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+        
+        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter },0);
 
         if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
             return false
@@ -115,7 +117,7 @@ class AssesserComponent extends React.Component {
             return false
         }
 
-        if (CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
             return true
         }
 
