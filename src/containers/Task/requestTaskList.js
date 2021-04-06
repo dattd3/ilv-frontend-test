@@ -1,6 +1,7 @@
 import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
 import deleteButton from '../../assets/img/icon-delete.svg'
+import evictionButton from '../../assets/img/eviction.svg'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
@@ -455,9 +456,9 @@ class RequestTaskList extends React.Component {
                                 <th scope="col" className="code">{t("RequestNo")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
-                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 <th scope="col" className="status text-center">{t("Status")}</th>
-                                <th scope="col" className="tool"></th>
+                                <th scope="col" className="tool text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -488,9 +489,9 @@ class RequestTaskList extends React.Component {
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
                                                     <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time">{totalTime}</td>
+                                                    <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
-                                                    <td className="tool">
+                                                    <td className="tool justify-content-center">
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
@@ -500,7 +501,7 @@ class RequestTaskList extends React.Component {
                                                         }
                                                         {
                                                             isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                                 : null
                                                         }
                                                         {
