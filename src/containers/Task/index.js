@@ -33,7 +33,7 @@ class Task extends React.Component {
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
               const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
-              this.setState({tasks : tasksOrdered, isShowApprovalTab: true, isShowPrepareTab: shouldShowPrepareJob});
+              this.setState({tasks : tasksOrdered, isShowApprovalTab: true, isShowPrepareTab: true});
             }
           }
         }).catch(error => {})

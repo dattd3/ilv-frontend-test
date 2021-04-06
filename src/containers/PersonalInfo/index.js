@@ -527,7 +527,7 @@ class MyComponent extends React.Component {
             </Container>
           </Tab>
           {
-            ['V030'].includes(localStorage.getItem("companyCode")) ? 
+            // ['V030'].includes(localStorage.getItem("companyCode")) ? 
             <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
             <Row >
                 {documents &&  documents.length > 0 ? <>
@@ -583,7 +583,7 @@ class MyComponent extends React.Component {
                 }
               </Row>
             </Tab>
-            : null
+            // : null
           }
           
         </Tabs>

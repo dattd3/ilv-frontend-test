@@ -108,7 +108,7 @@ class RequestComponent extends React.Component {
     axios.get(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}api/managementPoints/listPreparingOnboardCandidate`, config)
     .then(res => {
         if (this._isMounted) {
-          if (res.result.code != Constants.API_ERROR_CODE) {
+          if (res && res.code != Constants.API_ERROR_CODE) {
             this.prepareListDocumentRequest(res);
           }
         }
@@ -141,7 +141,7 @@ class RequestComponent extends React.Component {
     }))
   }
   prepareListDocumentRequest = res => {
-    if (!res || !res.data || !res.data.data || res.data.data.LstManagementPoint.length == 0) {
+    if (!res || !res.data || !res.data.data || res.data.data.lstManagementPoint.length == 0) {
         return []
     }
     const status = {
@@ -152,39 +152,39 @@ class RequestComponent extends React.Component {
     };
 
 
-    const listCandidatesRemote = res.data.data.LstManagementPoint.map(item => {
+    const listCandidatesRemote = res.data.data.lstManagementPoint.map(item => {
       status.isShowDevices = status.isShowDevices ||  item.managerToolIndicator;
       status.isShowAccount = status.isShowAccount || item.managerAccountIndicator;
       status.isShowVoucher = status.isShowVoucher || item.managerFingerIndicator;
       status.isShowDonitory = status.isShowDonitory || item.managerDormitoryIndicator;
         return {
             id: item.id,
-            employeeNo: item.employeeCode,
-            name: item.fullName,
-            region: item.regionName,
-            unit: item.unitName,
-            department: item.divisionName,
-            rank: item.positionName,
-            startWork: item.dateStartWork,
-            timeExpire: item.expireDate,
+            employeeNo: item.employeeCode || '',
+            name: item.fullName || '',
+            region: item.regionName || '',
+            unit: item.unitName || '',
+            department: item.divisionName || '',
+            rank: item.positionName || '',
+            startWork: item.dateStartWork || '',
+            timeExpire: item.expireDate || '',
             devices: {
-                status: item.managerToolStatus,
-                note: item.managerToolDesc,
+                status: item.managerToolStatus ,
+                note: item.managerToolDesc || '',
                 isEditable: item.managerToolIndicator
             },
             account: {
                 status: item.managerAccountStatus,
-                note: item.managerAccountDesc,
+                note: item.managerAccountDesc || '',
                 isEditable: item.managerAccountIndicator
             },
             voucher: {
                 status: item.managerFingerStatus,
-                note: item.managerFingerDesc,
+                note: item.managerFingerDesc || '',
                 isEditable: item.managerFingerIndicator
             },
             dormitory: {
                 status: item.managerDormitoryStatus,
-                note: item.managerDormitoryDesc,
+                note: item.managerDormitoryDesc || '',
                 isEditable: item.managerDormitoryIndicator
             }
         }
