@@ -281,7 +281,7 @@ class RequestTaskList extends React.Component {
           }
         });
         this.setState({ tasks: tasks });
-        this.props.handleChange(this.state.taskChecked);
+        // this.props.handleChange(this.state.taskChecked);
     };
 
     getTaskLink = id => {
