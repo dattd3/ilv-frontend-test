@@ -902,7 +902,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-lg-4 col-xl-4">
                                         <p className="title">{t('TotalLeaveTime')}</p>
                                         <div className="text-lowercase">
-                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${"day"}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
+                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${t("Day")}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
                                         </div>
                                     </div>
                                 </div>
