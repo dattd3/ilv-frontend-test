@@ -274,6 +274,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && startTime && startTime) || req.isAllDay)) {
                 times.push({
                     id: req.groupItem,
+                    // subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -285,7 +286,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
 
         if (times.length === 0) return
-
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             times: times,
@@ -754,10 +754,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                     let totalTime = 0
                     req.forEach(r => {
                         if (r.totalDays) {
-                            totalDay += r.totalDays
+                            totalDay += +(Math.round( r.totalDays + "e+2")  + "e-2");
                         }
                         if (r.totalTimes) {
-                            totalTime += r.totalTimes
+                            totalTime += +(Math.round( r.totalTimes + "e+2")  + "e-2");
                         }
                     })
                     return (
