@@ -1,6 +1,7 @@
 import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
 import deleteButton from '../../assets/img/icon-delete.svg'
+import evictionButton from '../../assets/img/eviction.svg'
 import notetButton from '../../assets/img/icon-note.png'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
@@ -189,6 +190,10 @@ class RequestTaskList extends React.Component {
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
+        
+        if(taskData.fullName && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -228,17 +233,17 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
-    isShowDeleteButton = status => {
+    isShowDeleteButton = (status, appraiser) => {
 
-        return status == 5 || status == 8 ? true : false;
+        return (status == 5 && appraiser.fullName == null) || status == 8 ? true : false;
         
     }
-    isShowEvictionButton = status => {
+    isShowEvictionButton = (status, appraiser) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2){
+            if (status == 2 || (status == 5 && appraiser.fullName)){
                 isShow = true;
             } else {
                 isShow = false;
@@ -450,14 +455,14 @@ class RequestTaskList extends React.Component {
                         <thead>
                             <tr>
                                 <th scope="col" className="check-box">
-                                    <input type="checkbox" onClick={this.handleAllChecked} value="checkedall"/>{" "}
+                                    
                                 </th>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
-                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 <th scope="col" className="status text-center">{t("Status")}</th>
-                                <th scope="col" className="tool"></th>
+                                <th scope="col" className="tool text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -471,8 +476,8 @@ class RequestTaskList extends React.Component {
                                     return (
                                         task.requestInfo?.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, task.appraiser);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, task.appraiser);
                                             let totalTime = null;
                                             // if (task.requestTypeId == 2) {
                                             //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
@@ -483,14 +488,14 @@ class RequestTaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
+                                                        
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time">{totalTime}</td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
-                                                    <td className="tool">
+                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
+                                                    <td className="tool justify-content-center">
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
@@ -500,7 +505,7 @@ class RequestTaskList extends React.Component {
                                                         }
                                                         {
                                                             isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)} className="eviction"><i className='fas fa-undo-alt'></i></span>
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                                 : null
                                                         }
                                                         {
