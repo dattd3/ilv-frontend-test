@@ -89,7 +89,7 @@ class ChangeReqBtnComponent extends React.Component {
                     onHide={this.onHideModalConfirm.bind(this)}
                     updateTask = {this.updateTaskStatus}
             />
-            <div className="bg-white d-flex justify-content-center mt-2 mb-3 p-3">
+            <div className="bg-white d-flex justify-content-center mt-2 action-btn">
                 {
                     action === "approval" ?
                         <>
