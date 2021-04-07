@@ -221,9 +221,9 @@ class BusinessTripComponent extends React.Component {
 
         const start = moment(startDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
         const end = moment(endDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
-        if (startDateTime && endDateTime) {
-            this.validationFromDB(start, end, startTimeInput, endTimeInput, indexReq)
-        }
+        // if (startDateTime && endDateTime) {
+        //     this.validationFromDB(start, end, startTimeInput, endTimeInput, indexReq)
+        // }
         this.validateTimeRequest(requestInfo)
     }
 
@@ -501,7 +501,7 @@ class BusinessTripComponent extends React.Component {
 
         axios({
             method: 'POST',
-            url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}request/attendance/register`,
+            url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/attendance/register`,
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -829,7 +829,7 @@ class BusinessTripComponent extends React.Component {
                                     <div className="col-lg-4 col-xl-4">
                                         <p className="title">{t('TotalTimeForBizTripAndTraining')}</p>
                                         <div className="text-lowercase">
-                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${t("day")}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
+                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${t("Day")}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
                                         </div>
                                     </div>
                                 </div>
