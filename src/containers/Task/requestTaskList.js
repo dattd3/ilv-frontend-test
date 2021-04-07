@@ -224,7 +224,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 5 || status == 8 || status == 2 || status == 3) {
+            if (status == 2 || status == 3) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -495,7 +495,7 @@ class RequestTaskList extends React.Component {
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
-                                                    <td className="tool justify-content-center">
+                                                    <td className="tool">
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
