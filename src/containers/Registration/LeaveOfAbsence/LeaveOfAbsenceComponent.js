@@ -581,6 +581,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             name: "Đăng ký nghỉ"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
+        if(isEdit){
+            bodyFormData.append('id', this.props.leaveOfAbsence.id)
+        }
 
         files.forEach(file => {
             bodyFormData.append('Files', file)
