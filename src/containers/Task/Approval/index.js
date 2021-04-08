@@ -40,10 +40,17 @@ class ApprovalComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    let statusFiler = [
+      { value: Constants.STATUS_WAITING , label: t("Waiting") },
+      { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_NOT_APPROVED , label: t("Từ chối") },
+      { value: Constants.STATUS_REVOCATION , label: t("Hủy") },
+    ]
     return (
       <>
       <div className="task-section">
-        <TaskList tasks={this.props.tasks} page="approval" title={t("ApprovalManagement")}/>
+        <TaskList tasks={this.props.tasks} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
       </div>
       </>
     )
