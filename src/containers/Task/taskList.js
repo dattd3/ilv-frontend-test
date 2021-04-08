@@ -419,12 +419,14 @@ class TaskList extends React.Component {
         this.setState({ [name]: value })
         let cloneTask = this.props.tasks;
         let result = [];
+        console.log(value?.value);
         if(value && value.value)
         {
-            result = cloneTask.filter(element => {
-                let ele = element.requestInfo.filter(req => req.processStatusId == value.value);
-                return ele.length > 0
-           });
+            // result = cloneTask.filter(element => {
+                result = cloneTask.filter(req => req.processStatusId == value.value);
+                // return ele.length > 0
+            // });
+            console.log(result);
             this.setState({tasks:result});
         }
         else{
@@ -445,7 +447,6 @@ class TaskList extends React.Component {
     render() {
         const recordPerPage = 10
         let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
-        // const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const { t } = this.props
 
         const typeFeedbackMapping = {
@@ -455,12 +456,6 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
-
-        let statusFiler = [
-            { value: Constants.STATUS_WAITING, label: t("Waiting") },
-            { value: Constants.STATUS_APPROVED, label: t("Approved") },
-            { value: Constants.STATUS_EVICTION , label: t("Recalled") }
-          ]
         return (
             <>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
@@ -475,7 +470,7 @@ class TaskList extends React.Component {
                             value={this.state.absenceType} 
                             isClearable={true}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                            placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} 
+                            placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
                             theme={theme => ({
                             ...theme,
                             colors: {
@@ -535,16 +530,9 @@ class TaskList extends React.Component {
                         </thead>
                         <tbody>
                             {tasks.length > 0 ?
-                                tasks.map((task) => {
-                                    let isShowEditButton = this.isShowEditButton(task.status);
-                                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                    // let userId = "";
-                                    // let userManagerId = "";
-                                    // if (task.user.userId) {
-                                    //     userId = task.userId.split("@")[0];
-                                    // }
-                                    return (
-                                        task.requestInfo.map((child, index) => {
+                                // tasks.map((task) => {
+                                //     return (
+                                        tasks.map((child, index) => {
                                             let totalTime = null;
                                             // if (task.requestTypeId == 2) {
                                             //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
@@ -561,18 +549,18 @@ class TaskList extends React.Component {
                                                         </td>
                                                         : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
                                                     }
-                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
-                                                    <td className="user-title">{task.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    <td className="code"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1])}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
+                                                    <td className="user-title">{child.user.jobTitle}</td>
+                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id)} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
                                                         this.props.page == "approval" ?
-                                                            <td className="appraiser text-center">{task.appraiser?.fullname}</td>
+                                                            <td className="appraiser text-center">{child.appraiser?.fullname}</td>
                                                         :null
                                                     }
-                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
+                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
                                                     {
                                                         this.props.page != "consent" ?
                                                         <td className="tool">
@@ -588,35 +576,25 @@ class TaskList extends React.Component {
                                                             </Popover>}>
                                                             <img alt="Note task" src={notetButton} title={t("Reason")} />
                                                         </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                        {task.hrComment ? <OverlayTrigger
+                                                        {child.hrComment ? <OverlayTrigger
                                                             rootClose
                                                             trigger="click"
                                                             placement="left"
                                                             overlay={<Popover id={'comment-task-' + index}>
-                                                                <Popover.Title as="h3">{typeFeedbackMapping[task.requestType.id]}</Popover.Title>
+                                                                <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
                                                                 <Popover.Content>
-                                                                    {task.hrComment}
+                                                                    {child.hrComment}
                                                                 </Popover.Content>
                                                             </Popover>}>
-                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestType.id]} />
-                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestType.id]} />}
-                                                        {
-                                                            // isShowEditButton ?
-                                                            //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                            // : null
-                                                        }
-                                                        {
-                                                            isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                                : null
-                                                        }
+                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
                                                     </td>
                                                         :null
                                                     }
                                                 </tr>
                                             )
                                         })
-                                    )})
+                                    // )})
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
