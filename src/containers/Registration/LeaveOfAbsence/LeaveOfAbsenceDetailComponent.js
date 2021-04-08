@@ -139,7 +139,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           {(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? <div className="row">
             <div className="col">
               {t("MarriageFuneral")}
-              <div className="detail">{requestInfo.pn03.label}</div>
+              <div className="detail">{requestInfo.absenceType.label}</div>
             </div>
           </div> : null}
           <div className="row">
