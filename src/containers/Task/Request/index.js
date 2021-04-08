@@ -27,7 +27,17 @@ class RequestComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-          this.setState({tasks : tasksOrdered, dataResponse: res.data.data});
+          let taskList = [];
+          tasksOrdered.forEach(element => {
+            element.requestInfo.forEach(e => {
+                e.user = element.user
+                e.appraiser = element.appraiser
+                e.requestType = element.requestType
+                e.requestTypeId = element.requestTypeId
+                taskList.push(e);
+            })
+          });
+          this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
     }).catch(error => {
