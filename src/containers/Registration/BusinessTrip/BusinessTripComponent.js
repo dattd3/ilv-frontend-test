@@ -384,7 +384,6 @@ class BusinessTripComponent extends React.Component {
     handleSelectChange(name, value, groupId) {
         const { requestInfo } = this.state
 
-
         if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
             this.setState({ isShowAddressAndVehicle: false })
         } else {
@@ -460,8 +459,8 @@ class BusinessTripComponent extends React.Component {
                 hours: req.totalTimes,
                 days: req.totalDays,
                 attendanceType: req.attendanceQuotaType,
-                vehicle: !isShowAddressAndVehicle ? req.vehicle : null,
-                location: !isShowAddressAndVehicle ? req.place: null,
+                vehicle: isShowAddressAndVehicle ? req.vehicle : null,
+                location: isShowAddressAndVehicle ? req.place: null,
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }
@@ -478,7 +477,7 @@ class BusinessTripComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-
+        debugger
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))

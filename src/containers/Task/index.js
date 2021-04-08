@@ -30,7 +30,18 @@ class Task extends React.Component {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-              this.setState({tasks : tasksOrdered, isShowApprovalTab: true});
+              let taskList = [];
+              tasksOrdered.forEach(element => {
+                element.requestInfo.forEach(e => {
+                    e.user = element.user
+                    e.appraiser = element.appraiser
+                    e.requestType = element.requestType
+                    taskList.push(e);
+                })
+                console.log(taskList);
+              // debugger
+            });
+              this.setState({tasks : taskList, isShowApprovalTab: true});
             }
           }
         }).catch(error => {})
