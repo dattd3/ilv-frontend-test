@@ -418,14 +418,12 @@ class TaskList extends React.Component {
         this.setState({ [name]: value })
         let cloneTask = this.props.tasks;
         let result = [];
-        console.log(value?.value);
         if(value && value.value)
         {
             // result = cloneTask.filter(element => {
                 result = cloneTask.filter(req => req.processStatusId == value.value);
                 // return ele.length > 0
             // });
-            console.log(result);
             this.setState({tasks:result});
         }
         else{
@@ -466,7 +464,7 @@ class TaskList extends React.Component {
                     </InputGroup.Prepend>
                     <Select name="absenceType" 
                             className="w-75" 
-                            value={this.state.absenceType} 
+                            value={this.state.absenceType || ""} 
                             isClearable={true}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                             placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
