@@ -467,17 +467,17 @@ class RequestTaskList extends React.Component {
                         </thead>
                         <tbody>
                         {tasks.length > 0 ?
-                                tasks.map((task) => {
-                                    let userId = "";
-                                    let userManagerId = "";
-                                    if (task.user.userId) {
-                                        userId = task.userId.split("@")[0];
-                                    }
-                                    return (
-                                        task.requestInfo?.map((child, index) => {
+                                // tasks.map((task) => {
+                                //     let userId = "";
+                                //     let userManagerId = "";
+                                //     if (task.user.userId) {
+                                //         userId = task.userId.split("@")[0];
+                                //     }
+                                //     return (
+                                        tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, task.appraiser);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, task.appraiser);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser);
                                             let totalTime = null;
                                             // if (task.requestTypeId == 2) {
                                             //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
@@ -491,33 +491,33 @@ class RequestTaskList extends React.Component {
                                                         
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.appraiser)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
                                                     <td className="tool">
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
-                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${task.id}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(task.id,child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                                 </>
                                                             : null
                                                         }
                                                         {
                                                             isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
+                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                                 : null
                                                         }
                                                         {
                                                             isShowDeleteButton ?
-                                                                <span title="Hủy" onClick={e => this.deleteRequest(task.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                                <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
                                                                 : null
                                                         }
                                                     </td>
                                                 </tr>
                                             )
                                         })
-                                    )})
+                                    // )})
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
