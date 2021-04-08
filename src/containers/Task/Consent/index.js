@@ -30,7 +30,16 @@ class ConsentComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-          this.setState({tasks : tasksOrdered, dataResponse: res.data.data});
+          let taskList = [];
+          tasksOrdered.forEach(element => {
+            element.requestInfo.forEach(e => {
+                e.user = element.user
+                e.appraiser = element.appraiser
+                e.requestType = element.requestType
+                taskList.push(e);
+            })
+          });
+          this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
     }).catch(error => {
@@ -40,12 +49,19 @@ class ConsentComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    let statusFiler = [
+      { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
+      { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
+      { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối") },
+    ]
     return (
       this.state.dataResponse ?
       <>
       {/* <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} /> */}
       <div className="task-section">
-        <TaskList tasks={this.state.tasks} page="consent" title={t("ConsentManagement")}/>       
+        <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>       
       </div>
       </> : 
       <LoadingSpinner />
