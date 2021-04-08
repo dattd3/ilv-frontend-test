@@ -384,7 +384,6 @@ class BusinessTripComponent extends React.Component {
     handleSelectChange(name, value, groupId) {
         const { requestInfo } = this.state
 
-
         if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
             this.setState({ isShowAddressAndVehicle: false })
         } else {
@@ -451,35 +450,34 @@ class BusinessTripComponent extends React.Component {
             return
         }
         const dataRequestInfo = requestInfo.map(req => {
-          let reqItem = {
-              startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-              startTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
-              endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-              endTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
-              comment: req.comment,
-              hours: req.totalTimes,
-              days: req.totalDays,
-              attendanceType: req.attendanceQuotaType,
-              vehicle: isShowAddressAndVehicle ? req.vehicle : null,
-              location: isShowAddressAndVehicle ? req.place : null,
-              isAllDay: req.isAllDay,
-              groupId: req.groupId,
-          }
-          if (isEdit) {
-              reqItem = {
-                  ...reqItem,
-                  processStatusId: req.processStatusId,
-                  id: req.id
-              }
-          }
-          return reqItem
-      })
-           
+            let reqItem =  {
+                startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+                endTime: !req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                comment: req.comment,
+                hours: req.totalTimes,
+                days: req.totalDays,
+                attendanceType: req.attendanceQuotaType,
+                vehicle: isShowAddressAndVehicle ? req.vehicle : null,
+                location: isShowAddressAndVehicle ? req.place: null,
+                isAllDay: req.isAllDay,
+                groupId: req.groupId,
+            }
+            if(isEdit){
+                reqItem = {
+                    ...reqItem,
+                    processStatusId: req.processStatusId,
+                    id: req.id
+                }
+            }
+            return reqItem
+        })
         const approver = { ...this.state.approver }
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-
+        debugger
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
