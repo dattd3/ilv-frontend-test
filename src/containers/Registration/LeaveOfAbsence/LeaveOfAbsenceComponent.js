@@ -459,7 +459,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver || (!errors.appraiser && employeeLevel === "N0")) {
+        if (listError.length > 0 || errors.approver || (errors.appraiser && employeeLevel === "N0")) {
             return false
         }
         return true
@@ -493,6 +493,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     onAddLeave() {
         const { requestInfo } = this.state;
         const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
+        const maxGroupItem = _.maxBy(requestInfo, 'groupItem').groupItem;
         requestInfo.push({
             startDate: null,
             startTime: null,
@@ -505,6 +506,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             isAllDay: true,
             funeralWeddingInfo: null,
             groupId: maxGroup + 1,
+            groupItem: maxGroupItem + 1,
             errors: {},
         })
         document.querySelector('.list-inline').scrollIntoView({
@@ -566,7 +568,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-
+        
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
