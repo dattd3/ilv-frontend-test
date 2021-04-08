@@ -130,9 +130,6 @@ class ConfirmationModal extends React.Component {
     }
 
     approve = (dataToSap,id) => {
-        // const dataToSap = this.props.dataToSap
-        // let bodyFormData = new FormData()
-        // bodyFormData.append(JSON.stringify(dataToSap))
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/approve`,
@@ -144,9 +141,14 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        // this.props.updateTask(id,2)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                        if(res.data.data[0].sub[0].status == "E")
+                        {
+                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                        }
+                        else{
+                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        }
+                        setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -174,9 +176,14 @@ class ConfirmationModal extends React.Component {
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Successful"), "Hủy phê duyệt thành công!", true)
-                        // this.props.updateTask(id,1)
-                        setTimeout(() => { this.redirectApprovalTab() }, 1000);
+                        if(res.data.data[0].sub[0].status == "E")
+                        {
+                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                        }
+                        else{
+                            this.showStatusModal(this.props.t("Successful"), data.result.message, true)
+                        }
+                        setTimeout(() => { this.redirectApprovalTab() }, 2000);
                     }
                 }
             })
@@ -201,8 +208,14 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                        if(res.data.data[0].sub[0].status == "E")
+                        {
+                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                        }
+                        else{
+                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        }
+                        setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -231,8 +244,15 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                        if(res.data.data[0].sub[0].status == "E")
+                        {
+                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                        }
+                        else{
+                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        }
+                       
+                        setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
