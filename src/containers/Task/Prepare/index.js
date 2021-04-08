@@ -124,7 +124,7 @@ class RequestComponent extends React.Component {
       unitName: item.unit,
       divisionName: item.department,
       positionName: item.rank,
-      dateStartWork: item.startWork,
+      recruitingDate: item.startWork,
       expireDate: item.timeExpire,
       managerToolStatus: item.devices.status,
       managerToolDesc: item.devices.note,
@@ -165,7 +165,7 @@ class RequestComponent extends React.Component {
             unit: item.unitName || '',
             department: item.divisionName || '',
             rank: item.positionName || '',
-            startWork: item.dateStartWork || '',
+            startWork: item.recruitingDate || '',
             timeExpire: item.expireDate || '',
             devices: {
                 status: item.managerToolStatus ,
