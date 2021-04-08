@@ -36,6 +36,7 @@ class Task extends React.Component {
                     e.user = element.user
                     e.appraiser = element.appraiser
                     e.requestType = element.requestType
+                    e.requestTypeId = element.requestTypeId
                     taskList.push(e);
                 })
                 console.log(taskList);
