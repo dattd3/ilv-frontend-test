@@ -107,7 +107,7 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        // setTimeout(() => { this.hideStatusModal() }, 1000);
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -232,7 +232,7 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        // setTimeout(() => { this.hideStatusModal() }, 1000);
+                        setTimeout(() => { this.hideStatusModal() }, 1000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -259,7 +259,7 @@ class ConfirmationModal extends React.Component {
 
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false })
-        //window.location.href = "/tasks?tab=approval"
+        window.location.reload();
     }
 
     redirectApprovalTab = () => {
