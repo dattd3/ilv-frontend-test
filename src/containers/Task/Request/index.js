@@ -65,13 +65,20 @@ class RequestComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    let statusFiler = [
+      { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
+      { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
+      { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối thẩm định") },
+    ]
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        <div className="block-title">
+        {/* <div className="block-title">
           <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-        </div>
-        <RequestTaskList tasks={this.state.tasks} page="request"/>         
+        </div> */}
+        <RequestTaskList tasks={this.state.tasks} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
       <LoadingSpinner />
     )
