@@ -89,13 +89,13 @@ class ChangeReqBtnComponent extends React.Component {
                     onHide={this.onHideModalConfirm.bind(this)}
                     updateTask = {this.updateTaskStatus}
             />
-            <div className="bg-white d-flex justify-content-center mt-2 mb-3 p-3">
+            <div className="bg-white d-flex justify-content-center mt-2 action-btn">
                 {
                     action === "approval" ?
                         <>
                         {
                             <>
-                             <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>Không phê duyệt</button>
+                             <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>{t("Reject")}</button>
                             <button type="button" className="btn btn-success"  onClick={this.approval.bind(this)} disabled={this.props.disabled}><i className='fas fa-check mr-2'></i>{t("Approval")}</button>
                             </>
                         }

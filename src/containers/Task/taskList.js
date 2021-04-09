@@ -26,6 +26,7 @@ class TaskList extends React.Component {
         super();
         this.state = {
             approveTasks: [],
+            tasks: [],
             taskChecked: [],
             isShowTaskDetailModal: false,
             messageModalConfirm: "",
@@ -37,6 +38,7 @@ class TaskList extends React.Component {
             dataToPrepareToSAP: {},
             action: null,
             disabled: "disabled",
+            query: ""
         }
 
         this.manager = {
@@ -48,10 +50,14 @@ class TaskList extends React.Component {
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
-
     componentDidMount()
     {
-        this.setState({approveTasks: this.props.tasks})
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps()
+    {
+        this.setState({tasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -149,6 +155,9 @@ class TaskList extends React.Component {
             }
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
+        if(this.props.page === "consent" && taskData && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -204,17 +213,20 @@ class TaskList extends React.Component {
 
     handleAllChecked = event => {
         let tasks = this.props.tasks;
-        tasks.forEach((task,index) => {
-            task.isChecked = event.target.checked
-            if(task.isChecked)
-            {
-                this.state.taskChecked.push(task);
-            }
-            else
-            {
-                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
-            }      
-        });
+        // tasks.forEach((task,index) => {
+            tasks.forEach((child) => {
+                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                if(child.isChecked)
+                {
+                    // child.requestTypeId =  child.requestTypeId
+                    this.state.taskChecked.push(child);
+                }
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
+                }
+            }) 
+        // });
         this.setState({ approveTasks: tasks });
         this.enableBtn(this.state.taskChecked);
     };
@@ -222,22 +234,25 @@ class TaskList extends React.Component {
     handleCheckChieldElement = event => {
         let tasks = this.props.tasks;
         
-        tasks.forEach((task,index) => {
-            task.isAllChecked = false;
-                let id = task.id;
+        // tasks.forEach((task,index) => {
+        //     task.isAllChecked = false;
+            tasks.forEach((child) => {
+                let id = child.id;
                 if (id == event.target.value)
                 {
-                    task.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                    if(task.isChecked)
+                    child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                    if(child.isChecked)
                     {
-                        this.state.taskChecked.push(task);
+                        this.state.taskChecked.push(child);
                     }
                     else
                     {
-                        this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
+                        this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
                     }
                 }
-        });
+            })
+               
+        // });
         // this.props.handleChange(this.state.taskChecked);
         this.enableBtn(this.state.taskChecked);
     };
@@ -401,12 +416,34 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
+        let cloneTask = this.props.tasks;
+        let result = [];
+        if(value && value.value)
+        {
+            // result = cloneTask.filter(element => {
+                result = cloneTask.filter(req => req.processStatusId == value.value);
+                // return ele.length > 0
+            // });
+            this.setState({tasks:result});
+        }
+        else{
+            this.setState({tasks:this.props.tasks});
+        }
     }
     
+    handleInputChange = (event) => {
+        let data = null;
+        let cloneTask = this.props.tasks;
+        this.setState({
+            query: event.target.value
+          }, () => {
+            data = this.state.query ? cloneTask.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+            this.setState({tasks:data});
+          })
+    }
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, recordPerPage)
-        // const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
 
         const typeFeedbackMapping = {
@@ -416,15 +453,9 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
-
-        let statusFiler = [
-            { value: Constants.STATUS_WAITING, label: t("Waiting") },
-            { value: Constants.STATUS_APPROVED, label: t("Approved") },
-            { value: Constants.STATUS_EVICTION , label: t("Recalled") }
-          ]
         return (
             <>
-                <TaskDetailModal key= {this.state.taskId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="row w-50 mt-2 mb-3">
                 <div className="col-xl-6">
                     <InputGroup className="d-flex">
@@ -433,9 +464,10 @@ class TaskList extends React.Component {
                     </InputGroup.Prepend>
                     <Select name="absenceType" 
                             className="w-75" 
-                            value={this.state.absenceType} 
+                            value={this.state.absenceType || ""} 
+                            isClearable={true}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                            placeholder={t('SortByStatus')} key="absenceType" options={statusFiler} 
+                            placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
                             theme={theme => ({
                             ...theme,
                             colors: {
@@ -455,6 +487,7 @@ class TaskList extends React.Component {
                     placeholder={t('SearchRequester')}
                     aria-label="SearchRequester"
                     aria-describedby="basic-addon2"
+                    onChange={this.handleInputChange}
                     />
                 </InputGroup>
                 </div>
@@ -467,7 +500,7 @@ class TaskList extends React.Component {
                         <thead>
                             <tr className="text-center">
                                 <th scope="col" className="check-box">
-                                    <input type="checkbox" onClick={this.handleAllChecked} value="checkedall"/>{" "}
+                                    <input type="checkbox" onClick={this.handleAllChecked}  value={"checkedall"}/>{" "}
                                 </th>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
                                 {
@@ -479,37 +512,55 @@ class TaskList extends React.Component {
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
                                 <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
-                                <th scope="col" className="appraiser">{t("Consenter")}</th>
+                                {
+                                    this.props.page == "approval" ?
+                                        <th scope="col" className="appraiser">{t("Consenter")}</th>
+                                    : null
+                                }
                                 <th scope="col" className="status">{t("Status")}</th>
-                                <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                {
+                                    this.props.page != "consent" ?
+                                        <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                    : null
+                                }
                             </tr>
                         </thead>
                         <tbody>
                             {tasks.length > 0 ?
-                                tasks.map((task) => {
-                                    let isShowEditButton = this.isShowEditButton(task.status);
-                                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                    let userId = "";
-                                    let userManagerId = "";
-                                    if (task.user.userId) {
-                                        userId = task.userId.split("@")[0];
-                                    }
-                                    return (
-                                        task.requestInfo.map((child, index) => {
+                                // tasks.map((task) => {
+                                //     return (
+                                        tasks.map((child, index) => {
+                                            let totalTime = null;
+                                            // if (task.requestTypeId == 2) {
+                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
+                                            // }
+                                            // else {
+                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                            // }
                                             return (
                                                 <tr key={index}>
-                                                    <td scope="col" className="check-box">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!task.isChecked} value={task.id}/>
-                                                    </td>
-                                                    <td className="code"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id,child.id.split(".")[1])} title={task.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,task.id,child.id.split(".")[1])}><a href="#" className="task-title">{task.user.fullName}</a></td> : null}
-                                                    <td className="user-title">{task.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={task.requestType.id == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
+                                                    {
+                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                        <td scope="col" className="check-box">
+                                                            <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id}/>
+                                                        </td>
+                                                        : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
+                                                    }
+                                                    <td className="code"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1])}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
+                                                    <td className="user-title">{child.user.jobTitle}</td>
+                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id)} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time text-center">{(child.days ||  child.hours) ? (child.days ? child.days : 0 ) +" ngày "+ (child.hours ? child.hours : 0)  + " giờ" : 0}</td>
-                                                    <td className="appraiser text-center">{task.appraiser?.fullname}</td>
-                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, task.requestType.id, task.userProfileInfo)}</td>
-                                                    <td className="tool">
+                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    {
+                                                        this.props.page == "approval" ?
+                                                            <td className="appraiser text-center">{child.appraiser?.fullname}</td>
+                                                        :null
+                                                    }
+                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                    {
+                                                        this.props.page != "consent" ?
+                                                        <td className="tool">
                                                         {child.comment ? <OverlayTrigger
                                                             rootClose
                                                             trigger="click"
@@ -522,33 +573,25 @@ class TaskList extends React.Component {
                                                             </Popover>}>
                                                             <img alt="Note task" src={notetButton} title={t("Reason")} />
                                                         </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                        {task.hrComment ? <OverlayTrigger
+                                                        {child.hrComment ? <OverlayTrigger
                                                             rootClose
                                                             trigger="click"
                                                             placement="left"
                                                             overlay={<Popover id={'comment-task-' + index}>
-                                                                <Popover.Title as="h3">{typeFeedbackMapping[task.requestType.id]}</Popover.Title>
+                                                                <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
                                                                 <Popover.Content>
-                                                                    {task.hrComment}
+                                                                    {child.hrComment}
                                                                 </Popover.Content>
                                                             </Popover>}>
-                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestType.id]} />
-                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestType.id]} />}
-                                                        {
-                                                            // isShowEditButton ?
-                                                            //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                            // : null
-                                                        }
-                                                        {
-                                                            isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                                : null
-                                                        }
+                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
                                                     </td>
+                                                        :null
+                                                    }
                                                 </tr>
                                             )
                                         })
-                                    )})
+                                    // )})
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
@@ -558,10 +601,10 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)

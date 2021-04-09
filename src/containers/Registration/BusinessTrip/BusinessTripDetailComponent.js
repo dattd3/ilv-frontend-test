@@ -57,7 +57,8 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               {t('TotalTimeForBizTripAndTraining')}
-              <div className="detail">{(businessTrip && businessTrip.requestInfo?.hours) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.days + ' ' + t("Day") +' '+businessTrip.requestInfo?.hours + ' ' + t("Hour")) : null}</div>
+              {/* <div className="detail">{(businessTrip && businessTrip.requestInfo?.hours) ? ((businessTrip.requestInfo.isAllDay == FULL_DAY) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.days + ' ' + t("Day") +' '+businessTrip.requestInfo?.hours + ' ' + t("Hour")) : null}</div> */}
+              <div className="detail">{(businessTrip && businessTrip.requestInfo?.days >=1) ? businessTrip.requestInfo?.days + ' ' + t("Day") : businessTrip.requestInfo?.hours + ' ' + t("Hour")}</div>
             </div>
           </div>
           <div className="row">
@@ -81,15 +82,37 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-
         {
-          this.getTypeDetail() === "request" ?
+          businessTrip.requestInfo && (businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING || businessTrip.requestInfo.processStatusId === Constants.STATUS_APPROVED) ? 
+          <>
+          <h5>Thông tin CBQL thẩm định</h5>
+          <div className="box shadow cbnv">
+            <div className="row">
+              <div className="col-4">
+                {t("Approver")}
+                <div className="detail">{businessTrip.appraiser.fullname}</div>
+              </div>
+              <div className="col-4">
+                {t("Title")}
+                <div className="detail">{businessTrip.appraiser.current_position}</div>
+              </div>
+              <div className="col-4">
+                {t("DepartmentManage")}
+                <div className="detail">{businessTrip.appraiser.department}</div>
+              </div>
+            </div>
+          </div>
+          </>
+          : null
+        }
+        {
+          this.getTypeDetail() === "request" || businessTrip.requestInfo.processStatusId == 2 ?
           <>
           <h5>Thông tin phê duyệt</h5>
           <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
           </> : 
           <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
+            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && businessTrip.requestInfo.processStatusId == 5 && businessTrip.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
             {
               businessTrip.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
               <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
@@ -112,7 +135,7 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
 
-        {(businessTrip.requestInfo.processStatusId === 8 || businessTrip.requestInfo.processStatusId === 5 || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
+        {(businessTrip.requestInfo.processStatusId === 8 || (this.props.action != "consent" && businessTrip.requestInfo.processStatusId === 5) || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
         dataToSap={[{
           // MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
           // PERNR: businessTrip.user.employeeNo,
@@ -122,9 +145,16 @@ class BusinessTripDetailComponent extends React.Component {
           // BEGUZ: businessTrip.requestInfo.startTime ? moment(businessTrip.requestInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           // ENDUZ: businessTrip.requestInfo.endTime ? moment(businessTrip.requestInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
           // ACTIO: 'INS'
+          "id": businessTrip.id,
+          "requestTypeId": Constants.BUSINESS_TRIP,
+          "sub": [
+            {
+              "id": businessTrip.requestInfo.id,
+            }
+          ]
         }]}
         isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
-        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 6}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}

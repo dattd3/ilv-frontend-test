@@ -37,10 +37,10 @@ class ResultDetailModal extends React.Component {
                     </div> */}
                     <table className="table table-sm">
                         <thead>
-                            <tr>
-                                <th scope="col">{t("RequestNo")}</th>
-                                <th scope="col">{t("Status")}</th>
-                                <th scope="col">{t("Reason")}</th>
+                            <tr class="row">
+                                <th className="col-3">{t("RequestNo")}</th>
+                                <th className="col-3 text-center">{t("Status")}</th>
+                                <th className="col-6">{t("Reason")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,10 +49,10 @@ class ResultDetailModal extends React.Component {
                                     return (
                                         req.sub.map((child,index) => {
                                             return (
-                                                <tr key={index}>
-                                                    <td>{req.id+"."+child.id}</td>
-                                                    <td>{child.status == "S" ? <i className="fas fa-check text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
-                                                    <td>{child.status == "E" ? child.message : ""}</td>
+                                                <tr key={index} className="row">
+                                                    <td className="col-3">{child.id}</td>
+                                                    <td className="col-3 text-center">{child.status == "S" ? <i className="fas fa-check text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
+                                                    <td className="col-6">{child.status == "E" ? child.message : ""}</td>
                                                 </tr>
                                             )
                                         })

@@ -32,8 +32,20 @@ class Task extends React.Component {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
-              const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
-              this.setState({tasks : tasksOrdered, isShowApprovalTab: true, isShowPrepareTab: true});
+              let taskList = [];
+              tasksOrdered.forEach(element => {
+                element.requestInfo.forEach(e => {
+                    e.user = element.user
+                    e.appraiser = element.appraiser
+                    e.requestType = element.requestType
+                    e.requestTypeId = element.requestTypeId
+                    taskList.push(e);
+                })
+                console.log(taskList);
+              // debugger
+            });
+               const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
+              this.setState({tasks : taskList, isShowApprovalTab: true, isShowPrepareTab: true});
             }
           }
         }).catch(error => {})
@@ -51,11 +63,15 @@ class Task extends React.Component {
                <Tab eventKey="request" title={t("Request")}>
                     <RequestComponent />
                 </Tab>
-                <Tab eventKey="consent" title={t("Consent")}>
-                    <ConsentComponent />
-                </Tab>
                 {
-                    this.state.isShowApprovalTab == true ?
+                  Constants.CONSENTER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ?
+                  <Tab eventKey="consent" title={t("Consent")}>
+                    <ConsentComponent />
+                  </Tab>
+                  : null
+                }
+                {
+                    this.state.isShowApprovalTab == true && Constants.APPROVER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ?
                     <Tab eventKey="approval" title={t("Approval")}>
                         <ApprovalComponent tasks={this.state.tasks} />
                     </Tab>

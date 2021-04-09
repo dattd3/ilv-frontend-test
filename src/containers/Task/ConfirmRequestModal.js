@@ -37,10 +37,10 @@ class ConfirmRequestModal extends React.Component {
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
                 break;
-            case Constants.STATUS_REVOCATION:
+            case Constants.STATUS_REVOCATION: // hủy
                 this.revocation(id)
                 break;
-            case Constants.STATUS_EVICTION:
+            case Constants.STATUS_EVICTION: // thu hồi phê duyệt
                 this.eviction(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/eviction`, id)
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
@@ -52,59 +52,6 @@ class ConfirmRequestModal extends React.Component {
             default:
                 break;
         }
-    }
-
-    eviction = (url, id) => {
-        this.props.onHide();
-        axios.post(url, null, {
-            headers: { Authorization: localStorage.getItem('accessToken') }
-        })
-            .then(res => {
-                if (res && res.data) {
-                    const data = res.data
-                    if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                        return window.location.href = map.NotFound
-                    } else {
-                        this.showStatusModal(this.props.t("Successful"), "Thu hồi yêu cầu thành công!", true)
-                    }
-                }
-            })
-            .catch(response => {
-                window.location.href = "/tasks?tab=approval"
-            })
-    }
-
-    revocation = (id) => {
-        const dataToSap = this.prepareDataForRevocation()
-        let bodyFormData = new FormData()
-        bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-
-        axios({
-            method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-revocation`,
-            data: bodyFormData,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
-        })
-            .then(res => {
-                if (res && res.data) {
-                    const result = res.data.result
-                    const code = result.code
-                    if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
-                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                        return window.location.href = map.NotFound
-                    } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
-                    }
-                }
-            })
-            .finally(res=> {
-                this.props.onHide()
-            })
-            .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
-            })
     }
 
     prepareDataForRevocation = () => {
@@ -148,30 +95,33 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
-            element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_APPROVED})
-            });
+            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            // element.requestInfo.forEach(sub => {
+                if(element.processStatusId == Constants.STATUS_WAITING){
+                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
+                }
+            // });
             dataToSap.push(taskObj)
           });
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
         console.log(dataToSap);
-          this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái phê duyệt"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái phê duyệt"))
         
     }
 
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
-            element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_NOT_APPROVED,"ApproverComment":this.state.message})
-            });
+            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            // element.requestInfo.forEach(sub => {
+                if(element.processStatusId == Constants.STATUS_WAITING){
+                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
+                }
+            // });
             dataToSap.push(taskObj)
           });
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
+
         console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
     }
@@ -179,30 +129,30 @@ class ConfirmRequestModal extends React.Component {
     consent = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
-            element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_CONSENTED})
-            });
+            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            // element.requestInfo.forEach(sub => {
+                if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
+                }
+            // });
             dataToSap.push(taskObj)
           });
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
+          console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":element.id,"sub":[]};
-            element.requestInfo.forEach(sub => {
-              taskObj.sub.push({"id":parseInt(sub.id.split(".")[1]),"processStatusId": Constants.STATUS_NO_CONSENTED,"AppraiserComment":this.state.message})
-            });
+            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            // element.requestInfo.forEach(sub => {
+                if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
+                }        
+            // });
             dataToSap.push(taskObj)
           });
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
+        
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
     }
     
@@ -216,7 +166,8 @@ class ConfirmRequestModal extends React.Component {
     }
 
     hideStatusModal = () => {
-        this.setState({ isShowStatusModal: false })
+        this.setState({ isShowStatusModal: false });
+        window.location.reload();
     }
 
     render() {

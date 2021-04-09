@@ -3,6 +3,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
+import APPROVER_LIST_LEVEL from "../../commons/Constants"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -18,7 +19,7 @@ const MyOption = props => {
         </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullname}</div>
-          <div className="comment"><i>({props.data.userAccount}) {props.data.current_position}</i></div>
+          <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
         </div>
       </div>
     </div>
@@ -46,7 +47,7 @@ class ApproverComponent extends React.Component {
       employeeLevel: "",
       pnl: "",
       orglv2Id: "",
-      userAccount: "",
+      account: "",
       current_position: "",
       department: ""
     }
@@ -55,6 +56,7 @@ class ApproverComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
+    const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
@@ -66,7 +68,7 @@ class ApproverComponent extends React.Component {
               label: manager.fullname,
               value: manager.userid.toLowerCase(),
               fullname: manager.fullname,
-              userAccount: manager.userid.toLowerCase(),
+              account: manager.userid.toLowerCase(),
               current_position: manager.title,
               department: manager.department
             }
@@ -78,32 +80,43 @@ class ApproverComponent extends React.Component {
         });
     }
 
-    if (this.props.approver) {
-      this.setState({ approver: this.props.approver })
+    if (approver) {
+      this.setState({
+        approver: {
+          ...approver,
+          label: approver.fullname,
+          value: approver.account,
+        }
+      })
     }
   }
 
   handleSelectChange(name, value) {
-    const currentUserLevel = localStorage.getItem('employeeLevel')
-    this.setState({ [name]: value })
-    const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.userAccount)
-    this.props.updateApprover(value, isApprover)
+    if (value) {
+      const currentUserLevel = localStorage.getItem('employeeLevel')
+      this.setState({ [name]: value })
+      const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+      this.props.updateApprover(value, isApprover)
+    } else {
+      this.setState({ [name]: value, users: [] })
+      this.props.updateApprover(value, true)
+    }
   }
 
-  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, userAccount) => {
-    const levelApprover = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1"]
+  isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
+    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(levelApprover, function (item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(levelApprover, function (item) { return item == levelApproverFilter });
+    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
 
     if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
       return false
     }
-    if (userAccount.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
       return false
     }
 
-    if (levelApprover.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
+    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
       return true
     }
 
@@ -111,6 +124,7 @@ class ApproverComponent extends React.Component {
   }
 
   getApproverInfo = (value) => {
+    const { appraiser } = this.props
     if (value !== "") {
       const config = {
         headers: {
@@ -133,12 +147,12 @@ class ApproverComponent extends React.Component {
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
                 orglv2Id: res.orglv2_id,
-                userAccount: res.user_account,
+                account: res.user_account,
                 current_position: res.title,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: users })
+            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users })
           }
         }).catch(error => { })
     }
@@ -161,27 +175,39 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-    const {t} = this.props;
+    const { t, isEdit } = this.props;
     return <div className="approver">
       <div className="box shadow">
         <div className="row">
           <div className="col-4">
             <p className="title">{t('Approver')}</p>
             <div>
-              <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="approver" onChange={approver => this.handleSelectChange('approver', approver)} value={this.state.approver} placeholder={t('Search') + '...'} key="approver" options={this.state.users} />
+              <Select
+                isClearable={true}
+                isDisabled={isEdit}
+                styles={customStyles}
+                components={{ Option: MyOption }}
+                onInputChange={this.onInputChange.bind(this)}
+                name="approver"
+                onChange={approver => this.handleSelectChange('approver', approver)}
+                value={this.state.approver}
+                placeholder={t('Search') + '...'}
+                key="approver"
+                options={this.state.users}
+               />
             </div>
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
           <div className="col-4">
             <p className="title">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver ? this.state.approver.current_position : ""} readOnly />
+              <input type="text" className="form-control" value={this.state.approver?.current_position || ""} readOnly />
             </div>
           </div>
           <div className="col-4">
             <p className="title">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver ? this.state.approver.department : ""} readOnly />
+              <input type="text" className="form-control" value={this.state.approver?.department || ""} readOnly />
             </div>
           </div>
         </div>
