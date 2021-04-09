@@ -15,6 +15,8 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import TaskDetailModal from './TaskDetailModal'
+import {InputGroup, FormControl} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 
 const TIME_FORMAT = 'HH:mm:ss'
@@ -64,6 +66,16 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
+    }
+
+    componentDidMount()
+    {
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps()
+    {
+        this.setState({tasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -428,11 +440,27 @@ class RequestTaskList extends React.Component {
         }
         return dataToSAP
     }
+    handleSelectChange(name, value) {
+        this.setState({ [name]: value })
+        let cloneTask = this.props.tasks;
+        let result = [];
+        if(value && value.value)
+        {
+            // result = cloneTask.filter(element => {
+                result = cloneTask.filter(req => req.processStatusId == value.value);
+                // return ele.length > 0
+            // });
+            this.setState({tasks:result});
+        }
+        else{
+            this.setState({tasks:this.props.tasks});
+        }
+    }
 
     render() {
         const recordPerPage = 10
         const { t } = this.props
-        let tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
@@ -449,6 +477,45 @@ class RequestTaskList extends React.Component {
                     />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
+                <div className="row w-75 mt-2 mb-3">
+                    <div className="col-xl-6">
+                        <InputGroup className="d-flex">
+                        <InputGroup.Prepend className="">
+                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Select name="absenceType" 
+                                className="w-75" 
+                                value={this.state.absenceType || ""} 
+                                isClearable={true}
+                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                                })}/>
+                        </InputGroup>
+                    </div>
+                    {/* <div className="col-xl-6">
+                    <InputGroup className="">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                        placeholder={t('SearchRequester')}
+                        aria-label="SearchRequester"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleInputChange}
+                        />
+                    </InputGroup>
+                    </div> */}
+                </div>
+                <div className="block-title">
+                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                </div>
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
@@ -490,7 +557,7 @@ class RequestTaskList extends React.Component {
                                                         
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
@@ -526,10 +593,10 @@ class RequestTaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
                 </div> : null}
             </>)
     }
