@@ -424,6 +424,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     verifyInput() {
         let { requestInfo, approver, appraiser, errors } = this.state;
+        debugger
         requestInfo.forEach((req, indexReq) => {
             if (!req.startDate) {
                 req.errors["startDate"] = this.props.t('Required')
@@ -469,7 +470,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
-    addMultiDateTime(groupId, requestItem, isAllDay) {
+    addMultiDateTime(groupId, requestItem, isAllDay, absenceType, comment, funeralWeddingInfo) {
         const { requestInfo } = this.state;
         const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
         requestInfo.push({
@@ -478,12 +479,12 @@ class LeaveOfAbsenceComponent extends React.Component {
             startTime: null,
             endDate: null,
             endTime: null,
-            comment: null,
+            comment: comment,
             totalTimes: 0,
             totalDays: 0,
-            absenceType: null,
+            absenceType: absenceType,
             isAllDay: isAllDay,
-            funeralWeddingInfo: null,
+            funeralWeddingInfo: funeralWeddingInfo,
             groupId: groupId,
             errors: {},
         })
@@ -527,12 +528,14 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
+        debugger
         const { t } = this.props
         const {
             files,
             isEdit,
             requestInfo
         } = this.state
+        
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
         if (!err) {
@@ -782,6 +785,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-lg-8 col-xl-8">
                                         {req.map((reqDetail, indexDetail) => (
                                             <div className="time-area" key={index + indexDetail}>
+                                                {/* {
+                                                    !req[0].isAllDay ? 
+                                                    <div className="all-day-area">
+                                                        <input type="checkbox" value="" className="check-box mr-2"/>
+                                                        <label>Nghỉ cả ngày</label>                                              
+                                                    </div>                                                    
+                                                    : null
+                                                } */}
                                                 <div className="row p-2">
                                                     <div className="col-lg-12 col-xl-6">
                                                         <p className="title">{t('StartDateTime')}</p>
@@ -884,7 +895,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {!indexDetail ?
                                                     !isEdit &&
                                                     <React.Fragment>
-                                                        <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
+                                                        <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0].absenceType, req[0].comment, req[0].funeralWeddingInfo)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
                                                     </React.Fragment>
                                                     :
