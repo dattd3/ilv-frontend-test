@@ -39,8 +39,6 @@ class Task extends React.Component {
                     e.requestTypeId = element.requestTypeId
                     taskList.push(e);
                 })
-                console.log(taskList);
-              // debugger
             });
               this.setState({tasks : taskList, isShowApprovalTab: true});
             }
