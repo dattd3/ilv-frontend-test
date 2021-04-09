@@ -54,8 +54,8 @@ class ConfirmationModal extends React.Component {
                 this.cancel(this.props.dataToSap);
                 break;
             case Constants.STATUS_EVICTION: // thu hồi
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_EVICTION;
-                this.props.dataToSap[0].sub[0].comment = this.state.message;
+                this.props.dataToSap.sub.processStatusId = Constants.STATUS_EVICTION;
+                this.props.dataToSap.sub.comment = this.state.message;
                 this.revocation(this.props.dataToSap);
                 break;
             default:
@@ -77,7 +77,7 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                        setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -97,7 +97,7 @@ class ConfirmationModal extends React.Component {
         console.log(dataToSap);
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/revoke`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -107,7 +107,7 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 1000);
+                        // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -304,7 +304,7 @@ class ConfirmationModal extends React.Component {
                     <Modal.Body>
                         <p>{this.props.message}</p>
                         {
-                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED ?
+                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED || this.props.type == Constants.STATUS_EVICTION ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                                 </div>
