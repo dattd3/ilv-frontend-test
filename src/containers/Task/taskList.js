@@ -456,41 +456,41 @@ class TaskList extends React.Component {
         return (
             <>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="row w-50 mt-2 mb-3">
-                <div className="col-xl-6">
-                    <InputGroup className="d-flex">
-                    <InputGroup.Prepend className="">
-                        <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <Select name="absenceType" 
-                            className="w-75" 
-                            value={this.state.absenceType || ""} 
-                            isClearable={true}
-                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                            placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
-                            theme={theme => ({
-                            ...theme,
-                            colors: {
-                                ...theme.colors,
-                                primary25: '#F9C20A',
-                                primary: '#F9C20A',
-                            },
-                            })}/>
+                <div className="row w-75 mt-2 mb-3">
+                    <div className="col-xl-6">
+                        <InputGroup className="d-flex">
+                        <InputGroup.Prepend className="">
+                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Select name="absenceType" 
+                                className="w-75" 
+                                value={this.state.absenceType || ""} 
+                                isClearable={true}
+                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                                })}/>
+                        </InputGroup>
+                    </div>
+                    <div className="col-xl-6">
+                    <InputGroup className="">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                        placeholder={t('SearchRequester')}
+                        aria-label="SearchRequester"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleInputChange}
+                        />
                     </InputGroup>
-                </div>
-                <div className="col-xl-6">
-                <InputGroup className="">
-                    <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl
-                    placeholder={t('SearchRequester')}
-                    aria-label="SearchRequester"
-                    aria-describedby="basic-addon2"
-                    onChange={this.handleInputChange}
-                    />
-                </InputGroup>
-                </div>
+                    </div>
                 </div> 
                 <div className="block-title">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
