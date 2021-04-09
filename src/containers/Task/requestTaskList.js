@@ -103,7 +103,7 @@ class RequestTaskList extends React.Component {
     }
 
     evictionRequest = (requestTypeId, child) => {
-        let prepareDataForRevoke = [
+        let prepareDataForRevoke =
             {
                 id: parseInt(child.id.split(".")[0]),
                 requestTypeId: requestTypeId,
@@ -113,10 +113,9 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        ]
         this.setState({
             modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+            modalMessage: "Lý do thu hồi yêu cầu",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
             dataToUpdate: prepareDataForRevoke
