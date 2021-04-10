@@ -169,14 +169,18 @@ class ConfirmationModal extends React.Component {
     disApprove = (formData, url, id) => {
         axios.post(url, formData, {
             headers: { Authorization: localStorage.getItem('accessToken') }
-        })
-            .then(res => {
+        }).then(res => {
                 if (res && res.data) {
                     const data = res.data
+                    
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
-                    } else {
-                        if(res.data.data[0].sub[0].status == "E")
+                    } 
+                    else if(data.result && data.result.code == Constants.API_ERROR_CODE){
+                        this.showStatusModal(this.props.t("Notification"), data.result.message, false)
+                    }
+                    else {
+                        if( res.data.data[0].sub[0].status == "E")
                         {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
                         }
@@ -191,7 +195,7 @@ class ConfirmationModal extends React.Component {
                 this.props.onHide();
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Hủy phê duyệt thành công!", true)
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
