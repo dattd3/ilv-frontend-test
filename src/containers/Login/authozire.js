@@ -105,7 +105,14 @@ function Authorize(props) {
                             region: user.department,
                             companyCode: user.company_code,
                             companyLogoUrl: res.data.data.logoUrl,
-                            companyThemeColor: res.data.data.colorHexCode
+                            companyThemeColor: res.data.data.colorHexCode,
+                            divisionId: user.organization_lv3,
+                            division: user.division,
+                            regionId: user.organization_lv4,
+                            unitId: user.organization_lv5,
+                            unit: user.unit,
+                            partId: user.organization_lv6,
+                            part: user.part
                         });
                     }
                 })
@@ -134,7 +141,14 @@ function Authorize(props) {
                         organizationLv5: user.organization_lv5,
                         region: user.department,
                         companyCode: user.company_code,
-                        companyLogoUrl: ''
+                        companyLogoUrl: '',
+                        divisionId: user.organization_lv3,
+                        division: user.division,
+                        regionId: user.organization_lv4,
+                        unitId: user.organization_lv5,
+                        unit: user.unit,
+                        partId: user.organization_lv6,
+                        part: user.part
                     });
                 })
                 .finally(result => {

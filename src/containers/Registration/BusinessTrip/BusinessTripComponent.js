@@ -67,7 +67,7 @@ class BusinessTripComponent extends React.Component {
         }
         return prevState
     }
-    
+
     componentDidMount() {
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
@@ -450,7 +450,7 @@ class BusinessTripComponent extends React.Component {
             return
         }
         const dataRequestInfo = requestInfo.map(req => {
-            let reqItem =  {
+            let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
                 startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -460,11 +460,11 @@ class BusinessTripComponent extends React.Component {
                 days: req.totalDays,
                 attendanceType: req.attendanceQuotaType,
                 vehicle: isShowAddressAndVehicle ? req.vehicle : null,
-                location: isShowAddressAndVehicle ? req.place: null,
+                location: isShowAddressAndVehicle ? req.place : null,
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }
-            if(isEdit){
+            if (isEdit) {
                 reqItem = {
                     ...reqItem,
                     processStatusId: req.processStatusId,
@@ -477,14 +477,21 @@ class BusinessTripComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-        debugger
+
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
         bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
-        bodyFormData.append("region", localStorage.getItem('region'))
+        bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
+        bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
+        bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
+        bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
+        bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
+        bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
+        bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
+        bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
@@ -508,8 +515,7 @@ class BusinessTripComponent extends React.Component {
                     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
-                else
-                {
+                else {
                     this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                     this.setDisabledSubmitButton(false)
                 }
@@ -532,13 +538,21 @@ class BusinessTripComponent extends React.Component {
         return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
+    isNullCustomize = value => {
+        return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    }
+
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     };
 
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false });
-        window.location.reload();
+        if (isEdit) {
+            window.location.replace("/tasks")
+        } else {
+            window.location.reload();
+        }
     }
 
     updateLeaveType(isAllDay, groupId) {
@@ -886,9 +900,9 @@ class BusinessTripComponent extends React.Component {
                                 </div>
                             </div>
                             {!index ?
-                                !isEdit &&  <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddBizTrip()}><i className="fas fa-plus"></i> {t("AddBizTrip")}</button>
+                                !isEdit && <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddBizTrip()}><i className="fas fa-plus"></i> {t("AddBizTrip")}</button>
                                 :
-                                !isEdit &&  <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(req[0].groupId)}><i className="fas fa-times"></i> {t("RemoveBizTrip")}</button>
+                                !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(req[0].groupId)}><i className="fas fa-times"></i> {t("RemoveBizTrip")}</button>
                             }
                         </div>
                     )
