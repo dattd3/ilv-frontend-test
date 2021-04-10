@@ -531,12 +531,9 @@ class TaskList extends React.Component {
                                 //     return (
                                         tasks.map((child, index) => {
                                             let totalTime = null;
-                                            // if (task.requestTypeId == 2) {
-                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
-                                            // }
-                                            // else {
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            // }
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     {
@@ -546,10 +543,10 @@ class TaskList extends React.Component {
                                                         </td>
                                                         : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
                                                     }
-                                                    <td className="code"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1])}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
                                                     <td className="user-title">{child.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id)} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
