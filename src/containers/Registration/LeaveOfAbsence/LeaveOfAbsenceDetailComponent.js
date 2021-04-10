@@ -31,7 +31,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }
     }
 
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/inbound/user/currentabsence`, {
+    axios.post(`${process.env.REACT_APP_MULE_HOST_INBOUND}api/sap/hcm/v1/inbound/user/currentabsence`, {
       perno: this.props.leaveOfAbsence.user.employeeNo,
       date: moment().format('YYYYMMDD')
     }, config)
