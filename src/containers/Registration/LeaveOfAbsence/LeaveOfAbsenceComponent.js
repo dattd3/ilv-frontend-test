@@ -465,6 +465,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         return true
     }
+    isNullCustomize = value => {
+        return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    }
 
     setDisabledSubmitButton(status) {
         this.setState({ disabledSubmitButton: status });
@@ -535,7 +538,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             isEdit,
             requestInfo
         } = this.state
-        
+
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
         if (!err) {
@@ -571,14 +574,21 @@ class LeaveOfAbsenceComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-        
+
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
         bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
-        bodyFormData.append("region", localStorage.getItem('region'))
+        bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
+        bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
+        bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
+        bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
+        bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
+        bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
+        bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
+        bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
@@ -586,7 +596,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             name: "Đăng ký nghỉ"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
-        if(isEdit){
+        if (isEdit) {
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
@@ -759,10 +769,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                     let totalTime = 0
                     req.forEach(r => {
                         if (r.totalDays) {
-                            totalDay += +(Math.round( r.totalDays + "e+2")  + "e-2");
+                            totalDay += +(Math.round(r.totalDays + "e+2") + "e-2");
                         }
                         if (r.totalTimes) {
-                            totalTime += +(Math.round( r.totalTimes + "e+2")  + "e-2");
+                            totalTime += +(Math.round(r.totalTimes + "e+2") + "e-2");
                         }
                     })
                     return (

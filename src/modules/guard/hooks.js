@@ -62,10 +62,18 @@ const Storage = {
     localStorage.setItem('organizationLv3', currentAuthUser.organizationLv3);
     localStorage.setItem('organizationLv4', currentAuthUser.organizationLv4);
     localStorage.setItem('organizationLv5', currentAuthUser.organizationLv5);
-    localStorage.setItem('region', currentAuthUser.region);
     localStorage.setItem('companyCode', currentAuthUser.companyCode);
     localStorage.setItem('companyLogoUrl', currentAuthUser.companyLogoUrl);
     localStorage.setItem('companyThemeColor', currentAuthUser.companyThemeColor);
+    localStorage.setItem('divisionId', currentAuthUser.divisionId);
+    localStorage.setItem('division', currentAuthUser.division);
+    localStorage.setItem('regionId', currentAuthUser.regionId);
+    localStorage.setItem('region', currentAuthUser.region);
+    localStorage.setItem('unitId', currentAuthUser.unitId);
+    localStorage.setItem('unit', currentAuthUser.unit);
+    localStorage.setItem('partId', currentAuthUser.partId);
+    localStorage.setItem('part', currentAuthUser.part);
+
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -92,10 +100,17 @@ const Storage = {
       organizationLv3: localStorage.getItem('organizationLv3'),
       organizationLv4: localStorage.getItem('organizationLv4'),
       organizationLv5: localStorage.getItem('organizationLv5'),
-      region: localStorage.getItem('region'),
       companyCode: localStorage.getItem('companyCode'),
       companyLogoUrl: localStorage.getItem('companyLogoUrl'),
-      companyThemeColor: localStorage.getItem('companyThemeColor')
+      companyThemeColor: localStorage.getItem('companyThemeColor'),
+      divisionId: localStorage.getItem('divisionId'),
+      division: localStorage.getItem('division'),
+      regionId: localStorage.getItem('regionId'),
+      region: localStorage.getItem('region'),
+      unitId: localStorage.getItem('unitId'),
+      unit: localStorage.getItem('unit'),
+      partId: localStorage.getItem('partId'),
+      part: localStorage.getItem('part')
     }
   },
   reset() {
@@ -120,10 +135,17 @@ const Storage = {
     localStorage.removeItem('organizationLv3');
     localStorage.removeItem('organizationLv4');
     localStorage.removeItem('organizationLv5');
-    localStorage.removeItem('region');
     localStorage.removeItem('companyCode');
     localStorage.removeItem('companyLogoUrl');
     localStorage.removeItem('companyThemeColor');
+    localStorage.removeItem('divisionId');
+    localStorage.removeItem('division');
+    localStorage.removeItem('regionId');
+    localStorage.removeItem('region');
+    localStorage.removeItem('unitId');
+    localStorage.removeItem('unit');
+    localStorage.removeItem('partId');
+    localStorage.removeItem('part');
   }
 }
 
@@ -149,8 +171,15 @@ const deserialize = (currentAuthUser) => ({
   organizationLv3: currentAuthUser.organizationLv3,
   organizationLv4: currentAuthUser.organizationLv4,
   organizationLv5: currentAuthUser.organizationLv5,
-  region: currentAuthUser.region,
   companyCode: currentAuthUser.companyCode,
   companyLogoUrl: currentAuthUser.companyLogoUrl,
-  companyThemeColor: currentAuthUser.companyThemeColor
+  companyThemeColor: currentAuthUser.companyThemeColor,
+  divisionId: currentAuthUser.divisionId,
+  division: currentAuthUser.division,
+  regionId: currentAuthUser.regionId,
+  region: currentAuthUser.region,
+  unitId: currentAuthUser.unitId,
+  unit: currentAuthUser.unit,
+  partId: currentAuthUser.partId,
+  part: currentAuthUser.part
 })
