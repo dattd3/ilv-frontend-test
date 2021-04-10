@@ -209,7 +209,7 @@ class RequestTaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page === "approval" ? `/tregistration/${id}/1` : `/registration/${id}/1`
     }
 
     getLinkRegistration(id,childId) {
@@ -545,19 +545,17 @@ class RequestTaskList extends React.Component {
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser);
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser);
                                             let totalTime = null;
-                                            // if (task.requestTypeId == 2) {
-                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
-                                            // }
-                                            // else {
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            // }
+                                            }
+                                            
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
                                                         
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
