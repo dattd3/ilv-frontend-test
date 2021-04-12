@@ -7,7 +7,7 @@ function ApproverDetailComponent(props) {
     return <div className="box shadow cbnv">
     <div className="row">
       <div className="col-4">
-        {t('Approver')}
+        {props.title}
         <div className="detail">{props.approver ? props.approver.fullname : null}</div>
       </div>
       <div className="col-4">
@@ -18,19 +18,15 @@ function ApproverDetailComponent(props) {
         {t('DepartmentManage')}
         <div className="detail">{props.approver ? props.approver.department : null}</div>
       </div>
-    </div>
-    <div className="row">
-      <div className="col-4">
-        Tình trạng
-        <div className="detail">{props.status != null ? t(Constants.mappingStatus[props.status].label) : ""}</div>
-      </div>
       {
-        props.status == Constants.STATUS_NOT_APPROVED ?
-        <div className="col-8">
-          Lý do không duyệt
-          <div className="detail">{props.hrComment ? props.hrComment : ""}</div>
+      props.status == Constants.STATUS_NOT_APPROVED || props.status == Constants.STATUS_NO_CONSENTED ?
+      <div className="col-4">
+        Lý do không duyệt
+        <div className="detail">
+          <span className="hr-comments">{props.hrComment ? props.hrComment : ""}</span>
         </div>
-        : null
+      </div>
+      : null
       }
     </div>
   </div>
