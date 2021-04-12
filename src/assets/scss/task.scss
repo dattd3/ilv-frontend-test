@@ -250,6 +250,9 @@
                 .request-type, .content, .tool {
                     min-width: 180px;
                 }
+                .col-content{
+                    min-width: 210px;
+                }
             
             }
             tbody{
@@ -304,9 +307,10 @@
                 vertical-align: middle;
             }
             td:last-child {
-                display: flex;
+                //display: flex;
                 // justify-content: space-evenly;
                 align-items: center;
+                justify-content: center;
             }
             .status {
                 [class$="-control"] {

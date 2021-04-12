@@ -29,6 +29,7 @@
     "react-metismenu": "^1.4.0",
     "react-moment": "^0.9.7",
     "react-paginate": "^6.3.2",
+    "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",

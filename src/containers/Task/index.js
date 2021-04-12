@@ -2,6 +2,7 @@ import React from 'react'
 import {Tabs, Tab} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import RequestComponent from '../Task/Request/'
+import EvalutionComponent from './Evalution'
 import ConsentComponent from '../Task/Consent/'
 import ApprovalComponent from '../Task/Approval/'
 import PrepareComponent from '../Task/Prepare';
@@ -14,7 +15,8 @@ class Task extends React.Component {
         super();
         this.state = {
             isShowApprovalTab: false,
-            isShowPrepareTab: false,
+            isShowPrepareTab: true,
+            isShowJobEvalutionTab: true,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: []
         }
@@ -84,6 +86,14 @@ class Task extends React.Component {
                     </Tab>
                     : null
                 }
+                {
+                    this.state.isShowJobEvalutionTab == true ?
+                    <Tab eventKey="evalution" title="Đánh giá công việc">
+                        <EvalutionComponent />
+                    </Tab>
+                    : null
+                }
+                
             </Tabs>
         )
     }
