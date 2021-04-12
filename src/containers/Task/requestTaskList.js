@@ -145,9 +145,9 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        console.log(prepareDataForCancel);
+        // console.log(prepareDataForCancel);
         this.setState({
-            modalTitle: "Yêu cầu hủy phê duyệt",
+            modalTitle: "Xác nhận hủy yêu cầu",
             modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_REVOCATION,
@@ -202,14 +202,14 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.fullName && statusOriginal == 5) {
+        if(taskData.fullname != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tregistration/${id}/1` : `/registration/${id}/1`
+        return this.props.page === "approval" ? `/registration/${id}/1` : `/registration/${id}/1`
     }
 
     getLinkRegistration(id,childId) {
@@ -230,12 +230,12 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEditButton = status => {
+    isShowEditButton = (status, requestTypeId) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2 || status == 3) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || status == 3)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -460,7 +460,7 @@ class RequestTaskList extends React.Component {
     render() {
         const recordPerPage = 10
         const { t } = this.props
-        let tasks = TableUtil.updateData(this.state.tasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
@@ -541,14 +541,21 @@ class RequestTaskList extends React.Component {
                                 //     }
                                 //     return (
                                         tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId);
+                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser);
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser);
                                             let totalTime = null;
+                                            let editLink = null
                                             if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
-                                            
+                                            if(child.requestType.id == 4 || child.requestType.id == 5)
+                                            {
+                                                editLink = null;
+                                            }
+                                            else{
+                                                editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
@@ -563,7 +570,7 @@ class RequestTaskList extends React.Component {
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
-                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                                    <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                                 </>
                                                             : null
                                                         }
