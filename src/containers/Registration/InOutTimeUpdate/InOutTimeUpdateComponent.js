@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
+import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -21,6 +22,7 @@ class InOutTimeUpdateComponent extends React.Component {
       endDate: new Date(),
       timesheets: [],
       approver: null,
+      appraiser:null,
       files: [],
       isUpdateFiles: false,
       errors: {},
@@ -89,6 +91,16 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({ errors: errors })
   }
 
+  updateAppraiser(appraiser, isAppraiser) {
+    this.setState({ appraiser: appraiser })
+    const errors = { ...this.state.errors }
+    if (!isAppraiser) {
+        errors.appraiser = this.props.t("InvalidAppraiser")
+    } else {
+        errors.appraiser = null
+    }
+    this.setState({ errors: errors })
+}
   handleInputChange(index, event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -108,6 +120,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   verifyInput() {
+    debugger
     const { t } = this.props
     let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
@@ -196,7 +209,6 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
-
     axios({
       method: 'POST',
       url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
@@ -583,7 +595,12 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+        <>
+          <AssesserComponent isEdit={t.isEdit} errors={this.state.errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+          <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
+        </>
+          : null}
 
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
