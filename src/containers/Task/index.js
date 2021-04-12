@@ -12,7 +12,7 @@ class Task extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            isShowApprovalTab: false,
+            isShowApprovalTab: true,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: []
         }
@@ -39,15 +39,16 @@ class Task extends React.Component {
                     e.requestTypeId = element.requestTypeId
                     if(element.requestTypeId == 5 || element.requestTypeId == 4)
                     {
-                      e.timesheets.forEach(ts => {
-                        // e.startDate = ts.startDate
-                        e.id = element.id
-                      })
+                      e.processStatusId = element.processStatusId
+                      e.id = element.id
+                      // e.timesheets.forEach(ts => {
+                       
+                      // })
                     }
                     taskList.push(e);
                 })
             });
-              this.setState({tasks : taskList, isShowApprovalTab: true});
+              this.setState({tasks : taskList});
             }
           }
         }).catch(error => {})
