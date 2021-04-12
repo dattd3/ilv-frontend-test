@@ -426,6 +426,14 @@ export default [
           component: lazy(() => import("./Registration/RegistrationEditComponent"))
         },
         {
+          key: "evalution-edit",
+          routeProps: {
+            exact: true,
+            path: map.Evaluation
+          },
+          component: lazy(() => import("./Registration/ContractEvaluation"))
+        },
+        {
           key: "question-and-answer",
           routeProps: {
             exact: true,

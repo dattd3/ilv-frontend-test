@@ -2,6 +2,7 @@ import React from 'react'
 import {Tabs, Tab} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import RequestComponent from '../Task/Request/'
+import EvalutionComponent from './Evalution'
 import ConsentComponent from '../Task/Consent/'
 import ApprovalComponent from '../Task/Approval/'
 import ApprovalDelegationModal from "./ApprovalDelegation/ApprovalDelegationModal"
@@ -66,7 +67,7 @@ class Task extends React.Component {
         } catch(e) {
 
         }
-    } 
+    }
 
     fetchUserApprovalDelegations = async () => {
         try {
@@ -182,11 +183,11 @@ class Task extends React.Component {
                         : null
                     }
                     {
-                        /*this.state.isShowJobEvalutionTab == true ?
+                        this.state.isShowJobEvalutionTab == true ?
                         <Tab eventKey="evalution" title="Đánh giá công việc">
                             <EvalutionComponent />
                         </Tab>
-                        : null*/
+                        : null
                     }
                 </Tabs>
             </div>

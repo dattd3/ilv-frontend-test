@@ -65,6 +65,9 @@ export default {
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
 
+  //Evalution
+  Evaluation: '/evaluation/:id/:type',
+
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
   QuestionAndAnswerDetails:"/question-and-answer-details/:id",

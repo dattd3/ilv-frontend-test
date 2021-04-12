@@ -866,11 +866,11 @@
         overflow: hidden;
     }
     .auto-height {
-        padding-bottom: 99999px; 
+        padding-bottom: 99999px;
         margin-bottom: -99999px;
     }
     @media (max-width: 1200px){
-        .auto-height { 
+        .auto-height {
             padding-bottom: 0px;
              margin-bottom: 0px;
         }
@@ -897,7 +897,7 @@
     }
 
     .message-danger{
-        margin-top: 38px !important; 
+        margin-top: 38px !important;
         margin-bottom: 0px !important;
     }
     .bottom {
