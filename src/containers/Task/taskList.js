@@ -437,13 +437,13 @@ class TaskList extends React.Component {
         this.setState({
             query: event.target.value
           }, () => {
-            data = this.state.query ? cloneTask.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+            data = this.state.query ? cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query)) : this.props.tasks;
             this.setState({tasks:data});
           })
     }
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks  || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
 
         const typeFeedbackMapping = {

@@ -39,10 +39,11 @@ class ConsentComponent extends React.Component {
                 e.requestTypeId = element.requestTypeId
                 if(element.requestTypeId == 5 || element.requestTypeId == 4)
                 {
-                  e.timesheets.forEach(ts => {
-                    // e.startDate = ts.startDate
-                    e.id = element.id
-                  })
+                  e.processStatusId = element.processStatusId
+                  e.id = element.id
+                  // e.timesheets.forEach(ts => {
+                    
+                  // })
                 }
                 taskList.push(e);
             })
@@ -63,6 +64,7 @@ class ConsentComponent extends React.Component {
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối") },
+      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") },
     ]
     return (
       this.state.dataResponse ?

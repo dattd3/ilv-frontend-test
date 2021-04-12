@@ -27,7 +27,6 @@ class RequestComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered = res.data.data.requests
-          console.log(tasksOrdered);
           let taskList = [];
           tasksOrdered.forEach(element => {
             element.requestInfo.forEach(e => {
@@ -37,10 +36,11 @@ class RequestComponent extends React.Component {
                 e.requestTypeId = element.requestTypeId
                 if(element.requestTypeId == 5 || element.requestTypeId == 4)
                 {
-                  e.timesheets.forEach(ts => {
-                    // e.startDate = ts.startDate
-                    e.id = element.id
-                  })
+                  e.processStatusId = element.processStatusId
+                  e.id = element.id
+                  // e.timesheets.forEach(ts => {
+                    
+                  // })
                 }
                 taskList.push(e);
             })
@@ -48,7 +48,7 @@ class RequestComponent extends React.Component {
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
-    }).catch(error => {
+    }).catch(error => { 
       this.setState({tasks : []});
     });
   }
@@ -77,8 +77,10 @@ class RequestComponent extends React.Component {
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
       { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
-      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_NOT_APPROVED , label: t("Từ chối phê duyệt") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối thẩm định") },
+      { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") }
     ]
     return (
       this.state.dataResponse ?
