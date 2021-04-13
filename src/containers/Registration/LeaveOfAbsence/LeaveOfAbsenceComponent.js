@@ -274,7 +274,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
-                    // subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
+                    // subid:req.id,
+                    subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -424,7 +425,6 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     verifyInput() {
         let { requestInfo, approver, appraiser, errors } = this.state;
-        debugger
         requestInfo.forEach((req, indexReq) => {
             if (!req.startDate) {
                 req.errors["startDate"] = this.props.t('Required')
