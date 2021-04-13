@@ -168,6 +168,7 @@ class InOutTimeUpdateComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
     const approver = { ...this.state.approver }
     const appraiser = { ...this.state.appraiser }
@@ -194,6 +195,15 @@ class InOutTimeUpdateComponent extends React.Component {
         department: localStorage.getItem('department'),
         employeeNo: localStorage.getItem('employeeNo')
     }
+
+    timesheets.map( item => {
+        Object.assign(item,
+          {
+            hours: item.hours ? parseFloat(item.hours) : null,
+            date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
+          });
+    })
+    
     const comments = timesheets
       .filter(item => (item.note))
       .map(item => item.note).join(" - ")
