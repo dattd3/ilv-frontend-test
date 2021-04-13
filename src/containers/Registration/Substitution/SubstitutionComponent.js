@@ -3,6 +3,7 @@ import axios from 'axios'
 import ButtonComponent from '../ButtonComponent'
 import Select from 'react-select'
 import ApproverComponent from '../ApproverComponent'
+import AssesserComponent from '../AssesserComponent'
 import moment from 'moment'
 import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
@@ -30,6 +31,7 @@ class SubstitutionComponent extends React.Component {
       timesheets: [],
       shifts: [],
       approver: null,
+      appraiser:null,
       files: [],
       isUpdateFiles: false,
       errors: {},
@@ -155,7 +157,10 @@ class SubstitutionComponent extends React.Component {
       }
     })
 
+    timesheets = timesheets.filter(item => item.isEdit)
     const approver = { ...this.state.approver }
+    const appraiser = { ...this.state.appraiser }
+    delete appraiser.avatar
     delete approver.avatar
     const data = {
       startDate: this.state.startDate,
@@ -170,6 +175,12 @@ class SubstitutionComponent extends React.Component {
         employeeNo: localStorage.getItem('employeeNo')
       }
     }
+    const user = {
+      fullname: localStorage.getItem('fullName'),
+      jobTitle: localStorage.getItem('jobTitle'),
+      department: localStorage.getItem('department'),
+      employeeNo: localStorage.getItem('employeeNo')
+    }
     const comments = timesheets
       .filter(item => (item.note))
       .map(item => item.note).join(" - ")
@@ -178,8 +189,8 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append('Name', 'Thay đổi phân ca')
     bodyFormData.append('RequestTypeId', '4')
     bodyFormData.append('Comment', comments)
-    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
-    bodyFormData.append('UpdateField', {})
+    bodyFormData.append('requestInfo', JSON.stringify(timesheets))
+    // bodyFormData.append('UpdateField', {})
     bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
     bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
     bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
@@ -188,9 +199,12 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
     bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
     bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
-    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
-    bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
+    // bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
+    // bodyFormData.append('UserProfileInfoToSap', {})
+    bodyFormData.append('appraiser', JSON.stringify(appraiser))
+    bodyFormData.append('approver', JSON.stringify(approver))
+    bodyFormData.append('user', JSON.stringify(user))
+    // bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
@@ -275,6 +289,17 @@ class SubstitutionComponent extends React.Component {
       errors.approver = this.props.t("InvalidApprover")
     } else {
       errors.approver = null
+    }
+    this.setState({ errors: errors })
+  }
+
+  updateAppraiser(appraiser, isAppraiser) {
+    this.setState({ appraiser: appraiser })
+    const errors = { ...this.state.errors }
+    if (!isAppraiser) {
+        errors.appraiser = this.props.t("InvalidAppraiser")
+    } else {
+        errors.appraiser = null
     }
     this.setState({ errors: errors })
   }
@@ -673,7 +698,12 @@ class SubstitutionComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+        <>
+        <AssesserComponent isEdit={t.isEdit} errors={this.state.errors} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} appraiser={this.props.substitution ? this.props.substitution.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+        <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> 
+        </>
+        : null}
 
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
