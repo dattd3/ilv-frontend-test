@@ -42,7 +42,8 @@ class RequestTaskList extends React.Component {
             requestTypeId: null,
             dataToPrepareToSAP: {},
             dataToUpdate: [],
-            isShowModalRegistrationConfirm: false
+            isShowModalRegistrationConfirm: false,
+            statusSelected:null
         }
 
         this.manager = {
@@ -447,20 +448,35 @@ class RequestTaskList extends React.Component {
         if(value && value.value)
         {
             // result = cloneTask.filter(element => {
-                result = cloneTask.filter(req => req.processStatusId == value.value);
+                result = cloneTask.filter(req => {
+                    if (value.value == 8)
+                    {
+                        return req.processStatusId == 5 || req.processStatusId == 8
+                    }
+                    else if(value.value == 5)
+                    {
+                        return req.processStatusId == 5 && req.appraiser.fullname
+                    }
+                    else
+                    {
+                        return req.processStatusId == value.value
+                    }
+                    
+                });
                 // return ele.length > 0
             // });
-            this.setState({tasks:result});
+            this.setState({statusSelected:value.value, tasks:result});
         }
         else{
-            this.setState({tasks:this.props.tasks});
+            this.setState({statusSelected:null, tasks:this.props.tasks});
         }
     }
 
     render() {
         const recordPerPage = 10
         const { t } = this.props
-        let tasks = TableUtil.updateData(this.state.tasks || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
+        let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected ? this.state.tasks : this.props.tasks
+        let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
@@ -598,10 +614,10 @@ class RequestTaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={tasksRaw.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {tasksRaw.length}</div>
                 </div> : null}
             </>)
     }
