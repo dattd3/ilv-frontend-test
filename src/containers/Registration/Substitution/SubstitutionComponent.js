@@ -139,24 +139,27 @@ class SubstitutionComponent extends React.Component {
     }
     let timesheets = [...this.state.timesheets].map(item => {
       return {
+        pernr: localStorage.getItem('employeeNo'),
         isEdit: item.isEdit,
-        date: item.date,
-        endBreakTime: item.endBreakTime,
-        endTime: item.endTime,
-        endTimeFilter: item.endTimeFilter,
-        fromTime: item.fromTime,
+        date:  moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+        endBreakTimeEdited: item.endBreakTime ? moment(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
+        toTimeEdited: item.endTime ? moment(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // sửa giờ kết thúc
+        // endTimeFilter: item.endTimeFilter ? moment(item.endTimeFilter, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
+        fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
-        shiftHours: item.shiftHours,
+        shiftHours: item.shiftHours ? parseFloat(item.shiftHours) : null,
         shiftId: item.shiftId,
         shiftIndex: item.shiftIndex,
-        shiftType: item.shiftType,
-        startBreakTime: item.startBreakTime,
-        startTime: item.startTime,
+        // shiftType: item.shiftType,
+        startBreakTimeEdited: item.startBreakTime ? moment(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
+        fromTimeEdited: item.startTime ? moment(item.startTime , Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //sửa giờ bắt đầu
         substitutionType: item.substitutionType,
-        toTime: item.toTime
+        toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //giờ kết thúc theo kế hoạch
+        startDateSearching: moment(this.state.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+        endDateSearching: moment(this.state.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString()
       }
     })
-
+    
     timesheets = timesheets.filter(item => item.isEdit)
     const approver = { ...this.state.approver }
     const appraiser = { ...this.state.appraiser }

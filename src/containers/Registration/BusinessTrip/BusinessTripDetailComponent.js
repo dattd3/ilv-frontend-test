@@ -133,8 +133,9 @@ class BusinessTripDetailComponent extends React.Component {
             }
           ]
         }]}
-        isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
-        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
+        isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === Constants.STATUS_APPROVED}
+        isShowConsent = {businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING && businessTrip.appraiser}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}
