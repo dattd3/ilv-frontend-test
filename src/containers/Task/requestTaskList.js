@@ -245,17 +245,18 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
-    isShowDeleteButton = (status, appraiser) => {
+    isShowDeleteButton = (status, appraiser, requestTypeId) => {
 
-        return (status == 5 && appraiser.fullName == null) || status == 8 ? true : false;
+        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.fullName == null) || status == 8) ? true : false;
         
     }
-    isShowEvictionButton = (status, appraiser) => {
+    
+    isShowEvictionButton = (status, appraiser, requestTypeId) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2 || (status == 5 && appraiser.fullName)){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.fullName))){
                 isShow = true;
             } else {
                 isShow = false;
@@ -558,8 +559,8 @@ class RequestTaskList extends React.Component {
                                 //     return (
                                         tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
                                             let totalTime = null;
                                             let editLink = null
                                             if (child.requestTypeId == 2 || child.requestTypeId == 3) {
