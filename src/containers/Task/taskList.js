@@ -38,7 +38,8 @@ class TaskList extends React.Component {
             dataToPrepareToSAP: {},
             action: null,
             disabled: "disabled",
-            query: ""
+            query: "",
+            statusSelected:null
         }
 
         this.manager = {
@@ -113,6 +114,9 @@ class TaskList extends React.Component {
     }
 
     onHideisShowTaskDetailModal= () => {
+        if(this.state.statusSelected){
+            this.setState({ tasks:  this.state.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
+        }
         this.setState({ isShowTaskDetailModal: false });
     }
 
@@ -424,20 +428,30 @@ class TaskList extends React.Component {
                 result = cloneTask.filter(req => req.processStatusId == value.value);
                 // return ele.length > 0
             // });
-            this.setState({tasks:result});
+            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
         }
         else{
-            this.setState({tasks:this.props.tasks});
+            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
         }
     }
     
     handleInputChange = (event) => {
         let data = null;
-        let cloneTask = this.props.tasks;
+        let cloneTask = this.state.taskFiltered;
         this.setState({
             query: event.target.value
           }, () => {
-            data = this.state.query ? cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query)) : this.props.tasks;
+              if(this.state.query)
+              {
+                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query));
+              }
+              else if (this.state.statusSelected){
+                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
+              }
+              else {
+                data = this.props.tasks
+              }
+            
             this.setState({tasks:data});
           })
     }
