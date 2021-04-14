@@ -108,7 +108,7 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         </div>
         <h5>{t("InOutChangeRequestInfo")}</h5>
-        {this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.inOutTimeUpdate.requestInfo.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
@@ -163,12 +163,13 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-
+        <h5>Thông tin CBQL thẩm định</h5>
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.requestInfo.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
           this.getTypeDetail() === "request" ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
             </> :
             <div className="block-status">
               <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].label)}</span>
