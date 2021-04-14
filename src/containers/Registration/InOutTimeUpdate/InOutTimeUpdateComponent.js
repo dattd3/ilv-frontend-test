@@ -170,11 +170,11 @@ class InOutTimeUpdateComponent extends React.Component {
     }
     
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
-    const approver = { ...this.state.approver }
+    const approver = this.state.approver ? { ...this.state.approver } : null
     const appraiser = { ...this.state.appraiser }
     
     delete approver.avatar
-    delete appraiser.avatar
+    // delete appraiser.avatar
 
     const data = {
       timesheets: timesheets,
