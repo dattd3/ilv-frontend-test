@@ -240,7 +240,7 @@ class BusinessTripComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
-                    subid: this.props.businessTrip.requestInfo.id ? this.props.businessTrip.requestInfo.id : null,
+                    subid: this.props.businessTrip ? this.props.businessTrip.requestInfo.id : null,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -428,11 +428,11 @@ class BusinessTripComponent extends React.Component {
             requestInfo,
             errors: {
                 approver: !approver ? this.props.t('Required') : null,
-                appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
+                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
             }
         })
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || !approver || (!appraiser && employeeLevel === "N0")) {
+        if (listError.length > 0 || !approver) { //|| (!appraiser && employeeLevel === "N0")
             return false
         }
         return true
@@ -662,13 +662,12 @@ class BusinessTripComponent extends React.Component {
     handleCheckboxChange = (e) => {
         const { requestInfo } = this.state
         requestInfo.forEach(req => {
-            if (e.target.value == req.groupId) {
+            if (e.target.value.split(".")[0] == req.groupId && e.target.value.split(".")[1] == req.groupItem) {
                 req.startTime = null
                 req.endTime = null
                 req.isAllDayCheckbox = e.target.checked
             }
         });
-        console.log(requestInfo)
         this.setState({ requestInfo: requestInfo })
         this.validateTimeRequest(requestInfo)
     }
@@ -742,7 +741,7 @@ class BusinessTripComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ? 
                                                     <div className="all-day-area">
-                                                        <input type="checkbox" value={req[0].groupId} checked={req[0].isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
+                                                        <input type="checkbox" value={reqDetail.groupId+"."+reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
                                                         <label>Nghỉ cả ngày</label>                                              
                                                     </div>                                                    
                                                     : null
@@ -788,7 +787,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox} />
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox} />
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -835,7 +834,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
