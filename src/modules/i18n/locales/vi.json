@@ -831,5 +831,7 @@
   "Evidence": "Tài liệu chứng minh",
   "PIT Reduction": "Có tính giảm trừ gia cảnh",
   "BirthCity": "Thành phố sinh",
-  "Recalled": "Đã thu hồi"
+  "Recalled": "Đã thu hồi",
+  "successfulRecallReq" : "Gửi yêu cầu thu hồi thành công !",
+  "successfulCancelReq" : "Hủy yêu cầu thành công !"
 }
