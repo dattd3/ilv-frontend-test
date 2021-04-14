@@ -15,7 +15,6 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import TaskDetailModal from './TaskDetailModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 
@@ -43,7 +42,8 @@ class RequestTaskList extends React.Component {
             dataToPrepareToSAP: {},
             dataToUpdate: [],
             isShowModalRegistrationConfirm: false,
-            statusSelected:null
+            statusSelected:null,
+            query: null
         }
 
         this.manager = {
@@ -210,7 +210,7 @@ class RequestTaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/registration/${id}/1` : `/registration/${id}/1`
+        return this.props.page === "approval" ? `/registration/${id}/1` : `/registration/${id}/1/request`
     }
 
     getLinkRegistration(id,childId) {
@@ -448,29 +448,47 @@ class RequestTaskList extends React.Component {
         let result = [];
         if(value && value.value)
         {
-            // result = cloneTask.filter(element => {
-                result = cloneTask.filter(req => {
-                    if (value.value == 8)
-                    {
-                        return req.processStatusId == 5 || req.processStatusId == 8
-                    }
-                    else if(value.value == 5)
-                    {
-                        return req.processStatusId == 5 && req.appraiser.fullname
-                    }
-                    else
-                    {
-                        return req.processStatusId == value.value
-                    }
-                    
-                });
-                // return ele.length > 0
-            // });
-            this.setState({statusSelected:value.value, tasks:result});
+            result = cloneTask.filter(req => {
+                if (value.value == 8)
+                {
+                    return req.processStatusId == 5 || req.processStatusId == 8
+                }
+                else if(value.value == 5)
+                {
+                    return req.processStatusId == 5 && req.appraiser.fullname
+                }
+                else
+                {
+                    return req.processStatusId == value.value
+                }
+            });   
+            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
         }
         else{
-            this.setState({statusSelected:null, tasks:this.props.tasks});
+            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
         }
+    }
+
+    handleInputChange = (event) => {
+        let data = null;
+        let cloneTask = this.state.taskFiltered ? this.state.taskFiltered : this.props.tasks;
+        this.setState({
+            query: event.target.value
+          }, () => {
+              if(this.state.query)
+              {
+                  debugger
+                data = cloneTask.filter(x => x.id.includes(this.state.query));
+              }
+              else if (this.state.statusSelected){
+                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
+              }
+              else {
+                data = this.props.tasks
+              }
+            
+            this.setState({tasks:data});
+          })
     }
 
     render() {
@@ -516,19 +534,19 @@ class RequestTaskList extends React.Component {
                                 })}/>
                         </InputGroup>
                     </div>
-                    {/* <div className="col-xl-6">
+                    <div className="col-xl-6">
                     <InputGroup className="">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
-                        placeholder={t('SearchRequester')}
+                        placeholder={t('Tìm kiếm mã yêu cầu')}
                         aria-label="SearchRequester"
                         aria-describedby="basic-addon2"
                         onChange={this.handleInputChange}
                         />
                     </InputGroup>
-                    </div> */}
+                    </div>
                 </div>
                 <div className="block-title">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
@@ -550,64 +568,56 @@ class RequestTaskList extends React.Component {
                         </thead>
                         <tbody>
                         {tasks.length > 0 ?
-                                // tasks.map((task) => {
-                                //     let userId = "";
-                                //     let userManagerId = "";
-                                //     if (task.user.userId) {
-                                //         userId = task.userId.split("@")[0];
-                                //     }
-                                //     return (
-                                        tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
-                                            let totalTime = null;
-                                            let editLink = null
-                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            }
-                                            if(child.requestType.id == 4 || child.requestType.id == 5)
+                            tasks.map((child, index) => {
+                                let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
+                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
+                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
+                                let totalTime = null;
+                                let editLink = null
+                                if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                    totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                }
+                                if(child.requestType.id == 4 || child.requestType.id == 5)
+                                {
+                                    editLink = null;
+                                }
+                                else{
+                                    editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+                                }
+                                return (
+                                    <tr key={index}>
+                                        <td scope="col" className="check-box">
+                                            
+                                        </td>
+                                        <td className="code">{this.getTaskCode(child.id)}</td>
+                                        <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
+                                        <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
+                                        <td className="break-time text-center">{totalTime}</td>
+                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                        <td className="tool">
                                             {
-                                                editLink = null;
+                                                isShowEditButton ? 
+                                                    <>
+                                                        <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                    </>
+                                                : null
                                             }
-                                            else{
-                                                editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+                                            {
+                                                isShowEvictionButton ?
+                                                    <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
+                                                    : null
                                             }
-                                            return (
-                                                <tr key={index}>
-                                                    <td scope="col" className="check-box">
-                                                        
-                                                    </td>
-                                                    <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
-                                                    <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time text-center">{totalTime}</td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
-                                                    <td className="tool">
-                                                        {
-                                                            isShowEditButton ? 
-                                                                <>
-                                                                    <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                                </>
-                                                            : null
-                                                        }
-                                                        {
-                                                            isShowEvictionButton ?
-                                                                <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
-                                                                : null
-                                                        }
-                                                        {
-                                                            isShowDeleteButton ?
-                                                                <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
-                                                                : null
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })
-                                    // )})
-                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
-                            }
+                                            {
+                                                isShowDeleteButton ?
+                                                    <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                    : null
+                                            }
+                                        </td>
+                                    </tr>
+                                )
+                            })           
+                            : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
+                        }
                         </tbody>
                     </table>
                 </div>
