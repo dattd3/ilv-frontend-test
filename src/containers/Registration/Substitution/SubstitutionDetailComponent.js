@@ -91,19 +91,19 @@ class SubstitutionDetailComponent extends React.Component {
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
-        {this.props.substitution.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.substitution.requestInfo.filter(t => t.isEdit).map((timesheet, index) => {
           return <div className="box shadow cbnv" key={index}>
-            <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+            <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">{t("ScheduledTime")}</p>
                   <div className="row">
                     <div className="col-6">
-                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.fromTime ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
+                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.fromTimeByPlan ? moment(timesheet.fromTimeByPlan, TIME_FORMAT).format('HH:mm') : null}</b>
                     </div>
                     <div className="col-6 text-right">
-                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.toTime ? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</b>
+                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.toTimeByplan ? moment(timesheet.toTimeByplan, TIME_FORMAT).format('HH:mm') : null}</b>
                     </div>
                   </div>
                 </div>
@@ -113,10 +113,10 @@ class SubstitutionDetailComponent extends React.Component {
                   <p className="text-center">{t("ShiftChangeTime")}</p>
                   <div className="row">
                     <div className="col-6">
-                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.startTime}</b>
+                      {t("Start")} {timesheet.shiftIndex}: <b>{timesheet.fromTimeEdited ? moment(timesheet.fromTimeEdited, TIME_FORMAT).format('HH:mm') : null}</b>
                     </div>
                     <div className="col-6 text-right">
-                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.endTime}</b>
+                      {t("End")} {timesheet.shiftIndex}: <b>{timesheet.toTimeEdited ? moment(timesheet.toTimeEdited, TIME_FORMAT).format('HH:mm') : null}</b>
                     </div>
                   </div>
                 </div>
@@ -126,11 +126,11 @@ class SubstitutionDetailComponent extends React.Component {
             {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? <div className="row">
               <div className="col">
                 <p>{t("BreakStartTime")}</p>
-                <div className="detail">{timesheet.startBreakTime}</div>
+                <div className="detail">{timesheet.startBreakTimeEdited}</div>
               </div>
               <div className="col">
                 <p>{t("BreakEndTime")}</p>
-                <div className="detail">{timesheet.endBreakTime}</div>
+                <div className="detail">{timesheet.endBreakTimeEdited}</div>
               </div>
               <div className="col">
                 <p>{t("ShiftBreak")}</p>
@@ -157,12 +157,13 @@ class SubstitutionDetailComponent extends React.Component {
             </div>
           </div>
         })}
-
+        <h5>Thông tin CBQL thẩm định</h5>
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.requestInfo.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
         {
           this.getTypeDetail() === "request" ?
           <>
           <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={this.props.substitution.approver} status={this.props.substitution.requestInfo.processStatusId} hrComment={this.props.substitution.hrComment} />
+          <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.requestInfo.processStatusId} hrComment={this.props.substitution.hrComment} />
           </> : 
           <div className="block-status">
             <span className={`status ${Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].label)}</span>
