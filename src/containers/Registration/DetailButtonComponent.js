@@ -109,13 +109,18 @@ class DetailButtonComponent extends React.Component {
             action === "consent" ?
             <div className="clearfix mt-5 mb-5">
                 {
-                    !this.props.isShowRevocationOfConsent ? 
+                    this.props.isShowConsent ? 
                     <>
                     <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
                     <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
                     </>
-                    : <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
+                    : null
+                }
+                {
+                    this.props.isShowRevocationOfConsent ?
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
+                    : null
                 }
             </div>
             : null

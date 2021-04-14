@@ -100,7 +100,7 @@ class InOutTimeUpdateComponent extends React.Component {
         errors.appraiser = null
     }
     this.setState({ errors: errors })
-}
+  }
   handleInputChange(index, event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -119,8 +119,7 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
-  verifyInput() {
-    debugger
+  verifyInput() {  
     const { t } = this.props
     let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
@@ -169,9 +168,14 @@ class InOutTimeUpdateComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
     const approver = { ...this.state.approver }
+    const appraiser = { ...this.state.appraiser }
+    
     delete approver.avatar
+    delete appraiser.avatar
+
     const data = {
       timesheets: timesheets,
       startDate: this.state.startDate,
@@ -184,6 +188,22 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: approver,
     }
+
+    const user = {
+        fullname: localStorage.getItem('fullName'),
+        jobTitle: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+        employeeNo: localStorage.getItem('employeeNo')
+    }
+
+    timesheets.map( item => {
+        Object.assign(item,
+          {
+            hours: item.hours ? parseFloat(item.hours) : null,
+            date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
+          });
+    })
+    
     const comments = timesheets
       .filter(item => (item.note))
       .map(item => item.note).join(" - ")
@@ -192,8 +212,8 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Name', t("ModifyInOut"))
     bodyFormData.append('RequestTypeId', '5')
     bodyFormData.append('Comment', comments)
-    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
-    bodyFormData.append('UpdateField', {})
+    bodyFormData.append('requestInfo', JSON.stringify(timesheets))
+    // bodyFormData.append('UpdateField', {})
     bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
     bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
     bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
@@ -202,13 +222,17 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
     bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
     bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
-    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
-    bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
+    // bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
+    bodyFormData.append('appraiser', JSON.stringify(appraiser))
+    bodyFormData.append('approver', JSON.stringify(approver))
+    bodyFormData.append('user', JSON.stringify(user))
+    // bodyFormData.append('UserProfileInfoToSap', {})
+    // bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
+
     axios({
       method: 'POST',
       url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
