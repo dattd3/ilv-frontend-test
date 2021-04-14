@@ -116,7 +116,10 @@ class ApproverComponent extends React.Component {
       return false
     }
 
-    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
+    // if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
+    //   return true
+    // }
+    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter)) {
       return true
     }
 

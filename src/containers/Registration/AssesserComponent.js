@@ -117,7 +117,10 @@ class AssesserComponent extends React.Component {
             return false
         }
 
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+        //     return true
+        // }
+        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
             return true
         }
 
