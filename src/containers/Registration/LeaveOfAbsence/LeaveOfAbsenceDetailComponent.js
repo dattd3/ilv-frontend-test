@@ -32,7 +32,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
 
     axios.post(`${process.env.REACT_APP_MULE_HOST_INBOUND}api/sap/hcm/v1/inbound/user/currentabsence`, {
-      perno: this.props.leaveOfAbsence.user.employeeNo,
+      perno: this.props.leaveOfAbsence.user.employeeNo.toString(),
       date: moment().format('YYYYMMDD')
     }, config)
       .then(res => {
@@ -207,8 +207,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
           ]
         }
-          isShowRevocationOfApproval={requestInfo.processStatusId === 2}
-          isShowRevocationOfConsent = {requestInfo.processStatusId === 2}
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED}
+          isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}
