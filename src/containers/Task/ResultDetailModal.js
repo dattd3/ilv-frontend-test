@@ -11,17 +11,20 @@ class ResultDetailModal extends React.Component {
 
     render () {
         const {t} = this.props
-        const resultDetail = this.props.resultDetail;
+        const resultDetail = this.props.resultDetail || [];
         let total = 0;
         let sucessReqs = 0;
 
         resultDetail.forEach(element => {
-            total += element.sub.length;
-            element.sub.forEach(child=>{
-                if(child.status == "S"){
-                    sucessReqs += 1;
-                }
-            })
+            total += element?.sub.length;
+            if(element?.sub.length){
+                element.sub.forEach(child=>{
+                    if(child.status == "S"){
+                        sucessReqs += 1;
+                    }
+                })
+            }
+            
         });
 
         return (
@@ -35,33 +38,43 @@ class ResultDetailModal extends React.Component {
                     {/* <div className="wrap-result">
                         {this.props.isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
                     </div> */}
-                    <table className="table table-sm">
-                        <thead>
-                            <tr class="row">
-                                <th className="col-3">{t("RequestNo")}</th>
-                                <th className="col-3 text-center">{t("Status")}</th>
-                                <th className="col-6">{t("Reason")}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                resultDetail.map(req =>{
-                                    return (
-                                        req.sub.map((child,index) => {
+                    {
+                        resultDetail.length > 0 ?
+                        <>
+                            <table className="table table-sm">
+                                <thead>
+                                    <tr class="row">
+                                        <th className="col-3">{t("RequestNo")}</th>
+                                        <th className="col-3 text-center">{t("Status")}</th>
+                                        <th className="col-6">{t("Reason")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        resultDetail.map(req =>{
                                             return (
-                                                <tr key={index} className="row">
-                                                    <td className="col-3">{child.id}</td>
-                                                    <td className="col-3 text-center">{child.status == "S" ? <i className="fas fa-check text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
-                                                    <td className="col-6">{child.status == "E" ? child.message : ""}</td>
-                                                </tr>
+                                                req.sub.map((child,index) => {
+                                                    return (
+                                                        <tr key={index} className="row">
+                                                            <td className="col-3">{child.id}</td>
+                                                            <td className="col-3 text-center">{child.status == "S" ? <i className="fas fa-check text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
+                                                            <td className="col-6">{child.status == "E" ? child.message : ""}</td>
+                                                        </tr>
+                                                    )
+                                                })
                                             )
                                         })
-                                    )
-                                })
-                            }   
-                        </tbody>
-                    </table>
-                    <p><span className="text-success">{t("Successful")}:</span><strong>{sucessReqs}/{total}</strong></p>
+                                    }   
+                                </tbody>
+                            </table>
+                            <p><span className="text-success">{t("Successful")}:</span><strong>{sucessReqs}/{total}</strong></p>
+                        </>
+                        :   <div className="wrap-result">
+                                <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>
+                                <Image src={IconFailed} alt="faile" className="ic-status" />
+                            </div> 
+                    }
+                    
                 </Modal.Body>
             </Modal>
             </>

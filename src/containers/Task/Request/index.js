@@ -26,7 +26,7 @@ class RequestComponent extends React.Component {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
-          let tasksOrdered = res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
+          let tasksOrdered = res.data.data.requests
           let taskList = [];
           tasksOrdered.forEach(element => {
             element.requestInfo.forEach(e => {
@@ -34,13 +34,21 @@ class RequestComponent extends React.Component {
                 e.appraiser = element.appraiser
                 e.requestType = element.requestType
                 e.requestTypeId = element.requestTypeId
+                if(element.requestTypeId == 5 || element.requestTypeId == 4)
+                {
+                  e.processStatusId = element.processStatusId
+                  e.id = element.id
+                  // e.timesheets.forEach(ts => {
+                    
+                  // })
+                }
                 taskList.push(e);
             })
           });
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
-    }).catch(error => {
+    }).catch(error => { 
       this.setState({tasks : []});
     });
   }
@@ -65,13 +73,22 @@ class RequestComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    let statusFiler = [
+      { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
+      { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
+      { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      { value: Constants.STATUS_NOT_APPROVED , label: t("Từ chối phê duyệt") },
+      { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối thẩm định") },
+      { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") }
+    ]
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        <div className="block-title">
+        {/* <div className="block-title">
           <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-        </div>
-        <RequestTaskList tasks={this.state.tasks} page="request"/>         
+        </div> */}
+        <RequestTaskList tasks={this.state.tasks} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
       <LoadingSpinner />
     )

@@ -28,7 +28,7 @@ class DetailButtonComponent extends React.Component {
 
     disApproval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NOT_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt", typeRequest: Constants.STATUS_NOT_APPROVED })
     }
 
     revocationApproval = () => {
@@ -46,7 +46,7 @@ class DetailButtonComponent extends React.Component {
     }
     rejected = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NO_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do từ chối thẩm định", typeRequest: Constants.STATUS_NO_CONSENTED })
     }
     onHideModalConfirm() {
         this.setState({ isConfirmShow: false })
@@ -109,13 +109,18 @@ class DetailButtonComponent extends React.Component {
             action === "consent" ?
             <div className="clearfix mt-5 mb-5">
                 {
-                    !this.props.isShowRevocationOfConsent ? 
+                    this.props.isShowConsent ? 
                     <>
                     <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
                     <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
                     </>
-                    : <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
+                    : null
+                }
+                {
+                    this.props.isShowRevocationOfConsent ?
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
+                    : null
                 }
             </div>
             : null

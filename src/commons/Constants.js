@@ -35,6 +35,8 @@ const Constants = {
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
 
+  STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,7],
+  STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,8],
   mappingStatus: {
     1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt

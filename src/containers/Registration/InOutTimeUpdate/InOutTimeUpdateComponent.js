@@ -2,13 +2,14 @@ import React from 'react'
 import axios from 'axios'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
+import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
-import { withTranslation  } from "react-i18next";
+import { withTranslation } from "react-i18next";
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -21,6 +22,7 @@ class InOutTimeUpdateComponent extends React.Component {
       endDate: new Date(),
       timesheets: [],
       approver: null,
+      appraiser:null,
       files: [],
       isUpdateFiles: false,
       errors: {},
@@ -62,20 +64,20 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    }, () => {this.verifyInput()})
-    
+    }, () => { this.verifyInput() })
+
   }
 
   setEndTime(index, name, endTime) {
     this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
-    }, () => {this.verifyInput()})
-    
+    }, () => { this.verifyInput() })
+
   }
 
   updateFiles(files) {
-    this.setState({ files: files },() => {this.verifyInput()})
+    this.setState({ files: files }, () => { this.verifyInput() })
   }
 
   updateApprover(approver, isApprover) {
@@ -89,6 +91,16 @@ class InOutTimeUpdateComponent extends React.Component {
     this.setState({ errors: errors })
   }
 
+  updateAppraiser(appraiser, isAppraiser) {
+    this.setState({ appraiser: appraiser })
+    const errors = { ...this.state.errors }
+    if (!isAppraiser) {
+        errors.appraiser = this.props.t("InvalidAppraiser")
+    } else {
+        errors.appraiser = null
+    }
+    this.setState({ errors: errors })
+  }
   handleInputChange(index, event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -97,7 +109,7 @@ class InOutTimeUpdateComponent extends React.Component {
     this.state.timesheets[index][name] = value
     this.setState({
       timesheets: [...this.state.timesheets]
-    },() => {this.verifyInput()})
+    }, () => { this.verifyInput() })
   }
 
   handleSelectChange(index, name, value) {
@@ -107,7 +119,7 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
-  verifyInput() {
+  verifyInput() {  
     const { t } = this.props
     let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
@@ -115,8 +127,7 @@ class InOutTimeUpdateComponent extends React.Component {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
-        }else
-        {
+        } else {
           errors['start_time1_fact_update' + index] = null;
           errors['end_time1_fact_update' + index] = null
         }
@@ -124,8 +135,7 @@ class InOutTimeUpdateComponent extends React.Component {
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
           errors['start_time2_fact_update' + index] = this.isNullCustomize(timesheet.start_time2_fact_update) ? this.props.t("Required") : null
           errors['end_time2_fact_update' + index] = this.isNullCustomize(timesheet.end_time2_fact_update) ? this.props.t("Required") : null
-        }else
-        {
+        } else {
           errors['start_time2_fact_update' + index] = null
           errors['end_time2_fact_update' + index] = null
         }
@@ -136,14 +146,17 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070','V077','V073'].includes( localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073'].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
 
-  setDisabledSubmitButton(status)
-  {
-    this.setState({disabledSubmitButton: status})
+  setDisabledSubmitButton(status) {
+    this.setState({ disabledSubmitButton: status })
+  }
+
+  isNullCustomize = value => {
+    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
   }
 
   submit() {
@@ -155,9 +168,14 @@ class InOutTimeUpdateComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    
     const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
     const approver = { ...this.state.approver }
+    const appraiser = { ...this.state.appraiser }
+    
     delete approver.avatar
+    delete appraiser.avatar
+
     const data = {
       timesheets: timesheets,
       startDate: this.state.startDate,
@@ -170,6 +188,22 @@ class InOutTimeUpdateComponent extends React.Component {
       },
       approver: approver,
     }
+
+    const user = {
+        fullname: localStorage.getItem('fullName'),
+        jobTitle: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+        employeeNo: localStorage.getItem('employeeNo')
+    }
+
+    timesheets.map( item => {
+        Object.assign(item,
+          {
+            hours: item.hours ? parseFloat(item.hours) : null,
+            date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
+          });
+    })
+    
     const comments = timesheets
       .filter(item => (item.note))
       .map(item => item.note).join(" - ")
@@ -178,12 +212,22 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('Name', t("ModifyInOut"))
     bodyFormData.append('RequestTypeId', '5')
     bodyFormData.append('Comment', comments)
-    bodyFormData.append('UserProfileInfo', JSON.stringify(data))
-    bodyFormData.append('UpdateField', {})
-    bodyFormData.append('Region', localStorage.getItem('region'))
-    bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
-    bodyFormData.append('UserProfileInfoToSap', {})
-    bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
+    bodyFormData.append('requestInfo', JSON.stringify(timesheets))
+    // bodyFormData.append('UpdateField', {})
+    bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
+    bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
+    bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
+    bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
+    bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
+    bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
+    bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
+    bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
+    // bodyFormData.append('IsUpdateFiles', this.state.isUpdateFiles)
+    bodyFormData.append('appraiser', JSON.stringify(appraiser))
+    bodyFormData.append('approver', JSON.stringify(approver))
+    bodyFormData.append('user', JSON.stringify(user))
+    // bodyFormData.append('UserProfileInfoToSap', {})
+    // bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
     bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
@@ -381,7 +425,7 @@ class InOutTimeUpdateComponent extends React.Component {
                 {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
                   <p>{t("StartTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("EndTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                   : null}
-                  
+
               </div>
               <div className="col-2 pr-0 pl-0">
                 {!timesheet.isEdit
@@ -575,7 +619,12 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+        <>
+          <AssesserComponent isEdit={t.isEdit} errors={this.state.errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+          <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
+        </>
+          : null}
 
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
@@ -589,13 +638,13 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070","V077","V073"].includes(localStorage.getItem("companyCode"))) ?
+          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070", "V077", "V073"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton = {this.state.disabledSubmitButton}/> : null}
+        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
       </div>
     )
   }

@@ -15,6 +15,8 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import TaskDetailModal from './TaskDetailModal'
+import {InputGroup, FormControl} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 
 const TIME_FORMAT = 'HH:mm:ss'
@@ -40,7 +42,8 @@ class RequestTaskList extends React.Component {
             requestTypeId: null,
             dataToPrepareToSAP: {},
             dataToUpdate: [],
-            isShowModalRegistrationConfirm: false
+            isShowModalRegistrationConfirm: false,
+            statusSelected:null
         }
 
         this.manager = {
@@ -64,6 +67,16 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
+    }
+
+    componentDidMount()
+    {
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps()
+    {
+        this.setState({tasks: this.props.tasks})
     }
 
     onChangePage = index => {
@@ -103,7 +116,7 @@ class RequestTaskList extends React.Component {
     }
 
     evictionRequest = (requestTypeId, child) => {
-        let prepareDataForRevoke = [
+        let prepareDataForRevoke =
             {
                 id: parseInt(child.id.split(".")[0]),
                 requestTypeId: requestTypeId,
@@ -113,10 +126,9 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        ]
         this.setState({
             modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+            modalMessage: "Lý do thu hồi yêu cầu",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
             dataToUpdate: prepareDataForRevoke
@@ -134,9 +146,9 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        console.log(prepareDataForCancel);
+        // console.log(prepareDataForCancel);
         this.setState({
-            modalTitle: "Yêu cầu hủy phê duyệt",
+            modalTitle: "Xác nhận hủy yêu cầu",
             modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_REVOCATION,
@@ -191,14 +203,14 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.fullName && statusOriginal == 5) {
+        if(taskData.fullname != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page === "approval" ? `/registration/${id}/1` : `/registration/${id}/1`
     }
 
     getLinkRegistration(id,childId) {
@@ -219,12 +231,12 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEditButton = status => {
+    isShowEditButton = (status, requestTypeId) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2 || status == 3) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || status == 3)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -233,17 +245,18 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
-    isShowDeleteButton = (status, appraiser) => {
+    isShowDeleteButton = (status, appraiser, requestTypeId) => {
 
-        return (status == 5 && appraiser.fullName == null) || status == 8 ? true : false;
+        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.fullName == null) || status == 8) ? true : false;
         
     }
-    isShowEvictionButton = (status, appraiser) => {
+    
+    isShowEvictionButton = (status, appraiser, requestTypeId) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if (status == 2 || (status == 5 && appraiser.fullName)){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.fullName))){
                 isShow = true;
             } else {
                 isShow = false;
@@ -429,11 +442,42 @@ class RequestTaskList extends React.Component {
         }
         return dataToSAP
     }
+    handleSelectChange(name, value) {
+        this.setState({ [name]: value })
+        let cloneTask = this.props.tasks;
+        let result = [];
+        if(value && value.value)
+        {
+            // result = cloneTask.filter(element => {
+                result = cloneTask.filter(req => {
+                    if (value.value == 8)
+                    {
+                        return req.processStatusId == 5 || req.processStatusId == 8
+                    }
+                    else if(value.value == 5)
+                    {
+                        return req.processStatusId == 5 && req.appraiser.fullname
+                    }
+                    else
+                    {
+                        return req.processStatusId == value.value
+                    }
+                    
+                });
+                // return ele.length > 0
+            // });
+            this.setState({statusSelected:value.value, tasks:result});
+        }
+        else{
+            this.setState({statusSelected:null, tasks:this.props.tasks});
+        }
+    }
 
     render() {
         const recordPerPage = 10
         const { t } = this.props
-        let tasks = TableUtil.updateData(this.props.tasks || [], this.state.pageNumber - 1, recordPerPage)
+        let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected ? this.state.tasks : this.props.tasks
+        let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
@@ -450,6 +494,45 @@ class RequestTaskList extends React.Component {
                     />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
+                <div className="row w-75 mt-2 mb-3">
+                    <div className="col-xl-6">
+                        <InputGroup className="d-flex">
+                        <InputGroup.Prepend className="">
+                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Select name="absenceType" 
+                                className="w-75" 
+                                value={this.state.absenceType || ""} 
+                                isClearable={true}
+                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                                })}/>
+                        </InputGroup>
+                    </div>
+                    {/* <div className="col-xl-6">
+                    <InputGroup className="">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                        placeholder={t('SearchRequester')}
+                        aria-label="SearchRequester"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleInputChange}
+                        />
+                    </InputGroup>
+                    </div> */}
+                </div>
+                <div className="block-title">
+                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                </div>
                 <div className="task-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
@@ -475,23 +558,28 @@ class RequestTaskList extends React.Component {
                                 //     }
                                 //     return (
                                         tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser);
+                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
                                             let totalTime = null;
-                                            // if (task.requestTypeId == 2) {
-                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
-                                            // }
-                                            // else {
+                                            let editLink = null
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            // }
+                                            }
+                                            if(child.requestType.id == 4 || child.requestType.id == 5)
+                                            {
+                                                editLink = null;
+                                            }
+                                            else{
+                                                editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     <td scope="col" className="check-box">
                                                         
                                                     </td>
                                                     <td className="code">{this.getTaskCode(child.id)}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
                                                     <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
@@ -499,7 +587,7 @@ class RequestTaskList extends React.Component {
                                                         {
                                                             isShowEditButton ? 
                                                                 <>
-                                                                    <a href={([Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId)) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                                    <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                                 </>
                                                             : null
                                                         }
@@ -527,10 +615,10 @@ class RequestTaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.props.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={tasksRaw.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.props.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {tasksRaw.length}</div>
                 </div> : null}
             </>)
     }

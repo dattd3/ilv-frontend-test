@@ -92,7 +92,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
 
 
-        axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/inbound/user/currentabsence`, {
+        axios.post(`${process.env.REACT_APP_MULE_HOST_INBOUND}api/sap/hcm/v1/inbound/user/currentabsence`, {
             perno: localStorage.getItem('employeeNo'),
             date: moment().format('YYYYMMDD')
         }, config)
@@ -246,9 +246,9 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
         const { requestInfo } = this.state
-        const { isAllDay } = requestInfo[indexReq]
-        if (isAllDay && (!startDate || !endDate)) return
-        if (!isAllDay && (!startDate || !endDate || !startTime || !endTime)) return
+        const { isAllDay, isAllDayCheckbox } = requestInfo[indexReq]
+        if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
+        if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
 
         const startDateTime = moment(`${startDate} ${startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
         const endDateTime = moment(`${endDate} ${endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
@@ -271,14 +271,15 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo.forEach(req => {
             const startTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
             const endTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
-            if (req.startDate && req.endDate && ((!req.isAllDay && startTime && startTime) || req.isAllDay)) {
+            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
-                    // subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
+                    // subid:req.id,
+                    subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-                    from_time: !req.isAllDay ? startTime : "",
+                    from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-                    to_time: !req.isAllDay ? endTime : "",
+                    to_time: !req.isAllDay && !req.isAllDayCheckbox ? endTime : "",
                     leave_type: req.absenceType?.value || "",
                     group_id: req.groupId
                 })
@@ -431,10 +432,10 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (!req.endDate) {
                 req.errors["endDate"] = this.props.t('Required')
             }
-            if (!req.startTime && !req.isAllDay) {
+            if (!req.startTime && !req.isAllDay && !req.isAllDayCheckbox) {
                 req.errors["startTime"] = this.props.t('Required')
             }
-            if (!req.endTime && !req.isAllDay) {
+            if (!req.endTime && !req.isAllDay && !req.isAllDayCheckbox) {
                 req.errors["endTime"] = this.props.t('Required')
             }
             if (!req.absenceType) {
@@ -464,12 +465,15 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         return true
     }
+    isNullCustomize = value => {
+        return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    }
 
     setDisabledSubmitButton(status) {
         this.setState({ disabledSubmitButton: status });
     }
 
-    addMultiDateTime(groupId, requestItem, isAllDay) {
+    addMultiDateTime(groupId, requestItem, isAllDay, absenceType, comment, funeralWeddingInfo) {
         const { requestInfo } = this.state;
         const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
         requestInfo.push({
@@ -478,12 +482,12 @@ class LeaveOfAbsenceComponent extends React.Component {
             startTime: null,
             endDate: null,
             endTime: null,
-            comment: null,
+            comment: comment,
             totalTimes: 0,
             totalDays: 0,
-            absenceType: null,
+            absenceType: absenceType,
             isAllDay: isAllDay,
-            funeralWeddingInfo: null,
+            funeralWeddingInfo: funeralWeddingInfo,
             groupId: groupId,
             errors: {},
         })
@@ -533,6 +537,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             isEdit,
             requestInfo
         } = this.state
+
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
         if (!err) {
@@ -543,9 +548,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                startTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: !req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
@@ -568,14 +573,21 @@ class LeaveOfAbsenceComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-        
+
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
         bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
-        bodyFormData.append("region", localStorage.getItem('region'))
+        bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
+        bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
+        bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
+        bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
+        bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
+        bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
+        bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
+        bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
@@ -583,7 +595,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             name: "Đăng ký nghỉ"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
-        if(isEdit){
+        if (isEdit) {
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
@@ -667,6 +679,20 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     hideNoteModal = () => {
         this.setState({ isShowNoteModal: false });
+    }
+
+    handleCheckboxChange = (e) => {
+        const { requestInfo } = this.state
+        requestInfo.forEach(req => {
+            if (e.target.value == req.groupId) {
+                req.startTime = null
+                req.endTime = null
+                req.isAllDayCheckbox = e.target.checked
+            }
+        });
+        console.log(requestInfo)
+        this.setState({ requestInfo: requestInfo })
+        this.validateTimeRequest(requestInfo)
     }
 
     render() {
@@ -756,10 +782,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                     let totalTime = 0
                     req.forEach(r => {
                         if (r.totalDays) {
-                            totalDay += +(Math.round( r.totalDays + "e+2")  + "e-2");
+                            totalDay += +(Math.round(r.totalDays + "e+2") + "e-2");
                         }
                         if (r.totalTimes) {
-                            totalTime += +(Math.round( r.totalTimes + "e+2")  + "e-2");
+                            totalTime += +(Math.round(r.totalTimes + "e+2") + "e-2");
                         }
                     })
                     return (
@@ -782,6 +808,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-lg-8 col-xl-8">
                                         {req.map((reqDetail, indexDetail) => (
                                             <div className="time-area" key={index + indexDetail}>
+                                                {
+                                                    !req[0].isAllDay ? 
+                                                    <div className="all-day-area">
+                                                        <input type="checkbox" value={req[0].groupId} checked={req[0].isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
+                                                        <label>Nghỉ cả ngày</label>                                              
+                                                    </div>                                                    
+                                                    : null
+                                                }
                                                 <div className="row p-2">
                                                     <div className="col-lg-12 col-xl-6">
                                                         <p className="title">{t('StartDateTime')}</p>
@@ -823,7 +857,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay}
+                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -871,7 +905,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay}
+                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -884,7 +918,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {!indexDetail ?
                                                     !isEdit &&
                                                     <React.Fragment>
-                                                        <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
+                                                        <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0].absenceType, req[0].comment, req[0].funeralWeddingInfo)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
                                                     </React.Fragment>
                                                     :

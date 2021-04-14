@@ -67,7 +67,7 @@ class BusinessTripComponent extends React.Component {
         }
         return prevState
     }
-    
+
     componentDidMount() {
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
@@ -203,9 +203,9 @@ class BusinessTripComponent extends React.Component {
 
     calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null, indexReq) {
         const { requestInfo } = this.state
-        const { isAllDay, errors } = requestInfo[indexReq]
-        if ((isAllDay && (!startDateInput || !endDateInput))
-            || (!isAllDay && (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput))) {
+        const { isAllDay,isAllDayCheckbox, errors } = requestInfo[indexReq]
+        if ((isAllDay && isAllDayCheckbox && (!startDateInput || !endDateInput))
+            || (!isAllDay && !isAllDayCheckbox && (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput))) {
             return false
         }
 
@@ -237,13 +237,14 @@ class BusinessTripComponent extends React.Component {
         requestInfo.forEach(req => {
             const startTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
             const endTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
-            if (req.startDate && req.endDate && ((!req.isAllDay && startTime && startTime) || req.isAllDay)) {
+            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
+                    subid: this.props.businessTrip.requestInfo.id ? this.props.businessTrip.requestInfo.id : null,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-                    from_time: !req.isAllDay ? startTime : "",
+                    from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
-                    to_time: !req.isAllDay ? endTime : "",
+                    to_time: !req.isAllDay && !req.isAllDayCheckbox ? endTime : "",
                     leave_type: null,
                     group_id: req.groupId
                 })
@@ -414,11 +415,13 @@ class BusinessTripComponent extends React.Component {
             const { startDate, endDate, startTime, endTime, attendanceQuotaType, vehicle, place, comment, isAllDay } = req
             requestInfo[indexReq].errors["startDate"] = !startDate ? this.props.t('Required') : null
             requestInfo[indexReq].errors["endDate"] = !endDate ? this.props.t('Required') : null
-            requestInfo[indexReq].errors["startTime"] = !startTime && !isAllDay ? this.props.t('Required') : null
-            requestInfo[indexReq].errors["endTime"] = !endTime && !isAllDay ? this.props.t('Required') : null
+            requestInfo[indexReq].errors["startTime"] = !startTime && !isAllDay && !req.isAllDayCheckbox ? this.props.t('Required') : null
+            requestInfo[indexReq].errors["endTime"] = !endTime && !isAllDay && !req.isAllDayCheckbox ?  this.props.t('Required') : null
             requestInfo[indexReq].errors.attendanceQuotaType = !attendanceQuotaType ? this.props.t('Required') : null
-            requestInfo[indexReq].errors.vehicle = !vehicle ? this.props.t('Required') : null
-            requestInfo[indexReq].errors.place = !place ? this.props.t('Required') : null
+            if(attendanceQuotaType?.value != "DT01") {
+                requestInfo[indexReq].errors.vehicle = !vehicle ? this.props.t('Required') : null
+                requestInfo[indexReq].errors.place = !place ? this.props.t('Required') : null
+            }
             requestInfo[indexReq].errors.comment = !comment ? this.props.t('Required') : null
         })
         this.setState({
@@ -450,21 +453,21 @@ class BusinessTripComponent extends React.Component {
             return
         }
         const dataRequestInfo = requestInfo.map(req => {
-            let reqItem =  {
+            let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime: !req.isAllDay ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                startTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: !req.isAllDay ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
+                endTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
                 comment: req.comment,
                 hours: req.totalTimes,
                 days: req.totalDays,
                 attendanceType: req.attendanceQuotaType,
                 vehicle: isShowAddressAndVehicle ? req.vehicle : null,
-                location: isShowAddressAndVehicle ? req.place: null,
+                location: isShowAddressAndVehicle ? req.place : null,
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }
-            if(isEdit){
+            if (isEdit) {
                 reqItem = {
                     ...reqItem,
                     processStatusId: req.processStatusId,
@@ -484,7 +487,14 @@ class BusinessTripComponent extends React.Component {
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
         bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
-        bodyFormData.append("region", localStorage.getItem('region'))
+        bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
+        bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
+        bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
+        bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
+        bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
+        bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
+        bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
+        bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
@@ -508,8 +518,7 @@ class BusinessTripComponent extends React.Component {
                     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
-                else
-                {
+                else {
                     this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                     this.setDisabledSubmitButton(false)
                 }
@@ -532,6 +541,10 @@ class BusinessTripComponent extends React.Component {
         return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
+    isNullCustomize = value => {
+        return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    }
+
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     };
@@ -539,7 +552,7 @@ class BusinessTripComponent extends React.Component {
     hideStatusModal = () => {
         const { isEdit } = this.state;
         this.setState({ isShowStatusModal: false });
-        if(isEdit){
+        if (isEdit) {
             window.location.replace("/tasks")
         } else {
             window.location.reload();
@@ -576,7 +589,7 @@ class BusinessTripComponent extends React.Component {
         this.setState({ isUpdateFiles: status })
     }
 
-    addMultiDateTime(groupId, requestItem, isAllDay) {
+    addMultiDateTime(groupId, requestItem, isAllDay,req) {
         const { requestInfo } = this.state;
         const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
         requestInfo.push({
@@ -586,13 +599,13 @@ class BusinessTripComponent extends React.Component {
             startTime: 0,
             endDate: null,
             endTime: 0,
-            comment: null,
+            comment: req.comment,
             totalTimes: 0,
             totalDays: 0,
             isAllDay: isAllDay,
-            attendanceQuotaType: null,
-            place: null,
-            vehicle: null,
+            attendanceQuotaType: req.attendanceQuotaType,
+            place: req.place,
+            vehicle: req.vehicle,
             errors: {},
         })
         this.setState({ requestInfo })
@@ -645,6 +658,20 @@ class BusinessTripComponent extends React.Component {
             newRequestInfo = requestInfo.filter(req => req.groupId !== groupId || req.groupItem !== groupItem)
         }
         this.setState({ requestInfo: newRequestInfo })
+    }
+
+    handleCheckboxChange = (e) => {
+        const { requestInfo } = this.state
+        requestInfo.forEach(req => {
+            if (e.target.value == req.groupId) {
+                req.startTime = null
+                req.endTime = null
+                req.isAllDayCheckbox = e.target.checked
+            }
+        });
+        console.log(requestInfo)
+        this.setState({ requestInfo: requestInfo })
+        this.validateTimeRequest(requestInfo)
     }
 
     render() {
@@ -713,6 +740,14 @@ class BusinessTripComponent extends React.Component {
                                     <div className="col-lg-8 col-xl-8">
                                         {req.map((reqDetail, indexDetail) =>
                                             <div className="time-area" key={indexDetail + index}>
+                                                {
+                                                    !req[0].isAllDay ? 
+                                                    <div className="all-day-area">
+                                                        <input type="checkbox" value={req[0].groupId} checked={req[0].isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
+                                                        <label>Nghỉ cả ngày</label>                                              
+                                                    </div>                                                    
+                                                    : null
+                                                }
                                                 <div className="row p-2">
                                                     <div className="col-lg-12 col-xl-6">
                                                         <p className="title">{t('StartDateTime')}</p>
@@ -754,7 +789,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay} />
+                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox} />
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -801,7 +836,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay}
+                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -811,7 +846,7 @@ class BusinessTripComponent extends React.Component {
                                                     </div>
                                                 </div>
                                                 {!indexDetail ?
-                                                    !isEdit && <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
+                                                    !isEdit && <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0])}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                     :
                                                     !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
                                                 }
@@ -847,7 +882,7 @@ class BusinessTripComponent extends React.Component {
                                         {this.error('attendanceQuotaType', req[0].groupId)}
                                     </div>
                                     {
-                                        this.state.isShowAddressAndVehicle && !['V073'].includes(localStorage.getItem("companyCode")) ?
+                                        req[0]?.attendanceQuotaType?.value != "DT01" && !['V073'].includes(localStorage.getItem("companyCode")) ?
                                             <>
                                                 <div className="col-5">
                                                     <p className="title">{t('Location')}</p>
@@ -891,9 +926,9 @@ class BusinessTripComponent extends React.Component {
                                 </div>
                             </div>
                             {!index ?
-                                !isEdit &&  <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddBizTrip()}><i className="fas fa-plus"></i> {t("AddBizTrip")}</button>
+                                !isEdit && <button type="button" className="btn btn-add-multiple" onClick={() => this.onAddBizTrip()}><i className="fas fa-plus"></i> {t("AddBizTrip")}</button>
                                 :
-                                !isEdit &&  <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(req[0].groupId)}><i className="fas fa-times"></i> {t("RemoveBizTrip")}</button>
+                                !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(req[0].groupId)}><i className="fas fa-times"></i> {t("RemoveBizTrip")}</button>
                             }
                         </div>
                     )

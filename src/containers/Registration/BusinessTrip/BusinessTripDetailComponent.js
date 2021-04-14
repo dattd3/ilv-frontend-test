@@ -83,41 +83,19 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
         </div>
         {
-          businessTrip.requestInfo && (businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING || businessTrip.requestInfo.processStatusId === Constants.STATUS_APPROVED) ? 
+          businessTrip.requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(businessTrip.requestInfo.processStatusId)) ? 
           <>
-          <h5>Thông tin CBQL thẩm định</h5>
-          <div className="box shadow cbnv">
-            <div className="row">
-              <div className="col-4">
-                {t("Approver")}
-                <div className="detail">{businessTrip.appraiser.fullname}</div>
-              </div>
-              <div className="col-4">
-                {t("Title")}
-                <div className="detail">{businessTrip.appraiser.current_position}</div>
-              </div>
-              <div className="col-4">
-                {t("DepartmentManage")}
-                <div className="detail">{businessTrip.appraiser.department}</div>
-              </div>
-            </div>
-          </div>
+            <h5>Thông tin CBQL thẩm định</h5>
+            <ApproverDetailComponent title={t("Consenter")} approver={businessTrip.appraiser} status={businessTrip.requestInfo ? businessTrip.requestInfo.processStatusId : ""} hrComment={businessTrip.requestInfo.appraiserComment} />
           </>
           : null
         }
         {
-          this.getTypeDetail() === "request" || businessTrip.requestInfo.processStatusId == 2 ?
+          this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(businessTrip.requestInfo.processStatusId)?
           <>
           <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
-          </> : 
-          <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && businessTrip.requestInfo.processStatusId == 5 && businessTrip.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
-            {
-              businessTrip.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{businessTrip.hrComment || ""}</span></span> : null
-            }
-          </div>
+          <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={businessTrip.requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
+          </> : null
         }
 
         {
@@ -134,7 +112,9 @@ class BusinessTripDetailComponent extends React.Component {
           </>
           : null
         }
-
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[businessTrip.requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && businessTrip.requestInfo.processStatusId == 5 && businessTrip.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[businessTrip.requestInfo.processStatusId].label)}</span>
+        </div>
         {(businessTrip.requestInfo.processStatusId === 8 || (this.props.action != "consent" && businessTrip.requestInfo.processStatusId === 5) || businessTrip.requestInfo.processStatusId === 2) ? <DetailButtonComponent 
         dataToSap={[{
           // MYVP_ID: 'ATT' + '0'.repeat(9 - businessTrip.id.toString().length) + businessTrip.id,
@@ -153,8 +133,9 @@ class BusinessTripDetailComponent extends React.Component {
             }
           ]
         }]}
-        isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === 2}
-        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === 2}
+        isShowRevocationOfApproval={businessTrip.requestInfo.processStatusId === Constants.STATUS_APPROVED}
+        isShowConsent = {businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+        isShowRevocationOfConsent = {businessTrip.requestInfo.processStatusId === Constants.STATUS_WAITING && businessTrip.appraiser}
         id={businessTrip.id}
         urlName={'requestattendance'}
         requestTypeId={requestTypeId}

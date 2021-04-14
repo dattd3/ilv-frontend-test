@@ -29,7 +29,7 @@ class ConsentComponent extends React.Component {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
-          let tasksOrdered =res.data.data.requests.sort((a, b) => a.id <= b.id ? 1 : -1)
+          let tasksOrdered =res.data.data.requests
           let taskList = [];
           tasksOrdered.forEach(element => {
             element.requestInfo.forEach(e => {
@@ -37,6 +37,14 @@ class ConsentComponent extends React.Component {
                 e.appraiser = element.appraiser
                 e.requestType = element.requestType
                 e.requestTypeId = element.requestTypeId
+                if(element.requestTypeId == 5 || element.requestTypeId == 4)
+                {
+                  e.processStatusId = element.processStatusId
+                  e.id = element.id
+                  // e.timesheets.forEach(ts => {
+                    
+                  // })
+                }
                 taskList.push(e);
             })
           });
@@ -56,6 +64,7 @@ class ConsentComponent extends React.Component {
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối") },
+      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") },
     ]
     return (
       this.state.dataResponse ?

@@ -38,7 +38,8 @@ class TaskList extends React.Component {
             dataToPrepareToSAP: {},
             action: null,
             disabled: "disabled",
-            query: ""
+            query: "",
+            statusSelected:null
         }
 
         this.manager = {
@@ -113,6 +114,9 @@ class TaskList extends React.Component {
     }
 
     onHideisShowTaskDetailModal= () => {
+        if(this.state.statusSelected){
+            this.setState({ tasks:  this.state.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
+        }
         this.setState({ isShowTaskDetailModal: false });
     }
 
@@ -424,26 +428,36 @@ class TaskList extends React.Component {
                 result = cloneTask.filter(req => req.processStatusId == value.value);
                 // return ele.length > 0
             // });
-            this.setState({tasks:result});
+            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
         }
         else{
-            this.setState({tasks:this.props.tasks});
+            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
         }
     }
     
     handleInputChange = (event) => {
         let data = null;
-        let cloneTask = this.props.tasks;
+        let cloneTask = this.state.taskFiltered;
         this.setState({
             query: event.target.value
           }, () => {
-            data = this.state.query ? cloneTask.filter(x =>x.user?.fullName?.toLowerCase().includes(this.state.query)) : this.props.tasks;
+              if(this.state.query)
+              {
+                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query));
+              }
+              else if (this.state.statusSelected){
+                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
+              }
+              else {
+                data = this.props.tasks
+              }
+            
             this.setState({tasks:data});
           })
     }
     render() {
         const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.tasks  || [], this.state.pageNumber - 1, recordPerPage)
+        let tasks = TableUtil.updateData(this.state.tasks  || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
 
         const typeFeedbackMapping = {
@@ -456,41 +470,41 @@ class TaskList extends React.Component {
         return (
             <>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="row w-50 mt-2 mb-3">
-                <div className="col-xl-6">
-                    <InputGroup className="d-flex">
-                    <InputGroup.Prepend className="">
-                        <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <Select name="absenceType" 
-                            className="w-75" 
-                            value={this.state.absenceType || ""} 
-                            isClearable={true}
-                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                            placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
-                            theme={theme => ({
-                            ...theme,
-                            colors: {
-                                ...theme.colors,
-                                primary25: '#F9C20A',
-                                primary: '#F9C20A',
-                            },
-                            })}/>
+                <div className="row w-75 mt-2 mb-3">
+                    <div className="col-xl-6">
+                        <InputGroup className="d-flex">
+                        <InputGroup.Prepend className="">
+                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Select name="absenceType" 
+                                className="w-75" 
+                                value={this.state.absenceType || ""} 
+                                isClearable={true}
+                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                                })}/>
+                        </InputGroup>
+                    </div>
+                    <div className="col-xl-6">
+                    <InputGroup className="">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                        placeholder={t('SearchRequester')}
+                        aria-label="SearchRequester"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleInputChange}
+                        />
                     </InputGroup>
-                </div>
-                <div className="col-xl-6">
-                <InputGroup className="">
-                    <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl
-                    placeholder={t('SearchRequester')}
-                    aria-label="SearchRequester"
-                    aria-describedby="basic-addon2"
-                    onChange={this.handleInputChange}
-                    />
-                </InputGroup>
-                </div>
+                    </div>
                 </div> 
                 <div className="block-title">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
@@ -531,12 +545,9 @@ class TaskList extends React.Component {
                                 //     return (
                                         tasks.map((child, index) => {
                                             let totalTime = null;
-                                            // if (task.requestTypeId == 2) {
-                                            //     totalTime = child.absenceType.value == "PQ02" ? child.hours + " giờ" : child.days + " ngày";
-                                            // }
-                                            // else {
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            // }
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     {
@@ -546,10 +557,10 @@ class TaskList extends React.Component {
                                                         </td>
                                                         : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
                                                     }
-                                                    <td className="code"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1])}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
                                                     <td className="user-title">{child.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 1 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id)} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
