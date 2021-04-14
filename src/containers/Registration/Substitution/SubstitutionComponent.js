@@ -147,7 +147,7 @@ class SubstitutionComponent extends React.Component {
         // endTimeFilter: item.endTimeFilter ? moment(item.endTimeFilter, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
-        shiftHours: item.shiftHours ? parseFloat(item.shiftHours) : null,
+        shiftHours: item.shiftHours,
         shiftId: item.shiftId,
         shiftIndex: item.shiftIndex,
         // shiftType: item.shiftType,
@@ -162,8 +162,8 @@ class SubstitutionComponent extends React.Component {
     
     timesheets = timesheets.filter(item => item.isEdit)
     const approver = { ...this.state.approver }
-    const appraiser = { ...this.state.appraiser }
-    delete appraiser.avatar
+    const appraiser = this.state.appraiser ? this.state.appraiser : null
+    // delete appraiser.avatar
     delete approver.avatar
     const data = {
       startDate: this.state.startDate,
