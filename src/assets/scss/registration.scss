@@ -121,7 +121,7 @@
         
     }
     .mv-10{
-        margin: 10px 0;
+        margin-top: 10px;
     }
     [class$="-container"] {
         margin: 10px 0;
@@ -270,6 +270,20 @@
         color: #FF0000;
         font-size: 20px;
         font-weight: bold;
+        margin-bottom: 30px;
+    }
+    .eval-heading{
+        display: flex;
+        justify-content: center;
+        color: #FF0000;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .sub-heading{
+        display: flex;
+        justify-content: center;
+        color: #FF0000;
+        font-size: 16px;
         margin-bottom: 30px;
     }
     .box {
@@ -486,5 +500,8 @@
         border-radius: 0.35rem;
         margin-top: 10px;
         
+    }
+    .btn-save{
+        background-color: #05BD29;
     }
 }

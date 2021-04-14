@@ -6,6 +6,7 @@ import { Image } from 'react-bootstrap'
 import IconEdit from '../../../assets/img/ic-edit.svg';
 import IconRemove from '../../../assets/img/ic-remove.svg';
 import IconAdd from '../../../assets/img/ic-add.svg';
+import IconSave from '../../../assets/img/ic-save.svg';
 import ResizableTextarea from '../TextareaComponent';
 import ApproverComponent from './SearchPeopleComponent'
 import Select from 'react-select'
@@ -41,6 +42,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 'VG', label: 'HĐDV theo giờ'},
     {value: 'VH', label: 'HĐDV khoán'}
   ];
+  STATUS_OPTIONS = [
+    {value: 9, label: 'Tự đánh giá'},
+    {value: 10, label: 'Người đánh giá'},
+    {value: 11, label: 'QLTT đánh giá'},
+    {value: 12, label: 'HR thẩm định'},
+    {value: 13, label: 'CBLD phê duyệt'},
+    {value: 14, label: 'Đã phê duyệt'}
+  ];
 
   commonData = {
 
@@ -60,28 +69,31 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     disableComponent: {
       employeeSide: true,
       qlttSide: false,
-    }
-  };
-
-  qlttSetting =  {
-    showComponent: {
-      JobEditing: false, // co the edit , them sua xoa noi dung danh gia
-      bossOption: true, //Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
-      HrOption: false, //Ý KIẾN THẨM ĐỊNH CỦA BỘ PHẬN NHÂN SỰ
-      employeePoC: false, //NGƯỜI ĐÁNH GIÁ (Nếu có)
-      qlttPoc: false, //QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ
-      hrPoC: false, //NGƯỜI THẨM ĐỊNH
-      bossPoc: true, //NGƯỜI PHÊ DUYỆT
-      employeeSide: true,
-      save: false // Luu
+      disableAll: false,
     },
-    disableComponent: {
-      employeeSide: false,
-      qlttSide: true,
-    }
+    requiredFields: [],
+    optionFields: [],
   };
 
-  bossSetting = {
+  // qlttSetting =  {
+  //   showComponent: {
+  //     JobEditing: false, // co the edit , them sua xoa noi dung danh gia
+  //     bossOption: true, //Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
+  //     HrOption: false, //Ý KIẾN THẨM ĐỊNH CỦA BỘ PHẬN NHÂN SỰ
+  //     employeePoC: false, //NGƯỜI ĐÁNH GIÁ (Nếu có)
+  //     qlttPoc: false, //QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ
+  //     hrPoC: false, //NGƯỜI THẨM ĐỊNH
+  //     bossPoc: true, //NGƯỜI PHÊ DUYỆT
+  //     employeeSide: true,
+  //     save: false // Luu
+  //   },
+  //   disableComponent: {
+  //     employeeSide: false,
+  //     qlttSide: true,
+  //   }
+  // };
+
+  qlttSetting = {
     showComponent: {
       JobEditing: false, // co the edit , them sua xoa noi dung danh gia
       bossOption: true, //Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
@@ -96,6 +108,29 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     disableComponent: {
       employeeSide: false,
       qlttSide: true,
+      disableAll: false,
+    }
+  }
+
+  bossSetting = {
+    showComponent: {
+      JobEditing: false, // co the edit , them sua xoa noi dung danh gia
+      bossOption: true, //Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
+      HrOption: false, //Ý KIẾN THẨM ĐỊNH CỦA BỘ PHẬN NHÂN SỰ
+      employeePoC: false, //NGƯỜI ĐÁNH GIÁ (Nếu có)
+      qlttPoc: false, //QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ
+      hrPoC: true, //NGƯỜI THẨM ĐỊNH
+      bossPoc: true, //NGƯỜI PHÊ DUYỆT
+      employeeSide: false,
+      bossSide: true,
+      save: false // Luu
+    },
+    disableComponent: {
+      employeeSide: false,
+      qlttSide: false,
+      bossSide: true,
+      editable: false,
+      disableAll: false,
     }
   }
 
@@ -116,7 +151,42 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       qlttSide: false,
       bossSide: false,
       editable: true,
+      disableAll: false,
     }
+  }
+
+  checkAuthorize = () => {
+    const currentEmployeeNo = localStorage.getItem('employeeNo');
+    const data = this.state.data;
+    let shouldDisable = false;
+    switch(data.processStatus) {
+      case 9: 
+        if(!data.employeeInfo || !data.employeeInfo.employeeNo || data.employeeInfo.employeeNo != currentEmployeeNo){
+          shouldDisable = true;
+        }
+        break;
+      case 10: 
+        if((!data.nguoidanhgia || data.nguoidanhgia.employeeNo != currentEmployeeNo)){
+          shouldDisable = true;
+        }
+        break;
+      case 11: 
+        if((!data.qltt || data.qltt.employeeNo != currentEmployeeNo)){
+          shouldDisable = true;
+        }
+        break;
+      case 13: 
+        if((!data.nguoipheduyet || data.nguoipheduyet.employeeNo != currentEmployeeNo)){
+          shouldDisable = true;
+        }
+        break;
+      case 14: 
+        shouldDisable = true;
+      break;
+    }
+    this.setState({
+      disableComponent: {...this.employeeSetting.disableComponent, disableAll: shouldDisable}
+    })
   }
 
   constructor(props) {
@@ -125,63 +195,53 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       isShowStatusModal: false,
       annualLeaveSummary: {},
       data: {
-        employeeInfo: [],
+        processStatus: 0,
+        employeeInfo: {},
         evalution:[
-          {
-            id: 1,
-            content: 'Kiến thức chuyên môn',
-            selfRate: 4,
-            bossRate: 1,
-            note: 'Kiến thức chuyên môn nghiệp vụ cao',
-            canEdit: false,
-            isEditing: false,
-            isEdited: false,
-            isDeleted: false,
-          },
-          {
-            id: 2,
-            content: 'Làm FE',
-            selfRate: 3,
-            bossRate: 2,
-            note: 'Kiến thức chuyên môn nghiệp vụ cao',
-            canEdit: true,
-            isEditing: false,
-            isEdited: false,
-            isDeleted: false,
-          },
-          {
-            id: 3,
-            content: 'Làm BE',
-            selfRate: 3,
-            bossRate: 2,
-            note: 'Kiến thức chuyên môn nghiệp vụ cao',
-            canEdit: true,
-            isEditing: false,
-            isEdited: false,
-            isDeleted: false,
-          }
+          // {
+          //   id: 1,
+          //   TaskName: 'Kiến thức chuyên môn',
+          //   SelfAssessmentScore: 0,
+          //   ManagementScore: 0,
+          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
+          //   canEdit: false,
+          //   isEditing: false,
+          //   isEdited: false,
+          //   isDeleted: false,
+          // },
+          // {
+          //   id: 2,
+          //   TaskName: 'Làm FE',
+          //   SelfAssessmentScore: 0,
+          //   ManagementScore: 0,
+          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
+          //   canEdit: true,
+          //   isEditing: false,
+          //   isEdited: false,
+          //   isDeleted: false,
+          // },
+          // {
+          //   id: 3,
+          //   TaskName: 'Làm BE',
+          //   SelfAssessmentScore: 0,
+          //   ManagementScore: 0,
+          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
+          //   canEdit: true,
+          //   isEditing: false,
+          //   isEdited: false,
+          //   isDeleted: false,
+          // }
         ],
         newEvalution: [
-          {
-            id: 0,
-            content: 'Đi muộn về sớm',
-            selfRate: 3,
-            bossRate: 2,
-            note: 'Kiến thức chuyên môn nghiệp vụ cao',
-            canEdit: true,
-            isEditing: false,
-            isEdited: false,
-            isDeleted: false,
-          }
         ],
         selfEvalution: {
-          strong: 'Học hỏi nhanh, chăm chỉ',
-          weak: 'Lười vận động',
-          opinion: 'Không có'
+          // strong: 'Học hỏi nhanh, chăm chỉ',
+          // weak: 'Lười vận động',
+          // opinion: 'Không có'
         },
         bossEvalution: {
-          strong: 'Đồng ý với nhân viên',
-          weak: 'Đồng ý với nhân viên',
+          // strong: 'Đồng ý với nhân viên',
+          // weak: 'Đồng ý với nhân viên',
         },
         course: [
           {
@@ -212,10 +272,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         ],
         documentStatus: false,
-        nguoidanhgia: [],
-        qltt: [],
+        nguoidanhgia: {},
+        qltt: {},
+        nguoipheduyet: {},
         qlttOpinion: {
-          result: {value: 0, label: 'Đạt'},
+          result: {},
           contract: {},
           expire: '',
           otherOption: ''
@@ -223,24 +284,48 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         thamdinh: {
 
         },
-        nguoipheduyet: null,
-        selfRateTotal: 7,
-        bossRateTotal: 3,
-        totalSelfRate: 7,
-        totalBossRate: 3
+        cvs: [
+          {
+            id: 1,
+            name: 'File 1.xlsx',
+            link: 'https://stackoverflow.com/questions/15748656/javascript-reduce-on-object',
+          },
+          {
+            id: 2,
+            name: 'File 2.xlsx',
+            link: 'https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip',
+          }
+        ],
+        cvIdToDeleted: [],
+        cvOriginals: [
+          {
+            id: 1,
+            name: 'File 1.xlsx',
+            link: 'https://stackoverflow.com/questions/15748656/javascript-reduce-on-object',
+          },
+          {
+            id: 2,
+            name: 'File 2.xlsx',
+            link: 'https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip',
+          }
+        ],
+        
+        SelfAssessmentScoreTotal: 0,
+        ManagementScoreTotal: 0,
+      },
+      errors: {
+        // rating: '(Bắt buộc)',
+        // nguoidanhgia: '(Bắt buộc)',
+        // result: '(Bắt buộc)',
+        // contract: '(Bắt buộc)',
+        // expire: '(Bắt buộc)',
+        // boss: '(Bắt buộc)'
       },
       showComponent: this.editableSetting.showComponent, 
       disableComponent: this.editableSetting.disableComponent
     }
   }
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
 
     const type = this.props.match.params.type;
     const id = this.props.match.params.id;
@@ -252,35 +337,300 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     if(type === 'request'){
       this.setState({
         showComponent: this.employeeSetting.showComponent,
-        disableComponent: this.employeeSetting.disableComponent
+        disableComponent: {...this.employeeSetting.disableComponent, disableAll: false},
+        type: 'request',
+        id: id
       })
     }else if(type == 'edit'){
       this.setState({
         showComponent: this.editableSetting.showComponent,
-        disableComponent: this.editableSetting.disableComponent
+        disableComponent: {...this.editableSetting.disableComponent, disableAll: false},
+        type: 'edit',
+        id: id
       })
     }else if(type === 'assess'){
       this.setState({
-        showComponent: this.bossSetting.showComponent,
-        disableComponent: this.bossSetting.disableComponent
+        showComponent: this.qlttSetting.showComponent,
+        disableComponent: {...this.qlttSetting.disableComponent, disableAll: false},
+        type: 'assess',
+        id: id
       })
     }else if(type === 'approval'){
       this.setState({
-        showComponent: this.qlttSetting.showComponent,
-        disableComponent: this.qlttSetting.disableComponent
+        showComponent: this.bossSetting.showComponent,
+        disableComponent: {...this.bossSetting.disableComponent, disableAll: false},
+        type: 'approval',
+        id: id
       })
     }
-    // axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/inbound/user/currentabsence`, {
-    //   perno: this.props.leaveOfAbsence.user.employeeNo,
-    //   date: moment().format('YYYYMMDD')
-    // }, config)
-    //   .then(res => {
-    //     if (res && res.data) {
-    //       const annualLeaveSummary = res.data.data
-    //       this.setState({ annualLeaveSummary: annualLeaveSummary })
-    //     }
-    //   }).catch(error => {
-    //   })
+
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
+    .then(res => {
+      if (res && res.data && res.data.data && res.data.result) {
+        const result = res.data.result;
+        if (result.code != Constants.API_ERROR_CODE) {
+          const responseData = this.saveStateInfos(res.data.data);
+          this.setState({data : responseData}, () => {
+            //this.checkAuthorize();
+          });
+        }
+      }
+    }).catch(error => {})
+
+  }
+
+ 
+
+  prepareDataToSubmit = (data) => {
+    const remoteData = data.remoteData;
+    remoteData.lstTaskAssessments = (remoteData.lstTaskAssessments || []).map( (item, index) => {
+      return {
+        ...item,
+        selfAssessmentScore: data.evalution[index].SelfAssessmentScore,
+        managementScore: data.evalution[index].ManagementScore,
+        managementComment: data.evalution[index].ManagementComment
+      }
+    });
+    remoteData.additionInforEvaluations = {
+      ...remoteData.additionInforEvaluations,
+      selfAssessmentStrengths: data.selfEvalution.strong,
+      selfAssessmentPointImprove: data.selfEvalution.weak,
+      staffSuggestions: data.selfEvalution.opinion,
+      managersEvaluateStrengths: data.bossEvalution.strong,
+      managersEvaluatePointImprove: data.bossEvalution.weak
+    }
+
+    remoteData.requestHistorys = {
+      ...remoteData.requestHistorys,
+      appraiserInfo: data.nguoidanhgia,
+      supervisorInfo: data.qltt,
+      approverInfo: data.nguoipheduyet
+    }
+    let bodyFormData = new FormData();
+    bodyFormData.append('IsEdit', remoteData.isEdit);
+    bodyFormData.append('staffContracts', JSON.stringify(remoteData.staffContracts));
+    bodyFormData.append('lstTaskAssessments', JSON.stringify(remoteData.lstTaskAssessments));
+    bodyFormData.append('additionInforEvaluations', JSON.stringify(remoteData.additionInforEvaluations));
+    bodyFormData.append('requestHistorys', JSON.stringify(remoteData.requestHistorys));
+    if (data.cvIdToDeleted && data.cvIdToDeleted.length > 0) {
+      bodyFormData.append('DeletedDocumentIds', JSON.stringify(data.cvIdToDeleted))
+    }
+
+    const additionalDocuments = this.getAdditionalDocuments()
+
+    if (additionalDocuments.length > 0) {
+        additionalDocuments.forEach(file => {
+            bodyFormData.append('AttachedFiles', file)
+        })
+    }
+    return bodyFormData;
+  }
+
+  saveStateInfos = (infos) => {
+    const candidateInfos = {...this.state.data}
+    candidateInfos.remoteData = infos;
+    //save staff contract
+    if(infos.staffContracts){
+      candidateInfos.employeeInfo = {
+        fullName: infos.staffContracts.fullName,
+        positionName: infos.staffContracts.positionName,
+        departmentName: infos.staffContracts.departmentName,
+        startDate: infos.staffContracts.startDate,
+        expireDate: infos.staffContracts.expireDate
+      }
+    }
+
+    if(infos.lstTaskAssessments && infos.lstTaskAssessments.length > 0){
+      candidateInfos.SelfAssessmentScoreTotal = 0;
+      candidateInfos.ManagementScoreTotal = 0;
+      candidateInfos.evalution = infos.lstTaskAssessments.map( item => {
+        candidateInfos.SelfAssessmentScoreTotal += item.selfAssessmentScore;
+        candidateInfos.ManagementScoreTotal += item.managementScore;
+        return {
+            id: item.id,
+            TaskName: item.taskName || '',
+            SelfAssessmentScore: item.selfAssessmentScore,
+            ManagementScore: item.managementScore,
+            ManagementComment: item.managementComment || '',
+            canEdit: item.isEdit,
+            isEditing: false,
+            isEdited: false,
+            isDeleted: false,
+          }
+      })
+    }
+    if(infos.lstCourse && infos.lstCourse.length > 0){
+      candidateInfos.course = infos.lstTaskAssessments.map( item => {
+        return {
+            name: item.name || '',
+            status: item.status ? true : false
+          }
+      })
+    }
+    if(infos.additionInforEvaluations) {
+      candidateInfos.selfEvalution = {
+        strong: infos.additionInforEvaluations.selfAssessmentStrengths || '',
+        weak: infos.additionInforEvaluations.selfAssessmentPointImprove || '',
+        opinion: infos.additionInforEvaluations.staffSuggestions || ''
+      };
+      candidateInfos.bossEvalution = {
+        strong: infos.additionInforEvaluations.managersEvaluateStrengths || '',
+        weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
+      }
+    }
+
+    if(infos.requestHistorys){
+      candidateInfos.processStatus = infos.requestHistorys.processStatusId;
+      candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.fullname ?  infos.requestHistorys.appraiserInfo : {};
+      candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.fullname ?  infos.requestHistorys.supervisorInfo : {};
+      candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.fullname ? infos.requestHistorys.approverInfo : {}; 
+    }
+    
+    const cvs = this.prepareCVResponses(infos.attachedFiles)
+    candidateInfos.cvs = cvs
+    candidateInfos.cvOriginals = cvs
+    return candidateInfos;
+  }
+
+  prepareCVResponses = (attachedDocuments) => {
+    let documents = []
+    if (attachedDocuments && attachedDocuments.length > 0) {
+        documents = attachedDocuments.map(item => {
+            return {
+                id: item.id,
+                name: item.bucketName,
+                link: item.link,
+            }
+        })
+    }
+
+    return [...documents]
+  }
+
+  getAdditionalDocuments = () => {
+    const candidateInfos = {...this.state.data}
+    const cvs = candidateInfos.cvs
+    const files = cvs.filter((item, index) => !item.id)
+    return files
+  }
+
+  handleChangeFileInput = e => {
+    const files = Object.values(e.target.files)
+    const candidateInfos = {...this.state.data}
+    candidateInfos.cvs = candidateInfos.cvs.concat(files)
+    this.setState({ data: candidateInfos })
+  }
+
+  removeFiles = (fileId, index) => {
+      const candidateInfos = {...this.state.data}
+      const files = candidateInfos.cvs.filter((item, i) => i !== index)
+      const filesDeleted = candidateInfos.cvOriginals.filter((item, i) => {
+          return fileId ? item.id == fileId : i === index
+      })
+      const fileIdsDeleted = filesDeleted.map(item => item && item.id)
+      candidateInfos.cvs = files
+      candidateInfos.cvIdToDeleted = candidateInfos.cvIdToDeleted.concat(fileIdsDeleted)
+
+      this.setState({ data: candidateInfos })
+  }
+
+  verifyInputs = () => {
+    const type = this.state.type;
+    const errors = {};
+    const evalutions = [...this.state.data.evalution, ...this.state.data.newEvalution];
+    if(type === 'request'){
+      if(evalutions && evalutions.length > 0){
+        let isMissing = false;
+        for(let i = 0; i < evalutions.length ; i++){
+          if(evalutions[i].isDeleted === false &&  evalutions[i].SelfAssessmentScore < 1){
+            isMissing = true;
+            break;
+          }
+        }
+        if(isMissing)
+          errors['rating'] = '(Bắt buộc điền tự đánh giá)'
+      }
+      if(!this.state.data.qltt || !this.state.data.qltt.value){
+        errors['qltt'] = '(Bắt buộc)';
+      }
+
+      const fileExtension = [
+        'application/msword', // doc
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
+        'application/vnd.ms-excel', // xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
+        'application/pdf', // pdf,
+        'image/png', // png
+        'image/jpeg' // jpg and jpeg
+      ]
+
+      const cvs = this.state.data.cvs
+
+      let sizeTotal = 0
+      for (let index = 0, lenFiles = cvs.length; index < lenFiles; index++) {
+          const file = cvs[index];
+          if (file.id) {
+              continue
+          }
+
+          if (!fileExtension.includes(file.type)) {
+              errors.cvs = 'Tồn tại file đính kèm không đúng định dạng'
+              break
+          } else if (parseFloat(file.size / 1000000) > 2) {
+              errors.cvs = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+              break
+          } else {
+              errors.cvs = null
+          }
+          sizeTotal += parseInt(file.size)
+      }
+
+      if (parseFloat(sizeTotal / 1000000) > 10) {
+          errors.cvs = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+      }
+    }else if(type === 'assess'){
+      if(evalutions && evalutions.length > 0){
+        let isMissing = false;
+        for(let i = 0; i < evalutions.length ; i++){
+          if(evalutions[i].isDeleted === false && evalutions[i].ManagementScore < 1){
+            isMissing = true;
+            break;
+          }
+        }
+        if(isMissing)
+          errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
+      }
+      if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.value){
+        errors['boss'] = '(Bắt buộc)';
+      }
+      const array = ['result', 'contract'];
+      array.forEach(name => {
+        if (!this.state.data.qlttOpinion[name].value) {
+            errors[name] = '(Bắt buộc)'
+        } else {
+            errors[name] = null
+        }
+      })
+    }else if( type === 'edit'){
+      if(evalutions && evalutions.length > 0){
+        let isMissing = false;
+        for(let i = 0; i < evalutions.length ; i++){
+          if(evalutions[i].isDeleted === false && !evalutions[i].TaskName){
+            isMissing = true;
+            break;
+          }
+        }
+        if(isMissing)
+          errors['rating'] = '(Bắt buộc điền nội dung đánh giá)'
+      }
+    }
+    this.setState({errors: errors});
+    return errors;
   }
 
   
@@ -347,14 +697,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   updateApprover(name, approver, isApprover) {
-    this.setState({ [name]: approver })
-    const errors = { ...this.state.errors }
-    if (!isApprover) {
-        errors[name] = 'Nhân viên không hợp lệ !!'
-    } else {
-        errors[name] = null
-    }
-    this.setState({ errors: errors })
+    this.setState({
+      data: {
+        ...this.state.data,
+        [name]: approver 
+      }
+    })
 }
 
 changeEditingStatus = (name, subName,  subId) => {
@@ -376,10 +724,10 @@ addMoreEvalution = () => {
   const result = candidateInfos.newEvalution;
   const newItem = {
     id: result.length,
-    content: '',
-    selfRate: 0,
-    bossRate: 0,
-    note: '',
+    TaskName: '',
+    SelfAssessmentScore: 0,
+    ManagementScore: 0,
+    ManagementComment: '',
     canEdit: true,
     isEditing: true,
     isEdited: false,
@@ -399,8 +747,8 @@ renderEvalution = (name, data, isDisable) => {
       <td style={{width: '20%'}}>
         {
           item.isEditing ? 
-          <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'content')}  disabled={isDisable} value={item.content}/> :
-          item.content
+          <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+          item.TaskName
         }
       </td>
       <td style={{width: '14%'}}><Rating initialRating={0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
@@ -420,9 +768,85 @@ renderEvalution = (name, data, isDisable) => {
       </td>
     </tr>
     })
+    
     :
     null
   }
+
+  submitEvalution = () => {
+    const { t } = this.props
+    const err = this.verifyInputs()
+
+    this.setDisabledSubmitButton(true)
+    if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
+        this.setDisabledSubmitButton(false)
+        return
+    }
+    const candidateInfos = this.state.data;
+    const evalution = candidateInfos.evalution;
+    const newEvalution = candidateInfos.newEvalution;
+    const totalEvalution = [...evalution, ...newEvalution.filter(item => !item.isDeleted).map(item => {item.id = null; return item})];
+    const result = totalEvalution.map( item => {
+      return {
+        id: item.id,
+        TaskName: item.TaskName,
+        SelfAssessmentScore: item.SelfAssessmentScore,
+        ManagementScore: item.ManagementScore,
+        ManagementComment: item.ManagementComment || '',
+        IsEdit: item.canEdit,
+        IsDeleted: item.isDeleted
+      }
+    })
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_REQUEST_URL}api/taskAssements/saveTaskAssement/${this.state.id}`,
+      data: result,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+    })
+    .then(response => {
+        if (response && response.data && response.data.result) {
+            this.showStatusModal(t("RequestSent"), true)
+            this.setDisabledSubmitButton(false)
+        }
+    })
+    .catch(response => {
+        this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.setDisabledSubmitButton(false)
+    })
+  }
+
+  setDisabledSubmitButton(status) {
+    this.setState({ disabledSubmitButton: status });
+  }
+
+  submit() {
+    const { t } = this.props
+    const err = this.verifyInputs()
+
+    this.setDisabledSubmitButton(true)
+    if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
+        this.setDisabledSubmitButton(false)
+        return
+    }
+
+    const bodyFormData = this.prepareDataToSubmit(this.state.data);
+    axios({
+        method: 'POST',
+        url:`${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation1`,
+        data: bodyFormData,
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+    })
+        .then(response => {
+            if (response && response.data && response.data.result) {
+                this.showStatusModal(t("RequestSent"), true)
+                this.setDisabledSubmitButton(false)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        })
+}
   
 
   render() {
@@ -430,29 +854,31 @@ renderEvalution = (name, data, isDisable) => {
     const showComponent = this.state.showComponent;
     const disableComponent = this.state.disableComponent;
     const data = this.state.data;
-    console.log('render');
-    console.log(disableComponent.employeeSide + " _ " + showComponent.JobEditing);
     return (
       <div className="registration-section">
 
       <div className="leave-of-absence evalution">
-        <div className="heading">
-          {showComponent.JobEditing ? 'aaa'  : 'Test'}
+        <div className="eval-heading">
+            BIÊN BẢN ĐÁNH GIÁ GIAO KẾT / GIA HẠN HĐLĐ 
+        </div>
+
+        <div className="sub-heading">
+          {showComponent.employeeSide ? '' : '(Quản lý trực tiếp vui lòng nhập các yêu cầu công việc vào phần thông tin đánh giá)'}
         </div>
         <h5>THÔNG TIN NGƯỜI ĐƯỢC ĐÁNH GIÁ</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
              {t("FullName")}
-              <div className="detail">{data.employeeInfo.name || ""}</div>
+              <div className="detail">{data.employeeInfo.fullName || ""}</div>
             </div>
             <div className="col-4">
               {t("Title")}
-              <div className="detail">{data.employeeInfo.title || ""}</div>
+              <div className="detail">{data.employeeInfo.positionName || ""}</div>
             </div>
             <div className="col-4">
               {t('DepartmentManage')}
-              <div className="detail">{data.employeeInfo.block || ""}</div>
+              <div className="detail">{data.employeeInfo.departmentName || ""}</div>
             </div>
           </div>
           <div className="row">
@@ -462,7 +888,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
             <div className="col-4">
               {"Ngày hết hạn HĐTV/HĐLĐ"}
-              <div className="detail">{data.employeeInfo.contractExpire ? moment(data.employeeInfo.contractExpire).format("DD/MM/YYYY") : '' }</div>
+              <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : '' }</div>
             </div>
           </div>
         </div>
@@ -506,11 +932,11 @@ renderEvalution = (name, data, isDisable) => {
                           if(item.isDeleted)
                             return null;
                           return <tr key = {index}>
-                          <td style={{width: '22%'}}>{item.content}</td>
-                          <td style={{width: '16%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'selfRate')} initialRating={item.selfRate || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={!disableComponent.employeeSide}/></td>
-                          <td style={{width: '22%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'bossRate')} initialRating={item.bossRate || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={!disableComponent.qlttSide}/></td>
+                          <td style={{width: '22%'}}>{item.TaskName}</td>
+                          <td style={{width: '16%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.employeeSide}/></td>
+                          <td style={{width: '22%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'ManagementScore')} initialRating={item.ManagementScore || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.qlttSide}/></td>
                           <td style={{width: '40%'}}>
-                            <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, 'evalution', item.id, 'note')}  disabled={!disableComponent.qlttSide} value={item.note}/>
+                            <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, 'evalution', item.id, 'ManagementComment')}  disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={item.ManagementComment}/>
                           </td>
                         </tr>
                         })
@@ -521,8 +947,8 @@ renderEvalution = (name, data, isDisable) => {
                     <thead>
                       <tr>
                         <th style={{width: '22%'}}>Tổng điểm</th>
-                        <th style={{width: '16%'}}>{data.selfRateTotal}</th>
-                        <th style={{width: '22%'}}>{data.bossRateTotal}</th>
+                        <th style={{width: '16%'}}>{data.SelfAssessmentScoreTotal}</th>
+                        <th style={{width: '22%'}}>{data.ManagementScoreTotal}</th>
                         <th style={{width: '40%'}}></th>
                       </tr>
                     </thead>
@@ -541,17 +967,17 @@ renderEvalution = (name, data, isDisable) => {
                     </thead>
                     <tbody>
                       {
-                        this.renderEvalution('evalution', data.evalution, !disableComponent.editable)
+                        this.renderEvalution('evalution', data.evalution, disableComponent.disableAll || !disableComponent.editable)
                       }
                       {
-                        this.renderEvalution('newEvalution', data.newEvalution, !disableComponent.editable)
+                        this.renderEvalution('newEvalution', data.newEvalution, disableComponent.disableAll || !disableComponent.editable)
                       }
                     </tbody>
                   </table>
                   </>
                 }
-                
               </div>
+              {this.state.errors && this.state.errors['rating'] ? <p className="text-danger">{this.state.errors['rating']}</p> : null}
             </div>
           </div>
           {
@@ -576,15 +1002,15 @@ renderEvalution = (name, data, isDisable) => {
           <div className="row">
             <div className="col-6">
               Điểm mạnh
-              <ResizableTextarea disabled={!disableComponent.employeeSide} value={data.selfEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'strong')} className="mv-10"/>
+              <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
               Điểm cần cải thiên
-              <ResizableTextarea disabled={!disableComponent.employeeSide} value={data.selfEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'weak')} className="mv-10"/>
+              <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'weak')} className="mv-10"/>
             </div>
             <div className="col-12">
               Ý kiến đề xuất của CBNV
-              <ResizableTextarea disabled={!disableComponent.employeeSide} value={data.selfEvalution.opinion} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'opinion')} className="mv-10"/>
+              <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.opinion} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'opinion')} className="mv-10"/>
             </div>
           </div>
         </div>
@@ -595,11 +1021,11 @@ renderEvalution = (name, data, isDisable) => {
           <div className="row">
             <div className="col-6">
               Điểm mạnh
-              <ResizableTextarea disabled={!disableComponent.qlttSide} value={data.bossEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'strong')} className="mv-10"/>
+              <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
               Điểm cần cải thiên
-              <ResizableTextarea disabled={!disableComponent.qlttSide} value={data.bossEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'weak')} className="mv-10"/>
+              <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'weak')} className="mv-10"/>
             </div>
           </div>
         </div>
@@ -716,7 +1142,8 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={!disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
             <div className="box shadow cbnv">
@@ -730,7 +1157,8 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={!disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
           <>
@@ -742,23 +1170,26 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row">
                 <div className="col-4">
                   Kết quả
-                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                  {this.state.errors && this.state.errors['result'] ? <p className="text-danger">{this.state.errors['result']}</p> : null}
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-4">
                   Loại hợp đồng lao động
-                  <Select  placeholder={"Lựa chọn kết quả"} options={this.contractTypeOptions} isDisabled={!disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                  {this.state.errors && this.state.errors['contract'] ? <p className="text-danger">{this.state.errors['contract']}</p> : null}
                   {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
                 </div>
                 <div className="col-4">
                   Thời hạn
                   <ResizableTextarea disabled={true} className="mv-10"/>
+                  {this.state.errors && this.state.errors['expire'] ? <p className="text-danger">{this.state.errors['expire']}</p> : null}
                 </div>
               </div>
               <div className="row">
@@ -768,7 +1199,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div> */}
                 <div className="col-12">
                   Đề xuất khác
-                  <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} disabled={!disableComponent.qlttSide} className="mv-10"/>
+                  <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
                 </div>
               </div>
             </div>
@@ -821,23 +1252,69 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={!disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
           </>
         }
-        
-
-
-        
-
+        <ul className="list-inline">
+            {data.cvs.map((file, index) => {
+                return <li className="list-inline-item" key={index}>
+                    <span className="file-name">
+                        <a title={file.name} href={file.link} download={file.name} target="_blank">{file.name}</a>
+                        {showComponent.employeeSide ? 
+                        <i className="fa fa-times remove" aria-hidden="true" onClick={e => this.removeFiles(file.id, index)}></i> 
+                        : null }
+                    </span>
+                </li>
+            })}
+        </ul>
+        {this.state.errors && this.state.errors['cvs'] ? <p className="text-danger">{this.state.errors['cvs']}</p> : null}
+        {disableComponent.disableAll ? null :
         <div className="bottom">
             <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-primary float-right ml-3 shadow" disabled={this.props.disabledSubmitButton}>
-                    {!this.props.disabledSubmitButton ?
+                {
+                  showComponent.JobEditing ?
+                  <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={this.submitEvalution.bind(this)} disabled={this.state.disabledSubmitButton}>
+                    {!this.state.disabledSubmitButton ?
+                        <>
+                            {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
+                            </i> */}
+                        <Image src={IconSave} className="ic-action ic-reset mr-2" />
+                        </> :
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="mr-2"
+                        />}
+                        {'Lưu'}
+                </button> :
+                <>
+                  {showComponent.bossSide ? 
+                  <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
+                      {!this.state.disabledSubmitButton ?
+                          <>
+                              <i className="fa fa-paper-plane mr-2" aria-hidden="true">
+                              </i>
+                          </> :
+                          <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                              className="mr-2"
+                          />}
+                          {'Phê duyệt'}
+                  </button> : 
+                  <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
+                    {!this.state.disabledSubmitButton ?
                         <>
                             <i className="fa fa-paper-plane mr-2" aria-hidden="true">
                             </i>
-                        
                         </> :
                         <Spinner
                             as="span"
@@ -849,8 +1326,21 @@ renderEvalution = (name, data, isDisable) => {
                         />}
                         {t('Send')}
                 </button>
+                  }
+                  {showComponent.employeeSide ? 
+                  <>
+                  <input type="file" hidden  type="file" id="i_files" name="i_files" onChange={this.handleChangeFileInput} multiple />
+                  <label htmlFor="i_files" className="btn btn-light float-right shadow">
+                    <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
+                  </label>
+                  </> 
+                  : null }
+                </>
+                }
+
             </div>
         </div>
+        }
       </div>
       </div>
     )
