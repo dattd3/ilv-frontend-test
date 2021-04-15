@@ -108,7 +108,7 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         </div>
         <h5>{t("InOutChangeRequestInfo")}</h5>
-        {this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.inOutTimeUpdate.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
             <div className="row">
@@ -163,20 +163,21 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-
+        <h5>Thông tin CBQL thẩm định</h5>
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.requestInfo.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
-          this.getTypeDetail() === "request" ?
+           this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
-            </> :
-            <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.requestInfo.processStatusId].label)}</span>
-              {
-                this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-                  <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
-              }
-            </div>
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.processStatusId} hrComment={this.props.inOutTimeUpdate.approverComment} />
+            </> : null
+            // <div className="block-status">
+            //   <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+            //   {
+            //     this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
+            //       <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
+            //   }
+            // </div>
         }
 
         {
@@ -193,12 +194,27 @@ class InOutUpdateDetailComponent extends React.Component {
             </>
             : null
         }
-
-        { this.props.inOutTimeUpdate.requestInfo.processStatusId === 8 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 5 || this.props.inOutTimeUpdate.requestInfo.processStatusId === 2 ? <DetailButtonComponent
-          dataToSap={this.dataToSap()}
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{(this.props.action == "consent" && this.props.inOutTimeUpdate.processStatusId == 5 && this.props.inOutTimeUpdate.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+        </div>
+        { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? <DetailButtonComponent
+          dataToSap={
+            [
+              {
+                "id": this.props.inOutTimeUpdate.id,
+                "requestTypeId": Constants.IN_OUT_TIME_UPDATE,
+                "sub": [
+                  {
+                    "id": this.props.inOutTimeUpdate.id,
+                  }
+                ]
+              }
+            ]
+          } //this.dataToSap()
           id={this.props.inOutTimeUpdate.id}
-          isShowRevocationOfApproval={this.props.inOutTimeUpdate.requestInfo.processStatusId === 2}
-          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.requestInfo.processStatusId === 6}
+          isShowRevocationOfApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_APPROVED}
+          isShowConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING && this.props.inOutTimeUpdate.appraiser}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
           action={this.props.action}
