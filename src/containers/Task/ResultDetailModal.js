@@ -43,7 +43,7 @@ class ResultDetailModal extends React.Component {
                         <>
                             <table className="table table-sm">
                                 <thead>
-                                    <tr class="row">
+                                    <tr className="row">
                                         <th className="col-3">{t("RequestNo")}</th>
                                         <th className="col-3 text-center">{t("Status")}</th>
                                         <th className="col-6">{t("Reason")}</th>

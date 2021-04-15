@@ -477,7 +477,6 @@ class RequestTaskList extends React.Component {
           }, () => {
               if(this.state.query)
               {
-                  debugger
                 data = cloneTask.filter(x => x.id.includes(this.state.query));
               }
               else if (this.state.statusSelected){
@@ -494,7 +493,7 @@ class RequestTaskList extends React.Component {
     render() {
         const recordPerPage = 10
         const { t } = this.props
-        let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected ? this.state.tasks : this.props.tasks
+        let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
         let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
