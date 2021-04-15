@@ -39,7 +39,7 @@ class RequestComponent extends React.Component {
                 if(element.requestTypeId == 5 || element.requestTypeId == 4)
                 {
                   e.processStatusId = element.processStatusId
-                  e.id = element.id
+                  e.id = element.id.toString()
                   // e.timesheets.forEach(ts => {
                     
                   // })

@@ -91,7 +91,7 @@ class SubstitutionDetailComponent extends React.Component {
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
-        {this.props.substitution.requestInfo.filter(t => t.isEdit).map((timesheet, index) => {
+        {this.props.substitution.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow cbnv" key={index}>
             <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
