@@ -814,5 +814,9 @@
   "BirthCity": "Birth City",
   "Recalled": "Recalled",
   "successfulRecallReq": "Successfully submitted recall request",
-  "successfulCancelReq": "Successfully cancel request"
+  "successfulCancelReq": "Successfully cancel request",
+  "successfulApprvalReq": "Successfully approve request",
+  "successfulDisApprovalReq": "Successfully disapprove request",
+  "successfulConsentReq": "Successfully consent request",
+  "successfulRejectConsentReq": "Successfully reject request"
 }
