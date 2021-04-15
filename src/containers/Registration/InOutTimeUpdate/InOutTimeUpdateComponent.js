@@ -36,7 +36,7 @@ class InOutTimeUpdateComponent extends React.Component {
   componentDidMount() {
     if (this.props.inOutTimeUpdate) {
       this.setState({
-        isEdit: true,
+        isEdited: true,
         id: this.props.inOutTimeUpdate.id,
         startDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
         endDate: moment(this.props.inOutTimeUpdate.userProfileInfo.startDate).toDate(),
@@ -123,7 +123,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { t } = this.props
     let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
-      if (timesheet.isEdit) {
+      if (timesheet.isEdited) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
@@ -169,7 +169,7 @@ class InOutTimeUpdateComponent extends React.Component {
       return
     }
     
-    const timesheets = [...this.state.timesheets].filter(item => item.isEdit)
+    const timesheets = [...this.state.timesheets].filter(item => item.isEdited)
     const approver = this.state.approver ? { ...this.state.approver } : null
     const appraiser = { ...this.state.appraiser }
     
@@ -235,7 +235,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
     axios({
       method: 'POST',
-      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: this.state.isEdited && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
@@ -260,7 +260,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    this.state.timesheets[index].isEdit = !this.state.timesheets[index].isEdit
+    this.state.timesheets[index].isEdited = !this.state.timesheets[index].isEdited
     this.setState({
       timesheets: [...this.state.timesheets]
     })
@@ -289,7 +289,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
           const timesheets = dataSort.map(ts => {
             return Object.assign({
-              isEdit: false,
+              isEdited: false,
               note: null,
               error: {},
               start_time1_fact_update: null,
@@ -418,22 +418,22 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="row">
               <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
-                {!timesheet.isEdit ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
-                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
+                {!timesheet.isEdited ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
+                {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
                   <p>{t("StartTime")} 2: <b>{this.printTimeFormat(timesheet.start_time2_fact)}</b> | {t("EndTime")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></p>
                   : null}
-                {!timesheet.isEdit && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
+                {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time3_fact) || !this.isNullCustomize(timesheet.end_time3_fact)) ?
                   <p>{t("StartTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.start_time3_fact)}</b> | {t("EndTime")} 3 (OT): <b>{this.printTimeFormat(timesheet.end_time3_fact)}</b></p>
                   : null}
 
               </div>
               <div className="col-2 pr-0 pl-0">
-                {!timesheet.isEdit
+                {!timesheet.isEdited
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
-            {timesheet.isEdit ? <div className="row block-time-item-edit">
+            {timesheet.isEdited ? <div className="row block-time-item-edit">
               <div className="col-6">
                 <div className="box-time">
                   <p className="text-center">{t('ActualTime')}</p>
@@ -607,7 +607,7 @@ class InOutTimeUpdateComponent extends React.Component {
               </div>
             </div> : null}
 
-            {timesheet.isEdit ? <div className="row block-note-item-edit">
+            {timesheet.isEdited ? <div className="row block-note-item-edit">
               <div className="col-12 pb-2">
                 <p className="title">{t('ReasonModifyInOut')}</p>
                 <div>
@@ -619,9 +619,9 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? 
         <>
-          <AssesserComponent isEdit={t.isEdit} errors={this.state.errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+          <AssesserComponent isEdit={t.isEdited} errors={this.state.errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
           <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
         </>
           : null}
@@ -638,13 +638,13 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdit).length > 0 && !["V070", "V077", "V073"].includes(localStorage.getItem("companyCode"))) ?
+          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
+        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
       </div>
     )
   }
