@@ -24,10 +24,12 @@ class RequestComponent extends React.Component {
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
+        // debugger
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered = res.data.data.requests
           let taskList = [];
+          
           tasksOrdered.forEach(element => {
             element.requestInfo.forEach(e => {
                 e.user = element.user
