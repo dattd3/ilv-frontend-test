@@ -160,18 +160,18 @@ class SubstitutionDetailComponent extends React.Component {
         <h5>Thông tin CBQL thẩm định</h5>
         <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.requestInfo.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
         {
-          this.getTypeDetail() === "request" ?
+          this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) ?
           <>
-          <h5>Thông tin phê duyệt</h5>
-          <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.requestInfo.processStatusId} hrComment={this.props.substitution.hrComment} />
-          </> : 
-          <div className="block-status">
-            <span className={`status ${Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.substitution.requestInfo.processStatusId].label)}</span>
-            {
-              this.props.substitution.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-              <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
-            }
-          </div>
+            <h5>Thông tin phê duyệt</h5>
+            <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
+          </> : null
+          // <div className="block-status">
+          //   <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.substitution.processStatusId].label)}</span>
+          //   {
+          //     this.props.substitution.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
+          //     <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
+          //   }
+          // </div>
         }
 
         {
@@ -188,12 +188,27 @@ class SubstitutionDetailComponent extends React.Component {
           </>
           : null
         }
-
-        {this.props.substitution.requestInfo.processStatusId == 8 || this.props.substitution.requestInfo.processStatusId == 5 || this.props.substitution.requestInfo.processStatusId == 2 ? <DetailButtonComponent dataToSap={this.getData()}
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{(this.props.action == "consent" && this.props.substitution.processStatusId == 5 && this.props.substitution.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.substitution.processStatusId].label)}</span>
+        </div>
+        { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 ) ? <DetailButtonComponent 
+          dataToSap={
+            [
+              {
+                "id": this.props.substitution.id,
+                "requestTypeId": Constants.SUBSTITUTION,
+                "sub": [
+                  {
+                    "id": this.props.substitution.id,
+                  }
+                ]
+              }
+            ]
+          } //this.getData()
           id={this.props.substitution.id}
-          isShowRevocationOfApproval={this.props.substitution.requestInfo.processStatusId == 2}
-          isShowEvictionRequest={this.props.substitution.requestInfo.processStatusId == 0}
-          isShowRevocationOfConsent = {this.props.substitution.requestInfo.processStatusId === 6}
+          isShowRevocationOfApproval={this.props.substitution.processStatusId === Constants.STATUS_APPROVED}
+          isShowConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING && this.props.substitution.appraiser}
           urlName={'requestsubstitution'}
           requestTypeId={requestTypeId}
           hiddenRevocationOfApprovalButton={1}
