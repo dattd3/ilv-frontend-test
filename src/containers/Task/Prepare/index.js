@@ -82,7 +82,7 @@ class RequestComponent extends React.Component {
     axios.all([requestSupport, requestStaffContract]).then(axios.spread((...responses) => {
       if (this._isMounted) {
         this.prepareListDocumentRequest(responses[0], true);
-        //this.prepareListDocumentRequest(responses[1], false);
+        this.prepareListDocumentRequest(responses[1], false);
       }
     }))
 }
@@ -156,7 +156,7 @@ class RequestComponent extends React.Component {
     })
   }
   prepareListDocumentRequest = (res, isReset) => {
-    
+
     if (!res || !res.data || !res.data.data) {
         return []
     }
@@ -422,10 +422,10 @@ class RequestComponent extends React.Component {
                                     {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">Chuẩn bị công cụ dụng cụ <br/> (Phòng làm việc, Bàn/ghế/tủ, máy tính, đồng phục)</th> : null}
                                     {this.state.isShowAccount ? <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, máy in</th> : null}
                                     {this.state.isShowVoucher? <th scope="col" className="col-devices text-center">Lấy dấu vân tay, phiếu ăn, vé gửi xe</th> : null}
-                                    {this.state.isShowDonitory? <th scope="col" className="col-devices text-center">Ký túc xá (Áp dụng với Phú Quốc,Nha Trang, Đà Nẵng)</th> : null}                                
+                                    {this.state.isShowDonitory? <th scope="col" className="col-devices text-center">Ký túc xá (Áp dụng với Phú Quốc,Nha Trang, Đà Nẵng)</th> : null}
                                   </>
                                 }
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -434,9 +434,9 @@ class RequestComponent extends React.Component {
                                 return <tr key={index}>
                                 <td className="col-code sticky-col text-center">
                                   {
-                                    item.requestCode ? 
+                                    item.requestCode ?
                                     <a href={`/evaluation/${item.requestCode}/edit`}>{item.employeeNo}</a> :
-                                    item.employeeNo 
+                                    item.employeeNo
                                   }
                                 </td>
                                 <td className="col-name sticky-col text-center">{item.name}</td>
@@ -466,7 +466,7 @@ class RequestComponent extends React.Component {
                                     {this.renderActionView(this.state.isShowDonitory, item.employeeNo, item.item4, 'item4')}
                                   </>
                                 }
-                                
+
                             </tr>
                             })
                         }
