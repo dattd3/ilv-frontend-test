@@ -40,9 +40,7 @@ class RequestComponent extends React.Component {
                 {
                   e.processStatusId = element.processStatusId
                   e.id = element.id.toString()
-                  // e.timesheets.forEach(ts => {
-                    
-                  // })
+                  e.startDate = e.date
                 }
                 taskList.push(e);
             })
@@ -87,9 +85,6 @@ class RequestComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        {/* <div className="block-title">
-          <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-        </div> */}
         <RequestTaskList tasks={this.state.tasks} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
       <LoadingSpinner />

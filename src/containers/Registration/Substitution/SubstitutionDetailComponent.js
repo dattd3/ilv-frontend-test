@@ -165,13 +165,6 @@ class SubstitutionDetailComponent extends React.Component {
             <h5>Thông tin phê duyệt</h5>
             <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
           </> : null
-          // <div className="block-status">
-          //   <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.substitution.processStatusId].label)}</span>
-          //   {
-          //     this.props.substitution.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-          //     <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.substitution.hrComment || ""}</span></span> : null
-          //   }
-          // </div>
         }
 
         {
@@ -191,7 +184,7 @@ class SubstitutionDetailComponent extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{(this.props.action == "consent" && this.props.substitution.processStatusId == 5 && this.props.substitution.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.substitution.processStatusId].label)}</span>
         </div>
-        { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 ) ? <DetailButtonComponent 
+        { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.substitution.processStatusId === 2 ) ? <DetailButtonComponent 
           dataToSap={
             [
               {
