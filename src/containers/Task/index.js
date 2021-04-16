@@ -41,9 +41,7 @@ class Task extends React.Component {
                     {
                       e.processStatusId = element.processStatusId
                       e.id = element.id.toString()
-                      // e.timesheets.forEach(ts => {
-                       
-                      // })
+                      e.startDate = e.date
                     }
                     taskList.push(e);
                 })
