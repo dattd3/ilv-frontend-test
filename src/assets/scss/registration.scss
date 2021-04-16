@@ -393,6 +393,11 @@
             margin: 0;
         }
     }
+    .react-datepicker-wrapper{
+        [class$="-container"] {
+            margin: 10px 0 0 0 ;
+        }   
+    }
     .document{
         padding: 12px !important;
         span{
