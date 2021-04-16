@@ -16,16 +16,6 @@ class TaskDetailModal extends React.Component {
         }
     }
   
-    getTypeDetail = () => {
-      const pathName = window.location.pathname;
-      const pathNameArr = pathName.split('/');
-      return pathNameArr[pathNameArr.length - 1];
-    }
-  
-    evictionRequest = (taskId) => {
-      alert(taskId)
-    }
-  
     componentDidMount() {
       let config = {
         headers: {

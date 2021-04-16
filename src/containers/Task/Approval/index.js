@@ -49,9 +49,9 @@ class ApprovalComponent extends React.Component {
     ]
     return (
       <>
-      <div className="task-section">
-        <TaskList tasks={this.props.tasks} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
-      </div>
+        <div className="task-section">
+          <TaskList tasks={this.props.tasks} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
+        </div>
       </>
     )
   }
