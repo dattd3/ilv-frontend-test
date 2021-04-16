@@ -162,11 +162,11 @@ class TaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page ? `/registration/${id}/1/${this.props.page}` : `/registration/${id}/1/request`
     }
 
     getLinkRegistration(id,childId) {
-        return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
+        return this.props.page ? `/registration/${id}/${childId}/${this.props.page}` : `/registration/${id}/${childId}/request`
     }
 
     getTaskCode = code => {
@@ -380,8 +380,8 @@ class TaskList extends React.Component {
                 <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
-                            <tr className="text-center">
-                                <th scope="col" className="check-box">
+                            <tr>
+                                <th scope="col" className="check-box text-center">
                                     <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
                                 </th>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
@@ -393,13 +393,13 @@ class TaskList extends React.Component {
                                 <th scope="col" className="user-title">{t("Title")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
-                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 {
                                     this.props.page == "approval" ?
                                         <th scope="col" className="appraiser">{t("Consenter")}</th>
                                     : null
                                 }
-                                <th scope="col" className="status">{t("Status")}</th>
+                                <th scope="col" className="status text-center">{t("Status")}</th>
                                 {
                                     this.props.page != "consent" ?
                                         <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
@@ -421,23 +421,24 @@ class TaskList extends React.Component {
                                             <tr key={index}>
                                                 {
                                                     ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
-                                                    <td scope="col" className="check-box">
+                                                    <td scope="col" className="check-bo text-center">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id}/>
                                                     </td>
-                                                    : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
+                                                    : <td scope="col" className="check-box text-center"><input type="checkbox" disabled/></td>
                                                 }
-                                                <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
+                                                <td className="code" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
+                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request">{child.user.fullName}</td> : null}
                                                 <td className="user-title">{child.user.jobTitle}</td>
-                                                <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
-                                                <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
+                                                <td className="request-type">{child.requestType.name}</td>
+                                                <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
                                                     this.props.page == "approval" ?
                                                         <td className="appraiser text-center">{child.appraiser?.fullname}</td>
                                                     :null
                                                 }
-                                                <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
                                                 {
                                                     this.props.page != "consent" ?
                                                     <td className="tool">
