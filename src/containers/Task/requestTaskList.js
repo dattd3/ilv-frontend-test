@@ -29,12 +29,10 @@ class RequestTaskList extends React.Component {
         this.state = {
             tasks: [],
             taskChecked: [],
-            dataToModalConfirm: null,
             isShowModalConfirm: false,
             modalTitle: "",
             modalMessage: "",
             typeRequest: 1,
-            messageModalConfirm: "",
             pageNumber: 1,
             taskId: null,
             requestUrl: "",

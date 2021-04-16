@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
-// import RequestTaskList from '../requestTaskList';
 import ResultModal from '../../Registration/ResultModal'
 
 
@@ -41,9 +40,7 @@ class ConsentComponent extends React.Component {
                 {
                   e.processStatusId = element.processStatusId
                   e.id = element.id.toString()
-                  // e.timesheets.forEach(ts => {
-                    
-                  // })
+                  e.startDate = e.date
                 }
                 taskList.push(e);
             })
@@ -69,10 +66,9 @@ class ConsentComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <>
-      {/* <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} /> */}
-      <div className="task-section">
-        <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>       
-      </div>
+        <div className="task-section">
+          <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>       
+        </div>
       </> : 
       <LoadingSpinner />
     )
