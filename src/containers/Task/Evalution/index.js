@@ -54,7 +54,7 @@ class RequestComponent extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const searchingDataToFilter = {...this.state.searchingDataToFilter}
-    searchingDataToFilter.pageIndex = Constants.PAGE_INDEX_DEFAULT
+    searchingDataToFilter.pageIndex = 1;
     this.setState({searchingDataToFilter: searchingDataToFilter})
     const params = {
       pageIndex: searchingDataToFilter.pageIndex || Constants.PAGE_INDEX_DEFAULT,
@@ -114,7 +114,7 @@ class RequestComponent extends React.Component {
             dateExpire: item.expireDate,
             approver: item.approverName,
             status: statusOption && statusOption[0] ? statusOption[0].label : '',
-            canRecall: item.status == 10 ? true : false
+            canRecall: item.status < 11 ? true : false
         }
     });
 
@@ -143,6 +143,41 @@ class RequestComponent extends React.Component {
 
     this.fetchCandidateData(params)
 }
+  recallRequest = (taskId) => {
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/recallvaluation?idDisplay=${taskId}`, config)
+    .then(res => {
+        if (this._isMounted) {
+          const code = res.data.result.code;
+          if (code != "000000" ) {
+            this.handleShowResultModal(this.props.t("Notification"), 'Thu hồi không thành công !!', false);
+          } else {
+            this.handleShowResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true);
+          }
+        }
+    })
+    .catch(err => {
+        if (this._isMounted) {
+            this.handleShowResultModal(this.props.t("Notification"), this.props.t("Error"), false);    
+        }
+    })
+  }
+
+  handleShowResultModal = (title, message, status) => {
+    this.setState({modal: {
+        ...this.state.modal,
+        isShowStatusModal: true,
+        modalTitle: title,
+        textContentStatusModal: message,
+        isSuccess: status 
+      }
+    });
+  }
 
   hideModalByStateName = stateName => {
     this.setState({
@@ -163,7 +198,7 @@ class RequestComponent extends React.Component {
     const total = listCandidate && listCandidate.total || 0
     return (
       <>
-      <ResultModal show={modal.isShowStatusModal} title="Thông báo" message={modal.textContentStatusModal} isSuccess={modal.isSuccessStatusModal} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
+      <ResultModal show={modal.isShowStatusModal} title={modal.modalTitle} message={modal.textContentStatusModal} isSuccess={modal.isSuccess} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
       {this.state.dataResponse ?
       <>
       <div className="task-section">
@@ -195,7 +230,7 @@ class RequestComponent extends React.Component {
                                 <td className="col-unit text-center">{item.status}</td>
                                 <td className="col-code text-center">
                                     {
-                                        item.canRecall ? <Image src={IconRecall}/> : null
+                                        item.canRecall ? <Image src={IconRecall} onClick={() => this.recallRequest(item.taskId)}/> : null
                                     }                                    
                                 </td>
                             </tr>

@@ -78,7 +78,7 @@ class RequestComponent extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const searchingDataToFilter = {...this.state.searchingDataToFilter}
-    searchingDataToFilter.pageIndex = Constants.PAGE_INDEX_DEFAULT
+    searchingDataToFilter.pageIndex = 1
     this.setState({searchingDataToFilter: searchingDataToFilter})
     const params = {
       pageIndex: searchingDataToFilter.pageIndex || Constants.PAGE_INDEX_DEFAULT,
@@ -104,15 +104,17 @@ class RequestComponent extends React.Component {
         },
         params: params
     }
+    const SupportEndpoint = `${process.env.REACT_APP_HRDX_REQUEST_API_URL}api/managementPoints/listPreparingOnboardCandidate`;
+    const StaffContractEndpoint = `${process.env.REACT_APP_REQUEST_URL}StaffContract/subordinate`;
+    const requestSupport = axios.get(SupportEndpoint, config);
+    const requestStaffContract = axios.get(StaffContractEndpoint, config);
 
-    axios.get(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}api/managementPoints/listPreparingOnboardCandidate`, config)
-    .then(res => {
-        if (this._isMounted) {
-          if (res && res.code != Constants.API_ERROR_CODE) {
-            this.prepareListDocumentRequest(res);
-          }
-        }
-    })
+    axios.all([requestSupport, requestStaffContract]).then(axios.spread((...responses) => {
+      if (this._isMounted) {
+        this.prepareListDocumentRequest(responses[0], true);
+        this.prepareListDocumentRequest(responses[1], false);
+      }
+    }))
 }
 
   prepareDatatoSubmit = (data) => {
@@ -140,7 +142,7 @@ class RequestComponent extends React.Component {
       managerDormitoryIndicator: item.dormitory.isEditable
     }))
   }
-  prepareListDocumentRequest = res => {
+  prepareListDocumentRequest = (res, isReset) => {
     if (!res || !res.data || !res.data.data || res.data.data.lstManagementPoint.length == 0) {
         return []
     }
@@ -167,6 +169,7 @@ class RequestComponent extends React.Component {
             rank: item.positionName || '',
             startWork: item.recruitingDate || '',
             timeExpire: item.expireDate || '',
+            requestCode: item.requestCode,
             devices: {
                 status: item.managerToolStatus ,
                 note: item.managerToolDesc || '',
@@ -191,7 +194,7 @@ class RequestComponent extends React.Component {
     });
 
     let result = {
-        data: listCandidatesRemote,
+        data: isReset ? listCandidatesRemote : [...this.state.listCandidate.data, ...listCandidatesRemote],
         total:res.data.data.totalRecord || this.state.searchingDataToFilter.pageSize
     }
     this.setState({modal: {
@@ -359,7 +362,13 @@ class RequestComponent extends React.Component {
                         {
                             (listCandidate && listCandidate.data || []).map( (item, index) => {
                                 return <tr key={index}>
-                                <td className="col-code text-center">{item.employeeNo}</td>
+                                <td className="col-code text-center">
+                                  {
+                                    item.requestCode ? 
+                                    <a href={`/evaluation/${item.requestCode}/request`}>{item.employeeNo}</a> :
+                                    item.employeeNo 
+                                  }
+                                </td>
                                 <td className="col-name text-center">{item.name}</td>
                                 <td className="col-region text-center">{item.region}</td>
                                 <td className="col-unit text-center">{item.unit}</td>

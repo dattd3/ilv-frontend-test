@@ -16,6 +16,9 @@ import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import Rating from 'react-rating';
 import _, { debounce } from 'lodash'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { vi, enUS } from 'date-fns/locale'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -156,33 +159,36 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   checkAuthorize = () => {
-    const currentEmployeeNo = localStorage.getItem('employeeNo');
+    const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
     let shouldDisable = false;
     switch(data.processStatus) {
       case 9: 
-        if(!data.employeeInfo || !data.employeeInfo.employeeNo || data.employeeInfo.employeeNo != currentEmployeeNo){
+        if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail != currentEmployeeNo){
           shouldDisable = true;
         }
         break;
       case 10: 
-        if((!data.nguoidanhgia || data.nguoidanhgia.employeeNo != currentEmployeeNo)){
+        if((!data.nguoidanhgia || data.nguoidanhgia.employeeEmail != currentEmployeeNo)){
           shouldDisable = true;
         }
         break;
       case 11: 
-        if((!data.qltt || data.qltt.employeeNo != currentEmployeeNo)){
+        if((!data.qltt || data.qltt.employeeEmail != currentEmployeeNo)){
           shouldDisable = true;
         }
         break;
       case 13: 
-        if((!data.nguoipheduyet || data.nguoipheduyet.employeeNo != currentEmployeeNo)){
+        if((!data.nguoipheduyet || data.nguoipheduyet.employeeEmail != currentEmployeeNo)){
           shouldDisable = true;
         }
         break;
       case 14: 
         shouldDisable = true;
       break;
+    }
+    if(this.state.type == 'edit'){
+      shouldDisable = data.canAddJob ? false : true;
     }
     this.setState({
       disableComponent: {...this.employeeSetting.disableComponent, disableAll: shouldDisable}
@@ -271,14 +277,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             noidung: 'Cách chức/ Hạ chức | Trừ thưởng YTCL công việc | Bồi thưởng thiệt hại'
           }
         ],
-        documentStatus: false,
+        documentStatus: '',
         nguoidanhgia: {},
         qltt: {},
         nguoipheduyet: {},
         qlttOpinion: {
           result: {},
           contract: {},
-          expire: '',
+          endDate: '',
+          startDate: '',
           otherOption: ''
         },
         thamdinh: {
@@ -309,7 +316,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             link: 'https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip',
           }
         ],
-        
+        canAddJob: false,
         SelfAssessmentScoreTotal: 0,
         ManagementScoreTotal: 0,
       },
@@ -377,11 +384,49 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
             //this.checkAuthorize();
+            //this.getPenatiesRemote();
           });
         }
       }
     }).catch(error => {})
 
+  }
+
+  getPenatiesRemote = () => {
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+    
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${this.state.data.employeeInfo.employeeNo}`, config)
+    .then(res => {
+        if (res && res.data && res.data.data) {
+            const candidateInfos = {...this.state.data}
+            let userPenaltiesResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
+            userPenaltiesResult = userPenaltiesResult.map( item => {
+              let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
+              penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
+              penaltiesTitle += (item.deduction_from_bonus ? `${this.props.t("DeductionOnBehaviorAndAttitudeBonus")} | ` : '');
+              penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
+              penaltiesTitle += (item.compensation ? `${this.props.t("DeductionOnLoss")} | ` : '');
+              penaltiesTitle += (item.other ? `${this.props.t("Other")} | ` : '');
+              penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
+              return {
+                id: 1,
+                quyetdinh: item.decision_number,
+                hieuluc: moment(item.effective_date).format('DD/MM/YYYY').toString(),
+                nhomloi: item.violation_group,
+                lydo: item.disciplinary_reason,
+                noidung: penaltiesTitle
+              }
+            })
+            this.setState({ data: candidateInfos});
+        }
+    }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+    });
   }
 
  
@@ -412,20 +457,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       approverInfo: data.nguoipheduyet
     }
     let bodyFormData = new FormData();
-    bodyFormData.append('IsEdit', remoteData.isEdit);
     bodyFormData.append('staffContracts', JSON.stringify(remoteData.staffContracts));
     bodyFormData.append('lstTaskAssessments', JSON.stringify(remoteData.lstTaskAssessments));
     bodyFormData.append('additionInforEvaluations', JSON.stringify(remoteData.additionInforEvaluations));
     bodyFormData.append('requestHistorys', JSON.stringify(remoteData.requestHistorys));
     if (data.cvIdToDeleted && data.cvIdToDeleted.length > 0) {
-      bodyFormData.append('DeletedDocumentIds', JSON.stringify(data.cvIdToDeleted))
+      bodyFormData.append('deletedDocumentIds', JSON.stringify(data.cvIdToDeleted))
     }
 
     const additionalDocuments = this.getAdditionalDocuments()
 
     if (additionalDocuments.length > 0) {
         additionalDocuments.forEach(file => {
-            bodyFormData.append('AttachedFiles', file)
+            bodyFormData.append('attachedFiles', file)
         })
     }
     return bodyFormData;
@@ -434,9 +478,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   saveStateInfos = (infos) => {
     const candidateInfos = {...this.state.data}
     candidateInfos.remoteData = infos;
+    candidateInfos.canAddJob = infos.isEdit;
     //save staff contract
     if(infos.staffContracts){
       candidateInfos.employeeInfo = {
+        employeeNo: infos.staffContracts.employeeCode,
         fullName: infos.staffContracts.fullName,
         positionName: infos.staffContracts.positionName,
         departmentName: infos.staffContracts.departmentName,
@@ -465,7 +511,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       })
     }
     if(infos.lstCourse && infos.lstCourse.length > 0){
-      candidateInfos.course = infos.lstTaskAssessments.map( item => {
+      candidateInfos.course = infos.lstCourse.map( item => {
         return {
             name: item.name || '',
             status: item.status ? true : false
@@ -490,7 +536,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.fullname ?  infos.requestHistorys.supervisorInfo : {};
       candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.fullname ? infos.requestHistorys.approverInfo : {}; 
     }
-    
+    candidateInfos.documentStatus = infos.profileStatus;
     const cvs = this.prepareCVResponses(infos.attachedFiles)
     candidateInfos.cvs = cvs
     candidateInfos.cvOriginals = cvs
@@ -608,9 +654,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.value){
         errors['boss'] = '(Bắt buộc)';
       }
-      const array = ['result', 'contract'];
+      const array = ['result', 'contract', 'startDate', 'endDate'];
+      const optionFields = ['result', 'contract']
+      
       array.forEach(name => {
-        if (!this.state.data.qlttOpinion[name].value) {
+        if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
             errors[name] = '(Bắt buộc)'
         } else {
             errors[name] = null
@@ -751,8 +799,8 @@ renderEvalution = (name, data, isDisable) => {
           item.TaskName
         }
       </td>
-      <td style={{width: '14%'}}><Rating initialRating={0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
-      <td style={{width: '16%'}}><Rating initialRating={0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
+      <td style={{width: '14%'}}><Rating initialRating={0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
+      <td style={{width: '16%'}}><Rating initialRating={0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
       <td style={{width: '42%'}}>
         <ResizableTextarea disabled={true} />
       </td>
@@ -805,8 +853,13 @@ renderEvalution = (name, data, isDisable) => {
     })
     .then(response => {
         if (response && response.data && response.data.result) {
-            this.showStatusModal(t("RequestSent"), true)
-            this.setDisabledSubmitButton(false)
+            if(response.data.result.code == '000000'){
+              this.showStatusModal(t("RequestSent"), true)
+              this.setDisabledSubmitButton(false)
+              return;
+            }
+            this.showStatusModal(response.data.result.message, false)
+            this.setDisabledSubmitButton(false)    
         }
     })
     .catch(response => {
@@ -817,6 +870,20 @@ renderEvalution = (name, data, isDisable) => {
 
   setDisabledSubmitButton(status) {
     this.setState({ disabledSubmitButton: status });
+  }
+
+  handleDatePickerInputChange = (value, name, subname) => {
+    const candidateInfos = {...this.state.data}
+    if (moment(value, 'DD/MM/YYYY').isValid()) {
+        const date = moment(value).format('DD/MM/YYYY')
+        candidateInfos[name][subname] = date
+        if(subname == 'startDate' && candidateInfos[name].endDate && moment(moment(candidateInfos[name].startDate, 'DD/MM/YYYY')).isAfter(moment(candidateInfos[name].endDate, 'DD/MM/YYYY')) ){
+          candidateInfos[name].endDate = null  
+        }
+    } else {
+        candidateInfos[name][subname] = null
+    }
+    this.setState({data : candidateInfos})
   }
 
   submit() {
@@ -832,7 +899,7 @@ renderEvalution = (name, data, isDisable) => {
     const bodyFormData = this.prepareDataToSubmit(this.state.data);
     axios({
         method: 'POST',
-        url:`${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation1`,
+        url:`${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`,
         data: bodyFormData,
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
@@ -933,8 +1000,8 @@ renderEvalution = (name, data, isDisable) => {
                             return null;
                           return <tr key = {index}>
                           <td style={{width: '22%'}}>{item.TaskName}</td>
-                          <td style={{width: '16%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.employeeSide}/></td>
-                          <td style={{width: '22%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'ManagementScore')} initialRating={item.ManagementScore || 0} start={0} stop={4}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.qlttSide}/></td>
+                          <td style={{width: '16%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.employeeSide}/></td>
+                          <td style={{width: '22%'}}><Rating onChange={(rating) => this.handleRatingChangeForItem(rating, 'evalution', item.id, 'ManagementScore')} initialRating={item.ManagementScore || 0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={disableComponent.disableAll || !disableComponent.qlttSide}/></td>
                           <td style={{width: '40%'}}>
                             <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, 'evalution', item.id, 'ManagementComment')}  disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={item.ManagementComment}/>
                           </td>
@@ -981,7 +1048,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
           </div>
           {
-            showComponent.JobEditing ? 
+            showComponent.JobEditing ? disableComponent.disableAll ? null : 
             <div className="row">
               <div className="col-12">
                 <div className="buttn-addmore" onClick={() => this.addMoreEvalution()}>
@@ -1087,7 +1154,7 @@ renderEvalution = (name, data, isDisable) => {
         <div className="box shadow cbnv document">
           <div className="row">
             <div className="col-12">
-              <label>Tình trạng hồ sơ:</label> <span>{data.documentStatus? 'Đủ' : 'Thiếu'}</span>
+              <label>Tình trạng hồ sơ:</label> <span>{data.documentStatus}</span>
             </div>
           </div>
         </div>
@@ -1168,7 +1235,7 @@ renderEvalution = (name, data, isDisable) => {
                 Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
               </div>
               <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   Kết quả
                   <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
@@ -1177,7 +1244,7 @@ renderEvalution = (name, data, isDisable) => {
                   {this.state.errors && this.state.errors['result'] ? <p className="text-danger">{this.state.errors['result']}</p> : null}
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
-                <div className="col-4">
+                <div className="col-3">
                   Loại hợp đồng lao động
                   <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
@@ -1186,10 +1253,42 @@ renderEvalution = (name, data, isDisable) => {
                   {this.state.errors && this.state.errors['contract'] ? <p className="text-danger">{this.state.errors['contract']}</p> : null}
                   {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
                 </div>
-                <div className="col-4">
-                  Thời hạn
-                  <ResizableTextarea disabled={true} className="mv-10"/>
-                  {this.state.errors && this.state.errors['expire'] ? <p className="text-danger">{this.state.errors['expire']}</p> : null}
+                <div className="col-3">
+                  Ngày bắt đầu hợp đồng
+                  <DatePicker
+                    name="startDate"
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    autoComplete="off"
+                    selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                    //onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                    onChange={date => this.handleDatePickerInputChange(date, 'qlttOpinion', 'startDate')}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t('Select')}
+                    locale={t("locale")}
+                    className="form-control input" />
+                  {this.state.errors && this.state.errors['startDate'] ? <p className="text-danger">{this.state.errors['startDate']}</p> : null}
+                </div>
+                <div className="col-3">
+                  Ngày kết thúc hợp đồng
+                  <DatePicker
+                    name="startDate"
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    autoComplete="off"
+                    selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    minDate={ data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate + 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                    onChange={date => this.handleDatePickerInputChange(date, 'qlttOpinion', 'endDate')}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t('Select')}
+                    locale={t("locale")}
+                    className="form-control input" />
+                  {this.state.errors && this.state.errors['endDate'] ? <p className="text-danger">{this.state.errors['endDate']}</p> : null}
                 </div>
               </div>
               <div className="row">
@@ -1334,7 +1433,23 @@ renderEvalution = (name, data, isDisable) => {
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>
                   </> 
-                  : null }
+                  : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
+                    {!this.state.disabledSubmitButton ?
+                        <>
+                            {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
+                            </i> */}
+                        <Image src={IconSave} className="ic-action ic-reset mr-2" />
+                        </> :
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="mr-2"
+                        />}
+                        {'Lưu'}
+                    </button> : null }
                 </>
                 }
 

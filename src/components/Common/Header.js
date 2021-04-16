@@ -94,6 +94,9 @@ function Header(props) {
                             let notificationLink = (type) => {
                                 switch (type) {
                                     case 0:
+                                    case 7:
+                                    case 8:
+                                    case 9:
                                         return `/notifications/${item.id}`
                                     case 1:
                                         return `/registration/${item.userProfileHistoryId}/approval`
