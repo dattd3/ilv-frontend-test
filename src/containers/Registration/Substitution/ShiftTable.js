@@ -24,7 +24,7 @@ class ShiftTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.shifts.filter(s => s.shift_id !== 'OFF').map((shift, index) => {
+                        {this.props.shifts.map((shift, index) => { //.filter(s => s.shift_id !== 'OFF')
                             return <tr className="text-center" key={index}>
                                 <th scope="row">
                                     <div className="d-flex justify-content-center">
@@ -33,8 +33,8 @@ class ShiftTable extends React.Component {
                                 </th>
                                 <td>{shift.shift_id}</td>
                                 <td>{shift.hours}</td>
-                                <td>{moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</td>
-                                <td>{moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</td>
+                                <td>{shift.from_time.replace("#",'') ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</td>
+                                <td>{shift.to_time.replace("#",'') ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</td>
                             </tr>
                         })}
                     </tbody>
