@@ -164,7 +164,7 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         })}
         <h5>Thông tin CBQL thẩm định</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.requestInfo.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
            this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
             <>
