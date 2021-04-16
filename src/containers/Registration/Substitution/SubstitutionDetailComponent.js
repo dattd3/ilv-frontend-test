@@ -158,7 +158,7 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
         <h5>Thông tin CBQL thẩm định</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.requestInfo.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
         {
           this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) ?
           <>
