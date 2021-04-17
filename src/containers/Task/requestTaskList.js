@@ -201,7 +201,7 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.fullname != null && statusOriginal == 5) {
+        if(taskData.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
@@ -245,7 +245,7 @@ class RequestTaskList extends React.Component {
 
     isShowDeleteButton = (status, appraiser, requestTypeId) => {
 
-        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.fullName == null) || status == 8) ? true : false;
+        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.account == null) || status == 8) ? true : false;
         
     }
     
@@ -254,7 +254,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.fullName))){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))){
                 isShow = true;
             } else {
                 isShow = false;
@@ -453,7 +453,7 @@ class RequestTaskList extends React.Component {
                 }
                 else if(value.value == 5)
                 {
-                    return req.processStatusId == 5 && req.appraiser.fullname
+                    return req.processStatusId == 5 && req.appraiser.account
                 }
                 else
                 {
