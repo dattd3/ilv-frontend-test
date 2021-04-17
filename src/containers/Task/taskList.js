@@ -422,7 +422,7 @@ class TaskList extends React.Component {
                                                 {
                                                     ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
                                                     <td scope="col" className="check-bo text-center">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id}/>
+                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
                                                     : <td scope="col" className="check-box text-center"><input type="checkbox" disabled/></td>
                                                 }
@@ -435,7 +435,7 @@ class TaskList extends React.Component {
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
                                                     this.props.page == "approval" ?
-                                                        <td className="appraiser text-center">{child.appraiser?.fullname}</td>
+                                                        <td className="appraiser text-center">{child.appraiser?.fullName}</td>
                                                     :null
                                                 }
                                                 <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
