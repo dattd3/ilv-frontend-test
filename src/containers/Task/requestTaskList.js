@@ -234,7 +234,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || status == 3)) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2)) {
                 isShow = true;
             } else {
                 isShow = false;
