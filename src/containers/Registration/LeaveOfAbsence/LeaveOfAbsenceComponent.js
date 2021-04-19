@@ -314,6 +314,17 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     this.setState({ requestInfo: newRequestInfo })
                 }
+                else {
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.totalDaysOff = this.props.t("AnErrorOccurred")
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
+                }
             }).catch(error => {
 
                 const newRequestInfo = requestInfo.map(req => {
@@ -607,8 +618,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result) {
+                if (response && response.data.data && response.data.result) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                    this.setDisabledSubmitButton(false)
+                }
+                else
+                {
+                    this.showStatusModal(t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
             })
