@@ -201,7 +201,7 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.fullname != null && statusOriginal == 5) {
+        if(taskData.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
@@ -245,7 +245,7 @@ class RequestTaskList extends React.Component {
 
     isShowDeleteButton = (status, appraiser, requestTypeId) => {
 
-        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.fullName == null) || status == 8) ? true : false;
+        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.account == null) || status == 8) ? true : false;
         
     }
     
@@ -254,7 +254,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.fullName))){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))){
                 isShow = true;
             } else {
                 isShow = false;
@@ -453,7 +453,7 @@ class RequestTaskList extends React.Component {
                 }
                 else if(value.value == 5)
                 {
-                    return req.processStatusId == 5 && req.appraiser.fullname
+                    return req.processStatusId == 5 && req.appraiser.account
                 }
                 else
                 {
@@ -588,7 +588,7 @@ class RequestTaskList extends React.Component {
                                         </td>
                                         <td className="code">{this.getTaskCode(child.id)}</td>
                                         <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</a></td>
-                                        <td className="day-off">{moment(child.startDate).format("DD/MM/YYYY")}</td>
+                                        <td className="day-off">{child.startDate}</td>
                                         <td className="break-time text-center">{totalTime}</td>
                                         <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
                                         <td className="tool">

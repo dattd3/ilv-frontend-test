@@ -8,7 +8,7 @@ function ApproverDetailComponent(props) {
     <div className="row">
       <div className="col-4">
         {props.title}
-        <div className="detail">{props.approver ? props.approver.fullname : null}</div>
+        <div className="detail">{props.approver ? props.approver.fullName : null}</div>
       </div>
       <div className="col-4">
         {t('Position')}
