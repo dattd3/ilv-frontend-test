@@ -280,8 +280,18 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ requestInfo: newRequestInfo })
                 }
+                else {
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.startTimeAndEndTime = this.props.t("AnErrorOccurred")
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
+                }
             }).catch(error => {
-
                 const newRequestInfo = requestInfo.map(req => {
                     const errors = req.errors
                     errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
@@ -522,7 +532,7 @@ class BusinessTripComponent extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
                 else {
-                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                    this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
             })
