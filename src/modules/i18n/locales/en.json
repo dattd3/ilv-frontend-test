@@ -818,5 +818,6 @@
   "successfulApprvalReq": "Successfully approve request",
   "successfulDisApprovalReq": "Successfully disapprove request",
   "successfulConsentReq": "Successfully consent request",
-  "successfulRejectConsentReq": "Successfully reject request"
+  "successfulRejectConsentReq": "Successfully reject request",
+  "AnErrorOccurred": "Something went wrong"
 }
