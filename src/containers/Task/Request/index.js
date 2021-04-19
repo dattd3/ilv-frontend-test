@@ -29,6 +29,7 @@ class RequestComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered = res.data.data.requests
           let taskList = processingDataReq(tasksOrdered)
+          // console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
