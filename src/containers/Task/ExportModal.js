@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import moment from 'moment'
 import Select from 'react-select'
 import { withTranslation } from "react-i18next"
 
@@ -13,7 +14,8 @@ class ExportModal extends React.Component {
         super();
         this.state = {
           data: {},
-          startDate: new Date(),
+          fromDate: new Date(),
+          toDate: new Date(),
           status:null
         }
     }
@@ -46,9 +48,18 @@ class ExportModal extends React.Component {
         });
       }
     }
+
     handleSelectChange(name, value) {
       this.setState({ [name]: value })
-  }
+    }
+
+    setFromDate = (date)=>{
+      this.setState({fromDate: date})
+    }
+
+    setToDate = (date)=>{
+      this.setState({toDate: date})
+    }
     render() {
         const { t } = this.props
         return (
@@ -65,25 +76,39 @@ class ExportModal extends React.Component {
                 <div className="time-area row">
                   <div className="col-6">
                     <div className="content input-container">
-                      <label>Từ ngày</label>
+                      <label className="mb-1">Từ ngày</label>
                       <label>
-                        <DatePicker selectsStart autoComplete="off" className="form-control input" placeholderText={t('Select')} /> 
+                        <DatePicker 
+                          selectsStart 
+                          autoComplete="off"
+                          dateFormat="dd/MM/yyyy"
+                          selected={ moment(this.state.fromDate, 'DD/MM/YYYY').toDate()} 
+                          onChange={date => this.setFromDate(date)} 
+                          className="form-control input" 
+                          placeholderText={t('Select')} /> 
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                       </label>
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="content input-container">
-                    <label>Đến ngày</label>
+                    <label className="mb-1">Đến ngày</label>
                       <label>
-                        <DatePicker selectsStart autoComplete="off" className="form-control input" placeholderText={t('Select')} /> 
+                        <DatePicker
+                          selectsStart 
+                          autoComplete="off"
+                          dateFormat="dd/MM/yyyy"
+                          selected={ moment(this.state.toDate, 'DD/MM/YYYY').toDate()} 
+                          onChange={date => this.setToDate(date)} 
+                          className="form-control input" 
+                          placeholderText={t('Select')}/> 
                         <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
                       </label>
                     </div>
                   </div>
                 </div> 
                 <div className="check_tatus_area w-100 mt-2">
-                <lable>Tình trạng</lable>
+                <label className="mb-1">Tình trạng</label>
                 <Select name="status" 
                    className="w-100" 
                    value={this.state.status || ""} 
@@ -100,8 +125,8 @@ class ExportModal extends React.Component {
                    })}/>                 
                 </div>
                 <div className="clearfix mt-2">
-                  <button type="button" className='btn btn-primary w-25 float-right'> Tải về</button>
-                  <button type="button" className="btn btn-secondary mr-2 w-25 float-right">Hủy</button>
+                  <button type="button" className='btn btn-primary w-25 float-right'>Tải về</button>
+                  <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>Hủy</button>
                 </div>
                 </Modal.Body>
                 </Modal>
