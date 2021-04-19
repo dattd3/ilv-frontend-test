@@ -480,7 +480,7 @@ class BusinessTripComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-        debugger
+
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
