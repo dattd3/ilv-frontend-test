@@ -104,7 +104,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             }).catch(error => {
             })
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
-            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo
+            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
             this.setState({
                 isEdit: true,

@@ -71,7 +71,7 @@ class BusinessTripComponent extends React.Component {
     componentDidMount() {
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
-            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo
+            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo[0]
             const { appraiser, approver, requestDocuments } = businessTrip
             this.setState({
                 isEdit: true,
@@ -502,6 +502,9 @@ class BusinessTripComponent extends React.Component {
             name: "Đăng ký công tác đào tạo"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
+        if (isEdit) {
+            bodyFormData.append('id', this.props.businessTrip.id)
+        }
 
         files.forEach(file => {
             bodyFormData.append('Files', file)
