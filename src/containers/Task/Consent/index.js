@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
-import ResultModal from '../../Registration/ResultModal'
+import processingDataReq from "../../Utils/Common"
 
 
 class ConsentComponent extends React.Component {
@@ -29,22 +29,8 @@ class ConsentComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests
-          let taskList = [];
-          tasksOrdered.forEach(element => {
-            element.requestInfo.forEach(e => {
-                e.user = element.user
-                e.appraiser = element.appraiser
-                e.requestType = element.requestType
-                e.requestTypeId = element.requestTypeId
-                if(element.requestTypeId == 5 || element.requestTypeId == 4)
-                {
-                  e.processStatusId = element.processStatusId
-                  e.id = element.id.toString()
-                  e.startDate = e.date
-                }
-                taskList.push(e);
-            })
-          });
+          let taskList = processingDataReq(tasksOrdered)
+          console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
