@@ -214,3 +214,39 @@
     border-radius: 10px;
     opacity: 1;
 }
+.input-container {
+    position:relative;
+
+    label, .react-datepicker-wrapper {
+        width: 100%;
+    }
+
+    .input {
+        margin:0;
+        padding-right: 10px;
+        width: 100%;
+    }
+    .input-img {
+        position: absolute;
+        bottom: 5px;
+        right: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    .input-clock {
+        position: absolute;
+        bottom: 15px;
+        right: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    label {
+        margin-bottom: 0;
+    }
+    i {
+        font-size: 20px;
+        font-weight: 100;
+    }
+}
