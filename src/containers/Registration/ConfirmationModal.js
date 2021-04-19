@@ -77,7 +77,7 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulCancelReq"), true)
-                        setTimeout(() => { this.hideStatusModal() }, 3000);
+                        // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -148,7 +148,7 @@ class ConfirmationModal extends React.Component {
                         else{
                             this.showStatusModal(this.props.t("Successful"), this.props.t("successfulApprvalReq"), true)
                         }
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -219,7 +219,7 @@ class ConfirmationModal extends React.Component {
                         else{
                             this.showStatusModal(this.props.t("Successful"), this.props.t("successfulConsentReq"), true)
                         }
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -256,7 +256,7 @@ class ConfirmationModal extends React.Component {
                             this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRejectConsentReq"), true)
                         }
                        
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
