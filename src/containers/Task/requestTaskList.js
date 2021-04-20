@@ -229,12 +229,12 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEditButton = (status, requestTypeId) => {
+    isShowEditButton = (status, appraiser, requestTypeId) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2)) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -449,7 +449,7 @@ class RequestTaskList extends React.Component {
             result = cloneTask.filter(req => {
                 if (value.value == 8)
                 {
-                    return req.processStatusId == 5 || req.processStatusId == 8
+                    return (req.processStatusId == 5 && req.appraiser.account == null) || req.processStatusId == 8
                 }
                 else if(value.value == 5)
                 {
@@ -566,7 +566,7 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                             tasks.map((child, index) => {
-                                let isShowEditButton = this.isShowEditButton(child.processStatusId, child.requestType.id);
+                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiser, child.requestType.id);
                                 let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
                                 let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
                                 let totalTime = null;
