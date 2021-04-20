@@ -240,7 +240,7 @@ class BusinessTripComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
-                    subid: this.props.businessTrip ? this.props.businessTrip.requestInfo.id : null,
+                    subid: req.id,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
