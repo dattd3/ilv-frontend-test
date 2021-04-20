@@ -135,12 +135,12 @@ class TaskList extends React.Component {
         const status = {
             1: { label: this.props.t('Rejected'), className: 'request-status fail' },
             2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Recalled'), className: 'request-status' },
-            4: { label: this.props.t('Đã hủy'), className: 'request-status' },
+            3: { label: this.props.t('Canceled'), className: 'request-status' },
+            4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
-            7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' },
+            6: { label: this.props.t("Consented"), className: 'request-status' },
+            7: { label: this.props.t("NotConsent"), className: 'request-status' },
+            8: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
         const options = [
