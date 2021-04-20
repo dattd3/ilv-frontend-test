@@ -123,7 +123,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
             </div>
 
-            {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? <div className="row">
+            {timesheet.startBreakTimeEdited ? <div className="row">
               <div className="col">
                 <p>{t("BreakStartTime")}</p>
                 <div className="detail">{timesheet.startBreakTimeEdited}</div>
@@ -138,7 +138,7 @@ class SubstitutionDetailComponent extends React.Component {
               </div>
             </div> : null}
 
-            {timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? <div className="row">
+            {timesheet.shiftId ? <div className="row">
               <div className="col">
                 <p>{t("ChangedShiftCode")}</p>
                 <div className="detail">{timesheet.shiftId}</div>
