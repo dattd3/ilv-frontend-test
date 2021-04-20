@@ -113,6 +113,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 requestInfo: [
                     {
                         id: id,
+                        subid: id,
                         groupItem: 0,
                         startDate: moment(startDate, 'YYYYMMDD').format('DD/MM/YYYY'),
                         startTime: startTime ? moment(startTime, 'HHmm00').format('HH:mm') : null,
@@ -269,13 +270,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         const times = [];
         requestInfo.forEach(req => {
-            const startTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
-            const endTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+            const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
+            const endTime = req.endTime ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
                     // subid:req.id,
-                    subid: this.props.leaveOfAbsence ? this.props.leaveOfAbsence.requestInfo.id : null,
+                    subid: req.id,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -285,7 +286,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 })
             }
         })
-
+console.log(times)
         if (times.length === 0) return
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
