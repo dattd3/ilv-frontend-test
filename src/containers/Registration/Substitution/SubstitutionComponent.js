@@ -343,8 +343,8 @@ class SubstitutionComponent extends React.Component {
     let timesheets = this.state.timesheets
     timesheets[index].shiftId = shift.shift_id
     timesheets[index].shiftHours = shift.hours.trim()
-    timesheets[index].startTime = moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
-    timesheets[index].endTime = moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
+    timesheets[index].startTime = shift.from_time.replace("#","") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
+    timesheets[index].endTime =shift.to_time.replace("#","") ?  moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
     this.setState({
       timesheets: [...timesheets]
     }, () => { this.verifyInput() })
