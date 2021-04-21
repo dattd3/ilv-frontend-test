@@ -139,7 +139,7 @@ class TaskList extends React.Component {
             4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
             6: { label: this.props.t("Consented"), className: 'request-status' },
-            7: { label: this.props.t("NotConsent"), className: 'request-status' },
+            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
