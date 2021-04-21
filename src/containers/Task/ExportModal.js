@@ -61,14 +61,18 @@ class ExportModal extends React.Component {
       this.setState({toDate: date})
     }
     exportExcel = () => {
+      let type = this.props.exportType == "consent" ? "Appraiser" : "Approver";
+      
       const config = {
         headers: {
           'Authorization': `${localStorage.getItem('accessToken')}`
         },
         params: {
+          Type: type,
+          ProcessStatusId: this.state.status.value,
           companyCode: localStorage.getItem("companyCode"),
-          fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('DD-MM-YYYY').toString(),
-          toDate: moment(this.state.toDate, "DD/MM/YYYY").format('DD-MM-YYYY').toString(),
+          fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+          toDate: moment(this.state.toDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
           divisionId: null,
           regionId: null,
           unitId: null
@@ -76,7 +80,7 @@ class ExportModal extends React.Component {
       }
       
       debugger
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/Export`, config)
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/ExportExcel`, config)
       .then(res => {
         const fileUrl = res.data
         if (fileUrl) {
