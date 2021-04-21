@@ -65,9 +65,9 @@ class ApproverComponent extends React.Component {
             let manager = res.data.data[0]
             let managerApproval = {
               ...approverModel,
-              label: manager.fullname,
+              label: manager.fullName,
               value: manager.userid.toLowerCase(),
-              fullname: manager.fullname,
+              fullname: manager.fullName,
               account: manager.userid.toLowerCase(),
               current_position: manager.title,
               department: manager.department
@@ -79,7 +79,23 @@ class ApproverComponent extends React.Component {
 
         });
     }
+    if (approver) {
+      this.setState({
+        approver: {
+          ...approver,
+          label: approver.fullname,
+          value: approver.account,
+        }
+      })
+    }
+  }
 
+  componentWillReceiveProps(nextProps) {
+    const { approver } = nextProps;
+    const companiesUsing = ['V070','V077', 'V060']
+    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+      return;
+    }
     if (approver) {
       this.setState({
         approver: {
@@ -140,9 +156,9 @@ class ApproverComponent extends React.Component {
             const data = res.data.data || []
             const users = data.map(res => {
               return {
-                label: res.fullname,
+                label: res.fullName,
                 value: res.user_account,
-                fullname: res.fullname,
+                fullname: res.fullName,
                 avatar: res.avatar,
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
