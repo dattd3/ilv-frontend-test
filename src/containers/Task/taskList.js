@@ -56,9 +56,9 @@ class TaskList extends React.Component {
         this.setState({tasks: this.props.tasks})
     }
     
-    componentWillReceiveProps()
+    componentWillReceiveProps(nextProps)
     {
-        this.setState({tasks: this.props.tasks})
+        this.setState({tasks: nextProps.tasks, taskFiltered: nextProps.tasks})
     }
 
     onChangePage = index => {
@@ -145,6 +145,12 @@ class TaskList extends React.Component {
             6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
             7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
+            9: {className: 'request-status', label: 'Tự đánh giá'},
+            10: {className: 'request-status', label: 'Người đánh giá'},
+            11: {className: 'request-status', label: 'QLTT đánh giá'},
+            12: {className: 'request-status', label: 'HR thẩm định'},
+            13: {className: 'request-status', label: 'CBLD phê duyệt'},
+            14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         const options = [
@@ -167,6 +173,10 @@ class TaskList extends React.Component {
 
     getLinkUserProfileHistory = (id) => {
         return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+    }
+
+    getLinkEvalution = (id) => {
+        return this.props.page === "approval" ? `/evaluation/${id}/approval` : `/evaluation/${id}/assess`
     }
 
     getLinkRegistration(id,childId) {
@@ -420,7 +430,7 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        let cloneTask = this.props.tasks;
+        let cloneTask = this.state.taskFiltered;
         let result = [];
         if(value && value.value)
         {
@@ -443,7 +453,7 @@ class TaskList extends React.Component {
           }, () => {
               if(this.state.query)
               {
-                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query));
+                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || (x.id +'' ).toLowerCase().includes(this.state.query));
               }
               else if (this.state.statusSelected){
                 data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
@@ -459,7 +469,6 @@ class TaskList extends React.Component {
         const recordPerPage = 10
         let tasks = TableUtil.updateData(this.state.tasks  || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
-
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
             2: t("LineManagerSResponse"),
@@ -551,16 +560,25 @@ class TaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     {
-                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                         <td scope="col" className="check-box">
                                                             <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id}/>
                                                         </td>
                                                         : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
                                                     }
-                                                    <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1])}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
+                                                    <td className="code"><a href={child.requestType.id == 6 ? 
+                                                        this.getLinkEvalution(child.id) :
+                                                         child.requestType.id == 4 || child.requestType.id == 5 ? 
+                                                         this.getLinkUserProfileHistory(child.id) : 
+                                                         this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} 
+                                                         title={child.id} className="task-title">
+                                                             {this.getTaskCode(child.id)}
+                                                        </a>
+                                                        </td>
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={child.requestType.id != 6 ? this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1]) : null}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
                                                     <td className="user-title">{child.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
+                                                    <td className="request-type"><a href={child.requestType.id == 6 ? 
+                                                        this.getLinkEvalution(child.id) : child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUse0rProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
                                                     <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {

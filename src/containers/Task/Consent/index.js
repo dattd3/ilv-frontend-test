@@ -24,6 +24,7 @@ class ConsentComponent extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
+    let item = {};
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/assessing?companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
@@ -32,7 +33,11 @@ class ConsentComponent extends React.Component {
           let tasksOrdered =res.data.data.requests
           let taskList = [];
           tasksOrdered.forEach(element => {
-            element.requestInfo.forEach(e => {
+            item = element;
+            if(element.requestTypeId == 6) {
+              taskList.push(element);
+            }else{
+              element.requestInfo.forEach(e => {
                 e.user = element.user
                 e.appraiser = element.appraiser
                 e.requestType = element.requestType
@@ -47,6 +52,7 @@ class ConsentComponent extends React.Component {
                 }
                 taskList.push(e);
             })
+            }
           });
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
@@ -65,6 +71,10 @@ class ConsentComponent extends React.Component {
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối") },
       { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") },
+      { value: Constants.STATUS_OB_SELF_EVALUATION , label:'Tự đánh giá' },
+      { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label: "Người đánh giá" },
+      { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: "QLTT đánh giá" },
+      { value: Constants.STATUS_OB_APPROVER_EVALUATION , label: "CBLĐ phê duyệt" },
     ]
     return (
       this.state.dataResponse ?

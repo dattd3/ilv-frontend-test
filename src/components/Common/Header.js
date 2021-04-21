@@ -97,6 +97,7 @@ function Header(props) {
                                     case 7:
                                     case 8:
                                     case 9:
+                                    case 10:
                                         return `/notifications/${item.id}`
                                     case 1:
                                         return `/registration/${item.userProfileHistoryId}/approval`

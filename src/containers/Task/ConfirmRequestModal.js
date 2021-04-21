@@ -129,27 +129,39 @@ class ConfirmRequestModal extends React.Component {
     consent = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId})
+            } else {
+                taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
                 }
             // });
+            }
             dataToSap.push(taskObj)
           });
-          console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
-            // element.requestInfo.forEach(sub => {
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId": -1 ,"comment":this.state.message})
+            }else{
+                taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
                 }        
-            // });
+                // });
+            }
+            
             dataToSap.push(taskObj)
           });
         

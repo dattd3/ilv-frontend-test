@@ -35,6 +35,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 4, label: 'Không đạt HĐ thử việc, học việc'},
     {value: 5, label: 'Do không gia hạn hợp đồng'},
   ];
+  HD_THUVIEC = 2;
   contractTypeOptions = [
     {value: 'VA', label: 'HĐLĐ XĐ thời hạn'},
     {value: 'VB', label: 'HĐLĐ KXĐ thời hạn'},
@@ -164,22 +165,22 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     let shouldDisable = false;
     switch(data.processStatus) {
       case 9: 
-        if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail != currentEmployeeNo){
+        if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()){
           shouldDisable = true;
         }
         break;
       case 10: 
-        if((!data.nguoidanhgia || data.nguoidanhgia.employeeEmail != currentEmployeeNo)){
+        if((!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 11: 
-        if((!data.qltt || data.qltt.employeeEmail != currentEmployeeNo)){
+        if((!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 13: 
-        if((!data.nguoipheduyet || data.nguoipheduyet.employeeEmail != currentEmployeeNo)){
+        if((!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
@@ -191,7 +192,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       shouldDisable = data.canAddJob ? false : true;
     }
     this.setState({
-      disableComponent: {...this.employeeSetting.disableComponent, disableAll: shouldDisable}
+      disableComponent: {...this.state.disableComponent, disableAll: shouldDisable}
     })
   }
 
@@ -204,50 +205,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         processStatus: 0,
         employeeInfo: {},
         evalution:[
-          // {
-          //   id: 1,
-          //   TaskName: 'Kiến thức chuyên môn',
-          //   SelfAssessmentScore: 0,
-          //   ManagementScore: 0,
-          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
-          //   canEdit: false,
-          //   isEditing: false,
-          //   isEdited: false,
-          //   isDeleted: false,
-          // },
-          // {
-          //   id: 2,
-          //   TaskName: 'Làm FE',
-          //   SelfAssessmentScore: 0,
-          //   ManagementScore: 0,
-          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
-          //   canEdit: true,
-          //   isEditing: false,
-          //   isEdited: false,
-          //   isDeleted: false,
-          // },
-          // {
-          //   id: 3,
-          //   TaskName: 'Làm BE',
-          //   SelfAssessmentScore: 0,
-          //   ManagementScore: 0,
-          //   ManagementComment: 'Kiến thức chuyên môn nghiệp vụ cao',
-          //   canEdit: true,
-          //   isEditing: false,
-          //   isEdited: false,
-          //   isDeleted: false,
-          // }
         ],
         newEvalution: [
         ],
         selfEvalution: {
-          // strong: 'Học hỏi nhanh, chăm chỉ',
-          // weak: 'Lười vận động',
-          // opinion: 'Không có'
+          
         },
         bossEvalution: {
-          // strong: 'Đồng ý với nhân viên',
-          // weak: 'Đồng ý với nhân viên',
+          
         },
         course: [
           {
@@ -260,22 +225,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         ],
         violation: [
-          {
-            id: 1,
-            quyetdinh: '03593160/KT-VP/2020-01',
-            hieuluc: '2020-11-20',
-            nhomloi: 'Nhóm 3 (cũ): Lỗi lớn/lỗi lặt lại hệ thống/lỗi do ý thức kém',
-            lydo: 'Chưa kiểm soát tốt công việc của đơn vị',
-            noidung: 'Cách chức/ Hạ chức | Trừ thưởng YTCL công việc | Bồi thưởng thiệt hại'
-          },
-          {
-            id: 2,
-            quyetdinh: '03593160/KT-VP/2020-01',
-            hieuluc: '2020-11-20',
-            nhomloi: 'Nhóm 3 (cũ): Lỗi lớn/lỗi lặt lại hệ thống/lỗi do ý thức kém',
-            lydo: 'Chưa kiểm soát tốt công việc của đơn vị',
-            noidung: 'Cách chức/ Hạ chức | Trừ thưởng YTCL công việc | Bồi thưởng thiệt hại'
-          }
+         
         ],
         documentStatus: '',
         nguoidanhgia: {},
@@ -292,29 +242,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
         },
         cvs: [
-          {
-            id: 1,
-            name: 'File 1.xlsx',
-            link: 'https://stackoverflow.com/questions/15748656/javascript-reduce-on-object',
-          },
-          {
-            id: 2,
-            name: 'File 2.xlsx',
-            link: 'https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip',
-          }
+          
         ],
         cvIdToDeleted: [],
         cvOriginals: [
-          {
-            id: 1,
-            name: 'File 1.xlsx',
-            link: 'https://stackoverflow.com/questions/15748656/javascript-reduce-on-object',
-          },
-          {
-            id: 2,
-            name: 'File 2.xlsx',
-            link: 'https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip',
-          }
+          
         ],
         canAddJob: false,
         SelfAssessmentScoreTotal: 0,
@@ -337,99 +269,65 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const type = this.props.match.params.type;
     const id = this.props.match.params.id;
     if(!type || !id){
-      //todo 
+      window.history.back();
       return;
     }
   
     if(type === 'request'){
       this.setState({
         showComponent: this.employeeSetting.showComponent,
-        disableComponent: {...this.employeeSetting.disableComponent, disableAll: false},
+        disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
         type: 'request',
         id: id
       })
     }else if(type == 'edit'){
       this.setState({
         showComponent: this.editableSetting.showComponent,
-        disableComponent: {...this.editableSetting.disableComponent, disableAll: false},
+        disableComponent: {...this.editableSetting.disableComponent, disableAll: true},
         type: 'edit',
         id: id
       })
+      
     }else if(type === 'assess'){
       this.setState({
         showComponent: this.qlttSetting.showComponent,
-        disableComponent: {...this.qlttSetting.disableComponent, disableAll: false},
+        disableComponent: {...this.qlttSetting.disableComponent, disableAll: true},
         type: 'assess',
         id: id
       })
     }else if(type === 'approval'){
       this.setState({
         showComponent: this.bossSetting.showComponent,
-        disableComponent: {...this.bossSetting.disableComponent, disableAll: false},
+        disableComponent: {...this.bossSetting.disableComponent, disableAll: true},
         type: 'approval',
         id: id
       })
     }
-
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
+    //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
+    //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
+    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`;
+    if(type == 'assess' || type == 'approval'){
+      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
+    }
+    axios.get(url, config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
-            //this.checkAuthorize();
-            //this.getPenatiesRemote();
+            this.checkAuthorize();
           });
         }
       }
     }).catch(error => {})
 
   }
-
-  getPenatiesRemote = () => {
-    const config = {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`
-      }
-    }
-    
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}user/penalties?perno=${this.state.data.employeeInfo.employeeNo}`, config)
-    .then(res => {
-        if (res && res.data && res.data.data) {
-            const candidateInfos = {...this.state.data}
-            let userPenaltiesResult = res.data.data.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
-            userPenaltiesResult = userPenaltiesResult.map( item => {
-              let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
-              penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
-              penaltiesTitle += (item.deduction_from_bonus ? `${this.props.t("DeductionOnBehaviorAndAttitudeBonus")} | ` : '');
-              penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
-              penaltiesTitle += (item.compensation ? `${this.props.t("DeductionOnLoss")} | ` : '');
-              penaltiesTitle += (item.other ? `${this.props.t("Other")} | ` : '');
-              penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
-              return {
-                id: 1,
-                quyetdinh: item.decision_number,
-                hieuluc: moment(item.effective_date).format('DD/MM/YYYY').toString(),
-                nhomloi: item.violation_group,
-                lydo: item.disciplinary_reason,
-                noidung: penaltiesTitle
-              }
-            })
-            this.setState({ data: candidateInfos});
-        }
-    }).catch(error => {
-        // localStorage.clear();
-        // window.location.href = map.Login;
-    });
-  }
-
- 
 
   prepareDataToSubmit = (data) => {
     const remoteData = data.remoteData;
@@ -441,13 +339,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         managementComment: data.evalution[index].ManagementComment
       }
     });
+
     remoteData.additionInforEvaluations = {
       ...remoteData.additionInforEvaluations,
       selfAssessmentStrengths: data.selfEvalution.strong,
       selfAssessmentPointImprove: data.selfEvalution.weak,
       staffSuggestions: data.selfEvalution.opinion,
       managersEvaluateStrengths: data.bossEvalution.strong,
-      managersEvaluatePointImprove: data.bossEvalution.weak
+      managersEvaluatePointImprove: data.bossEvalution.weak,
+      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations.contractKpiResult,
+      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations.contractType,
+      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations.contractTypeName,
+      startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
+      expireDate: data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
+      proposed: data.qlttOpinion.otherOption || '',
+      employeeCode: remoteData.lstTaskAssessments && remoteData.lstTaskAssessments.length > 0 ? remoteData.lstTaskAssessments[0].employeeCode : null
     }
 
     remoteData.requestHistorys = {
@@ -472,6 +378,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             bodyFormData.append('attachedFiles', file)
         })
     }
+    if(this.state.type == 'assess'){
+      
+    }
     return bodyFormData;
   }
 
@@ -487,14 +396,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         positionName: infos.staffContracts.positionName,
         departmentName: infos.staffContracts.departmentName,
         startDate: infos.staffContracts.startDate,
-        expireDate: infos.staffContracts.expireDate
+        expireDate: infos.staffContracts.expireDate,
+        employeeEmail: infos.staffContracts.employeeEmail
       }
     }
 
     if(infos.lstTaskAssessments && infos.lstTaskAssessments.length > 0){
       candidateInfos.SelfAssessmentScoreTotal = 0;
       candidateInfos.ManagementScoreTotal = 0;
+      let itemCount = 0;
       candidateInfos.evalution = infos.lstTaskAssessments.map( item => {
+        itemCount += 1;
         candidateInfos.SelfAssessmentScoreTotal += item.selfAssessmentScore;
         candidateInfos.ManagementScoreTotal += item.managementScore;
         return {
@@ -509,6 +421,30 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             isDeleted: false,
           }
       })
+      candidateInfos.SelfAssessmentScoreTotal  = itemCount > 0 ? Number(candidateInfos.SelfAssessmentScoreTotal/itemCount).toFixed(2) : 0;
+      candidateInfos.ManagementScoreTotal  = itemCount > 0 ? Number(candidateInfos.ManagementScoreTotal/itemCount).toFixed(2) : 0;
+    }
+
+    if(infos.lstStaffPenalty && infos.lstStaffPenalty.length > 0){
+      let userPenaltiesResult = infos.lstStaffPenalty.sort((a, b) => Date.parse(a.effective_date) <= Date.parse(b.effective_date) ? 1 : -1);
+        userPenaltiesResult = userPenaltiesResult.map( item => {
+          let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
+          penaltiesTitle += (item.removal_demotion ? 'Cách chức/ Hạ chức | ' : '');
+          penaltiesTitle += (item.deduction_from_bonus ? `${this.props.t("DeductionOnBehaviorAndAttitudeBonus")} | ` : '');
+          penaltiesTitle += (item.terminate_labour_contract ? 'Chấm dứt HĐLĐ | ' : '');
+          penaltiesTitle += (item.compensation ? `${this.props.t("DeductionOnLoss")} | ` : '');
+          penaltiesTitle += (item.other ? `${this.props.t("Other")} | ` : '');
+          penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
+          return {
+            id: item.id,
+            quyetdinh: item.decision_number,
+            hieuluc: item.effective_date,
+            nhomloi: item.violation_group,
+            lydo: item.disciplinary_reason,
+            noidung: penaltiesTitle
+          }
+        })
+        candidateInfos.violation = userPenaltiesResult;
     }
     if(infos.lstCourse && infos.lstCourse.length > 0){
       candidateInfos.course = infos.lstCourse.map( item => {
@@ -528,16 +464,24 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         strong: infos.additionInforEvaluations.managersEvaluateStrengths || '',
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
+      
+      candidateInfos.qlttOpinion = {
+        result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
+        contract: infos.additionInforEvaluations.contractType ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
+        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : '', 
+        endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : '',
+        otherOption: infos.additionInforEvaluations.proposed || ''
+      }
     }
 
     if(infos.requestHistorys){
       candidateInfos.processStatus = infos.requestHistorys.processStatusId;
-      candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.fullname ?  infos.requestHistorys.appraiserInfo : {};
-      candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.fullname ?  infos.requestHistorys.supervisorInfo : {};
-      candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.fullname ? infos.requestHistorys.approverInfo : {}; 
+      candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ?  infos.requestHistorys.appraiserInfo : {};
+      candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.account ?  infos.requestHistorys.supervisorInfo : {};
+      candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.account ? infos.requestHistorys.approverInfo : {}; 
     }
     candidateInfos.documentStatus = infos.profileStatus;
-    const cvs = this.prepareCVResponses(infos.attachedFiles)
+    const cvs = this.prepareCVResponses(infos.staffProfileDocuments)
     candidateInfos.cvs = cvs
     candidateInfos.cvOriginals = cvs
     return candidateInfos;
@@ -549,8 +493,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         documents = attachedDocuments.map(item => {
             return {
                 id: item.id,
-                name: item.bucketName,
-                link: item.link,
+                name: item.fileName,
+                link: item.fileUrl,
             }
         })
     }
@@ -601,7 +545,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
-      if(!this.state.data.qltt || !this.state.data.qltt.value){
+      if(!this.state.data.qltt || !this.state.data.qltt.account){
         errors['qltt'] = '(Bắt buộc)';
       }
 
@@ -651,7 +595,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.value){
+      if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
         errors['boss'] = '(Bắt buộc)';
       }
       const array = ['result', 'contract', 'startDate', 'endDate'];
@@ -689,12 +633,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     return pathNameArr[pathNameArr.length - 1];
   }
 
-  showStatusModal = (message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
+  showStatusModal = (message, isSuccess = false, shouldReload = false, url = null) => {
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess, shouldReload: shouldReload, url: url});
   }
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
+    if(this.state.shouldReload){
+      if(this.state.url){
+        window.location.href = this.state.url; 
+      }else{
+        window.location.reload();
+      }
+      
+    }
   }
 
   handleTextInputChange = (e, name, subName) => {
@@ -705,8 +657,31 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   handleChangeSelectInputs = (e, name, subName) => {
     const candidateInfos = {...this.state.data}
+    const errors = {...this.state.errors};
+    let shouldShowError = false;
+    if(name == 'qlttOpinion' && subName == 'result'){      
+      (candidateInfos.course || []).forEach( item => {
+        shouldShowError = item.status == false ? true : shouldShowError;
+      });
+      let totalScore = 5;
+      shouldShowError = ((candidateInfos.ManagementScoreTotal / totalScore) >= 0.7) ? shouldShowError : true;
+      shouldShowError = candidateInfos.documentStatus == 'Đủ' ? shouldShowError : true;
+      if(shouldShowError && (e != null && e.value == this.HD_THUVIEC)) {
+        candidateInfos[name][subName] ={};
+        this.setState({
+          data : candidateInfos,
+          errors: {
+            ...this.state.errors,
+            [subName]: 'Không đủ điều kiện ký HĐ'
+          }
+          
+        });
+        return;
+      }
+      errors[subName] = null;
+    }
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
-    this.setState({data : candidateInfos})
+    this.setState({errors: errors, data : candidateInfos})
   }
 
   handleTextInputChangeForItem = (e, name, subId, subName) => {
@@ -730,13 +705,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       if(item.id != subId){
         return item;
       }
-      total = total - item[subName] + value;
+      total = (total - item[subName] + value);
       item[subName] = value;
       return item;
     })
+    candidateInfos['qlttOpinion']['result'] = {}
     candidateInfos[name] = result;
-    candidateInfos[subName + 'Total'] = total;
-    this.setState({data : candidateInfos})
+    candidateInfos[subName + 'Total'] = total / candidateInfos[name].length;
+    this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
   }
 
 
@@ -854,7 +830,7 @@ renderEvalution = (name, data, isDisable) => {
     .then(response => {
         if (response && response.data && response.data.result) {
             if(response.data.result.code == '000000'){
-              this.showStatusModal(t("RequestSent"), true)
+              this.showStatusModal(t("RequestSent"), true, true, '/tasks?tab=prepare')
               this.setDisabledSubmitButton(false)
               return;
             }
@@ -886,7 +862,7 @@ renderEvalution = (name, data, isDisable) => {
     this.setState({data : candidateInfos})
   }
 
-  submit() {
+  submit(actionType) {
     const { t } = this.props
     const err = this.verifyInputs()
 
@@ -896,16 +872,23 @@ renderEvalution = (name, data, isDisable) => {
         return
     }
 
+    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`;
+    let home = '/tasks?tab=evalution';
+    if(this.state.type == 'assess'){
+      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
+      home = '/tasks?tab=consent';
+    }
+
     const bodyFormData = this.prepareDataToSubmit(this.state.data);
     axios({
         method: 'POST',
-        url:`${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`,
+        url:url,
         data: bodyFormData,
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
         .then(response => {
             if (response && response.data && response.data.result) {
-                this.showStatusModal(t("RequestSent"), true)
+                this.showStatusModal(t("RequestSent"), true, true, home)
                 this.setDisabledSubmitButton(false)
             }
         })
@@ -921,6 +904,7 @@ renderEvalution = (name, data, isDisable) => {
     const showComponent = this.state.showComponent;
     const disableComponent = this.state.disableComponent;
     const data = this.state.data;
+    
     return (
       <div className="registration-section">
 
@@ -1338,8 +1322,10 @@ renderEvalution = (name, data, isDisable) => {
               // : null
             }
             
-            
-            <div className="box shadow cbnv">
+            {
+              showComponent.bossSide ? 
+              null :
+              <div className="box shadow cbnv">
             
               <div className="row approve">
                 <div className="col-12">
@@ -1354,8 +1340,41 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
+            }
+            
           </>
         }
+        { 
+        data.processStatus == 2 || data.processStatus == 1 ?
+        <>
+        <h5>THÔNG TIN PHÊ DUYỆT</h5>
+        
+          <div className="box shadow cbnv" >
+          <div className="row">
+            <div className="col-4">
+              Người phê duyệt
+              <div className="detail">{data.nguoipheduyet.fullname}</div>
+            </div>
+            <div className="col-4">
+              Chức danh
+              <div className="detail">{data.nguoipheduyet.current_position}</div>
+            </div>
+            <div className="col-4">
+              Khối/Phòng/Bộ phận
+              <div className="detail">{data.nguoipheduyet.department}</div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-4">
+              Lý do không duyệt
+              <div className="detail">{''}</div>
+            </div>
+          </div>
+          
+        </div>
+        </> : null
+        }
+
         <ul className="list-inline">
             {data.cvs.map((file, index) => {
                 return <li className="list-inline-item" key={index}>
@@ -1409,7 +1428,7 @@ renderEvalution = (name, data, isDisable) => {
                           />}
                           {'Phê duyệt'}
                   </button> : 
-                  <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
+                  <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
                     {!this.state.disabledSubmitButton ?
                         <>
                             <i className="fa fa-paper-plane mr-2" aria-hidden="true">
@@ -1433,7 +1452,7 @@ renderEvalution = (name, data, isDisable) => {
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>
                   </> 
-                  : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
+                  : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
                     {!this.state.disabledSubmitButton ?
                         <>
                             {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">

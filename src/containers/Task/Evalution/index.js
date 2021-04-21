@@ -114,7 +114,7 @@ class RequestComponent extends React.Component {
             dateExpire: item.expireDate,
             approver: item.approverName,
             status: statusOption && statusOption[0] ? statusOption[0].label : '',
-            canRecall: item.status < 11 ? true : false
+            canRecall: item.isRecall || false
         }
     });
 
@@ -174,7 +174,8 @@ class RequestComponent extends React.Component {
         isShowStatusModal: true,
         modalTitle: title,
         textContentStatusModal: message,
-        isSuccess: status 
+        isSuccess: status ,
+        isReload: true
       }
     });
   }

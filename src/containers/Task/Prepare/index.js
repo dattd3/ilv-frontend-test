@@ -143,18 +143,21 @@ class RequestComponent extends React.Component {
     }))
   }
   prepareListDocumentRequest = (res, isReset) => {
-    if (!res || !res.data || !res.data.data || res.data.data.lstManagementPoint.length == 0) {
+    
+    if (!res || !res.data || !res.data.data) {
         return []
     }
     const status = {
-      isShowDevices: false,
-      isShowAccount: false,
-      isShowVoucher: false,
-      isShowDonitory: false,
+      isShowDevices: true,
+      isShowAccount: true,
+      isShowVoucher: true,
+      isShowDonitory: true,
     };
-
-
-    const listCandidatesRemote = res.data.data.lstManagementPoint.map(item => {
+    let remoteData = res.data.data.lstManagementPoint;
+    remoteData = !remoteData || remoteData.length == 0 ? res.data.data.lstSubordinate : remoteData;
+    if(!remoteData || remoteData.length == 0)
+      return [];
+    const listCandidatesRemote = remoteData.map(item => {
       status.isShowDevices = status.isShowDevices ||  item.managerToolIndicator;
       status.isShowAccount = status.isShowAccount || item.managerAccountIndicator;
       status.isShowVoucher = status.isShowVoucher || item.managerFingerIndicator;
@@ -365,7 +368,7 @@ class RequestComponent extends React.Component {
                                 <td className="col-code text-center">
                                   {
                                     item.requestCode ? 
-                                    <a href={`/evaluation/${item.requestCode}/request`}>{item.employeeNo}</a> :
+                                    <a href={`/evaluation/${item.requestCode}/edit`}>{item.employeeNo}</a> :
                                     item.employeeNo 
                                   }
                                 </td>
