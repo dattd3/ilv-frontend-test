@@ -215,7 +215,7 @@ class TaskList extends React.Component {
         let tasks = this.props.tasks;
         tasks.forEach((child) => {
             child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-            if(child.isChecked)
+            if(child.isChecked && ((child.processStatusId == 5 && child.appraiser.account == null) || child.processStatusId == 8))
             {
                 this.state.taskChecked.push(child);
             }
@@ -224,7 +224,8 @@ class TaskList extends React.Component {
                 this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
             }
         })
-        this.setState({ approveTasks: tasks,checkedAll:true });
+        this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
+        console.log(this.state.taskChecked);
         this.enableBtn(this.state.taskChecked);
     };
     
@@ -323,7 +324,7 @@ class TaskList extends React.Component {
           })
     }
     render() {
-        const recordPerPage = 10
+        const recordPerPage = 6
         let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
         let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
@@ -374,20 +375,21 @@ class TaskList extends React.Component {
                     </InputGroup>
                     </div>
                 </div> 
-                <div className="block-title">
+                <div className="block-title d-flex">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
                 </div>
                 <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
                             <tr>
-                                <th scope="col" className="check-box text-center">
+                                <th scope="col" className="check-box text-center sticky-col">
                                     <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
                                 </th>
-                                <th scope="col" className="code">{t("RequestNo")}</th>
+                                <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="user-request">{t("Requestor")}</th>
+                                        ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
                                         : null
                                 }
                                 <th scope="col" className="user-title">{t("Title")}</th>
@@ -421,14 +423,14 @@ class TaskList extends React.Component {
                                             <tr key={index}>
                                                 {
                                                     ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
-                                                    <td scope="col" className="check-bo text-center">
+                                                    <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
-                                                    : <td scope="col" className="check-box text-center"><input type="checkbox" disabled/></td>
+                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled/></td>
                                                 }
-                                                <td className="code" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
-                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request">{child.user.fullName}</td> : null}
+                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user.fullName}</td> : null}
                                                 <td className="user-title">{child.user.jobTitle}</td>
                                                 <td className="request-type">{child.requestType.name}</td>
                                                 <td className="day-off">{child.startDate}</td>
@@ -486,7 +488,7 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {taskRaw.length}</div>
                 </div> : null}
-                <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
+               
             </>)
     }
 }
