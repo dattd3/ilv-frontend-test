@@ -153,7 +153,13 @@ class TaskList extends React.Component {
             6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' }
+            20: { label: this.props.t("Consented"), className: 'request-status' },
+            9: {className: 'request-status', label: 'Tự đánh giá'},
+            10: {className: 'request-status', label: 'Người đánh giá'},
+            11: {className: 'request-status', label: 'QLTT đánh giá'},
+            12: {className: 'request-status', label: 'HR thẩm định'},
+            13: {className: 'request-status', label: 'CBLD phê duyệt'},
+            14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         const options = [
@@ -176,6 +182,10 @@ class TaskList extends React.Component {
 
     getLinkUserProfileHistory = (id) => {
         return this.props.page ? `/registration/${id}/1/${this.props.page}` : `/registration/${id}/1/request`
+    }
+
+    getLinkEvalution = (id) => {
+        return this.props.page === "approval" ? `/evaluation/${id}/approval` : `/evaluation/${id}/assess`
     }
 
     getLinkRegistration(id,childId) {
@@ -212,7 +222,7 @@ class TaskList extends React.Component {
 
     handleAllChecked = event => {
         const { page } = this.props
-        let tasks = this.props.tasks; 
+        let tasks = this.props.tasks;
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         tasks.forEach((child) => {
@@ -239,7 +249,7 @@ class TaskList extends React.Component {
             let id = child.id;
             if (id == event.target.value)
             {
-                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     this.state.taskChecked.push(child);
                 }
@@ -319,7 +329,7 @@ class TaskList extends React.Component {
         }else{
             params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
         }
-        this.setState({ 
+        this.setState({
             approveTasks: [],
             tasks: [],
             taskChecked: [],
@@ -330,7 +340,7 @@ class TaskList extends React.Component {
             needRefresh: needRefresh
         }})
         this.enableBtn([]);
-        this.props.requestRemoteData(params);  
+        this.props.requestRemoteData(params);
     }
 
     render() {
@@ -365,15 +375,15 @@ class TaskList extends React.Component {
                             <InputGroup.Prepend className="">
                                 <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Select name="absenceType" 
-                                    className="w-75" 
+                            <Select name="absenceType"
+                                    className="w-75"
                                     // defaultValue={this.props.filterdata[0]}
                                     value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
                                     isClearable={false}
-                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
                                     // selectedValue={{ label: t("All"), value: 0 }}
-                                    placeholder={t('SortByStatus')} 
-                                    key="absenceType" options={this.props.filterdata} 
+                                    placeholder={t('SortByStatus')}
+                                    key="absenceType" options={this.props.filterdata}
                                     styles={{
                                         menu: provided => ({ ...provided, zIndex: 2 })
                                     }}
@@ -405,8 +415,8 @@ class TaskList extends React.Component {
                             <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
-                   
-                </div> 
+
+                </div>
                 <div className="block-title d-flex">
                     <h4 className="content-page-header">{this.props.title}</h4>
                     <div className="export-btn">
@@ -460,22 +470,44 @@ class TaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     {
-                                                        (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))) 
-                                                        && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                        (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
+                                                        && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                         <td scope="col" className="check-box text-left sticky-col">
                                                             <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                         </td>
                                                         : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                     }
-                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this, reId, childId)}><a href="#" title={child.id} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
+                                                    {
+                                                        child.requestType?.id == 6 ?
+                                                        <td className="code sticky-col">
+                                                            <a href={this.getLinkEvalution(child.id)}
+                                                             title={child.id} className="task-title">
+                                                                 {generateTaskCodeByCode(child.id)}
+                                                            </a>
+                                                        </td>
+                                                        :
+                                                       <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this, reId, childId)}>
+                                                            <a href="#" title={child.id} className="task-title">{generateTaskCodeByCode(child.id)}</a>
+                                                       </td>
+                                                    }
+
                                                     {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
-                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
+
+                                                    {
+                                                        child.requestType?.id == 6 ?
+                                                        <td className="request-type">
+                                                            <a href={this.getLinkEvalution(child.id)} className="task-title">{child.requestType?.name}</a>
+                                                        </td>
+                                                        :
+                                                        <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
+                                                    }
+
                                                     <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
-                                                        this.props.page == "approval" 
+                                                        this.props.page == "approval"
                                                         ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
                                                         : null
                                                     }
