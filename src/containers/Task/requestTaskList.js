@@ -184,7 +184,7 @@ class RequestTaskList extends React.Component {
             4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
             6: { label: this.props.t("Consented"), className: 'request-status' },
-            7: { label: this.props.t("NotConsent"), className: 'request-status' },
+            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
@@ -447,21 +447,17 @@ class RequestTaskList extends React.Component {
         if(value && value.value)
         {
             result = cloneTask.filter(req => {
-                if (value.value == 8)
-                {
-                    return (req.processStatusId == 5 && req.appraiser.account == null) || req.processStatusId == 8
-                }
-                else if(value.value == 5)
-                {
-                    return req.processStatusId == 5 && req.appraiser.account
-                }
-                else if(value.value == 4)
-                {
-                    return req.processStatusId == 3 || req.processStatusId == 4
-                }
-                else
-                {
-                    return req.processStatusId == value.value
+                switch (value.value) {
+                    case 8:
+                        return (req.processStatusId == 5 && req.appraiser.account == null) || req.processStatusId == 8
+                    case 5:
+                        return req.processStatusId == 5 && req.appraiser.account
+                    case 4:
+                        return req.processStatusId == 3 || req.processStatusId == 4
+                    case 1:  
+                        return req.processStatusId == 1 || req.processStatusId == 7
+                    default:
+                        return req.processStatusId == value.value
                 }
             });   
             this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
