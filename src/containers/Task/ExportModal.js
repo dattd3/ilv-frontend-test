@@ -60,6 +60,33 @@ class ExportModal extends React.Component {
     setToDate = (date)=>{
       this.setState({toDate: date})
     }
+    exportExcel = () => {
+      const config = {
+        headers: {
+          'Authorization': `${localStorage.getItem('accessToken')}`
+        },
+        params: {
+          companyCode: localStorage.getItem("companyCode"),
+          fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('DD-MM-YYYY').toString(),
+          toDate: moment(this.state.toDate, "DD/MM/YYYY").format('DD-MM-YYYY').toString(),
+          divisionId: null,
+          regionId: null,
+          unitId: null
+        }
+      }
+      
+      debugger
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/Export`, config)
+      .then(res => {
+        const fileUrl = res.data
+        if (fileUrl) {
+          window.open(fileUrl);
+        }
+      }).catch(error => {
+  
+      });
+    }
+    
     render() {
         const { t } = this.props
         return (
@@ -125,7 +152,7 @@ class ExportModal extends React.Component {
                    })}/>                 
                 </div>
                 <div className="clearfix mt-2">
-                  <button type="button" className='btn btn-primary w-25 float-right'>Tải về</button>
+                  <button type="button" className='btn btn-primary w-25 float-right' onClick={this.exportExcel}>Tải về</button>
                   <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>Hủy</button>
                 </div>
                 </Modal.Body>
