@@ -516,10 +516,13 @@ class BusinessTripComponent extends React.Component {
             bodyFormData.append('id', this.props.businessTrip.id)
         }
 
-        files.forEach(file => {
-            bodyFormData.append('Files', file)
-        })
-
+        if(!isEdit)
+        {
+            files.forEach(file => {
+                bodyFormData.append('Files', file)
+            })
+        }
+        
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/attendance/register`,
@@ -959,7 +962,7 @@ class BusinessTripComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
             </div>
         )
     }
