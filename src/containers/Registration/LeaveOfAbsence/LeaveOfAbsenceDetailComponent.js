@@ -69,25 +69,25 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-2">
+          <div className="row group">
+            <div className="col-xl-2">
              {t("FullName")}
-              <div className="detail">{userProfileInfo? userProfileInfo.fullName : ""}</div>
+              <div className="detail auto-height">{userProfileInfo? userProfileInfo.fullName : ""}</div>
             </div>
-            <div className="col-2">
+            <div className="col-xl-2">
               {t("EmployeeNo")}
-              <div className="detail">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("Title")}
-              <div className="detail">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
             </div>
-            <div className="col-5">
+            <div className="col-xl-5">
               {t('DepartmentManage')}
-              <div className="detail">{userProfileInfo ? userProfileInfo.department : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.department : ""}</div>
             </div>
           </div>
-          <div className="row">
+          <div className="row mt-2">
             <div className="col-2">
               {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
