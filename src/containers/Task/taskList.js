@@ -324,7 +324,7 @@ class TaskList extends React.Component {
           })
     }
     render() {
-        const recordPerPage = 6
+        const recordPerPage = 5
         let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
         let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
