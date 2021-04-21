@@ -95,7 +95,7 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
@@ -113,7 +113,7 @@ class ConfirmRequestModal extends React.Component {
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
@@ -134,7 +134,7 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId})
             } else {
-                taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
@@ -154,14 +154,14 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": -1 ,"comment":this.state.message})
             }else{
-                taskObj = {"id":parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
                 }        
                 // });
             }
-            
+
             dataToSap.push(taskObj)
           });
         

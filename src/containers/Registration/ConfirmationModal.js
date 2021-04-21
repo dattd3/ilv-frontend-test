@@ -76,8 +76,8 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
-                        setTimeout(() => { this.hideStatusModal() }, 3000);
+                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulCancelReq"), true)
+                        // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -106,7 +106,7 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        this.showStatusModal(this.props.t("Successful"), result.message, true)
+                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRecallReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
@@ -146,9 +146,9 @@ class ConfirmationModal extends React.Component {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
                         }
                         else{
-                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulApprvalReq"), true)
                         }
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -185,7 +185,7 @@ class ConfirmationModal extends React.Component {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
                         }
                         else{
-                            this.showStatusModal(this.props.t("Successful"), data.result.message, true)
+                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulDisApprovalReq"), true)
                         }
                         setTimeout(() => { this.redirectApprovalTab() }, 2000);
                     }
@@ -217,9 +217,9 @@ class ConfirmationModal extends React.Component {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
                         }
                         else{
-                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulConsentReq"), true)
                         }
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
@@ -253,10 +253,10 @@ class ConfirmationModal extends React.Component {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
                         }
                         else{
-                            this.showStatusModal(this.props.t("Successful"), result.message, true)
+                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRejectConsentReq"), true)
                         }
                        
-                        setTimeout(() => { this.hideStatusModal() }, 2000);
+                        // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {

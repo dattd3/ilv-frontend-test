@@ -63,6 +63,7 @@ export default {
   ApprovalTaskDetail: "/tasks-approval/:id",
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
+  RegistrationDetailConsent: "/registration/:id/:childId/consent",
 
   //Evalution
   Evaluation: '/evaluation/:id/:type',

@@ -61,7 +61,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   render() {
     const userProfileInfo = this.props.leaveOfAbsence.user
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
-    const requestInfo = this.props.leaveOfAbsence.requestInfo
+    const requestInfo = this.props.leaveOfAbsence.requestInfo[0]
     const appraiser = this.props.leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
     const { t } = this.props
@@ -69,25 +69,25 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-2">
+          <div className="row group">
+            <div className="col-xl-2">
              {t("FullName")}
-              <div className="detail">{userProfileInfo? userProfileInfo.fullName : ""}</div>
+              <div className="detail auto-height">{userProfileInfo? userProfileInfo.fullName : ""}</div>
             </div>
-            <div className="col-2">
+            <div className="col-xl-2">
               {t("EmployeeNo")}
-              <div className="detail">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("Title")}
-              <div className="detail">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
             </div>
-            <div className="col-5">
+            <div className="col-xl-5">
               {t('DepartmentManage')}
-              <div className="detail">{userProfileInfo ? userProfileInfo.department : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.department : ""}</div>
             </div>
           </div>
-          <div className="row">
+          <div className="row mt-2">
             <div className="col-2">
               {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
@@ -184,17 +184,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
         </div>
-        {requestInfo && (requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 ) ? <DetailButtonComponent dataToSap={
-          // [{
-          // MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
-          // PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",
-          // BEGDA: moment(userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          // ENDDA: moment(userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          // SUBTY: userProfileInfo.absenceType ? userProfileInfo.absenceType.value : "",
-          // BEGUZ: userProfileInfo.startTime ? moment(userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          // ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          // ACTIO: 'INS'
-          // }]
+        {requestInfo && (requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 ) ? 
+        <DetailButtonComponent dataToSap={
           [
             {
               "id": this.props.leaveOfAbsence.id,

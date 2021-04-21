@@ -71,7 +71,7 @@ class BusinessTripComponent extends React.Component {
     componentDidMount() {
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
-            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo
+            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo[0]
             const { appraiser, approver, requestDocuments } = businessTrip
             this.setState({
                 isEdit: true,
@@ -240,7 +240,7 @@ class BusinessTripComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
-                    subid: this.props.businessTrip.requestInfo.id ? this.props.businessTrip.requestInfo.id : null,
+                    subid: req.id,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -280,8 +280,18 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ requestInfo: newRequestInfo })
                 }
+                else {
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.startTimeAndEndTime = this.props.t("AnErrorOccurred")
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
+                }
             }).catch(error => {
-
                 const newRequestInfo = requestInfo.map(req => {
                     const errors = req.errors
                     errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
@@ -428,11 +438,11 @@ class BusinessTripComponent extends React.Component {
             requestInfo,
             errors: {
                 approver: !approver ? this.props.t('Required') : null,
-                appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
+                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
             }
         })
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || !approver || (!appraiser && employeeLevel === "N0")) {
+        if (listError.length > 0 || !approver) { //|| (!appraiser && employeeLevel === "N0")
             return false
         }
         return true
@@ -480,7 +490,7 @@ class BusinessTripComponent extends React.Component {
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
         delete appraiser.avatar
-        debugger
+
         let bodyFormData = new FormData();
         bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
@@ -502,11 +512,17 @@ class BusinessTripComponent extends React.Component {
             name: "Đăng ký công tác đào tạo"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
+        if (isEdit) {
+            bodyFormData.append('id', this.props.businessTrip.id)
+        }
 
-        files.forEach(file => {
-            bodyFormData.append('Files', file)
-        })
-
+        if(!isEdit)
+        {
+            files.forEach(file => {
+                bodyFormData.append('Files', file)
+            })
+        }
+        
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/attendance/register`,
@@ -519,7 +535,7 @@ class BusinessTripComponent extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
                 else {
-                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                    this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
             })
@@ -663,13 +679,12 @@ class BusinessTripComponent extends React.Component {
     handleCheckboxChange = (e) => {
         const { requestInfo } = this.state
         requestInfo.forEach(req => {
-            if (e.target.value == req.groupId) {
+            if (e.target.value.split(".")[0] == req.groupId && e.target.value.split(".")[1] == req.groupItem) {
                 req.startTime = null
                 req.endTime = null
                 req.isAllDayCheckbox = e.target.checked
             }
         });
-        console.log(requestInfo)
         this.setState({ requestInfo: requestInfo })
         this.validateTimeRequest(requestInfo)
     }
@@ -743,7 +758,7 @@ class BusinessTripComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ? 
                                                     <div className="all-day-area">
-                                                        <input type="checkbox" value={req[0].groupId} checked={req[0].isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
+                                                        <input type="checkbox" value={reqDetail.groupId+"."+reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
                                                         <label>Nghỉ cả ngày</label>                                              
                                                     </div>                                                    
                                                     : null
@@ -789,7 +804,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox} />
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox} />
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -836,7 +851,7 @@ class BusinessTripComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -947,7 +962,7 @@ class BusinessTripComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
             </div>
         )
     }

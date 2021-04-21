@@ -62,7 +62,7 @@ class SubstitutionComponent extends React.Component {
 
     if (this.props.substitution) {
       this.setState({
-        isEdit: true,
+        isEdited: true,
         id: this.props.substitution.id,
         startDate: this.props.substitution.userProfileInfo.startDate,
         endDate: this.props.substitution.userProfileInfo.endDate,
@@ -85,7 +85,7 @@ class SubstitutionComponent extends React.Component {
   verifyInput() {
     let errors = {}
     this.state.timesheets.forEach((timesheet, index) => {
-      if (!timesheet.isEdit) return;
+      if (!timesheet.isEdited) return;
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? this.props.t('Required') : null
       }
@@ -140,14 +140,14 @@ class SubstitutionComponent extends React.Component {
     let timesheets = [...this.state.timesheets].map(item => {
       return {
         pernr: localStorage.getItem('employeeNo'),
-        isEdit: item.isEdit,
+        isEdited: item.isEdited,
         date:  moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
         endBreakTimeEdited: item.endBreakTime ? moment(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         toTimeEdited: item.endTime ? moment(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // sửa giờ kết thúc
         // endTimeFilter: item.endTimeFilter ? moment(item.endTimeFilter, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
-        shiftHours: item.shiftHours ? parseFloat(item.shiftHours) : null,
+        shiftHours: item.shiftHours,
         shiftId: item.shiftId,
         shiftIndex: item.shiftIndex,
         // shiftType: item.shiftType,
@@ -160,10 +160,10 @@ class SubstitutionComponent extends React.Component {
       }
     })
     
-    timesheets = timesheets.filter(item => item.isEdit)
+    timesheets = timesheets.filter(item => item.isEdited)
     const approver = { ...this.state.approver }
-    const appraiser = { ...this.state.appraiser }
-    delete appraiser.avatar
+    const appraiser = this.state.appraiser ? this.state.appraiser : null
+    // delete appraiser.avatar
     delete approver.avatar
     const data = {
       startDate: this.state.startDate,
@@ -215,7 +215,7 @@ class SubstitutionComponent extends React.Component {
 
     axios({
       method: 'POST',
-      url: this.state.isEdit && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: this.state.isEdited && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
@@ -309,7 +309,7 @@ class SubstitutionComponent extends React.Component {
 
   updateEditMode(index) {
     let timesheets = this.state.timesheets
-    timesheets[index].isEdit = !this.state.timesheets[index].isEdit
+    timesheets[index].isEdited = !this.state.timesheets[index].isEdited
     this.setState({
       timesheets: [...timesheets]
     }, () => { this.verifyInput() })
@@ -343,8 +343,8 @@ class SubstitutionComponent extends React.Component {
     let timesheets = this.state.timesheets
     timesheets[index].shiftId = shift.shift_id
     timesheets[index].shiftHours = shift.hours.trim()
-    timesheets[index].startTime = moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
-    timesheets[index].endTime = moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)
+    timesheets[index].startTime = shift.from_time.replace("#","") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
+    timesheets[index].endTime =shift.to_time.replace("#","") ?  moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
     this.setState({
       timesheets: [...timesheets]
     }, () => { this.verifyInput() })
@@ -417,7 +417,7 @@ class SubstitutionComponent extends React.Component {
                 date: timesheet.date,
                 fromTime: timesheet[`from_time${shiftIndex}`],
                 toTime: timesheet[`to_time${shiftIndex}`],
-                isEdit: false,
+                isEdited: false,
                 note: null,
                 error: {},
                 startTime: null,
@@ -462,7 +462,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   resetValidation = (index) => {
-    const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdit);
+    const timesheets = [...this.state.timesheets].filter((item, i) => i == index && item.isEdited);
     const errors = { ...this.state.errors }
 
     const startTime = moment(timesheets[0].startTime, "HH:mm:ss").isValid() ? moment(timesheets[0].startTime, "HH:mm:ss") : null
@@ -591,15 +591,15 @@ class SubstitutionComponent extends React.Component {
                 <p>{t("Start")} {timesheet.shiftIndex}: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} {timesheet.shiftIndex}: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
               </div>
               <div className="col-2 ">
-                {!timesheet.isEdit
+                {!timesheet.isEdited
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
 
-            {timesheet.isEdit ? <hr /> : null}
+            {timesheet.isEdited ? <hr /> : null}
 
-            {timesheet.isEdit ?
+            {timesheet.isEdited ?
               <div>
                 <p className="text-uppercase"><b>{t("SelectShiftType")}</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
@@ -619,7 +619,7 @@ class SubstitutionComponent extends React.Component {
                     {this.error(index, 'substitutionType')}
                   </div>
                 </div>
-                {timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
+                {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
                   <div>
                     <fieldset className="col-12 block-filter-shift">
                       <legend>{t("SearchShiftCode")}</legend>
@@ -681,19 +681,19 @@ class SubstitutionComponent extends React.Component {
                   : null}
               </div> : null}
 
-            {timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
+            {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <>
                 <ShiftTable shifts={timesheet.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} updateShift={this.updateShift.bind(this)} />
                 {this.error(index, 'shiftId')}
               </>
               : null}
-            {timesheet.isEdit && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE
+            {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE
               ? <ShiftForm updateTime={this.updateTime.bind(this)} errors={this.state.errors} isShowStartBreakTimeAndEndBreakTime={this.state.isShowStartBreakTimeAndEndBreakTime}
                 updateTotalHours={this.updateTotalHours.bind(this)} resetValidation={this.resetValidation.bind(this)}
                 timesheet={{ index: index, startTime: timesheet.startTime, endTime: timesheet.endTime, startBreakTime: timesheet.startBreakTime, endBreakTime: timesheet.endBreakTime, note: timesheet.note, substitutionType: timesheet.substitutionType }} />
               : null}
 
-            {timesheet.isEdit ? <div>
+            {timesheet.isEdited ? <div>
               <p>{t("ShiftChangeReason")}</p>
               <textarea placeholder={t("EnterReason")} value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control mt-3" name="note" rows="4" />
               {this.error(index, 'note')}
@@ -701,9 +701,9 @@ class SubstitutionComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? 
+        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? 
         <>
-        <AssesserComponent isEdit={t.isEdit} errors={this.state.errors} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} appraiser={this.props.substitution ? this.props.substitution.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+        <AssesserComponent isEdit={t.isEdited} errors={this.state.errors} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} appraiser={this.props.substitution ? this.props.substitution.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
         <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> 
         </>
         : null}
@@ -721,7 +721,7 @@ class SubstitutionComponent extends React.Component {
 
         {this.errorWithoutItem("files")}
 
-        {this.state.timesheets.filter(t => t.isEdit).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
+        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
       </div >
     )
   }

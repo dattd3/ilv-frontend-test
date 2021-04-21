@@ -451,6 +451,10 @@
   "Penalties": "Quyết định xử lý vi phạm",
   "Pending": "Đang xử lý",
   "Waiting": "Đang chờ xử lý",
+  "Canceled": "Đã hủy",
+  "Consented": "Đã thẩm định",
+  "NotConsent": "Từ chối thẩm định",
+  "RejectApprove": "Từ chối phê duyệt",
   "PerDiemIncluded": "Có CTP: được trả Công tác phí",
   "PeriodMonth": "Kỳ lương tháng ",
   "Period": "Kỳ chấm công",
@@ -832,5 +836,12 @@
   "Evidence": "Tài liệu chứng minh",
   "PIT Reduction": "Có tính giảm trừ gia cảnh",
   "BirthCity": "Thành phố sinh",
-  "Recalled": "Đã thu hồi"
+  "Recalled": "Đã thu hồi",
+  "successfulRecallReq": "Gửi yêu cầu thu hồi thành công !",
+  "successfulCancelReq": "Hủy yêu cầu thành công !",
+  "successfulApprvalReq": "Phê duyệt yêu cầu thành công !",
+  "successfulDisApprovalReq": "Từ chối phê duyệt yêu cầu thành công !",
+  "successfulConsentReq": "Thẩm định yêu cầu thành công !",
+  "successfulRejectConsentReq": "Từ chối thẩm định yêu cầu thành công !",
+  "AnErrorOccurred": "Đã có lỗi xảy ra"
 }

@@ -24,7 +24,6 @@ class ResultDetailModal extends React.Component {
                     }
                 })
             }
-            
         });
 
         return (
@@ -43,7 +42,7 @@ class ResultDetailModal extends React.Component {
                         <>
                             <table className="table table-sm">
                                 <thead>
-                                    <tr class="row">
+                                    <tr className="row">
                                         <th className="col-3">{t("RequestNo")}</th>
                                         <th className="col-3 text-center">{t("Status")}</th>
                                         <th className="col-6">{t("Reason")}</th>
@@ -69,10 +68,10 @@ class ResultDetailModal extends React.Component {
                             </table>
                             <p><span className="text-success">{t("Successful")}:</span><strong>{sucessReqs}/{total}</strong></p>
                         </>
-                        :   <div className="wrap-result">
-                                <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>
-                                <Image src={IconFailed} alt="faile" className="ic-status" />
-                            </div> 
+                        : <div className="wrap-result">
+                            <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>
+                            <Image src={IconFailed} alt="faile" className="ic-status" />
+                          </div>   
                     }
                     
                 </Modal.Body>

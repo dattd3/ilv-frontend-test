@@ -8,7 +8,7 @@ import ApprovalComponent from '../Task/Approval/'
 import PrepareComponent from '../Task/Prepare';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
-import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner'
+import processingDataReq from "../Utils/Common"
 
 class Task extends React.Component {
     constructor(props) {
@@ -34,24 +34,7 @@ class Task extends React.Component {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests
-              let taskList = [];
-              tasksOrdered.forEach(element => {
-                element.requestInfo.forEach(e => {
-                    e.user = element.user
-                    e.appraiser = element.appraiser
-                    e.requestType = element.requestType
-                    e.requestTypeId = element.requestTypeId
-                    if(element.requestTypeId == 5 || element.requestTypeId == 4)
-                    {
-                      e.processStatusId = element.processStatusId
-                      e.id = element.id
-                      // e.timesheets.forEach(ts => {
-
-                      // })
-                    }
-                    taskList.push(e);
-                })
-            });
+              let taskList = processingDataReq(tasksOrdered)
               const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
               this.setState({tasks : taskList , isShowPrepareTab: true});
             }

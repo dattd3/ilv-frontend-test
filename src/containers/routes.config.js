@@ -410,6 +410,14 @@ export default [
           component: lazy(() => import("./Registration/RegistrationDetailComponent"))
         },
         {
+          key: "registration-detail-consent",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationDetailConsent
+          },
+          component: lazy(() => import("./Registration/RegistrationDetailComponent"))
+        },
+        {
           key: "edit-registration",
           routeProps: {
             exact: true,

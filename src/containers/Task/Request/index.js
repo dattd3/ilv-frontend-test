@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
-import TaskList from '../taskList'
+import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 
@@ -24,27 +24,12 @@ class RequestComponent extends React.Component {
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
+        // debugger
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered = res.data.data.requests
-          let taskList = [];
-          tasksOrdered.forEach(element => {
-            element.requestInfo.forEach(e => {
-                e.user = element.user
-                e.appraiser = element.appraiser
-                e.requestType = element.requestType
-                e.requestTypeId = element.requestTypeId
-                if(element.requestTypeId == 5 || element.requestTypeId == 4)
-                {
-                  e.processStatusId = element.processStatusId
-                  e.id = element.id
-                  // e.timesheets.forEach(ts => {
-                    
-                  // })
-                }
-                taskList.push(e);
-            })
-          });
+          let taskList = processingDataReq(tasksOrdered)
+          // console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
@@ -75,19 +60,16 @@ class RequestComponent extends React.Component {
     const { t } = this.props
     let statusFiler = [
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
-      { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
+      { value: Constants.STATUS_WAITING , label: t("Consented") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
-      { value: Constants.STATUS_NOT_APPROVED , label: t("Từ chối phê duyệt") },
-      { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối thẩm định") },
-      { value: Constants.STATUS_EVICTION , label: t("Recalled") },
-      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") }
+      { value: Constants.STATUS_NOT_APPROVED , label: t("Rejected") },
+      // { value: Constants.STATUS_NO_CONSENTED , label: t("NotConsent") },
+      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_REVOCATION , label: t("Canceled") }
     ]
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        {/* <div className="block-title">
-          <h4 className="title text-uppercase">{t("RequestManagement")}</h4>
-        </div> */}
         <RequestTaskList tasks={this.state.tasks} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
       <LoadingSpinner />

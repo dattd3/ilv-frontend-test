@@ -724,7 +724,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.setState({
       data: {
         ...this.state.data,
-        [name]: approver 
+        [name]: {
+          ...approver,
+          avatar: null
+        } 
       }
     })
 }

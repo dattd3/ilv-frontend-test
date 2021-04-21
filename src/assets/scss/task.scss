@@ -36,7 +36,7 @@
     }
     .task-list {
         display: block;
-        overflow-x: auto;
+        overflow-x: scroll;
         overflow-y: auto;
         border-radius: 5px;
         &::-webkit-scrollbar {
@@ -55,6 +55,8 @@
             background-color: #eee;
         }
         .table {
+            table-layout: auto;
+            // width: 100%;
             width: 100%;
             margin-bottom: 1rem;
             color: #858796;
@@ -64,7 +66,11 @@
                 background-color: #eaecf4;
                 th {
                     vertical-align: middle;
+                    border-collapse: collapse;
                     // position: sticky; 
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                     top: 0;
                     background-color: #eaecf4;
                     z-index: 10;
@@ -76,27 +82,54 @@
                     text-align: center;
                     border-top-right-radius: 5px;
                 }
-
-                .request-type, .content, .tool {
-                    min-width: 180px;
-                }
+                // .request-type, .content, .tool {
+                //     min-width: 180px;
+                // }
             
-                .code, .user-request, .request-date, .approval-date {
-                    min-width: 120px;
-                }
+                // .code, .user-request, .request-date, .approval-date {
+                //     min-width: 120px;
+                // }
          
-                .request-date, .user-approved, .approval-date {
-                    min-width: 140px;
-                }
+                // .request-date, .user-approved, .approval-date {
+                //     min-width: 140px;
+                // }
 
-                .status {
-                    min-width: 160px;
-                }
+                // .status {
+                //     min-width: 160px;
+                // }
             }
             td:last-child {
                 display: flex;
                 // justify-content: space-evenly;
                 align-items: center;
+            }
+            td {
+                // border: 1px solid blue;
+                // border-collapse: collapse;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            .sticky-col{
+                position: sticky;
+                position: -webkit-sticky;
+                z-index: 0;
+                background-color: #eeeeee !important;
+            }
+            .check-box {
+                width: 50px;
+                text-align: center;
+                left: 0px;
+            }
+            .code {
+                // width: 50px;
+                left: 36px;
+            }
+            .user-request {
+                left: 147px;
+            }
+            .day-off {
+                white-space: inherit !important;
             }
             .status {
                 [class$="-control"] {

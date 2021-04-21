@@ -18,7 +18,7 @@ const MyOption = props => {
                     <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
                 </div>
                 <div className="float-left text-wrap w-75">
-                    <div className="title">{props.data.fullname}</div>
+                    <div className="title">{props.data.fullName}</div>
                     <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
                 </div>
             </div>
@@ -42,7 +42,7 @@ class AssesserComponent extends React.Component {
         let appraiserModel = {
             label: "",
             value: "",
-            fullname: "",
+            fullName: "",
             avatar: "",
             employeeLevel: "",
             pnl: "",
@@ -64,9 +64,9 @@ class AssesserComponent extends React.Component {
                         let manager = res.data.data[0]
                         let managerApproval = {
                             ...appraiserModel,
-                            label: manager.fullname,
+                            label: manager.fullName,
                             value: manager.userid.toLowerCase(),
-                            fullname: manager.fullname,
+                            fullName: manager.fullName,
                             account: manager.userid.toLowerCase(),
                             current_position: manager.title,
                             department: manager.department
@@ -84,7 +84,7 @@ class AssesserComponent extends React.Component {
             this.setState({
               appraiser: {
                 ...appraiser,
-                label: appraiser.fullname,
+                label: appraiser.fullName,
                 value: appraiser.account,
               }
             })
@@ -117,7 +117,10 @@ class AssesserComponent extends React.Component {
             return false
         }
 
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+        //     return true
+        // }
+        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
             return true
         }
 
@@ -135,15 +138,15 @@ class AssesserComponent extends React.Component {
                 }
             }
 
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
+            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
                 .then(res => {
                     if (res && res.data && res.data.data) {
                         const data = res.data.data || []
                         const users = data.map(res => {
                             return {
-                                label: res.fullname,
+                                label: res.fullName,
                                 value: res.user_account,
-                                fullname: res.fullname,
+                                fullName: res.fullName,
                                 avatar: res.avatar,
                                 employeeLevel: res.employee_level,
                                 pnl: res.pnl,

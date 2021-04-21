@@ -4,8 +4,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
-// import RequestTaskList from '../requestTaskList';
-import ResultModal from '../../Registration/ResultModal'
+import processingDataReq from "../../Utils/Common"
 
 
 class ConsentComponent extends React.Component {
@@ -31,29 +30,8 @@ class ConsentComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests
-          let taskList = [];
-          tasksOrdered.forEach(element => {
-            item = element;
-            if(element.requestTypeId == 6) {
-              taskList.push(element);
-            }else{
-              element.requestInfo.forEach(e => {
-                e.user = element.user
-                e.appraiser = element.appraiser
-                e.requestType = element.requestType
-                e.requestTypeId = element.requestTypeId
-                if(element.requestTypeId == 5 || element.requestTypeId == 4)
-                {
-                  e.processStatusId = element.processStatusId
-                  e.id = element.id
-                  // e.timesheets.forEach(ts => {
-                    
-                  // })
-                }
-                taskList.push(e);
-            })
-            }
-          });
+          let taskList = processingDataReq(tasksOrdered)
+          // console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
       }
@@ -66,11 +44,11 @@ class ConsentComponent extends React.Component {
     const { t } = this.props
     let statusFiler = [
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
-      { value: Constants.STATUS_WAITING , label: t("Đã thẩm định") },
+      { value: Constants.STATUS_WAITING , label: t("Consented") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
-      { value: Constants.STATUS_NO_CONSENTED , label: t("Từ chối") },
-      { value: Constants.STATUS_REVOCATION , label: t("Đã hủy") },
+      { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
+      { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
       { value: Constants.STATUS_OB_SELF_EVALUATION , label:'Tự đánh giá' },
       { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label: "Người đánh giá" },
       { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: "QLTT đánh giá" },
@@ -79,10 +57,9 @@ class ConsentComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <>
-      {/* <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} /> */}
-      <div className="task-section">
-        <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>       
-      </div>
+        <div className="task-section">
+          <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>
+        </div>
       </> : 
       <LoadingSpinner />
     )

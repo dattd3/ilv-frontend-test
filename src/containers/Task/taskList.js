@@ -16,11 +16,6 @@ import TaskDetailModal from './TaskDetailModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 
-const TIME_FORMAT = 'HH:mm:ss'
-const DATE_FORMAT = 'DD-MM-YYYY'
-const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
-const TIME_OF_SAP_FORMAT = 'HHmm00'
-
 class TaskList extends React.Component {
     constructor() {
         super();
@@ -39,7 +34,8 @@ class TaskList extends React.Component {
             action: null,
             disabled: "disabled",
             query: "",
-            statusSelected:null
+            statusSelected:null,
+            checkedAll:false
         }
 
         this.manager = {
@@ -139,11 +135,11 @@ class TaskList extends React.Component {
         const status = {
             1: { label: this.props.t('Rejected'), className: 'request-status fail' },
             2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Recalled'), className: 'request-status' },
-            4: { label: this.props.t('Đã hủy'), className: 'request-status' },
+            3: { label: this.props.t('Canceled'), className: 'request-status' },
+            4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Đã thẩm định"), className: 'request-status' },
-            7: { label: this.props.t("Từ chối thẩm định"), className: 'request-status' },
+            6: { label: this.props.t("Consented"), className: 'request-status' },
+            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
             9: {className: 'request-status', label: 'Tự đánh giá'},
             10: {className: 'request-status', label: 'Người đánh giá'},
@@ -172,7 +168,7 @@ class TaskList extends React.Component {
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page ? `/registration/${id}/1/${this.props.page}` : `/registration/${id}/1/request`
     }
 
     getLinkEvalution = (id) => {
@@ -180,7 +176,7 @@ class TaskList extends React.Component {
     }
 
     getLinkRegistration(id,childId) {
-        return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
+        return this.props.page ? `/registration/${id}/${childId}/${this.props.page}` : `/registration/${id}/${childId}/request`
     }
 
     getTaskCode = code => {
@@ -227,47 +223,44 @@ class TaskList extends React.Component {
 
     handleAllChecked = event => {
         let tasks = this.props.tasks;
-        // tasks.forEach((task,index) => {
-            tasks.forEach((child) => {
-                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                if(child.isChecked)
-                {
-                    // child.requestTypeId =  child.requestTypeId
-                    this.state.taskChecked.push(child);
-                }
-                else
-                {
-                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
-                }
-            }) 
-        // });
-        this.setState({ approveTasks: tasks });
+        tasks.forEach((child) => {
+            child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+            if(child.isChecked && ((child.processStatusId == 5 && child.appraiser.account == null) || child.processStatusId == 8))
+            {
+                this.state.taskChecked.push(child);
+            }
+            else
+            {
+                this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
+            }
+        })
+        this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
+        console.log(this.state.taskChecked);
         this.enableBtn(this.state.taskChecked);
     };
     
     handleCheckChieldElement = event => {
         let tasks = this.props.tasks;
-        
-        // tasks.forEach((task,index) => {
-        //     task.isAllChecked = false;
-            tasks.forEach((child) => {
-                let id = child.id;
-                if (id == event.target.value)
+        tasks.forEach((child) => {
+            let id = child.id;
+            if (id == event.target.value)
+            {
+                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                if(child.isChecked)
                 {
-                    child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                    if(child.isChecked)
-                    {
-                        this.state.taskChecked.push(child);
-                    }
-                    else
-                    {
-                        this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
-                    }
+                    this.state.taskChecked.push(child);
                 }
-            })
-               
-        // });
-        // this.props.handleChange(this.state.taskChecked);
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
+                    
+                }
+            }
+        })    
+
+        let taskCheckedList = tasks.filter(t => t.isChecked);
+        this.setState({checkedAll: taskCheckedList.length == tasks.length ? true : false})
+
         this.enableBtn(this.state.taskChecked);
     };
 
@@ -289,93 +282,9 @@ class TaskList extends React.Component {
         return `/tasks-request/${id}`;
     }
 
-    // getDataToSAP = (request, data) => {
-    //     let jsonData = []
-    //     switch (request) {
-    //         case Constants.LEAVE_OF_ABSENCE:
-    //             jsonData = this.getLeaveOfAbsenceToSAp(data)
-    //             break;
-    //         case Constants.BUSINESS_TRIP:
-    //             jsonData = this.getBusinessTripToSAp(data)
-    //             break;
-    //         case Constants.SUBSTITUTION:
-    //             jsonData = this.getSubstitutionToSAp(data)
-    //             break;
-    //         case Constants.IN_OUT_TIME_UPDATE:
-    //             jsonData = this.getInOutUpdateToSAp(data)
-    //             break;
-    //     }
-    //     return jsonData
-    // }
-
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
-
-    // getInOutUpdateToSAp = data => {
-    //     let dataToSAP = []
-    //     data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-    //         ['1', '2'].forEach(n => {
-    //             const startTimeName = `start_time${n}_fact_update`
-    //             const endTimeName = `end_time${n}_fact_update`
-    //             const startTimeNameOld = `start_time${n}_fact`
-    //             const endTimeNameOld = `end_time${n}_fact`
-    //             const startPlanTimeName = `from_time${n}`
-    //             const endPlanTimeName = `to_time${n}`
-    //             if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
-    //             if (true) {
-    //                 let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[startTimeNameOld]) ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-    //                 if (startTime) {
-    //                     dataToSAP.push({
-    //                         MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-    //                         PERNR: data.userProfileInfo.user.employeeNo,
-    //                         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-    //                         SATZA: 'P10',
-    //                         LTIME: startTime,
-    //                         DALLF: '+',
-    //                         ACTIO: 'INS'
-    //                     })
-    //                 }
-    //             }
-
-    //             if (true) {
-    //                 let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[endTimeNameOld]) ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-    //                 if (endTime) {
-    //                     dataToSAP.push({
-    //                         MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-    //                         PERNR: data.userProfileInfo.user.employeeNo,
-    //                         LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-    //                         SATZA: 'P20',
-    //                         LTIME: endTime,
-    //                         DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
-    //                         ACTIO: 'INS'
-    //                     })
-    //                 }
-    //             }
-    //         })
-    //     })
-    //     return dataToSAP
-    // }
-
-    // getSubstitutionToSAp = data => {
-    //     return data.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
-    //         return {
-    //             MYVP_ID: 'SUB' + '0'.repeat(8 - data.id.toString().length) + data.id + index,
-    //             PERNR: data.userProfileInfo.user.employeeNo,
-    //             BEGDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //             ENDDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //             TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
-    //             BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-    //             ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-    //             VTART: timesheet.substitutionType.value,
-    //             PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-    //             PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime !== null ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-    //             PBEZ1: '',
-    //             PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime !== null && timesheet.endBreakTime !== null ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
-    //             TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
-    //         }
-    //     })
-    // }
 
     calTime = (start, end) => {
         if (start == null || end == null) {
@@ -384,44 +293,6 @@ class TaskList extends React.Component {
         const differenceInMs = moment(end, Constants.SUBSTITUTION_TIME_FORMAT).diff(moment(start, Constants.SUBSTITUTION_TIME_FORMAT))
         return moment.duration(differenceInMs).asHours()
     }
-
-    // getLeaveOfAbsenceToSAp = data => {
-    //     let dataToSAP = []
-    //     if (data.status === 0) {
-    //         dataToSAP.push(
-    //             {
-    //                 MYVP_ID: 'ABS' + '0'.repeat(9 - data.id.toString().length) + data.id,
-    //                 PERNR: data.userProfileInfo.user ? data.userProfileInfo.user.employeeNo : "",
-    //                 BEGDA: moment(data.userProfileInfo.startDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //                 ENDDA: moment(data.userProfileInfo.endDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //                 SUBTY: data.userProfileInfo.absenceType ? data.userProfileInfo.absenceType.value : "",
-    //                 BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-    //                 ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-    //                 ACTIO: 'INS'
-    //             }
-    //         )
-    //     }
-    //     return dataToSAP
-    // }
-
-    // getBusinessTripToSAp(data) {
-    //     let dataToSAP = []
-    //     if (data.status === 0) {
-    //         dataToSAP.push(
-    //             {
-    //                 MYVP_ID: 'ATT' + '0'.repeat(9 - data.id.toString().length) + data.id,
-    //                 PERNR: data.userProfileInfo.user.employeeNo,
-    //                 BEGDA: moment(data.userProfileInfo.startDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //                 ENDDA: moment(data.userProfileInfo.endDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-    //                 SUBTY: data.userProfileInfo.attendanceQuotaType.value,
-    //                 BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-    //                 ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-    //                 ACTIO: 'INS'
-    //             }
-    //         )
-    //     }
-    //     return dataToSAP
-    // }
 
     updateTaskStatus = (id, status) =>{
         let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
@@ -434,10 +305,7 @@ class TaskList extends React.Component {
         let result = [];
         if(value && value.value)
         {
-            // result = cloneTask.filter(element => {
-                result = cloneTask.filter(req => req.processStatusId == value.value);
-                // return ele.length > 0
-            // });
+            result = cloneTask.filter(req => req.processStatusId == value.value);
             this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
         }
         else{
@@ -447,7 +315,7 @@ class TaskList extends React.Component {
     
     handleInputChange = (event) => {
         let data = null;
-        let cloneTask = this.state.taskFiltered;
+        let cloneTask = this.state.taskFiltered ? this.state.taskFiltered : this.props.tasks;
         this.setState({
             query: event.target.value
           }, () => {
@@ -466,8 +334,9 @@ class TaskList extends React.Component {
           })
     }
     render() {
-        const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.tasks  || this.props.tasks, this.state.pageNumber - 1, recordPerPage)
+        const recordPerPage = 5
+        let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
+        let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
@@ -515,32 +384,33 @@ class TaskList extends React.Component {
                     </InputGroup>
                     </div>
                 </div> 
-                <div className="block-title">
+                <div className="block-title d-flex">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
                 </div>
                 <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
-                            <tr className="text-center">
-                                <th scope="col" className="check-box">
-                                    <input type="checkbox" onClick={this.handleAllChecked}  value={"checkedall"}/>{" "}
+                            <tr>
+                                <th scope="col" className="check-box text-center sticky-col">
+                                    <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
                                 </th>
-                                <th scope="col" className="code">{t("RequestNo")}</th>
+                                <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="user-request">{t("Requestor")}</th>
+                                        ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
                                         : null
                                 }
                                 <th scope="col" className="user-title">{t("Title")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
-                                <th scope="col" className="break-time">{t("TotalLeaveTime")}</th>
+                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 {
                                     this.props.page == "approval" ?
                                         <th scope="col" className="appraiser">{t("Consenter")}</th>
                                     : null
                                 }
-                                <th scope="col" className="status">{t("Status")}</th>
+                                <th scope="col" className="status text-center">{t("Status")}</th>
                                 {
                                     this.props.page != "consent" ?
                                         <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
@@ -549,24 +419,77 @@ class TaskList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {tasks.length > 0 ?
+                        {//tasks.length > 0 ?
                                 // tasks.map((task) => {
                                 //     return (
-                                        tasks.map((child, index) => {
-                                            let totalTime = null;
-                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                            }
-                                            return (
-                                                <tr key={index}>
-                                                    {
-                                                        ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
-                                                        <td scope="col" className="check-box">
-                                                            <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id}/>
-                                                        </td>
-                                                        : <td scope="col" className="check-box"><input type="checkbox" disabled/></td>
-                                                    }
-                                                    <td className="code"><a href={child.requestType.id == 6 ? 
+                                        // tasks.map((child, index) => {
+                                          //   let totalTime = null;
+                                        //     let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
+                                        //     let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        //     if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                        //     totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                        // }
+                                        //     return (
+                                        //         <tr key={index}>
+                                                    
+                                                   
+                        
+                                        //             {
+                                        //                 this.props.page == "approval" ?
+                                        //                     <td className="appraiser text-center">{child.appraiser?.fullname}</td>
+                                        //                 :null
+                                        //             }
+                                        //             <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                        //             {
+                                        //                 this.props.page != "consent" ?
+                                        //                 <td className="tool">
+                                        //                 {child.comment ? <OverlayTrigger
+                                        //                     rootClose
+                                        //                     trigger="click"
+                                        //                     placement="left"
+                                        //                     overlay={<Popover id={'note-task-' + index}>
+                                        //                         <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                        //                         <Popover.Content>
+                                        //                             {child.comment}
+                                        //                         </Popover.Content>
+                                        //                     </Popover>}>
+                                        //                     <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                        //                 </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                        //                 {child.hrComment ? <OverlayTrigger
+                                        //                     rootClose
+                                        //                     trigger="click"
+                                        //                     placement="left"
+                                        //                     overlay={<Popover id={'comment-task-' + index}>
+                                        //                         <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
+                                        //                         <Popover.Content>
+                                        //                             {child.hrComment}
+                                        //                         </Popover.Content>
+                                        //                     </Popover>}>
+                                        //                     <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                        //                 </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                            }
+                            {
+                                tasks.length > 0 ?
+                                    tasks.map((child, index) => {
+                                        let totalTime = null;
+                                        // let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
+                                        // let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                            totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                        }
+                                        return (
+                                            <tr key={index}>
+                                                {
+                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
+                                                    <td scope="col" className="check-box text-center sticky-col">
+                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
+                                                    </td>
+                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled/></td>
+                                                }
+                                                
+                                                <td className="code sticky-col" onClick={() => { if(child.requestType.id != 6) this.showModalTaskDetail(this,child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0], child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1])}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
+                                                {/* { <td className="code"><a href={child.requestType.id == 6 ? 
                                                         this.getLinkEvalution(child.id) :
                                                          child.requestType.id == 4 || child.requestType.id == 5 ? 
                                                          this.getLinkUserProfileHistory(child.id) : 
@@ -574,53 +497,55 @@ class TaskList extends React.Component {
                                                          title={child.id} className="task-title">
                                                              {this.getTaskCode(child.id)}
                                                         </a>
-                                                        </td>
-                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center"  onClick={child.requestType.id != 6 ? this.showModalTaskDetail.bind(this,child.id.split(".")[0],child.id.split(".")[1]) : null}><a href="#" className="task-title">{child.user.fullName}</a></td> : null}
-                                                    <td className="user-title">{child.user.jobTitle}</td>
-                                                    <td className="request-type"><a href={child.requestType.id == 6 ? 
-                                                        this.getLinkEvalution(child.id) : child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUse0rProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{child.requestType.name}</a></td>
-                                                    <td className="day-off text-center">{moment(child.startDate).format("DD/MM/YYYY")}</td>
-                                                    <td className="break-time text-center">{totalTime}</td>
-                                                    {
-                                                        this.props.page == "approval" ?
-                                                            <td className="appraiser text-center">{child.appraiser?.fullname}</td>
-                                                        :null
-                                                    }
-                                                    <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
-                                                    {
-                                                        this.props.page != "consent" ?
-                                                        <td className="tool">
-                                                        {child.comment ? <OverlayTrigger
-                                                            rootClose
-                                                            trigger="click"
-                                                            placement="left"
-                                                            overlay={<Popover id={'note-task-' + index}>
-                                                                <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                                                <Popover.Content>
-                                                                    {child.comment}
-                                                                </Popover.Content>
-                                                            </Popover>}>
-                                                            <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                        {child.hrComment ? <OverlayTrigger
-                                                            rootClose
-                                                            trigger="click"
-                                                            placement="left"
-                                                            overlay={<Popover id={'comment-task-' + index}>
-                                                                <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
-                                                                <Popover.Content>
-                                                                    {child.hrComment}
-                                                                </Popover.Content>
-                                                            </Popover>}>
-                                                            <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
-                                                        </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
-                                                    </td>
-                                                        :null
-                                                    }
-                                                </tr>
-                                            )
-                                        })
-                                    // )})
+                                                        </td>} */
+                                                }
+                                                
+
+
+                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user.fullName}</td> : null}
+                                                <td className="user-title">{child.user.jobTitle}</td>
+                                                <td className="request-type">{child.requestType.name}</td>
+                                                <td className="day-off">{child.startDate}</td>
+                                                <td className="break-time text-center">{totalTime}</td>
+                                                {
+                                                    this.props.page == "approval" ?
+                                                        <td className="appraiser text-center">{child.appraiser?.fullName}</td>
+                                                    :null
+                                                }
+                                                <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                {
+                                                    this.props.page != "consent" ?
+                                                    <td className="tool">
+                                                    {child.comment ? <OverlayTrigger
+                                                        rootClose
+                                                        trigger="click"
+                                                        placement="left"
+                                                        overlay={<Popover id={'note-task-' + index}>
+                                                            <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                                            <Popover.Content>
+                                                                {child.comment}
+                                                            </Popover.Content>
+                                                        </Popover>}>
+                                                        <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                    {child.hrComment ? <OverlayTrigger
+                                                        rootClose
+                                                        trigger="click"
+                                                        placement="left"
+                                                        overlay={<Popover id={'comment-task-' + index}>
+                                                            <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
+                                                            <Popover.Content>
+                                                                {child.hrComment}
+                                                            </Popover.Content>
+                                                        </Popover>}>
+                                                        <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                                                </td>
+                                                    :null
+                                                }
+                                            </tr>
+                                        )
+                                    })  
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
@@ -630,12 +555,12 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.tasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={taskRaw.length} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {this.state.tasks.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {taskRaw.length}</div>
                 </div> : null}
-                <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
+               
             </>)
     }
 }

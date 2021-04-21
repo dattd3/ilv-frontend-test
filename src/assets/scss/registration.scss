@@ -129,7 +129,7 @@
     .react-datepicker-wrapper{
         [class$="-container"] {
             margin: 10px 0 0 0 ;
-        }   
+        }
     }
     .document{
         padding: 12px !important;
@@ -523,6 +523,20 @@
         margin-right: 10px;
         margin-top: 20px;
         border-bottom: 1px solid #d1d3e2
+    }
+
+    .group {
+        overflow: hidden;
+    }
+    .auto-height {
+        padding-bottom: 99999px;
+        margin-bottom: -99999px;
+    }
+    @media (max-width: 1200px){
+        .auto-height {
+            padding-bottom: 0px;
+             margin-bottom: 0px;
+        }
     }
     .btn-save{
         background-color: #05BD29;

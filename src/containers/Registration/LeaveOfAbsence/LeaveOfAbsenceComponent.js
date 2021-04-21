@@ -104,7 +104,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             }).catch(error => {
             })
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
-            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo
+            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
             this.setState({
                 isEdit: true,
@@ -113,6 +113,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 requestInfo: [
                     {
                         id: id,
+                        subid: id,
                         groupItem: 0,
                         startDate: moment(startDate, 'YYYYMMDD').format('DD/MM/YYYY'),
                         startTime: startTime ? moment(startTime, 'HHmm00').format('HH:mm') : null,
@@ -237,7 +238,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
             const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
 
-            if ((startDateTime >= start && startDateTime <= end) || (endDateTime >= start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end)) {
+            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end)) {
                 return req
             }
         })
@@ -269,13 +270,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         const times = [];
         requestInfo.forEach(req => {
-            const startTime = moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
-            const endTime = moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION)
+            const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
+            const endTime = req.endTime ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
                 times.push({
                     id: req.groupItem,
                     // subid:req.id,
-                    subid: this.props.leaveOfAbsence.requestInfo.id ? this.props.leaveOfAbsence.requestInfo.id : null,
+                    subid: req.id,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
@@ -285,7 +286,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 })
             }
         })
-
+console.log(times)
         if (times.length === 0) return
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
@@ -313,6 +314,17 @@ class LeaveOfAbsenceComponent extends React.Component {
                         }
                     })
                     this.setState({ requestInfo: newRequestInfo })
+                }
+                else {
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.totalDaysOff = this.props.t("AnErrorOccurred")
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
                 }
             }).catch(error => {
 
@@ -448,19 +460,16 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         const employeeLevel = localStorage.getItem("employeeLevel")
 
-        // if{
-        //     appraiser.id 
-        // }
         this.setState({
             requestInfo,
             errors: {
                 approver: !approver ? this.props.t('Required') : errors.approver,
-                appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
+                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
             }
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver || (errors.appraiser && employeeLevel === "N0")) {
+        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
             return false
         }
         return true
@@ -599,10 +608,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
-        files.forEach(file => {
-            bodyFormData.append('Files', file)
-        })
-
+        if(!isEdit)
+        {
+            files.forEach(file => {
+                bodyFormData.append('Files', file)
+            })
+        }
+       
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
@@ -610,8 +622,13 @@ class LeaveOfAbsenceComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result) {
+                if (response && response.data.data && response.data.result) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                    this.setDisabledSubmitButton(false)
+                }
+                else
+                {
+                    this.showStatusModal(t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
             })
@@ -684,13 +701,13 @@ class LeaveOfAbsenceComponent extends React.Component {
     handleCheckboxChange = (e) => {
         const { requestInfo } = this.state
         requestInfo.forEach(req => {
-            if (e.target.value == req.groupId) {
+            if (e.target.value.split(".")[0] == req.groupId && e.target.value.split(".")[1] == req.groupItem) {
                 req.startTime = null
                 req.endTime = null
                 req.isAllDayCheckbox = e.target.checked
             }
         });
-        console.log(requestInfo)
+
         this.setState({ requestInfo: requestInfo })
         this.validateTimeRequest(requestInfo)
     }
@@ -811,7 +828,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ? 
                                                     <div className="all-day-area">
-                                                        <input type="checkbox" value={req[0].groupId} checked={req[0].isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
+                                                        <input type="checkbox" value={reqDetail.groupId+"."+reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
                                                         <label>Nghỉ cả ngày</label>                                              
                                                     </div>                                                    
                                                     : null
@@ -857,7 +874,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -905,7 +922,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
-                                                                            disabled={req[0].isAllDay || req[0].isAllDayCheckbox}
+                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                         />
                                                                     </label>
                                                                 </div>
@@ -994,7 +1011,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>
         )
     }
