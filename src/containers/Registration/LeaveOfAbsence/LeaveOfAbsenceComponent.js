@@ -608,10 +608,13 @@ console.log(times)
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
-        files.forEach(file => {
-            bodyFormData.append('Files', file)
-        })
-
+        if(!isEdit)
+        {
+            files.forEach(file => {
+                bodyFormData.append('Files', file)
+            })
+        }
+       
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
@@ -1008,7 +1011,7 @@ console.log(times)
                         </li>
                     })}
                 </ul>
-                <ButtonComponent files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>
         )
     }
