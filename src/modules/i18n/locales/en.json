@@ -797,7 +797,7 @@
   "ResponseSentSuccessfully": "Response Sent Successfully",
   "recall": "Are you sure you want to recall?",
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
-  
+
   "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
   "GROSSSUPCovidCampaignBonus": "GROSS Covid Campaign Bonus",
   "GROSSCovidCampaignBonus": "Covid - 19 Campaign Bonus(gross)",
@@ -926,7 +926,7 @@
   "CONSENTER":"CONSENTER",
   "Position":"Position",
   "StartTime": "Start Time",
-  "NoticeQuest": "Please contact Line Manager to know who is the PIC of your question!", 
+  "NoticeQuest": "Please contact Line Manager to know who is the PIC of your question!",
   "FinanceAccountingPIC": "Finance/Accounting PIC",
   "HrPIC": "HR PIC",
   "EscalateToManagerOrHr": "Escalate to Manager/HR",
@@ -1075,5 +1075,6 @@
   "MenuMyProjects": "My projects",
   "MenuMyProfile": "My profile",
   "VFCarElectricStakeNet": "VF car electric stake (net)",
-  "VFCarElectricStakeGross": "VF car electric stake (gross)"
+  "VFCarElectricStakeGross": "VF car electric stake (gross)",
+  "RegistrationEmploymentTermination": "Register leave"
 }
