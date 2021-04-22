@@ -7,6 +7,7 @@ import Constants from '../../commons/Constants'
 import map from "../map.config"
 import moment from 'moment'
 import Select from 'react-select'
+import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation } from "react-i18next"
 
 class ExportModal extends React.Component {
@@ -16,7 +17,8 @@ class ExportModal extends React.Component {
           data: {},
           fromDate: new Date(),
           toDate: new Date(),
-          status:null
+          status:null,
+          disabledDownloadBtn: false,
         }
     }
   
@@ -62,14 +64,17 @@ class ExportModal extends React.Component {
     }
     exportExcel = () => {
       let type = this.props.exportType == "consent" ? "Appraiser" : "Approver";
+      let fileName = "DanhSachYeuCau.xlsx"
       
       const config = {
+        responseType: 'blob',
         headers: {
-          'Authorization': `${localStorage.getItem('accessToken')}`
+          'Authorization': `${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/octet-stream'
         },
         params: {
-          Type: type,
-          ProcessStatusId: this.state.status.value,
+          type: type,
+          processStatusId: this.state.status ? this.state.status.value : 0,
           companyCode: localStorage.getItem("companyCode"),
           fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
           toDate: moment(this.state.toDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -78,19 +83,43 @@ class ExportModal extends React.Component {
           unitId: null
         }
       }
-      
-      debugger
+
       axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/ExportExcel`, config)
       .then(res => {
-        const fileUrl = res.data
-        if (fileUrl) {
-          window.open(fileUrl);
+        this.setState({ disabledDownloadBtn: true });
+
+        var blob = new Blob([res.data], { type: "application/octetstream" });
+ 
+        //Check the Browser type and download the File.
+        var isIE = false || !!document.documentMode;
+
+        if (isIE) {
+          window.navigator.msSaveBlob(blob, fileName);
+        } 
+        else {
+          var url = window.URL || window.webkitURL;
+          let link = url.createObjectURL(blob);
+          var a = document.createElement("a");
+
+          a.setAttribute("download", fileName);
+          a.setAttribute("href", link);
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          setTimeout(() => {  this.hideExportModal() }, 2000);  
         }
       }).catch(error => {
   
       });
     }
-    
+
+    errorDate = (fromDate, toDate) => {
+      return fromDate > toDate ? "Vui lòng chọn Từ ngày nhỏ hơn Đến ngày" : null
+    }
+    hideExportModal() {
+      this.props.onHide()
+    }
     render() {
         const { t } = this.props
         return (
@@ -138,6 +167,7 @@ class ExportModal extends React.Component {
                     </div>
                   </div>
                 </div> 
+                <span className='text-danger'>{this.errorDate(this.state.fromDate,this.state.toDate)}</span>
                 <div className="check_tatus_area w-100 mt-2">
                 <label className="mb-1">Tình trạng</label>
                 <Select name="status" 
@@ -156,7 +186,16 @@ class ExportModal extends React.Component {
                    })}/>                 
                 </div>
                 <div className="clearfix mt-2">
-                  <button type="button" className='btn btn-primary w-25 float-right' onClick={this.exportExcel}>Tải về</button>
+                  <button type="button" className='btn btn-primary w-25 float-right'  disabled={this.state.disabledDownloadBtn} onClick={this.exportExcel}>
+                  {!this.state.disabledDownloadBtn ? t("Dowload") :
+                   <Spinner
+                   as="span"
+                   animation="border"
+                   size="sm"
+                   role="status"
+                   aria-hidden="true"
+                  />}                 
+                  </button>
                   <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>Hủy</button>
                 </div>
                 </Modal.Body>
