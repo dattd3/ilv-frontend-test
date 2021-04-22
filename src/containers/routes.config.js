@@ -449,7 +449,7 @@ export default [
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
         },
-        
+
         {
           key: "leave-fund",
           routeProps: {
@@ -563,6 +563,14 @@ export default [
           },
           component: lazy(() => import("./TaskRecruitment/Evalution"))
         },
+        {
+          key: "registration-employment-termination",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationEmploymentTermination
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination"))
+        }
       ],
     },
   },

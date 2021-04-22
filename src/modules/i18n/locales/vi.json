@@ -941,8 +941,8 @@
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
   "MenuChangeShiftReport": "Báo cáo thay đổi phân ca",
-  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!", 
-  "Withdraw": "Thu hồi", 
+  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!",
+  "Withdraw": "Thu hồi",
   "AllowRegisterFor1Hour":"Cho phép Đăng ký nghỉ 1 khung giờ trong nhiều ngày liên tiếp (Giới hạn trong chu kỳ lương)",
   "CONSENTER":"CBQL THẨM ĐỊNH",
   "APPROVER":"CBLĐ PHÊ DUYỆT",
@@ -1092,5 +1092,6 @@
   "MenuMyProjects": "Dự án của tôi",
   "MenuMyProfile": "Hồ sơ của tôi",
   "VFCarElectricStakeNet": "Hỗ trợ cọc xe VF (NET)",
-  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)"
+  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)",
+  "RegistrationEmploymentTermination": "Đăng ký nghỉ việc"
 }

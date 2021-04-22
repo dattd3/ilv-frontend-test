@@ -371,7 +371,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
   },
   {
@@ -390,6 +390,13 @@ export const Navigation = [
     label: "instruct",
     to: map.Instruct,
     role: 'U'
-  }
-
+  },
+  {
+    id: 119999,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    role: 'U'
+  },
 ];
