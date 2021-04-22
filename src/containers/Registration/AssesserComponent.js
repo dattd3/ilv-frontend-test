@@ -138,7 +138,7 @@ class AssesserComponent extends React.Component {
                 }
             }
 
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
+            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
                 .then(res => {
                     if (res && res.data && res.data.data) {
                         const data = res.data.data || []
