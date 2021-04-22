@@ -847,8 +847,8 @@ renderEvalution = (name, data, isDisable) => {
     })
   }
 
-  setDisabledSubmitButton(status) {
-    this.setState({ disabledSubmitButton: status });
+  setDisabledSubmitButton(status, actionType = null) {
+    this.setState({ disabledSubmitButton: status, actionType: actionType });
   }
 
   handleDatePickerInputChange = (value, name, subname) => {
@@ -869,9 +869,9 @@ renderEvalution = (name, data, isDisable) => {
     const { t } = this.props
     const err = this.verifyInputs()
 
-    this.setDisabledSubmitButton(true)
+    this.setDisabledSubmitButton(true, actionType)
     if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
-        this.setDisabledSubmitButton(false)
+        this.setDisabledSubmitButton(false, actionType)
         return
     }
 
@@ -890,14 +890,22 @@ renderEvalution = (name, data, isDisable) => {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
         .then(response => {
-            if (response && response.data && response.data.result) {
-                this.showStatusModal(t("RequestSent"), true, true, home)
-                this.setDisabledSubmitButton(false)
-            }
+          if(response.data.result && response.data.result.code == '000000'){
+            this.showStatusModal(t("RequestSent"), true, true, home)
+            this.setDisabledSubmitButton(false, actionType)
+            return;
+          }
+          this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+          this.setDisabledSubmitButton(false, actionType)    
+
+            // if (response && response.data && response.data.result) {
+            //     this.showStatusModal(t("RequestSent"), true, true, home)
+            //     this.setDisabledSubmitButton(false)
+            // }
         })
         .catch(response => {
             this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-            this.setDisabledSubmitButton(false)
+            this.setDisabledSubmitButton(false, actionType)
         })
 }
   
@@ -1432,7 +1440,7 @@ renderEvalution = (name, data, isDisable) => {
                           {'Phê duyệt'}
                   </button> : 
                   <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
-                    {!this.state.disabledSubmitButton ?
+                    {!(this.state.disabledSubmitButton && this.state.actionType == 2) ?
                         <>
                             <i className="fa fa-paper-plane mr-2" aria-hidden="true">
                             </i>
@@ -1456,7 +1464,7 @@ renderEvalution = (name, data, isDisable) => {
                   </label>
                   </> 
                   : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
-                    {!this.state.disabledSubmitButton ?
+                    {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
                         <>
                             {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
                             </i> */}
