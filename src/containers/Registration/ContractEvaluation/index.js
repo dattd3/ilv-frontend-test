@@ -397,7 +397,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         departmentName: infos.staffContracts.departmentName,
         startDate: infos.staffContracts.startDate,
         expireDate: infos.staffContracts.expireDate,
-        employeeEmail: infos.staffContracts.employeeEmail
+        employeeEmail: infos.staffContracts.employeeEmail,
+        comments: infos.staffContracts.comments
       }
     }
 
@@ -1381,7 +1382,7 @@ renderEvalution = (name, data, isDisable) => {
           <div className="row">
             <div className="col-4">
               Lý do không duyệt
-              <div className="detail">{''}</div>
+              <div className="detail">{data.employeeInfo.comments || '' }</div>
             </div>
           </div>
           
