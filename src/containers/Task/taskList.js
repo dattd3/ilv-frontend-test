@@ -481,7 +481,7 @@ class TaskList extends React.Component {
                                         return (
                                             <tr key={index}>
                                                 {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
+                                                    (((child.processStatusId == 5 || child.processStatusId) && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                     <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>

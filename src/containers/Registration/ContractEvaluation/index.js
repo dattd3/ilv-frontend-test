@@ -467,7 +467,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
-        contract: infos.additionInforEvaluations.contractType ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
+        contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
         startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : '', 
         endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : '',
         otherOption: infos.additionInforEvaluations.proposed || ''
@@ -880,6 +880,9 @@ renderEvalution = (name, data, isDisable) => {
     if(this.state.type == 'assess'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
       home = '/tasks?tab=consent';
+    }else if(this.state.type == 'approval') {
+      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=5`
+      home = '/tasks?tab=approval'
     }
 
     const bodyFormData = this.prepareDataToSubmit(this.state.data);
@@ -1293,7 +1296,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div> */}
                 <div className="col-12">
                   Đề xuất khác
-                  <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
+                  <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} value={data.qlttOpinion.otherOption || ''} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
                 </div>
               </div>
             </div>
@@ -1356,7 +1359,7 @@ renderEvalution = (name, data, isDisable) => {
           </>
         }
         { 
-        data.processStatus == 2 || data.processStatus == 1 ?
+        data.processStatus == 1 ?
         <>
         <h5>THÔNG TIN PHÊ DUYỆT</h5>
         
@@ -1391,7 +1394,7 @@ renderEvalution = (name, data, isDisable) => {
                 return <li className="list-inline-item" key={index}>
                     <span className="file-name">
                         <a title={file.name} href={file.link} download={file.name} target="_blank">{file.name}</a>
-                        {showComponent.employeeSide ? 
+                        {showComponent.employeeSide && !disableComponent.disableAll? 
                         <i className="fa fa-times remove" aria-hidden="true" onClick={e => this.removeFiles(file.id, index)}></i> 
                         : null }
                     </span>
