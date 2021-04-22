@@ -52,9 +52,9 @@ class TaskList extends React.Component {
         this.setState({tasks: this.props.tasks})
     }
     
-    componentWillReceiveProps()
+    componentWillReceiveProps(nextProps)
     {
-        this.setState({tasks: this.props.tasks})
+        this.setState({tasks: nextProps.tasks, taskFiltered: nextProps.tasks})
     }
 
     onChangePage = index => {
@@ -291,7 +291,7 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        let cloneTask = this.props.tasks;
+        let cloneTask = this.state.taskFiltered;
         let result = [];
         if(value && value.value)
         {
@@ -325,7 +325,8 @@ class TaskList extends React.Component {
     }
     render() {
         const recordPerPage = 5
-        let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
+        // let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
+        let taskRaw = this.state.tasks
         let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
 
