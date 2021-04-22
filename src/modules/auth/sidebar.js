@@ -249,4 +249,12 @@ export const Navigation = [
     to: map.QuestionAndAnswer,
     role: ['V030','V096','V060','V073']
   },
+  {
+    id: 99,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    role: 'U'
+  },
 ];

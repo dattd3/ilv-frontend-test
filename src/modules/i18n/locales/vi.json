@@ -843,5 +843,6 @@
   "successfulDisApprovalReq": "Từ chối phê duyệt yêu cầu thành công !",
   "successfulConsentReq": "Thẩm định yêu cầu thành công !",
   "successfulRejectConsentReq": "Từ chối thẩm định yêu cầu thành công !",
-  "AnErrorOccurred": "Đã có lỗi xảy ra"
+  "AnErrorOccurred": "Đã có lỗi xảy ra",
+  "RegistrationEmploymentTermination": "Đăng ký nghỉ việc"
 }

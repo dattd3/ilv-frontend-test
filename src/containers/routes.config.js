@@ -448,6 +448,14 @@ export default [
             path: map.QuestionAndAnswerDetails
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
+        },
+        {
+          key: "registration-employment-termination",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationEmploymentTermination
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination"))
         }
       ],
     },
