@@ -15,7 +15,8 @@ class ConfirmationModal extends React.Component {
             resultTitle: "",
             resultMessage: "",
             isShowStatusModal: false,
-            disabledSubmitButton: false
+            disabledSubmitButton: false,
+            errorMessage: null
         }
     }
 
@@ -23,10 +24,12 @@ class ConfirmationModal extends React.Component {
         if (this.state.disabledSubmitButton) {
             return;
         }
+        if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
+            this.setState({errorMessage: "Vui lòng nhập lý do"})
+            return;
+        }
         this.setState({ disabledSubmitButton: true });
-        const url = window.location.pathname
         const id = this.props.id
-        let formData = new FormData();
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
@@ -308,7 +311,12 @@ class ConfirmationModal extends React.Component {
     }
 
     handleChangeMessage = (e) => {
-        this.setState({ message: e.target.value })
+        if(e.target.value) {
+            this.setState({ message: e.target.value, errorMessage: null })
+        }
+        else {
+            this.setState({ message: "", errorMessage: "Vui lòng nhập lý do" })
+        }
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -344,9 +352,10 @@ class ConfirmationModal extends React.Component {
                     <Modal.Body>
                         <p>{this.props.message}</p>
                         {
-                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED || this.props.type == Constants.STATUS_EVICTION || this.props.type == 0 ?
+                            Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                    <span className="text-danger">{this.state.errorMessage}</span>
                                 </div>
                                 : null
                         }
