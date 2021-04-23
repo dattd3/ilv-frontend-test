@@ -48,30 +48,30 @@ class BusinessTripDetailComponent extends React.Component {
         <h5>Thông tin đăng ký Công tác/Đào tạo</h5>
         <div className="box shadow cbnv">
           <div className="row">
-            <div className="col-4">
+            <div className="col-xl-4">
               {t("StartDateTime")}
               <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
-            <div className="col-4">
+            <div className="col-xl-4">
               {t("EndDateTime")}
               <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
             </div>
-            <div className="col-4">
+            <div className="col-xl-4">
               {t('TotalTimeForBizTripAndTraining')}
               {/* <div className="detail">{(businessTrip && requestInfo?.hours) ? ((requestInfo.isAllDay == FULL_DAY) ? requestInfo?.days + ' ' + t("Day") : requestInfo?.days + ' ' + t("Day") +' '+requestInfo?.hours + ' ' + t("Hour")) : null}</div> */}
               <div className="detail">{(businessTrip && requestInfo?.days >=1) ? requestInfo?.days + ' ' + t("Day") : requestInfo?.hours + ' ' + t("Hour")}</div>
             </div>
           </div>
           <div className="row">
-            <div className="col-4">
+            <div className="col-xl-4">
               {t('TypeOfBizTripAndTraining')}
               <div className="detail">{requestInfo.attendanceType?.label}</div>
             </div>
-            <div className="col-4">
+            <div className="col-xl-4">
               {t('Location')}
               <div className="detail">{requestInfo.location && requestInfo.location?.label}</div>
             </div>
-            <div className="col-4">
+            <div className="col-xl-4">
               {t('MeansOfTransportation')}
               <div className="detail">{requestInfo.vehicle && requestInfo.vehicle.label}</div>
             </div>
