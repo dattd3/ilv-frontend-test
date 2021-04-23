@@ -29,7 +29,7 @@ class ConsentComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests
-          let taskList = processingDataReq(tasksOrdered)
+          let taskList = processingDataReq(tasksOrdered,"consent")
           // console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
@@ -42,6 +42,7 @@ class ConsentComponent extends React.Component {
   render() {
     const { t } = this.props
     let statusFiler = [
+      { value: 0, label: t("All") },
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
       { value: Constants.STATUS_WAITING , label: t("Consented") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },

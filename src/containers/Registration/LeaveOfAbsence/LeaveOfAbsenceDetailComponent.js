@@ -88,25 +88,25 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div>
           <div className="row mt-2">
-            <div className="col-2">
+            <div className="col-xl-2">
               {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
-            <div className="col-2">
+            <div className="col-xl-3">
               {t("LeavesThisYear")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("AdvancecdAnnualLeave")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
             </div>
-            <div className="col-5">
+            <div className="col-xl-4">
               <div className="row">
-                <div className="col-6">
+                <div className="col-xl-6">
                   {t("ToilHoursBalance")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
                 </div>
-                <div className="col-6">
+                <div className="col-xl-6">
                   {t("ToilHours")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
                 </div>
@@ -118,20 +118,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <h5>Thông tin đăng ký nghỉ</h5>
         <div className="box shadow cbnv">
           <div className="row">
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("StartDateTime")}
               <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("EndDateTime")}
               <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("TotalLeaveTime")}
               {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
               <div className="detail">{( requestInfo && requestInfo.days >= 1) ? requestInfo.days + ' ' + t("Day") : requestInfo.hours + ' ' + t("Hour")}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("LeaveCategory")}
               <div className="detail">{requestInfo && requestInfo.absenceType ? requestInfo.absenceType.label : ""}</div>
             </div>
@@ -154,7 +154,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId )) ? 
           <>
             <h5>Thông tin CBQL thẩm định</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.requestInfo.appraiserComment} />
+            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
           : null
         }
@@ -163,7 +163,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.requestInfo.approverComment} />
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }
 
@@ -198,7 +198,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
           ]
         }
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED}
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
           isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
           id={this.props.leaveOfAbsence.id}
