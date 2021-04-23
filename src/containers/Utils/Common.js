@@ -1,7 +1,7 @@
 import moment from 'moment'
 import Constants from '../../commons/Constants'
 
-export default function processingDataReq (dataRawFromApi)  {
+export default function processingDataReq (dataRawFromApi, tab)  {
     let taskList = [];
         dataRawFromApi.forEach(element => {
             if(element.requestInfo) {
@@ -16,6 +16,9 @@ export default function processingDataReq (dataRawFromApi)  {
                       e.processStatusId = element.processStatusId
                       e.id = element.id.toString()
                       e.startDate = moment(e.date).format("DD/MM/YYYY")
+                    }
+                    if(e.processStatusId == 8 || (e.processStatusId == 5 &&  tab == "approval")) {
+                        e.canChecked = true
                     }
                     taskList.push(e);
                 })
