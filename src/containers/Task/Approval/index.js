@@ -41,6 +41,7 @@ class ApprovalComponent extends React.Component {
   render() {
     const { t } = this.props
     let statusFiler = [
+      { value: 0, label: t("All") },
       { value: Constants.STATUS_WAITING , label: t("Waiting") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
