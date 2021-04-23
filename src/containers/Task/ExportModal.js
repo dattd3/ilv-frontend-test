@@ -59,7 +59,7 @@ class ExportModal extends React.Component {
         }
       }
       this.setState({ disabledDownloadBtn: true });
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/ExportExcel`, config)
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}Request/ExportExcel`, config)
       .then(res => {
         var blob = new Blob([res.data], { type: "application/octetstream" });
  
@@ -80,7 +80,7 @@ class ExportModal extends React.Component {
           a.click();
           document.body.removeChild(a);
 
-          setTimeout(() => {  this.hideExportModal() }, 2000);  
+          setTimeout(() => {  this.hideExportModal() }, 1000);  
           this.setState({ disabledDownloadBtn: false });
           
         }
@@ -147,8 +147,9 @@ class ExportModal extends React.Component {
                 <label className="mb-1">Tình trạng</label>
                 <Select name="status" 
                    className="w-100" 
-                   value={this.state.status || ""} 
-                   isClearable={true}
+                   defaultValue={this.props.statusOptions[0]}
+                   value={this.state.status || this.props.statusOptions[0]} 
+                   isClearable={false}
                    onChange={status => this.handleSelectChange('status', status)} 
                    placeholder={t('SortByStatus')} key="status" options={this.props.statusOptions} 
                    theme={theme => ({
