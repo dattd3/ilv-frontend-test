@@ -95,7 +95,7 @@ class BusinessTripDetailComponent extends React.Component {
           this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)?
           <>
             <h5>Thông tin phê duyệt</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={businessTrip.hrComment} />
+            <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={requestInfo.approverComment} />
           </> : null
         }
 
@@ -131,7 +131,7 @@ class BusinessTripDetailComponent extends React.Component {
               }
             ]
           }]}
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED}
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
           isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && businessTrip.appraiser}
           id={businessTrip.id}
