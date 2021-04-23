@@ -1,6 +1,7 @@
 import React from 'react'
 // import editButton from '../../assets/img/Icon-edit.png'
 import notetButton from '../../assets/img/icon-note.png'
+import excelButton from '../../assets/img/excel-icon.svg'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
@@ -13,6 +14,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../commons/Constants'
 // import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import TaskDetailModal from './TaskDetailModal'
+import ExportModal from './ExportModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 
@@ -24,6 +26,7 @@ class TaskList extends React.Component {
             tasks: [],
             taskChecked: [],
             isShowTaskDetailModal: false,
+            isShowExportModal: false,
             messageModalConfirm: "",
             pageNumber: 1,
             taskId: null,
@@ -91,15 +94,13 @@ class TaskList extends React.Component {
         }
     }
 
-    // evictionRequest = id => {
-    //     this.setState({
-    //         modalTitle: "Xác nhận thu hồi",
-    //         modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
-    //         isShowModalConfirm: true,
-    //         typeRequest: Constants.STATUS_EVICTION,
-    //         taskId: id
-    //     });
-    // }
+    showExportModal = () => {
+        this.setState({isShowExportModal: true})
+    }
+
+    onHideisShowExportModal = () => {
+        this.setState({ isShowExportModal: false });
+    }
 
     onHideModalConfirm = () => {
         this.setState({ isShowModalConfirm: false });
@@ -224,10 +225,15 @@ class TaskList extends React.Component {
     handleAllChecked = event => {
         let tasks = this.props.tasks;
         tasks.forEach((child) => {
-            child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-            if(child.isChecked && ((child.processStatusId == 5 && child.appraiser.account == null) || child.processStatusId == 8))
+            child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+            if(child.isChecked)
             {
-                this.state.taskChecked.push(child);
+                
+                if( ((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval") 
+                    || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10
+                    ){
+                    this.state.taskChecked.push(child);
+                }
             }
             else
             {
@@ -348,42 +354,48 @@ class TaskList extends React.Component {
         }
         return (
             <>
+                <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="row w-75 mt-2 mb-3">
-                    <div className="col-xl-6">
-                        <InputGroup className="d-flex">
-                        <InputGroup.Prepend className="">
-                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <Select name="absenceType" 
-                                className="w-75" 
-                                value={this.state.absenceType || ""} 
-                                isClearable={true}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
-                                theme={theme => ({
-                                ...theme,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: '#F9C20A',
-                                    primary: '#F9C20A',
-                                },
-                                })}/>
+                <div className="d-flex justify-content-between w-100 mt-2 mb-3">
+                    <div className="row w-75">
+                        <div className="col-xl-6">
+                            <InputGroup className="d-flex">
+                            <InputGroup.Prepend className="">
+                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Select name="absenceType" 
+                                    className="w-75" 
+                                    value={this.state.absenceType || ""} 
+                                    isClearable={true}
+                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                    placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                    theme={theme => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        primary25: '#F9C20A',
+                                        primary: '#F9C20A',
+                                    },
+                                    })}/>
+                            </InputGroup>
+                        </div>
+                        <div className="col-xl-6">
+                            <InputGroup className="">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            onChange={this.handleInputChange}
+                            />
                         </InputGroup>
+                        </div>
                     </div>
-                    <div className="col-xl-6">
-                    <InputGroup className="">
-                        <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                        placeholder={t('SearchRequester')}
-                        aria-label="SearchRequester"
-                        aria-describedby="basic-addon2"
-                        onChange={this.handleInputChange}
-                        />
-                    </InputGroup>
-                    </div>
+                   <div className="export-btn">
+                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
+                   </div>
                 </div> 
                 <div className="block-title d-flex">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
@@ -481,7 +493,7 @@ class TaskList extends React.Component {
                                         return (
                                             <tr key={index}>
                                                 {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
+                                                    (((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                     <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
