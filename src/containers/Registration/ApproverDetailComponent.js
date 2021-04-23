@@ -19,7 +19,7 @@ function ApproverDetailComponent(props) {
         <div className="detail">{props.approver ? props.approver.department : null}</div>
       </div>
       {
-      props.status == Constants.STATUS_NOT_APPROVED || props.status == Constants.STATUS_NO_CONSENTED ?
+      props.status == Constants.STATUS_NOT_APPROVED || props.status == Constants.STATUS_NO_CONSENTED || props.status == Constants.STATUS_EVICTION ?
       <div className="col-xl-4">
         Lý do không duyệt
         <div className="detail">
