@@ -28,12 +28,12 @@ class DetailButtonComponent extends React.Component {
 
     disApproval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt", typeRequest: Constants.STATUS_NOT_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NOT_APPROVED })
     }
 
     revocationApproval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: t("ConfirmApprovalRecall"), modalMessage: t("SureApprovalRecall") + t(this.requestRegistraion[this.props.requestTypeId]), typeRequest: 0 })
+        this.setState({ isConfirmShow: true, modalTitle: t("ConfirmApprovalRecall"), modalMessage: t("SureApprovalRecall"), typeRequest: 0 })
     }
 
     evictionRequest = () => {
@@ -46,7 +46,7 @@ class DetailButtonComponent extends React.Component {
     }
     rejected = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do từ chối thẩm định", typeRequest: Constants.STATUS_NO_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do từ chối thẩm định (Bắt buộc)", typeRequest: Constants.STATUS_NO_CONSENTED })
     }
     onHideModalConfirm() {
         this.setState({ isConfirmShow: false })
