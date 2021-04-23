@@ -23,32 +23,7 @@ class ExportModal extends React.Component {
     }
   
     componentDidMount() {
-      let config = {
-        headers: {
-          'Authorization': localStorage.getItem('accessToken')
-        },
-        params:{
-          id: this.props.taskId,
-          subid: this.props.subId
-        }
-      }
-      if(this.props.taskId)
-      {
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
-        .then(res => {
-          if (res && res.data) {
-            const data = res.data
-            if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
-              return window.location.href = map.NotFound;
-            }
-            const response = data.data
-            this.setState({data: response })
-            console.log(this.state.data);
-          }
-        }).catch(error => {
-          console.log(error)
-        });
-      }
+      this.setState({ disabledDownloadBtn: false });
     }
 
     handleSelectChange(name, value) {
@@ -83,11 +58,9 @@ class ExportModal extends React.Component {
           unitId: null
         }
       }
-
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/ExportExcel`, config)
+      this.setState({ disabledDownloadBtn: true });
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}Request/ExportExcel`, config)
       .then(res => {
-        this.setState({ disabledDownloadBtn: true });
-
         var blob = new Blob([res.data], { type: "application/octetstream" });
  
         //Check the Browser type and download the File.
@@ -107,7 +80,9 @@ class ExportModal extends React.Component {
           a.click();
           document.body.removeChild(a);
 
-          setTimeout(() => {  this.hideExportModal() }, 2000);  
+          setTimeout(() => {  this.hideExportModal() }, 1000);  
+          this.setState({ disabledDownloadBtn: false });
+          
         }
       }).catch(error => {
   
@@ -172,8 +147,9 @@ class ExportModal extends React.Component {
                 <label className="mb-1">Tình trạng</label>
                 <Select name="status" 
                    className="w-100" 
-                   value={this.state.status || ""} 
-                   isClearable={true}
+                   defaultValue={this.props.statusOptions[0]}
+                   value={this.state.status || this.props.statusOptions[0]} 
+                   isClearable={false}
                    onChange={status => this.handleSelectChange('status', status)} 
                    placeholder={t('SortByStatus')} key="status" options={this.props.statusOptions} 
                    theme={theme => ({
