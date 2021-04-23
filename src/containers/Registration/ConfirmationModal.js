@@ -58,6 +58,11 @@ class ConfirmationModal extends React.Component {
                 this.props.dataToSap.sub[0].comment = this.state.message;
                 this.revocation(this.props.dataToSap);
                 break;
+            case 0: //cán bộ phê duyệt thu hồi
+                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_EVICTION;
+                this.props.dataToSap[0].sub[0].comment = this.state.message;
+                this.revocationApproval(this.props.dataToSap);
+                break;
             default:
                 break;
         }
@@ -107,6 +112,36 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == "000000") {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRecallReq"), true)
+                        // setTimeout(() => { this.hideStatusModal() }, 3000);
+                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                        return window.location.href = map.NotFound
+                    } else {
+                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                    }
+                }
+            })
+            .finally(res => {
+                this.props.onHide()
+            })
+            .catch(response => {
+                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            })
+    }
+
+    revocationApproval = (dataToSap) => {
+        console.log(dataToSap[0]);
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}request/approved/cancel`,
+            data: dataToSap[0],
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+        })
+            .then(res => {
+                if (res && res.data) {
+                    const result = res.data.result
+                    const code = result.code
+                    if (code == "000000") {
+                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRevocationApproval"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
@@ -294,6 +329,7 @@ class ConfirmationModal extends React.Component {
         const backgroundColorMapping = {
             [Constants.STATUS_NOT_APPROVED]: "bg-not-approved",
             [Constants.STATUS_NO_CONSENTED]: "bg-not-approved",
+            [0]: "bg-not-approved",
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         }
@@ -308,7 +344,7 @@ class ConfirmationModal extends React.Component {
                     <Modal.Body>
                         <p>{this.props.message}</p>
                         {
-                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED || this.props.type == Constants.STATUS_EVICTION ?
+                            this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == Constants.STATUS_NO_CONSENTED || this.props.type == Constants.STATUS_EVICTION || this.props.type == 0 ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
                                 </div>
