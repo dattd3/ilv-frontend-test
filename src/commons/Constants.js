@@ -37,6 +37,7 @@ const Constants = {
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,7],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,8],
+  STATUS_USE_COMMENT: [0,1,3,4,7],
   mappingStatus: {
     1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt
