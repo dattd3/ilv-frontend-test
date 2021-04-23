@@ -154,7 +154,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId )) ? 
           <>
             <h5>Thông tin CBQL thẩm định</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.requestInfo.appraiserComment} />
+            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
           : null
         }
@@ -163,7 +163,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={this.props.leaveOfAbsence.requestInfo.approverComment} />
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }
 
@@ -198,7 +198,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
           ]
         }
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED}
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
           isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
           id={this.props.leaveOfAbsence.id}
