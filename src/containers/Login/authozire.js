@@ -41,6 +41,7 @@ function Authorize(props) {
                 if (res && res.data && res.data.data) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
+                    updateUser(userProfile,jwtToken)
                 }
             })
             .catch(error => {
@@ -176,6 +177,33 @@ function Authorize(props) {
                 SetNotifyContent(t("WaitNotice"));
             }
         });
+    }
+
+    function updateUser(userProfile, jwtToken) {
+       let userData = {
+            fullName: userProfile.fullname,
+            employeeNo: userProfile.uid,
+            mobile: "",
+            jobTitle: "",
+            benefitLevel: "",
+            companyName: "",
+            companyCode: userProfile.company_code,
+            departmentName: "",
+            culture: localStorage.getItem('locale').split("-")[0]
+        }
+        debugger
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}user/update`,
+            data: userData,
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwtToken}`}
+        })
+        .then(res => {
+        })
+        .finally(res => {
+        })
+        .catch(response => {
+        })    
     }
 
     useEffect(() => {
