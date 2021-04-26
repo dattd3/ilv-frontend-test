@@ -105,7 +105,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
@@ -129,7 +129,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED ,"comment":this.state.message})
+                taskObj.sub.push({"id":element.id,"processStatusId":element.processStatusId, 'status': '0' ,"comment":this.state.message, 'status': '0'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
@@ -149,7 +149,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
@@ -169,7 +169,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": -1 ,"comment":this.state.message})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
             }else{
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
