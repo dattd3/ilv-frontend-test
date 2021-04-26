@@ -236,6 +236,18 @@ export const Navigation = [
     id: 97,
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RequestRegistration",
+    label2: "RequestRegistration",
+    to: map.Registration,
+    role: 'U'
+  },
+  
+  
+  
+  {
+    id: 97,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
     label2: "Registration",
     to: map.Registration,
