@@ -49,6 +49,27 @@ const Constants = {
     8: {label: 'Waiting', className: ''} // đang chờ thẩm định
   },
 
+  //
+  mappingActionType : {
+    'INS': {
+      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do đăng ký nghỉ'
+    },
+    'MOD': {
+      TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do chỉnh sửa đăng ký nghỉ'
+    },
+    'DEL': {
+      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do hủy đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do hủy đăng ký nghỉ'
+    }
+  },
   //DateTime
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',
