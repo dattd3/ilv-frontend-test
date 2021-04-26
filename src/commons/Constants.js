@@ -43,6 +43,7 @@ const Constants = {
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,7],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,8],
+  STATUS_USE_COMMENT: [0,1,3,4,7],
   mappingStatus: {
     1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt
@@ -54,6 +55,27 @@ const Constants = {
     8: {label: 'Waiting', className: ''} // đang chờ thẩm định
   },
 
+  //
+  mappingActionType : {
+    'INS': {
+      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do đăng ký nghỉ'
+    },
+    'MOD': {
+      TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do chỉnh sửa đăng ký nghỉ'
+    },
+    'DEL': {
+      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
+      ReasonTripAndTrainning: 'Lý do hủy đăng ký công tác/đào tạo',
+      ReasonRequestLeave: 'Lý do hủy đăng ký nghỉ'
+    }
+  },
   //DateTime
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',

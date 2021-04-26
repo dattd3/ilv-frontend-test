@@ -30,7 +30,7 @@ class ConsentComponent extends React.Component {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests
-          let taskList = processingDataReq(tasksOrdered)
+          let taskList = processingDataReq(tasksOrdered,"consent")
           // console.log(taskList);
           this.setState({tasks : taskList, dataResponse: res.data.data});
         }
@@ -43,12 +43,13 @@ class ConsentComponent extends React.Component {
   render() {
     const { t } = this.props
     let statusFiler = [
+      { value: 0, label: t("All") },
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
       { value: Constants.STATUS_WAITING , label: t("Consented") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
-      { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
+      // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
       { value: Constants.STATUS_OB_SELF_EVALUATION , label:'Tự đánh giá' },
       { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label: "Người đánh giá" },
       { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: "QLTT đánh giá" },

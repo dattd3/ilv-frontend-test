@@ -37,8 +37,8 @@ class TaskList extends React.Component {
             action: null,
             disabled: "disabled",
             query: "",
-            statusSelected:null,
-            checkedAll:false
+            statusSelected: null,
+            checkedAll:false,
         }
 
         this.manager = {
@@ -61,7 +61,13 @@ class TaskList extends React.Component {
     }
 
     onChangePage = index => {
-        this.setState({ pageNumber: index })
+        this.setState({ pageNumber: index, checkedAll: false })
+        let tasks = TableUtil.updateData(this.props.tasks  || [], index - 1, 5)
+        let canEdit = tasks.filter(child => child.canChecked)
+        let number = tasks.filter(child => child.isChecked);
+        if (number.length > 0 && number.length == canEdit.length ) {
+            this.setState({checkedAll: true})
+        }
     }
 
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
@@ -147,7 +153,7 @@ class TaskList extends React.Component {
             11: {className: 'request-status', label: 'QLTT đánh giá'},
             12: {className: 'request-status', label: 'HR thẩm định'},
             13: {className: 'request-status', label: 'CBLD phê duyệt'},
-            14: {className: 'request-status', label: 'Đã phê duyệt'}
+            //14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         const options = [
@@ -223,21 +229,23 @@ class TaskList extends React.Component {
     }
 
     handleAllChecked = event => {
-        let tasks = this.props.tasks;
+        // let tasks = this.props.tasks;
+        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, 5)
         tasks.forEach((child) => {
-            child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-            if(child.isChecked)
-            {
-                
-                if( ((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval") 
-                    || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10
-                    ){
-                    this.state.taskChecked.push(child);
+            if(child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10 || ((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval")){
+                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                if(child.isChecked)
+                {
+                    // child.canChecked = true
+                    // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
+                    if(this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
+                        this.state.taskChecked.push(child);
+                    }
                 }
-            }
-            else
-            {
-                this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
+                }
             }
         })
         this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
@@ -258,7 +266,7 @@ class TaskList extends React.Component {
                 }
                 else
                 {
-                    this.state.taskChecked.splice(this.state.taskChecked.indexOf(child.id),1);
+                    this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
                     
                 }
             }
@@ -307,9 +315,9 @@ class TaskList extends React.Component {
 
     handleSelectChange(name, value) {
         this.setState({ [name]: value })
-        let cloneTask = this.state.taskFiltered;
+        let cloneTask = this.props.tasks;
         let result = [];
-        if(value && value.value)
+        if(value && value.value > 0)
         {
             result = cloneTask.filter(req => req.processStatusId == value.value);
             this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
@@ -365,10 +373,13 @@ class TaskList extends React.Component {
                             </InputGroup.Prepend>
                             <Select name="absenceType" 
                                     className="w-75" 
-                                    value={this.state.absenceType || ""} 
-                                    isClearable={true}
+                                    // defaultValue={this.props.filterdata[0]}
+                                    value={this.state.absenceType || ""}
+                                    isClearable={false}
                                     onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                                    placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                    // selectedValue={{ label: t("All"), value: 0 }}
+                                    placeholder={t('SortByStatus')} 
+                                    key="absenceType" options={this.props.filterdata} 
                                     theme={theme => ({
                                     ...theme,
                                     colors: {
@@ -393,13 +404,13 @@ class TaskList extends React.Component {
                         </InputGroup>
                         </div>
                     </div>
-                   <div className="export-btn">
-                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
-                   </div>
+                   
                 </div> 
                 <div className="block-title d-flex">
                     <h4 className="title text-uppercase">{this.props.title}</h4>
-                    <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
+                    <div className="export-btn">
+                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
+                   </div>
                 </div>
                 <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
@@ -573,7 +584,7 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {taskRaw.length}</div>
                 </div> : null}
-               
+                <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
     }
 }

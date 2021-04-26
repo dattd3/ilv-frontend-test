@@ -126,7 +126,7 @@ class RequestTaskList extends React.Component {
             }
         this.setState({
             modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Lý do thu hồi yêu cầu",
+            modalMessage: "Lý do thu hồi yêu cầu (bắt buộc)",
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
             dataToUpdate: prepareDataForRevoke
@@ -444,7 +444,7 @@ class RequestTaskList extends React.Component {
         this.setState({ [name]: value })
         let cloneTask = this.props.tasks;
         let result = [];
-        if(value && value.value)
+        if(value && value.value > 0)
         {
             result = cloneTask.filter(req => {
                 switch (value.value) {
@@ -517,8 +517,9 @@ class RequestTaskList extends React.Component {
                         </InputGroup.Prepend>
                         <Select name="absenceType" 
                                 className="w-75" 
+                                // defaultValue={this.props.filterdata[0]}
                                 value={this.state.absenceType || ""} 
-                                isClearable={true}
+                                isClearable={false}
                                 onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                 placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
                                 theme={theme => ({

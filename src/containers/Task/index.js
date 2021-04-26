@@ -34,7 +34,7 @@ class Task extends React.Component {
             const result = res.data.result;
             if (result.code != Constants.API_ERROR_CODE) {
               let tasksOrdered = res.data.data.requests
-              let taskList = processingDataReq(tasksOrdered)
+              let taskList = processingDataReq(tasksOrdered, "approval")
               const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
               this.setState({tasks : taskList , isShowPrepareTab: true});
             }

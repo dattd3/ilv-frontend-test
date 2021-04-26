@@ -827,5 +827,6 @@
   "successfulRejectConsentReq": "Successfully reject request",
   "AnErrorOccurred": "Something went wrong",
   "RequestRegistration": "Request registration",
-  "RegistrationEmploymentTermination": "Register leave"
+  "RegistrationEmploymentTermination": "Register leave",
+  "successfulRevocationApproval": "Successfully revocation approval"
 }

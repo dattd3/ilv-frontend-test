@@ -17,12 +17,17 @@ class ConfirmRequestModal extends React.Component {
             resultDetail:[],
             isShowStatusModal: false,
             disabledSubmitButton: false,
-            approverComment: ""
+            approverComment: "",
+            errorMessage: null
         }
     }
 
     ok = (e) => {
         if (this.state.disabledSubmitButton) {
+            return;
+        }
+        if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
+            this.setState({errorMessage: "Vui lòng nhập lý do"})
             return;
         }
         this.setState({ disabledSubmitButton: true });
@@ -98,7 +103,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
@@ -123,7 +128,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED ,"comment":this.state.message})
+                taskObj.sub.push({"id":element.id,"processStatusId":element.processStatusId, 'status': '0' ,"comment":this.state.message, 'status': '0'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
@@ -146,7 +151,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
@@ -166,7 +171,7 @@ class ConfirmRequestModal extends React.Component {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
-                taskObj.sub.push({"id":element.id,"processStatusId": -1 ,"comment":this.state.message})
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
             }else{
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
@@ -183,7 +188,12 @@ class ConfirmRequestModal extends React.Component {
     }
     
     handleChangeMessage = (e) => {
-        this.setState({ message: e.target.value })
+        if(e.target.value) {
+            this.setState({ message: e.target.value, errorMessage: null })
+        }
+        else {
+            this.setState({ message: "", errorMessage: "Vui lòng nhập lý do" })
+        }
     }
 
     showStatusModal = (title, message, data, isSuccess = false) => {
@@ -217,6 +227,7 @@ class ConfirmRequestModal extends React.Component {
                             this.props.type == Constants.STATUS_NOT_APPROVED ||  this.props.type == Constants.STATUS_NO_CONSENTED?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                    <span className="text-danger">{this.state.errorMessage}</span>
                                 </div>
                                 : null
                         }
