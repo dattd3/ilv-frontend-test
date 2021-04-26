@@ -517,8 +517,8 @@ class RequestTaskList extends React.Component {
                         </InputGroup.Prepend>
                         <Select name="absenceType" 
                                 className="w-75" 
-                                defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || this.props.filterdata[0]} 
+                                // defaultValue={this.props.filterdata[0]}
+                                value={this.state.absenceType || ""} 
                                 isClearable={false}
                                 onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                 placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
