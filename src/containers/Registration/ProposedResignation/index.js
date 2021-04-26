@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
-import RegistrationEmploymentTerminationForm from './RegistrationEmploymentTerminationForm'
+import RegistrationEmploymentTerminationForm from '../RegistrationEmploymentTermination/RegistrationEmploymentTerminationForm'
 import { withTranslation  } from "react-i18next";
 class RegistrationEmploymentTermination extends React.Component {
   constructor(props) {

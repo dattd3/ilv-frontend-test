@@ -233,7 +233,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 97,
+    id: 99,
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestRegistration",
@@ -241,12 +241,9 @@ export const Navigation = [
     to: map.Registration,
     role: 'U'
   },
-  
-  
-  
   {
-    id: 97,
-    parentId: 10,
+    id: 100,
+    parentId: 99,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
     label2: "Registration",
@@ -254,19 +251,27 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 98,
-    parentId: 0,
-    icon: 'c-qa',
-    label: "QuestionAndAnswer",
-    to: map.QuestionAndAnswer,
-    role: ['V030','V096','V060','V073']
-  },
-  {
-    id: 99,
-    parentId: 10,
+    id: 101,
+    parentId: 99,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
     role: 'U'
   },
+  {
+    id: 102,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "ProposedResignation",
+    to: map.ProposedResignation,
+    role: 'U'
+  },
+  {
+    id: 103,
+    parentId: 0,
+    icon: 'c-qa',
+    label: "QuestionAndAnswer",
+    to: map.QuestionAndAnswer,
+    role: ['V030','V096','V060','V073']
+  }
 ];

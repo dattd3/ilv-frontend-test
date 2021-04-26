@@ -1366,6 +1366,64 @@ span.badge-notification[data-badge]::after {
   }
 }
 
+.nav-tabs {
+  &.tab-page {
+    border: none;
+    padding: 1em 0;
+    margin: 0 auto;
+    .nav-link {
+      border: none;
+    }
+    .nav-item {
+      border: 1px solid #ccc;
+      border-radius: 0.5em;
+      margin-right: 2em;
+      background-color: #fff;
+      color: #293281;
+    }
+    .active {
+      background-color: #347ef9;
+      color: #fff;
+    }
+    a {
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+  }
+}
+
+.registration-employment-termination {
+  color: #000000;
+  .page-title {
+    text-align: center;
+    color: #ff0000;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .block {
+    .block-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #283280;
+    }
+    input {
+      &:focus {
+        box-shadow: none;
+        border-color: #d1d3e2;
+      }
+    }
+    .react-datepicker-wrapper {
+      cursor: pointer;
+      [class$="-container"] {
+        margin-top: 0;
+      }
+    }
+    .has-border-bottom {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+  }
+}
+
 .kpi-staff-info {
   .title-group {
     text-align: left;
