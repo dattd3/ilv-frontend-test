@@ -364,12 +364,12 @@ class TaskList extends React.Component {
                             </InputGroup.Prepend>
                             <Select name="absenceType" 
                                     className="w-75" 
-                                    defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || this.props.filterdata[0]}
+                                    // defaultValue={this.props.filterdata[0]}
+                                    value={this.state.absenceType || ""}
                                     isClearable={false}
                                     onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                     // selectedValue={{ label: t("All"), value: 0 }}
-                                    // placeholder={t('SortByStatus')} 
+                                    placeholder={t('SortByStatus')} 
                                     key="absenceType" options={this.props.filterdata} 
                                     theme={theme => ({
                                     ...theme,
