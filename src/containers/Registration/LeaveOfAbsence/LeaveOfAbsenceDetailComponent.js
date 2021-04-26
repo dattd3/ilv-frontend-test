@@ -115,7 +115,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký nghỉ</h5>
+        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleLeave}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-xl-3">
@@ -144,7 +144,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div> : null}
           <div className="row">
             <div className="col">
-              {t("ReasonRequestLeave")}
+              {Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave}
               <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
             </div>
           </div>
