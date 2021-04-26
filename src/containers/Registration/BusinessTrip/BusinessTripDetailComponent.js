@@ -45,7 +45,7 @@ class BusinessTripDetailComponent extends React.Component {
         <h5>Thông tin CBNV đăng ký</h5>
         <RequesterDetailComponent user={businessTrip.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký Công tác/Đào tạo</h5>
+        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleTripAndTrainning}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-xl-4">
@@ -78,7 +78,7 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              {t('ReasonTripAndTrainning')}
+              {Constants.mappingActionType[requestInfo.actionType].ReasonTripAndTrainning}
               <div className="detail">{requestInfo.comment}</div>
             </div>
           </div>
