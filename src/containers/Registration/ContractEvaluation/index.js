@@ -52,7 +52,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 11, label: 'QLTT đánh giá'},
     {value: 12, label: 'HR thẩm định'},
     {value: 13, label: 'CBLD phê duyệt'},
-    {value: 14, label: 'Đã phê duyệt'}
+    {value: 2, label: 'Đã phê duyệt'},
+    {value: 1, label: 'Từ chối phê duyệt'}
   ];
 
   commonData = {
@@ -184,9 +185,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           shouldDisable = true;
         }
         break;
-      case 14: 
+      case 1:
+      case 2: 
         shouldDisable = true;
       break;
+      default:
+        shouldDisable = true;
     }
     if(this.state.type == 'edit'){
       shouldDisable = data.canAddJob ? false : true;
@@ -608,6 +612,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             errors[name] = null
         }
       })
+      const error = this.validateResult();
+      if(error) errors['result'] = error;
     }else if( type === 'edit'){
       if(evalutions && evalutions.length > 0){
         let isMissing = false;
@@ -655,18 +661,22 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.setState({data : candidateInfos})
   }
 
-  handleChangeSelectInputs = (e, name, subName) => {
+  validateResult = () => {
+    const name = 'qlttOpinion';
+    const subName = 'result';   
     const candidateInfos = {...this.state.data}
     const errors = {...this.state.errors};
+    let endData = candidateInfos[name][subName];
+    let endError = null;
     let shouldShowError = false;
-    if(name == 'qlttOpinion' && subName == 'result'){      
-      (candidateInfos.course || []).forEach( item => {
-        shouldShowError = item.status == false ? true : shouldShowError;
-      });
-      let totalScore = 5;
-      shouldShowError = ((candidateInfos.ManagementScoreTotal / totalScore) >= 0.7) ? shouldShowError : true;
-      shouldShowError = candidateInfos.documentStatus == 'Đủ' ? shouldShowError : true;
-      if(shouldShowError && (e != null && e.value == this.HD_THUVIEC)) {
+    
+    (candidateInfos.course || []).forEach( item => {
+      shouldShowError = item.status == false ? true : shouldShowError;
+    });
+    let totalScore = 5;
+    shouldShowError = ((candidateInfos.ManagementScoreTotal / totalScore) >= 0.7) ? shouldShowError : true;
+    shouldShowError = candidateInfos.documentStatus == 'Đủ' ? shouldShowError : true;
+    if(shouldShowError && ( candidateInfos[name] != null && candidateInfos[name][subName] && candidateInfos[name][subName].value == this.HD_THUVIEC)) {
         candidateInfos[name][subName] ={};
         this.setState({
           data : candidateInfos,
@@ -676,10 +686,36 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
           
         });
-        return;
-      }
-      errors[subName] = null;
+        return 'Không đủ điều kiện ký HĐ';
     }
+    return null;
+  }
+
+  handleChangeSelectInputs = (e, name, subName) => {
+    const candidateInfos = {...this.state.data}
+    const errors = {...this.state.errors};
+    let shouldShowError = false;
+    // if(name == 'qlttOpinion' && subName == 'result'){      
+    //   (candidateInfos.course || []).forEach( item => {
+    //     shouldShowError = item.status == false ? true : shouldShowError;
+    //   });
+    //   let totalScore = 5;
+    //   shouldShowError = ((candidateInfos.ManagementScoreTotal / totalScore) >= 0.7) ? shouldShowError : true;
+    //   shouldShowError = candidateInfos.documentStatus == 'Đủ' ? shouldShowError : true;
+    //   if(shouldShowError && (e != null && e.value == this.HD_THUVIEC)) {
+    //     candidateInfos[name][subName] ={};
+    //     this.setState({
+    //       data : candidateInfos,
+    //       errors: {
+    //         ...this.state.errors,
+    //         [subName]: 'Không đủ điều kiện ký HĐ'
+    //       }
+          
+    //     });
+    //     return;
+    //   }
+    //   errors[subName] = null;
+    // }
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
     this.setState({errors: errors, data : candidateInfos})
   }
@@ -709,9 +745,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       item[subName] = value;
       return item;
     })
-    candidateInfos['qlttOpinion']['result'] = {}
+    //candidateInfos['qlttOpinion']['result'] = {}
     candidateInfos[name] = result;
-    candidateInfos[subName + 'Total'] = total / candidateInfos[name].length;
+    candidateInfos[subName + 'Total'] = Number(total / candidateInfos[name].length).toFixed(2);
     this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
   }
 
@@ -812,7 +848,7 @@ renderEvalution = (name, data, isDisable) => {
     const candidateInfos = this.state.data;
     const evalution = candidateInfos.evalution;
     const newEvalution = candidateInfos.newEvalution;
-    const totalEvalution = [...evalution, ...newEvalution.filter(item => !item.isDeleted).map(item => {item.id = null; return item})];
+    const totalEvalution = [...evalution, ...newEvalution.filter(item => !item.isDeleted).map(item => {item.id = -1; return item})];
     const result = totalEvalution.map( item => {
       return {
         id: item.id,

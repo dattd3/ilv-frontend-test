@@ -164,7 +164,7 @@ class TaskList extends React.Component {
             11: {className: 'request-status', label: 'QLTT đánh giá'},
             12: {className: 'request-status', label: 'HR thẩm định'},
             13: {className: 'request-status', label: 'CBLD phê duyệt'},
-            14: {className: 'request-status', label: 'Đã phê duyệt'}
+            //14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         const options = [
