@@ -167,7 +167,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     switch(data.processStatus) {
       case 9: 
         if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()){
-          shouldDisable = true;
+          shouldDisable = data.canAddJob ? true : false;
         }
         break;
       case 10: 
@@ -335,6 +335,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   prepareDataToSubmit = (data) => {
     const remoteData = data.remoteData;
+    if(this.state.type == 'approval') {
+      let bodyFormData = new FormData();
+      bodyFormData.append('staffContractId', remoteData.staffContracts.id);
+      bodyFormData.append('requestHistoryId', remoteData.requestHistorys.id); 
+      bodyFormData.append('requestHistoryStatuses', 13);
+      bodyFormData.append('actionRequest', 5);
+      return bodyFormData;
+    }
     remoteData.lstTaskAssessments = (remoteData.lstTaskAssessments || []).map( (item, index) => {
       return {
         ...item,
@@ -918,7 +926,7 @@ renderEvalution = (name, data, isDisable) => {
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
       home = '/tasks?tab=consent';
     }else if(this.state.type == 'approval') {
-      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=5`
+      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/approvals`
       home = '/tasks?tab=approval'
     }
 
