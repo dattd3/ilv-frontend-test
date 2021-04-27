@@ -191,7 +191,7 @@ function Authorize(props) {
             departmentName: "",
             culture: localStorage.getItem('locale').split("-")[0]
         }
-        debugger
+
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}user/update`,
