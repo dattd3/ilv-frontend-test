@@ -16,7 +16,6 @@ class TaskEditComponent extends React.Component {
     }
 
     componentDidMount() {
-      debugger
       const taskId = this.props.match.params.id
       const subId = this.props.match.params.childId
         let config = {
