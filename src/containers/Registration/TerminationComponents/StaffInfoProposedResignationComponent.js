@@ -26,7 +26,7 @@ const MyOption = props => {
     )
 }
 
-class SeniorExecutiveInfoComponent extends React.PureComponent {
+class StaffInfoProposedResignationComponent extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
@@ -181,48 +181,79 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         }
         const { t, isEdit } = this.props;
 
-        return <div className="block appraiser">
-            <div className="box shadow">
-                <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
-                <div className="row">
-                    <div className="col-4">
-                        <p className="title">{t('FullName')}</p>
-                        <div>
-                            <Select
-                                isDisabled={isEdit}
-                                isClearable={true}
-                                styles={customStyles}
-                                components={{ Option: MyOption }}
-                                onInputChange={this.onInputChange.bind(this)}
-                                name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                value={this.state.appraiser}
-                                placeholder={t('Search') + '...'}
-                                key="appraiser"
-                                options={this.state.users}
-                            />
+        return <div className="block staff-information-proposed-resignation-block">
+                    <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
+                    <div className="box shadow">
+                        <div className="row search-action-block">
+                            <div className="col-4">
+                                <div>
+                                    <Select
+                                        isDisabled={isEdit}
+                                        isClearable={true}
+                                        styles={customStyles}
+                                        components={{ Option: MyOption }}
+                                        onInputChange={this.onInputChange.bind(this)}
+                                        name="appraiser"
+                                        onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
+                                        value={this.state.appraiser}
+                                        placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
+                                        key="appraiser"
+                                        options={this.state.users}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-2 btn-action-group">
+                                <button type="button" className="btn-action add">Thêm</button>
+                                <button type="button" className="btn-action delete">Xóa</button>
+                            </div>
                         </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('Position')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('DepartmentManage')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
+                        <div className="row">
+                            <div className="col-12">
+                                <table className="list-staff">
+                                    <thead>
+                                        <tr>
+                                            <th>Họ và tên</th>
+                                            <th>Mã nhân viên</th>
+                                            <th>Chức danh</th>
+                                            <th>Khối/Phòng/Bộ phận</th>
+                                            <th>Loại hợp đồng</th>
+                                            <th>Ngày vào làm việc</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="full-name">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="employee-code"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="contract-type"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="day-working"><div className="data day-working">12/04/2021</div></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="full-name">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="employee-code"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="contract-type"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="day-working"><div className="data day-working">12/04/2021</div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {
-                    localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-                }
-            </div>
-        </div>
     }
 }
 
-export default withTranslation()(SeniorExecutiveInfoComponent)
+export default withTranslation()(StaffInfoProposedResignationComponent)

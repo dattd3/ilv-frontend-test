@@ -26,7 +26,7 @@ const MyOption = props => {
     )
 }
 
-class SeniorExecutiveInfoComponent extends React.PureComponent {
+class ResignationRequestsManagementActionButton extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
@@ -181,48 +181,10 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         }
         const { t, isEdit } = this.props;
 
-        return <div className="block appraiser">
-            <div className="box shadow">
-                <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
-                <div className="row">
-                    <div className="col-4">
-                        <p className="title">{t('FullName')}</p>
-                        <div>
-                            <Select
-                                isDisabled={isEdit}
-                                isClearable={true}
-                                styles={customStyles}
-                                components={{ Option: MyOption }}
-                                onInputChange={this.onInputChange.bind(this)}
-                                name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                value={this.state.appraiser}
-                                placeholder={t('Search') + '...'}
-                                key="appraiser"
-                                options={this.state.users}
-                            />
-                        </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('Position')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('DepartmentManage')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
-                        </div>
-                    </div>
+        return <div className="block resignation-requests-management-action-button">
+                    
                 </div>
-                {
-                    localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-                }
-            </div>
-        </div>
     }
 }
 
-export default withTranslation()(SeniorExecutiveInfoComponent)
+export default withTranslation()(ResignationRequestsManagementActionButton)

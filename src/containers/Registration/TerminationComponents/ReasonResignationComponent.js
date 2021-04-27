@@ -7,7 +7,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import Constants from "../../../commons/Constants"
 
-class AttachmentComponent extends React.PureComponent {
+class ReasonResignationComponent extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
@@ -162,19 +162,27 @@ class AttachmentComponent extends React.PureComponent {
         }
         const { t, isEdit } = this.props;
         const reqDetail = {}
-        const files = []
 
-        return <ul className="list-inline">
-                    {files.map((file, index) => {
-                        return <li className="list-inline-item" key={index}>
-                            <span className="file-name">
-                                <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
-                                <i className="fa fa-times remove" aria-hidden="true" onClick={this.removeFile.bind(this, index)}></i>
-                            </span>
-                        </li>
-                    })}
-                </ul>
+        return <div className="block reason-resignation-block">
+                    <h6 className="block-title">II. Lý do CBLĐ TT đề xuất cho nghỉ</h6>
+                    <div className="box shadow">
+                        <div className="row">
+                            <div className="col-4">
+                                <p className="title">{t('ReasonForContractTermination')}</p>
+                                <div>
+                                    <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} />
+                                </div>
+                            </div>
+                            <div className="col-8">
+                                <p className="title">{t('DetailedReason')}</p>
+                                <div>
+                                    <input type="text" placeholder="Nhập lý do chi tiết" className="form-control" value={this.state.appraiser?.current_position || ""} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
     }
 }
 
-export default withTranslation()(AttachmentComponent)
+export default withTranslation()(ReasonResignationComponent)

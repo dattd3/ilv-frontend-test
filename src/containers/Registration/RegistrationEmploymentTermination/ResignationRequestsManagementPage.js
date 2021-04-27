@@ -1,16 +1,13 @@
 import React from 'react'
 import axios from 'axios'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 
 import Constants from '../../../commons/Constants'
-import ButtonComponent from '../ButtonComponent'
-import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
-import StaffInfoProposedResignationComponent from '../TerminationComponents/StaffInfoProposedResignationComponent'
-import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
-import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
+import ResignationRequestsManagementActionButton from '../TerminationComponents/ResignationRequestsManagementActionButton'
+import ListStaffResignationComponent from '../TerminationComponents/ListStaffResignationComponent'
 import ResultModal from '../ResultModal'
 
 import 'react-datepicker/dist/react-datepicker.css'
@@ -31,7 +28,7 @@ const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 const MATERNITY_LEAVE_KEY = "IN02"
 
-class ProposedResignationPage extends React.Component {
+class ResignationRequestsManagementPage extends React.Component {
     constructor(props) {
         super();
         this.state = {
@@ -771,17 +768,13 @@ console.log(times)
         return (
             <>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
-            <div className="leave-of-absence proposed-registration-employment-termination">
-                <h5 className="page-title">{t('ProposeForEmployeesResignation')}</h5>
-                <StaffInfoProposedResignationComponent />
-                <ReasonResignationComponent />
-                <SeniorExecutiveInfoComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
-                <AttachmentComponent />
-                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+            <div className="leave-of-absence resignation-requests-management-page">
+                <ResignationRequestsManagementActionButton />
+                <ListStaffResignationComponent />
             </div>
             </>
         )
     }
 }
 
-export default withTranslation()(ProposedResignationPage)
+export default withTranslation()(ResignationRequestsManagementPage)

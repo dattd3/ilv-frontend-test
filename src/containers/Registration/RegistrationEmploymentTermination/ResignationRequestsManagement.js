@@ -1,12 +1,13 @@
 import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
-import ProposedResignationPage from './ProposedResignationPage'
+import ResignationRequestsManagementPage from './ResignationRequestsManagementPage'
 import { withTranslation  } from "react-i18next";
-class ProposedResignation extends React.Component {
+
+class ResignationRequestsManagement extends React.Component {
   constructor(props) {
     super()
     this.state = {
-      tab: new URLSearchParams(props.history.location.search).get('tab') || "RegistrationEmploymentTerminationForm",
+      tab: new URLSearchParams(props.history.location.search).get('tab') || "ResignationRequestsManagementPage",
     }
   }
 
@@ -20,12 +21,12 @@ class ProposedResignation extends React.Component {
     return (
       <div className="registration-section justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)} className="tab-page">
-          <Tab eventKey="RegistrationEmploymentTerminationForm" title={t('ProposedForResignation')}>
-            <ProposedResignationPage />
+          <Tab eventKey="ResignationRequestsManagementPage" title={t('ResignationRequestsManagement')}>
+            <ResignationRequestsManagementPage />
           </Tab>
         </Tabs>
       </div>
     )
   }
 }
-export default withTranslation()(ProposedResignation)
+export default withTranslation()(ResignationRequestsManagement)
