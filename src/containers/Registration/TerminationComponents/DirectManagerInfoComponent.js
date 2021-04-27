@@ -26,7 +26,7 @@ const MyOption = props => {
   )
 }
 
-class DirectManagerInfoComponent extends React.Component {
+class DirectManagerInfoComponent extends React.PureComponent {
   constructor(props) {
     super();
     this.state = {

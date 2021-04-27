@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
-import RegistrationEmploymentTerminationForm from './RegistrationEmploymentTerminationForm'
+import ProposedResignationPage from './ProposedResignationPage'
 import { withTranslation  } from "react-i18next";
 class ProposedResignation extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class ProposedResignation extends React.Component {
       <div className="task-page justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} className={`task-tabs`} onSelect={(key) => this.updateTabLink(key)} >
           <Tab eventKey="RegistrationEmploymentTerminationForm" title={t('ProposedResignation')}>
-            <RegistrationEmploymentTerminationForm />
+            <ProposedResignationPage />
           </Tab>
         </Tabs>
       </div>

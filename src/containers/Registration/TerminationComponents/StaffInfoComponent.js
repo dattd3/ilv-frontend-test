@@ -5,7 +5,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import Constants from "../../../commons/Constants"
 
-class StaffInfoComponent extends React.Component {
+class StaffInfoComponent extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {

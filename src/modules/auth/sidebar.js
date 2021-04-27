@@ -50,6 +50,14 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+  {
+      id: 104,
+      parentId: 0,
+      icon: 'c-resignation-requests-management',
+      label: "ResignationRequestsManagement",
+      to: map.ResignationRequestsManagement,
+      role: 'U'
+    },
 
   // {
   //   id: 48,
