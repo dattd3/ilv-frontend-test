@@ -1090,5 +1090,9 @@
   "DetailedReason": "Detailed reason",
   "DirectManager": "Direct manager",
   "SeniorExecutive": "Senior executive",
-  "ProposedResignationForStaff": "Proposed resignation for staff"
+  "ProposedResignationForStaff": "Proposed resignation for staff",
+  "ProposedForResignation": "Proposed for resignation",
+  "ProposeForEmployeesResignation": "Propose for employees resignation",
+  "ResignationRequestsManagement": "Resignation requests management",
+  "successfulRevocationApproval": "Successfully revocation approval"
 }

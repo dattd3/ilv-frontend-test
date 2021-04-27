@@ -26,7 +26,7 @@ const MyOption = props => {
     )
 }
 
-class SeniorExecutiveInfoComponent extends React.PureComponent {
+class ListStaffResignationComponent extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
@@ -168,6 +168,16 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         })
     }
 
+    getWidthContent = (isExpand, padding = 64) => {
+        const remainScale = isExpand ? 0.82 : 0.96;
+        return (window.innerWidth * remainScale - padding) + 'px';
+    }
+
+    getWidthContentDynamicTableContractManagement = (isExpand, padding = 64) => {
+        const remainScale = isExpand ? 0.82 : 0.96;
+        return (window.innerWidth * remainScale - padding - 180) + 'px';
+    }
+
     render() {
         const customStyles = {
             option: (styles, state) => ({
@@ -180,49 +190,101 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
             })
         }
         const { t, isEdit } = this.props;
+        const candidateInfos = []
 
-        return <div className="block appraiser">
-            <div className="box shadow">
-                <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
-                <div className="row">
-                    <div className="col-4">
-                        <p className="title">{t('FullName')}</p>
-                        <div>
-                            <Select
-                                isDisabled={isEdit}
-                                isClearable={true}
-                                styles={customStyles}
-                                components={{ Option: MyOption }}
-                                onInputChange={this.onInputChange.bind(this)}
-                                name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                value={this.state.appraiser}
-                                placeholder={t('Search') + '...'}
-                                key="appraiser"
-                                options={this.state.users}
-                            />
+        return <div className="block staff-information-proposed-resignation-block">
+                    <div className="box shadow">
+                        <div className="row search-action-block">
+                            <div className="col-4">
+                                <div>
+                                    <Select
+                                        isDisabled={isEdit}
+                                        isClearable={true}
+                                        styles={customStyles}
+                                        components={{ Option: MyOption }}
+                                        onInputChange={this.onInputChange.bind(this)}
+                                        name="appraiser"
+                                        onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
+                                        value={this.state.appraiser}
+                                        placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
+                                        key="appraiser"
+                                        options={this.state.users}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-2 btn-action-group">
+                                <button type="button" className="btn-action add">Thêm</button>
+                                <button type="button" className="btn-action delete">Xóa</button>
+                            </div>
                         </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('Position')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('DepartmentManage')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="list-staff" style={{width: this.getWidthContent(this.props.isExpand)}}>
+                                    <div className="f-grid-fixed-column">
+                                        <div className="row-header">
+                                            <div className="font-weight-bold col-customize full-name">Họ và tên</div>
+                                        </div>
+                                        <div className="table-body-customize">
+                                            {
+                                                (candidateInfos || []).map((item, index) => {
+                                                    return <div className="row-customize text-main-color" key={index}>
+                                                                <div className="col-customize data full-name">
+                                                                    <input name="candidateId" type="checkbox" className="row-id" 
+                                                                    // checked={candidateIdChecked[index] && candidateIdChecked[index].value ? candidateIdChecked[index].value : false} 
+                                                                    /* onChange={e => this.handleCheckboxChange(index, e)} */ />
+                                                                    <a className="text-collapse-for-flex" title={item.fullName} href={`/contract-management/contract-evaluation-results/employee/${item.idDisplay}`}>{item.fullName || ""}</a>
+                                                                </div>
+                                                            </div>
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="f-grid-dynamic-column" style={{width: this.getWidthContentDynamicTableContractManagement(this.props.isExpand)}}>
+                                        <div className="body-scroll">
+                                            <div className="row-header">
+                                                <div className="font-weight-bold item title employee-code">Mã nhân viên</div>
+                                                <div className="font-weight-bold item title job-title">Chức danh</div>
+                                                <div className="font-weight-bold item title facility-department">Phòng ban/Cơ sở</div>
+                                                <div className="font-weight-bold item title part">Bộ phận</div>
+                                                <div className="font-weight-bold item title rank">Cấp bậc</div>
+                                                <div className="font-weight-bold item title application-date">Ngày nộp đơn</div>
+                                                <div className="font-weight-bold item title contract-termination-date">Ngày chấm dứt hợp đồng</div>
+                                                <div className="font-weight-bold item title leave-type">Hình thức nghỉ</div>
+                                                <div className="font-weight-bold item title leave-reason">Lý do nghỉ</div>
+                                                <div className="font-weight-bold item title contract-type">Loại hợp đồng</div>
+                                                <div className="font-weight-bold item title created-by">Người tạo</div>
+                                                <div className="font-weight-bold item title attachment">File đính kèm</div>
+                                                <div className="font-weight-bold item title handover-status">Tình trạng bàn giao</div>
+                                                <div className="font-weight-bold item title approval status">Tình trạng phê duyệt</div>
+                                            </div>
+                                            {
+                                                (candidateInfos || []).map((item, index) => {
+                                                    return <div className="row-header text-main-color" key={index}>
+                                                                <div className="item data employee-code"><span className="text-collapse-for-flex">{3651641 || ""}</span></div>
+                                                                <div className="item data job-title"><span className="text-collapse-for-flex">{"Quản lý dự án" || ""}</span></div>
+                                                                <div className="item data facility-department"><span className="text-collapse-for-flex">{"Phòng PMK" || ""}</span></div>
+                                                                <div className="item data part"><span className="text-collapse-for-flex">{"CNTT" || ""}</span></div>
+                                                                <div className="item data rank"><span className="text-collapse-for-flex">{"Chuyên viên" || ""}</span></div>
+                                                                <div className="item data application-date"><span className="text-collapse-for-flex">{"10/10/2020" || ""}</span></div>
+                                                                <div className="item data contract-termination-date"><span className="text-collapse-for-flex">{"10/10/2021" || ""}</span></div>
+                                                                <div className="item data leave-type"><span className="text-collapse-for-flex">{"Chấm dứt hợp đồng - Tự nghỉ" || ""}</span></div>
+                                                                <div className="item data leave-reason"><span className="text-collapse-for-flex">{"Do sức khỏe" || ""}</span></div>
+                                                                <div className="item data contract-type"><span className="text-collapse-for-flex">{"Hợp đồng lao động có thời hạn" || ""}</span></div>
+                                                                <div className="item data created-by"><span className="text-collapse-for-flex">{"Nguyễn Văn Cường" || ""}</span></div>
+                                                                <div className="item data attachment"><span className="text-collapse-for-flex">{"Danh sách files" || ""}</span></div>
+                                                                <div className="item data handover-status"><span className="text-collapse-for-flex">{"Đã bàn giao" || ""}</span></div>
+                                                                <div className="item data approval status"><span className="text-collapse-for-flex">{"Đã phê duyệt" || ""}</span></div>
+                                                            </div>
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {
-                    localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-                }
-            </div>
-        </div>
     }
 }
 
-export default withTranslation()(SeniorExecutiveInfoComponent)
+export default withTranslation()(ListStaffResignationComponent)

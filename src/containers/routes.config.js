@@ -578,7 +578,15 @@ export default [
             path: map.ProposedResignation
           },
           component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ProposedResignation"))
-        }
+        },
+        {
+          key: "resignation-requests-management",
+          routeProps: {
+            exact: true,
+            path: map.ResignationRequestsManagement
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ResignationRequestsManagement"))
+        },
       ],
     },
   },

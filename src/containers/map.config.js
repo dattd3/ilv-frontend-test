@@ -70,6 +70,7 @@ export default {
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
   RegistrationEmploymentTermination: "/registration-employment-termination",
   ProposedResignation: "/proposed-resignation",
+  ResignationRequestsManagement: "/management-resignation-requests",
   //Evalution
   Evaluation: '/evaluation/:id/:type',
 
