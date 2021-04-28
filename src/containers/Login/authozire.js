@@ -184,11 +184,11 @@ function Authorize(props) {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
-            jobTitle: "",
-            benefitLevel: "",
-            companyName: "",
+            jobTitle: userProfile.job_name,
+            benefitLevel: userProfile.employee_level,
+            companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
-            departmentName: "",
+            departmentName: userProfile.department,
             culture: localStorage.getItem('locale').split("-")[0]
         }
 
