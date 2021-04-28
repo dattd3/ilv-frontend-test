@@ -38,8 +38,8 @@ class ExportModal extends React.Component {
       this.setState({toDate: date})
     }
     exportExcel = () => {
-      let type = this.props.exportType == "consent" ? "Appraiser" : "Approver";
-      let fileName = "DanhSachYeuCau.xlsx"
+      let type = this.props.exportType == "consent" ? "appraiser" : "approver";
+      let fileName = `RequestHistory_${moment(new Date(),'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`
       
       const config = {
         responseType: 'blob',
