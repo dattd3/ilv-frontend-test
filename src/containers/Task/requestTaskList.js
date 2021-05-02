@@ -243,10 +243,8 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
-    isShowDeleteButton = (status, appraiser, requestTypeId) => {
-
-        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.account == null) || status == 8) ? true : false;
-        
+    isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
+        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.account == null) || status == 8) && (actionType == "INS") ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId) => {
@@ -517,8 +515,8 @@ class RequestTaskList extends React.Component {
                         </InputGroup.Prepend>
                         <Select name="absenceType" 
                                 className="w-75" 
-                                defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || this.props.filterdata[0]} 
+                                // defaultValue={this.props.filterdata[0]}
+                                value={this.state.absenceType || ""} 
                                 isClearable={false}
                                 onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                 placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
@@ -569,7 +567,7 @@ class RequestTaskList extends React.Component {
                             tasks.map((child, index) => {
                                 let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiser, child.requestType.id);
                                 let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
-                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id);
+                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id, child.actionType);
                                 let totalTime = null;
                                 let editLink = null
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
