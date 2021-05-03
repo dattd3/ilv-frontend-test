@@ -267,21 +267,25 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   search() {
+    const start = moment(this.state.startDate).format('YYYYMMDD').toString()
+    const end = moment(this.state.endDate).format('YYYYMMDD').toString()
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      },
+      params: {
+        from_date: start,
+        to_date: end
       }
     }
-    const start = moment(this.state.startDate).format('YYYYMMDD').toString()
-    const end = moment(this.state.endDate).format('YYYYMMDD').toString()
-
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, {
-      perno: localStorage.getItem('employeeNo'),
-      from_date: start,
-      to_date: end
-    }, config)
+    // {
+    //   perno: localStorage.getItem('employeeNo'),
+    //   from_date: start,
+    //   to_date: end
+    // },
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
 
