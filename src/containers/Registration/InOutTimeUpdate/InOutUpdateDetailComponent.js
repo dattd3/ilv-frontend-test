@@ -25,7 +25,7 @@ class InOutUpdateDetailComponent extends React.Component {
 
   dataToSap() {
     let dataToSAP = []
-    this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
+    this.props.inOutTimeUpdate.requestInfo.timesheet.filter(t => t.isEdit).forEach((timesheet, index) => {
       ['1', '2'].forEach(n => {
         const startTimeName = `start_time${n}_fact_update`
         const endTimeName = `end_time${n}_fact_update`
@@ -39,7 +39,7 @@ class InOutUpdateDetailComponent extends React.Component {
           if (startTime) {
             dataToSAP.push({
               MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              PERNR: this.props.inOutTimeUpdate.user.employeeNo,
               LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
               SATZA: 'P10',
               LTIME: startTime,
@@ -54,7 +54,7 @@ class InOutUpdateDetailComponent extends React.Component {
           if (endTime) {
             dataToSAP.push({
               MYVP_ID: 'TEV' + '0'.repeat(7 - this.props.inOutTimeUpdate.id.toString().length) + this.props.inOutTimeUpdate.id + `${index}${n}`,
-              PERNR: this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo,
+              PERNR: this.props.inOutTimeUpdate.user.employeeNo,
               LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
               SATZA: 'P20',
               LTIME: endTime,
@@ -88,29 +88,29 @@ class InOutUpdateDetailComponent extends React.Component {
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-3">
+          <div className="row group">
+            <div className="col-xl-3">
              {t("FullName")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.fullname}</div>
+              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.fullName}</div>
             </div>
-            <div className="col-3">
-              {t("EmployeeCode")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.employeeNo}</div>
+            <div className="col-xl-3">
+              {t("EmployeeNo")}
+              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.employeeNo}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("Title")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.jobTitle}</div>
+              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.jobTitle}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("DepartmentManage")}
-              <div className="detail">{this.props.inOutTimeUpdate.userProfileInfo.user.department}</div>
+              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.department}</div>
             </div>
           </div>
         </div>
-        <h5>Thông tin sửa giờ vào - ra</h5>
-        {this.props.inOutTimeUpdate.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
+        <h5>{t("InOutChangeRequestInfo")}</h5>
+        {this.props.inOutTimeUpdate.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
-            <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+            <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
@@ -135,7 +135,7 @@ class InOutUpdateDetailComponent extends React.Component {
               </div>
               <div className="col-6">
                 <div className="box-time">
-                  <p className="text-center">Giờ chỉnh sửa</p>
+                  <p className="text-center">{t("ChangedTime")}</p>
                   <div className="row">
                     <div className="col-6">
                       {t("Start")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact_update)}</b>
@@ -163,28 +163,29 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-
+        <h5>Thông tin CBQL thẩm định</h5>
+        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
-          this.getTypeDetail() === "request" ?
+           this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent approver={this.props.inOutTimeUpdate.userProfileInfo.approver} status={this.props.inOutTimeUpdate.status} hrComment={this.props.inOutTimeUpdate.hrComment} />
-            </> :
-            <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.status].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.status].label)}</span>
-              {
-                this.props.inOutTimeUpdate.status == Constants.STATUS_NOT_APPROVED ?
-                  <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
-              }
-            </div>
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.processStatusId} hrComment={this.props.inOutTimeUpdate.approverComment} />
+            </> : null
+            // <div className="block-status">
+            //   <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+            //   {
+            //     this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
+            //       <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
+            //   }
+            // </div>
         }
 
         {
-          this.props.inOutTimeUpdate.userProfileInfoDocuments.length > 0 ?
+          this.props.inOutTimeUpdate.requestDocuments.length > 0 ?
             <>
-              <h5>Tài liệu chứng minh</h5>
+              <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
-                {this.props.inOutTimeUpdate.userProfileInfoDocuments.map((file, index) => {
+                {this.props.inOutTimeUpdate.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
                     <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
                   </li>
@@ -193,13 +194,30 @@ class InOutUpdateDetailComponent extends React.Component {
             </>
             : null
         }
-
-        { this.props.inOutTimeUpdate.status === 0 || this.props.inOutTimeUpdate.status === 2 ? <DetailButtonComponent
-          dataToSap={this.dataToSap()}
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{(this.props.action == "consent" && this.props.inOutTimeUpdate.processStatusId == 5 && this.props.inOutTimeUpdate.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+        </div>
+        { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? <DetailButtonComponent
+          dataToSap={
+            [
+              {
+                "id": this.props.inOutTimeUpdate.id,
+                "requestTypeId": Constants.IN_OUT_TIME_UPDATE,
+                "sub": [
+                  {
+                    "id": this.props.inOutTimeUpdate.id,
+                  }
+                ]
+              }
+            ]
+          } //this.dataToSap()
           id={this.props.inOutTimeUpdate.id}
-          isShowRevocationOfApproval={this.props.inOutTimeUpdate.status === 2}
+          isShowRevocationOfApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_APPROVED}
+          isShowConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING && this.props.inOutTimeUpdate.appraiser}
           urlName={'requesttimekeeping'}
           requestTypeId={requestTypeId}
+          action={this.props.action}
         /> : null}
       </div>
     )

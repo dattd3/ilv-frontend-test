@@ -1,12 +1,21 @@
 import React from 'react'
 import axios from 'axios'
+import {InputGroup, FormControl} from 'react-bootstrap'
+import Select from 'react-select'
+import { withTranslation } from "react-i18next"
 import TaskList from '../taskList'
+import ConfirmRequestModal from '../ConfirmRequestModal'
+import Constants from '../../../commons/Constants'
 
 class ApprovalComponent extends React.Component {
   constructor(props) {
     super();
+    this.state = {
+      tasks: [],
+      dataToSap: [],
+    }
   }
-
+  
   exportToExcel = () => {
     const config = {
       headers: {
@@ -25,17 +34,28 @@ class ApprovalComponent extends React.Component {
     });
   }
 
+  handleSelectChange(name, value) {
+    this.setState({ [name]: value })
+  }
+
   render() {
+    const { t } = this.props
+    let statusFiler = [
+      { value: 0, label: t("All") },
+      { value: Constants.STATUS_WAITING , label: t("Waiting") },
+      { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
+      { value: Constants.STATUS_NOT_APPROVED , label: t("Rejected") },
+      // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
+    ]
     return (
-      <div className="task-section">
-        <div className="block-title">
-          <h4 className="title text-uppercase">Quản lý thông tin phê duyệt</h4>
-          {/* <button type="button" className="btn btn-outline-primary" onClick={this.exportToExcel}><i className='fas fa-file-export ic-export'></i>Export</button> */}
+      <>
+        <div className="task-section">
+          <TaskList tasks={this.props.tasks} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
         </div>
-        <TaskList tasks={this.props.tasks} page="approval" />
-      </div>
+      </>
     )
   }
 }
 
-export default ApprovalComponent
+export default withTranslation()(ApprovalComponent)

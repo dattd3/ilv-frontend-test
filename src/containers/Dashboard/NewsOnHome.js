@@ -54,7 +54,7 @@ function NewsOnHome(props) {
             <Card.Body className="card-body pd-0">
                 <ListGroup variant="flush">
                     <ListGroup.Item>
-                        <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i> {t("CompanyAnnouncement")}</span>
+                        <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i> {t("Menu_GroupInformation")}</span>
                     </ListGroup.Item>
                     {
                         listArticles && listArticles.data ?

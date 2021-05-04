@@ -26,11 +26,11 @@ function displayOther(data, t) {
   return (<>
     {data.leadership ? <JDOther title={t("LeadershipSkill")} content={data.leadership}/> : null}
     {data.specialize ? <JDOther title={t("SpecializedSkill")} content={data.specialize}/> : null}
-    {data.academic ? <JDOther title="Trình độ học vấn" content={data.academic}/> : null}
+    {data.academic ? <JDOther title={t("DegreeRequirement")} content={data.academic}/> : null}
     {data.experience ? <JDOther title={t("Experience")} content={data.experience}/> : null}
     {data.skill ? <JDOther title={t("Skill")} content={data.skill}/> : null}
-    {data.language ? <JDOther title="Tiêu chuẩn ngoại ngữ tối thiểu" content={data.language}/> : null}
-    {data.coloring ? <JDOther title="Tiêu chuẩn ngoại hình tối thiểu" content={data.coloring}/> : null}
+    {data.language ? <JDOther title={t("MinimumAppearanceRequirement")} content={data.language}/> : null}
+    {data.coloring ? <JDOther title={t("MinimumForeignLanguageRequirement")} content={data.coloring}/> : null}
   </>)
 }
 

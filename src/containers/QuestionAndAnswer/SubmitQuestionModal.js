@@ -41,7 +41,7 @@ class SubmitQuestionModal extends React.Component {
                 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     this.setState({ supervise: res.data.data[0] })
@@ -166,7 +166,7 @@ class SubmitQuestionModal extends React.Component {
                                 <div className="content input-container ">
                                     <Select
                                         defaultValue={categoriesDisplay[0]}
-                                        placeholder="Chọn nhóm câu hỏi..."
+                                        placeholder={t("SelectCategory")}
                                         options={categoriesDisplay}
                                         onChange={this.setCategory.bind(this)} />
                                 </div>
@@ -179,7 +179,7 @@ class SubmitQuestionModal extends React.Component {
                                     value={this.state.questionContent}
                                     onChange={this.handleChange.bind(this)} />
                                 <Form.Control.Feedback type="invalid">
-                                    Điền nội dung câu hỏi !
+                                    {t("EnterQuestion")}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="submitQuestionForm.CBQL">

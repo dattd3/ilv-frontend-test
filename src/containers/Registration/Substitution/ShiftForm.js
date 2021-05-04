@@ -3,6 +3,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import _ from 'lodash'
+import { withTranslation  } from "react-i18next";
 
 const TIME_FORMAT = 'HH:mm:00'
 
@@ -80,13 +81,14 @@ class ShiftForm extends React.Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div className="shift-form mt-3">
                 <div className="row">
                     <div className="col-5">
                         <div className="row">
                             <div className="col">
-                                <p>Bắt đầu 1 - Thay đổi</p>
+                                <p>{t("StartTime")} 1 - Thay đổi</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -108,7 +110,7 @@ class ShiftForm extends React.Component {
                                 {this.error(this.props.timesheet.index, 'startTime')}
                             </div>
                             <div className="col">
-                                <p>Kết thúc 1 - Thay đổi</p>
+                                <p>{t("EndTime")} 1 - Thay đổi</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -137,7 +139,7 @@ class ShiftForm extends React.Component {
                                     {
                                     this.props.isShowStartBreakTimeAndEndBreakTime ?
                                     <>
-                                    <p>Thời gian bắt đầu nghỉ ca</p>
+                                    <p>{t("BreakStartTime")}</p>
                                     <div className="content input-container">
                                         <label>
                                             <DatePicker
@@ -164,7 +166,7 @@ class ShiftForm extends React.Component {
                                     {
                                     this.props.isShowStartBreakTimeAndEndBreakTime ?
                                     <>
-                                    <p>Thời gian kết thúc nghỉ ca</p>
+                                    <p>{t("BreakEndTime")}</p>
                                     <div className="content input-container">
                                         <label>
                                             <DatePicker
@@ -175,10 +177,10 @@ class ShiftForm extends React.Component {
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
-                                                timeCaption="Giờ"
+                                                timeCaption={t("Hour")}
                                                 dateFormat="HH:mm"
                                                 timeFormat="HH:mm"
-                                                placeholderText="Lựa chọn"
+                                                placeholderText={t("Select")}
                                                 className="form-control input"
                                             />
                                         </label>
@@ -196,7 +198,7 @@ class ShiftForm extends React.Component {
                             {
                             this.props.isShowStartBreakTimeAndEndBreakTime ?
                             <div className="text-danger">
-                                <p>(*) Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p>
+                                <p>(*) {t("OnlyShiftBreakTime")}</p>
                                 {this.error(this.props.timesheet.index, 'breakTime')}
                             </div>
                             : null }
@@ -207,4 +209,4 @@ class ShiftForm extends React.Component {
     }
 }
 
-export default ShiftForm
+export default withTranslation()(ShiftForm)

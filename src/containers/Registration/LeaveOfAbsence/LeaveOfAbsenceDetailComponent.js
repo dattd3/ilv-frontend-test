@@ -6,13 +6,13 @@ import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
-import _, { startsWith } from 'lodash'
+import _ from 'lodash'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-const FULL_DAY = 1
+const FULL_DAY = true
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
@@ -26,15 +26,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      },
+      params: {
+        date: moment().format('YYYYMMDD')
       }
     }
-    axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/user/currentabsence`, {
-        perno: this.props.leaveOfAbsence.userProfileInfo.user.employeeNo,
-        date: moment().format('YYYYMMDD')
 
-    }, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
       .then(res => {
         if (res && res.data) {
           const annualLeaveSummary = res.data.data
@@ -59,52 +59,54 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   render() {
-    const userProfileInfo = this.props.leaveOfAbsence.userProfileInfo
+    const userProfileInfo = this.props.leaveOfAbsence.user
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
+    const requestInfo = this.props.leaveOfAbsence.requestInfo[0]
+    const appraiser = this.props.leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
     const { t } = this.props
     return (
       <div className="leave-of-absence">
         <h5>Thông tin CBNV đăng ký</h5>
         <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-2">
+          <div className="row group">
+            <div className="col-xl-2">
              {t("FullName")}
-              <div className="detail">{userProfileInfo.user ? userProfileInfo.user.fullname : ""}</div>
+              <div className="detail auto-height">{userProfileInfo? userProfileInfo.fullName : ""}</div>
             </div>
-            <div className="col-2">
+            <div className="col-xl-2">
               {t("EmployeeNo")}
-              <div className="detail">{userProfileInfo.user ? userProfileInfo.user.employeeNo : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("Title")}
-              <div className="detail">{userProfileInfo.user ? userProfileInfo.user.jobTitle : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
             </div>
-            <div className="col-5">
+            <div className="col-xl-5">
               {t('DepartmentManage')}
-              <div className="detail">{userProfileInfo.user ? userProfileInfo.user.department : ""}</div>
+              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.department : ""}</div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-2">
+          <div className="row mt-2">
+            <div className="col-xl-2">
               {t("LeaveBalance")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
             </div>
-            <div className="col-2">
+            <div className="col-xl-3">
               {t("LeavesThisYear")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("AdvancecdAnnualLeave")}
               <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
             </div>
-            <div className="col-5">
+            <div className="col-xl-4">
               <div className="row">
-                <div className="col-6">
+                <div className="col-xl-6">
                   {t("ToilHoursBalance")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
                 </div>
-                <div className="col-6">
+                <div className="col-xl-6">
                   {t("ToilHours")}
                   <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
                 </div>
@@ -113,61 +115,64 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký nghỉ</h5>
+        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleLeave}</h5>
         <div className="box shadow cbnv">
           <div className="row">
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("StartDateTime")}
-              <div className="detail">{userProfileInfo.startDate + (userProfileInfo.startTime ? ' ' + moment(userProfileInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("EndDateTime")}
-              <div className="detail">{userProfileInfo.endDate + (userProfileInfo.endTime ? ' ' + moment(userProfileInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("TotalLeaveTime")}
-              <div className="detail">{this.props.leaveOfAbsence.userProfileInfo.leaveType == FULL_DAY ? this.props.leaveOfAbsence.userProfileInfo.totalDays ? this.props.leaveOfAbsence.userProfileInfo.totalDays + ' ngày' : "" : this.props.leaveOfAbsence.userProfileInfo.totalTimes ? this.props.leaveOfAbsence.userProfileInfo.totalTimes + ' giờ' : ""}</div>
+              {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
+              <div className="detail">{( requestInfo && requestInfo.days >= 1) ? requestInfo.days + ' ' + t("Day") : requestInfo.hours + ' ' + t("Hour")}</div>
             </div>
-            <div className="col-3">
+            <div className="col-xl-3">
               {t("LeaveCategory")}
-              <div className="detail">{userProfileInfo.absenceType ? userProfileInfo.absenceType.label : ""}</div>
+              <div className="detail">{requestInfo && requestInfo.absenceType ? requestInfo.absenceType.label : ""}</div>
             </div>
           </div>
-          {(userProfileInfo.absenceType && userProfileInfo.absenceType.value === 'PN03') ? <div className="row">
+          {(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? <div className="row">
             <div className="col">
-              Thông tin hiếu hỉ
-              <div className="detail">{userProfileInfo.pn03.label}</div>
+              {t("MarriageFuneral")}
+              <div className="detail">{requestInfo.absenceType.label}</div>
             </div>
           </div> : null}
           <div className="row">
             <div className="col">
-              {t("ReasonRequestLeave")}
-              <div className="detail">{this.props.leaveOfAbsence.comment}</div>
+              {Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave}
+              <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
             </div>
           </div>
         </div>
 
         {
-          this.getTypeDetail() === "request" ?
+          requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId )) ? 
+          <>
+            <h5>Thông tin CBQL thẩm định</h5>
+            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
+          </>
+          : null
+        }
+        {
+          // this.getTypeDetail() === "request" ?
+          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
               <h5>Thông tin phê duyệt</h5>
-              <ApproverDetailComponent approver={this.props.leaveOfAbsence.userProfileInfo.approver} status={this.props.leaveOfAbsence.status} hrComment={this.props.leaveOfAbsence.hrComment} />
-            </> :
-            <div className="block-status">
-              <span className={`status ${Constants.mappingStatus[this.props.leaveOfAbsence.status].className}`}>{t(Constants.mappingStatus[this.props.leaveOfAbsence.status].label)}</span>
-              {
-                this.props.leaveOfAbsence.status == Constants.STATUS_NOT_APPROVED ?
-                  <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.leaveOfAbsence.hrComment || ""}</span></span> : null
-              }
-            </div>
+              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
+            </> : null
         }
 
         {
-          this.props.leaveOfAbsence.userProfileInfoDocuments.length > 0 ?
+          this.props.leaveOfAbsence.requestDocuments.length > 0 ?
             <>
-              <h5>Tài liệu chứng minh</h5>
+              <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
-                {this.props.leaveOfAbsence.userProfileInfoDocuments.map((file, index) => {
+                {this.props.leaveOfAbsence.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
                     <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
                   </li>
@@ -176,21 +181,30 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </>
             : null
         }
-
-        {this.props.leaveOfAbsence.status === 0 || this.props.leaveOfAbsence.status === 2 ? <DetailButtonComponent dataToSap={[{
-          MYVP_ID: 'ABS' + '0'.repeat(9 - this.props.leaveOfAbsence.id.toString().length) + this.props.leaveOfAbsence.id,
-          PERNR: userProfileInfo.user ? userProfileInfo.user.employeeNo : "",
-          BEGDA: moment(userProfileInfo.startDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          ENDDA: moment(userProfileInfo.endDate, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-          SUBTY: userProfileInfo.absenceType ? userProfileInfo.absenceType.value : "",
-          BEGUZ: userProfileInfo.startTime ? moment(userProfileInfo.startTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ENDUZ: userProfileInfo.endTime ? moment(userProfileInfo.endTime, TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null,
-          ACTIO: 'INS'
-        }]}
-          isShowRevocationOfApproval={this.props.leaveOfAbsence.status === 2}
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
+        </div>
+        {requestInfo && (requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 ) ? 
+        <DetailButtonComponent dataToSap={
+          [
+            {
+              "id": this.props.leaveOfAbsence.id,
+              "requestTypeId":2,
+              "sub": [
+                {
+                  "id": requestInfo.id,
+                }
+              ]
+            }
+          ]
+        }
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+          isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
           id={this.props.leaveOfAbsence.id}
           urlName={'requestabsence'}
           requestTypeId={requestTypeId}
+          action={this.props.action}
         /> : null}
       </div>
     )

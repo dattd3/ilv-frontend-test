@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { withTranslation  } from "react-i18next"
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -11,16 +12,17 @@ class ShiftTable extends React.Component {
     }
 
     render() {
+        const {t} = this.props;
         return (
             <div className="shift-table mt-3">
                 <table className="table table-hover table-borderless table-striped">
                     <thead className="bg-primary text-white text-center">
                         <tr>
-                            <th scope="col">Lựa chọn mã ca</th>
-                            <th scope="col">Mã ca</th>
-                            <th scope="col">Giờ làm việc</th>
-                            <th scope="col">Giờ bắt đầu</th>
-                            <th scope="col">Giờ kết thúc</th>
+                            <th scope="col">{t("SelectShiftCode")}</th>
+                            <th scope="col">{t("ShiftCode")}</th>
+                            <th scope="col">{t("WorkHours")}</th>
+                            <th scope="col">{t("StartTime")}</th>
+                            <th scope="col">{t("Endtime")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,8 +35,8 @@ class ShiftTable extends React.Component {
                                 </th>
                                 <td>{shift.shift_id}</td>
                                 <td>{shift.hours}</td>
-                                <td>{shift.from_time.replace("#",'') ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</td>
-                                <td>{shift.to_time.replace("#",'') ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null}</td>
+                                <td>{shift.from_time.replace("#", "") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
+                                <td>{shift.to_time.replace("#", "") ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
                             </tr>
                         })}
                     </tbody>
@@ -43,4 +45,4 @@ class ShiftTable extends React.Component {
         )
     }
 }
-export default ShiftTable
+export default withTranslation()(ShiftTable)

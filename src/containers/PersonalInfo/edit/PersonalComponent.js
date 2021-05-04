@@ -81,12 +81,12 @@ class PersonalComponent extends React.Component {
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
-        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
-        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
+        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
+        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
         const requestProfile = axios.get(profileEndpoint, config);
         const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
 
@@ -120,7 +120,7 @@ class PersonalComponent extends React.Component {
             // Edit profile
         } else {
             if (this.state.countryId) {
-                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.state.countryId}`, config)
+                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
                     .then(res => {
                         if (res && res.data && res.data.data) {
                             const data = res.data.data;
@@ -225,7 +225,7 @@ class PersonalComponent extends React.Component {
             }
         }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${country_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;
@@ -371,7 +371,7 @@ class PersonalComponent extends React.Component {
                             <i className="note note-old"></i> {t("Record")}
                 </div>
                         <div className="col">
-                            <i className="note note-new"></i> {t("AdjustmentInformation")}
+                            <i className="note note-new"></i> {t("NewInformation")}
                 </div>
                     </div>
                     <hr />
@@ -586,7 +586,7 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">{t("Nationality")}</div>
+                            <div className="label">{t("Country")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{userDetail.nationality || ""}</div>
@@ -629,14 +629,14 @@ class PersonalComponent extends React.Component {
 
                     <div className="row">
                         <div className="col-2">
-                            <div className="label">Địa chỉ tạm trú</div>
+                            <div className="label">{t("TemporaryAddress")}</div>
                         </div>
                         <div className="col-4 old">
                             <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || "", userDetail.tmp_nation || ""])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isTmpAddressEdit ? <AddressModal
-                                title="Địa chỉ tạm trú"
+                                title={t("TemporaryAddress")}
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}

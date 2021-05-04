@@ -61,7 +61,7 @@ class AddressModal extends React.Component {
     }
 
     getProvices(country_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${country_id}`, this.config())
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, this.config())
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;
@@ -71,7 +71,7 @@ class AddressModal extends React.Component {
     }
 
     getDistricts(province_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/districts?province_id=${province_id}`, this.config())
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${province_id}`, this.config())
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let districts = res.data.data;
@@ -81,7 +81,7 @@ class AddressModal extends React.Component {
     }
 
     getWards(district_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/wards?district_id=${district_id}`, this.config())
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${district_id}`, this.config())
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let wards = res.data.data;
@@ -183,7 +183,7 @@ class AddressModal extends React.Component {
                         </div>
                         <div className="row mb-2">
                             <div className="col-5">
-                                {t("Province")}
+                                {t("City")}
                             </div>
                             <div className="col-7">
                                 <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvice.bind(this)} value={this.state.province} />

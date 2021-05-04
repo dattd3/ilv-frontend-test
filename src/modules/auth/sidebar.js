@@ -196,7 +196,7 @@ export const Navigation = [
     id: 20,
     parentId: 0,
     icon: "c-notification",
-    label: "Notification",
+    label: "Menu_Notification",
     to: map.Notifications,
     role: "U"
   },
@@ -237,7 +237,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
-    label2: "RegistrationSeconds",
+    label2: "Registration",
     to: map.Registration,
     role: 'U'
   },

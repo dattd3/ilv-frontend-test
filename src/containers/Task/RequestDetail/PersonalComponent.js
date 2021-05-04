@@ -93,7 +93,7 @@ class PersonalComponent extends React.Component {
             case "TempStreetNameText":
                 return `${t("Street")} - ${t("TemporaryAddress")}`;
             case "MarriageDate":
-                return "Ngày kết hôn";
+                return t("MarriageDate");
         }
     }
 
@@ -105,7 +105,7 @@ class PersonalComponent extends React.Component {
                 <div className="box shadow wrap-item">
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> {t("Record")}</div>
-                        <div className="col"><i className="note note-new"></i> {t("AdjustmentInformation")}</div>
+                        <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>
                     </div>
                     <hr />
                     {

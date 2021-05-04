@@ -30,7 +30,7 @@ class Timesheet extends React.Component {
         const start = moment(startDate).format('YYYYMMDD').toString()
         const end = moment(endDate).format('YYYYMMDD').toString()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping?from_time=${start}&to_time=${end}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const timsheetSummary = res.data.data[0]
@@ -41,7 +41,7 @@ class Timesheet extends React.Component {
             // window.location.href = map.Login;
         })
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const timesheets = res.data.data

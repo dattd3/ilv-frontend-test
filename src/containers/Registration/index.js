@@ -21,7 +21,7 @@ class RegistrationComponent extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="registration-section personal-info">
+      <div className="registration-section personal-info justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="LeaveOfAbsenceRegistration" title={t('LeaveRequest')}>
             <LeaveOfAbsence />
@@ -30,12 +30,12 @@ class RegistrationComponent extends React.Component {
             <BusinessTrip />
           </Tab>
           { 
-            !['V096','V073'].includes(localStorage.getItem("companyCode")) ?
+            !['V096','V073','V061'].includes(localStorage.getItem("companyCode")) ?
            <Tab eventKey="SubstitutionRegistration" title={t('ShiftChange')}>
             <SubstitutionComponent />
           </Tab> : null
           }
-          <Tab eventKey="InOutTimeUpdate" title={localStorage.getItem("companyCode") != "V096" ? t('InOutChangeRequest') : t('Explanation')}>
+          <Tab eventKey="InOutTimeUpdate" title={t('InOutChangeRequest')}>
             <InOutTimeUpdate />
           </Tab>
         </Tabs>

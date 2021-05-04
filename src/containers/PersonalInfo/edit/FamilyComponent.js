@@ -21,7 +21,7 @@ class FamilyComponent extends React.Component {
           }
         }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/family`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
               let userFamily = res.data.data;
@@ -55,7 +55,7 @@ class FamilyComponent extends React.Component {
                 <h4 className="title text-uppercase">{t("Family")}</h4>
                 <div className="box shadow">
                     <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
-                    <span><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
+                    <span><i className="note note-new"></i> {t("NewInformation")}</span>
                     <hr/>
 
                        { this.state.userFamily.map((item, i) => {

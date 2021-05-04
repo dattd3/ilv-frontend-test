@@ -632,7 +632,7 @@ class PersonalInfoEdit extends React.Component {
         }
       })
       .catch(response => {
-        this.handleShowModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin !", "error");
+        this.handleShowModal(t("Notification"), t("Error"), "error");
       });
   }
 
@@ -967,13 +967,13 @@ class PersonalInfoEdit extends React.Component {
     let configWithinSecretKey = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
-    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
-    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/education`;
+    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
+    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
+    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`;
     const requestProfile = axios.get(profileEndpoint, configWithinSecretKey);
     const requestPersonalInfo = axios.get(personalInfoEndpoint, configWithinSecretKey);
     const requestEducation = axios.get(personalEducationEnpoint, configWithinSecretKey);
@@ -992,7 +992,7 @@ class PersonalInfoEdit extends React.Component {
         'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       }
     }
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -1003,7 +1003,7 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/profileinfobase`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
@@ -1131,7 +1131,7 @@ class PersonalInfoEdit extends React.Component {
 
             <div className="clearfix mb-5">
               {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-              <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button>
+              <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}</button>
               <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
               <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
             </div>
