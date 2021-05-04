@@ -59,7 +59,7 @@ class ApproverComponent extends React.Component {
     const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/immediatesupervise`, config)
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
         .then(res => {
           if (res && res.data && res.data.data && res.data.data.length > 0) {
             let manager = res.data.data[0]
@@ -137,7 +137,7 @@ class ApproverComponent extends React.Component {
         }
       }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/userinfo/search`, { account: value, should_check_superviser: true }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []

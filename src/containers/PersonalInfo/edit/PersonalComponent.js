@@ -85,8 +85,8 @@ class PersonalComponent extends React.Component {
                 // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
-        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`;
-        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/personalinfo`;
+        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
+        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
         const requestProfile = axios.get(profileEndpoint, config);
         const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
 
@@ -120,7 +120,7 @@ class PersonalComponent extends React.Component {
             // Edit profile
         } else {
             if (this.state.countryId) {
-                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${this.state.countryId}`, config)
+                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
                     .then(res => {
                         if (res && res.data && res.data.data) {
                             const data = res.data.data;
@@ -225,7 +225,7 @@ class PersonalComponent extends React.Component {
             }
         }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/provinces?country_id=${country_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;

@@ -27,7 +27,7 @@ class EducationComponent extends React.Component {
       }
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/schools`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/schools`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let schools = res.data.data;
