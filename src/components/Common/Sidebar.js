@@ -40,6 +40,9 @@ function SideBar(props) {
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
+        if (user.companyCode === "V040") {
+            rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
+        }
         return rootNav;
     }
     const contents = getNavigation(user.benefitLevel).map(c => {

@@ -646,6 +646,8 @@
   "TaskDetail": "Chi tiết công việc",
   "SelectFile": "Chọn",
   "Confirm": "Xác nhận",
+  "ApprovalConfirmation": "Xác nhận phê duyệt",
+  "ConsentConfirmation": "Xác nhận thẩm định",
   "Cancel": "Hủy bỏ",
   "Task": "Công việc",
   "CountryOfBirth": "Quốc gia sinh",

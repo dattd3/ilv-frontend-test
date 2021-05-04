@@ -31,8 +31,8 @@ function Authorize(props) {
         let config = {
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
 
@@ -184,14 +184,14 @@ function Authorize(props) {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
-            jobTitle: "",
-            benefitLevel: "",
-            companyName: "",
+            jobTitle: userProfile.job_name,
+            benefitLevel: userProfile.employee_level,
+            companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
-            departmentName: "",
+            departmentName: userProfile.department,
             culture: localStorage.getItem('locale').split("-")[0]
         }
-        debugger
+
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}user/update`,

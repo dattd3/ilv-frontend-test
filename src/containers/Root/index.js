@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
+import Maintenance from "../Maintenance";
 import ContextProviders from "./providers";
 import Amplify from 'aws-amplify';
 import AWS from 'aws-sdk';
@@ -31,6 +32,7 @@ function Root() {
   return (
     <ContextProviders>
       <BrowserRouter>
+      {/* <Maintenance/> */}
         <Switch> 
           {routes.map(
             ({ component: Content, key, routeProps, contentProps }) => (
