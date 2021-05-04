@@ -67,6 +67,7 @@ export default {
   RegistrationEmploymentTermination: "/registration-employment-termination",
   ProposedResignation: "/proposed-resignation",
   ResignationRequestsManagement: "/management-resignation-requests",
+  ContractTerminationInterview: "/contract-termination-interview",
   //Evalution
   Evaluation: '/evaluation/:id/:type',
 

@@ -182,7 +182,40 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         const { t, isEdit } = this.props;
 
         return <div className="block resignation-requests-management-action-button">
-                    
+                    <div className="row filter-action-block">
+                        <div className="col-4">
+                            <div className="input-filter">
+                                <input type="text" value="" placeholder="Tìm kiếm theo từ khóa" />
+                            </div>
+                        </div>
+                        <div className="col-3 btn-action-group">
+                            <div className="row action-group">
+                                <div className="col-6">
+                                    <div>
+                                        <Select
+                                            isDisabled={isEdit}
+                                            isClearable={true}
+                                            styles={customStyles}
+                                            components={{ Option: MyOption }}
+                                            onInputChange={this.onInputChange.bind(this)}
+                                            name="appraiser"
+                                            onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
+                                            value={this.state.appraiser}
+                                            placeholder="Xuất"
+                                            key="appraiser"
+                                            options={this.state.users}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-6">
+                                    <button type="button" className="attachment">
+                                        <i className="fas fa-paperclip"></i>
+                                        <span>Đính kèm</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
     }
 }

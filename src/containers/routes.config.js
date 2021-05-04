@@ -473,6 +473,14 @@ export default [
           },
           component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ResignationRequestsManagement"))
         },
+        {
+          key: "contract-termination-interview",
+          routeProps: {
+            exact: true,
+            path: map.ContractTerminationInterview
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ContractTerminationInterview"))
+        }
       ],
     },
   },

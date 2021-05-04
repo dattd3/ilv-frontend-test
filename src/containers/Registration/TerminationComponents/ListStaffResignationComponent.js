@@ -193,93 +193,202 @@ class ListStaffResignationComponent extends React.PureComponent {
         const candidateInfos = []
 
         return <div className="block staff-information-proposed-resignation-block">
-                    <div className="box shadow">
-                        <div className="row search-action-block">
-                            <div className="col-4">
-                                <div>
-                                    <Select
-                                        isDisabled={isEdit}
-                                        isClearable={true}
-                                        styles={customStyles}
-                                        components={{ Option: MyOption }}
-                                        onInputChange={this.onInputChange.bind(this)}
-                                        name="appraiser"
-                                        onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                        value={this.state.appraiser}
-                                        placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
-                                        key="appraiser"
-                                        options={this.state.users}
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-2 btn-action-group">
-                                <button type="button" className="btn-action add">Thêm</button>
-                                <button type="button" className="btn-action delete">Xóa</button>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-12">
-                                <div className="list-staff" style={{width: this.getWidthContent(this.props.isExpand)}}>
-                                    <div className="f-grid-fixed-column">
-                                        <div className="row-header">
-                                            <div className="font-weight-bold col-customize full-name">Họ và tên</div>
-                                        </div>
-                                        <div className="table-body-customize">
-                                            {
-                                                (candidateInfos || []).map((item, index) => {
-                                                    return <div className="row-customize text-main-color" key={index}>
-                                                                <div className="col-customize data full-name">
-                                                                    <input name="candidateId" type="checkbox" className="row-id" 
-                                                                    // checked={candidateIdChecked[index] && candidateIdChecked[index].value ? candidateIdChecked[index].value : false} 
-                                                                    /* onChange={e => this.handleCheckboxChange(index, e)} */ />
-                                                                    <a className="text-collapse-for-flex" title={item.fullName} href={`/contract-management/contract-evaluation-results/employee/${item.idDisplay}`}>{item.fullName || ""}</a>
-                                                                </div>
-                                                            </div>
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="f-grid-dynamic-column" style={{width: this.getWidthContentDynamicTableContractManagement(this.props.isExpand)}}>
-                                        <div className="body-scroll">
-                                            <div className="row-header">
-                                                <div className="font-weight-bold item title employee-code">Mã nhân viên</div>
-                                                <div className="font-weight-bold item title job-title">Chức danh</div>
-                                                <div className="font-weight-bold item title facility-department">Phòng ban/Cơ sở</div>
-                                                <div className="font-weight-bold item title part">Bộ phận</div>
-                                                <div className="font-weight-bold item title rank">Cấp bậc</div>
-                                                <div className="font-weight-bold item title application-date">Ngày nộp đơn</div>
-                                                <div className="font-weight-bold item title contract-termination-date">Ngày chấm dứt hợp đồng</div>
-                                                <div className="font-weight-bold item title leave-type">Hình thức nghỉ</div>
-                                                <div className="font-weight-bold item title leave-reason">Lý do nghỉ</div>
-                                                <div className="font-weight-bold item title contract-type">Loại hợp đồng</div>
-                                                <div className="font-weight-bold item title created-by">Người tạo</div>
-                                                <div className="font-weight-bold item title attachment">File đính kèm</div>
-                                                <div className="font-weight-bold item title handover-status">Tình trạng bàn giao</div>
-                                                <div className="font-weight-bold item title approval status">Tình trạng phê duyệt</div>
-                                            </div>
-                                            {
-                                                (candidateInfos || []).map((item, index) => {
-                                                    return <div className="row-header text-main-color" key={index}>
-                                                                <div className="item data employee-code"><span className="text-collapse-for-flex">{3651641 || ""}</span></div>
-                                                                <div className="item data job-title"><span className="text-collapse-for-flex">{"Quản lý dự án" || ""}</span></div>
-                                                                <div className="item data facility-department"><span className="text-collapse-for-flex">{"Phòng PMK" || ""}</span></div>
-                                                                <div className="item data part"><span className="text-collapse-for-flex">{"CNTT" || ""}</span></div>
-                                                                <div className="item data rank"><span className="text-collapse-for-flex">{"Chuyên viên" || ""}</span></div>
-                                                                <div className="item data application-date"><span className="text-collapse-for-flex">{"10/10/2020" || ""}</span></div>
-                                                                <div className="item data contract-termination-date"><span className="text-collapse-for-flex">{"10/10/2021" || ""}</span></div>
-                                                                <div className="item data leave-type"><span className="text-collapse-for-flex">{"Chấm dứt hợp đồng - Tự nghỉ" || ""}</span></div>
-                                                                <div className="item data leave-reason"><span className="text-collapse-for-flex">{"Do sức khỏe" || ""}</span></div>
-                                                                <div className="item data contract-type"><span className="text-collapse-for-flex">{"Hợp đồng lao động có thời hạn" || ""}</span></div>
-                                                                <div className="item data created-by"><span className="text-collapse-for-flex">{"Nguyễn Văn Cường" || ""}</span></div>
-                                                                <div className="item data attachment"><span className="text-collapse-for-flex">{"Danh sách files" || ""}</span></div>
-                                                                <div className="item data handover-status"><span className="text-collapse-for-flex">{"Đã bàn giao" || ""}</span></div>
-                                                                <div className="item data approval status"><span className="text-collapse-for-flex">{"Đã phê duyệt" || ""}</span></div>
-                                                            </div>
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="list-staff-block">
+                                <table className="list-staff table">
+                                    <thead>
+                                        <tr>
+                                            <th className="sticky-col full-name-col">Họ và tên</th>
+                                            <th className="sticky-col employee-code-col">Mã nhân viên</th>
+                                            <th>Chức danh</th>
+                                            <th>Khối/Phòng/Bộ phận</th>
+                                            <th>Cấp bậc</th>
+                                            <th>Ngày nộp đơn</th>
+                                            <th>Ngày chấm dứt hợp đồng</th>
+                                            <th>Lý do nghỉ</th>
+                                            <th>Lý do chi tiết</th>
+                                            <th>Loại hợp đồng</th>
+                                            <th>Người tạo</th>
+                                            <th>Tệp đính kèm</th>
+                                            <th>Tình trạng bàn giao</th>
+                                            <th>Bàn giao công việc</th>
+                                            <th>Bàn giao tài sản công ty</th>
+                                            <th>Bàn giao BHXH và BHYT</th>
+                                            <th>Bàn giao đồng phục</th>
+                                            <th>Bàn giao vân tay/email</th>
+                                            <th>Bàn giao công nợ</th>
+                                            <th>Các phần mềm phục vụ công việc (nếu có)</th>
+                                            <th>Xác nhận biên bản vi phạm chưa xử lý</th>
+                                            <th>Tình trạng phê duyệt</th>
+                                            <th>Tình trạng sổ BHXH</th>
+                                            <th>Lương nghỉ việc</th>
+                                            <th>Phiếu phỏng vấn</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="sticky-col full-name-col">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="sticky-col employee-code-col"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title-col"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part-col"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="rank-col"><div className="data rank">Hợp đồng thử việc</div></td>
+                                            <td className="application-date-col"><div className="data text-center application-date">12/04/2021</div></td>
+                                            <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">12/04/2021</div></td>
+                                            <td className="reason-termination-col"><div className="data reason-termination">Sức khỏe yếu</div></td>
+                                            <td className="detailed-reason-col"><div className="data detailed-reason">Dịch bệnh Covid</div></td>
+                                            <td className="contract-type-col"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="created-by-col"><div className="data created-by">Nguyễn Văn Cường</div></td>
+                                            <td className="attachment-col"><div className="data attachment">Danh sách</div></td>
+                                            <td className="handover-status-col"><div className="data handover-status">Đã bàn giao</div></td>
+                                            <td className="handover-job-col"><div className="data handover-job">Chưa hoàn thành</div></td>
+                                            <td className="asset-transfer-col"><div className="data asset-transfer">Chưa hoàn thành</div></td>
+                                            <td className="handover-insurance-col"><div className="data handover-insurance">Chưa hoàn thành</div></td>
+                                            <td className="handover-uniforms-col"><div className="data handover-uniforms">Chưa hoàn thành</div></td>
+                                            <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">Chưa hoàn thành</div></td>
+                                            <td className="handover-liabilities-col"><div className="data handover-liabilities">Chưa hoàn thành</div></td>
+                                            <td className="handover-software-col"><div className="data handover-software">Chưa hoàn thành</div></td>
+                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">Chưa hoàn thành</div></td>
+                                            <td className="approval-status-col"><div className="data approval-status">Đã phê duyệt</div></td>
+                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">Đã chốt</div></td>
+                                            <td className="leave-salary-col"><div className="data leave-salary">Giữ lương</div></td>
+                                            <td className="interview-card-col"><div className="data interview-card" href="https://www.google.com/" title="phongvan.xlsx">phongvan.xlsx</div></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="sticky-col full-name-col">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="sticky-col employee-code-col"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title-col"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part-col"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="rank-col"><div className="data rank">Hợp đồng thử việc</div></td>
+                                            <td className="application-date-col"><div className="data text-center application-date">12/04/2021</div></td>
+                                            <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">12/04/2021</div></td>
+                                            <td className="reason-termination-col"><div className="data reason-termination">Sức khỏe yếu</div></td>
+                                            <td className="detailed-reason-col"><div className="data detailed-reason">Dịch bệnh Covid</div></td>
+                                            <td className="contract-type-col"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="created-by-col"><div className="data created-by">Nguyễn Văn Cường</div></td>
+                                            <td className="attachment-col"><div className="data attachment">Danh sách</div></td>
+                                            <td className="handover-status-col"><div className="data handover-status">Đã bàn giao</div></td>
+                                            <td className="handover-job-col"><div className="data handover-job">Chưa hoàn thành</div></td>
+                                            <td className="asset-transfer-col"><div className="data asset-transfer">Chưa hoàn thành</div></td>
+                                            <td className="handover-insurance-col"><div className="data handover-insurance">Chưa hoàn thành</div></td>
+                                            <td className="handover-uniforms-col"><div className="data handover-uniforms">Chưa hoàn thành</div></td>
+                                            <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">Chưa hoàn thành</div></td>
+                                            <td className="handover-liabilities-col"><div className="data handover-liabilities">Chưa hoàn thành</div></td>
+                                            <td className="handover-software-col"><div className="data handover-software">Chưa hoàn thành</div></td>
+                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">Chưa hoàn thành</div></td>
+                                            <td className="approval-status-col"><div className="data approval-status">Đã phê duyệt</div></td>
+                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">Đã chốt</div></td>
+                                            <td className="leave-salary-col"><div className="data leave-salary">Giữ lương</div></td>
+                                            <td className="interview-card-col"><div className="data interview-card" href="https://www.google.com/" title="phongvan.xlsx">phongvan.xlsx</div></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="sticky-col full-name-col">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="sticky-col employee-code-col"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title-col"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part-col"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="rank-col"><div className="data rank">Hợp đồng thử việc</div></td>
+                                            <td className="application-date-col"><div className="data text-center application-date">12/04/2021</div></td>
+                                            <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">12/04/2021</div></td>
+                                            <td className="reason-termination-col"><div className="data reason-termination">Sức khỏe yếu</div></td>
+                                            <td className="detailed-reason-col"><div className="data detailed-reason">Dịch bệnh Covid</div></td>
+                                            <td className="contract-type-col"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="created-by-col"><div className="data created-by">Nguyễn Văn Cường</div></td>
+                                            <td className="attachment-col"><div className="data attachment">Danh sách</div></td>
+                                            <td className="handover-status-col"><div className="data handover-status">Đã bàn giao</div></td>
+                                            <td className="handover-job-col"><div className="data handover-job">Chưa hoàn thành</div></td>
+                                            <td className="asset-transfer-col"><div className="data asset-transfer">Chưa hoàn thành</div></td>
+                                            <td className="handover-insurance-col"><div className="data handover-insurance">Chưa hoàn thành</div></td>
+                                            <td className="handover-uniforms-col"><div className="data handover-uniforms">Chưa hoàn thành</div></td>
+                                            <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">Chưa hoàn thành</div></td>
+                                            <td className="handover-liabilities-col"><div className="data handover-liabilities">Chưa hoàn thành</div></td>
+                                            <td className="handover-software-col"><div className="data handover-software">Chưa hoàn thành</div></td>
+                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">Chưa hoàn thành</div></td>
+                                            <td className="approval-status-col"><div className="data approval-status">Đã phê duyệt</div></td>
+                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">Đã chốt</div></td>
+                                            <td className="leave-salary-col"><div className="data leave-salary">Giữ lương</div></td>
+                                            <td className="interview-card-col"><div className="data interview-card" href="https://www.google.com/" title="phongvan.xlsx">phongvan.xlsx</div></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="sticky-col full-name-col">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="sticky-col employee-code-col"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title-col"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part-col"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="rank-col"><div className="data rank">Hợp đồng thử việc</div></td>
+                                            <td className="application-date-col"><div className="data text-center application-date">12/04/2021</div></td>
+                                            <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">12/04/2021</div></td>
+                                            <td className="reason-termination-col"><div className="data reason-termination">Sức khỏe yếu</div></td>
+                                            <td className="detailed-reason-col"><div className="data detailed-reason">Dịch bệnh Covid</div></td>
+                                            <td className="contract-type-col"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="created-by-col"><div className="data created-by">Nguyễn Văn Cường</div></td>
+                                            <td className="attachment-col"><div className="data attachment">Danh sách</div></td>
+                                            <td className="handover-status-col"><div className="data handover-status">Đã bàn giao</div></td>
+                                            <td className="handover-job-col"><div className="data handover-job">Chưa hoàn thành</div></td>
+                                            <td className="asset-transfer-col"><div className="data asset-transfer">Chưa hoàn thành</div></td>
+                                            <td className="handover-insurance-col"><div className="data handover-insurance">Chưa hoàn thành</div></td>
+                                            <td className="handover-uniforms-col"><div className="data handover-uniforms">Chưa hoàn thành</div></td>
+                                            <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">Chưa hoàn thành</div></td>
+                                            <td className="handover-liabilities-col"><div className="data handover-liabilities">Chưa hoàn thành</div></td>
+                                            <td className="handover-software-col"><div className="data handover-software">Chưa hoàn thành</div></td>
+                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">Chưa hoàn thành</div></td>
+                                            <td className="approval-status-col"><div className="data approval-status">Đã phê duyệt</div></td>
+                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">Đã chốt</div></td>
+                                            <td className="leave-salary-col"><div className="data leave-salary">Giữ lương</div></td>
+                                            <td className="interview-card-col"><div className="data interview-card" href="https://www.google.com/" title="phongvan.xlsx">phongvan.xlsx</div></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="sticky-col full-name-col">
+                                                <div className="data full-name">
+                                                    <input type="checkbox" defaultChecked={false} />
+                                                    <span>Nguyễn Văn Cường</span>
+                                                </div>
+                                            </td>
+                                            <td className="sticky-col employee-code-col"><div className="data employee-code">3651641</div></td>
+                                            <td className="job-title-col"><div className="data job-title">Chuyên viên nhân sự</div></td>
+                                            <td className="block-department-part-col"><div className="data block-department-part">Hành chính nhân sự</div></td>
+                                            <td className="rank-col"><div className="data rank">Hợp đồng thử việc</div></td>
+                                            <td className="application-date-col"><div className="data text-center application-date">12/04/2021</div></td>
+                                            <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">12/04/2021</div></td>
+                                            <td className="reason-termination-col"><div className="data reason-termination">Sức khỏe yếu</div></td>
+                                            <td className="detailed-reason-col"><div className="data detailed-reason">Dịch bệnh Covid</div></td>
+                                            <td className="contract-type-col"><div className="data contract-type">Hợp đồng thử việc</div></td>
+                                            <td className="created-by-col"><div className="data created-by">Nguyễn Văn Cường</div></td>
+                                            <td className="attachment-col"><div className="data attachment">Danh sách</div></td>
+                                            <td className="handover-status-col"><div className="data handover-status">Đã bàn giao</div></td>
+                                            <td className="handover-job-col"><div className="data handover-job">Chưa hoàn thành</div></td>
+                                            <td className="asset-transfer-col"><div className="data asset-transfer">Chưa hoàn thành</div></td>
+                                            <td className="handover-insurance-col"><div className="data handover-insurance">Chưa hoàn thành</div></td>
+                                            <td className="handover-uniforms-col"><div className="data handover-uniforms">Chưa hoàn thành</div></td>
+                                            <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">Chưa hoàn thành</div></td>
+                                            <td className="handover-liabilities-col"><div className="data handover-liabilities">Chưa hoàn thành</div></td>
+                                            <td className="handover-software-col"><div className="data handover-software">Chưa hoàn thành</div></td>
+                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">Chưa hoàn thành</div></td>
+                                            <td className="approval-status-col"><div className="data approval-status">Đã phê duyệt</div></td>
+                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">Đã chốt</div></td>
+                                            <td className="leave-salary-col"><div className="data leave-salary">Giữ lương</div></td>
+                                            <td className="interview-card-col"><div className="data interview-card" href="https://www.google.com/" title="phongvan.xlsx">phongvan.xlsx</div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

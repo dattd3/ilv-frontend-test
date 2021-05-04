@@ -1560,6 +1560,41 @@ span.badge-notification[data-badge]::after {
 }
 .resignation-requests-management-page {
   color: #000000;
+  .resignation-requests-management-action-button {
+    .filter-action-block {
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      .action-group {
+        align-items: center;
+        .attachment {
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          background: #FFFFFF;
+          padding: 6px;
+          &:focus {
+            outline: none;
+          }
+          i {
+            margin-right: 5px;
+            font-size: 14px;
+          }
+        }
+      }
+      .input-filter {
+        input {
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          padding: 6px 10px;
+          &:focus-visible {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
   .staff-information-proposed-resignation-block {
     .search-action-block {
       .btn-action-group {
@@ -1581,277 +1616,264 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
-    .list-staff {
-      display: flex;
+    .list-staff-block {
+      display: block;
+      overflow-x: scroll;
+      overflow-y: auto;
       border: 1px solid #CCCCCC;
-      border-radius: .35rem;
-      .title {
-        background-color: #eaecf4;
+      border-top-left-radius: .35rem;
+      border-top-right-radius: .35rem;
+      &::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+          background-color: #F5F5F5;
       }
-      .data {
-        border-bottom: 1px dashed #e0e0e0;
-        height: 60px!important;
+      &::-webkit-scrollbar-thumb {
+          background-color: #C1C1C1;
       }
-      .f-grid-fixed-column {
-        flex-basis: 180px;
-        .row-header {
-          display: flex;
-          align-items: center;
+      &::-webkit-scrollbar-track {
+          box-shadow: inset 0 0 6px #F1F1F1;
+          -webkit-box-shadow: inset 0 0 6px #F1F1F1;
+          background-color: #F1F1F1;
+      }
+      .table {
+        color: inherit;
+        table-layout: auto;
+        width: 100%;
+        border-radius: .35rem;
+        background: #FFFFFF;
+        border-spacing: 0;
+        border-collapse: separate;
+        margin-bottom: 0;
+        thead {
+          color: #347EF9;
           background-color: #eaecf4;
-          border-top-left-radius: .35rem;
-          .col-customize {
-            padding: 0 10px;
+          th {
+            text-align: center;
+            vertical-align: middle;
+            border-collapse: collapse;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            top: 0;
             background-color: #eaecf4;
-            color: inherit;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 160px;
-            border-top-left-radius: .35rem;
-            &.data {
-              height: 60px!important;
+            z-index: 10;
+            border-bottom: none;
+            &.sticky-col{
+              position: sticky;
+              position: -webkit-sticky;
+              background: #eaecf4;
+              z-index: 0;
             }
-            &.job-title {
-              flex: 0 0 150px;
+          }
+          th:first-child {
+            border-top-left-radius: .35px;
+          }
+          th:last-child {
+            text-align: center;
+            border-top-right-radius: .35px;
+          }
+        }
+        tbody {
+          td {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            border-bottom: 1px solid #CCCCCC;
+            &.full-name-col {
+              .full-name {
+                input {
+                  margin-right: 8px;
+                }
+              }
             }
-            &.candidate-code {
-              flex: 0 0 120px;
+            .full-name {
+              width: 200px;
             }
-            &.full-name {
-              flex: 0 0 180px;
+            .employee-code {
+              width: 120px;
+              text-align: center;
+            }
+            .job-title {
+              width: 180px;
+            }
+            .block-department-part {
+              width: 200px;
+            }
+            .rank {
+              width: 160px;
+            }
+            .day-working {
+              width: 140px;
+              text-align: center;
             }
           }
         }
-        .table-body-customize {
-          font: normal 14px HelveticaNeue, Arial, Helvetica, sans-serif;
-          .row-customize {
-            display: flex;
-            align-items: center;
-            height: 60px;
-            input {
-              height: 28px;
-              font: inherit;
-              border: none;
-              border-bottom: 1px solid #d3d3d3;
-              border-radius: 0;
-              color: #000000;
-              padding: 0;
-              &.row-id {
-                margin-right: 5px!important;
-              }
-              &:focus {
-                box-shadow: none;
-              }
+        .full-name-col {
+          left: 0;
+        }
+        .sticky-col {
+          position: sticky;
+          background: #FFFFFF;
+          z-index: 0;
+        }
+        .employee-code-col {
+          left: 224px;
+        }
+      }
+    }
+  }
+}
+
+.contract-termination-interview {
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #000000;
+  padding: 30px 1.5rem;
+  .logo-block {
+    text-align: center;
+    margin-bottom: 30px;
+    .logo {
+      height: 80px;
+    }
+  }
+  .page-title {
+    text-align: center;
+    color: #ff0000;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .box {
+    color: inherit;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    margin: 15px 0;
+    p {
+      margin: 10px 0;
+      &.question {
+        margin: 0 0 15px 0;
+        font-weight: bold;
+      }
+    }
+    .divider {
+      margin-top: 10px;
+      border-top: none;
+      border-bottom: 1px solid #CCCCCC;
+    }
+    .answer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      label {
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+      span {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 80px;
+        input {
+          cursor: pointer;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  .block {
+    .block-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #283280;
+    }
+    input {
+      &:focus {
+        box-shadow: none;
+        border-color: #d1d3e2;
+      }
+    }
+    .react-datepicker-wrapper {
+      cursor: pointer;
+      [class$="-container"] {
+        margin-top: 0;
+      }
+    }
+    .has-border-bottom {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+  }
+  .interview-content-block {
+    .list-staff {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: separate;
+      border: 1px solid #CCCCCC;
+      border-radius: 10px;
+      thead {
+        background: #eaecf4;
+        tr {
+          height: 40px;
+          th {
+            font-weight: bold;
+            text-align: center;
+            &.col-first {
+              border-top-left-radius: 10px;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
             }
-            .col-customize {
-              display: flex;
-              padding: 0 10px;
+            &.col-second {
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+            }
+            &.col-third {
+              border-top-right-radius: 10px;
+              border-bottom: 1px solid #CCCCCC;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            border-bottom: 1px solid #CCCCCC;
+            .data {
+              height: 40px;
               display: flex;
               align-items: center;
-              flex: 0 0 160px;
-              &.job-title {
-                flex: 0 0 150px;
-              }
-              &.candidate-code {
-                flex: 0 0 120px;
-                justify-content: center;
-              }
-              &.full-name {
-                flex: 0 0 180px;
-                a {
-                  color: #000000;
-                }
-              }
-            }
-            &:last-child {
-              .data {
-                border: none;
-              }
-            }
-          }
-        }
-        .col-customize {
-          height: 80px;
-          .candidate-name {
-            width: 0;
-            flex-grow: 1;
-            text-decoration: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            &:hover {
-              color: #ffba00 !important;
-            }
-          }
-          .normal-link{
-            text-decoration: none;
-          }
-          &.title {
-            text-align: center;
-          }
-          &.label {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding-left: 15px;
-            padding-right: 15px;
-            input {
-              margin-right: 15px;
-            }
-          }
-        }
-      }
-      .f-grid-dynamic-column {
-        flex:  1;
-        .body-scroll {
-          overflow-x: scroll;
-          &::-webkit-scrollbar {
-            background-color: #F5F5F5;
-            height: 8px;
-            width: 8px;
-          }
-          &::-webkit-scrollbar-thumb {
-            background-color: #a4afb7;
-            border-left: 1px solid white;
-            border-right: 1px solid white;
-            border-top: 1px solid white;
-            border-bottom: 1px solid white;
-            border-radius: 4px;
-          }
-          &::-webkit-scrollbar-track {
-            background-color: #d3d3d3;
-            border-left: 3.5px solid white;
-            border-right: 3.5px solid white;
-            border-top: 3.5px solid white;
-            border-bottom: 3.5px solid white;
-          }
-          .row-header {
-            display: flex;
-            align-items: center;
-            &:last-child {
-              .data {
-                border: none;
-              }
-            }
-          }
-          .row-body {
-            .row-table {
-              display: flex;
-            }
-          }
-          .item {
-            flex: 0 0 160px;
-            padding: 0 10px;
-            height: 50px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            &.data {
-              justify-content: flex-start;
               padding: 0 10px;
-              width: 0;
-              flex-grow: 1;
-              text-decoration: none;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              &.current-information {
-                flex: 0 0 320px;
-                padding: 0 20px;
-                .current-info-contract-type {
-                  flex: 0 0 50%;
-                  min-width: 0;
-                }
-                .current-info-contract-period {
-                  flex: 0 0 50%;
-                  text-align: center;
-                  min-width: 0;
-                }
-              }
-              &.evaluation-results {
-                flex: 0 0 1000px;
-                padding: 0 10px 0 30px;
-                .result {
-                  flex: 0 0 25%;
-                  min-width: 0;
-                }
-                .result-contract-type {
-                  flex: 0 0 20%;
-                  min-width: 0;
-                }
-                .result-contract-period {
-                  flex: 0 0 18%;
-                  text-align: center;
-                }
-                .result-other-proposals {
-                  flex: 0 0 37%;
-                  text-align: left;
-                  padding-left: 50px;
-                  min-width: 0;
+            }
+            .item {
+              padding: 0 10px;
+              .sub {
+                padding: 5px 0;
+                input {
+                  margin-right: 8px;
                 }
               }
             }
-            &.title.current-information {
-              padding: 0 20px;
-              flex: 0 0 320px;
-              display: flex;
-              flex-direction: column;
-              .row-top {
-                width: 100%;
-                text-align: center;
-                border-bottom: 1px solid #8e8e8e;
-                padding: 0 0 10px 0;
-              }
-              .row-bottom {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 0 0 0;
-                .current-info-contract-type {
-                  flex: 0 0 50%;
-                }
-                .current-info-contract-period {
-                  flex: 0 0 50%;
-                  text-align: right;
-                }
+            &.categories {
+              width: 15%;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+              .item {
+                font-weight: bold;
               }
             }
-            &.title.evaluation-results {
-              padding: 0 10px 0 30px;
-              flex: 0 0 1000px;
-              display: flex;
-              flex-direction: column;
-              .row-top {
-                width: 100%;
-                text-align: center;
-                border-bottom: 1px solid #8e8e8e;
-                padding: 0 0 10px 0;
-              }
-              .row-bottom {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 0 0 0;
-                .result {
-                  flex: 0 0 25%;
-                }
-                .result-contract-type {
-                  flex: 0 0 20%;
-                }
-                .result-contract-period {
-                  flex: 0 0 18%;
-                }
-                .result-other-proposals {
-                  flex: 0 0 37%;
-                  text-align: right;
-                }
-              }
+            &.selection {
+              width: 35%;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+            }
+            &.explain {
+              width: 50%;
+            }
+          }
+          &:last-child {
+            td {
+              border-bottom: none;
             }
           }
         }
