@@ -59,10 +59,11 @@ export default {
   //Registration
   Registration: "/registration",
   RegistrationEdit: "/registration/:id/edit",
-  RequestTaskEdit: "/tasks-request/:id/edit",
+  RequestTaskEdit: "/tasks-request/:id/:childId/edit",
   ApprovalTaskDetail: "/tasks-approval/:id",
-  RegistrationDetailRequest: "/registration/:id/request",
-  RegistrationDetailApproval: "/registration/:id/approval",
+  RegistrationDetailRequest: "/registration/:id/:childId/request",
+  RegistrationDetailApproval: "/registration/:id/:childId/approval",
+  RegistrationDetailConsent: "/registration/:id/:childId/consent",
 
   //Q&A
   QuestionAndAnswer: "/question-and-answer",

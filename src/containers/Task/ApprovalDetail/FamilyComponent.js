@@ -16,7 +16,7 @@ class FamilyComponent extends React.Component {
                 <h4 className="title text-uppercase">{t("PersonalRelations")}</h4>
                 <div className="box shadow">
                     <span className="mr-5"><i className="note note-old"></i> {t("Record")}</span>
-                    <span className="mr-5"><i className="note note-new"></i> {t("AdjustmentInformation")}</span>
+                    <span className="mr-5"><i className="note note-new"></i> {t("NewInformation")}</span>
                     <span><i className="note note-create"></i> {t("NewInformation")}</span>
                     <hr/>
                        { (userFamilyUpdate || []).map((item, i) => {
@@ -35,7 +35,7 @@ class FamilyComponent extends React.Component {
                                         {t("PitNoNpt")}
                                     </Col>
                                     <Col xs={12} md={6} lg={1}>
-                                        Có tính giảm trừ gia cảnh (Tích x)
+                                        {t("PITReduction")} (Tích x)
                                     </Col>
                                     <Col xs={12} md={6} lg={2}>
                                         {t("StartDate")}
@@ -111,7 +111,7 @@ class FamilyComponent extends React.Component {
                                             {t("PitNoNpt")}
                                         </Col>
                                         <Col xs={12} md={6} lg={1}>
-                                            Có tính giảm trừ gia cảnh (Tích x)
+                                            {t("PITReduction")} (Tích x)
                                         </Col>
                                         <Col xs={12} md={6} lg={2}>
                                             {t("StartDate")}

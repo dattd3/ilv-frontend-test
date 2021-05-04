@@ -31,16 +31,17 @@ function Authorize(props) {
         let config = {
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/user/profile`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
+                    updateUser(userProfile,jwtToken)
                 }
             })
             .catch(error => {
@@ -105,7 +106,14 @@ function Authorize(props) {
                             region: user.department,
                             companyCode: user.company_code,
                             companyLogoUrl: res.data.data.logoUrl,
-                            companyThemeColor: res.data.data.colorHexCode
+                            companyThemeColor: res.data.data.colorHexCode,
+                            divisionId: user.organization_lv3,
+                            division: user.division,
+                            regionId: user.organization_lv4,
+                            unitId: user.organization_lv5,
+                            unit: user.unit,
+                            partId: user.organization_lv6,
+                            part: user.part
                         });
                     }
                 })
@@ -134,7 +142,14 @@ function Authorize(props) {
                         organizationLv5: user.organization_lv5,
                         region: user.department,
                         companyCode: user.company_code,
-                        companyLogoUrl: ''
+                        companyLogoUrl: '',
+                        divisionId: user.organization_lv3,
+                        division: user.division,
+                        regionId: user.organization_lv4,
+                        unitId: user.organization_lv5,
+                        unit: user.unit,
+                        partId: user.organization_lv6,
+                        part: user.part
                     });
                 })
                 .finally(result => {
@@ -162,6 +177,33 @@ function Authorize(props) {
                 SetNotifyContent(t("WaitNotice"));
             }
         });
+    }
+
+    function updateUser(userProfile, jwtToken) {
+       let userData = {
+            fullName: userProfile.fullname,
+            employeeNo: userProfile.uid,
+            mobile: "",
+            jobTitle: userProfile.job_name,
+            benefitLevel: userProfile.employee_level,
+            companyName: userProfile.pnl,
+            companyCode: userProfile.company_code,
+            departmentName: userProfile.department,
+            culture: localStorage.getItem('locale').split("-")[0]
+        }
+
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}user/update`,
+            data: userData,
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwtToken}`}
+        })
+        .then(res => {
+        })
+        .finally(res => {
+        })
+        .catch(response => {
+        })    
     }
 
     useEffect(() => {

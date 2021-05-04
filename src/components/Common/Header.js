@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
 import { Animated } from "react-animated-css";
+import { useLocalizeStore } from '../../modules';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -22,10 +23,13 @@ const getOrganizationLevelByRawLevel = level => {
 }
 
 function Header(props) {
+    const localizeStore = useLocalizeStore();
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
+    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"))
     const guard = useGuardStore();
+    const {t} = useTranslation();
 
     let totalNotificationUnRead = 0;
     const companyCode = localStorage.getItem('companyCode');
@@ -41,9 +45,9 @@ function Header(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-            timePost = Math.floor(minutes) + " phút trước";
+            timePost = Math.floor(minutes) + t("minutesAgo");
         } else if (hours < 24) {
-            timePost = Math.floor(hours) + " giờ trước";
+            timePost = Math.floor(hours) + t("hoursAgo");
         }
         return timePost;
     }
@@ -104,7 +108,7 @@ function Header(props) {
                                 <p className="description">{item.description != null ? item.description : ""}</p>
                                 <div className="time-file">
                                     <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>Có tệp tin đính kèm</span></span> : ""}
+                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
                                 </div>
                             </div>
                         })
@@ -124,7 +128,6 @@ function Header(props) {
         }
     }
 
-    const { t } = useTranslation();
 
     Auth.currentUserInfo().then(currentAuthUser => {
         if (currentAuthUser === undefined || currentAuthUser === null) {
@@ -138,7 +141,14 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
+    
+    const onChangeLocale = lang => {
+        setActiveLang(lang)
+    }
 
+    useEffect(() => { 
+        localizeStore.setLocale(activeLang || "vi-VN") 
+      }, [activeLang, localizeStore]);
 
     return (
         isApp ? null :
@@ -188,7 +198,17 @@ function Header(props) {
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
-                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>{t("Logout")}</Dropdown.Item>
+                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
+                                {t("LangViet")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
+                                {t("LangEng")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                {t("Logout")}
+                            </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Navbar>

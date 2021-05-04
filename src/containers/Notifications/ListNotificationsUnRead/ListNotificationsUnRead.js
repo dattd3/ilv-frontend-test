@@ -44,9 +44,9 @@ function ListNotificationsUnRead(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-            timePost = Math.floor(minutes) + " phút trước";
+            timePost = Math.floor(minutes) + t("minutesAgo");
         } else if (hours < 24) {
-            timePost = Math.floor(hours) + " giờ trước";
+            timePost = Math.floor(hours) + t("hoursAgo");
         }
         return timePost;
     }
@@ -81,12 +81,12 @@ function ListNotificationsUnRead(props) {
                             {item.hasAttachmentFiles ?
                             <span className="attachment-block">
                                 <i className="fas fa-paperclip ic-attachment"></i>
-                                <span>Có tệp tin đính kèm</span>
+                                <span>{t("HasAttachments")}</span>
                             </span>
                             : null
                             }
                             </div>
-                            <a href={`/notifications/${item.id}`} title="Xem chi tiết" className="detail-link">Xem chi tiết</a>
+                            <a href={`/notifications/${item.id}`} title="Xem chi tiết" className="detail-link">{t("Details")}</a>
                         </div>
                         </div>
                     </div>

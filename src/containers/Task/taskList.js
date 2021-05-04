@@ -1,41 +1,44 @@
 import React from 'react'
-import editButton from '../../assets/img/Icon-edit.png'
+// import editButton from '../../assets/img/Icon-edit.png'
 import notetButton from '../../assets/img/icon-note.png'
+import excelButton from '../../assets/img/excel-icon.svg'
 import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap'
 import Select from 'react-select'
-import Moment from 'react-moment'
 import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
-import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
+// import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
 import Constants from '../../commons/Constants'
-import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-
-const TIME_FORMAT = 'HH:mm:ss'
-const DATE_FORMAT = 'DD-MM-YYYY'
-const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
-const TIME_OF_SAP_FORMAT = 'HHmm00'
+// import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import TaskDetailModal from './TaskDetailModal'
+import ExportModal from './ExportModal'
+import {InputGroup, FormControl} from 'react-bootstrap'
+import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 
 class TaskList extends React.Component {
     constructor() {
         super();
         this.state = {
             approveTasks: [],
-            dataToModalConfirm: null,
-            isShowModalConfirm: false,
-            modalTitle: "",
-            modalMessage: "",
-            typeRequest: 1,
+            tasks: [],
+            taskChecked: [],
+            isShowTaskDetailModal: false,
+            isShowExportModal: false,
             messageModalConfirm: "",
             pageNumber: 1,
             taskId: null,
+            subId: null,
             requestUrl: "",
             requestTypeId: null,
             dataToPrepareToSAP: {},
-            isShowModalRegistrationConfirm: false,
+            action: null,
+            disabled: "disabled",
+            query: "",
+            statusSelected: null,
+            checkedAll:false,
         }
 
         this.manager = {
@@ -44,16 +47,27 @@ class TaskList extends React.Component {
             title: localStorage.getItem('jobTitle') || "",
             department: localStorage.getItem('department') || ""
         };
+        // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
-
     componentDidMount()
     {
-        this.setState({approveTasks: this.props.tasks})
+        this.setState({tasks: this.props.tasks})
+    }
+    
+    componentWillReceiveProps(nextProps)
+    {
+        this.setState({tasks: nextProps.tasks, taskFiltered: nextProps.tasks})
     }
 
     onChangePage = index => {
-        this.setState({ pageNumber: index })
+        this.setState({ pageNumber: index, checkedAll: false })
+        let tasks = TableUtil.updateData(this.props.tasks  || [], index - 1, 5)
+        let canEdit = tasks.filter(child => child.canChecked)
+        let number = tasks.filter(child => child.isChecked);
+        if (number.length > 0 && number.length == canEdit.length ) {
+            this.setState({checkedAll: true})
+        }
     }
 
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
@@ -72,42 +86,26 @@ class TaskList extends React.Component {
         this.showModalConfirm(value, request)
     }
 
-
-    showModalConfirm = (status, requestId) => {
-        const { t } = this.props
-        const requestRegistraion = {
-            2: { request: t("LeaveRequest"), requestUrl: "requestabsence" },
-            3: { request: t("BizTrip_TrainingRequest"), requestUrl: "requestattendance" },
-            4: { request: t("ShiftChange"), requestUrl: "requestsubstitution" },
-            5: { request: t("ModifyInOut"), requestUrl: "requesttimekeeping" }
-        }
-        const requestUpdateProfile = 1
-        if (requestId == requestUpdateProfile) {
-            this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt thay đổi này ?",
-                isShowModalConfirm: true,
-                typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED
-            });
-        } else {
-            this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + requestRegistraion[requestId].request + " này ?",
-                isShowModalRegistrationConfirm: true,
-                typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
-                requestUrl: requestRegistraion[requestId].requestUrl
-            });
+    showModalTaskDetail = (tasskId, subId) => {
+        this.setState({isShowTaskDetailModal: true ,taskId: tasskId, subId: subId});
+        switch (this.props.page) {
+            case "approval":
+                this.setState({action:"approval"})
+                break;
+            case "consent":
+                this.setState({action:"consent"})
+                break;
+            default:
+                break;
         }
     }
 
-    evictionRequest = id => {
-        this.setState({
-            modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
-            isShowModalConfirm: true,
-            typeRequest: Constants.STATUS_EVICTION,
-            taskId: id
-        });
+    showExportModal = () => {
+        this.setState({isShowExportModal: true})
+    }
+
+    onHideisShowExportModal = () => {
+        this.setState({ isShowExportModal: false });
     }
 
     onHideModalConfirm = () => {
@@ -118,7 +116,14 @@ class TaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData) => {
+    onHideisShowTaskDetailModal= () => {
+        if(this.state.statusSelected){
+            this.setState({ tasks:  this.state.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
+        }
+        this.setState({ isShowTaskDetailModal: false });
+    }
+
+    showStatus = (taskId, statusOriginal = 0, request, taskData) => {
         const { t } = this.props
         const customStylesStatus = {
             control: base => ({
@@ -135,10 +140,14 @@ class TaskList extends React.Component {
         }
 
         const status = {
-            0: { label: t("Waiting"), className: 'request-status' },
-            1: { label: t("Rejected"), className: 'request-status fail' },
-            2: { label: t("Approved"), className: 'request-status success' },
-            3: { label: 'Đã thu hồi', className: 'request-status' }
+            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
+            2: { label: this.props.t('Approved'), className: 'request-status success' },
+            3: { label: this.props.t('Canceled'), className: 'request-status' },
+            4: { label: this.props.t('Canceled'), className: 'request-status' },
+            5: { label: this.props.t("Waiting"), className: 'request-status' },
+            6: { label: this.props.t("Consented"), className: 'request-status' },
+            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
+            8: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
         const options = [
@@ -151,17 +160,20 @@ class TaskList extends React.Component {
             if (statusOriginal == 0) {
                 return <Select defaultValue={options[0]} value = {options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
             }
-            return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+            return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
-        return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        if(this.props.page === "consent" && taskData && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
+        return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
     getLinkUserProfileHistory = (id) => {
-        return this.props.page === "approval" ? `/tasks-approval/${id}` : `/tasks-request/${id}`
+        return this.props.page ? `/registration/${id}/1/${this.props.page}` : `/registration/${id}/1/request`
     }
 
-    getLinkRegistration(id) {
-        return this.props.page === "approval" ? `/registration/${id}/approval` : `/registration/${id}/request`
+    getLinkRegistration(id,childId) {
+        return this.props.page ? `/registration/${id}/${childId}/${this.props.page}` : `/registration/${id}/${childId}/request`
     }
 
     getTaskCode = code => {
@@ -206,6 +218,67 @@ class TaskList extends React.Component {
         return isShow;
     }
 
+    handleAllChecked = event => {
+        // let tasks = this.props.tasks;
+        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, 5)
+        tasks.forEach((child) => {
+            if(child.processStatusId == 8 || (child.processStatusId == 5 && this.props.page == "approval")){
+                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                if(child.isChecked)
+                {
+                    // child.canChecked = true
+                    // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
+                    if(this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
+                        this.state.taskChecked.push(child);
+                    }
+                }
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
+                }
+            }
+        })
+        this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
+        console.log(this.state.taskChecked);
+        this.enableBtn(this.state.taskChecked);
+    };
+    
+    handleCheckChieldElement = event => {
+        let tasks = this.props.tasks;
+        tasks.forEach((child) => {
+            let id = child.id;
+            if (id == event.target.value)
+            {
+                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                if(child.isChecked)
+                {
+                    this.state.taskChecked.push(child);
+                }
+                else
+                {
+                    this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
+                    
+                }
+            }
+        })    
+
+        let taskCheckedList = tasks.filter(t => t.isChecked);
+        this.setState({checkedAll: taskCheckedList.length == tasks.length ? true : false})
+
+        this.enableBtn(this.state.taskChecked);
+    };
+
+    enableBtn = (taskChecked) => {
+        if(taskChecked.length)
+        {
+            this.setState({ disabled:"", dataToSap:taskChecked})
+        }
+        else
+        {
+            this.setState({ disabled:"disabled", dataToSap:[]})
+        }
+    }
+
     getTaskLink = id => {
         if (this.props.page == "approval") {
             return `/tasks-approval/${id}`;
@@ -213,92 +286,8 @@ class TaskList extends React.Component {
         return `/tasks-request/${id}`;
     }
 
-    getDataToSAP = (request, data) => {
-        let jsonData = []
-        switch (request) {
-            case Constants.LEAVE_OF_ABSENCE:
-                jsonData = this.getLeaveOfAbsenceToSAp(data)
-                break;
-            case Constants.BUSINESS_TRIP:
-                jsonData = this.getBusinessTripToSAp(data)
-                break;
-            case Constants.SUBSTITUTION:
-                jsonData = this.getSubstitutionToSAp(data)
-                break;
-            case Constants.IN_OUT_TIME_UPDATE:
-                jsonData = this.getInOutUpdateToSAp(data)
-                break;
-        }
-        return jsonData
-    }
-
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
-    }
-
-    getInOutUpdateToSAp = data => {
-        let dataToSAP = []
-        data.userProfileInfo.timesheets.filter(t => t.isEdit).forEach((timesheet, index) => {
-            ['1', '2'].forEach(n => {
-                const startTimeName = `start_time${n}_fact_update`
-                const endTimeName = `end_time${n}_fact_update`
-                const startTimeNameOld = `start_time${n}_fact`
-                const endTimeNameOld = `end_time${n}_fact`
-                const startPlanTimeName = `from_time${n}`
-                const endPlanTimeName = `to_time${n}`
-                if (!timesheet[startTimeName] && !timesheet[endTimeName]) return
-                if (true) {
-                    let startTime = timesheet[startTimeName] ? moment(timesheet[startTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[startTimeNameOld]) ? moment(timesheet[startTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-                    if (startTime) {
-                        dataToSAP.push({
-                            MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                            PERNR: data.userProfileInfo.user.employeeNo,
-                            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-                            SATZA: 'P10',
-                            LTIME: startTime,
-                            DALLF: '+',
-                            ACTIO: 'INS'
-                        })
-                    }
-                }
-
-                if (true) {
-                    let endTime = timesheet[endTimeName] ? moment(timesheet[endTimeName], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : (!this.isNullCustomize(timesheet[endTimeNameOld]) ? moment(timesheet[endTimeNameOld], TIME_FORMAT).format(TIME_OF_SAP_FORMAT) : null)
-                    if (endTime) {
-                        dataToSAP.push({
-                            MYVP_ID: 'TEV' + '0'.repeat(7 - data.id.toString().length) + data.id + `${index}${n}`,
-                            PERNR: data.userProfileInfo.user.employeeNo,
-                            LDATE: moment(timesheet.date, DATE_FORMAT).format(DATE_OF_SAP_FORMAT),
-                            SATZA: 'P20',
-                            LTIME: endTime,
-                            DALLF: endTime > timesheet[startPlanTimeName] ? '+' : '-',
-                            ACTIO: 'INS'
-                        })
-                    }
-                }
-            })
-        })
-        return dataToSAP
-    }
-
-    getSubstitutionToSAp = data => {
-        return data.userProfileInfo.timesheets.filter(t => t.isEdit).map((timesheet, index) => {
-            return {
-                MYVP_ID: 'SUB' + '0'.repeat(8 - data.id.toString().length) + data.id + index,
-                PERNR: data.userProfileInfo.user.employeeNo,
-                BEGDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                ENDDA: moment(timesheet.date, Constants.SUBSTITUTION_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                TPROG: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? timesheet.shiftId : '',
-                BEGUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                ENDUZ: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(timesheet.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                VTART: timesheet.substitutionType.value,
-                PBEG1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  ? moment(timesheet.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                PEND1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.endBreakTime  ? moment(timesheet.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : '',
-                PBEZ1: '',
-                PUNB1: timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE && timesheet.startBreakTime  && timesheet.endBreakTime  ? this.calTime(timesheet.startBreakTime, timesheet.endBreakTime) : '',
-                TPKLA: parseFloat(timesheet.shiftHours) > 4 && timesheet.shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE ? Constants.SUBSTITUTION_TPKLA_FULL_DAY : Constants.SUBSTITUTION_TPKLA_HALF_DAY
-            }
-        })
     }
 
     calTime = (start, end) => {
@@ -309,53 +298,50 @@ class TaskList extends React.Component {
         return moment.duration(differenceInMs).asHours()
     }
 
-    getLeaveOfAbsenceToSAp = data => {
-        let dataToSAP = []
-        if (data.status === 0) {
-            dataToSAP.push(
-                {
-                    MYVP_ID: 'ABS' + '0'.repeat(9 - data.id.toString().length) + data.id,
-                    PERNR: data.userProfileInfo.user ? data.userProfileInfo.user.employeeNo : "",
-                    BEGDA: moment(data.userProfileInfo.startDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    ENDDA: moment(data.userProfileInfo.endDate, Constants.LEAVE_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    SUBTY: data.userProfileInfo.absenceType ? data.userProfileInfo.absenceType.value : "",
-                    BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.LEAVE_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ACTIO: 'INS'
-                }
-            )
-        }
-        return dataToSAP
-    }
-
-    getBusinessTripToSAp(data) {
-        let dataToSAP = []
-        if (data.status === 0) {
-            dataToSAP.push(
-                {
-                    MYVP_ID: 'ATT' + '0'.repeat(9 - data.id.toString().length) + data.id,
-                    PERNR: data.userProfileInfo.user.employeeNo,
-                    BEGDA: moment(data.userProfileInfo.startDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    ENDDA: moment(data.userProfileInfo.endDate, Constants.BUSINESS_TRIP_DATE_FORMAT).format(Constants.DATE_OF_SAP_FORMAT),
-                    SUBTY: data.userProfileInfo.attendanceQuotaType.value,
-                    BEGUZ: data.userProfileInfo.startTime ? moment(data.userProfileInfo.startTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ENDUZ: data.userProfileInfo.endTime ? moment(data.userProfileInfo.endTime, Constants.BUSINESS_TRIP_TIME_FORMAT).format(Constants.TIME_OF_SAP_FORMAT) : null,
-                    ACTIO: 'INS'
-                }
-            )
-        }
-        return dataToSAP
-    }
-
     updateTaskStatus = (id, status) =>{
         let tasksUpdated = this.state.approveTasks.map(x => (x.id === id ? {...x, status: status, approvalDate: moment(new Date())} : x));
         this.setState({approveTasks: tasksUpdated})
     }
 
+    handleSelectChange(name, value) {
+        this.setState({ [name]: value })
+        let cloneTask = this.props.tasks;
+        let result = [];
+        if(value && value.value > 0)
+        {
+            result = cloneTask.filter(req => req.processStatusId == value.value);
+            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
+        }
+        else{
+            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
+        }
+    }
+    
+    handleInputChange = (event) => {
+        let data = null;
+        let cloneTask = this.state.taskFiltered ? this.state.taskFiltered : this.props.tasks;
+        this.setState({
+            query: event.target.value
+          }, () => {
+              if(this.state.query)
+              {
+                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || x.id.toLowerCase().includes(this.state.query));
+              }
+              else if (this.state.statusSelected){
+                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
+              }
+              else {
+                data = this.props.tasks
+              }
+            
+            this.setState({tasks:data});
+          })
+    }
     render() {
-        const recordPerPage = 10
-        let tasks = TableUtil.updateData(this.state.approveTasks || [], this.state.pageNumber - 1, recordPerPage)
-        const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        const recordPerPage = 5
+        // let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
+        let taskRaw = this.state.tasks
+        let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
         const { t } = this.props
 
         const typeFeedbackMapping = {
@@ -365,95 +351,153 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
-
         return (
             <>
-                <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
-                    taskId={this.state.taskId} onHide={this.onHideModalConfirm} />
-                <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
-                    type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} updateTask = {this.updateTaskStatus} />
-                <div className="task-list shadow">
+                <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
+                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <div className="d-flex justify-content-between w-100 mt-2 mb-3">
+                    <div className="row w-75">
+                        <div className="col-xl-6">
+                            <InputGroup className="d-flex">
+                            <InputGroup.Prepend className="">
+                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Select name="absenceType" 
+                                    className="w-75" 
+                                    // defaultValue={this.props.filterdata[0]}
+                                    value={this.state.absenceType || ""}
+                                    isClearable={false}
+                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
+                                    // selectedValue={{ label: t("All"), value: 0 }}
+                                    placeholder={t('SortByStatus')} 
+                                    key="absenceType" options={this.props.filterdata} 
+                                    theme={theme => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        primary25: '#F9C20A',
+                                        primary: '#F9C20A',
+                                    },
+                                    })}/>
+                            </InputGroup>
+                        </div>
+                        <div className="col-xl-6">
+                            <InputGroup className="">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            onChange={this.handleInputChange}
+                            />
+                        </InputGroup>
+                        </div>
+                    </div>
+                   
+                </div> 
+                <div className="block-title d-flex">
+                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <div className="export-btn">
+                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
+                   </div>
+                </div>
+                <div className="task-list">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
-                            <tr className="text-center">
-                                <th scope="col" className="code">{t("RequestNo")}</th>
-                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="content">{t("Changecontent")}</th>
+                            <tr>
+                                <th scope="col" className="check-box text-center sticky-col">
+                                    <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
+                                </th>
+                                <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
                                 {
                                     !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="user-request">{t("Requestor")}</th>
+                                        ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
                                         : null
                                 }
-                                <th scope="col" className="request-date">{t("DateOfRequest")}</th>
-                                <th scope="col" className="user-approved">{t("Approver")}</th>
-                                <th scope="col" className="approval-date">{t("DateOfApproval")}</th>
-                                <th scope="col" className="status">{t("Status")}</th>
-                                <th scope="col" className="tool text-center">Lý do/ Phản hồi/ Chỉnh sửa</th>
+                                <th scope="col" className="user-title">{t("Title")}</th>
+                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                <th scope="col" className="day-off">{t("DayOff")}</th>
+                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                {
+                                    this.props.page == "approval" ?
+                                        <th scope="col" className="appraiser">{t("Consenter")}</th>
+                                    : null
+                                }
+                                <th scope="col" className="status text-center">{t("Status")}</th>
+                                {
+                                    this.props.page != "consent" ?
+                                        <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                    : null
+                                }
                             </tr>
                         </thead>
                         <tbody>
-                            {tasks.length > 0 ?
-                                tasks.map((task, index) => {
-                                    const approvalDate = task.approvalDate == null ? "" : <Moment format="DD/MM/YYYY">{task.approvalDate}</Moment>;
-                                    let isShowEditButton = this.isShowEditButton(task.status);
-                                    let isShowEvictionButton = this.isShowEvictionButton(task.status);
-                                    let userId = "";
-                                    let userManagerId = "";
-                                    if (task.userId) {
-                                        userId = task.userId.split("@")[0];
-                                    }
-                                    if (task.userManagerId) {
-                                        userManagerId = task.userManagerId.split("@")[0];
-                                    }
-                                    return (
-                                        <tr key={index}>
-                                            <td className="code"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.name} className="task-title">{this.getTaskCode(task.id)}</a></td>
-                                            <td className="request-type"><a href={task.requestTypeId == 1 ? this.getLinkUserProfileHistory(task.id) : this.getLinkRegistration(task.id)} title={task.requestType.name} className="task-title">{task.requestType.name}</a></td>
-                                            <td className="content">{task.requestTypeId == 1 ? task.name : task.comment || ""}</td>
-                                            {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="user-request text-center">{userId}</td> : null}
-                                            <td className="request-date text-center"><Moment format="DD/MM/YYYY">{task.createdDate}</Moment></td>
-                                            <td className="user-approved text-center">{userManagerId}</td>
-                                            <td className="approval-date text-center">{approvalDate}</td>
-                                            <td className="status">{this.showStatus(task.id, task.status, task.requestTypeId, task.userProfileInfo)}</td>
-                                            <td className="tool">
-                                                {task.comment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'note-task-' + index}>
-                                                        <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.comment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                {task.hrComment ? <OverlayTrigger
-                                                    rootClose
-                                                    trigger="click"
-                                                    placement="left"
-                                                    overlay={<Popover id={'comment-task-' + index}>
-                                                        <Popover.Title as="h3">{typeFeedbackMapping[task.requestTypeId]}</Popover.Title>
-                                                        <Popover.Content>
-                                                            {task.hrComment}
-                                                        </Popover.Content>
-                                                    </Popover>}>
-                                                    <img alt="comment task" src={commentButton} title={typeFeedbackMapping[task.requestTypeId]} />
-                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[task.requestTypeId]} />}
+                            {
+                                tasks.length > 0 ?
+                                    tasks.map((child, index) => {
+                                        let totalTime = null;
+                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
+                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                            totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                        }
+                                        return (
+                                            <tr key={index}>
                                                 {
-                                                    // isShowEditButton ?
-                                                    //     <a href={task.requestTypeId == 1 ? `/tasks-request/${task.id}/edit` : this.getLinkRegistration(task.id)} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                    // : null
+                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                    <td scope="col" className="check-box text-center sticky-col">
+                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
+                                                    </td>
+                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled/></td>
                                                 }
+                                                <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
+                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user.fullName}</td> : null}
+                                                <td className="user-title">{child.user.jobTitle}</td>
+                                                <td className="request-type">{child.requestType.name}</td>
+                                                <td className="day-off">{child.startDate}</td>
+                                                <td className="break-time text-center">{totalTime}</td>
                                                 {
-                                                    isShowEvictionButton ?
-                                                        <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(task.id)} className="eviction"><i className='fas fa-undo-alt'></i></span>
-                                                        : null
+                                                    this.props.page == "approval" ?
+                                                        <td className="appraiser text-center">{child.appraiser?.fullName}</td>
+                                                    :null
                                                 }
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                                <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                {
+                                                    this.props.page != "consent" ?
+                                                    <td className="tool">
+                                                    {child.comment ? <OverlayTrigger
+                                                        rootClose
+                                                        trigger="click"
+                                                        placement="left"
+                                                        overlay={<Popover id={'note-task-' + index}>
+                                                            <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                                            <Popover.Content>
+                                                                {child.comment}
+                                                            </Popover.Content>
+                                                        </Popover>}>
+                                                        <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                    {child.hrComment ? <OverlayTrigger
+                                                        rootClose
+                                                        trigger="click"
+                                                        placement="left"
+                                                        overlay={<Popover id={'comment-task-' + index}>
+                                                            <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
+                                                            <Popover.Content>
+                                                                {child.hrComment}
+                                                            </Popover.Content>
+                                                        </Popover>}>
+                                                        <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                                                </td>
+                                                    :null
+                                                }
+                                            </tr>
+                                        )
+                                    })  
                                 : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
@@ -461,11 +505,14 @@ class TaskList extends React.Component {
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
+                    <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.approveTasks.length} />
+                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={taskRaw.length} />
                     </div>
-                    <div className="col-sm text-right">{t("Total")}: {this.state.approveTasks.length}</div>
+                    <div className="col-sm"></div>
+                    <div className="col-sm text-right">{t("Total")}: {taskRaw.length}</div>
                 </div> : null}
+                <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)
     }
 }
