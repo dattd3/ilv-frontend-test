@@ -52,7 +52,7 @@ class SubstitutionComponent extends React.Component {
       }
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm_itgr/v1/masterdata/shifts`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)

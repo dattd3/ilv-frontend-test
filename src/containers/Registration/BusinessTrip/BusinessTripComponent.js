@@ -454,7 +454,7 @@ class BusinessTripComponent extends React.Component {
 
     submit() {
         const { t } = this.props
-        const { requestInfo, files, isEdit } = this.state
+        const { requestInfo, files, isEdit, isShowAddressAndVehicle } = this.state
         this.setDisabledSubmitButton(true)
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -566,6 +566,7 @@ class BusinessTripComponent extends React.Component {
     };
 
     hideStatusModal = () => {
+        const { isEdit } = this.state;
         this.setState({ isShowStatusModal: false });
         if (isEdit) {
             window.location.replace("/tasks")
