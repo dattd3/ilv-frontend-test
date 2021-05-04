@@ -36,6 +36,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            reasonTypes: [],
+            userInfos: {},
+
             approver: null,
             appraiser: null,
             annualLeaveSummary: null,
@@ -79,72 +82,40 @@ class RegistrationEmploymentTerminationForm extends React.Component {
     }
 
     componentDidMount() {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
+        this.initialData()
+    }
+
+    initialData = async () => {
+        const reasonTypes = await this.getReasonTypes()
+        const userInfos = await this.getUserInfos()
+
+        this.setState({reasonTypes: reasonTypes, userInfos: userInfos})
+    }
+
+    getReasonTypes = async () => {
+        try {
+            const reasonTypeForEmployee = 1
+            const responses = await axios.get(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}ReasonType/list?type=${reasonTypeForEmployee}`)
+            const reasonTypes = this.prepareReasonTypes(responses)
+            return reasonTypes
+        } catch (error) {
+            return []
         }
+    }
 
-        const { leaveOfAbsence, t } = this.props
-        if (t("locale") === "vi") {
-            registerLocale("vi", vi)
-        } else {
-            registerLocale("en-US", enUS)
-        }
+    getUserInfos = async () => {
 
+    }
 
-        axios.post(`${process.env.REACT_APP_MULE_HOST_INBOUND}api/sap/hcm/v1/inbound/user/currentabsence`, {
-            perno: localStorage.getItem('employeeNo'),
-            date: moment().format('YYYYMMDD')
-        }, config)
-            .then(res => {
-                if (res && res.data) {
-                    const annualLeaveSummary = res.data.data
-                    this.setState({ annualLeaveSummary: annualLeaveSummary })
-                }
-            }).catch(error => {
+    prepareReasonTypes = responses => {
+        if (responses && responses.data) {
+            const reasonTypes = responses.data.data
+            const results = (reasonTypes || []).map(item => {
+                return {value: item.code, label: item.name}
             })
-        if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
-            const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
-            const { appraiser, approver, requestDocuments } = leaveOfAbsence
-            this.setState({
-                isEdit: true,
-                approver: approver,
-                appraiser: appraiser,
-                requestInfo: [
-                    {
-                        id: id,
-                        subid: id,
-                        groupItem: 0,
-                        startDate: moment(startDate, 'YYYYMMDD').format('DD/MM/YYYY'),
-                        startTime: startTime ? moment(startTime, 'HHmm00').format('HH:mm') : null,
-                        endDate: moment(endDate, 'YYYYMMDD').format('DD/MM/YYYY'),
-                        endTime: endTime ? moment(endTime, 'HHmm00').format('HH:mm') : null,
-                        totalTimes: hours,
-                        totalDays: days,
-                        processStatusId: processStatusId,
-                        absenceType: absenceType,
-                        leaveType: leaveType,
-                        comment: comment,
-                        isAllDay: isAllDay,
-                        funeralWeddingInfo: null,
-                        groupId: parseInt(groupID),
-                        errors: {},
-                    }
-                ],
-                files: requestDocuments.length > 0 ? requestDocuments.map(file => {
-                    return {
-                        id: file.id,
-                        name: file.fileName,
-                        fileSize: file.fileSize,
-                        fileType: file.fileType,
-                        fileUrl: file.fileUrl
-                    }
-                }) : [],
-            })
+            return results
         }
+        return []
     }
 
     setStartDate(startDate, groupId, groupItem) {
@@ -728,22 +699,13 @@ console.log(times)
         }
     }
 
+    updateStaffTerminationDetail = infos => {
+
+    }
+
     render() {
         const { t } = this.props;
-        let absenceTypes = [
-            { value: 'IN01', label: t('SickLeave') },
-            { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
-            { value: 'IN03', label: t('RecoveryLeave') },
-            { value: 'PN01', label: t('LeaveForExpats') },
-            { value: 'PN02', label: t("LeaveForMother") },
-            { value: 'PN03', label: t('LeaveForMarriageFuneral') },
-            // { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
-            { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
-            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: t("AdvancedLeave") },
-            { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
-            // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
-            { value: 'UN01', label: t('UnpaidLeave') }
-        ]
+        const reasonTypes = this.state.reasonTypes
 
         const PN03List = [
             { value: '1', label: 'Bản thân Kết hôn' },
@@ -775,7 +737,7 @@ console.log(times)
             <div className="leave-of-absence registration-employment-termination">
                 <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                 <StaffInfoComponent />
-                <StaffTerminationDetailComponent />
+                <StaffTerminationDetailComponent reasonTypes={reasonTypes} updateStaffTerminationDetail={this.updateStaffTerminationDetail} />
                 <DirectManagerInfoComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
                 <SeniorExecutiveInfoComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
                 <AttachmentComponent />
