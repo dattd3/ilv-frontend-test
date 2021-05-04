@@ -26,15 +26,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      },
+      params: {
+        date: moment().format('YYYYMMDD')
       }
     }
 
-    axios.post(`${process.env.REACT_APP_MULE_HOST_INBOUND}api/sap/hcm/v1/inbound/user/currentabsence`, {
-      perno: this.props.leaveOfAbsence.user.employeeNo.toString(),
-      date: moment().format('YYYYMMDD')
-    }, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
       .then(res => {
         if (res && res.data) {
           const annualLeaveSummary = res.data.data
