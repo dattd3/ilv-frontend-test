@@ -778,7 +778,7 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
@@ -825,7 +825,7 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
