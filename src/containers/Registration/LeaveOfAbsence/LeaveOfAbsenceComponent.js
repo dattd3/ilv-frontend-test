@@ -290,7 +290,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 })
             }
         })
-console.log(times)
+
         if (times.length === 0) return
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
