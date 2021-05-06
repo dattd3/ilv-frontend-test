@@ -283,7 +283,7 @@ class BusinessTripComponent extends React.Component {
                 else {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.startTimeAndEndTime = this.props.t("AnErrorOccurred")
+                        errors.startTimeAndEndTime =  res.data.result.message
                         return {
                             ...req,
                             errors,
