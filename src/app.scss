@@ -1503,14 +1503,17 @@ span.badge-notification[data-badge]::after {
           td {
             border-bottom: 1px solid #CCCCCC;
             .data {
-              height: 40px;
+              height: 60px;
               display: flex;
-              align-items: center;
-              padding: 0 10px;
+              align-items: flex-start;
+              padding: 10px;
+              overflow: hidden;
               &.full-name {
+                display: flex;
+                align-items: flex-start;
                 input {
                   margin-right: 8px;
-                  margin-top: -3px;
+                  margin-top: 6px;
                 }
               }
               &.employee-code {
