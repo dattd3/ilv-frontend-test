@@ -3,7 +3,6 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
-import Constants from "../../../commons/Constants"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -12,231 +11,236 @@ const MyOption = props => {
     }
 
     return (
-        <div ref={innerRef} {...innerProps} className="approver">
-            <div className="d-block clearfix">
-                <div className="float-left mr-2 w-20">
-                    <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
-                </div>
-                <div className="float-left text-wrap w-75">
-                    <div className="title">{props.data.fullname}</div>
-                    <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
-                </div>
-            </div>
+      <div ref={innerRef} {...innerProps} className="approver">
+        <div className="d-block clearfix">
+          <div className="float-left mr-2 w-20">
+            <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
+          </div>
+          <div className="float-left text-wrap w-75">
+            <div className="title">{props.data.fullname}</div>
+            <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+          </div>
         </div>
+      </div>
     )
 }
 
 class SeniorExecutiveInfoComponent extends React.PureComponent {
-    constructor(props) {
-        super()
-        this.state = {
-            seniorExecutive: null,
-            users: [],
-            typingTimeout: 0,
-            seniorExecutiveTyping: ""
-        }
-        this.onInputChange = debounce(this.getApproverInfo, 600)
+  constructor(props) {
+    super(props)
+    this.state = {
+        seniorExecutive: null,
+        isSearching: false,
+        users: [],
+        typingTimeout: 0,
+        seniorExecutiveTyping: ""
     }
+    this.onInputChange = debounce(this.getApproverInfo, 800)
+  }
     
-    componentDidMount() {
-        let approverModel = {
-            label: "",
-            value: "",
-            fullname: "",
-            avatar: "",
-            employeeLevel: "",
-            pnl: "",
-            orglv2Id: "",
-            account: "",
-            current_position: "",
-            department: ""
-        }
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+  componentDidMount() {
+    let approverModel = {
+      label: "",
+      value: "",
+      fullname: "",
+      avatar: "",
+      employeeLevel: "",
+      pnl: "",
+      orglv2Id: "",
+      account: "",
+      current_position: "",
+      department: ""
+    }
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+    const { seniorExecutive } = this.props
+    const companiesUsing = ['V070','V077', 'V060']
+    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      .then(res => {
+        if (res && res.data && res.data.data && res.data.data.length > 0) {
+            const manager = res.data.data[0]
+            const managerApproval = {
+                ...approverModel,
+                label: manager.fullName,
+                value: manager.userid.toLowerCase(),
+                fullname: manager.fullName,
+                account: manager.userid.toLowerCase(),
+                current_position: manager.title,
+                department: manager.department
             }
+            this.setState({ seniorExecutive: managerApproval })
+            this.props.updateApprovalInfos("seniorExecutive", managerApproval, true)
         }
-        const { seniorExecutive } = this.props
-        const companiesUsing = ['V070','V077', 'V060']
-        if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-          axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-          .then(res => {
-            if (res && res.data && res.data.data && res.data.data.length > 0) {
-                const manager = res.data.data[0]
-                const managerApproval = {
-                    ...approverModel,
-                    label: manager.fullName,
-                    value: manager.userid.toLowerCase(),
-                    fullname: manager.fullName,
-                    account: manager.userid.toLowerCase(),
-                    current_position: manager.title,
-                    department: manager.department
-                }
-                this.setState({ seniorExecutive: managerApproval })
-                this.props.updateApprovalInfos("seniorExecutive", managerApproval, true)
-            }
-          }).catch(error => {
-    
-          })
-        }
+      }).catch(error => {
 
-        if (seniorExecutive) {
-          this.setState({
-            seniorExecutive: {
-              ...seniorExecutive,
-              label: seniorExecutive.fullname,
-              value: seniorExecutive.account,
-            }
-          })
-        }
+      })
     }
-    
-      componentWillReceiveProps(nextProps) {
-        const { seniorExecutive } = nextProps;
-        const companiesUsing = ['V070','V077', 'V060']
-    
-        if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-          return
+
+    if (seniorExecutive) {
+      this.setState({
+        seniorExecutive: {
+          ...seniorExecutive,
+          label: seniorExecutive.fullname,
+          value: seniorExecutive.account,
         }
+      })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { seniorExecutive } = nextProps;
+    const companiesUsing = ['V070','V077', 'V060']
+
+    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+      return
+    }
+
+    if (seniorExecutive) {
+      this.setState({
+        seniorExecutive: {
+          ...seniorExecutive,
+          label: seniorExecutive.fullname,
+          value: seniorExecutive.account,
+        }
+      })
+    }
+  }
     
-        if (seniorExecutive) {
-          this.setState({
-            seniorExecutive: {
-              ...seniorExecutive,
-              label: seniorExecutive.fullname,
-              value: seniorExecutive.account,
+  handleSelectChange = (name, value) => {
+    if (value) {
+      const currentUserLevel = localStorage.getItem('employeeLevel')
+      this.setState({ [name]: value })
+      const isDirectManager = this.isSeniorExecutive(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+      this.props.updateApprovalInfos("seniorExecutive", value, isDirectManager)
+    } else {
+      this.setState({ [name]: value, users: [] })
+      this.props.updateApprovalInfos("seniorExecutive", value, true)
+    }
+  }
+    
+  isSeniorExecutive = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
+    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+    const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
+    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
+
+    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
+      return false
+    }
+    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+      return false
+    }
+
+    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
+      return true
+    }
+
+    return false
+  }
+    
+  getApproverInfo = value => {   
+    const { seniorExecutive } = this.props
+
+    if (value !== "") {
+      this.setState({isSearching: true})
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      }
+
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const data = res.data.data || []
+          const users = data.map(res => {
+            return {
+              label: res.fullName,
+              value: res.user_account,
+              fullname: res.fullName,
+              avatar: res.avatar,
+              employeeLevel: res.employee_level,
+              pnl: res.pnl,
+              orglv2Id: res.orglv2_id,
+              account: res.user_account,
+              current_position: res.title,
+              department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
             }
           })
+          this.setState({ users: seniorExecutive ? users.filter(user => user.account !== seniorExecutive.account) : users, isSearching: false })
         }
-      }
+      }).catch(error => {
+        this.setState({isSearching: false})
+      })
+    }
+  }
     
-      handleSelectChange(name, value) {
-        if (value) {
-          const currentUserLevel = localStorage.getItem('employeeLevel')
-          this.setState({ [name]: value })
-          const isDirectManager = this.isSeniorExecutive(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-          this.props.updateApprovalInfos("seniorExecutive", value, isDirectManager)
-        } else {
-          this.setState({ [name]: value, users: [] })
-          this.props.updateApprovalInfos("seniorExecutive", value, true)
-        }
-      }
-    
-      isSeniorExecutive = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-        const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
-        const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
-    
-        if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
-          return false
-        }
-        if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-          return false
-        }
-    
-        if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
-          return true
-        }
-    
-        return false
-      }
-    
-      getApproverInfo = value => {
-        const { seniorExecutive } = this.props
-    
-        if (value !== "") {
-          const config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-          }
-    
-          axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
-          .then(res => {
-            if (res && res.data && res.data.data) {
-              const data = res.data.data || []
-              const users = data.map(res => {
-                return {
-                  label: res.fullName,
-                  value: res.user_account,
-                  fullname: res.fullName,
-                  avatar: res.avatar,
-                  employeeLevel: res.employee_level,
-                  pnl: res.pnl,
-                  orglv2Id: res.orglv2_id,
-                  account: res.user_account,
-                  current_position: res.title,
-                  department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
-                }
-              })
-              this.setState({ users: seniorExecutive ? users.filter(user => user.account !== seniorExecutive.account) : users })
-            }
-          }).catch(error => { })
-        }
-      }
-    
-      onInputChange = value => {
-        this.setState({ seniorExecutiveTyping: value }, () => {
-          this.onInputChange(value)
+  onInputChange = value => {
+    this.setState({ seniorExecutiveTyping: value }, () => {
+      this.onInputChange(value)
+    })
+  }
+
+  render() {
+    const customStyles = {
+        option: (styles, state) => ({
+            ...styles,
+            cursor: 'pointer',
+        }),
+        control: (styles) => ({
+            ...styles,
+            cursor: 'pointer',
         })
-      }
+    }
+    const { t, isEdit } = this.props
+    const { seniorExecutive, isSearching } = this.state
 
-    render() {
-        const customStyles = {
-            option: (styles, state) => ({
-                ...styles,
-                cursor: 'pointer',
-            }),
-            control: (styles) => ({
-                ...styles,
-                cursor: 'pointer',
-            })
-        }
-        const { t, isEdit } = this.props
-        const seniorExecutive = this.state.seniorExecutive
-
-        return <div className="block senior-executive">
-            <div className="box shadow">
-                <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
-                <div className="row">
-                    <div className="col-4">
-                        <p className="title">{t('FullName')}</p>
-                        <div>
-                            <Select
-                                isDisabled={isEdit}
-                                isClearable={true}
-                                styles={customStyles}
-                                components={{ Option: MyOption }}
-                                onInputChange={this.onInputChange.bind(this)}
-                                onChange={seniorExecutiveOption => this.handleSelectChange('seniorExecutive', seniorExecutiveOption)}
-                                value={this.state.appraiser}
-                                placeholder={t('Search') + '...'}
-                                key="seniorExecutive"
-                                options={this.state.users}
-                            />
-                        </div>
-                        {this.props.errors && this.props.errors['seniorExecutive'] ? <p className="text-danger">{this.props.errors['seniorExecutive']}</p> : null}
+    return <div className="block senior-executive">
+        <div className="box shadow">
+            <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
+            <div className="row">
+                <div className="col-4">
+                    <p className="title">{t('FullName')}</p>
+                    <div>
+                        <Select
+                            isLoading={isSearching}
+                            isDisabled={isEdit}
+                            isClearable={true}
+                            styles={customStyles}
+                            components={{ Option: MyOption }}
+                            onInputChange={this.onInputChange}
+                            onChange={seniorExecutiveOption => this.handleSelectChange('seniorExecutive', seniorExecutiveOption)}
+                            value={seniorExecutive}
+                            placeholder={t('Search') + '...'}
+                            key="seniorExecutive"
+                            options={this.state.users}
+                        />
                     </div>
-                    <div className="col-4">
-                        <p className="title">{t('Position')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={seniorExecutive?.current_position || ""} readOnly />
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <p className="title">{t('DepartmentManage')}</p>
-                        <div>
-                            <input type="text" className="form-control" value={seniorExecutive?.department || ""} readOnly />
-                        </div>
+                    {this.props.errors && this.props.errors['seniorExecutive'] ? <p className="text-danger">{this.props.errors['seniorExecutive']}</p> : null}
+                </div>
+                <div className="col-4">
+                    <p className="title">{t('Position')}</p>
+                    <div>
+                        <input type="text" className="form-control" value={seniorExecutive?.current_position || ""} readOnly />
                     </div>
                 </div>
-                {
-                    localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-                }
+                <div className="col-4">
+                    <p className="title">{t('DepartmentManage')}</p>
+                    <div>
+                        <input type="text" className="form-control" value={seniorExecutive?.department || ""} readOnly />
+                    </div>
+                </div>
             </div>
+            {
+                localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
+            }
         </div>
-    }
+    </div>
+  }
 }
 
 export default withTranslation()(SeniorExecutiveInfoComponent)

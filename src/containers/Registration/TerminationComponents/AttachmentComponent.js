@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next"
 
 class AttachmentComponent extends React.PureComponent {
     constructor(props) {
-        super()
+        super(props)
         this.state = {
             files: props.files
         }
