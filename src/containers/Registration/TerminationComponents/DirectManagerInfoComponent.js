@@ -27,14 +27,15 @@ const MyOption = props => {
 
 class DirectManagerInfoComponent extends React.PureComponent {
   constructor(props) {
-    super();
+    super(props)
     this.state = {
       directManager: null,
+      isSearching: false,
       users: [],
       typingTimeout: 0,
       directManagerTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 600)
+    this.onInputChange = debounce(this.getApproverInfo, 800)
   }
 
   componentDidMount() {
@@ -109,7 +110,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
     }
   }
 
-  handleSelectChange(name, value) {
+  handleSelectChange = (name, value) => {
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
@@ -145,6 +146,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
     const { directManager } = this.props
 
     if (value !== "") {
+      this.setState({isSearching: true})
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -169,9 +171,11 @@ class DirectManagerInfoComponent extends React.PureComponent {
               department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
             }
           })
-          this.setState({ users: directManager ? users.filter(user => user.account !== directManager.account) : users })
+          this.setState({ users: directManager ? users.filter(user => user.account !== directManager.account) : users, isSearching: false })
         }
-      }).catch(error => { })
+      }).catch(error => {
+        this.setState({isSearching: false})
+      })
     }
   }
 
@@ -193,7 +197,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
       })
     }
     const { t, isEdit } = this.props
-    const directManager = this.state.directManager
+    const { directManager, isSearching } = this.state
 
     return <div className="block direct-manager">
               <div className="box shadow">
@@ -203,6 +207,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
                       <p className="title">{t('FullName')}</p>
                       <div>
                         <Select
+                          isLoading={isSearching}
                           isDisabled={isEdit}
                           isClearable={true}
                           styles={customStyles}

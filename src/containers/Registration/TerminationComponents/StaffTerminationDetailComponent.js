@@ -9,7 +9,7 @@ import { vi, enUS } from 'date-fns/locale'
 
 class StaffTerminationDetailComponent extends React.PureComponent {
     constructor(props) {
-        super();
+        super(props)
         this.state = {
             infos: {}
         }

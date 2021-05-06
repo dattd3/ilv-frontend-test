@@ -1,9 +1,9 @@
 import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
+import moment from 'moment'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
-import Constants from "../../../commons/Constants"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -18,7 +18,7 @@ const MyOption = props => {
                     <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
                 </div>
                 <div className="float-left text-wrap w-75">
-                    <div className="title">{props.data.fullName}</div>
+                    <div className="title">{props.data.fullname}</div>
                     <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
                 </div>
             </div>
@@ -28,144 +28,104 @@ const MyOption = props => {
 
 class StaffInfoProposedResignationComponent extends React.PureComponent {
     constructor(props) {
-        super();
+        super(props)
         this.state = {
-            appraiser: null,
+            employee: null,
+            isSearching: false,
+            userInfos: props.userInfos,
             users: [],
             typingTimeout: 0,
-            appraiserTyping: ""
+            employeeTyping: ""
         }
-        this.onInputChange = debounce(this.getAppraiser, 600);
+        this.onInputChange = debounce(this.getEmployeeInfos, 800)
     }
-
-    componentDidMount() {
-        let appraiserModel = {
-            label: "",
-            value: "",
-            fullName: "",
-            avatar: "",
-            employeeLevel: "",
-            pnl: "",
-            orglv2Id: "",
-            account: "",
-            current_position: "",
-            department: ""
-        }
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
-        const companiesUsing = ['V070', 'V077', 'V060']
-        if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-            axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-                .then(res => {
-                    if (res && res.data && res.data.data && res.data.data.length > 0) {
-                        let manager = res.data.data[0]
-                        let managerApproval = {
-                            ...appraiserModel,
-                            label: manager.fullName,
-                            value: manager.userid.toLowerCase(),
-                            fullName: manager.fullName,
-                            account: manager.userid.toLowerCase(),
-                            current_position: manager.title,
-                            department: manager.department
-                        }
-                        this.setState({ appraiser: managerApproval })
-                        this.props.updateAppraiser(managerApproval, true)
-                    }
-                }).catch(error => {
-
-                });
-        }
-
-        const { appraiser } = this.props
-        if (appraiser) {
-            this.setState({
-              appraiser: {
-                ...appraiser,
-                label: appraiser.fullName,
-                value: appraiser.account,
-              }
-            })
-          }
-    }
-
-    handleSelectChange(name, value) {
-        if (value) {
-            const currentUserLevel = localStorage.getItem('employeeLevel')
-            this.setState({ [name]: value })
-            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-            console.log(value);
-            this.props.updateAppraiser(value, isAppraiser)
-        } else {
-            this.setState({ [name]: value, users: [] })
-            this.props.updateAppraiser(value, true)
-        }
-    }
-
-    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
-        const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
         
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter },0);
+    handleSelectChange = (name, value) => {
+        console.log("??????????????????")
+        console.log(name)
+        console.log(value)
 
-        if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
-            return false
+        if (value && _.size(value) > 0) {
+            this.setState({ [name]: value })
+        } else {
+            this.setState({ users: [] })
         }
-        if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-            return false
-        }
-
-        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
-        //     return true
-        // }
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
-            return true
-        }
-
-        return false
     }
 
-    getAppraiser = (value) => {
-        const { approver } = this.props
+    addEmployees = () => {
+        let { userInfos, employee } = this.state
+        const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.account?.toLowerCase())
+
+        if (!itemExist || itemExist.length === 0) {
+            const employeeTemp = {
+                employeeNo: employee.account, // need update
+                fullName: employee.fullname,
+                jobTitle: employee.current_position,
+                department: employee.department,
+                dateStartWork: "9999-12-31", // need update
+                contractType: "VA", // need update
+                contractName: "Hợp đồng LĐXĐ thời hạn", // need update
+                email: employee.account.toLowerCase(), // need check
+                rank: null, // need update
+                unitName: "" // need update
+            }
+    
+            userInfos = userInfos.concat([{...employeeTemp}])
+    
+            this.setState({userInfos: userInfos})
+            this.props.updateUserInfos(userInfos)
+        }
+    }
+
+    getEmployeeInfos = value => {
+        const { employee } = this.props
+    
         if (value !== "") {
+            this.setState({isSearching: true})
             const config = {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                    'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                    'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             }
-
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
-                .then(res => {
-                    if (res && res.data && res.data.data) {
-                        const data = res.data.data || []
-                        const users = data.map(res => {
-                            return {
-                                label: res.fullName,
-                                value: res.user_account,
-                                fullName: res.fullName,
-                                avatar: res.avatar,
-                                employeeLevel: res.employee_level,
-                                pnl: res.pnl,
-                                orglv2Id: res.orglv2_id,
-                                account: res.user_account,
-                                current_position: res.title,
-                                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
-                            }
-                        })
-                        this.setState({ users: approver ? users.filter(user => user.account !== approver.account) : users })
+        
+            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+            .then(res => {
+                if (res && res.data && res.data.data) {
+                const data = res.data.data || []
+                const users = data.map(res => {
+                    return {
+                        label: res.fullName,
+                        value: res.user_account,
+                        fullname: res.fullName,
+                        avatar: res.avatar,
+                        employeeLevel: res.employee_level,
+                        pnl: res.pnl,
+                        orglv2Id: res.orglv2_id,
+                        account: res.user_account,
+                        current_position: res.title,
+                        department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
                     }
-                }).catch(error => { })
+                })
+                this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
+                }
+            }).catch(error => {
+                this.setState({isSearching: false})
+            })
         }
     }
-
+        
     onInputChange = value => {
-        this.setState({ appraiserTyping: value }, () => {
+        this.setState({ employeeTyping: value }, () => {
             this.onInputChange(value)
         })
+    }
+
+    handleCheckboxChange = (e, index) => {
+
+        console.log("NNNNNNNNNNNNNN")
+        console.log(e.target.checked)
+        console.log(index)
+
     }
 
     render() {
@@ -179,7 +139,11 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit } = this.props;
+        const { t, isEdit, userInfos } = this.props
+        const { employee, isSearching } = this.state
+
+        console.log("user info ===================")
+        console.log(userInfos)
 
         return <div className="block staff-information-proposed-resignation-block">
                     <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
@@ -187,23 +151,22 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         <div className="row search-action-block">
                             <div className="col-4">
                                 <div>
-                                    <Select
-                                        isDisabled={isEdit}
-                                        isClearable={true}
-                                        styles={customStyles}
-                                        components={{ Option: MyOption }}
-                                        onInputChange={this.onInputChange.bind(this)}
-                                        name="appraiser"
-                                        onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                        value={this.state.appraiser}
-                                        placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
-                                        key="appraiser"
-                                        options={this.state.users}
-                                    />
+                                <Select
+                                    isLoading={isSearching}
+                                    isDisabled={isEdit}
+                                    isClearable={true}
+                                    styles={customStyles}
+                                    components={{ Option: MyOption }}
+                                    onInputChange={this.onInputChange}
+                                    onChange={employeeOption => this.handleSelectChange('employee', employeeOption)}
+                                    value={employee}
+                                    placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
+                                    key="employee"
+                                    options={this.state.users} />
                                 </div>
                             </div>
                             <div className="col-2 btn-action-group">
-                                <button type="button" className="btn-action add">Thêm</button>
+                                <button type="button" className="btn-action add" onClick={this.addEmployees}>Thêm</button>
                                 <button type="button" className="btn-action delete">Xóa</button>
                             </div>
                         </div>
@@ -221,32 +184,24 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="full-name">
-                                                <div className="data full-name">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Nguyễn Văn Cường</span>
-                                                </div>
-                                            </td>
-                                            <td className="employee-code"><div className="data employee-code">3651641</div></td>
-                                            <td className="job-title"><div className="data job-title">Chuyên viên nhân sự</div></td>
-                                            <td className="block-department-part"><div className="data block-department-part">Hành chính nhân sự</div></td>
-                                            <td className="contract-type"><div className="data contract-type">Hợp đồng thử việc</div></td>
-                                            <td className="day-working"><div className="data day-working">12/04/2021</div></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="full-name">
-                                                <div className="data full-name">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Nguyễn Văn Cường</span>
-                                                </div>
-                                            </td>
-                                            <td className="employee-code"><div className="data employee-code">3651641</div></td>
-                                            <td className="job-title"><div className="data job-title">Chuyên viên nhân sự</div></td>
-                                            <td className="block-department-part"><div className="data block-department-part">Hành chính nhân sự</div></td>
-                                            <td className="contract-type"><div className="data contract-type">Hợp đồng thử việc</div></td>
-                                            <td className="day-working"><div className="data day-working">12/04/2021</div></td>
-                                        </tr>
+                                        {
+                                            (userInfos || []).map((item, index) => {
+                                                const dateStartWork = item && item.dateStartWork ? moment(item.dateStartWork, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
+                                                return <tr key={index}>
+                                                            <td className="full-name">
+                                                                <div className="data full-name">
+                                                                    <input type="checkbox" checked={item.isChecked} onChange={e => this.handleCheckboxChange(e, index)} />
+                                                                    <span>{item?.fullName || ""}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="employee-code"><div className="data employee-code">{item?.employeeNo || ""}</div></td>
+                                                            <td className="job-title"><div className="data job-title">{item?.jobTitle || ""}</div></td>
+                                                            <td className="block-department-part"><div className="data block-department-part">{item?.department || ""}</div></td>
+                                                            <td className="contract-type"><div className="data contract-type">{item?.contractName || ""}</div></td>
+                                                            <td className="day-working"><div className="data day-working">{dateStartWork}</div></td>
+                                                        </tr>
+                                            })
+                                        }
                                     </tbody>
                                 </table>
                             </div>

@@ -45,12 +45,14 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const reasonTypeForEmployee = 1
         const reasonTypesEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/list?type=${reasonTypeForEmployee}`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
+        const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
         const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
         const requestUserInfos = axios.get(userInfosEndpoint, config)
+        const requestUserContractInfos = axios.get(userContractInfosEndpoint, config)
 
-        await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
-            const userInfos = this.prepareUserInfos(responses[1])
+            const userInfos = this.prepareUserInfos(responses[1], responses[2])
 
             this.setState({reasonTypes: reasonTypes, userInfos: userInfos})
         })).catch(errors => {
@@ -58,31 +60,39 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         })
     }
 
-    prepareUserInfos = responses => {
-        if (responses && responses.data) {
-            const userInfos = responses.data.data
+    prepareUserInfos = (userResponses, contractResponses) => {
+        let userInfoResults = {}
+        let userContractInfoResults = {}
+        if (userResponses && userResponses.data) {
+            const userInfos = userResponses.data.data
             if (userInfos && userInfos.length > 0) {
                 const infos = userInfos[0]
                 const dateStartWork = infos && infos.starting_date_co && moment(infos.starting_date_co, "DD-MM-YYYY").isValid() ? moment(infos.starting_date_co, "DD-MM-YYYY").format("YYYY-MM-DD") : ""
-
-                return {
+                userInfoResults = {
                     employeeNo: localStorage.getItem("employeeNo") || "",
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
                     department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
                     dateStartWork: dateStartWork,
-                    contractType: 1,
-                    contractName: "Hợp đồng chính thức",
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
                     unitName: infos.unit || ""
                 }
             }
-
-            return {}
         }
 
-        return {}
+        if (contractResponses && contractResponses.data) {
+            const contractInfos = contractResponses.data.data
+            if (contractInfos && contractInfos.length > 0) {
+                const infos = contractInfos[0]
+                userContractInfoResults = {
+                    contractType: infos.contract_number,
+                    contractName: infos.contract_type || ""
+                }
+            }
+        }
+
+        return {...userInfoResults, ...userContractInfoResults}
     }
 
     prepareReasonTypes = responses => {
