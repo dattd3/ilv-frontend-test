@@ -322,7 +322,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 else {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.totalDaysOff = this.props.t("AnErrorOccurred")
+                        errors.totalDaysOff = res.data.result.message
                         return {
                             ...req,
                             errors,
