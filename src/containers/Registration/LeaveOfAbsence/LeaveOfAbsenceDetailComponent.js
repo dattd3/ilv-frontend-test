@@ -199,6 +199,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           ]
         }
           isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+          isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
           isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
           id={this.props.leaveOfAbsence.id}
