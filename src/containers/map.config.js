@@ -75,6 +75,9 @@ export default {
   //Evalution
   Evaluation: '/evaluation/:id/:type',
 
+  //Handover
+  HandOverForm: "/handover/:id/request",
+
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
   QuestionAndAnswerDetails:"/question-and-answer-details/:id",
