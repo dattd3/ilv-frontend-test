@@ -35,16 +35,13 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             userInfos: props.userInfos,
             users: [],
             typingTimeout: 0,
-            employeeTyping: ""
+            employeeTyping: "",
+            employeeIdChecked: [],
         }
         this.onInputChange = debounce(this.getEmployeeInfos, 800)
     }
         
     handleSelectChange = (name, value) => {
-        console.log("??????????????????")
-        console.log(name)
-        console.log(value)
-
         if (value && _.size(value) > 0) {
             this.setState({ [name]: value })
         } else {
@@ -56,7 +53,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         let { userInfos, employee } = this.state
         const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.account?.toLowerCase())
 
-        if (!itemExist || itemExist.length === 0) {
+        if (!itemExist || itemExist.length === 0 && employee) {
             const employeeTemp = {
                 employeeNo: employee.account, // need update
                 fullName: employee.fullname,
@@ -71,9 +68,39 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
     
             userInfos = userInfos.concat([{...employeeTemp}])
-    
             this.setState({userInfos: userInfos})
             this.props.updateUserInfos(userInfos)
+        }
+    }
+
+    handleCheckboxChange = (index, code, e) => {
+        const employeeIdChecked = [...this.state.employeeIdChecked]
+        employeeIdChecked[index] = {key: code, value: e.target.checked}
+
+        this.setState({employeeIdChecked: employeeIdChecked})
+    }
+
+    removeEmployees = () => {
+        const {employeeIdChecked, userInfos} = this.state
+
+        if (userInfos && userInfos.length > 0) {
+            let indexDeleted = []
+
+            for (let i = 0, employeeIdCheckedLength = employeeIdChecked.length; i < employeeIdCheckedLength; i++) {
+                const employeeIdCheckedItem = employeeIdChecked[i]
+                for (let j = 0, userInfosLength = userInfos.length; j < userInfosLength; j++) {
+                    const userInfoItem = userInfos[j]
+                    if (employeeIdCheckedItem && employeeIdCheckedItem.key === userInfoItem.employeeNo && employeeIdCheckedItem.value) {
+                        indexDeleted = indexDeleted.concat(j)
+                    }
+                }
+            }
+
+            if (indexDeleted.length > 0) {
+                const userInfosTemp = userInfos.filter((item, index) => !indexDeleted.includes(index))
+                this.setState({userInfos: userInfosTemp, employeeIdChecked: []})
+                this.props.updateUserInfos(userInfosTemp)
+            }
         }
     }
 
@@ -120,14 +147,6 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         })
     }
 
-    handleCheckboxChange = (e, index) => {
-
-        console.log("NNNNNNNNNNNNNN")
-        console.log(e.target.checked)
-        console.log(index)
-
-    }
-
     render() {
         const customStyles = {
             option: (styles, state) => ({
@@ -139,11 +158,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit, userInfos } = this.props
-        const { employee, isSearching } = this.state
-
-        console.log("user info ===================")
-        console.log(userInfos)
+        const { t, isEdit } = this.props
+        const { employee, userInfos, isSearching, employeeIdChecked } = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
                     <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
@@ -167,7 +183,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                             </div>
                             <div className="col-2 btn-action-group">
                                 <button type="button" className="btn-action add" onClick={this.addEmployees}>Thêm</button>
-                                <button type="button" className="btn-action delete">Xóa</button>
+                                <button type="button" className="btn-action delete" onClick={this.removeEmployees}>Xóa</button>
                             </div>
                         </div>
                         <div className="row">
@@ -187,10 +203,13 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                         {
                                             (userInfos || []).map((item, index) => {
                                                 const dateStartWork = item && item.dateStartWork ? moment(item.dateStartWork, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
+
                                                 return <tr key={index}>
                                                             <td className="full-name">
                                                                 <div className="data full-name">
-                                                                    <input type="checkbox" checked={item.isChecked} onChange={e => this.handleCheckboxChange(e, index)} />
+                                                                    <input type="checkbox" checked={employeeIdChecked[index] && employeeIdChecked[index].value ? employeeIdChecked[index].value : false} 
+                                                                    onChange={e => this.handleCheckboxChange(index, item.employeeNo, e)} 
+                                                                   /* onChange={e => this.handleCheckboxChange(i, item.id, e, item.gender, item.fullName, item.email)} */ />
                                                                     <span>{item?.fullName || ""}</span>
                                                                 </div>
                                                             </td>
