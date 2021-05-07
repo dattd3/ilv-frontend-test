@@ -283,7 +283,7 @@ class BusinessTripComponent extends React.Component {
                 else {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.startTimeAndEndTime = this.props.t("AnErrorOccurred")
+                        errors.startTimeAndEndTime =  res.data.result.message
                         return {
                             ...req,
                             errors,
@@ -428,7 +428,7 @@ class BusinessTripComponent extends React.Component {
             requestInfo[indexReq].errors["startTime"] = !startTime && !isAllDay && !req.isAllDayCheckbox ? this.props.t('Required') : null
             requestInfo[indexReq].errors["endTime"] = !endTime && !isAllDay && !req.isAllDayCheckbox ?  this.props.t('Required') : null
             requestInfo[indexReq].errors.attendanceQuotaType = !attendanceQuotaType ? this.props.t('Required') : null
-            if(attendanceQuotaType?.value != "DT01") {
+            if(attendanceQuotaType?.value != "DT01" && localStorage.getItem("companyCode") != 'V073') {
                 requestInfo[indexReq].errors.vehicle = !vehicle ? this.props.t('Required') : null
                 requestInfo[indexReq].errors.place = !place ? this.props.t('Required') : null
             }
