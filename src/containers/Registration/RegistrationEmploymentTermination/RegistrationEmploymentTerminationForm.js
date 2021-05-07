@@ -193,7 +193,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
 
         let bodyFormData = new FormData()
         bodyFormData.append('userInfo', JSON.stringify(userInfoToSubmit))
-        bodyFormData.append('dateStartWork', userInfos.dateStartWork)
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
@@ -213,7 +212,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         try {
             const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
 
-            if (responses && responses.data.data && responses.data.result) {
+            if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
                 if (result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)

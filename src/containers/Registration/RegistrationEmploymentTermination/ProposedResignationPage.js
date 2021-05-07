@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
@@ -23,6 +22,8 @@ class ProposedResignationPage extends React.Component {
         this.state = {
             reasonTypes: [],
             userInfos: [],
+            staffTerminationDetail: {},
+            directManager: null,
             seniorExecutive: null,
             employee: null,
             files: [],
@@ -41,10 +42,40 @@ class ProposedResignationPage extends React.Component {
 
     initialData = async () => {
         const reasonTypeForManager = 2
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/list?type=${reasonTypeForManager}`, config)
-        const reasonTypes = this.prepareReasonTypes(responses)
+        const reasonTypesEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/list?type=${reasonTypeForManager}`
+        const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
+        const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
+        const requestUserInfos = axios.get(userInfosEndpoint, config)
 
-        this.setState({reasonTypes: reasonTypes})
+        await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
+            const reasonTypes = this.prepareReasonTypes(responses[0])
+            const userInfos = this.prepareUserInfos(responses[1])
+
+            this.setState({reasonTypes: reasonTypes, directManager: userInfos})
+        })).catch(errors => {
+            return null
+        })
+    }
+
+    prepareUserInfos = (userResponses) => {
+        if (userResponses && userResponses.data) {
+            const userInfos = userResponses.data.data
+            if (userInfos && userInfos.length > 0) {
+                const infos = userInfos[0]
+                return {
+                    account: infos?.username?.toUpperCase() || "",
+                    avatar: "",
+                    current_position: infos?.current_position || "",
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    employeeLevel: infos?.employee_level || "",
+                    fullname: infos?.fullname || "",
+                    orglv2Id: infos?.organization_lv2 || "",
+                    pnl: infos?.pnl || ""
+                }
+            }
+            return {}
+        }
+        return {}
     }
 
     prepareReasonTypes = responses => {
@@ -59,11 +90,6 @@ class ProposedResignationPage extends React.Component {
     }
 
     updateApprovalInfos = (approvalType, approver, isDirectManager) => {
-        console.log("RRRRRRRR")
-        console.log(approvalType)
-        console.log(approver)
-        console.log(isDirectManager)
-
         const errors = { ...this.state.errors }
         errors[approvalType] = null
 
@@ -132,6 +158,10 @@ class ProposedResignationPage extends React.Component {
             files
         } = this.state
 
+        if (!userInfos || userInfos.length == 0 || !staffTerminationDetail || _.size(staffTerminationDetail) === 0 || !seniorExecutive || _.size(seniorExecutive) === 0 ) {
+            return
+        }
+
         // const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
         // if (!err) {
@@ -139,32 +169,23 @@ class ProposedResignationPage extends React.Component {
         //     return
         // }
 
-        const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
-
-        if (!_.isNull(directManager) && _.size(directManager) > 0) {
-            delete directManager.value
-            delete directManager.label
-        }
 
         if (!_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0) {
             delete seniorExecutive.value
             delete seniorExecutive.label
         }
-
-        const directManagerToSubmit = !_.isNull(directManager) && _.size(directManager) > 0 ? directManager : {}
         const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
 
         let bodyFormData = new FormData()
-        bodyFormData.append('userInfo', JSON.stringify(userInfoToSubmit))
-        bodyFormData.append('dateStartWork', userInfos.dateStartWork)
+        bodyFormData.append('userInfo', JSON.stringify(userInfos))
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
         bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
-        bodyFormData.append('formResignation', 1)
-        bodyFormData.append('supervisorId', `${directManager?.account.toLowerCase()}@vingroup.net`)
-        bodyFormData.append('supervisorInfo', JSON.stringify(directManagerToSubmit))
+        bodyFormData.append('formResignation', 2)
+        bodyFormData.append('supervisorId', localStorage.getItem('email'))
+        bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
         bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}@vingroup.net`)
         bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
 
@@ -177,7 +198,7 @@ class ProposedResignationPage extends React.Component {
         try {
             const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
 
-            if (responses && responses.data.data && responses.data.result) {
+            if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
                 if (result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
@@ -231,9 +252,8 @@ class ProposedResignationPage extends React.Component {
         this.setState({ files: files })
     }
 
-    updateResignationReasons = reasons => {
-        console.log("================")
-        console.log(reasons)
+    updateResignationReasons = infos => {
+        this.setState({ staffTerminationDetail: infos })
     }
 
     updateUserInfos = userInfos => {

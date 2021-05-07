@@ -7,26 +7,43 @@ import Constants from "../../../commons/Constants"
 
 class InterviewContentFormComponent extends React.PureComponent {
     constructor(props) {
-        super();
+        super(props)
+        this.state = {
+            timeJoinDefault: null,
+            timeInDefault: null,
+        }
     }
 
     componentDidMount() {
         
     }
 
-    render() {
-        const customStyles = {
-            option: (styles, state) => ({
-                ...styles,
-                cursor: 'pointer',
-            }),
-            control: (styles) => ({
-                ...styles,
-                cursor: 'pointer',
-            })
+    getTimeSurveyOptions = (type) => {
+        return [
+            { value: 1, label: "< 6 tháng", element: `${type}-less-6-month`},
+            { value: 2, label: "2 năm", element: `${type}-2-year`},
+            { value: 3, label: "2 - 5 năm", element: `${type}-2-5-year`},
+            { value: 4, label: "> 5 năm", element: `${type}-than-5-year`}
+        ]
+    }
+
+    handleChangeRadioInput = (e, type) => {	
+        if (e) {
+            const checkedValue = e.target?.value
+            this.setState({ [type]: checkedValue })
+            this.props.updateInterviewContents(type, checkedValue)
         }
-        const { t, isEdit } = this.props;
-        const reqDetail = {}
+    }
+
+    render() {
+        const { t } = this.props
+        const { timeJoinDefault, timeInDefault } = this.state
+
+        const timeJoinSurveyOptions = this.getTimeSurveyOptions("join")
+        const timeInSurveyOptions = this.getTimeSurveyOptions("in")
+
+        console.log(timeJoinDefault)
+        console.log(timeInDefault)
 
         return (
             <>
@@ -37,22 +54,19 @@ class InterviewContentFormComponent extends React.PureComponent {
                             <div className="col-12">
                                 <p className="question">Bạn gia nhập công ty cách đây bao lâu ?</p>
                                 <div className="answer">
-                                    <span>
-                                        <input type="checkbox" id="join-less-6-month" name="join-less-6-month" value="1" />
-                                        <label for="join-less-6-month">{"< 6 tháng"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="join-2-year" name="join-2-year" value="2" />
-                                        <label for="join-2-year">{"2 năm"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="join-2-5-year" name="join-2-5-year" value="3" />
-                                        <label for="join-2-5-year">{"2 - 5 năm"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="join-than-5-year" name="join-than-5-year" value="3" />
-                                        <label for="join-than-5-year">{"> 5 năm"}</label>
-                                    </span>
+                                    {
+                                        (timeJoinSurveyOptions || []).map((item, index) => {
+                                            const isDefault = item.value == timeJoinDefault
+                                            return <span key={index}>
+                                                        <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeJoinDefault")} />
+                                                        <label htmlFor={item.element}>{item.label}</label>
+                                                    </span>
+                                        })
+                                    }
+
+                                    {/* <input type="checkbox" checked={employeeIdChecked[index] && employeeIdChecked[index].value ? employeeIdChecked[index].value : false} 
+                                                                    onChange={e => this.handleCheckboxChange(index, item.employeeNo, e)} 
+                                                                   onChange={e => this.handleCheckboxChange(i, item.id, e, item.gender, item.fullName, item.email)} /> */}
                                 </div>
                             </div>
                         </div>
@@ -65,22 +79,15 @@ class InterviewContentFormComponent extends React.PureComponent {
                             <div className="col-12">
                                 <p className="question">Bạn ở vị trí hiện tại được bao lâu ?</p>
                                 <div className="answer">
-                                    <span>
-                                        <input type="checkbox" id="in-less-6-month" name="in-less-6-month" value="1" />
-                                        <label for="in-less-6-month">{"< 6 tháng"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="in-2-year" name="in-2-year" value="2" />
-                                        <label for="in-2-year">{"2 năm"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="in-2-5-year" name="in-2-5-year" value="3" />
-                                        <label for="in-2-5-year">{"2 - 5 năm"}</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="in-than-5-year" name="in-than-5-year" value="3" />
-                                        <label for="in-than-5-year">{"> 5 năm"}</label>
-                                    </span>
+                                    {
+                                        (timeInSurveyOptions || []).map((item, index) => {
+                                            const isDefault = item.value == timeInDefault
+                                            return <span key={index}>
+                                                        <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeInDefault")} />
+                                                        <label htmlFor={item.element}>{item.label}</label>
+                                                    </span>
+                                        })
+                                    }
                                 </div>
                             </div>
                         </div>
