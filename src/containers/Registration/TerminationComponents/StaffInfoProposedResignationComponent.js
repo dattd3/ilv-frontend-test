@@ -208,8 +208,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                                             <td className="full-name">
                                                                 <div className="data full-name">
                                                                     <input type="checkbox" checked={employeeIdChecked[index] && employeeIdChecked[index].value ? employeeIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.employeeNo, e)} 
-                                                                   /* onChange={e => this.handleCheckboxChange(i, item.id, e, item.gender, item.fullName, item.email)} */ />
+                                                                    onChange={e => this.handleCheckboxChange(index, item.employeeNo, e)} />
                                                                     <span>{item?.fullName || ""}</span>
                                                                 </div>
                                                             </td>

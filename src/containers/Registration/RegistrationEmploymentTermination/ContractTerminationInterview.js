@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import moment from 'moment'
 import { Image } from 'react-bootstrap';
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
@@ -17,55 +16,39 @@ const config = {
     }
 }
 
+const CURRENT_JOB = 1
+const MANAGER = 2
+const SALARY_BONUS_REMUNERATION = 3
+const PERSONAL_REASONS = 4
+
 class ContractTerminationInterview extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             timeJoinDefault: null,
             timeInDefault: null,
-            serveyInfos: {},
-            files: [],
+            resignationReasonOptionsChecked: [],
+            comments: {},
+            serveyInfos: [],
             isUpdateFiles: false,
-            isEdit: false,
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
-            isShowNoteModal: false,
+            isShowStatusModal: false,
             errors: {}
         }
     }
-
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     const { leaveOfAbsence } = nextProps
-    //     if (leaveOfAbsence) {
-    //         return ({
-    //             approver: leaveOfAbsence.approver,
-    //             appraiser: leaveOfAbsence.appraiser
-    //         })
-    //     }
-    //     return prevState
-    // }
 
     componentDidMount() {
         this.initialData()
     }
 
     initialData = async () => {
-        const serveyInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}getworkoffserveyinfo`
-        const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
-        const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
-        const requestServeyInfos = axios.get(serveyInfosEndpoint, config)
-        const requestUserInfos = axios.get(userInfosEndpoint, config)
-        const requestUserContractInfos = axios.get(userContractInfosEndpoint, config)
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo`, config)
+        const serveyInfos = this.prepareServeyInfos(responses)
+        const userInfos = this.prepareUserInfos(responses)
 
-        await axios.all([requestServeyInfos, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
-            const serveyInfos = this.prepareServeyInfos(responses[0])
-            const userInfos = this.prepareUserInfos(responses[1], responses[2])
-
-            this.setState({userInfos: userInfos, serveyInfos: serveyInfos})
-        })).catch(errors => {
-            return null
-        })
+        this.setState({userInfos: userInfos, serveyInfos: serveyInfos})
     }
 
     prepareServeyInfos = serveyResponses => {
@@ -73,27 +56,13 @@ class ContractTerminationInterview extends React.Component {
             const servey = serveyResponses.data.data
             const items = servey.workOffServeyItemModel
 
-            const categoryMapping = {
-                1: {code: "CURRENT_JOB", label: "Công việc hiện tại"},
-                2: {code: "MANAGER", label: "Quản lý"},
-                3: {code: "SALARY_BONUS_REMUNERATION", label: "Lương thưởng & Chế độ đãi ngộ"},
-                4: {code: "PERSONAL_REASONS", label: "Lý do cá nhân"}
-            }
-
-            console.log("kkkkkkkkkkk")
-            console.log(items)
-
-            const CURRENT_JOB = 1
-            const MANAGER = 2
-            const SALARY_BONUS_REMUNERATION = 3
-            const PERSONAL_REASONS = 4
-
             const currentJobItems = (items || [])
             .filter(item => item.type == CURRENT_JOB)
             .map(item => {
                 return {
                     value: item.id,
-                    label: item.name
+                    label: item.name,
+                    type: CURRENT_JOB
                 }
             })
 
@@ -102,59 +71,80 @@ class ContractTerminationInterview extends React.Component {
             .map(item => {
                 return {
                     value: item.id,
-                    label: item.name
+                    label: item.name,
+                    type: MANAGER,
+
                 }
             })
 
+            const salaryBonusRemunerationItems = (items || [])
+            .filter(item => item.type == SALARY_BONUS_REMUNERATION)
+            .map(item => {
+                return {
+                    value: item.id,
+                    label: item.name,
+                    type: SALARY_BONUS_REMUNERATION
+                }
+            })
 
+            const personalReasonItems = (items || [])
+            .filter(item => item.type == PERSONAL_REASONS)
+            .map(item => {
+                return {
+                    value: item.id,
+                    label: item.name,
+                    type: PERSONAL_REASONS
+                }
+            })
 
-            // [
-            //     {
-            //         code: "CURRENT_JOB",
-            //         data: [
-            //             {
-            //                 value: 1,
-            //                 label: "Địa điểm làm việc"
-            //             }
-            //         ]
-            //     }
-            // ]
+            return [
+                {
+                    category: "Công việc hiện tại",
+                    categoryCode: CURRENT_JOB,
+                    data: currentJobItems
+                },
+                {
+                    category: "Quản lý",
+                    categoryCode: MANAGER,
+                    data: managerItems
+                },
+                {
+                    category: "Lương thưởng & Chế độ đãi ngộ",
+                    categoryCode: SALARY_BONUS_REMUNERATION,
+                    data: salaryBonusRemunerationItems
+                },
+                {
+                    category: "Lý do cá nhân",
+                    categoryCode: PERSONAL_REASONS,
+                    data: personalReasonItems
+                }
+            ]
         }
     }
 
-    prepareUserInfos = (userResponses, contractResponses) => {
-        let userInfoResults = {}
-        let userContractInfoResults = {}
-        if (userResponses && userResponses.data) {
-            const userInfos = userResponses.data.data
-            if (userInfos && userInfos.length > 0) {
-                const infos = userInfos[0]
-                const dateStartWork = infos && infos.starting_date_co && moment(infos.starting_date_co, "DD-MM-YYYY").isValid() ? moment(infos.starting_date_co, "DD-MM-YYYY").format("YYYY-MM-DD") : ""
-                userInfoResults = {
-                    employeeNo: localStorage.getItem("employeeNo") || "",
-                    fullName: infos.fullname || "",
-                    jobTitle: infos.job_name || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
-                    dateStartWork: dateStartWork,
-                    email: localStorage.getItem("email") || "",
-                    rank: infos.rank_name || "",
-                    unitName: infos.unit || ""
+    prepareUserInfos = (serveyResponses) => {
+        if (serveyResponses && serveyResponses.data) {
+            const servey = serveyResponses.data.data
+            const items = servey.workOffServeyModel
+
+            if (items && _.size(items) > 0) {
+                return {
+                    absenseId: items.absenseId,
+                    requestHistoryId: items.requestHistoryId,
+                    userId: items.userId,
+                    fullName: items.fullName,
+                    employeeCode: items.employeeCode,
+                    positionName: items.positionName,
+                    departmentName: items.departmentName,
+                    contractType: items.contractType,
+                    dateTermination: items.dateTermination
                 }
             }
+
+            return {}
         }
 
-        if (contractResponses && contractResponses.data) {
-            const contractInfos = contractResponses.data.data
-            if (contractInfos && contractInfos.length > 0) {
-                const infos = contractInfos[0]
-                userContractInfoResults = {
-                    contractType: infos.contract_number,
-                    contractName: infos.contract_type || ""
-                }
-            }
-        }
-
-        return {...userInfoResults, ...userContractInfoResults}
+        return {}
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -162,12 +152,7 @@ class ContractTerminationInterview extends React.Component {
     }
 
     hideStatusModal = () => {
-        const { isEdit } = this.state
         this.setState({ isShowStatusModal: false })
-        if (isEdit) {
-            window.location.replace("/tasks")
-        }
-
         window.location.reload()
     }
 
@@ -175,14 +160,94 @@ class ContractTerminationInterview extends React.Component {
         this.setState({[type]: value})
     }
 
+    submit = async () => {
+        const { t } = this.props
+        const {
+            timeJoinDefault,
+            timeInDefault,
+            resignationReasonOptionsChecked,
+            userInfos,
+            comments
+        } = this.state
+
+        const currentWorksServey = (resignationReasonOptionsChecked || [])
+        .filter(item => item && item.type == CURRENT_JOB && item.value)
+        .map(item => item.key)
+        const currentWorksServeyToSubmit = currentWorksServey.length === 0 ? null : currentWorksServey.join(",")
+
+        const managementServey = (resignationReasonOptionsChecked || [])
+        .filter(item => item && item.type == MANAGER && item.value)
+        .map(item => item.key)
+        const managementServeyToSubmit = managementServey.length === 0 ? null : managementServey.join(",")
+
+        const salaryServey = (resignationReasonOptionsChecked || [])
+        .filter(item => item && item.type == SALARY_BONUS_REMUNERATION && item.value)
+        .map(item => item.key)
+        const salaryServeyToSubmit = salaryServey.length === 0 ? null : salaryServey.join(",")
+
+        const personalReasonServey = (resignationReasonOptionsChecked || [])
+        .filter(item => item && item.type == PERSONAL_REASONS && item.value)
+        .map(item => item.key)
+        const personalReasonServeyToSubmit = personalReasonServey.length === 0 ? null : personalReasonServey.join(",")
+
+        // const err = this.verifyInput()
+        this.setDisabledSubmitButton(true)
+        // if (!err) {
+        //     this.setDisabledSubmitButton(false)
+        //     return
+        // }
+
+        let bodyFormData = new FormData()
+        bodyFormData.append('absenseId', userInfos.absenseId)
+        bodyFormData.append('requestHistoryId', userInfos.requestHistoryId)
+        bodyFormData.append('userId', userInfos.userId)
+        bodyFormData.append('fullName', userInfos.fullName)
+        bodyFormData.append('employeeCode', userInfos.employeeCode)
+        bodyFormData.append('positionName', userInfos.positionName)
+        bodyFormData.append('departmentName', userInfos.departmentName)
+        bodyFormData.append('contractType', userInfos.contractType)
+        bodyFormData.append('dateTermination', userInfos.dateTermination)
+        bodyFormData.append('worksHistoryMonths', timeJoinDefault)
+        bodyFormData.append('positionCurrentsMonths', timeInDefault)
+        bodyFormData.append('currentWorksServey', currentWorksServeyToSubmit)
+        bodyFormData.append('workCurrentDescription', comments[CURRENT_JOB] || "")
+        bodyFormData.append('managementServey', managementServeyToSubmit)
+        bodyFormData.append('managementDescription', comments[MANAGER] || "")
+        bodyFormData.append('salaryServey', salaryServeyToSubmit)
+        bodyFormData.append('salaryDescription', comments[SALARY_BONUS_REMUNERATION] || "")
+        bodyFormData.append('personalReasonServey', personalReasonServeyToSubmit)
+        bodyFormData.append('personalDescription', comments[PERSONAL_REASONS] || "")
+
+        try {
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`, bodyFormData, config)
+
+            if (responses && responses.data && responses.data.result) {
+                const result = responses.data.result
+                if (result.code != Constants.API_ERROR_CODE) {
+                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                    this.setDisabledSubmitButton(false)
+                } else {
+                    this.showStatusModal(t("Notification"), result.message, false)
+                    this.setDisabledSubmitButton(false)
+                }
+            } else {
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.setDisabledSubmitButton(false)
+            }
+
+        } catch (errors) {
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        }
+    }
+
+    setDisabledSubmitButton(status) {
+        this.setState({ disabledSubmitButton: status });
+    }
+
     render() {
         const { t } = this.props
-        const isShowStatusModal = false
-        const titleModal = ""
-        const messageModal = ""
-        const isSuccess = true
-
-        const {userInfos, serveyInfos} = this.state
+        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal} = this.state
 
         return (
             <>
@@ -193,8 +258,8 @@ class ContractTerminationInterview extends React.Component {
                 </div>
                 <h5 className="page-title">Biểu mẫu phỏng vấn thôi việc</h5>
                 <StaffInfoForContractTerminationInterviewComponent userInfos={userInfos} />
-                <InterviewContentFormComponent updateInterviewContents={this.updateInterviewContents} />
-                <ButtonComponent />
+                <InterviewContentFormComponent serveyInfos={serveyInfos} updateInterviewContents={this.updateInterviewContents} />
+                <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
             </div>
             </>
         )
