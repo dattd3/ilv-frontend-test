@@ -1,9 +1,6 @@
 import React from 'react'
-import axios from 'axios'
-import moment from 'moment'
-import _ from 'lodash'
-import { withTranslation } from "react-i18next";
-import Constants from "../../../commons/Constants"
+import { withTranslation } from "react-i18next"
+import PropTypes from 'prop-types'
 
 class InterviewContentFormComponent extends React.PureComponent {
     constructor(props) {
@@ -11,11 +8,9 @@ class InterviewContentFormComponent extends React.PureComponent {
         this.state = {
             timeJoinDefault: null,
             timeInDefault: null,
+            resignationReasonOptionsChecked: [],
+            comments: {}
         }
-    }
-
-    componentDidMount() {
-        
     }
 
     getTimeSurveyOptions = (type) => {
@@ -27,7 +22,7 @@ class InterviewContentFormComponent extends React.PureComponent {
         ]
     }
 
-    handleChangeRadioInput = (e, type) => {	
+    handleChangeRadioInput = (e, type) => {
         if (e) {
             const checkedValue = e.target?.value
             this.setState({ [type]: checkedValue })
@@ -35,15 +30,27 @@ class InterviewContentFormComponent extends React.PureComponent {
         }
     }
 
-    render() {
-        const { t } = this.props
-        const { timeJoinDefault, timeInDefault } = this.state
+    handleCheckboxChange = (type, code, e) => {
+        const resignationReasonOptionsChecked = [...this.state.resignationReasonOptionsChecked]
+        resignationReasonOptionsChecked[code] = {key: code, value: e.target.checked, type: type}
 
+        this.setState({resignationReasonOptionsChecked: resignationReasonOptionsChecked})
+        this.props.updateInterviewContents("resignationReasonOptionsChecked", resignationReasonOptionsChecked)
+    }
+
+    handleTextareaChange = (code, e) => {
+        const comments = {...this.state.comments}
+        comments[code] = e.target.value || ""
+
+        this.setState({comments: comments})
+        this.props.updateInterviewContents("comments", comments)
+    }
+
+    render() {
+        const { t, serveyInfos } = this.props
+        const { timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.state
         const timeJoinSurveyOptions = this.getTimeSurveyOptions("join")
         const timeInSurveyOptions = this.getTimeSurveyOptions("in")
-
-        console.log(timeJoinDefault)
-        console.log(timeInDefault)
 
         return (
             <>
@@ -63,10 +70,6 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                     </span>
                                         })
                                     }
-
-                                    {/* <input type="checkbox" checked={employeeIdChecked[index] && employeeIdChecked[index].value ? employeeIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.employeeNo, e)} 
-                                                                   onChange={e => this.handleCheckboxChange(i, item.id, e, item.gender, item.fullName, item.email)} /> */}
                                 </div>
                             </div>
                         </div>
@@ -106,134 +109,34 @@ class InterviewContentFormComponent extends React.PureComponent {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td className="categories">
-                                            <div className="item">Công việc hiện tại</div>
-                                        </td>
-                                        <td className="selection">
-                                            <div className="item">
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Khối lượng công việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Thời gian làm việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Địa điểm làm việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Áp lực công việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Áp lực công việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Môi trường làm việc</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Cơ hội phát triển nghề nghiệp</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Lý do khác</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="explain">
-                                            <div className="item"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="categories">
-                                            <div className="item">Quản lý</div>
-                                        </td>
-                                        <td className="selection">
-                                            <div className="item">
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Người quản lý trực tiếp</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Cách thức điều hành của DN</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Văn hóa doanh nghiệp</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Tinh thần gắn kết trong nội bộ</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Các vấn đề khác</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="explain">
-                                            <div className="item"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="categories">
-                                            <div className="item">Lương thưởng & Chế độ đãi ngộ</div>
-                                        </td>
-                                        <td className="selection">
-                                            <div className="item">
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Chế độ lương thưởng</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Chế độ phúc lợi: trợ cấp, đi lại, ăn, bảo hiểm...</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Tính chất của chế độ đãi ngộ: đầy đủ, công bằng...</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Đánh giá công việc</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="explain">
-                                            <div className="item"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="categories">
-                                            <div className="item">Lý do các nhân</div>
-                                        </td>
-                                        <td className="selection">
-                                            <div className="item">
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Thay đổi địa điểm cư trú</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Kinh doanh riêng</span>
-                                                </div>
-                                                <div className="sub">
-                                                    <input type="checkbox" defaultChecked={false} />
-                                                    <span>Lý do khác</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="explain">
-                                            <div className="item"></div>
-                                        </td>
-                                    </tr>
+                                    {
+                                        (serveyInfos || []).map((item, index) => {
+                                            const options = item.data
+                                            return <tr key={index}>
+                                                        <td className="categories">
+                                                            <div className="item">{item.category || ""}</div>
+                                                        </td>
+                                                        <td className="selection">
+                                                            <div className="item">
+                                                            {
+                                                                (options || []).map((option, i) => {
+                                                                    return <div className="sub" key={i}>
+                                                                                <input type="checkbox" checked={resignationReasonOptionsChecked[option.value] ? resignationReasonOptionsChecked[option.value].value || false : false} 
+                                                                                    onChange={e => this.handleCheckboxChange(option.type, option.value, e)} />
+                                                                                <span>{option.label || ""}</span>
+                                                                            </div>
+                                                                })
+                                                            }
+                                                            </div>
+                                                        </td>
+                                                        <td className="explain">
+                                                            <div className="item comment">
+                                                                <textarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -242,6 +145,10 @@ class InterviewContentFormComponent extends React.PureComponent {
             </>
         )
     }
+}
+
+InterviewContentFormComponent.propTypes = {
+    serveyInfos: PropTypes.array
 }
 
 export default withTranslation()(InterviewContentFormComponent)
