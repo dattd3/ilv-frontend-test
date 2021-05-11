@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import { Image } from 'react-bootstrap';
 import _ from 'lodash'
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
@@ -35,16 +37,20 @@ class ContractTerminationInterview extends React.Component {
             messageModal: "",
             disabledSubmitButton: false,
             isShowStatusModal: false,
-            errors: {}
+            errors: {},
+            actionType: null
         }
     }
 
     componentDidMount() {
+        const actionType = this.props.match.params.type
+        this.setState({actionType: actionType})
         this.initialData()
     }
 
     initialData = async () => {
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo`, config)
+        const id = this.props.match.params.id
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?AbsenseId=${id}`, config)
         const serveyInfos = this.prepareServeyInfos(responses)
         const userInfos = this.prepareUserInfos(responses)
 
@@ -245,21 +251,55 @@ class ContractTerminationInterview extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
+    exportToPDF = () => {
+        const elementView = document.getElementById('frame-to-export')
+        const fileName = "Phieu-phong-van"
+
+        html2canvas(elementView).then(canvas => {
+            const image = canvas.toDataURL('image/jpeg', 1.0)
+            const doc = new jsPDF('p', 'px', 'a2')
+            const pageWidth = doc.internal.pageSize.getWidth()
+            const pageHeight = doc.internal.pageSize.getHeight()
+    
+            const widthRatio = pageWidth / canvas.width
+            const heightRatio = pageHeight / canvas.height
+            const ratio = widthRatio > heightRatio ? heightRatio : widthRatio
+    
+            const canvasWidth = canvas.width * ratio
+            const canvasHeight = canvas.height * ratio
+    
+            const marginX = (pageWidth - canvasWidth) / 2
+            const marginY = (pageHeight - canvasHeight) / 2
+    
+            doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
+            doc.save(`${fileName}.pdf`)
+        })
+    }
+
     render() {
         const { t } = this.props
-        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal} = this.state
+        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal, actionType} = this.state
 
         return (
             <>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
-            <div className="contract-termination-interview">
+            {
+                actionType === "export" ?
+                <div className="export-button-block">
+                    <button className="export-to-pdf" type="button" onClick={this.exportToPDF}><i className="fas fa-file-export"></i>Xuất PDF</button>
+                </div>
+                : null
+            }
+            <div id="frame-to-export" className="contract-termination-interview">
                 <div className="logo-block">
                     <Image src={VinpearlLogo} alt="Vinpearl" className="logo" />
                 </div>
                 <h5 className="page-title">Biểu mẫu phỏng vấn thôi việc</h5>
                 <StaffInfoForContractTerminationInterviewComponent userInfos={userInfos} />
                 <InterviewContentFormComponent serveyInfos={serveyInfos} updateInterviewContents={this.updateInterviewContents} />
-                <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
+                {
+                    actionType === "export" ? null : <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
+                }
             </div>
             </>
         )
