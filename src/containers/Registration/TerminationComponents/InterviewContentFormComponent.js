@@ -56,7 +56,7 @@ class InterviewContentFormComponent extends React.PureComponent {
             <>
             <div className="block interview-content-block">
                     <h6 className="block-title">II. Nội dung phỏng vấn</h6>
-                    <div className="box shadow">
+                    <div className="box">
                         <div className="row">
                             <div className="col-12">
                                 <p className="question">Bạn gia nhập công ty cách đây bao lâu ?</p>
@@ -100,7 +100,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                     <h6 className="block-title">III. Lý do thôi việc</h6>
                     <div className="row">
                         <div className="col-12">
-                            <table className="shadow list-staff">
+                            <table className="list-staff">
                                 <thead>
                                     <tr>
                                         <th className="col-first">Danh mục</th>
