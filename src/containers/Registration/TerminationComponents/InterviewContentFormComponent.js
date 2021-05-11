@@ -23,6 +23,11 @@ class InterviewContentFormComponent extends React.PureComponent {
     }
 
     handleChangeRadioInput = (e, type) => {
+        const {isViewOnly} = this.props
+        if (isViewOnly) {
+            return
+        }
+
         if (e) {
             const checkedValue = e.target?.value
             this.setState({ [type]: checkedValue })
@@ -31,6 +36,11 @@ class InterviewContentFormComponent extends React.PureComponent {
     }
 
     handleCheckboxChange = (type, code, e) => {
+        const {isViewOnly} = this.props
+        if (isViewOnly) {
+            return
+        }
+
         const resignationReasonOptionsChecked = [...this.state.resignationReasonOptionsChecked]
         resignationReasonOptionsChecked[code] = {key: code, value: e.target.checked, type: type}
 
@@ -39,6 +49,11 @@ class InterviewContentFormComponent extends React.PureComponent {
     }
 
     handleTextareaChange = (code, e) => {
+        const {isViewOnly} = this.props
+        if (isViewOnly) {
+            return
+        }
+
         const comments = {...this.state.comments}
         comments[code] = e.target.value || ""
 
@@ -47,7 +62,7 @@ class InterviewContentFormComponent extends React.PureComponent {
     }
 
     render() {
-        const { t, serveyInfos } = this.props
+        const { t, serveyInfos, serveyDetail, isViewOnly } = this.props
         const { timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.state
         const timeJoinSurveyOptions = this.getTimeSurveyOptions("join")
         const timeInSurveyOptions = this.getTimeSurveyOptions("in")
@@ -63,7 +78,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                 <div className="answer">
                                     {
                                         (timeJoinSurveyOptions || []).map((item, index) => {
-                                            const isDefault = item.value == timeJoinDefault
+                                            const isDefault = isViewOnly ? item.value == serveyDetail.worksHistoryMonths : item.value == timeJoinDefault
                                             return <span key={index}>
                                                         <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeJoinDefault")} />
                                                         <label htmlFor={item.element}>{item.label}</label>
@@ -84,7 +99,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                 <div className="answer">
                                     {
                                         (timeInSurveyOptions || []).map((item, index) => {
-                                            const isDefault = item.value == timeInDefault
+                                            const isDefault = isViewOnly ? item.value == serveyDetail.positionCurrentsMonths : item.value == timeInDefault
                                             return <span key={index}>
                                                         <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeInDefault")} />
                                                         <label htmlFor={item.element}>{item.label}</label>
@@ -112,6 +127,8 @@ class InterviewContentFormComponent extends React.PureComponent {
                                     {
                                         (serveyInfos || []).map((item, index) => {
                                             const options = item.data
+                                            const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
+                                            const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
                                             return <tr key={index}>
                                                         <td className="categories">
                                                             <div className="item">{item.category || ""}</div>
@@ -120,8 +137,9 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                             <div className="item">
                                                             {
                                                                 (options || []).map((option, i) => {
+                                                                    const isChecked = isViewOnly && optionSelectedToArray.includes(option.value.toString()) ? true : resignationReasonOptionsChecked[option.value] ? resignationReasonOptionsChecked[option.value].value || false : false
                                                                     return <div className="sub" key={i}>
-                                                                                <input type="checkbox" checked={resignationReasonOptionsChecked[option.value] ? resignationReasonOptionsChecked[option.value].value || false : false} 
+                                                                                <input type="checkbox" checked={isChecked} 
                                                                                     onChange={e => this.handleCheckboxChange(option.type, option.value, e)} />
                                                                                 <span>{option.label || ""}</span>
                                                                             </div>
@@ -131,7 +149,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                         </td>
                                                         <td className="explain">
                                                             <div className="item comment">
-                                                                <textarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} />
+                                                                <textarea value={isViewOnly ? serveyDetail[item.responseKeyDescription] : comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} />
                                                             </div>
                                                         </td>
                                                     </tr>

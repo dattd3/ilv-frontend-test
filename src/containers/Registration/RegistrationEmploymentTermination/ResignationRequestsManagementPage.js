@@ -18,6 +18,11 @@ const config = {
     }
 }
 
+const REPORT_RESIGNATION_REQUESTS = 1
+const HANDOVER_STATUS = 2
+const RESIGNATION = 3
+const REPORT_INTERVIEW_RESULTS = 4
+
 class ResignationRequestsManagementPage extends React.Component {
     constructor(props) {
         super();
@@ -30,6 +35,7 @@ class ResignationRequestsManagementPage extends React.Component {
             },
             requestIdChecked: [],
             isShowLoadingModal: false,
+            isShowStatusModal: false,
             approver: null,
             appraiser: null,
             annualLeaveSummary: null,
@@ -39,7 +45,6 @@ class ResignationRequestsManagementPage extends React.Component {
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
-            isShowNoteModal: false,
             errors: {}
         }
     }
@@ -298,30 +303,166 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({ isUpdateFiles: status })
     }
 
-    hideNoteModal = () => {
-        this.setState({ isShowNoteModal: false });
-    }
-
     updateTerminationRequestList = data => {
         this.setState({requestIdChecked: data})
     }
 
     updateOptionToExport = obj => {
-        console.log(obj)
         if (obj && _.size(obj) > 0) {
-            const option = obj.value
-            switch (option) {
-                case 1:
-                    this.exportFilesByType()
-                    break
-            }
+            const type = obj.value
+            this.exportFilesByType(type)
         }
     }
 
-    save = async () => {
-        const {requestIdChecked, listUserTerminations} = this.state
+    exportFilesByType = async type => {
+        const { t } = this.props
+        const requestObj = this.getRequestObjectByType(type)
+        this.setState({isShowLoadingModal: true})
+        try {
+            const isDataValid = this.isDataValid()
 
-        if (listUserTerminations && listUserTerminations.length > 0) {
+            if (!isDataValid.isValid && (type == HANDOVER_STATUS || type == RESIGNATION || type == REPORT_INTERVIEW_RESULTS)) {
+                this.showStatusModal(t("Notification"), "Vui lòng chọn những yêu cầu cần xuất dữ liệu!", false)
+                return
+            } else if (isDataValid.isValid && isDataValid.total > 1 && type == REPORT_INTERVIEW_RESULTS) {
+                this.showStatusModal(t("Notification"), "Vui lòng chọn duy nhất một yêu cầu cần xuất dữ liệu!", false)
+                return
+            }
+
+            const responses = await axios(requestObj)
+            this.processResponses(type, responses)
+        } catch (error) {
+            this.setState({isShowLoadingModal: false})
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+        }
+    }
+
+    getRequestObjectByType = (type) => {
+        const {requestIdChecked, searchingDataToFilter} = this.state
+        const ids = requestIdChecked.filter(item => {
+            return item && item.value
+        })
+        .map(item => item.key)
+
+        const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
+        const typeMethodMapping = {
+            [REPORT_RESIGNATION_REQUESTS]: "GET",
+            [HANDOVER_STATUS]: "POST",
+            [RESIGNATION]: "POST",
+            [REPORT_INTERVIEW_RESULTS]: "GET"
+        }
+
+        let requestObj = {}
+
+        switch (type) {
+            case REPORT_RESIGNATION_REQUESTS:
+                let apiPath = `${process.env.REACT_APP_REQUEST_URL}ReasonType/ExportToExcel`
+                if (fullTextSearch) {
+                    apiPath = `${process.env.REACT_APP_REQUEST_URL}ReasonType/ExportToExcel?fullTextSearch=${fullTextSearch}`
+                }
+                requestObj = {
+                    method: typeMethodMapping[type] || "GET",
+                    url: apiPath,
+                    headers: {            
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    responseType: 'blob'
+                }
+                break
+            case HANDOVER_STATUS:
+                requestObj = {
+                    method: typeMethodMapping[type] || "GET",
+                    url: `${process.env.REACT_APP_REQUEST_URL}ReasonType/exporttowordbienbanbangiao`,
+                    headers: {            
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    responseType: 'blob',
+                    data: {ids: ids}
+                }
+                break
+            case RESIGNATION:
+                requestObj = {
+                    method: typeMethodMapping[type] || "GET",
+                    url: `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`,
+                    headers: {            
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    responseType: 'blob',
+                    data: {ids: ids}
+                }
+                break
+            case REPORT_INTERVIEW_RESULTS: 
+                requestObj = {
+                    method: typeMethodMapping[type] || "GET",
+                    url: `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?AbsenseId=${ids[0]}`,
+                    headers: {            
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    responseType: 'blob'
+                }
+                break
+        }
+
+        return requestObj
+    }
+
+    processResponses = (type, responses) => {
+        const { t } = this.props
+
+        switch (type) {
+            case REPORT_RESIGNATION_REQUESTS:
+                this.setState({isShowLoadingModal: false})
+                if (responses && responses.data && responses.status === 200) {
+                    this.handleDownloadFiles(responses.data, "Bao-cao-yeu-cau-nghi-viec.xlsx")
+                } else {
+                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                }
+                break
+            case HANDOVER_STATUS:
+                this.setState({isShowLoadingModal: false})
+                if (responses && responses.data && responses.status === 200) {
+                    this.handleDownloadFiles(responses.data, "Bao-cao-tinh-trang-ban-giao.zip")
+                } else {
+                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                }
+                break
+            case RESIGNATION:
+                this.setState({isShowLoadingModal: false})
+                if (responses && responses.data && responses.status === 200) {
+                    this.handleDownloadFiles(responses.data, "Don-xin-nghi-viec.zip")
+                } else {
+                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                }
+                break
+            case REPORT_INTERVIEW_RESULTS:
+                this.setState({isShowLoadingModal: false})
+                if (responses && responses.data && responses.status === 200) {
+                    this.handleDownloadFiles(responses.data, "Don-xin-nghi-viec.zip")
+                } else {
+                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                }
+                break
+        }
+    }
+
+    handleDownloadFiles = (fileBlob, fileName) => {
+        const url = window.URL.createObjectURL(new Blob([fileBlob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode.removeChild(link)
+    }
+
+    save = async () => {
+        const {t} = this.props
+        const {requestIdChecked, listUserTerminations} = this.state
+        const isDataValid = this.isDataValid()
+
+        if (!isDataValid.isValid) {
+            this.showStatusModal(t("Notification"), "Xin vui lòng tích chọn thông tin cần lưu!", false)
+        } else {
             let itemsChecked = []
 
             for (let i = 0, requestIdCheckedLength = requestIdChecked.length; i < requestIdCheckedLength; i++) {
@@ -335,18 +476,48 @@ class ResignationRequestsManagementPage extends React.Component {
             }
 
             if (itemsChecked.length > 0) {
-                // const config = {
-                //     headers: {
-                //         'Authorization': `${localStorage.getItem('accessToken')}`,
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // }
+                this.setState({isShowLoadingModal: true})
+                try {
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, JSON.stringify(itemsChecked), config)
+                    this.setState({isShowLoadingModal: false, requestIdChecked: []})
 
-                let bodyFormData = new FormData()
-                bodyFormData.append('models', JSON.stringify(itemsChecked))
-                const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, config)
-                this.setState({requestIdChecked: []})
+                    if (responses && responses.data) {
+                        const result = responses.data.result
+                        if (result.code != Constants.API_ERROR_CODE) {
+                            this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                        } else {
+                            this.showStatusModal(t("Notification"), result.message, false)
+                        }
+                    } else {
+                        this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                    }
+                } catch (error) {
+                    this.setState({isShowLoadingModal: false, requestIdChecked: []})
+                }
             }
+        }
+    }
+
+    isDataValid = () => {
+        const {requestIdChecked, listUserTerminations} = this.state
+        if (!requestIdChecked || requestIdChecked.length === 0 || !listUserTerminations || listUserTerminations.length === 0) {
+            return {
+                isValid: false,
+                total: 0
+            }
+        }
+
+        const itemsChecked = requestIdChecked.filter(item => item && item.value)
+        if (itemsChecked && itemsChecked.length > 0) {
+            return {
+                isValid: true,
+                total: itemsChecked.length
+            }
+        }
+
+        return {
+            isValid: false,
+            total: 0
         }
     }
 
@@ -362,7 +533,6 @@ class ResignationRequestsManagementPage extends React.Component {
             disabledSubmitButton,
             isShowStatusModal,
             isSuccess,
-            isShowNoteModal,
             isShowLoadingModal
         } = this.state
 

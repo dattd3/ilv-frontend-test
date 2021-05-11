@@ -1563,6 +1563,8 @@ span.badge-notification[data-badge]::after {
 }
 .resignation-requests-management-page {
   color: #000000;
+  margin-bottom: 30px;
+  font-size: 15px;
   .resignation-requests-management-action-button {
     .filter-action-block {
       align-items: center;
@@ -1662,11 +1664,11 @@ span.badge-notification[data-badge]::after {
             background-color: #eaecf4;
             z-index: 10;
             border-bottom: none;
-            &.sticky-col{
+            &.sticky-col {
               position: sticky;
               position: -webkit-sticky;
               background: #eaecf4;
-              z-index: 0;
+              z-index: 1;
             }
           }
           th:first-child {
@@ -1684,12 +1686,20 @@ span.badge-notification[data-badge]::after {
             text-overflow: ellipsis;
             border-bottom: 1px solid #CCCCCC;
             vertical-align: middle;
+            [class$="-container"] {
+              margin: 0;
+            }
             &.full-name-col {
               .full-name {
                 input {
                   margin-right: 8px;
                 }
               }
+            }
+            .data {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             }
             .full-name {
               width: 200px;
@@ -1705,13 +1715,23 @@ span.badge-notification[data-badge]::after {
               width: 200px;
             }
             .rank {
-              width: 160px;
+              width: 150px;
             }
             .day-working {
               width: 140px;
               text-align: center;
             }
-            &.handover-status-col {
+            .detailed-reason {
+              width: 200px;
+            }
+            .created-by {
+              width: 140px;
+            }
+            .attachment {
+              overflow: initial;
+              width: 300px;
+            }
+            &.handover-status-col, &.attachment-col {
               overflow: initial;
             }
           }
@@ -1722,7 +1742,7 @@ span.badge-notification[data-badge]::after {
         .sticky-col {
           position: sticky;
           background: #FFFFFF;
-          z-index: 0;
+          z-index: 1;
         }
         .employee-code-col {
           left: 224px;
@@ -1897,6 +1917,7 @@ span.badge-notification[data-badge]::after {
               width: 50%;
             }
             textarea {
+              padding: 5px 10px;
               border: 1px solid #CCCCCC;
               width: 100%;
               height: 100%;
