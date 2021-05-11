@@ -87,7 +87,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       data: {
         employee: {
           fullName: 'Trần Hữu Đạt',
-          employeeEmail: 'datth31@vingroup.net',
+          employeeEmail: 'datth3@vingroup.net',
           positionName: 'Trưởng phòng nhân sự',
           departmentName: 'Không biết',
           startDate: '2020-01-15',
@@ -194,56 +194,61 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   }
 
-  prepareDataToSubmit = (data) => {
-    const remoteData = data.remoteData;
-    if(this.state.type == 'approval') {
-      let bodyFormData = new FormData();
-      bodyFormData.append('staffContractId', remoteData.staffContracts.id);
-      bodyFormData.append('requestHistoryId', remoteData.requestHistorys.id); 
-      bodyFormData.append('requestHistoryStatuses', 13);
-      bodyFormData.append('actionRequest', 5);
-      return bodyFormData;
+  prepareDataToSubmit = (data, remoteData) => {
+    const isEmployee = this.state.canEditable.currentActive.includes("employee");
+    //remoteData.RequestHistoryId = 
+    if(isEmployee) {
+      remoteData.ProjessionlWork = data.job.mainWork;
+      remoteData.ControlWord = data.job.controlWork;
+      remoteData.OtherWork = data.job.otherWork;
+      remoteData.HandoverWork = data.job.user;
+      remoteData.HandoverAsset = data.asset.user;
+      remoteData.HandoverSocial = data.associateCard.user;
+      remoteData.HandoverUniform = data.uniform.user;
+      remoteData.HandoverFingerprintEmail = data.finger.user;
+      remoteData.HandoverDebt = data.inout.user;
+      remoteData.HandoverSoftware = data.tool.user;
+      remoteData.HandoverConfirmation = data.policy.user;
+    } else {
+      this.state.canEditable.currentActive.map( (key) => {
+        switch(key) {
+          case 'job':
+            remoteData.StatusWork = data.job.status;
+            remoteData.NoteWord = data.job.note;
+            break;
+          case 'asset':
+            remoteData.DateImplementationAsset = data.asset.actionDate;
+            remoteData.StatusAsset = data.asset.status;
+            remoteData.NoteAsset = data.asset.note;
+            break;
+          case 'associateCard':
+            remoteData.StatusSocial = data.associateCard.status;
+            remoteData.NoteSocial = data.associateCard.note;
+            break;
+          case 'uniform':
+            remoteData.StatusUniform = data.uniform.status;
+            remoteData.NoteUniform = data.uniform.note;
+            break;
+          case 'finger':
+            remoteData.StatusFingerprintEmail = data.finger.status;
+            remoteData.NoteFingerprintEmail = data.finger.note;
+            break;
+          case 'inout':
+            remoteData.StatusDebt = data.inout.status;
+            remoteData.NoteDebt = data.inout.note;
+            break;
+          case 'tool':
+            remoteData.StatusSoftware = data.tool.status;
+            remoteData.NoteSoftware = data.tool.note;
+            break;
+          case 'policy':
+            remoteData.StatusConfirmation = data.policy.status;
+            remoteData.NoteConfirmation = data.policy.note;
+            break;
+        }
+      })
     }
-    remoteData.lstTaskAssessments = (remoteData.lstTaskAssessments || []).map( (item, index) => {
-      return {
-        ...item,
-        selfAssessmentScore: data.evalution[index].SelfAssessmentScore,
-        managementScore: data.evalution[index].ManagementScore,
-        managementComment: data.evalution[index].ManagementComment
-      }
-    });
-
-    remoteData.additionInforEvaluations = {
-      ...remoteData.additionInforEvaluations,
-      selfAssessmentStrengths: data.selfEvalution.strong,
-      selfAssessmentPointImprove: data.selfEvalution.weak,
-      staffSuggestions: data.selfEvalution.opinion,
-      managersEvaluateStrengths: data.bossEvalution.strong,
-      managersEvaluatePointImprove: data.bossEvalution.weak,
-      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations.contractKpiResult,
-      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations.contractType,
-      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations.contractTypeName,
-      startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
-      expireDate: data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
-      proposed: data.qlttOpinion.otherOption || '',
-      employeeCode: remoteData.lstTaskAssessments && remoteData.lstTaskAssessments.length > 0 ? remoteData.lstTaskAssessments[0].employeeCode : null
-    }
-
-    remoteData.requestHistorys = {
-      ...remoteData.requestHistorys,
-      appraiserInfo: data.nguoidanhgia,
-      supervisorInfo: data.qltt,
-      approverInfo: data.nguoipheduyet
-    }
-    let bodyFormData = new FormData();
-    bodyFormData.append('staffContracts', JSON.stringify(remoteData.staffContracts));
-    bodyFormData.append('lstTaskAssessments', JSON.stringify(remoteData.lstTaskAssessments));
-    bodyFormData.append('additionInforEvaluations', JSON.stringify(remoteData.additionInforEvaluations));
-    bodyFormData.append('requestHistorys', JSON.stringify(remoteData.requestHistorys));
-    if (data.cvIdToDeleted && data.cvIdToDeleted.length > 0) {
-      bodyFormData.append('deletedDocumentIds', JSON.stringify(data.cvIdToDeleted))
-    }
-    return bodyFormData;
+    return remoteData;
   }
 
   saveStateInfos = (infos) => {
@@ -377,46 +382,38 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     })
 }
 
-  setDisabledSubmitButton(status, actionType = null) {
-    this.setState({ disabledSubmitButton: status, actionType: actionType });
+  setDisabledSubmitButton(status) {
+    this.setState({ disabledSubmitButton: status});
   }
 
 
-  submit(actionType) {
+  submit() {
     const { t } = this.props
     const err = this.verifyInputs()
-    this.setDisabledSubmitButton(true, actionType)
+    this.setDisabledSubmitButton(true)
     if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
-        this.setDisabledSubmitButton(false, actionType)
+        this.setDisabledSubmitButton(false)
         return
     }
-    if(true)
-      return;
-    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`;
+    
+    let url = `${process.env.REACT_APP_REQUEST_URL}/ReasonType/fetchbangiao`;
     let home = '/tasks?tab=evalution';
-    if(this.state.type == 'assess'){
-      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
-      home = '/tasks?tab=consent';
-    }else if(this.state.type == 'approval') {
-      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/approvals`
-      home = '/tasks?tab=approval'
-    }
 
-    const bodyFormData = this.prepareDataToSubmit(this.state.data);
+    const bodyFormData = this.prepareDataToSubmit(this.state.data, this.state.remoteData);
     axios({
         method: 'POST',
         url:url,
         data: bodyFormData,
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
             this.showStatusModal(t("RequestSent"), true, true, home)
-            this.setDisabledSubmitButton(false, actionType)
+            this.setDisabledSubmitButton(false)
             return;
           }
           this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
-          this.setDisabledSubmitButton(false, actionType)    
+          this.setDisabledSubmitButton(false)    
 
             // if (response && response.data && response.data.result) {
             //     this.showStatusModal(t("RequestSent"), true, true, home)
@@ -425,7 +422,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         })
         .catch(response => {
             this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-            this.setDisabledSubmitButton(false, actionType)
+            this.setDisabledSubmitButton(false)
         })
 }
   
@@ -703,8 +700,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         {!disableComponent.canUpdate ? null :
         <div className="bottom">
             <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
-                    {!(this.state.disabledSubmitButton && this.state.actionType == 2) ?
+                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit()} disabled={this.state.disabledSubmitButton}>
+                    {!(this.state.disabledSubmitButton) ?
                         null :
                         <Spinner
                             as="span"
