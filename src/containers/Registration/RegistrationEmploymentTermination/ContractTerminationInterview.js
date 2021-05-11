@@ -32,19 +32,20 @@ class ContractTerminationInterview extends React.Component {
             resignationReasonOptionsChecked: [],
             comments: {},
             serveyInfos: [],
+            serveyDetail: {},
             isUpdateFiles: false,
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
             isShowStatusModal: false,
             errors: {},
-            actionType: null
+            isViewOnly: false
         }
     }
 
     componentDidMount() {
         const actionType = this.props.match.params.type
-        this.setState({actionType: actionType})
+        this.setState({isViewOnly: actionType === "export"})
         this.initialData()
     }
 
@@ -53,8 +54,9 @@ class ContractTerminationInterview extends React.Component {
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?AbsenseId=${id}`, config)
         const serveyInfos = this.prepareServeyInfos(responses)
         const userInfos = this.prepareUserInfos(responses)
+        const serveyDetail = this.prepareServeyDetail(responses)
 
-        this.setState({userInfos: userInfos, serveyInfos: serveyInfos})
+        this.setState({userInfos: userInfos, serveyInfos: serveyInfos, serveyDetail: serveyDetail})
     }
 
     prepareServeyInfos = serveyResponses => {
@@ -78,8 +80,7 @@ class ContractTerminationInterview extends React.Component {
                 return {
                     value: item.id,
                     label: item.name,
-                    type: MANAGER,
-
+                    type: MANAGER
                 }
             })
 
@@ -107,41 +108,76 @@ class ContractTerminationInterview extends React.Component {
                 {
                     category: "Công việc hiện tại",
                     categoryCode: CURRENT_JOB,
-                    data: currentJobItems
+                    data: currentJobItems,
+                    responseKeyOptionSelects: "currentWorksServey",
+                    responseKeyDescription: "workCurrentDescription"
                 },
                 {
                     category: "Quản lý",
                     categoryCode: MANAGER,
-                    data: managerItems
+                    data: managerItems,
+                    responseKeyOptionSelects: "managementServey",
+                    responseKeyDescription: "managementDescription"
                 },
                 {
                     category: "Lương thưởng & Chế độ đãi ngộ",
                     categoryCode: SALARY_BONUS_REMUNERATION,
-                    data: salaryBonusRemunerationItems
+                    data: salaryBonusRemunerationItems,
+                    responseKeyOptionSelects: "salaryServey",
+                    responseKeyDescription: "salaryDescription"
                 },
                 {
                     category: "Lý do cá nhân",
                     categoryCode: PERSONAL_REASONS,
-                    data: personalReasonItems
+                    data: personalReasonItems,
+                    responseKeyOptionSelects: "personalReasonServey",
+                    responseKeyDescription: "personalDescription"
                 }
             ]
         }
     }
 
-    prepareUserInfos = (serveyResponses) => {
+    prepareServeyDetail = (serveyResponses) => {
         if (serveyResponses && serveyResponses.data) {
             const servey = serveyResponses.data.data
             const items = servey.workOffServeyModel
 
             if (items && _.size(items) > 0) {
                 return {
+                    worksHistoryMonths: items.worksHistoryMonths,
+                    positionCurrentsMonths: items.positionCurrentsMonths,
+                    currentWorksServey: items.currentWorksServey,
+                    workCurrentDescription: items.workCurrentDescription,
+                    managementServey: items.managementServey,
+                    managementDescription: items.managementDescription,
+                    salaryServey: items.salaryServey,
+                    salaryDescription: items.salaryDescription,
+                    personalReasonServey: items.personalReasonServey,
+                    personalDescription: items.personalDescription
+                }
+            }
+
+            return {}
+        }
+
+        return {}
+    }
+
+    prepareUserInfos = (serveyResponses) => {
+        if (serveyResponses && serveyResponses.data) {
+            const servey = serveyResponses.data.data
+            const items = servey.workOffServeyModel
+            const userInfo = items.userInfo
+
+            if (items && _.size(items) > 0 && userInfo && _.size(userInfo) > 0) {
+                return {
                     absenseId: items.absenseId,
                     requestHistoryId: items.requestHistoryId,
                     userId: items.userId,
-                    fullName: items.fullName,
-                    employeeCode: items.employeeCode,
-                    positionName: items.positionName,
-                    departmentName: items.departmentName,
+                    fullName: userInfo.fullName,
+                    employeeCode: items.employeeNo,
+                    positionName: items.jobTitle,
+                    departmentName: items.department,
                     contractType: items.contractType,
                     dateTermination: items.dateTermination
                 }
@@ -278,13 +314,13 @@ class ContractTerminationInterview extends React.Component {
 
     render() {
         const { t } = this.props
-        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal, actionType} = this.state
+        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal, isViewOnly, serveyDetail} = this.state
 
         return (
             <>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             {
-                actionType === "export" ?
+                isViewOnly ?
                 <div className="export-button-block">
                     <button className="export-to-pdf" type="button" onClick={this.exportToPDF}><i className="fas fa-file-export"></i>Xuất PDF</button>
                 </div>
@@ -296,9 +332,9 @@ class ContractTerminationInterview extends React.Component {
                 </div>
                 <h5 className="page-title">Biểu mẫu phỏng vấn thôi việc</h5>
                 <StaffInfoForContractTerminationInterviewComponent userInfos={userInfos} />
-                <InterviewContentFormComponent serveyInfos={serveyInfos} updateInterviewContents={this.updateInterviewContents} />
+                <InterviewContentFormComponent serveyInfos={serveyInfos} serveyDetail={serveyDetail} isViewOnly={isViewOnly} updateInterviewContents={this.updateInterviewContents} />
                 {
-                    actionType === "export" ? null : <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
+                    isViewOnly ? null : <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
                 }
             </div>
             </>

@@ -75,6 +75,32 @@ class ListStaffResignationComponent extends React.PureComponent {
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
+    // renderAttachmentView = (fileOptions, index, isEditable, statusCode, stateName) => {
+    //     return <Select options={fileOptions, statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} />
+    // }
+
+    renderAttachmentView = (attachments, index) => {
+        const customStyles = {
+            option: (styles, state) => ({
+                ...styles,
+                cursor: 'pointer',
+            }),
+            control: (styles) => ({
+                ...styles,
+                cursor: 'pointer',
+            })
+        }
+
+        let options = []
+        if (attachments && attachments.length > 0) {
+            options = (attachments || []).map(item => {
+                return {value: item.id, label: item.fileName}
+            })
+        }
+
+        return <Select options={options} /* onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} */ styles={customStyles} />
+    }
+
     handleSelectChange = (index, e, name) => {
         const listUserTerminations = [...this.state.listUserTerminations]
         listUserTerminations[index][name] = e ? e.value : null
@@ -120,7 +146,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>Bàn giao đồng phục</th>
                                             <th>Bàn giao vân tay/email</th>
                                             <th>Bàn giao công nợ</th>
-                                            <th>Các phần mềm phục vụ công việc (nếu có)</th>
+                                            <th className="handover-software-col">Các phần mềm phục vụ công việc (nếu có)</th>
                                             <th>Xác nhận biên bản vi phạm chưa xử lý</th>
                                             <th>Tình trạng phê duyệt</th>
                                             <th>Tình trạng sổ BHXH</th>
@@ -133,6 +159,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             listUserTerminations.map((item, index) => {
                                                 const userInfos = item.userInfo
                                                 const reason = item.reason
+                                                const attachments = item.profileDocuments
 
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
@@ -153,7 +180,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="detailed-reason-col"><div className="data detailed-reason">{item?.reasonDetailed || ""}</div></td>
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
                                                             <td className="created-by-col"><div className="data created-by">{item?.createdBy || ""}</div></td>
-                                                            <td className="attachment-col"><div className="data attachment">Updating ...</div></td>
+                                                            <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
                                                             <td className="handover-status-col"><div className="data handover-status">{item?.statusDeliverString}</div></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
                                                             <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
