@@ -1570,7 +1570,7 @@ span.badge-notification[data-badge]::after {
       margin-bottom: 20px;
       .action-group {
         align-items: center;
-        .attachment {
+        .attachment, .save {
           width: 100%;
           border: 1px solid #CCCCCC;
           border-radius: .35rem;
@@ -1683,6 +1683,7 @@ span.badge-notification[data-badge]::after {
             white-space: nowrap;
             text-overflow: ellipsis;
             border-bottom: 1px solid #CCCCCC;
+            vertical-align: middle;
             &.full-name-col {
               .full-name {
                 input {
@@ -1710,6 +1711,9 @@ span.badge-notification[data-badge]::after {
               width: 140px;
               text-align: center;
             }
+            &.handover-status-col {
+              overflow: initial;
+            }
           }
         }
         .full-name-col {
@@ -1724,6 +1728,20 @@ span.badge-notification[data-badge]::after {
           left: 224px;
         }
       }
+    }
+  }
+}
+
+.export-button-block {
+  margin: 20px 0;
+  text-align: right;
+  button {
+    padding: 10px 30px;
+    border: 1px solid #CCCCCC;
+    border-radius: .35rem;
+    background: #FFFFFF;
+    i {
+      margin-right: 10px;
     }
   }
 }

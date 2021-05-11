@@ -480,6 +480,14 @@ export default [
             path: map.ContractTerminationInterview
           },
           component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ContractTerminationInterview"))
+        },
+        {
+          key: "contract-termination-interview-export",
+          routeProps: {
+            exact: true,
+            path: map.ContractTerminationInterviewExport
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ContractTerminationInterview"))
         }
       ],
     },

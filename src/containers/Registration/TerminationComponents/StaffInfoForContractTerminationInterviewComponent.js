@@ -13,7 +13,7 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
 
         return <div className="block staff-information-block">
                     <h6 className="block-title">I. {t('StaffInformation')}</h6>
-                    <div className="box shadow">
+                    <div className="box">
                         <div className="row">
                             <div className="col-4">
                                 <p className="title">{t('FullName')}</p>
