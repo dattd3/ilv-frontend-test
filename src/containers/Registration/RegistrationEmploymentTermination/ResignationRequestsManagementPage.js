@@ -22,6 +22,9 @@ const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
 const RESIGNATION = 3
 const REPORT_INTERVIEW_RESULTS = 4
+const LIQUIDATION_AGREEMENT = 5
+const CONTRACT_TERMINATION_AGREEMENT = 6
+const DECISION_CONTRACT_TERMINATION = 7
 
 class ResignationRequestsManagementPage extends React.Component {
     constructor(props) {
@@ -170,105 +173,6 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
-    submit() {
-        const { t } = this.props
-        const {
-            files,
-            isEdit,
-            requestInfo
-        } = this.state
-
-        const err = this.verifyInput()
-        this.setDisabledSubmitButton(true)
-        if (!err) {
-            this.setDisabledSubmitButton(false)
-            return
-        }
-
-        const dataRequestInfo = requestInfo.map(req => {
-            let reqItem = {
-                startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                startTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
-                endDate: moment(req.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-                endTime: !req.isAllDay && !req.isAllDayCheckbox ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null,
-                comment: req.comment,
-                hours: req.totalTimes,
-                days: req.totalDays,
-                absenceType: req.absenceType,
-                isAllDay: req.isAllDay,
-                funeralWeddingInfo: req.funeralWeddingInfo,
-                groupId: req.groupId,
-            }
-            if (isEdit) {
-                reqItem = {
-                    ...reqItem,
-                    processStatusId: req.processStatusId,
-                    id: req.id
-                }
-            }
-            return reqItem
-        })
-
-        const approver = { ...this.state.approver }
-        const appraiser = { ...this.state.appraiser }
-        delete approver.avatar
-        delete appraiser.avatar
-
-        let bodyFormData = new FormData();
-        bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
-        bodyFormData.append('fullName', localStorage.getItem('fullName'))
-        bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
-        bodyFormData.append('department', localStorage.getItem('department'))
-        bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
-        bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
-        bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
-        bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
-        bodyFormData.append("region", !this.isNullCustomize(localStorage.getItem('region')) ? localStorage.getItem('region') : "")
-        bodyFormData.append("unitId", !this.isNullCustomize(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : "")
-        bodyFormData.append("unit", !this.isNullCustomize(localStorage.getItem('unit')) ? localStorage.getItem('unit') : "")
-        bodyFormData.append("partId", !this.isNullCustomize(localStorage.getItem('partId')) ? localStorage.getItem('partId') : "")
-        bodyFormData.append("part", !this.isNullCustomize(localStorage.getItem('part')) ? localStorage.getItem('part') : "")
-        bodyFormData.append('approver', JSON.stringify(approver))
-        bodyFormData.append('appraiser', JSON.stringify(appraiser))
-        bodyFormData.append('RequestType', JSON.stringify({
-            id: 2,
-            name: "Đăng ký nghỉ"
-        }))
-        bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
-        if (isEdit) {
-            bodyFormData.append('id', this.props.leaveOfAbsence.id)
-        }
-
-        if(!isEdit)
-        {
-            files.forEach(file => {
-                bodyFormData.append('Files', file)
-            })
-        }
-       
-        axios({
-            method: 'POST',
-            url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
-            data: bodyFormData,
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-        })
-            .then(response => {
-                if (response && response.data.data && response.data.result) {
-                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
-                    this.setDisabledSubmitButton(false)
-                }
-                else
-                {
-                    this.showStatusModal(t("Notification"), response.data.result.message, false)
-                    this.setDisabledSubmitButton(false)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-                this.setDisabledSubmitButton(false)
-            })
-    }
-
     error(name, groupId, groupItem) {
         const { requestInfo } = this.state
         let indexReq
@@ -303,8 +207,8 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({ isUpdateFiles: status })
     }
 
-    updateTerminationRequestList = data => {
-        this.setState({requestIdChecked: data})
+    updateTerminationRequestList = (stateName, data) => {
+        this.setState({[stateName]: data})
     }
 
     updateOptionToExport = obj => {
@@ -321,11 +225,8 @@ class ResignationRequestsManagementPage extends React.Component {
         try {
             const isDataValid = this.isDataValid()
 
-            if (!isDataValid.isValid && (type == HANDOVER_STATUS || type == RESIGNATION || type == REPORT_INTERVIEW_RESULTS)) {
+            if (!isDataValid && (type == HANDOVER_STATUS || type == RESIGNATION)) {
                 this.showStatusModal(t("Notification"), "Vui lòng chọn những yêu cầu cần xuất dữ liệu!", false)
-                return
-            } else if (isDataValid.isValid && isDataValid.total > 1 && type == REPORT_INTERVIEW_RESULTS) {
-                this.showStatusModal(t("Notification"), "Vui lòng chọn duy nhất một yêu cầu cần xuất dữ liệu!", false)
                 return
             }
 
@@ -350,6 +251,9 @@ class ResignationRequestsManagementPage extends React.Component {
             [HANDOVER_STATUS]: "POST",
             [RESIGNATION]: "POST",
             [REPORT_INTERVIEW_RESULTS]: "GET"
+            // LIQUIDATION_AGREEMENT
+            // CONTRACT_TERMINATION_AGREEMENT
+            // DECISION_CONTRACT_TERMINATION
         }
 
         let requestObj = {}
@@ -394,12 +298,21 @@ class ResignationRequestsManagementPage extends React.Component {
             case REPORT_INTERVIEW_RESULTS: 
                 requestObj = {
                     method: typeMethodMapping[type] || "GET",
-                    url: `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?AbsenseId=${ids[0]}`,
+                    url: `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`,
                     headers: {            
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     },
                     responseType: 'blob'
                 }
+                break
+            case LIQUIDATION_AGREEMENT:
+                // TODO
+                break
+            case CONTRACT_TERMINATION_AGREEMENT:
+                // TODO
+                break
+            case DECISION_CONTRACT_TERMINATION:
+                // TODO
                 break
         }
 
@@ -437,10 +350,19 @@ class ResignationRequestsManagementPage extends React.Component {
             case REPORT_INTERVIEW_RESULTS:
                 this.setState({isShowLoadingModal: false})
                 if (responses && responses.data && responses.status === 200) {
-                    this.handleDownloadFiles(responses.data, "Don-xin-nghi-viec.zip")
+                    this.handleDownloadFiles(responses.data, "Bao-cao-ket-qua-phong-van.xlsx")
                 } else {
                     this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
                 }
+                break
+            case LIQUIDATION_AGREEMENT:
+                // TODO
+                break
+            case CONTRACT_TERMINATION_AGREEMENT:
+                // TODO
+                break
+            case DECISION_CONTRACT_TERMINATION:
+                // TOD
                 break
         }
     }
@@ -457,10 +379,10 @@ class ResignationRequestsManagementPage extends React.Component {
 
     save = async () => {
         const {t} = this.props
-        const {requestIdChecked, listUserTerminations} = this.state
+        const {requestIdChecked, listUserTerminations, files} = this.state
         const isDataValid = this.isDataValid()
 
-        if (!isDataValid.isValid) {
+        if (!isDataValid) {
             this.showStatusModal(t("Notification"), "Xin vui lòng tích chọn thông tin cần lưu!", false)
         } else {
             let itemsChecked = []
@@ -478,7 +400,16 @@ class ResignationRequestsManagementPage extends React.Component {
             if (itemsChecked.length > 0) {
                 this.setState({isShowLoadingModal: true})
                 try {
-                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, JSON.stringify(itemsChecked), config)
+                    let bodyFormData = new FormData()
+                    bodyFormData.append('models', JSON.stringify(itemsChecked))
+
+                    if (files && files.length > 0) {
+                        files.forEach(file => {
+                            bodyFormData.append('attachFiles', file)
+                        })
+                    }
+
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, config)
                     this.setState({isShowLoadingModal: false, requestIdChecked: []})
 
                     if (responses && responses.data) {
@@ -501,24 +432,15 @@ class ResignationRequestsManagementPage extends React.Component {
     isDataValid = () => {
         const {requestIdChecked, listUserTerminations} = this.state
         if (!requestIdChecked || requestIdChecked.length === 0 || !listUserTerminations || listUserTerminations.length === 0) {
-            return {
-                isValid: false,
-                total: 0
-            }
+            return false
         }
 
         const itemsChecked = requestIdChecked.filter(item => item && item.value)
         if (itemsChecked && itemsChecked.length > 0) {
-            return {
-                isValid: true,
-                total: itemsChecked.length
-            }
+            return true
         }
 
-        return {
-            isValid: false,
-            total: 0
-        }
+        return false
     }
 
     render() {
@@ -526,7 +448,6 @@ class ResignationRequestsManagementPage extends React.Component {
         const {
             listUserTerminations,
             isEdit,
-            files,
             errors,
             titleModal,
             messageModal,
