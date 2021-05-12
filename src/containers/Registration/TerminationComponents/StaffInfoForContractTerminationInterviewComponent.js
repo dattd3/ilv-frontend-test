@@ -24,13 +24,13 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                             <div className="col-4">
                                 <p className="title">Mã số nhân viên</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.employeeCode || ""} readOnly />
+                                    <input type="text" className="form-control" value={userInfos?.employeeNo || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
                                 <p className="title">{t('Title')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.positionName || ""} readOnly />
+                                    <input type="text" className="form-control" value={userInfos?.jobTitle || ""} readOnly />
                                 </div>
                             </div>
                         </div>
@@ -38,13 +38,13 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                             <div className="col-4">
                                 <p className="title">{t('DepartmentManage')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.departmentName || ""} readOnly />
+                                    <input type="text" className="form-control" value={userInfos?.department || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
                                 <p className="title">{t('ContractType')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.contractType || ""} readOnly />
+                                    <input type="text" className="form-control" value={userInfos?.contractName || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
