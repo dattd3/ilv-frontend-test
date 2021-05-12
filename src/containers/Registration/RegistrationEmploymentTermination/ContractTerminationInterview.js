@@ -173,13 +173,17 @@ class ContractTerminationInterview extends React.Component {
                 return {
                     absenseId: items.absenseId,
                     requestHistoryId: items.requestHistoryId,
-                    userId: items.userId,
                     fullName: userInfo.fullName,
-                    employeeCode: items.employeeNo,
-                    positionName: items.jobTitle,
-                    departmentName: items.department,
-                    contractType: items.contractType,
-                    dateTermination: items.dateTermination
+                    employeeNo: userInfo.employeeNo,
+                    jobTitle: userInfo.jobTitle,
+                    department: userInfo.department,
+                    contractType: userInfo.contractType,
+                    dateTermination: items.dateTermination,
+                    dateStartWork: userInfo.dateStartWork,
+                    contractName: userInfo.contractName,
+                    email: userInfo.email,
+                    rank: userInfo.rank,
+                    unitName: userInfo.unitName
                 }
             }
 
@@ -242,12 +246,7 @@ class ContractTerminationInterview extends React.Component {
         let bodyFormData = new FormData()
         bodyFormData.append('absenseId', userInfos.absenseId)
         bodyFormData.append('requestHistoryId', userInfos.requestHistoryId)
-        bodyFormData.append('userId', userInfos.userId)
-        bodyFormData.append('fullName', userInfos.fullName)
-        bodyFormData.append('employeeCode', userInfos.employeeCode)
-        bodyFormData.append('positionName', userInfos.positionName)
-        bodyFormData.append('departmentName', userInfos.departmentName)
-        bodyFormData.append('contractType', userInfos.contractType)
+        bodyFormData.append('userInfo', JSON.stringify(userInfos))
         bodyFormData.append('dateTermination', userInfos.dateTermination)
         bodyFormData.append('worksHistoryMonths', timeJoinDefault)
         bodyFormData.append('positionCurrentsMonths', timeInDefault)

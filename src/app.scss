@@ -1564,7 +1564,7 @@ span.badge-notification[data-badge]::after {
 .resignation-requests-management-page {
   color: #000000;
   margin-bottom: 30px;
-  font-size: 15px;
+  font-size: 14px;
   .resignation-requests-management-action-button {
     .filter-action-block {
       align-items: center;
@@ -1728,10 +1728,14 @@ span.badge-notification[data-badge]::after {
               width: 140px;
             }
             .attachment {
-              overflow: initial;
               width: 300px;
             }
-            &.handover-status-col, &.attachment-col {
+            .attachment, &.attachment-col,
+            &.handover-job-col, .handover-job, &.asset-transfer-col, .asset-transfer,
+            &.handover-insurance-col, .handover-insurance, &.handover-uniforms-col, 
+            .handover-uniforms, &.handover-fingerprints-email-col, .handover-fingerprints-email,
+            &.handover-liabilities-col, .handover-liabilities, &.handover-software-col, 
+            .handover-software {
               overflow: initial;
             }
           }

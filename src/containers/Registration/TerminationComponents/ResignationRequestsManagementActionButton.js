@@ -17,10 +17,6 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         this.onInputChange = debounce(this.updateKeywordsToFilter, 800)
     }
 
-    componentDidMount() {
-        
-    }
-
     handleInputChange = (e) => {
         const value = e ? e.target.value || "" : ""
         this.setState({ keywords: value || "" }, () => {
@@ -60,7 +56,10 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 1, label: 'Báo cáo yêu cầu nghỉ việc'},
             {value: 2, label: 'Tình trạng bàn giao'},
             {value: 3, label: 'Đơn xin nghỉ việc'},
-            {value: 4, label: 'Báo cáo kết quả phỏng vấn'}
+            {value: 4, label: 'Báo cáo kết quả phỏng vấn'},
+            {value: 5, label: 'Biên bản thanh lý'},
+            {value: 6, label: 'Thỏa thuận chấm dứt hợp đồng'},
+            {value: 7, label: 'Quyết định chấm dứt hợp đồng'}
         ]
 
         return <div className="block resignation-requests-management-action-button">

@@ -1,13 +1,44 @@
 import React from 'react'
-import Select from 'react-select'
+import { Image } from 'react-bootstrap'
+import Select, { components } from 'react-select'
 import Moment from 'react-moment'
 import _ from 'lodash'
-import { withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next"
+import Constants from '../../../commons/Constants'
+import IconReset from '../../../assets/img/icon/ic-reset.svg'
 
 const statusOptions = [
     {value: 0, label: "Chưa hoàn thành"},
     {value: 1, label: "Đã hoàn thành"}
 ]
+
+const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
+    <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
+    </components.ValueContainer>);
+
+const Option = props => {
+    return (
+        <div>
+            <components.Option {...props} innerProps={{
+                ...props.innerProps,
+                onClick: e => {
+                    const nodeName = e && e.target && e.target.nodeName || null
+                    if (nodeName && nodeName.toLowerCase() === 'img') {
+                        props.innerProps.onClick()
+                    } else if (nodeName && nodeName.toLowerCase() === 'div') {
+                        e.stopPropagation()
+                        e.preventDefault()
+                    }
+                }
+                }}
+            >
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'space-between', alignItems: 'center'}}>
+                <a title={props.label} href={props.data.link} style={{overflow: 'hidden', textOverflow: 'ellipsis', color: 'black', font: '13px Arial'}} target="_blank">{props.label}</a> <Image src={IconReset} alt="Xuất báo cáo" className="ic-action" style={{marginLeft: '20px', cursor: 'pointer'}} />
+            </div>
+            </components.Option>
+        </div>
+    )
+}
 
 class ListStaffResignationComponent extends React.PureComponent {
     constructor(props) {
@@ -38,13 +69,35 @@ class ListStaffResignationComponent extends React.PureComponent {
 
         if (isEditable) {
             const customStyles = {
-                option: (styles, state) => ({
-                    ...styles,
-                    cursor: 'pointer',
+                container: base => ({
+                    ...base,
+                    width: '100%'
                 }),
-                control: (styles) => ({
-                    ...styles,
+                input: (base) => ({
+                    ...base,
+                    color: '#ffffff'
+                }),
+                control: (base) => ({
+                    ...base,
+                    color: '#a6afb6',
+                    border: '1px solid #a6afb6',
+                    boxShadow: 'none',
                     cursor: 'pointer',
+                    borderRadius: '0px',
+                    padding: '0',
+                    height: '35px',
+                "&:hover": {
+                    borderColor: "#a6afb6",
+                    color: "#a6afb6"
+                }
+                }),
+                dropdownIndicator: base => ({
+                    ...base,
+                    color: '#a6afb6',
+                    fontWeight: 'normal',
+                    "&:hover": {
+                        color: "#a6afb6"
+                    }
                 })
             }
             element = <Select options={statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} />
@@ -58,6 +111,14 @@ class ListStaffResignationComponent extends React.PureComponent {
         return element
     }
 
+    handleSelectChange = (index, e, name) => {
+        const listUserTerminations = [...this.state.listUserTerminations]
+        listUserTerminations[index][name] = e ? e.value : null
+
+        this.setState({listUserTerminations: listUserTerminations})
+        this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
+    }
+
     renderInsuranceBookStatus = (statusCode) => {
         const insuranceBookOptions = [
             {value: "LV1", label: "PNS lưu trữ"},
@@ -68,44 +129,84 @@ class ListStaffResignationComponent extends React.PureComponent {
             {value: "NV1", label: "Sổ đã chốt"},
             {value: "NV2", label: "Sổ đang chốt"},
             {value: "NV3", label: "Sổ chưa chốt"}
-
         ]
 
         const statusName = insuranceBookOptions.filter(item => item.value == statusCode)
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
-    // renderAttachmentView = (fileOptions, index, isEditable, statusCode, stateName) => {
-    //     return <Select options={fileOptions, statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} />
-    // }
-
     renderAttachmentView = (attachments, index) => {
+        const ATTACHED_FILE_CODE = 0
         const customStyles = {
-            option: (styles, state) => ({
-                ...styles,
-                cursor: 'pointer',
+            container: base => ({
+                ...base,
+                width: '100%'
             }),
-            control: (styles) => ({
-                ...styles,
+            input: (base) => ({
+                ...base,
+                color: '#ffffff'
+            }),
+            control: (base) => ({
+                ...base,
+                color: '#a6afb6',
+                border: '1px solid #a6afb6',
+                boxShadow: 'none',
                 cursor: 'pointer',
+                borderRadius: '0px',
+                padding: '0 10px',
+                height: '35px',
+            "&:hover": {
+                borderColor: "#a6afb6",
+                color: "#a6afb6"
+            }
+            }),
+            dropdownIndicator: base => ({
+                ...base,
+                color: '#a6afb6',
+                fontWeight: 'normal',
+                "&:hover": {
+                    color: "#a6afb6"
+                }
             })
         }
 
         let options = []
         if (attachments && attachments.length > 0) {
-            options = (attachments || []).map(item => {
-                return {value: item.id, label: item.fileName}
+            options = (attachments || [])
+            .filter(item => item && item.fileStatus == ATTACHED_FILE_CODE)
+            .map(item => {
+                return {value: item.id, label: item.fileName, link: item.fileUrl, id: item.id}
             })
         }
 
-        return <Select options={options} /* onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} */ styles={customStyles} />
+        return <Select components={{ValueContainer: AttachmentOption, IndicatorSeparator:() => null, Option }} closeMenuOnSelect={false}
+                    options={options} isClearable={false} styles={{...customStyles, option: (styles, state) => ({
+                        ...styles,
+                        backgroundColor: state.isSelected ? null : null,
+                        })
+                    }} disabled={'disabled'} readOnly={'readonly'}
+                    isOptionDisabled={(option) => option.isdisabled}
+                    onChange={e => this.handleDeleteAttachedFiles(index, e)}
+                    menuPortalTarget={document.body}
+                />
     }
 
-    handleSelectChange = (index, e, name) => {
+    handleDeleteAttachedFiles = (index, file) => {
         const listUserTerminations = [...this.state.listUserTerminations]
-        listUserTerminations[index][name] = e ? e.value : null
+        let documentIdsDelete = listUserTerminations[index].deletedDocumentIds
+        const profileDocuments = listUserTerminations[index].profileDocuments
+
+        if (documentIdsDelete && Array.isArray(documentIdsDelete)) {
+            documentIdsDelete = documentIdsDelete.concat(file.id)
+        } else {
+            documentIdsDelete = [file.id]
+        }
+
+        listUserTerminations[index].deletedDocumentIds = documentIdsDelete
+        listUserTerminations[index].profileDocuments = (profileDocuments || []).filter(item => item && !documentIdsDelete.includes(item.id))
 
         this.setState({listUserTerminations: listUserTerminations})
+        this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
     handleCheckboxChange = (index, code, e) => {
@@ -113,7 +214,7 @@ class ListStaffResignationComponent extends React.PureComponent {
         requestIdChecked[index] = {key: code, value: e.target.checked}
 
         this.setState({requestIdChecked: requestIdChecked})
-        this.props.updateTerminationRequestList(requestIdChecked)
+        this.props.updateTerminationRequestList("requestIdChecked", requestIdChecked)
     }
 
     render() {
@@ -160,11 +261,11 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 const userInfos = item.userInfo
                                                 const reason = item.reason
                                                 const attachments = item.profileDocuments
+                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.id}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
 
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
-                                                                    {/* <input type="checkbox" defaultChecked={false} /> */}
                                                                     <input type="checkbox" checked={requestIdChecked[index] && requestIdChecked[index].value ? requestIdChecked[index].value : false} 
                                                                     onChange={e => this.handleCheckboxChange(index, item.id, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
@@ -189,11 +290,11 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div></td>
                                                             <td className="handover-liabilities-col"><div className="data handover-liabilities">{this.renderStatus(index, item.isHandoverDebt, item.statusDebt, "statusDebt")}</div></td>
                                                             <td className="handover-software-col"><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
-                                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
+                                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, false, item.statusConfirmation, "statusConfirmation")}</div></td>
                                                             <td className="approval-status-col"><div className="data approval-status">{item?.processStatusString || ""}</div></td>
                                                             <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">{this.renderInsuranceBookStatus(item?.statusSocialClosing)}</div></td>
                                                             <td className="leave-salary-col"><div className="data leave-salary">{item?.statusLastPaymentString || ""}</div></td>
-                                                            <td className="interview-card-col"><a className="data interview-card" href={`/contract-termination-interview/${item.id}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a></td>
+                                                            <td className="interview-card-col">{interviewQuestionnaire}</td>
                                                         </tr>
                                             })
                                         }
