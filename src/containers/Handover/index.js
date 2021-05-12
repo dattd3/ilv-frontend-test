@@ -33,38 +33,26 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 1, label: 'Hoàn thành'}
   ];
   HD_THUVIEC = 2;
-  contractTypeOptions = [
-    {value: 'VA', label: 'HĐLĐ XĐ thời hạn'},
-    {value: 'VB', label: 'HĐLĐ KXĐ thời hạn'},
-    {value: 'VC', label: 'HĐLĐ theo mùa vụ'},
-    {value: 'VD', label: 'Hợp đồng tập nghề'},
-    {value: 'VE', label: 'Hợp đồng thử việc'},
-    {value: 'VF', label: 'HĐDV theo tháng'},
-    {value: 'VG', label: 'HĐDV theo giờ'},
-    {value: 'VH', label: 'HĐDV khoán'}
-  ];
-  STATUS_OPTIONS = [
-    {value: 9, label: 'Tự đánh giá'},
-    {value: 10, label: 'Người đánh giá'},
-    {value: 11, label: 'QLTT đánh giá'},
-    {value: 12, label: 'HR thẩm định'},
-    {value: 13, label: 'CBLD phê duyệt'},
-    {value: 2, label: 'Đã phê duyệt'},
-    {value: 1, label: 'Từ chối phê duyệt'}
-  ];
 
   checkAuthorize = () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const canEditable = {...this.state.canEditable};
+    const data = this.state.data;
+    
     for (const [key, value] of Object.entries(this.state.data)) {
       if(key === 'employee') {
-        if(value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
+        let filled = null;
+        for (const [key_d, value_d] of Object.entries(data)) {
+          filled = (key_d == 'employee') || ( data[key_d] && data[key_d].user && data[key_d].user.account) ? filled :  '(Bắt buộc)' ;
+        }
+        if(filled && value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
           canEditable[key] = true;
           canEditable['canUpdate'] = true;
           canEditable['currentActive'] = ['employee'];
         }
       } else {
-        if(value && value.user && value.user.account && (value.user.account  + '@vingroup.net') == currentEmployeeNo.toLowerCase() ) {
+        let filled = data[key] && data[key].status ? null : '(Bắt buộc)';
+        if(filled && value && value.user && value.user.account && (value.user.account.toLowerCase()  + '@vingroup.net') == currentEmployeeNo.toLowerCase() ) {
           canEditable[key] = true;
           canEditable['canUpdate'] = true;
           canEditable['employee'] = false;
@@ -86,12 +74,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       annualLeaveSummary: {},
       data: {
         employee: {
-          fullName: 'Trần Hữu Đạt',
-          employeeEmail: 'datth3@vingroup.net',
-          positionName: 'Trưởng phòng nhân sự',
-          departmentName: 'Không biết',
-          startDate: '2020-01-15',
-          expireDate: '2020-01-16'
+          fullName: '',
+          employeeEmail: '',
+          positionName: '',
+          departmentName: '',
+          startDate: '',
+          expireDate: ''
         },
         job: {
             mainWork: '',
@@ -163,7 +151,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
   componentDidMount() {
-    const type = this.props.match.params.type;
     const id = this.props.match.params.id;
     this.setState({
         id: id
@@ -175,10 +162,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }
     }
   
-    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`;
-    if(type == 'assess' || type == 'approval'){
-      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
-    }
+    let url = `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/getbangiaoinfo?id=${id}`;
     axios.get(url, config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
@@ -196,54 +180,60 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   prepareDataToSubmit = (data, remoteData) => {
     const isEmployee = this.state.canEditable.currentActive.includes("employee");
-    //remoteData.RequestHistoryId = 
     if(isEmployee) {
-      remoteData.ProjessionlWork = data.job.mainWork;
-      remoteData.ControlWord = data.job.controlWork;
-      remoteData.OtherWork = data.job.otherWork;
-      remoteData.HandoverWork = data.job.user;
-      remoteData.HandoverAsset = data.asset.user;
-      remoteData.HandoverSocial = data.associateCard.user;
-      remoteData.HandoverUniform = data.uniform.user;
-      remoteData.HandoverFingerprintEmail = data.finger.user;
-      remoteData.HandoverDebt = data.inout.user;
-      remoteData.HandoverSoftware = data.tool.user;
-      remoteData.HandoverConfirmation = data.policy.user;
+      remoteData.projessionlWork = data.job.mainWork;
+      remoteData.controlWord = data.job.controlWork;
+      remoteData.otherWork = data.job.otherWork;
+      remoteData.handoverWork = data.job.user;
+      remoteData.handoverAsset = data.asset.user;
+      remoteData.handoverSocial = data.associateCard.user;
+      remoteData.handoverUniform = data.uniform.user;
+      remoteData.handoverFingerprintEmail = data.finger.user;
+      remoteData.handoverDebt = data.inout.user;
+      remoteData.handoverSoftware = data.tool.user;
+      remoteData.handoverConfirmation = data.policy.user;
     } else {
       this.state.canEditable.currentActive.map( (key) => {
         switch(key) {
           case 'job':
-            remoteData.StatusWork = data.job.status;
-            remoteData.NoteWord = data.job.note;
+            remoteData.dateHandoverWork = data.job.actionDate;
+            remoteData.statusWork = data.job.status;
+            remoteData.noteWord = data.job.note;
             break;
           case 'asset':
-            remoteData.DateImplementationAsset = data.asset.actionDate;
-            remoteData.StatusAsset = data.asset.status;
-            remoteData.NoteAsset = data.asset.note;
+            remoteData.dateImplementationAsset = data.asset.actionDate;
+            remoteData.statusAsset = data.asset.status;
+            remoteData.noteAsset = data.asset.note;
             break;
           case 'associateCard':
-            remoteData.StatusSocial = data.associateCard.status;
-            remoteData.NoteSocial = data.associateCard.note;
+            remoteData.dateHandoverSocial = data.associateCard.actionDate;
+            remoteData.statusSocial = data.associateCard.status;
+            remoteData.noteSocial = data.associateCard.note;
             break;
           case 'uniform':
-            remoteData.StatusUniform = data.uniform.status;
-            remoteData.NoteUniform = data.uniform.note;
+            remoteData.dateHandoverUniform = data.uniform.actionDate;
+            remoteData.statusUniform = data.uniform.status;
+            remoteData.noteUniform = data.uniform.note;
             break;
           case 'finger':
-            remoteData.StatusFingerprintEmail = data.finger.status;
-            remoteData.NoteFingerprintEmail = data.finger.note;
+            remoteData.dateHandoverFingerEmail = data.finger.actionDate;
+            remoteData.statusFingerprintEmail = data.finger.status;
+            remoteData.noteFingerprintEmail = data.finger.note;
             break;
           case 'inout':
-            remoteData.StatusDebt = data.inout.status;
-            remoteData.NoteDebt = data.inout.note;
+            remoteData.dateHandoverDebt = data.inout.actionDate;
+            remoteData.statusDebt = data.inout.status;
+            remoteData.noteDebt = data.inout.note;
             break;
           case 'tool':
-            remoteData.StatusSoftware = data.tool.status;
-            remoteData.NoteSoftware = data.tool.note;
+            remoteData.dateHandoverSoftware = data.tool.actionDate;
+            remoteData.statusSoftware = data.tool.status;
+            remoteData.noteSoftware = data.tool.note;
             break;
           case 'policy':
-            remoteData.StatusConfirmation = data.policy.status;
-            remoteData.NoteConfirmation = data.policy.note;
+            remoteData.dateHandoverConfirmation = data.policy.actionDate;
+            remoteData.statusConfirmation = data.policy.status;
+            remoteData.noteConfirmation = data.policy.note;
             break;
         }
       })
@@ -253,68 +243,69 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   saveStateInfos = (infos) => {
     const candidateInfos = {...this.state.data}
-    if(infos.staffContracts){
+    if(infos.userInfo){
       candidateInfos.employee = {
-        employeeNo: infos.staffContracts.employeeCode,
-        fullName: infos.staffContracts.fullName,
-        positionName: infos.staffContracts.positionName,
-        departmentName: infos.staffContracts.departmentName,
-        startDate: infos.staffContracts.startDate,
-        expireDate: infos.staffContracts.expireDate,
-        employeeEmail: infos.staffContracts.employeeEmail,
-        comments: infos.staffContracts.comments
+        employeeNo: infos.userInfo.employeeNo,
+        fullName: infos.userInfo.fullName,
+        positionName: infos.userInfo.jobTitle,
+        departmentName: infos.userInfo.department,
+        startDate: infos.userInfo.dateStartWork,
+        expireDate: infos.dateEndWork,
+        employeeEmail: infos.userInfo.email,
+        requestHistoryId: infos.requestHistoryId
       }
     }
+    
     candidateInfos.job =  {
-      mainWork: '',
-      controlWork: '',
-      actionDate: '',
-      otherWork: '',
-      status: null,
-      user: {},
-      note: ''
+      mainWork: infos.projessionlWork || '',
+      controlWork: infos.controlWord || '',
+      actionDate: infos.dateHandoverWork || '',
+      otherWork: infos.otherWork,
+      status: infos.statusWork,
+      user: infos.handoverWork || {},
+      note: infos.noteWord || ''
     }
     candidateInfos.asset = {
-      user: {},
-      actionDate: '',
-      status: null,
-      note: ''
+      user: infos.handoverAsset || {},
+      actionDate: infos.dateImplementationAsset || '',
+      status: infos.statusAsset,
+      note: infos.noteAsset
     }
     candidateInfos.associateCard = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverSocial || {},
+        status: infos.statusSocial,
+        actionDate: infos.dateHandoverSocial,
+        note: infos.noteSocial || ''
     }
     candidateInfos.uniform = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverUniform || {},
+        status: infos.statusUniform,
+        actionDate: infos.dateHandoverUniform || '',
+        note: infos.noteUniform || ''
     }
     candidateInfos.finger = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverFingerprintEmail || {},
+        status: infos.statusFingerprintEmail,
+        actionDate: infos.dateHandoverFingerEmail || '',
+        note: infos.noteFingerprintEmail || ''
     }
     candidateInfos.inout = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverDebt || {},
+        status: infos.statusDebt,
+        actionDate: infos.dateHandoverDebt || '',
+        note: infos.noteDebt || ''
     }
     candidateInfos.tool = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverSoftware || {},
+        status: infos.statusSoftware,
+        actionDate: infos.dateHandoverSoftware || '',
+        note: infos.noteSoftware || ''
     }
     candidateInfos.policy = {
-        user: {},
-        status: null,
-        actionDate: '',
-        note: ''
+        user: infos.handoverConfirmation || {},
+        status: infos.statusConfirmation,
+        actionDate: infos.dateHandoverConfirmation || '',
+        note: infos.noteConfirmation || ''
     }
     return {data: candidateInfos, remoteData: infos};
   }
@@ -326,7 +317,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     if(isEmployee) {
       for (const [key, value] of Object.entries(data)) {
-        errors[key] = data[key] && data[key].user && data[key].user.account ? null :  '(Bắt buộc)' ;
+        errors[key] = (key == 'employee') || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
       }
     } else {
       this.state.canEditable.currentActive.map( (key) => {
@@ -396,8 +387,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         return
     }
     
-    let url = `${process.env.REACT_APP_REQUEST_URL}/ReasonType/fetchbangiao`;
-    let home = '/tasks?tab=evalution';
+    let url = `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/fetchbangiao`;
 
     const bodyFormData = this.prepareDataToSubmit(this.state.data, this.state.remoteData);
     axios({
@@ -408,7 +398,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            this.showStatusModal(t("RequestSent"), true, true, home)
+            this.showStatusModal(t("RequestSent"), true, true, null)
             this.setDisabledSubmitButton(false)
             return;
           }
@@ -475,15 +465,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-12">
                 <span className="sub-title" style={{margin: '0px'}}>II.1.1 Các công việc chuyên môn</span>
-                <ResizableTextarea placeholder="Nhập nội dung chi tiết" minRows={3} disabled={!disableComponent.employee} value={data.job.mainWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'mainWork')} className="mv-10"/>
+                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.mainWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'mainWork')} className="mv-10"/>
             </div>
             <div className="col-12">
                 <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>II.1.2 Công việc kiểm soát tuân thủ</span>
-                <ResizableTextarea placeholder="Nhập nội dung chi tiết" minRows={3} disabled={!disableComponent.employee} value={data.job.controlWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'controlWork')} className="mv-10"/>
+                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.controlWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'controlWork')} className="mv-10"/>
             </div>
             <div className="col-12">
                 <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>II.1.3 Các công việc khác</span>
-                <ResizableTextarea placeholder="Nhập nội dung chi tiết" minRows={3} disabled={!disableComponent.employee} value={data.job.otherWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'otherWork')} className="mv-10"/>
+                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.otherWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'otherWork')} className="mv-10"/>
             </div>
           </div>
           <div className="row">
@@ -505,7 +495,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-12">
                 Ghi chú
-                <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.job} value={data.job.note} onChange={(e) => this.handleTextInputChange(e, 'job', 'note')} className="mv-10"/>
+                <ResizableTextarea placeholder={disableComponent.job ? "Nhập ghi chú" : ''} disabled={!disableComponent.job} value={data.job.note} onChange={(e) => this.handleTextInputChange(e, 'job', 'note')} className="mv-10"/>
             </div>
           </div>
         </div>
@@ -535,7 +525,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.asset ? "Nhập ghi chú" : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -561,7 +551,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.associateCard} value={data.associateCard.note} onChange={(e) => this.handleTextInputChange(e, 'associateCard', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.associateCard ? "Nhập ghi chú" : ''} disabled={!disableComponent.associateCard} value={data.associateCard.note} onChange={(e) => this.handleTextInputChange(e, 'associateCard', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -587,7 +577,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.uniform} value={data.uniform.note} onChange={(e) => this.handleTextInputChange(e, 'uniform', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.uniform ? "Nhập ghi chú" : ''}  disabled={!disableComponent.uniform} value={data.uniform.note} onChange={(e) => this.handleTextInputChange(e, 'uniform', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -613,7 +603,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.finger ? "Nhập ghi chú" : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -639,7 +629,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.inout} value={data.inout.note} onChange={(e) => this.handleTextInputChange(e, 'inout', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.inout ? "Nhập ghi chú" : ''} disabled={!disableComponent.inout} value={data.inout.note} onChange={(e) => this.handleTextInputChange(e, 'inout', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -665,7 +655,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.tool} value={data.tool.note} onChange={(e) => this.handleTextInputChange(e, 'tool', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.tool ? "Nhập ghi chú" : ''} disabled={!disableComponent.tool} value={data.tool.note} onChange={(e) => this.handleTextInputChange(e, 'tool', 'note')} className="mv-10"/>
                 </div>
             </div>
 
@@ -691,7 +681,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-12">
                     Ghi chú
-                    <ResizableTextarea placeholder="Nhập ghi chú" disabled={!disableComponent.policy} value={data.policy.note} onChange={(e) => this.handleTextInputChange(e, 'policy', 'note')} className="mv-10"/>
+                    <ResizableTextarea placeholder={disableComponent.policy ? "Nhập ghi chú" : ''}  disabled={!disableComponent.policy} value={data.policy.note} onChange={(e) => this.handleTextInputChange(e, 'policy', 'note')} className="mv-10"/>
                 </div>
             </div>
 

@@ -18,7 +18,7 @@ const MyOption = props => {
           <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
         </div>
         <div className="float-left text-wrap w-75">
-          <div className="title-name">{props.data.fullname}</div>
+          <div className="title-name">{props.data.fullName}</div>
           <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
         </div>
       </div>
@@ -42,7 +42,7 @@ class ApproverComponent extends React.Component {
     let approverModel = {
       label: "",
       value: "",
-      fullname: "",
+      fullName: "",
       avatar: "",
       employeeLevel: "",
       pnl: "",
@@ -67,7 +67,7 @@ class ApproverComponent extends React.Component {
               ...approverModel,
               label: manager.fullName,
               value: manager.userid.toLowerCase(),
-              fullname: manager.fullName,
+              fullName: manager.fullName,
               account: manager.userid.toLowerCase(),
               current_position: manager.title,
               department: manager.department
@@ -83,7 +83,7 @@ class ApproverComponent extends React.Component {
       this.setState({
         approver: {
           ...approver,
-          label: approver.fullname,
+          label: approver.fullName,
           value: approver.account,
         }
       })
@@ -100,7 +100,7 @@ class ApproverComponent extends React.Component {
       this.setState({
         approver: {
           ...approver,
-          label: approver.fullname,
+          label: approver.fullName,
           value: approver.account,
         }
       })
@@ -158,7 +158,7 @@ class ApproverComponent extends React.Component {
               return {
                 label: res.fullName,
                 value: res.user_account,
-                fullname: res.fullName,
+                fullName: res.fullName,
                 avatar: res.avatar,
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
