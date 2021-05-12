@@ -40,6 +40,12 @@ class ResizableTextarea extends React.Component {
         }
 	};
 
+	componentWillReceiveProps(nextProps) {
+		if (nextProps && nextProps.minRows && nextProps.minRows > 1 && nextProps.minRows !== this.state.minRows) {
+		  this.setState({ minRows: nextProps.minRows, rows: nextProps.minRows})
+		}
+	}
+
     processFirstTime(e){
         if(e && this.state.firstTime){
             const textareaLineHeight = 24;

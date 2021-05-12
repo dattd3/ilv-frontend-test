@@ -542,3 +542,235 @@
         background-color: #05BD29;
     }
 }
+
+.handover-section {
+    color: #000000;
+    .sub-title{
+        color: #000000;
+        font-weight: bold;
+        font-size: 16px;
+        margin: 40px 16px 16px 16px;
+    }
+
+    .hidden{
+        display: none !important;
+    }
+    .task{
+        input{
+            min-height: 40px;
+        }
+    }
+    .block-time-item-edit {
+        .box-time, input {
+            font-size: 15px;
+        }
+    }
+    .block-note-item-edit, textarea {
+        font-size: 15px;
+    }
+    
+    h5 {
+        color: #2a377c;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .textarea{
+        box-sizing: border-box;
+        border-radius: 3px;
+        resize: none;
+        font-size: inherit;
+        overflow: auto;
+        height: auto;
+        padding: 6px;
+        width: 100%;
+        min-height: 40px;
+        &:disabled{
+            border: 1px solid #ddd;
+            background-color: #eee;
+        }
+        &::placeholder{
+            color: #BBBBBB;
+        }
+    }
+    
+    .mv-10{
+        margin-top: 10px;
+    }
+    [class$="-container"] {
+        margin: 10px 0;
+    }
+    .react-datepicker-wrapper{
+        [class$="-container"] {
+            margin: 10px 0 0 0 ;
+        }
+    }
+   
+    
+    .eval-heading{
+        display: flex;
+        justify-content: center;
+        color: #FF0000;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #fff;
+        margin: 15px 0;
+
+        &.more-description{
+            padding-top: 0px;
+            .title{
+                padding: 10px 20px 10px 16px;
+                margin: 0px -20px 0px;
+                border-radius: 10px 10px 0 0 ;
+                background-color: rgba(40, 50, 128, 0.1);
+                color: #000000;
+                font-weight: bold;
+            }
+        }
+        p {
+            margin: 10px 0;
+        }
+        .description{
+            .title{
+                color: #000000;
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            span{
+                color: #FF0000;
+                margin-right: 25px;
+            }
+        }
+        .approve{
+            .title-name{
+                color: #283280;
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-right: 5px;
+            }
+            .sub-title{
+                color: #283280;
+                font-size: 16px;
+            }
+        }
+        .box-time {
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            padding: 0px 10px;
+            height: 100%;
+            .row {
+                line-height: 40px;
+            }
+        }
+
+        .close {
+            opacity: 1;
+        }
+    }
+
+    .input-container {
+        position:relative;
+
+        label, .react-datepicker-wrapper {
+            width: 100%;
+        }
+
+        .input {
+            margin:0;
+            padding-right: 10px;
+            width: 100%;
+        }
+        .input-img {
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .input-clock {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        label {
+            margin-bottom: 0;
+        }
+        i {
+            font-size: 20px;
+            font-weight: 100;
+        }
+    }
+    .detail {
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        background-color: #eee;
+        padding: 7px;
+        border-radius: 5px;
+        width: 100%;
+        min-height: 40px;
+    }
+
+    .leave-of-absence {
+        .summary {
+            .item {
+                border: 1px solid #ddd;
+                background-color: #fff;
+                height: 100%;
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+                box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            }
+        }
+    }
+
+    .approver {
+        .avatar {
+            height: 50px;
+            width: 50px;
+            border: 0;
+            border-radius: 50%;
+        }
+        .comment {
+            font-size: small;
+            font-style: italic;
+        }
+
+        .title, .comment {
+            margin: 0 5px;
+            padding: 0;
+        }
+    }
+    .nav-item {
+        width: 20%;
+        text-align: center;
+    }
+
+    .group {
+        overflow: hidden;
+    }
+    .auto-height {
+        padding-bottom: 99999px;
+        margin-bottom: -99999px;
+    }
+    @media (max-width: 1200px){
+        .auto-height {
+            padding-bottom: 0px;
+             margin-bottom: 0px;
+        }
+    }
+    .btn-save{
+        background-color: #05BD29;
+    }
+}

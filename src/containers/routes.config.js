@@ -386,6 +386,14 @@ export default [
           component: lazy(() => import("./NotFound")),
         },
         {
+          key: "handover",
+          routeProps: {
+            exact: true,
+            path: map.HandOverForm,
+          },
+          component: lazy(() => import("./Handover")),
+        },
+        {
           key: "registration",
           routeProps: {
             exact: true,
