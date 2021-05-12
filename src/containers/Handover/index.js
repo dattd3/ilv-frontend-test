@@ -452,7 +452,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
             <div className="col-4">
               {"Ngày chấm dứt HĐLĐ"}
-              <div className="detail">{data.employee.expireDate ? moment(data.employee.expireDate).format("DD/MM/YYYY") : '' }</div>
+              <div className="detail">{data.employee.expireDate }</div>
             </div>
           </div>
         </div>
