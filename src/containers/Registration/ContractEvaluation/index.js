@@ -314,7 +314,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
-    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`;
+    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     if(type == 'assess' || type == 'approval'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
@@ -359,9 +359,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       staffSuggestions: data.selfEvalution.opinion,
       managersEvaluateStrengths: data.bossEvalution.strong,
       managersEvaluatePointImprove: data.bossEvalution.weak,
-      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations.contractKpiResult,
-      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations.contractType,
-      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations.contractTypeName,
+      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractKpiResult : '',
+      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractType : '',
+      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractTypeName : '',
       startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       expireDate: data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       proposed: data.qlttOpinion.otherOption || '',
@@ -369,7 +369,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
 
     remoteData.requestHistorys = {
-      ...remoteData.requestHistorys,
+      ...(remoteData.requestHistorys || {}),
       appraiserInfo: data.nguoidanhgia,
       supervisorInfo: data.qltt,
       approverInfo: data.nguoipheduyet
