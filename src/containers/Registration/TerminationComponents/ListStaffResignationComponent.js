@@ -100,7 +100,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                     }
                 })
             }
-            element = <Select options={statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} />
+            element = <Select options={statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} menuPortalTarget={document.body} />
         } else {
             const statusName = statusOptions.filter(item => item.value == statusCode)
             if (statusName && statusName.length > 0) {

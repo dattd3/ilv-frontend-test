@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from "../../../commons/Constants"
+import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
     constructor(props) {
@@ -57,7 +58,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             })
         }
         const { t, isEdit } = this.props
-        const {exportOption, keywords} = this.state
+        const {exportOption, keywords, files} = this.state
 
         const exportOptions = [
             {value: 1, label: 'Báo cáo yêu cầu nghỉ việc'},
@@ -97,6 +98,11 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 text-right display-right">
+                            <AttachmentComponent files={files} />
                         </div>
                     </div>
                 </div>
