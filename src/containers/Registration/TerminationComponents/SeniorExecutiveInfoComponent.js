@@ -116,9 +116,11 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
       this.setState({ [name]: value })
       const isDirectManager = this.isSeniorExecutive(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       this.props.updateApprovalInfos("seniorExecutive", value, isDirectManager)
+      this.props.updateErrors({seniorExecutive: null})
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("seniorExecutive", value, true)
+      this.props.updateErrors({seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"})
     }
   }
     
@@ -204,7 +206,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
             <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
             <div className="row">
                 <div className="col-4">
-                    <p className="title">{t('FullName')}</p>
+                    <p className="title">{t('FullName')}<span className="required">(*)</span></p>
                     <div>
                         <Select
                             isLoading={isSearching}

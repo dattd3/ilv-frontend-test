@@ -16,26 +16,35 @@ class StaffTerminationDetailComponent extends React.PureComponent {
     }
 
     handleSelectChange = e => {
+        let errorObj = {reason: "Vui lòng chọn lý do chấm dứt hợp đồng!"}
+        const infos = {...this.state.infos}
+        infos.reason = null
+
         if (e) {
-            const infos = {...this.state.infos}
+            errorObj = {reason: null}
             infos.reason = {value: e.value, label: e.label}
-            this.setState({infos: infos})
-            this.props.updateStaffTerminationDetail(infos)
         }
+
+        this.setState({infos: infos})
+        this.props.updateStaffTerminationDetail(infos)
+        this.props.updateErrors(errorObj)
     }
 
     handleDatePickerChange = date => {
         const infos = {...this.state.infos}
         infos.lastWorkingDay = null
         infos.dateTermination = null
+        let errorObj = {lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!"}
 
         if (moment(date, 'YYYY-MM-DD').isValid()) {
             infos.lastWorkingDay = moment(date).format('YYYY-MM-DD')
             infos.dateTermination = moment(date, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD')
+            errorObj = {lastWorkingDay: null}
         }
 
         this.setState({infos: infos})
         this.props.updateStaffTerminationDetail(infos)
+        this.props.updateErrors(errorObj)
     }
 
     handleInputChange = e => {
@@ -66,7 +75,7 @@ class StaffTerminationDetailComponent extends React.PureComponent {
                     <div className="box shadow">
                         <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('LastWorkingDay')}</p>
+                                <p className="title">{t('LastWorkingDay')}<span className="required">(*)</span></p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -89,9 +98,9 @@ class StaffTerminationDetailComponent extends React.PureComponent {
                                 </div>
                             </div>
                             <div className="col-4">
-                                <p className="title">{t('ReasonForContractTermination')}</p>
+                                <p className="title">{t('ReasonForContractTermination')}<span className="required">(*)</span></p>
                                 <div>
-                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} />
+                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} isClearable={true} />
                                 </div>
                             </div>
                         </div>

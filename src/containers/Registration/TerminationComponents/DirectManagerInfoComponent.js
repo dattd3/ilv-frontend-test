@@ -116,9 +116,11 @@ class DirectManagerInfoComponent extends React.PureComponent {
       this.setState({ [name]: value })
       const isDirectManager = this.isDirectManager(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       this.props.updateApprovalInfos("directManager", value, isDirectManager)
+      this.props.updateErrors({directManager: null})
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("directManager", value, true)
+      this.props.updateErrors({directManager: "Vui lòng chọn CBQL trực tiếp!"})
     }
   }
 
@@ -204,7 +206,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
                 <h6 className="block-title has-border-bottom">{t('DirectManager')}</h6>
                 <div className="row">
                   <div className="col-4">
-                      <p className="title">{t('FullName')}</p>
+                      <p className="title">{t('FullName')}<span className="required">(*)</span></p>
                       <div>
                         <Select
                           isLoading={isSearching}

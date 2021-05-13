@@ -1,16 +1,15 @@
 import React from 'react'
 import axios from 'axios'
-import { registerLocale } from 'react-datepicker'
-import moment from 'moment'
 import _ from 'lodash'
+import { Progress } from "reactstrap"
+import { ToastContainer, toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import LoadingModal from '../../../components/Common/LoadingModal'
 import Constants from '../../../commons/Constants'
 import ResignationRequestsManagementActionButton from '../TerminationComponents/ResignationRequestsManagementActionButton'
 import ListStaffResignationComponent from '../TerminationComponents/ListStaffResignationComponent'
 import ResultModal from '../ResultModal'
-import 'react-datepicker/dist/react-datepicker.css'
-import { vi, enUS } from 'date-fns/locale'
+import "react-toastify/dist/ReactToastify.css"
 
 const config = {
     headers: {            
@@ -48,6 +47,7 @@ class ResignationRequestsManagementPage extends React.Component {
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
+            loaded: 0,
             errors: {}
         }
     }
@@ -74,18 +74,6 @@ class ResignationRequestsManagementPage extends React.Component {
             this.fetchListUserTerminations()
         })
     }
-
-    // initialData = async () => {
-    //     const listUserTerminationEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal?pageIndex=1&pageSize=10`
-    //     const requestListUserTerminations = axios.get(listUserTerminationEndpoint, config)
-
-    //     await axios.all([requestListUserTerminations]).then(axios.spread((...responses) => {
-    //         const listUserTerminations = this.prepareListUserTerminations(responses[0])
-    //         this.setState({listUserTerminations: listUserTerminations})
-    //     })).catch(errors => {
-    //         return null
-    //     })
-    // }
 
     fetchListUserTerminations = async () => {
         this.setState({isShowLoadingModal: true})
@@ -214,7 +202,8 @@ class ResignationRequestsManagementPage extends React.Component {
             const isDataValid = this.isDataValid()
 
             if (!isDataValid && (type == HANDOVER_STATUS || type == RESIGNATION)) {
-                this.showStatusModal(t("Notification"), "Vui lòng chọn những yêu cầu cần xuất dữ liệu!", false)
+                this.setState({isShowLoadingModal: false})
+                toast.error("Vui lòng chọn yêu cầu cần xuất dữ liệu!")
                 return
             }
 
@@ -222,7 +211,8 @@ class ResignationRequestsManagementPage extends React.Component {
             this.processResponses(type, responses)
         } catch (error) {
             this.setState({isShowLoadingModal: false})
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+            toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+            return
         }
     }
 
@@ -316,7 +306,8 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (responses && responses.data && responses.status === 200) {
                     this.handleDownloadFiles(responses.data, "Bao-cao-yeu-cau-nghi-viec.xlsx")
                 } else {
-                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+                    return
                 }
                 break
             case HANDOVER_STATUS:
@@ -324,7 +315,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (responses && responses.data && responses.status === 200) {
                     this.handleDownloadFiles(responses.data, "Bao-cao-tinh-trang-ban-giao.zip")
                 } else {
-                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
                 }
                 break
             case RESIGNATION:
@@ -332,7 +323,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (responses && responses.data && responses.status === 200) {
                     this.handleDownloadFiles(responses.data, "Don-xin-nghi-viec.zip")
                 } else {
-                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
                 }
                 break
             case REPORT_INTERVIEW_RESULTS:
@@ -340,7 +331,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (responses && responses.data && responses.status === 200) {
                     this.handleDownloadFiles(responses.data, "Bao-cao-ket-qua-phong-van.xlsx")
                 } else {
-                    this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình xuất báo cáo!", false)
+                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
                 }
                 break
             case LIQUIDATION_AGREEMENT:
@@ -369,13 +360,53 @@ class ResignationRequestsManagementPage extends React.Component {
         link.parentNode.removeChild(link)
     }
 
+    validateAttachmentFile = () => {
+        const files = this.state.files
+        const errors = {}
+        const fileExtension = [
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/pdf',
+            'image/png',
+            'image/jpeg'
+        ]
+    
+        let sizeTotal = 0
+        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
+            const file = files[index]
+            if (!fileExtension.includes(file.type)) {
+                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                break
+            } else if (parseFloat(file.size / 1000000) > 2) {
+                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                break
+            } else {
+                errors.files = null
+            }
+            sizeTotal += parseInt(file.size)
+        }
+    
+        if (parseFloat(sizeTotal / 1000000) > 10) {
+            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+        }
+
+        return errors
+    }
+
     save = async () => {
         const {t} = this.props
         const {requestIdChecked, listUserTerminations, files} = this.state
         const isDataValid = this.isDataValid()
+        const fileInfoValidation = this.validateAttachmentFile()
 
         if (!isDataValid) {
-            this.showStatusModal(t("Notification"), "Xin vui lòng tích chọn thông tin cần lưu!", false)
+            toast.error("Xin vui lòng tích chọn thông tin cần lưu!")
+            return
+        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
+            toast.error(fileInfoValidation.files)
+            return
         } else {
             let itemsChecked = []
 
@@ -451,6 +482,10 @@ class ResignationRequestsManagementPage extends React.Component {
 
         return (
             <>
+            <ToastContainer autoClose={2000} />
+            <Progress max="100" color="success" value={this.state.loaded}>
+                {Math.round(this.state.loaded, 2)}%
+            </Progress>
             <LoadingModal show={isShowLoadingModal} />
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence resignation-requests-management-page">

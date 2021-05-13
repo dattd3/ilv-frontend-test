@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
+import { Progress } from "reactstrap"
+import { ToastContainer, toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
@@ -11,6 +13,7 @@ import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
 import StaffTerminationDetailComponent from '../TerminationComponents/StaffTerminationDetailComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
+import "react-toastify/dist/ReactToastify.css"
 
 const config = {
     headers: {            
@@ -33,7 +36,13 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
-            errors: {}
+            loaded: 0,
+            errors: {
+                lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
+                reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
+                directManager: "Vui lòng chọn CBQL trực tiếp!",
+                seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"
+            }
         }
     }
 
@@ -110,52 +119,25 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         this.setState({ files: files })
     }
 
-    verifyInput() {
-        // let { requestInfo, approver, appraiser, errors } = this.state;
-        // requestInfo.forEach((req, indexReq) => {
-        //     if (!req.startDate) {
-        //         req.errors["startDate"] = this.props.t('Required')
-        //     }
-        //     if (!req.endDate) {
-        //         req.errors["endDate"] = this.props.t('Required')
-        //     }
-        //     if (!req.startTime && !req.isAllDay && !req.isAllDayCheckbox) {
-        //         req.errors["startTime"] = this.props.t('Required')
-        //     }
-        //     if (!req.endTime && !req.isAllDay && !req.isAllDayCheckbox) {
-        //         req.errors["endTime"] = this.props.t('Required')
-        //     }
-        //     if (!req.absenceType) {
-        //         requestInfo[indexReq].errors.absenceType = this.props.t('Required')
-        //     }
-        //     if (!req.comment) {
-        //         requestInfo[indexReq].errors.comment = this.props.t('Required')
-        //     }
-        //     requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === 'PN03' && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
-        // })
-        // const employeeLevel = localStorage.getItem("employeeLevel")
-
-        // this.setState({
-        //     requestInfo,
-        //     errors: {
-        //         approver: !approver ? this.props.t('Required') : errors.approver,
-        //         // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
-        //     }
-        // })
-
-        // const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        // if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
-        //     return false
-        // }
-        // return true
-    }
-
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
 
     setDisabledSubmitButton(status) {
         this.setState({ disabledSubmitButton: status });
+    }
+
+    isValidData = () => {
+        const errors = this.state.errors
+        const isEmpty = !Object.values(errors).some(item => item != null && item != "")
+        return isEmpty
+    }
+
+    getMessageValidation = () => {
+        const errors = this.state.errors
+        const listMessages = Object.values(errors).filter(item => item != null && item != "")
+
+        return listMessages[0]
     }
 
     submit = async () => {
@@ -167,13 +149,13 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             seniorExecutive,
             files
         } = this.state
+        const isValid = this.isValidData()
 
-        // const err = this.verifyInput()
-        this.setDisabledSubmitButton(true)
-        // if (!err) {
-        //     this.setDisabledSubmitButton(false)
-        //     return
-        // }
+        if (!isValid) {
+            const message = this.getMessageValidation()
+            toast.error(message)
+            return
+        }
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
@@ -265,13 +247,17 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         this.setState({ [approvalType]: approver, errors: errors })
     }
 
+    updateErrors = (errorObj) => {
+        const errors = {...this.state.errors, ...errorObj}
+        this.setState({errors: errors})
+    }
+
     render() {
         const { t } = this.props;
 
         const {
             isEdit,
             files,
-            errors,
             titleModal,
             messageModal,
             disabledSubmitButton,
@@ -285,13 +271,17 @@ class RegistrationEmploymentTerminationForm extends React.Component {
 
         return (
             <>
+            <ToastContainer autoClose={2000} />
+            <Progress max="100" color="success" value={this.state.loaded}>
+                {Math.round(this.state.loaded, 2)}%
+            </Progress>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence registration-employment-termination">
                 <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                 <StaffInfoComponent userInfos={userInfos} />
-                <StaffTerminationDetailComponent reasonTypes={reasonTypes} updateStaffTerminationDetail={this.updateStaffTerminationDetail} />
-                <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} />
-                <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} />
+                <StaffTerminationDetailComponent reasonTypes={reasonTypes} updateStaffTerminationDetail={this.updateStaffTerminationDetail} updateErrors={this.updateErrors} />
+                <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
+                <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
                 <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>

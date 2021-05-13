@@ -10,6 +10,15 @@ body {
   & > [class^="css-"] {
     font: normal 14px Arial, Helvetica, sans-serif;
   }
+  .progress {
+    background: none;
+  }
+  .required {
+    color: red;
+    margin-left: 5px;
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
 a {

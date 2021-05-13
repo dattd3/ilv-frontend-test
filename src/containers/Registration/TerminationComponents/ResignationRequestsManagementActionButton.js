@@ -1,9 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
-import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
-import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
@@ -42,6 +40,11 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     handleChangeFileInput = e => {
         const files = Object.values(e.target.files)
+        this.setState({files: files})
+        this.props.updateAttachedFiles(files)
+    }
+
+    updateFiles = files => {
         this.setState({files: files})
         this.props.updateAttachedFiles(files)
     }
@@ -102,7 +105,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                     </div>
                     <div className="row">
                         <div className="col-12 text-right display-right">
-                            <AttachmentComponent files={files} />
+                            <AttachmentComponent files={files} updateFiles={this.updateFiles} />
                         </div>
                     </div>
                 </div>
