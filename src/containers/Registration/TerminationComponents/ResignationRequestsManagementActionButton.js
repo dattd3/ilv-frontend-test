@@ -12,6 +12,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             exportOption: null,
             keywords: "",
             keywordsTyping: "",
+            files: []
         }
 
         this.onInputChange = debounce(this.updateKeywordsToFilter, 800)
@@ -36,6 +37,12 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     save = () => {
         this.props.save()
+    }
+
+    handleChangeFileInput = e => {
+        const files = Object.values(e.target.files)
+        this.setState({files: files})
+        this.props.updateAttachedFiles(files)
     }
 
     render() {
@@ -83,10 +90,11 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                     </div>
                                 </div>
                                 <div className="col-4">
-                                    <button type="button" className="attachment">
+                                    <label htmlFor="i_files" className="attachment">
                                         <i className="fas fa-paperclip"></i>
                                         <span>Đính kèm</span>
-                                    </button>
+                                        <input id="i_files" type="file" name="i_files" style={{display: 'none'}} onChange={this.handleChangeFileInput} multiple accept="image/jpeg, image/png, .doc, .pdf, .docx, .xls, .xlsx" />
+                                    </label>
                                 </div>
                             </div>
                         </div>
