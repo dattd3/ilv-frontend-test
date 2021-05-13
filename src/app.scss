@@ -1572,7 +1572,23 @@ span.badge-notification[data-badge]::after {
       margin-bottom: 20px;
       .action-group {
         align-items: center;
-        .attachment, .save {
+        .attachment {
+          cursor: pointer;
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          background: #FFFFFF;
+          padding: 6px;
+          margin-bottom: 0;
+          &:focus {
+            outline: none;
+          }
+          i {
+            margin-right: 6px;
+            font-size: 14px;
+          }
+        }
+        .save {
           width: 100%;
           border: 1px solid #CCCCCC;
           border-radius: .35rem;

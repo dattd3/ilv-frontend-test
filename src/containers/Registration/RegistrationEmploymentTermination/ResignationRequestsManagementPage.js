@@ -113,18 +113,6 @@ class ResignationRequestsManagementPage extends React.Component {
         return []
     }
 
-    updateFiles(files) {
-        this.setState({ files: files })
-    }
-
-    handleInputChange(event, groupId) {
-        // event.target.value
-    }
-
-    handleSelectChange(name, value, groupId) {
-        
-    }
-
     verifyInput() {
         // let { requestInfo, approver, appraiser, errors } = this.state;
         // requestInfo.forEach((req, indexReq) => {
@@ -367,6 +355,10 @@ class ResignationRequestsManagementPage extends React.Component {
         }
     }
 
+    updateAttachedFiles = files => {
+        this.setState({ files: files })
+    }
+
     handleDownloadFiles = (fileBlob, fileName) => {
         const url = window.URL.createObjectURL(new Blob([fileBlob]))
         const link = document.createElement('a')
@@ -462,7 +454,7 @@ class ResignationRequestsManagementPage extends React.Component {
             <LoadingModal show={isShowLoadingModal} />
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence resignation-requests-management-page">
-                <ResignationRequestsManagementActionButton updateKeywordsToFilter={this.updateKeywordsToFilter} save={this.save} updateOptionToExport={this.updateOptionToExport} />
+                <ResignationRequestsManagementActionButton updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} updateOptionToExport={this.updateOptionToExport} />
                 <ListStaffResignationComponent listUserTerminations={listUserTerminations} updateTerminationRequestList={this.updateTerminationRequestList} />
             </div>
             </>
