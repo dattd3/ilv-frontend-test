@@ -101,5 +101,8 @@ const Constants = {
 
   //other
   QAAlreadyExist: "QAAlreadyExist",
+
+  PAGE_INDEX_DEFAULT: 1,
+  PAGE_SIZE_DEFAULT: 10
 };
 export default Constants

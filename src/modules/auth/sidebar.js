@@ -47,7 +47,14 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
- 
+  {
+    id: 104,
+    parentId: 0,
+    icon: 'c-resignation-requests-management',
+    label: "ResignationRequestsManagement",
+    to: map.ResignationRequestsManagement,
+    role: 'U'
+  },
   {
     id: 4,
     parentId: 2,
@@ -233,8 +240,17 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 97,
+    id: 99,
     parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RequestRegistration",
+    label2: "RequestRegistration",
+    to: map.Registration,
+    role: 'U'
+  },
+  {
+    id: 100,
+    parentId: 99,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
     label2: "Registration",
@@ -242,11 +258,27 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 98,
+    id: 101,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    role: 'U'
+  },
+  {
+    id: 102,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "ProposedResignation",
+    to: map.ProposedResignation,
+    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+  },
+  {
+    id: 103,
     parentId: 0,
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: ['V030','V096','V060','V073']
-  },
+  }
 ];
