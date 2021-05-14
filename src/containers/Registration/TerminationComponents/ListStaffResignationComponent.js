@@ -209,9 +209,9 @@ class ListStaffResignationComponent extends React.PureComponent {
         this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
-    handleCheckboxChange = (index, code, e) => {
+    handleCheckboxChange = (index, code, requestHistoryId, e) => {
         const requestIdChecked = [...this.state.requestIdChecked]
-        requestIdChecked[index] = {key: code, value: e.target.checked}
+        requestIdChecked[index] = {key: code, value: e.target.checked, requestHistoryId: requestHistoryId}
 
         this.setState({requestIdChecked: requestIdChecked})
         this.props.updateTerminationRequestList("requestIdChecked", requestIdChecked)
@@ -267,7 +267,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
                                                                     <input type="checkbox" checked={requestIdChecked[index] && requestIdChecked[index].value ? requestIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.id, e)} />
+                                                                    onChange={e => this.handleCheckboxChange(index, item.id, item.requestHistoryId, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
                                                                 </div>
                                                             </td>
@@ -282,7 +282,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
                                                             <td className="created-by-col"><div className="data created-by">{item?.createdBy || ""}</div></td>
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
-                                                            <td className="handover-status-col"><div className="data handover-status">{item?.statusDeliverString}</div></td>
+                                                            <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.requestHistoryId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
                                                             <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
                                                             <td className="handover-insurance-col"><div className="data handover-insurance">{this.renderStatus(index, item.isHandoverSocial, item.statusSocial, "statusSocial")}</div></td>

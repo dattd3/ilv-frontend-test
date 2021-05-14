@@ -54,6 +54,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.account?.toLowerCase())
 
         if (!itemExist || itemExist.length === 0 && employee) {
+            let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
             const employeeTemp = {
                 employeeNo: employee.account, // need update
                 fullName: employee.fullname,
@@ -68,8 +69,13 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
     
             userInfos = userInfos.concat([{...employeeTemp}])
+            if (userInfos.length > 0) {
+                errorObj = {employees: null}
+            }
+
             this.setState({userInfos: userInfos})
             this.props.updateUserInfos(userInfos)
+            this.props.updateErrors(errorObj)
         }
     }
 
@@ -97,8 +103,14 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
 
             if (indexDeleted.length > 0) {
+                let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
                 const userInfosTemp = userInfos.filter((item, index) => !indexDeleted.includes(index))
+                if (userInfosTemp.length > 0) {
+                    errorObj = {employees: null}
+                }
+
                 this.setState({userInfos: userInfosTemp, employeeIdChecked: []})
+                this.props.updateErrors(errorObj)
                 this.props.updateUserInfos(userInfosTemp)
             }
         }
