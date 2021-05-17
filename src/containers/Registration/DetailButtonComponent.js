@@ -89,7 +89,7 @@ class DetailButtonComponent extends React.Component {
             action === "approval" ?
             <div className="clearfix mt-5 mb-5">
                 {
-                    !this.props.isShowRevocationOfApproval ?
+                    this.props.isShowApproval ?
                     <>
                     <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
