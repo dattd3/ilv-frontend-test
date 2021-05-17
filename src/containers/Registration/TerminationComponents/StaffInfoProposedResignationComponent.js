@@ -57,6 +57,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
             const employeeTemp = {
                 employeeNo: employee.account, // need update
+                ad: employee.account?.toLowerCase(),
                 fullName: employee.fullname,
                 jobTitle: employee.current_position,
                 department: employee.department,
