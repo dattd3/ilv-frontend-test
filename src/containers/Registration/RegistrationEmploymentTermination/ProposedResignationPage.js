@@ -140,11 +140,22 @@ class ProposedResignationPage extends React.Component {
             files
         } = this.state
         const isValid = this.isValidData()
+        const fileInfoValidation = this.validateAttachmentFile()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
             return
+        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
+            toast.error(fileInfoValidation.files)
+            return
+        } else {
+            const subordinates = await this.getSubordinates()
+            const directManagerValidation = this.validateDirectManager(subordinates)
+            if (!directManagerValidation.isValid) {
+                toast.error(directManagerValidation.messages)
+                return
+            }
         }
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
@@ -193,6 +204,95 @@ class ProposedResignationPage extends React.Component {
         } catch (errors) {
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false)
+        }
+    }
+
+    validateAttachmentFile = () => {
+        const files = this.state.files
+        const errors = {}
+        const fileExtension = [
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/pdf',
+            'image/png',
+            'image/jpeg'
+        ]
+    
+        let sizeTotal = 0
+        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
+            const file = files[index]
+            if (!fileExtension.includes(file.type)) {
+                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                break
+            } else if (parseFloat(file.size / 1000000) > 2) {
+                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                break
+            } else {
+                errors.files = null
+            }
+            sizeTotal += parseInt(file.size)
+        }
+    
+        if (parseFloat(sizeTotal / 1000000) > 10) {
+            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+        }
+
+        return errors
+    }
+
+    validateDirectManager = (subordinates) => {
+        const userInfos = this.state.userInfos
+
+        if (!userInfos || userInfos.length === 0) {
+            return {
+                isValid: false,
+                messages: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+            }
+        }
+
+        if (!subordinates || subordinates.length === 0) {
+            return {
+                isValid: false,
+                messages: "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT"
+            }
+        }
+
+        const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase())
+        const userNotInSubordinates = userInfos.filter(item => !subordinateAds.includes(item.ad.toLowerCase()))
+        .map(item => item.fullName)
+
+        const objValid = {
+            isValid: true,
+            messages: ""
+        }
+        if (userNotInSubordinates && userNotInSubordinates.length > 0) {
+            objValid.isValid = false
+            objValid.messages = `Nhân viên (${userNotInSubordinates.join(', ')}) đề xuất cho nghỉ không thuộc thẩm quyền của QLTT`
+        } else {
+            objValid.isValid = true
+            objValid.messages = ""
+        }
+
+        return objValid
+    }
+
+    getSubordinates = async () => {
+        try {
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, config)
+
+            if (responses && responses.data) {
+                const employees = responses.data.employees
+
+                if (employees && employees.length > 0) {
+                    return employees
+                }
+
+                return []
+            }
+        } catch (error) {
+            return []
         }
     }
 

@@ -150,10 +150,14 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             files
         } = this.state
         const isValid = this.isValidData()
+        const fileInfoValidation = this.validateAttachmentFile()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
+            return
+        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
+            toast.error(fileInfoValidation.files)
             return
         }
 
@@ -212,6 +216,41 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false)
         }
+    }
+
+    validateAttachmentFile = () => {
+        const files = this.state.files
+        const errors = {}
+        const fileExtension = [
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/pdf',
+            'image/png',
+            'image/jpeg'
+        ]
+    
+        let sizeTotal = 0
+        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
+            const file = files[index]
+            if (!fileExtension.includes(file.type)) {
+                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                break
+            } else if (parseFloat(file.size / 1000000) > 2) {
+                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                break
+            } else {
+                errors.files = null
+            }
+            sizeTotal += parseInt(file.size)
+        }
+    
+        if (parseFloat(sizeTotal / 1000000) > 10) {
+            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+        }
+
+        return errors
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
