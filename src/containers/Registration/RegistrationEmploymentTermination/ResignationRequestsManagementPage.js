@@ -226,8 +226,8 @@ class ResignationRequestsManagementPage extends React.Component {
                 requestObj = this.getRequestConfig(typeMethodMapping[type], apiPath)
                 break
             case HANDOVER_STATUS:
-                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exporttowordbienbanbangiao`)
-                requestObj = {...requestConfig, ...{data: {ids: ids}}}
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/exporttowordbienbanbangiao`)
+                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
                 break
             case RESIGNATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
