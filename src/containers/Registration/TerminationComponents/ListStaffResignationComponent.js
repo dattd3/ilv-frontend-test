@@ -280,7 +280,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="reason-termination-col"><div className="data reason-termination">{reason?.label || ""}</div></td>
                                                             <td className="detailed-reason-col"><div className="data detailed-reason">{item?.reasonDetailed || ""}</div></td>
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
-                                                            <td className="created-by-col"><div className="data created-by">{item?.createdBy || ""}</div></td>
+                                                            <td className="created-by-col"><div className="data created-by">{item?.createdBy?.fullName || ""}</div></td>
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
                                                             <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.requestHistoryId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
