@@ -251,7 +251,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>Xác nhận biên bản vi phạm chưa xử lý</th>
                                             <th>Tình trạng phê duyệt</th>
                                             <th>Tình trạng sổ BHXH</th>
-                                            <th>Lương nghỉ việc</th>
+                                            <th>Tình trạng lương</th>
                                             <th>Phiếu phỏng vấn</th>
                                         </tr>
                                     </thead>
