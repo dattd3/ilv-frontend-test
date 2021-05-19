@@ -149,7 +149,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                         </td>
                                                         <td className="explain">
                                                             <div className="item comment">
-                                                                <textarea value={isViewOnly ? serveyDetail[item.responseKeyDescription] : comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} />
+                                                                <textarea value={isViewOnly ? serveyDetail[item.responseKeyDescription] || "" : comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} />
                                                             </div>
                                                         </td>
                                                     </tr>
