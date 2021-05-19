@@ -33,7 +33,7 @@ const Option = props => {
                 }}
             >
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'space-between', alignItems: 'center'}}>
-                <a title={props.label} href={props.data.link} style={{overflow: 'hidden', textOverflow: 'ellipsis', color: 'black', font: '13px Arial'}} target="_blank">{props.label}</a> <Image src={IconReset} alt="Xuất báo cáo" className="ic-action" style={{marginLeft: '20px', cursor: 'pointer'}} />
+                <a title={props.label} href={props.data.link} style={{overflow: 'hidden', textOverflow: 'ellipsis', color: 'black', font: '13px Arial'}} target="_blank">{props.label}</a>{props.data.editable ? <Image src={IconReset} alt="Xuất báo cáo" className="ic-action" style={{marginLeft: '20px', cursor: 'pointer'}} /> : null}
             </div>
             </components.Option>
         </div>
@@ -173,9 +173,9 @@ class ListStaffResignationComponent extends React.PureComponent {
         let options = []
         if (attachments && attachments.length > 0) {
             options = (attachments || [])
-            .filter(item => item && item.fileStatus == ATTACHED_FILE_CODE)
+            .filter(item => item && item.fileStatus == ATTACHED_FILE_CODE && !item.isDeleted)
             .map(item => {
-                return {value: item.id, label: item.fileName, link: item.fileUrl, id: item.id}
+                return {value: item.id, label: item.fileName, link: item.fileUrl, id: item.id, editable: item.isEdit}
             })
         }
 
