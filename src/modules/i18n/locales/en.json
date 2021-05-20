@@ -218,6 +218,8 @@
   "BenefitGrade": "Benefit Grade",
   "BenefitNet": "Benefit Net (GrossUp) (Vinmec, Vinschool, Cash Bonus…)",
   "BizTripNoPerDiemNoMeals": "Biz Trip (No Per Diem and Meals)",
+  "WFHNoPerDiemNoMeals": "WFH (No Per Diem and Meals)",
+  "WFHNoPerDiemHasMeals": "WFH (No Per Diem, Meals Included)",
   "BizTripNoPerDiemHasMeals": "Biz Trip (No Per Diem, Meals Included)",
   "BizTripHasPerDiemHasMeals": "Biz Trip (Per Diem and meals Included)",
   "BizTripHasPerDiemNoMeals": "Biz Trip (Per Diem included, No meals)",
