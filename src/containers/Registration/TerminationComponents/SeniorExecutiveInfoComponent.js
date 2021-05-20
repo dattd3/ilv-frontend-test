@@ -37,59 +37,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
     }
     this.onInputChange = debounce(this.getApproverInfo, 800)
   }
-    
-  componentDidMount() {
-    let approverModel = {
-      label: "",
-      value: "",
-      fullname: "",
-      avatar: "",
-      employeeLevel: "",
-      pnl: "",
-      orglv2Id: "",
-      account: "",
-      current_position: "",
-      department: ""
-    }
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    }
-    const { seniorExecutive } = this.props
-    const companiesUsing = ['V070','V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-      .then(res => {
-        if (res && res.data && res.data.data && res.data.data.length > 0) {
-            const manager = res.data.data[0]
-            const managerApproval = {
-                ...approverModel,
-                label: manager.fullName,
-                value: manager.userid.toLowerCase(),
-                fullname: manager.fullName,
-                account: manager.userid.toLowerCase(),
-                current_position: manager.title,
-                department: manager.department
-            }
-            this.setState({ seniorExecutive: managerApproval })
-            this.props.updateApprovalInfos("seniorExecutive", managerApproval, true)
-        }
-      }).catch(error => {
-
-      })
-    }
-
-    if (seniorExecutive) {
-      this.setState({
-        seniorExecutive: {
-          ...seniorExecutive,
-          label: seniorExecutive.fullname,
-          value: seniorExecutive.account,
-        }
-      })
-    }
-  }
 
   componentWillReceiveProps(nextProps) {
     const { seniorExecutive } = nextProps;
@@ -153,7 +100,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         }
       }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []
