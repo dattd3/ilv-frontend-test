@@ -122,18 +122,6 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
-    error(name, groupId, groupItem) {
-        const { requestInfo } = this.state
-        let indexReq
-        if (groupItem) {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-        } else {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId)
-        }
-        const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
-    }
-
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     }
@@ -308,7 +296,16 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     updateAttachedFiles = files => {
-        this.setState({ files: files })
+        const requestIdChecked = this.state.requestIdChecked
+        const listRequestIdCheckedCanNotUpload = (requestIdChecked || [])
+        .filter(item => !item.isUploadFile)
+        .map(item => item.employeeNo)
+
+        if (listRequestIdCheckedCanNotUpload && listRequestIdCheckedCanNotUpload.length > 0) {
+            toast.error(`Bạn không có quyền đính kèm files cho Yêu cầu nghỉ việc của mã nhân viên: ${listRequestIdCheckedCanNotUpload.join(", ")}`)
+        } else {
+            this.setState({ files: files })
+        }
     }
 
     handleDownloadFiles = (fileBlob, fileName) => {

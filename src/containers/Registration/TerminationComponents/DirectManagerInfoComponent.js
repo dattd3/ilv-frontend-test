@@ -1,6 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
+import Constants from '../../../commons/Constants'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 
@@ -116,7 +117,10 @@ class DirectManagerInfoComponent extends React.PureComponent {
       this.setState({ [name]: value })
       const isDirectManager = this.isDirectManager(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       this.props.updateApprovalInfos("directManager", value, isDirectManager)
-      this.props.updateErrors({directManager: null})
+      
+      if (isDirectManager) {
+        this.props.updateErrors({directManager: null})
+      }
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("directManager", value, true)
@@ -125,23 +129,23 @@ class DirectManagerInfoComponent extends React.PureComponent {
   }
 
   isDirectManager = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
+    const indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function(item) { return item == currentUserLevel })
+    const indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function(item) { return item == levelApproverFilter },0)
 
-    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
-      return false
-    }
-    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-      return false
-    }
+    // if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel || (account.toLowerCase() === localStorage.getItem("email").split("@")[0])) {
+    //   return false
+    // }
 
-    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
-      return true
-    }
+    // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
+    //     return true
+    // }
 
-    return false
+    // if (Constants.CONSENTER_LIST_LEVEL.includes(levelApproverFilter)) {
+    //   return true
+    // }
+
+    return true
   }
 
   getApproverInfo = value => {
@@ -155,7 +159,7 @@ class DirectManagerInfoComponent extends React.PureComponent {
         }
       }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []

@@ -50,23 +50,22 @@ class ProposedResignationPage extends React.Component {
     }
 
     initialData = async () => {
-        const reasonTypeForManager = 2
-        const reasonTypesEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/list?type=${reasonTypeForManager}`
+        const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
         const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
         const requestUserInfos = axios.get(userInfosEndpoint, config)
 
         await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
-            const userInfos = this.prepareUserInfos(responses[1])
+            const directManagerInfos = this.prepareDirectManagerInfos(responses[1])
 
-            this.setState({reasonTypes: reasonTypes, directManager: userInfos})
+            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos})
         })).catch(errors => {
             return null
         })
     }
 
-    prepareUserInfos = (userResponses) => {
+    prepareDirectManagerInfos = (userResponses) => {
         if (userResponses && userResponses.data) {
             const userInfos = userResponses.data.data
             if (userInfos && userInfos.length > 0) {
@@ -89,9 +88,12 @@ class ProposedResignationPage extends React.Component {
 
     prepareReasonTypes = responses => {
         if (responses && responses.data) {
+            const reasonTypeCodeForManager = "ZH"
             const reasonTypes = responses.data.data
-            const results = (reasonTypes || []).map(item => {
-                return {value: item.code, label: item.name}
+            const results = (reasonTypes || [])
+            .filter(item => item.code01 === reasonTypeCodeForManager)
+            .map(item => {
+                return {value: item.code02, label: item.text}
             })
             return results
         }
