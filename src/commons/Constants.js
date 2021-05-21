@@ -24,6 +24,7 @@ const Constants = {
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
   ONBOARDING: 6,
+  RESIGN_SELF: 7,
 
   //Status request
   STATUS_PENDING: 0,

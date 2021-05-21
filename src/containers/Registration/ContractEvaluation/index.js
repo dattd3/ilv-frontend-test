@@ -219,14 +219,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           
         },
         course: [
-          {
-            name: 'Văn hóa Vin',
-            status: true
-          },
-          {
-            name: 'Quản lý dự án cơ bản',
-            status: false
-          }
         ],
         violation: [
          

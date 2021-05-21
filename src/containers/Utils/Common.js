@@ -4,7 +4,8 @@ import Constants from '../../commons/Constants'
 export default function processingDataReq (dataRawFromApi, tab)  {
     let taskList = [];
         dataRawFromApi.forEach(element => {
-            if(element.requestTypeId == Constants.ONBOARDING) {
+            if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF) {
+                element.id = element.requestTypeId == Constants.RESIGN_SELF ? element.id + '.1' : element.id;
                 taskList.push(element);
             }else{
                 if(element.requestInfo) {

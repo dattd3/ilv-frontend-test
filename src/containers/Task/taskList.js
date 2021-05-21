@@ -501,6 +501,8 @@ class TaskList extends React.Component {
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
+                                        if(!child.user)
+                                            return null;
                                         return (
                                             <tr key={index}>
                                                 {
@@ -511,7 +513,7 @@ class TaskList extends React.Component {
                                                     : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled/></td>
                                                 }
                                                 
-                                                <td className="code sticky-col" onClick={() => { if(child.requestType.id != 6) this.showModalTaskDetail(this,child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0], child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1])}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                <td className="code sticky-col" onClick={() => { if(child.requestType.id != 6) this.showModalTaskDetail(child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0], child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1])}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                 {/* { <td className="code"><a href={child.requestType.id == 6 ? 
                                                         this.getLinkEvalution(child.id) :

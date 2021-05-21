@@ -56,6 +56,13 @@ class StaffTerminationDetailComponent extends React.PureComponent {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps && nextProps.data && _.isEmpty(this.state.infos)) {
+            this.setState({infos: nextProps.data});
+        }
+    }
+
+
     render() {
         const customStyles = {
             option: (styles, state) => ({
