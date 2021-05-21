@@ -96,7 +96,10 @@ function Header(props) {
                                     case 0:
                                         return `/notifications/${item.id}`
                                     case 1:
-                                        return `/registration/${item.userProfileHistoryId}/approval`
+                                        if(item.title.indexOf("thẩm định") > 0)
+                                            return `/tasks?tab=consent`
+                                        else
+                                            return `/tasks?tab=approval`
                                     case 5:
                                         return item.url
                                     default:
