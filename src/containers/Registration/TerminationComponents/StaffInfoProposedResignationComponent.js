@@ -19,7 +19,7 @@ const MyOption = props => {
                 </div>
                 <div className="float-left text-wrap w-75">
                     <div className="title">{props.data.fullname}</div>
-                    <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+                    <div className="comment"><i>({props.data.account}) {props.data.job_title}</i></div>
                 </div>
             </div>
         </div>
@@ -54,22 +54,36 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.account?.toLowerCase())
 
         if (!itemExist || itemExist.length === 0 && employee) {
+            let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
             const employeeTemp = {
-                employeeNo: employee.account, // need update
+                employeeNo: employee.employee_no,
+                ad: employee.account?.toLowerCase(),
                 fullName: employee.fullname,
-                jobTitle: employee.current_position,
+                jobTitle: employee.job_title,
                 department: employee.department,
-                dateStartWork: "9999-12-31", // need update
-                contractType: "VA", // need update
-                contractName: "Hợp đồng LĐXĐ thời hạn", // need update
-                email: employee.account.toLowerCase(), // need check
-                rank: null, // need update
-                unitName: "" // need update
+                dateStartWork: employee.date_start_work,
+                contractType: employee.contract_type,
+                contractName: employee.contract_name,
+                email: employee.email,
+                rank: employee.rank_name,
+                unitName: employee.unit_name,
+                organizationLv1: employee.orglv1_id,
+                organizationLv2: employee.orglv2_id,
+                organizationLv6: employee.orglv6_id,
+                regionId: employee.orglv4_id,
+                departmentId: employee.orglv3_id,
+                unitId: employee.orglv5_id,
+                rankId: employee.rank_id
             }
     
             userInfos = userInfos.concat([{...employeeTemp}])
+            if (userInfos.length > 0) {
+                errorObj = {employees: null}
+            }
+
             this.setState({userInfos: userInfos})
             this.props.updateUserInfos(userInfos)
+            this.props.updateErrors(errorObj)
         }
     }
 
@@ -97,8 +111,14 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
 
             if (indexDeleted.length > 0) {
+                let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
                 const userInfosTemp = userInfos.filter((item, index) => !indexDeleted.includes(index))
+                if (userInfosTemp.length > 0) {
+                    errorObj = {employees: null}
+                }
+
                 this.setState({userInfos: userInfosTemp, employeeIdChecked: []})
+                this.props.updateErrors(errorObj)
                 this.props.updateUserInfos(userInfosTemp)
             }
         }
@@ -115,6 +135,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 }
             }
         
+            // Need update when has Mule api
             axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
@@ -125,12 +146,23 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         value: res.user_account,
                         fullname: res.fullName,
                         avatar: res.avatar,
-                        employeeLevel: res.employee_level,
-                        pnl: res.pnl,
-                        orglv2Id: res.orglv2_id,
                         account: res.user_account,
-                        current_position: res.title,
-                        department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
+                        employee_no: res.user_account, // need update
+                        job_title: res.title,
+                        department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`,
+                        date_start_work: null,
+                        contract_type: null, // need update
+                        contract_name: null, // need update
+                        email: `${res.user_account?.toLowerCase()}vingroup.net`, // need check
+                        unit_name: null, // need update
+                        orglv1_id: null, // need update
+                        orglv2_id: res.orglv2_id, // need check
+                        orglv3_id: res.orglv3_id, // need check
+                        orglv4_id: res.orglv4_id, // need check
+                        orglv5_id: res.orglv5_id, // need check
+                        orglv6_id: null, // need update
+                        rank_id: null, // need update
+                        rank_name: null // need update
                     }
                 })
                 this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })

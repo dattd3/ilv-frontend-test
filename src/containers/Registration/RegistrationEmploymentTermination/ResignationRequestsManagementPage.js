@@ -9,6 +9,7 @@ import Constants from '../../../commons/Constants'
 import ResignationRequestsManagementActionButton from '../TerminationComponents/ResignationRequestsManagementActionButton'
 import ListStaffResignationComponent from '../TerminationComponents/ListStaffResignationComponent'
 import ResultModal from '../ResultModal'
+import CustomPaging from '../../../components/Common/CustomPaging'
 import "react-toastify/dist/ReactToastify.css"
 
 const config = {
@@ -30,6 +31,7 @@ class ResignationRequestsManagementPage extends React.Component {
         super();
         this.state = {
             listUserTerminations: [],
+            totalUserTerminations: 0,
             searchingDataToFilter: {
                 pageIndex: Constants.PAGE_INDEX_DEFAULT,
                 pageSize: Constants.PAGE_SIZE_DEFAULT,
@@ -81,7 +83,7 @@ class ResignationRequestsManagementPage extends React.Component {
         config.params = params
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal`, config)
         const listUserTerminations = this.prepareListUserTerminations(responses)
-        this.setState({listUserTerminations: listUserTerminations, isShowLoadingModal: false})
+        this.setState({listUserTerminations: listUserTerminations.data, totalUserTerminations: listUserTerminations.total, isShowLoadingModal: false})
     }
 
     prepareParamsToFilter = () => {
@@ -89,56 +91,27 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     prepareListUserTerminations = responses => {
-        if (responses && responses.data && responses.data.data && responses.data.data.data) {
+        if (responses && responses.data && responses.data.data) {
+            const total = responses.data.data.totalRecord
             const userTerminations = responses.data.data.data
+
             if (userTerminations && userTerminations.length > 0) {
-                return userTerminations
+                return {
+                    data: userTerminations,
+                    total: total
+                }
             }
 
-            return []
+            return {
+                data: [],
+                total: 0
+            }
         }
 
-        return []
-    }
-
-    verifyInput() {
-        // let { requestInfo, approver, appraiser, errors } = this.state;
-        // requestInfo.forEach((req, indexReq) => {
-        //     if (!req.startDate) {
-        //         req.errors["startDate"] = this.props.t('Required')
-        //     }
-        //     if (!req.endDate) {
-        //         req.errors["endDate"] = this.props.t('Required')
-        //     }
-        //     if (!req.startTime && !req.isAllDay && !req.isAllDayCheckbox) {
-        //         req.errors["startTime"] = this.props.t('Required')
-        //     }
-        //     if (!req.endTime && !req.isAllDay && !req.isAllDayCheckbox) {
-        //         req.errors["endTime"] = this.props.t('Required')
-        //     }
-        //     if (!req.absenceType) {
-        //         requestInfo[indexReq].errors.absenceType = this.props.t('Required')
-        //     }
-        //     if (!req.comment) {
-        //         requestInfo[indexReq].errors.comment = this.props.t('Required')
-        //     }
-        //     requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === 'PN03' && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
-        // })
-        // const employeeLevel = localStorage.getItem("employeeLevel")
-
-        // this.setState({
-        //     requestInfo,
-        //     errors: {
-        //         approver: !approver ? this.props.t('Required') : errors.approver,
-        //         // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
-        //     }
-        // })
-
-        // const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        // if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
-        //     return false
-        // }
-        // return true
+        return {
+            data: [],
+            total: 0
+        }
     }
 
     isNullCustomize = value => {
@@ -147,18 +120,6 @@ class ResignationRequestsManagementPage extends React.Component {
 
     setDisabledSubmitButton(status) {
         this.setState({ disabledSubmitButton: status });
-    }
-
-    error(name, groupId, groupItem) {
-        const { requestInfo } = this.state
-        let indexReq
-        if (groupItem) {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-        } else {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId)
-        }
-        const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -187,9 +148,9 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({[stateName]: data})
     }
 
-    updateOptionToExport = obj => {
-        if (obj && _.size(obj) > 0) {
-            const type = obj.value
+    updateOptionToExport = exportOption => {
+        if (exportOption && _.size(exportOption) > 0) {
+            const type = exportOption.value
             this.exportFilesByType(type)
         }
     }
@@ -198,10 +159,12 @@ class ResignationRequestsManagementPage extends React.Component {
         const { t } = this.props
         const requestObj = this.getRequestObjectByType(type)
         this.setState({isShowLoadingModal: true})
+
         try {
             const isDataValid = this.isDataValid()
 
-            if (!isDataValid && (type == HANDOVER_STATUS || type == RESIGNATION)) {
+            if (!isDataValid && (type == HANDOVER_STATUS || type == RESIGNATION || type == LIQUIDATION_AGREEMENT 
+                || type == CONTRACT_TERMINATION_AGREEMENT || type == DECISION_CONTRACT_TERMINATION)) {
                 this.setState({isShowLoadingModal: false})
                 toast.error("Vui lòng chọn yêu cầu cần xuất dữ liệu!")
                 return
@@ -223,18 +186,24 @@ class ResignationRequestsManagementPage extends React.Component {
         })
         .map(item => item.key)
 
+        const requestHistoryIds = requestIdChecked.filter(item => {
+            return item && item.value
+        })
+        .map(item => item.requestHistoryId)
+
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
             [REPORT_RESIGNATION_REQUESTS]: "GET",
             [HANDOVER_STATUS]: "POST",
             [RESIGNATION]: "POST",
-            [REPORT_INTERVIEW_RESULTS]: "GET"
-            // LIQUIDATION_AGREEMENT
-            // CONTRACT_TERMINATION_AGREEMENT
-            // DECISION_CONTRACT_TERMINATION
+            [REPORT_INTERVIEW_RESULTS]: "GET",
+            [LIQUIDATION_AGREEMENT]: "POST",
+            [CONTRACT_TERMINATION_AGREEMENT]: "POST",
+            [DECISION_CONTRACT_TERMINATION]: "POST"
         }
 
         let requestObj = {}
+        let requestConfig = {}
 
         switch (type) {
             case REPORT_RESIGNATION_REQUESTS:
@@ -242,59 +211,45 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (fullTextSearch) {
                     apiPath = `${process.env.REACT_APP_REQUEST_URL}ReasonType/ExportToExcel?fullTextSearch=${fullTextSearch}`
                 }
-                requestObj = {
-                    method: typeMethodMapping[type] || "GET",
-                    url: apiPath,
-                    headers: {            
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                    responseType: 'blob'
-                }
+                requestObj = this.getRequestConfig(typeMethodMapping[type], apiPath)
                 break
             case HANDOVER_STATUS:
-                requestObj = {
-                    method: typeMethodMapping[type] || "GET",
-                    url: `${process.env.REACT_APP_REQUEST_URL}ReasonType/exporttowordbienbanbangiao`,
-                    headers: {            
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                    responseType: 'blob',
-                    data: {ids: ids}
-                }
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/exporttowordbienbanbangiao`)
+                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
                 break
             case RESIGNATION:
-                requestObj = {
-                    method: typeMethodMapping[type] || "GET",
-                    url: `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`,
-                    headers: {            
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                    responseType: 'blob',
-                    data: {ids: ids}
-                }
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
+                requestObj = {...requestConfig, ...{data: {ids: ids}}}
                 break
-            case REPORT_INTERVIEW_RESULTS: 
-                requestObj = {
-                    method: typeMethodMapping[type] || "GET",
-                    url: `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`,
-                    headers: {            
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                    responseType: 'blob'
-                }
+            case REPORT_INTERVIEW_RESULTS:
+                requestObj = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`)
                 break
             case LIQUIDATION_AGREEMENT:
-                // TODO
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_bienban_thanhly_hopdong`)
+                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
                 break
             case CONTRACT_TERMINATION_AGREEMENT:
-                // TODO
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_thoathuan_chamdut_hopdong`)
+                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
                 break
             case DECISION_CONTRACT_TERMINATION:
-                // TODO
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_quyetdinh_chamdut_hopdong`)
+                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
                 break
         }
 
         return requestObj
+    }
+
+    getRequestConfig = (method, url) => {
+        return {
+            method: method || "GET",
+            url: url,
+            headers: {            
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            },
+            responseType: 'blob'
+        }
     }
 
     processResponses = (type, responses) => {
@@ -311,43 +266,46 @@ class ResignationRequestsManagementPage extends React.Component {
                 }
                 break
             case HANDOVER_STATUS:
-                this.setState({isShowLoadingModal: false})
-                if (responses && responses.data && responses.status === 200) {
-                    this.handleDownloadFiles(responses.data, "Bao-cao-tinh-trang-ban-giao.zip")
-                } else {
-                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
-                }
+                this.handleExportResponses(responses, "Bao-cao-tinh-trang-ban-giao.zip")
                 break
             case RESIGNATION:
-                this.setState({isShowLoadingModal: false})
-                if (responses && responses.data && responses.status === 200) {
-                    this.handleDownloadFiles(responses.data, "Don-xin-nghi-viec.zip")
-                } else {
-                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
-                }
+                this.handleExportResponses(responses, "Don-xin-nghi-viec.zip")
                 break
             case REPORT_INTERVIEW_RESULTS:
-                this.setState({isShowLoadingModal: false})
-                if (responses && responses.data && responses.status === 200) {
-                    this.handleDownloadFiles(responses.data, "Bao-cao-ket-qua-phong-van.xlsx")
-                } else {
-                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
-                }
+                this.handleExportResponses(responses, "Bao-cao-ket-qua-phong-van.xlsx")
                 break
             case LIQUIDATION_AGREEMENT:
-                // TODO
+                this.handleExportResponses(responses, "Bien-ban-thanh-ly.zip")
                 break
             case CONTRACT_TERMINATION_AGREEMENT:
-                // TODO
+                this.handleExportResponses(responses, "Thoa-thuan-cham-dut-hop-dong.zip")
                 break
             case DECISION_CONTRACT_TERMINATION:
-                // TOD
+                this.handleExportResponses(responses, "Quyet-dinh-cham-dut-hop-dong.zip")
                 break
         }
     }
 
+    handleExportResponses = (responses, fileName) => {
+        this.setState({isShowLoadingModal: false})
+        if (responses && responses.data && responses.status === 200) {
+            this.handleDownloadFiles(responses.data, fileName)
+        } else {
+            toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+        }
+    }
+
     updateAttachedFiles = files => {
-        this.setState({ files: files })
+        const requestIdChecked = this.state.requestIdChecked
+        const listRequestIdCheckedCanNotUpload = (requestIdChecked || [])
+        .filter(item => !item.isUploadFile)
+        .map(item => item.employeeNo)
+
+        if (listRequestIdCheckedCanNotUpload && listRequestIdCheckedCanNotUpload.length > 0) {
+            toast.error(`Bạn không có quyền đính kèm files cho Yêu cầu nghỉ việc của mã nhân viên: ${listRequestIdCheckedCanNotUpload.join(", ")}`)
+        } else {
+            this.setState({ files: files })
+        }
     }
 
     handleDownloadFiles = (fileBlob, fileName) => {
@@ -466,10 +424,19 @@ class ResignationRequestsManagementPage extends React.Component {
         return false
     }
 
+    onChangePage = page => {
+        const searchingDataToFilter = this.state.searchingDataToFilter
+        searchingDataToFilter.pageIndex = page
+        this.setState({searchingDataToFilter: searchingDataToFilter}, () => {
+            this.fetchListUserTerminations()
+        })
+    }
+
     render() {
         const { t } = this.props
         const {
             listUserTerminations,
+            totalUserTerminations,
             isEdit,
             errors,
             titleModal,
@@ -477,7 +444,8 @@ class ResignationRequestsManagementPage extends React.Component {
             disabledSubmitButton,
             isShowStatusModal,
             isSuccess,
-            isShowLoadingModal
+            isShowLoadingModal,
+            searchingDataToFilter
         } = this.state
 
         return (
@@ -492,6 +460,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 <ResignationRequestsManagementActionButton updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} updateOptionToExport={this.updateOptionToExport} />
                 <ListStaffResignationComponent listUserTerminations={listUserTerminations} updateTerminationRequestList={this.updateTerminationRequestList} />
             </div>
+            <CustomPaging pageSize={searchingDataToFilter.pageSize} onChangePage={this.onChangePage} totalRecords={totalUserTerminations} />
             </>
         )
     }

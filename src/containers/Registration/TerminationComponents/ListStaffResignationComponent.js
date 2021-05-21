@@ -33,7 +33,7 @@ const Option = props => {
                 }}
             >
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'space-between', alignItems: 'center'}}>
-                <a title={props.label} href={props.data.link} style={{overflow: 'hidden', textOverflow: 'ellipsis', color: 'black', font: '13px Arial'}} target="_blank">{props.label}</a> <Image src={IconReset} alt="Xuất báo cáo" className="ic-action" style={{marginLeft: '20px', cursor: 'pointer'}} />
+                <a title={props.label} href={props.data.link} style={{overflow: 'hidden', textOverflow: 'ellipsis', color: 'black', font: '13px Arial'}} target="_blank">{props.label}</a>{props.data.editable ? <Image src={IconReset} alt="Xuất báo cáo" className="ic-action" style={{marginLeft: '20px', cursor: 'pointer'}} /> : null}
             </div>
             </components.Option>
         </div>
@@ -173,9 +173,9 @@ class ListStaffResignationComponent extends React.PureComponent {
         let options = []
         if (attachments && attachments.length > 0) {
             options = (attachments || [])
-            .filter(item => item && item.fileStatus == ATTACHED_FILE_CODE)
+            .filter(item => item && item.fileStatus == ATTACHED_FILE_CODE && !item.isDeleted)
             .map(item => {
-                return {value: item.id, label: item.fileName, link: item.fileUrl, id: item.id}
+                return {value: item.id, label: item.fileName, link: item.fileUrl, id: item.id, editable: item.isEdit}
             })
         }
 
@@ -209,9 +209,9 @@ class ListStaffResignationComponent extends React.PureComponent {
         this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
-    handleCheckboxChange = (index, code, e) => {
+    handleCheckboxChange = (index, code, requestHistoryId, isUploadFile, employeeNo, e) => {
         const requestIdChecked = [...this.state.requestIdChecked]
-        requestIdChecked[index] = {key: code, value: e.target.checked}
+        requestIdChecked[index] = {key: code, value: e.target.checked, requestHistoryId: requestHistoryId, isUploadFile: isUploadFile, employeeNo: employeeNo}
 
         this.setState({requestIdChecked: requestIdChecked})
         this.props.updateTerminationRequestList("requestIdChecked", requestIdChecked)
@@ -251,7 +251,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>Xác nhận biên bản vi phạm chưa xử lý</th>
                                             <th>Tình trạng phê duyệt</th>
                                             <th>Tình trạng sổ BHXH</th>
-                                            <th>Lương nghỉ việc</th>
+                                            <th>Tình trạng lương</th>
                                             <th>Phiếu phỏng vấn</th>
                                         </tr>
                                     </thead>
@@ -267,7 +267,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
                                                                     <input type="checkbox" checked={requestIdChecked[index] && requestIdChecked[index].value ? requestIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.id, e)} />
+                                                                    onChange={e => this.handleCheckboxChange(index, item.id, item.requestHistoryId, item.isUploadFile, userInfos?.employeeNo, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
                                                                 </div>
                                                             </td>
@@ -280,9 +280,9 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="reason-termination-col"><div className="data reason-termination">{reason?.label || ""}</div></td>
                                                             <td className="detailed-reason-col"><div className="data detailed-reason">{item?.reasonDetailed || ""}</div></td>
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
-                                                            <td className="created-by-col"><div className="data created-by">{item?.createdBy || ""}</div></td>
+                                                            <td className="created-by-col"><div className="data created-by">{item?.createdBy?.fullName || ""}</div></td>
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
-                                                            <td className="handover-status-col"><div className="data handover-status">{item?.statusDeliverString}</div></td>
+                                                            <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.requestHistoryId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
                                                             <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
                                                             <td className="handover-insurance-col"><div className="data handover-insurance">{this.renderStatus(index, item.isHandoverSocial, item.statusSocial, "statusSocial")}</div></td>
