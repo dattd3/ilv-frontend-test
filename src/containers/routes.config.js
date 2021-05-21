@@ -456,6 +456,46 @@ export default [
             path: map.QuestionAndAnswerDetails
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
+        },
+        {
+          key: "registration-employment-termination",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationEmploymentTermination
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/RegistrationTermination"))
+        },
+        {
+          key: "proposed-resignation",
+          routeProps: {
+            exact: true,
+            path: map.ProposedResignation
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ProposedResignation"))
+        },
+        {
+          key: "resignation-requests-management",
+          routeProps: {
+            exact: true,
+            path: map.ResignationRequestsManagement
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ResignationRequestsManagement"))
+        },
+        {
+          key: "contract-termination-interview",
+          routeProps: {
+            exact: true,
+            path: map.ContractTerminationInterview
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ContractTerminationInterview"))
+        },
+        {
+          key: "contract-termination-interview-export",
+          routeProps: {
+            exact: true,
+            path: map.ContractTerminationInterviewExport
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ContractTerminationInterview"))
         }
       ],
     },
