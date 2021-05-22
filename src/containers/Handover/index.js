@@ -11,7 +11,7 @@ import ResizableTextarea from '../Registration/TextareaComponent';
 import ApproverComponent from './SearchUserComponent'
 import Select from 'react-select'
 import Constants from '../../commons/Constants'
-
+import { getRequestConfigs } from '../../commons/commonFunctions'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import Rating from 'react-rating';
@@ -154,16 +154,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const id = this.props.match.params.id;
     this.setState({
         id: id
-      })
-    
-    const config = {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`
-      }
-    }
-  
+    })
+
     let url = `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/getbangiaoinfo?id=${id}`;
-    axios.get(url, config)
+    axios.get(url, getRequestConfigs())
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
