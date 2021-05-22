@@ -5,6 +5,7 @@ import { Progress } from "reactstrap"
 import { ToastContainer, toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
+import { getRequestConfigs } from '../../../commons/commonFunctions'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
 import StaffInfoProposedResignationComponent from '../TerminationComponents/StaffInfoProposedResignationComponent'
@@ -12,12 +13,6 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import "react-toastify/dist/ReactToastify.css"
-
-const config = {
-    headers: {            
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    }
-}
 
 class ProposedResignationPage extends React.Component {
     constructor(props) {
@@ -52,8 +47,8 @@ class ProposedResignationPage extends React.Component {
     initialData = async () => {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
-        const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
-        const requestUserInfos = axios.get(userInfosEndpoint, config)
+        const requestReasonTypes = axios.get(reasonTypesEndpoint, getRequestConfigs())
+        const requestUserInfos = axios.get(userInfosEndpoint, getRequestConfigs())
 
         await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
@@ -187,7 +182,7 @@ class ProposedResignationPage extends React.Component {
         }
 
         try {
-            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, getRequestConfigs())
 
             if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
@@ -282,7 +277,7 @@ class ProposedResignationPage extends React.Component {
 
     getSubordinates = async () => {
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, config)
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigs())
 
             if (responses && responses.data) {
                 const employees = responses.data.employees

@@ -6,16 +6,11 @@ import { ToastContainer, toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import LoadingModal from '../../../components/Common/LoadingModal'
 import Constants from '../../../commons/Constants'
+import { getRequestConfigs } from '../../../commons/commonFunctions'
 import ResignationRequestsManagementActionButton from '../TerminationComponents/ResignationRequestsManagementActionButton'
 import ListStaffResignationComponent from '../TerminationComponents/ListStaffResignationComponent'
 import ResultModal from '../ResultModal'
 import "react-toastify/dist/ReactToastify.css"
-
-const config = {
-    headers: {            
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    }
-}
 
 const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
@@ -78,6 +73,7 @@ class ResignationRequestsManagementPage extends React.Component {
     fetchListUserTerminations = async () => {
         this.setState({isShowLoadingModal: true})
         const params = this.prepareParamsToFilter()
+        const config = getRequestConfigs()
         config.params = params
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal`, config)
         const listUserTerminations = this.prepareListUserTerminations(responses)
@@ -423,7 +419,7 @@ class ResignationRequestsManagementPage extends React.Component {
                         })
                     }
 
-                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, config)
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, getRequestConfigs())
                     this.setState({isShowLoadingModal: false, requestIdChecked: []})
 
                     if (responses && responses.data) {

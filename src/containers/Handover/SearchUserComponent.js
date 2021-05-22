@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../commons/Constants"
+import { getRequestConfigs } from '../../commons/commonFunctions'
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -51,15 +52,11 @@ class ApproverComponent extends React.Component {
       current_position: "",
       department: ""
     }
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    }
+
     const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
         .then(res => {
           if (res && res.data && res.data.data && res.data.data.length > 0) {
             let manager = res.data.data[0]
@@ -142,15 +139,7 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
-      }
-
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, getRequestConfigs())
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
