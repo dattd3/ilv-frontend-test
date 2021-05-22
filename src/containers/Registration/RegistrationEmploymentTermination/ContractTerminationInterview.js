@@ -51,7 +51,7 @@ class ContractTerminationInterview extends React.Component {
 
     initialData = async () => {
         const id = this.props.match.params.id
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?AbsenseId=${id}`, config)
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?requestHistroyId=${id}`, config)
         const serveyInfos = this.prepareServeyInfos(responses)
         const userInfos = this.prepareUserInfos(responses)
         const serveyDetail = this.prepareServeyDetail(responses)
