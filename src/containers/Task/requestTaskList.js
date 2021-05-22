@@ -244,7 +244,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
-        return (requestTypeId != 4 && requestTypeId != 5) && ((status == 5 && appraiser.account == null) || status == 8) && (actionType == "INS") ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId) => {
