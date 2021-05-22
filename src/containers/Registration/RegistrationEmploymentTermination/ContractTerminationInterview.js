@@ -6,17 +6,12 @@ import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
+import {getRequestConfigs} from '../../../commons/commonFunctions'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import StaffInfoForContractTerminationInterviewComponent from '../TerminationComponents/StaffInfoForContractTerminationInterviewComponent'
 import InterviewContentFormComponent from '../TerminationComponents/InterviewContentFormComponent'
 import ResultModal from '../ResultModal'
 import VinpearlLogo from '../../../assets/img/logo-vp-vt.png'
-
-const config = {
-    headers: {            
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    }
-}
 
 const CURRENT_JOB = 1
 const MANAGER = 2
@@ -51,7 +46,7 @@ class ContractTerminationInterview extends React.Component {
 
     initialData = async () => {
         const id = this.props.match.params.id
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?requestHistroyId=${id}`, config)
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?requestHistroyId=${id}`, getRequestConfigs())
         const serveyInfos = this.prepareServeyInfos(responses)
         const userInfos = this.prepareUserInfos(responses)
         const serveyDetail = this.prepareServeyDetail(responses)
@@ -260,7 +255,7 @@ class ContractTerminationInterview extends React.Component {
         bodyFormData.append('personalDescription', comments[PERSONAL_REASONS] || "")
 
         try {
-            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`, bodyFormData, config)
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`, bodyFormData, getRequestConfigs())
 
             if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result

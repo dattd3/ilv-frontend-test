@@ -1,8 +1,9 @@
 import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
+import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
-import { withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -94,13 +95,8 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
 
     if (value !== "") {
       this.setState({isSearching: true})
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, getRequestConfigs())
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []

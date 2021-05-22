@@ -2,8 +2,9 @@ import React from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
+import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
-import { withTranslation  } from "react-i18next";
+import { withTranslation  } from "react-i18next"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props
@@ -52,15 +53,10 @@ class DirectManagerInfoComponent extends React.PureComponent {
       current_position: "",
       department: ""
     }
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    }
     const { directManager } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
       .then(res => {
         if (res && res.data && res.data.data && res.data.data.length > 0) {
           const manager = res.data.data[0]
@@ -153,13 +149,8 @@ class DirectManagerInfoComponent extends React.PureComponent {
 
     if (value !== "") {
       this.setState({isSearching: true})
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
+      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, getRequestConfigs())
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []

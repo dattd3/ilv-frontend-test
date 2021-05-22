@@ -168,7 +168,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? -45 : -7; 
+    const dateToCheck = data.contractType == 'VA' ? -45 : -7;
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -352,7 +352,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
-    
+
     if(type == 'assess' || type == 'approval'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
@@ -392,7 +392,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         managementComment: data.evalution[index].ManagementComment
       }
     });
-   
+
     remoteData.lstTaskAssessments = data.evalution.filter(item => !(item.id == 0 && item.isDeleted == true)).map(item => {
       return {
         id: item.id,
@@ -413,7 +413,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : 0,
       contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value : '',
       contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label :  '',
-      
+
 
       startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       expireDate: data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
@@ -425,7 +425,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       ...(remoteData.requestHistorys || {}),
       appraiserInfo: data.nguoidanhgia, //data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net'
       appraiserId: data.nguoidanhgia?.account ? data.nguoidanhgia.account.toLowerCase()  + '@vingroup.net' : '',
-      supervisorInfo: data.qltt, 
+      supervisorInfo: data.qltt,
       supervisorId: data.qltt?.account ? data.qltt.account.toLowerCase()  + '@vingroup.net' : '',
       approverInfo: data.nguoipheduyet,
       approverId: data.nguoipheduyet?.account ? data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net' : ''
@@ -457,7 +457,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     candidateInfos.remoteData = infos;
     candidateInfos.canAddJob = infos.isEdit;
     candidateInfos.comment = null;
-    
+
     //save staff contract
     if(infos.staffContracts){
       candidateInfos.contractType = infos.staffContracts.contractType
@@ -865,7 +865,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     candidateInfos[name] = result;
     candidateInfos[subName + 'Total'] = count == 0 ? 0 : Number(total / count).toFixed(2);
     this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
-  }  
+  }
 
   handleRatingChangeForItem = (value, name, subId, subName) => {
     const candidateInfos = {...this.state.data};
@@ -955,7 +955,7 @@ renderEvalution = (name, data, isDisable) => {
       </td>
       <td style={{width: '8%'}}>
         {
-           !isDisable && item.canEdit ? 
+           !isDisable && item.canEdit ?
           <div className="action-group">
             <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isEditing', item.id)} />
             <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isDeleted', item.id)} />
@@ -993,14 +993,14 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   renderEvalutionForEmployee = (name, data, isDisable, isRatingDisable) => {
-    return data.length > 0 ? 
+    return data.length > 0 ?
       data.map( (item, index) => {
         if(item.isDeleted)
           return null;
         return <tr key = {index}>
         <td style={{width: '20%'}}>
           {
-            item.isEditing ? 
+            item.isEditing ?
             <ResizableTextarea onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
             item.TaskName
           }
@@ -1012,17 +1012,17 @@ renderEvalution = (name, data, isDisable) => {
         </td>
         <td style={{width: '8%'}}>
           {
-             !isDisable && item.canEdit ? 
+             !isDisable && item.canEdit ?
             <div className="action-group">
               <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatusForEmployee(name, 'isEditing', item.editId)} />
               <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatusForEmployee(name, 'isDeleted', item.editId)} />
             </div> : null
           }
-          
+
         </td>
       </tr>
       })
-      
+
       :
       null
     }
@@ -1457,7 +1457,7 @@ renderEvalution = (name, data, isDisable) => {
               </div>
             </div>
           </div>
-          }) : 
+          }) :
           <div className="box shadow cbnv document">
           <div className="row">
             <div className="col-12">
@@ -1501,7 +1501,7 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
-          this.state.isNguoidanhgia ? 
+          this.state.isNguoidanhgia ?
              <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
@@ -1515,8 +1515,8 @@ renderEvalution = (name, data, isDisable) => {
               </div>
               <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
-            </div> 
-            : 
+            </div>
+            :
           <>
             {/* quan li */}
             <div className="box shadow cbnv more-description">
@@ -1649,7 +1649,7 @@ renderEvalution = (name, data, isDisable) => {
             
           </>
         }
-        {/* { 
+        {/* {
         data.processStatus == 1 ?
         <>
         <h5>THÔNG TIN PHÊ DUYỆT</h5>
