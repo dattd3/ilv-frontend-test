@@ -173,7 +173,7 @@ class ProposedResignationPage extends React.Component {
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
+        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
         bodyFormData.append('formResignation', 2)
         bodyFormData.append('supervisorId', localStorage.getItem('email'))
         bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
