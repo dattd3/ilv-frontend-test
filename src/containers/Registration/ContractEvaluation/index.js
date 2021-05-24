@@ -10,8 +10,8 @@ import IconSave from '../../../assets/img/ic-save.svg';
 import ResizableTextarea from '../TextareaComponent';
 import ApproverComponent from './SearchPeopleComponent'
 import Select from 'react-select'
-import Constants from '../.../../../../commons/Constants'
-
+import Constants from '../../../commons/Constants'
+import { getRequestConfigs } from '../../../commons/commonFunctions'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import Rating from 'react-rating';
@@ -300,18 +300,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         id: id
       })
     }
-    const config = {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`
-      }
-    }
+
     //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
-    //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
+    //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, getRequestConfigs())
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     if(type == 'assess' || type == 'approval'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
-    axios.get(url, config)
+    axios.get(url, getRequestConfigs())
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;

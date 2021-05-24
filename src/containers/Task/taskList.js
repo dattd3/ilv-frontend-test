@@ -168,7 +168,7 @@ class TaskList extends React.Component {
             }
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
-        if(this.props.page === "consent" && taskData && statusOriginal == 5) {
+        if(this.props.page === "consent" && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
