@@ -52,7 +52,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
       } else {
         let filled = data[key] && data[key].status ? null : '(Bắt buộc)';
-        if(filled && value && value.user && value.user.account && (value.user.account.toLowerCase()  + '@vingroup.net') == currentEmployeeNo.toLowerCase() ) {
+        if(value && value.user && value.user.account && (value.user.account.toLowerCase()  + '@vingroup.net') == currentEmployeeNo.toLowerCase() ) {
           canEditable[key] = true;
           canEditable['canUpdate'] = true;
           canEditable['employee'] = false;
@@ -313,11 +313,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       for (const [key, value] of Object.entries(data)) {
         errors[key] = (key == 'employee') || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
       }
-    } else {
-      this.state.canEditable.currentActive.map( (key) => {
-        errors[key+'_status'] = data[key] && data[key].status ? null : '(Bắt buộc)';
-      })
-    }
+    } 
+    // else {
+    //   this.state.canEditable.currentActive.map( (key) => {
+    //     errors[key+'_status'] = data[key] && data[key].status ? null : '(Bắt buộc)';
+    //   })
+    // }
     this.setState({errors: errors});
     return errors;
   }
@@ -348,7 +349,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const candidateInfos = {...this.state.data}
     const errors = {...this.state.errors};
     candidateInfos[name][subName] = e != null ? e.value: null;
-    candidateInfos[name]['actionDate'] = e && e.value == 1 ? moment(new Date()).format('DD/MM/YYYY') : '';
+    candidateInfos[name]['actionDate'] = e && e.value == 1 ? new Date() : '';
     this.setState({errors: errors, data : candidateInfos})
   }
 
