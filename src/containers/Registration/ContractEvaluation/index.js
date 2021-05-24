@@ -166,22 +166,23 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     let shouldDisable = false;
     switch(data.processStatus) {
       case 9: 
-        if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()){
-          shouldDisable = data.canAddJob ? true : false;
+        if((this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase())){
+          shouldDisable = true;
         }
         break;
       case 10: 
-        if((!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'assess') || (!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 11: 
-        if((!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+
+        if((this.state.type != 'assess') || (!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 13: 
-        if((!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
@@ -192,7 +193,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       default:
         shouldDisable = true;
     }
-    if(this.state.type == 'edit'){
+    if(this.state.type == 'edit' && data.processStatus == 9){
       shouldDisable = data.canAddJob ? false : true;
     }
     this.setState({
