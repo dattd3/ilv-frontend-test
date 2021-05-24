@@ -76,87 +76,6 @@ function Header(props) {
             });
     }
 
-    const getNotificationUnreadLimitationFn = (params) => {
-        var axios = require('axios');
-        var data = `companyCode=${params[0]}&level3=${params[1]}&level4=${params[2]}&level5=${params[3]}`;
-        var config = {
-            method: 'get',
-            url: `${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation?${data}`,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                //'Content-Type': 'application/json'
-            }//,
-            //data: data
-        };
-        axios(config)
-            .then(function (response) {
-                debugger
-                if (response && response.data && response.data.result) {
-                    const res = response.data.result;
-                    const data = response.data.data;
-                    if (res.code != 1) {
-                        if (data.notifications && data.notifications.length > 0) {
-                            if (data.total > 99) {
-                                if(data.total !== totalNotificationUnRead){
-                                    setTotalNotificationUnRead("+99");
-                                }
-                                
-                                //totalNotificationUnRead = "+99";
-                            } else if (data.total == 0) {
-                                if(data.total !== totalNotificationUnRead){
-                                    setTotalNotificationUnRead("");
-                                }
-                                
-                                //totalNotificationUnRead = "";
-                            } else {
-                                if(data.total !== totalNotificationUnRead){
-                                    setTotalNotificationUnRead(data.total);
-                                }
-                                //setTotalNotificationUnRead(data.total);
-                                //totalNotificationUnRead = data.total;
-                            }
-                            if (data.notifications[0]) {
-                                lastNotificationIdSeen = data.notifications[0].id;
-                            }
-                            dataNotificationsUnRead = <>
-                                {
-                                    data.notifications.map((item, i) => {
-                                        const timePost = getTimePost(item.createdDate);
-                                        let notificationLink = (type) => {
-                                            switch (type) {
-                                                case 0:
-                                                    return `/notifications/${item.id}`
-                                                case 1:
-                                                    if (item.title.indexOf("thẩm định") > 0)
-                                                        return `/tasks?tab=consent`
-                                                    else
-                                                        return `/tasks?tab=approval`
-                                                case 5:
-                                                    return item.url
-                                                default:
-                                                    return `${item.url}`
-                                            }
-                                        }
-                                        return <div key={i} className="item">
-                                            <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
-                                            <p className="description">{item.description != null ? item.description : ""}</p>
-                                            <div className="time-file">
-                                                <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                                {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
-                                            </div>
-                                        </div>
-                                    })
-                                }
-                            </>;
-                        }
-                    }
-                }
-            })
-            .catch(function (error) {
-
-            });
-    };
-
     const OnClickBellFn = (isOpen) => {
         if (isOpen && lastNotificationIdSeen > 0 && totalNotificationUnRead) {
             var axios = require('axios');
@@ -172,17 +91,13 @@ function Header(props) {
             };
             axios(config)
                 .then(function (response) {
-                    //alert("success");
-                    //totalNotificationUnRead = "";
                     setTotalNotificationUnRead("");
                 })
                 .catch(function (error) {
-                    alert("fail");
                     setTotalNotificationUnRead("");
                 });
         }
     }
-    //getNotificationUnreadLimitationFn([companyCode, lv3, lv4, lv5]);
 
     const result = usePreload([companyCode, lv3, lv4, lv5]);
     if (result && result.data && result.result) {
@@ -190,27 +105,15 @@ function Header(props) {
         const data = result.data;
         if (res.code != 1) {
             if (data.notifications && data.notifications.length > 0) {
-                if (data.total > 99) {
-                    if(data.total !== totalNotificationCount){
-                        setTotalNotificationCount(data.total)
-                        setTotalNotificationUnRead("+99");
-                    }
-                    
-                    //totalNotificationUnRead = "+99";
-                } else if (data.total == 0) {
-                    if(data.total !== totalNotificationCount){
-                        setTotalNotificationCount(data.total)
-                        setTotalNotificationUnRead("");
-                    }
-                    //setTotalNotificationUnRead("");
-                    //totalNotificationUnRead = "";
-                } else {
-                    if(data.total !== totalNotificationCount){
-                        setTotalNotificationCount(data.total)
-                        setTotalNotificationUnRead(data.total);
-                    }
-                    //setTotalNotificationUnRead(data.total);
-                    //totalNotificationUnRead = data.total;
+                if (data.total > 99 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("+99");
+                } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("");
+                } else if (data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead(data.total);
                 }
                 if (data.notifications[0]) {
                     lastNotificationIdSeen = data.notifications[0].id;
@@ -282,10 +185,6 @@ function Header(props) {
         localizeStore.setLocale(activeLang || "vi-VN")
     }, [activeLang, localizeStore]);
 
-    useEffect(() => {
-        debugger
-        //totalNotificationUnRead = totalNotificationUnReadInState;
-    }, [totalNotificationUnRead]);
     return (
         isApp ? null :
             <div>
