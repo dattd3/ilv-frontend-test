@@ -29,7 +29,7 @@ function Header(props) {
     const [isShow, SetIsShow] = useState(false);
     const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"))
     const guard = useGuardStore();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     let totalNotificationUnRead = 0;
     const companyCode = localStorage.getItem('companyCode');
@@ -73,6 +73,10 @@ function Header(props) {
             });
     }
 
+    const clickBell = (isOpen) => {
+        
+    }
+
     let dataNotificationsUnRead = "";
     const result = usePreload([companyCode, lv3, lv4, lv5]);
     if (result && result.data && result.result) {
@@ -101,7 +105,7 @@ function Header(props) {
                                     case 11:
                                         return `/notifications/${item.id}`
                                     case 1:
-                                        if(item.title.indexOf("thẩm định") > 0)
+                                        if (item.title.indexOf("thẩm định") > 0)
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
@@ -151,14 +155,14 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
-    
+
     const onChangeLocale = lang => {
         setActiveLang(lang)
     }
 
-    useEffect(() => { 
-        localizeStore.setLocale(activeLang || "vi-VN") 
-      }, [activeLang, localizeStore]);
+    useEffect(() => {
+        localizeStore.setLocale(activeLang || "vi-VN")
+    }, [activeLang, localizeStore]);
 
     return (
         isApp ? null :
@@ -175,54 +179,54 @@ function Header(props) {
                     </Form>
 
 
-                    <Dropdown id="notifications-block">
+                    <Dropdown id="notifications-block" onToggle={(isOpen) => clickBell(isOpen)}>
                         <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
-                            <Dropdown.Toggle>
-                                <span className="notifications-block">
-                                    <i className="far fa-bell ic-customize"></i>
-                                    {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
-                                </span>
-                            </Dropdown.Toggle>
-                        </Animated>
-                        {dataNotificationsUnRead != "" ?
-                            <Dropdown.Menu className="list-notification-popup">
-                                <div className="title-block text-center">{t("AnnouncementInternal")}</div>
-                                <div className="all-items">
-                                    {dataNotificationsUnRead}
-                                </div>
-                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
-                            </Dropdown.Menu>
-                            : null
-                        }
-                    </Dropdown>
-                    <Dropdown>
-                        <div className='mr-2 small text-right username'>
-                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                <span className="text-gray-600">{fullName}</span>
-                                {
-                                    (avatar != null && avatar !== '' && avatar !== 'null') ?
-                                        <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
-                                        :
-                                        <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
-                                }
-                            </Dropdown.Toggle>
-                        </div>
-                        <Dropdown.Menu className='animated--grow-in'>
-                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
-                                {t("LangViet")}
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
-                                {t("LangEng")}
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                {t("Logout")}
-                            </Dropdown.Item>
+                        <Dropdown.Toggle>
+                            <span className="notifications-block">
+                                <i className="far fa-bell ic-customize"></i>
+                                {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                            </span>
+                        </Dropdown.Toggle>
+                    </Animated>
+                    {dataNotificationsUnRead != "" ?
+                        <Dropdown.Menu className="list-notification-popup">
+                            <div className="title-block text-center">{t("AnnouncementInternal")}</div>
+                            <div className="all-items">
+                                {dataNotificationsUnRead}
+                            </div>
+                            {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
                         </Dropdown.Menu>
+                        : null
+                    }
                     </Dropdown>
+                <Dropdown>
+                    <div className='mr-2 small text-right username'>
+                        <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
+                            <span className="text-gray-600">{fullName}</span>
+                            {
+                                (avatar != null && avatar !== '' && avatar !== 'null') ?
+                                    <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                    :
+                                    <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
+                            }
+                        </Dropdown.Toggle>
+                    </div>
+                    <Dropdown.Menu className='animated--grow-in'>
+                        <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
+                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
+                            {t("LangViet")}
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
+                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
+                            {t("LangEng")}
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            {t("Logout")}
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 </Navbar>
-            </div>
+            </div >
     );
 }
 
