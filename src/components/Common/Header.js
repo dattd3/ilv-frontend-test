@@ -27,11 +27,14 @@ function Header(props) {
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
-    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"))
+    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"));
+    const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
+    const [totalNotificationCount, setTotalNotificationCount] = useState(0);
     const guard = useGuardStore();
     const { t } = useTranslation();
 
-    let totalNotificationUnRead = 0;
+    let lastNotificationIdSeen = 0;
+    let dataNotificationsUnRead = "";
     const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
@@ -73,24 +76,49 @@ function Header(props) {
             });
     }
 
-    const clickBell = (isOpen) => {
-        
+    const OnClickBellFn = (isOpen) => {
+        if (isOpen && lastNotificationIdSeen > 0 && totalNotificationUnRead) {
+            var axios = require('axios');
+            var data = '';
+            var config = {
+                method: 'post',
+                url: `${process.env.REACT_APP_REQUEST_URL}notifications/SetLastNotificationIdSeen/` + lastNotificationIdSeen,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+            axios(config)
+                .then(function (response) {
+                    setTotalNotificationUnRead("");
+                })
+                .catch(function (error) {
+                    setTotalNotificationUnRead("");
+                });
+        }
     }
 
-    let dataNotificationsUnRead = "";
     const result = usePreload([companyCode, lv3, lv4, lv5]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
         if (res.code != 1) {
             if (data.notifications && data.notifications.length > 0) {
-                if (data.total > 99) {
-                    totalNotificationUnRead = "+99";
-                } else if (data.total == 0) {
-                    totalNotificationUnRead = "";
-                } else {
-                    totalNotificationUnRead = data.total;
+                if (data.total > 99 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("+99");
+                } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("");
+                } else if (data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead(data.total);
                 }
+                if (data.notifications[0]) {
+                    lastNotificationIdSeen = data.notifications[0].id;
+                }
+
                 dataNotificationsUnRead = <>
                     {
                         data.notifications.map((item, i) => {
@@ -177,54 +205,52 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
-
-
-                    <Dropdown id="notifications-block" onToggle={(isOpen) => clickBell(isOpen)}>
+                    <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
                         <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
-                        <Dropdown.Toggle>
-                            <span className="notifications-block">
-                                <i className="far fa-bell ic-customize"></i>
-                                {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
-                            </span>
-                        </Dropdown.Toggle>
-                    </Animated>
-                    {dataNotificationsUnRead != "" ?
-                        <Dropdown.Menu className="list-notification-popup">
-                            <div className="title-block text-center">{t("AnnouncementInternal")}</div>
-                            <div className="all-items">
-                                {dataNotificationsUnRead}
-                            </div>
-                            {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
-                        </Dropdown.Menu>
-                        : null
-                    }
+                            <Dropdown.Toggle>
+                                <span className="notifications-block">
+                                    <i className="far fa-bell ic-customize"></i>
+                                    {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                                </span>
+                            </Dropdown.Toggle>
+                        </Animated>
+                        {dataNotificationsUnRead != "" ?
+                            <Dropdown.Menu className="list-notification-popup">
+                                <div className="title-block text-center">{t("AnnouncementInternal")}</div>
+                                <div className="all-items">
+                                    {dataNotificationsUnRead}
+                                </div>
+                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
+                            </Dropdown.Menu>
+                            : null
+                        }
                     </Dropdown>
-                <Dropdown>
-                    <div className='mr-2 small text-right username'>
-                        <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                            <span className="text-gray-600">{fullName}</span>
-                            {
-                                (avatar != null && avatar !== '' && avatar !== 'null') ?
-                                    <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
-                                    :
-                                    <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
-                            }
-                        </Dropdown.Toggle>
-                    </div>
-                    <Dropdown.Menu className='animated--grow-in'>
-                        <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
-                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
-                            {t("LangViet")}
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
-                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
-                            {t("LangEng")}
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                            {t("Logout")}
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                    <Dropdown>
+                        <div className='mr-2 small text-right username'>
+                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
+                                <span className="text-gray-600">{fullName}</span>
+                                {
+                                    (avatar != null && avatar !== '' && avatar !== 'null') ?
+                                        <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                        :
+                                        <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
+                                }
+                            </Dropdown.Toggle>
+                        </div>
+                        <Dropdown.Menu className='animated--grow-in'>
+                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
+                                {t("LangViet")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
+                                {t("LangEng")}
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                {t("Logout")}
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </Navbar>
             </div >
     );
