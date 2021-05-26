@@ -171,18 +171,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 10: 
-        if((this.state.type != 'assess') || (!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'assess') || (!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION) != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 11: 
 
-        if((this.state.type != 'assess') || (!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'assess') || (!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION) != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 13: 
-        if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION) != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
