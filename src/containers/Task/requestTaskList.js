@@ -288,7 +288,7 @@ class RequestTaskList extends React.Component {
         const currentDay = today.getDate()
         const year = today.getFullYear()
         const month = today.getMonth()
-        
+
         if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
             if (month === 0) {
                 minDate = new Date(year - 1, 11, 26)
@@ -348,7 +348,7 @@ class RequestTaskList extends React.Component {
             return false
         } else {
             if ([Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(status)) {
-                if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL'))  
+                if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL'))
                     && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
                     return true
                 }
@@ -643,7 +643,12 @@ class RequestTaskList extends React.Component {
                                         tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.actionType)
+                                            let actionType = child?.actionType || null
+                                            if (requestTypeId == Constants.RESIGN_SELF) {
+                                                const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
+                                                actionType = requestItem ? requestItem.actionType : null
+                                            }
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, actionType)
                                             let totalTime = null
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
@@ -663,7 +668,7 @@ class RequestTaskList extends React.Component {
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
                                                         { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
-                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY 
+                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                             && <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span> }
                                                         { isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span> }
                                                     </td>
