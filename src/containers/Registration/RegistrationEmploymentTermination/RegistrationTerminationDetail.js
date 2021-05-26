@@ -153,11 +153,11 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                     </div>
                     {
-                        terminationInfo.processStatusId == Constants.STATUS_NOT_APPROVED ||terminationInfo.processStatusId == Constants.STATUS_NO_CONSENTED || terminationInfo.processStatusId == Constants.STATUS_EVICTION ?
+                        resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
                         <div className="col-4">
                             <p className="title">Lý do không duyệt</p>
                             <div>
-                                <input type="text" className="form-control" value={terminationInfo.appraiserComment || ""} readOnly />
+                                <input type="text" className="form-control" value={resignInfo.appraiserComment || ""} readOnly />
                             </div>
                         </div>
                         : null
@@ -189,11 +189,11 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                     </div>
                     {
-                        terminationInfo.processStatusId == Constants.STATUS_NOT_APPROVED ||terminationInfo.processStatusId == Constants.STATUS_NO_CONSENTED || terminationInfo.processStatusId == Constants.STATUS_EVICTION ?
+                        resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
                         <div className="col-4">
                             <p className="title">Lý do không duyệt</p>
                             <div>
-                                <input type="text" className="form-control" value={terminationInfo.approverComment || ""} readOnly />
+                                <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
                             </div>
                         </div>
                         : null
