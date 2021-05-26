@@ -197,7 +197,8 @@ class InOutUpdateDetailComponent extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{(this.props.action == "consent" && this.props.inOutTimeUpdate.processStatusId == 5 && this.props.inOutTimeUpdate.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
         </div>
-        { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? <DetailButtonComponent
+        { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? 
+        <DetailButtonComponent
           dataToSap={
             [
               {
@@ -212,6 +213,7 @@ class InOutUpdateDetailComponent extends React.Component {
             ]
           } //this.dataToSap()
           id={this.props.inOutTimeUpdate.id}
+          isShowApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING}
           isShowRevocationOfApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_APPROVED}
           isShowConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING && this.props.inOutTimeUpdate.appraiser}
