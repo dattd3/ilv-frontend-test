@@ -31,7 +31,6 @@ class RegistrationEmploymentTermination extends React.Component {
     const { t } = this.props
     const {
         isEdit,
-        files,
         titleModal,
         messageModal,
         disabledSubmitButton,
@@ -53,6 +52,7 @@ class RegistrationEmploymentTermination extends React.Component {
     
     const userInfos = JSON.parse(terminationInfo.requestInfo.UserInfo);
     const approvalInfo = requestInfo && requestInfo.ApproverInfo ? JSON.parse(requestInfo.ApproverInfo) : {};
+    const files = requestInfo?.AttachedFiles || [];
 
     return (
       <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
@@ -181,6 +181,16 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
+                    {
+                        terminationInfo.processStatusId == Constants.STATUS_NOT_APPROVED ||terminationInfo.processStatusId == Constants.STATUS_NO_CONSENTED || terminationInfo.processStatusId == Constants.STATUS_EVICTION ?
+                        <div className="col-4">
+                            <p className="title">Lý do không duyệt</p>
+                            <div>
+                                <input type="text" className="form-control" value={terminationInfo.approverComment || ""} readOnly />
+                            </div>
+                        </div>
+                        : null
+                    }
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
+import _ from 'lodash';
 
 class ReasonResignationComponent extends React.PureComponent {
     constructor(props) {
@@ -52,6 +53,12 @@ class ReasonResignationComponent extends React.PureComponent {
             infos.reasonDetailed = e.target.value || ""
             this.setState({infos: infos})
             this.props.updateResignationReasons(infos)
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps && nextProps.data && _.isEmpty(this.state.infos)) {
+            this.setState({infos: nextProps.data});
         }
     }
 
