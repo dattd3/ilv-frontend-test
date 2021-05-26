@@ -41,6 +41,12 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         }
         this.onInputChange = debounce(this.getEmployeeInfos, 800)
     }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.userInfos && nextProps.userInfos.length > 0 && (this.state.userInfos || this.state.userInfos.length == 0)) {
+            this.setState({userInfos: nextProps.userInfos});
+        }    
+    }
         
     handleSelectChange = (name, value) => {
         if (value && _.size(value) > 0) {

@@ -145,26 +145,37 @@ class RegistrationEmploymentTermination extends React.Component {
 
         <div className="block direct-manager">
             <div className="box shadow">
-            <h6 className="block-title has-border-bottom">{t('DirectManager')}</h6>
-            <div className="row">
-                <div className="col-4">
+                <h6 className="block-title has-border-bottom">{t('DirectManager')}</h6>
+                <div className="row">
+                    <div className="col-4">
                         <p className="title">{t('FullName')}</p>
                         <div>
                             <input type="text" className="form-control" value={appraiserInfo?.fullname || ''} readOnly />
                         </div>
                     </div>
+
                     <div className="col-4">
-                    <p className="title">{t('Position')}</p>
-                    <div>
-                        <input type="text" className="form-control" value={appraiserInfo?.current_position || ""} readOnly />
-                    </div>
+                        <p className="title">{t('Position')}</p>
+                        <div>
+                            <input type="text" className="form-control" value={appraiserInfo?.current_position || ""} readOnly />
+                        </div>
                     </div>
                     <div className="col-4">
-                    <p className="title">{t('DepartmentManage')}</p>
-                    <div>
-                        <input type="text" className="form-control" value={appraiserInfo?.department || ""} readOnly />
+                        <p className="title">{t('DepartmentManage')}</p>
+                        <div>
+                            <input type="text" className="form-control" value={appraiserInfo?.department || ""} readOnly />
+                        </div>
                     </div>
-                    </div>
+                    {
+                        terminationInfo.processStatusId == Constants.STATUS_NOT_APPROVED ||terminationInfo.processStatusId == Constants.STATUS_NO_CONSENTED || terminationInfo.processStatusId == Constants.STATUS_EVICTION ?
+                        <div className="col-4">
+                            <p className="title">Lý do không duyệt</p>
+                            <div>
+                                <input type="text" className="form-control" value={terminationInfo.appraiserComment || ""} readOnly />
+                            </div>
+                        </div>
+                        : null
+                    }
                 </div>
             </div>
         </div>
@@ -191,6 +202,16 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
+                    {
+                        terminationInfo.processStatusId == Constants.STATUS_NOT_APPROVED ||terminationInfo.processStatusId == Constants.STATUS_NO_CONSENTED || terminationInfo.processStatusId == Constants.STATUS_EVICTION ?
+                        <div className="col-4">
+                            <p className="title">Lý do không duyệt</p>
+                            <div>
+                                <input type="text" className="form-control" value={terminationInfo.approverComment || ""} readOnly />
+                            </div>
+                        </div>
+                        : null
+                    }
                 </div>
             </div>
         </div>
