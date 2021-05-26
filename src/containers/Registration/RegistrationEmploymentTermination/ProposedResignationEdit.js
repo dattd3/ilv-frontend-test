@@ -4,11 +4,14 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
+import { Progress } from "reactstrap"
+import { ToastContainer, toast } from "react-toastify"
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
 import StaffInfoProposedResignationComponent from '../TerminationComponents/StaffInfoProposedResignationComponent'
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
+import "react-toastify/dist/ReactToastify.css"
 
 const config = {
     headers: {            
@@ -32,7 +35,11 @@ class ProposedResignationPage extends React.Component {
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
-            errors: {}
+            errors: {
+                employees: "",
+                lastWorkingDay: "",
+                reason: ""
+            }
         }
     }
 
@@ -40,7 +47,7 @@ class ProposedResignationPage extends React.Component {
         const result = {...this.state};
         if(this.props.resignInfo) {
             const parentData = this.props.resignInfo;
-            result.userInfos = JSON.parse(parentData.requestInfo.UserInfo)[0];
+            result.userInfos = JSON.parse(parentData.requestInfo.UserInfo);
             result.staffTerminationDetail = {
                 reason: JSON.parse(parentData.requestInfo.Reason),
                 reasonDetailed: parentData.requestInfo.ReasonDetailed,
@@ -49,7 +56,6 @@ class ProposedResignationPage extends React.Component {
             };
             result.directManager = parentData.requestInfo.SupervisorInfo ? JSON.parse(parentData.requestInfo.SupervisorInfo) : null;
             result.seniorExecutive = parentData.requestInfo.ApproverInfo ? JSON.parse(parentData.requestInfo.ApproverInfo) : null;
-            result.remoteData = this.props.resignInfo;
             this.setState(result);
         }
         this.initialData()
@@ -163,55 +169,116 @@ class ProposedResignationPage extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
+    getSubordinates = async () => {
+        try {
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, config)
+
+            if (responses && responses.data) {
+                const employees = responses.data.employees
+
+                if (employees && employees.length > 0) {
+                    return employees
+                }
+
+                return []
+            }
+        } catch (error) {
+            return []
+        }
+    }
+
+    validateDirectManager = (subordinates) => {
+        const userInfos = this.state.userInfos
+
+        if (!userInfos || userInfos.length === 0) {
+            return {
+                isValid: false,
+                messages: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+            }
+        }
+
+        if (!subordinates || subordinates.length === 0) {
+            return {
+                isValid: false,
+                messages: "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT"
+            }
+        }
+
+        const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase())
+        const userNotInSubordinates = userInfos.filter(item => !subordinateAds.includes(item.ad.toLowerCase()))
+        .map(item => item.fullName)
+
+        const objValid = {
+            isValid: true,
+            messages: ""
+        }
+        if (userNotInSubordinates && userNotInSubordinates.length > 0) {
+            objValid.isValid = false
+            objValid.messages = `Nhân viên (${userNotInSubordinates.join(', ')}) đề xuất cho nghỉ không thuộc thẩm quyền của QLTT`
+        } else {
+            objValid.isValid = true
+            objValid.messages = ""
+        }
+
+        return objValid
+    }
+
+    isValidData = () => {
+        const errors = this.state.errors
+        const isEmpty = !Object.values(errors).some(item => item != null && item != "")
+        return isEmpty
+    }
+
+    updateErrors = (errorObj) => {
+        const errors = {...this.state.errors, ...errorObj}
+        this.setState({errors: errors})
+    }
+
+    getMessageValidation = () => {
+        const errors = this.state.errors
+        const listMessages = Object.values(errors).filter(item => item != null && item != "")
+
+        return listMessages[0]
+    }
+
     submit = async () => {
+        console.log('submit');
         const { t } = this.props
         const {
             userInfos,
             staffTerminationDetail,
-            directManager,
-            seniorExecutive,
-            files
         } = this.state
 
-        if (!userInfos || userInfos.length == 0 || !staffTerminationDetail || _.size(staffTerminationDetail) === 0 || !seniorExecutive || _.size(seniorExecutive) === 0 ) {
+        const isValid = this.isValidData()
+        if (!isValid) {
+            const message = this.getMessageValidation()
+            toast.error(message)
             return
+        } else {
+            const subordinates = await this.getSubordinates()
+            const directManagerValidation = this.validateDirectManager(subordinates)
+            
+            if (!directManagerValidation.isValid) {
+                toast.error(directManagerValidation.messages)
+                return
+            }
         }
-
-        // const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
-        // if (!err) {
-        //     this.setDisabledSubmitButton(false)
-        //     return
-        // }
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
-
-        if (!_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0) {
-            delete seniorExecutive.value
-            delete seniorExecutive.label
-        }
-        const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
-
         let bodyFormData = new FormData()
-        bodyFormData.append('userInfo', JSON.stringify(userInfos))
-        bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
-        bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
-        bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
-        bodyFormData.append('formResignation', 2)
-        bodyFormData.append('supervisorId', localStorage.getItem('email'))
-        bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
-        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}@vingroup.net`)
-        bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
-
-        if (files && files.length > 0) {
-            files.forEach(file => {
-                bodyFormData.append('attachedFiles', file)
-            })
-        }
+        const requestInfo = this.props.resignInfo.requestInfo;
+        requestInfo.UserInfo =  JSON.stringify(userInfos);
+        requestInfo.LastWorkingDay = staffTerminationDetail.lastWorkingDay;
+        requestInfo.DateTermination = staffTerminationDetail.dateTermination;
+        requestInfo.Reason = JSON.stringify(reasonToSubmit);
+        requestInfo.ReasonDetailed = staffTerminationDetail.reasonDetailed || '';
+        bodyFormData.append('requestInfo', JSON.stringify(requestInfo));
+        bodyFormData.append('id', this.props.resignInfo.id)
+        const config1 = {...config, 'Content-Type': 'application/json'};
 
         try {
-            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}Request/edit`, bodyFormData, config1)
 
             if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
@@ -288,19 +355,23 @@ class ProposedResignationPage extends React.Component {
             isSuccess,
             userInfos,
             reasonTypes,
-            seniorExecutive
+            seniorExecutive,
+            staffTerminationDetail
         } = this.state
-
         return (
             <>
+            <ToastContainer autoClose={2000} />
+            <Progress max="100" color="success" value={this.state.loaded}>
+                {Math.round(this.state.loaded, 2)}%
+            </Progress>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence proposed-registration-employment-termination">
                 <h5 className="page-title">{t('ProposeForEmployeesResignation')}</h5>
-                <StaffInfoProposedResignationComponent userInfos={userInfos} updateUserInfos={this.updateUserInfos} />
-                <ReasonResignationComponent reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} />
-                <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} />
-                <AttachmentComponent files={files} updateFiles={this.updateFiles} />
-                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <StaffInfoProposedResignationComponent userInfos={userInfos} updateUserInfos={this.updateUserInfos}  updateErrors={this.updateErrors}/>
+                <ReasonResignationComponent reasonTypes={reasonTypes} data={staffTerminationDetail} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors}/>
+                <SeniorExecutiveInfoComponent isEdit={true} seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} />
+                <AttachmentComponent files={files} updateFiles={this.updateFiles}  isEdit={true} />
+                <ButtonComponent isEdit={true} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>
             </>
         )

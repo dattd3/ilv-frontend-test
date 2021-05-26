@@ -38,10 +38,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             disabledSubmitButton: false,
             loaded: 0,
             errors: {
-                lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
-                reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
-                directManager: "Vui lòng chọn CBQL trực tiếp!",
-                seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"
+                lastWorkingDay: "",
+                reason: "",
             },
             remoteData: null
         }
@@ -60,7 +58,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             };
             result.directManager = parentData.requestInfo.SupervisorInfo ? JSON.parse(parentData.requestInfo.SupervisorInfo) : null;
             result.seniorExecutive = parentData.requestInfo.ApproverInfo ? JSON.parse(parentData.requestInfo.ApproverInfo) : null;
-            result.remoteData = this.props.resignInfo;
             this.setState(result);
         }
         this.initialData()
@@ -115,59 +112,70 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         return listMessages[0]
     }
 
+    isDirectManagerValid = async () => {
+        const directManager = {...this.state.directManager}
+        const userAccount = directManager.account?.toLowerCase()
+
+        try {
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+            const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
+            
+            if (realUserAccounts.includes(userAccount)) {
+                return true
+            }
+
+            return false
+        } catch (errors) {
+            return false
+        }
+    }
+
+    getUserAccountDirectManagerByResponses = responses => {
+        if (responses && responses.data && responses.data.data) {
+            const listUsers = responses.data.data
+            const accounts = (listUsers || []).map(item => item.userid?.toLowerCase())
+
+            return accounts && accounts.length > 0 ? accounts : []
+        }
+
+        return []
+    }
+
     submit = async () => {
         const { t } = this.props
         const {
             userInfos,
             staffTerminationDetail,
-            directManager,
-            seniorExecutive,
-            files
         } = this.state
+
         const isValid = this.isValidData()
+        const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
+            return
+        } else if (!isDirectManagerValid) {
+            toast.error("Cán bộ QLTT không có thẩm quyền")
             return
         }
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
 
-        if (!_.isNull(directManager) && _.size(directManager) > 0) {
-            delete directManager.value
-            delete directManager.label
-        }
-
-        if (!_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0) {
-            delete seniorExecutive.value
-            delete seniorExecutive.label
-        }
-
-        const directManagerToSubmit = !_.isNull(directManager) && _.size(directManager) > 0 ? directManager : {}
-        const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
-
         let bodyFormData = new FormData()
-        bodyFormData.append('userInfo', JSON.stringify(userInfoToSubmit))
-        bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
-        bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
-        bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
-        bodyFormData.append('formResignation', 1)
-        bodyFormData.append('supervisorId', `${directManager?.account.toLowerCase()}@vingroup.net`)
-        bodyFormData.append('supervisorInfo', JSON.stringify(directManagerToSubmit))
-        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}@vingroup.net`)
-        bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
-
-        if (files && files.length > 0) {
-            files.forEach(file => {
-                bodyFormData.append('attachedFiles', file)
-            })
-        }
+        const requestInfo = this.props.resignInfo.requestInfo;
+        requestInfo.UserInfo =  JSON.stringify(userInfoToSubmit);
+        requestInfo.LastWorkingDay = staffTerminationDetail.lastWorkingDay;
+        requestInfo.DateTermination = staffTerminationDetail.dateTermination;
+        requestInfo.Reason = JSON.stringify(reasonToSubmit);
+        requestInfo.ReasonDetailed = staffTerminationDetail.reasonDetailed || '';
+        bodyFormData.append('requestInfo', JSON.stringify(requestInfo));
+        bodyFormData.append('id', this.props.resignInfo.id)
+        const config1 = {...config, 'Content-Type': 'application/json'};
 
         try {
-            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}Request/edit`, bodyFormData, config1)
 
             if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
@@ -255,10 +263,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                     <StaffInfoComponent userInfos={userInfos} />
                     <StaffTerminationDetailComponent reasonTypes={reasonTypes} data={staffTerminationDetail} updateStaffTerminationDetail={this.updateStaffTerminationDetail} updateErrors={this.updateErrors} />
-                    <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
-                    <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
-                    <AttachmentComponent files={files} updateFiles={this.updateFiles} />
-                    <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                    <DirectManagerInfoComponent isEdit={true} directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
+                    <SeniorExecutiveInfoComponent isEdit={true} seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
+                    <AttachmentComponent isEdit={true} files={files} updateFiles={this.updateFiles} />
+                    <ButtonComponent isEdit={true} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
                 </div>
             </div>
         )
