@@ -1,8 +1,8 @@
 import React from 'react'
-import { Tabs, Tab } from 'react-bootstrap'
 import { withTranslation  } from "react-i18next"
 import moment from 'moment'
-import DetailButtonComponent from '../DetailButtonComponent';
+import DetailButtonComponent from '../DetailButtonComponent'
+import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
 
 class RegistrationEmploymentTermination extends React.Component {
@@ -27,11 +27,14 @@ class RegistrationEmploymentTermination extends React.Component {
     this.setState({ tab: key })
   }
 
+    updateFiles = () => {
+
+    }
+
   render() {
-    const { t } = this.props
+    const { t, resignInfo } = this.props
     const {
         isEdit,
-        files,
         titleModal,
         messageModal,
         disabledSubmitButton,
@@ -44,15 +47,23 @@ class RegistrationEmploymentTermination extends React.Component {
         seniorExecutive,
         dateStartWork
     } = this.state
-    const terminationInfo = this.props.resignInfo
-    if( !terminationInfo.requestInfo) {
+
+    if( !resignInfo.requestInfo) {
         return null;
     }
-    const userInfos = JSON.parse(terminationInfo.requestInfo.UserInfo)[0];
+
+    const userInfos = resignInfo.user
     const requestInfo = this.props.resignInfo.requestInfo
     const requestTypeId = this.props.resignInfo.requestTypeId
     const approvalInfo = requestInfo && requestInfo.ApproverInfo ? JSON.parse(requestInfo.ApproverInfo) : {};
     const appraiserInfo = requestInfo && requestInfo.SupervisorInfo ? JSON.parse(requestInfo.SupervisorInfo) : {};
+    const files = (resignInfo.requestDocuments || []).map(item => {
+        return {
+            name: item.fileName,
+            fileUrl: item.fileUrl || ""
+        }
+    })
+
     return (
       <div className="registration-section registration-employment-termination justify-content-between">
          <div className="block staff-information-block">
@@ -82,7 +93,7 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('DaysOnWorking')}</p>
                         <div>
-                            <input type="text" className="form-control" value={userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
+                            <input type="text" className="form-control" value={userInfos && userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
@@ -201,23 +212,16 @@ class RegistrationEmploymentTermination extends React.Component {
                 </div>
             </div>
         </div>
-        <ul className="list-inline">
-            {(requestInfo.AttachedFiles || []).map((file, index) => {
-                return <li className="list-inline-item" key={index}>
-                    <span className="file-name">
-                        <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
-                    </span>
-                </li>
-            })}
-        </ul>
+
+        <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[terminationInfo.processStatusId].className}`}>{(this.props.action == "consent" && terminationInfo.processStatusId == 5 && terminationInfo.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[terminationInfo.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatus[resignInfo.processStatusId].className}`}>{(this.props.action == "consent" && resignInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[resignInfo.processStatusId].label)}</span>
         </div>
-        {(terminationInfo.processStatusId === 8 || (this.props.action != "consent" && terminationInfo.processStatusId === 5) || terminationInfo.processStatusId === 2) ? 
+        {(resignInfo.processStatusId === 8 || (this.props.action != "consent" && resignInfo.processStatusId === 5) || resignInfo.processStatusId === 2) ? 
         <DetailButtonComponent 
           dataToSap={[{
-            "id": terminationInfo.id,
+            "id": resignInfo.id,
             "requestTypeId": Constants.RESIGN_SELF,
             "sub": [
               {
@@ -225,11 +229,11 @@ class RegistrationEmploymentTermination extends React.Component {
               }
             ]
           }]}
-          isShowRevocationOfApproval={terminationInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
-          isShowApproval={terminationInfo.processStatusId === Constants.STATUS_WAITING}
-          isShowConsent = {terminationInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {terminationInfo.processStatusId === Constants.STATUS_WAITING && terminationInfo.appraiser}
-          id={terminationInfo.id}
+          isShowRevocationOfApproval={resignInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+          isShowApproval={resignInfo.processStatusId === Constants.STATUS_WAITING}
+          isShowConsent = {resignInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {resignInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
+          id={resignInfo.id}
           urlName={'requestattendance'}
           requestTypeId={requestTypeId}
           action={this.props.action}
