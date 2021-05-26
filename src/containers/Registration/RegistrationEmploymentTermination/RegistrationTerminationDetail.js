@@ -48,13 +48,13 @@ class RegistrationEmploymentTermination extends React.Component {
         dateStartWork
     } = this.state
 
-    if( !resignInfo.requestInfo) {
+    if (!resignInfo.requestInfo || !resignInfo.user) {
         return null;
     }
 
     const userInfos = resignInfo.user
-    const requestInfo = this.props.resignInfo.requestInfo
-    const requestTypeId = this.props.resignInfo.requestTypeId
+    const requestInfo = resignInfo.requestInfo
+    const requestTypeId = resignInfo.requestTypeId
     const approvalInfo = requestInfo && requestInfo.ApproverInfo ? JSON.parse(requestInfo.ApproverInfo) : {};
     const appraiserInfo = requestInfo && requestInfo.SupervisorInfo ? JSON.parse(requestInfo.SupervisorInfo) : {};
     const files = (resignInfo.requestDocuments || []).map(item => {
