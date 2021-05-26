@@ -52,7 +52,7 @@ class RegistrationEmploymentTermination extends React.Component {
         return null;
     }
 
-    const userInfos = JSON.parse(resignInfo.requestInfo.UserInfo)[0];
+    const userInfos = resignInfo.user
     const requestInfo = this.props.resignInfo.requestInfo
     const requestTypeId = this.props.resignInfo.requestTypeId
     const approvalInfo = requestInfo && requestInfo.ApproverInfo ? JSON.parse(requestInfo.ApproverInfo) : {};
@@ -63,9 +63,6 @@ class RegistrationEmploymentTermination extends React.Component {
             fileUrl: item.fileUrl || ""
         }
     })
-
-    console.log("lllllllllllll")
-    console.log(resignInfo)
 
     return (
       <div className="registration-section registration-employment-termination justify-content-between">
@@ -96,7 +93,7 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('DaysOnWorking')}</p>
                         <div>
-                            <input type="text" className="form-control" value={userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
+                            <input type="text" className="form-control" value={userInfos && userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
                         </div>
                     </div>
                     <div className="col-4">

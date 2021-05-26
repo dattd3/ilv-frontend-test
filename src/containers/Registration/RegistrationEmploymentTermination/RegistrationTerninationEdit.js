@@ -49,7 +49,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const result = {...this.state};
         if(this.props.resignInfo) {
             const parentData = this.props.resignInfo;
-            result.userInfos = JSON.parse(parentData.requestInfo.UserInfo)[0];
+            result.userInfos = parentData.user;
             result.staffTerminationDetail = {
                 reason: JSON.parse(parentData.requestInfo.Reason),
                 reasonDetailed: parentData.requestInfo.ReasonDetailed,
