@@ -55,8 +55,8 @@ class RegistrationEmploymentTermination extends React.Component {
     const userInfos = resignInfo.user
     const requestInfo = resignInfo.requestInfo
     const requestTypeId = resignInfo.requestTypeId
-    const approvalInfo = requestInfo && requestInfo.ApproverInfo ? JSON.parse(requestInfo.ApproverInfo) : {};
-    const appraiserInfo = requestInfo && requestInfo.SupervisorInfo ? JSON.parse(requestInfo.SupervisorInfo) : {};
+    const approvalInfo = resignInfo.approver || {}
+    const appraiserInfo = resignInfo.appraiser || {}
     const files = (resignInfo.requestDocuments || []).map(item => {
         return {
             name: item.fileName,
@@ -113,19 +113,19 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('LastWorkingDay')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.LastWorkingDay ? moment(requestInfo.LastWorkingDay, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
+                            <input type="text" className="form-control" value={requestInfo.lastWorkingDay ? moment(requestInfo.lastWorkingDay, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('ContractTerminationDate')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.DateTermination ? moment(requestInfo.DateTermination, "YYYY-MM-DD").format('DD/MM/YYYY') : ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo.dateTermination ? moment(requestInfo.dateTermination, "YYYY-MM-DD").format('DD/MM/YYYY') : ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('ReasonForContractTermination')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.Reason ? JSON.parse(requestInfo.Reason).label : ''} readOnly />
+                            <input type="text" className="form-control" value={requestInfo.absenceType ? requestInfo.absenceType.label : ''} readOnly />
                         </div>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-12">
                         <p className="title">{t('DetailedReason')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.ReasonDetailed || ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo.reasonDetailed || ""} readOnly />
                         </div>
                     </div>
                 </div>
@@ -147,14 +147,14 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('FullName')}</p>
                         <div>
-                            <input type="text" className="form-control" value={appraiserInfo?.fullname || ''} readOnly />
+                            <input type="text" className="form-control" value={appraiserInfo?.fullName || ''} readOnly />
                         </div>
                     </div>
 
                     <div className="col-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={appraiserInfo?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={appraiserInfo?.jobTitle || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
@@ -184,13 +184,13 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('FullName')}</p>
                         <div>
-                            <input type="text" className="form-control" value={approvalInfo?.fullname || ""} readOnly />
+                            <input type="text" className="form-control" value={approvalInfo?.fullName || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={approvalInfo?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={approvalInfo?.jobTitle || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">

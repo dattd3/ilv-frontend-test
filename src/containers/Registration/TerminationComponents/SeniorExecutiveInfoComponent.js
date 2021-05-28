@@ -18,8 +18,8 @@ const MyOption = props => {
             <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
           </div>
           <div className="float-left text-wrap w-75">
-            <div className="title">{props.data.fullname}</div>
-            <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+            <div className="title">{props.data.fullName}</div>
+            <div className="comment"><i>({props.data.account}) {props.data.jobTitle}</i></div>
           </div>
         </div>
       </div>
@@ -64,9 +64,11 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
       this.setState({ [name]: value })
       const isDirectManager = this.isSeniorExecutive(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       this.props.updateApprovalInfos("seniorExecutive", value, isDirectManager)
+      this.props.updateErrors({seniorExecutive: null})
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("seniorExecutive", value, true)
+      this.props.updateErrors({seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"})
     }
   }
     
@@ -102,15 +104,15 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
           const data = res.data.data || []
           const users = data.map(res => {
             return {
-              label: res.fullName,
-              value: res.user_account,
-              fullname: res.fullName,
-              avatar: res.avatar,
-              employeeLevel: res.employee_level,
-              pnl: res.pnl,
-              orglv2Id: res.orglv2_id,
-              account: res.user_account,
-              current_position: res.title,
+              label: res?.fullName,
+              value: res?.user_account,
+              fullName: res?.fullName,
+              avatar: res?.avatar,
+              employeeLevel: res?.employee_level,
+              pnl: res?.pnl,
+              organizationLv2: res?.orglv2_id,
+              account: res?.user_account,
+              jobTitle: res?.title,
               department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
             }
           })
@@ -130,56 +132,55 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
 
   render() {
     const customStyles = {
-        option: (styles, state) => ({
-            ...styles,
-            cursor: 'pointer',
-        }),
-        control: (styles) => ({
-            ...styles,
-            cursor: 'pointer',
-        })
+      option: (styles, state) => ({
+          ...styles,
+          cursor: 'pointer',
+      }),
+      control: (styles) => ({
+          ...styles,
+          cursor: 'pointer',
+      })
     }
     const { t, isEdit } = this.props
-    const { seniorExecutive, isSearching } = this.state
+    const { seniorExecutive, isSearching, users } = this.state
 
     return <div className="block senior-executive">
         <div className="box shadow">
             <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
             <div className="row">
                 <div className="col-4">
-                    <p className="title">{t('FullName')}</p>
-                    <div>
-                        <Select
-                            isLoading={isSearching}
-                            isDisabled={isEdit}
-                            isClearable={true}
-                            styles={customStyles}
-                            components={{ Option: MyOption }}
-                            onInputChange={this.onInputChange}
-                            onChange={seniorExecutiveOption => this.handleSelectChange('seniorExecutive', seniorExecutiveOption)}
-                            value={seniorExecutive}
-                            placeholder={t('Search') + '...'}
-                            key="seniorExecutive"
-                            options={this.state.users}
-                        />
-                    </div>
-                    {this.props.errors && this.props.errors['seniorExecutive'] ? <p className="text-danger">{this.props.errors['seniorExecutive']}</p> : null}
+                  <p className="title">{t('FullName')}<span className="required">(*)</span></p>
+                  <div>
+                    <Select
+                        isLoading={isSearching}
+                        isDisabled={isEdit}
+                        isClearable={true}
+                        styles={customStyles}
+                        components={{ Option: MyOption }}
+                        onInputChange={this.onInputChange}
+                        onChange={seniorExecutiveOption => this.handleSelectChange('seniorExecutive', seniorExecutiveOption)}
+                        value={seniorExecutive}
+                        placeholder={t('Search') + '...'}
+                        key="seniorExecutive"
+                        options={users}
+                    />
+                  </div>
                 </div>
                 <div className="col-4">
-                    <p className="title">{t('Position')}</p>
-                    <div>
-                        <input type="text" className="form-control" value={seniorExecutive?.current_position || ""} readOnly />
-                    </div>
+                  <p className="title">{t('Position')}</p>
+                  <div>
+                    <input type="text" className="form-control" value={seniorExecutive?.jobTitle || ""} readOnly />
+                  </div>
                 </div>
                 <div className="col-4">
                     <p className="title">{t('DepartmentManage')}</p>
                     <div>
-                        <input type="text" className="form-control" value={seniorExecutive?.department || ""} readOnly />
+                      <input type="text" className="form-control" value={seniorExecutive?.department || ""} readOnly />
                     </div>
                 </div>
             </div>
             {
-                localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
+              localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">*{t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
             }
         </div>
     </div>
