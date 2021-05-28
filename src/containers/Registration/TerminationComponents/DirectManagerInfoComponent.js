@@ -5,6 +5,7 @@ import Constants from '../../../commons/Constants'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next"
+import { Component } from 'react'
 
 const MyOption = props => {
   const { innerProps, innerRef } = props
@@ -19,15 +20,15 @@ const MyOption = props => {
           <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
         </div>
         <div className="float-left text-wrap w-75">
-          <div className="title">{props.data.fullname}</div>
-          <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+          <div className="title">{props.data.fullName}</div>
+          <div className="comment"><i>({props.data.account}) {props.data.jobTitle}</i></div>
         </div>
       </div>
     </div>
   )
 }
 
-class DirectManagerInfoComponent extends React.PureComponent {
+class DirectManagerInfoComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -40,70 +41,12 @@ class DirectManagerInfoComponent extends React.PureComponent {
     this.onInputChange = debounce(this.getApproverInfo, 800)
   }
 
-  componentDidMount() {
-    let approverModel = {
-      label: "",
-      value: "",
-      fullname: "",
-      avatar: "",
-      employeeLevel: "",
-      pnl: "",
-      orglv2Id: "",
-      account: "",
-      current_position: "",
-      department: ""
-    }
-    const { directManager } = this.props
-    const companiesUsing = ['V070','V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
-      .then(res => {
-        if (res && res.data && res.data.data && res.data.data.length > 0) {
-          const manager = res.data.data[0]
-          const managerApproval = {
-            ...approverModel,
-            label: manager.fullName,
-            value: manager.userid.toLowerCase(),
-            fullname: manager.fullName,
-            account: manager.userid.toLowerCase(),
-            current_position: manager.title,
-            department: manager.department
-          }
-          this.setState({ directManager: managerApproval })
-          this.props.updateApprovalInfos("directManager", managerApproval, true)
-        }
-      }).catch(error => {
-
-      })
-    }
-
-    if (directManager) {
-      this.setState({
-        directManager: {
-          ...directManager,
-          label: directManager.fullname,
-          value: directManager.account,
-        }
-      })
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     const { directManager } = nextProps;
     const companiesUsing = ['V070','V077', 'V060']
 
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       return
-    }
-
-    if (directManager) {
-      this.setState({
-        directManager: {
-          ...directManager,
-          label: directManager.fullname,
-          value: directManager.account,
-        }
-      })
     }
   }
 
@@ -156,16 +99,16 @@ class DirectManagerInfoComponent extends React.PureComponent {
           const data = res.data.data || []
           const users = data.map(res => {
             return {
-              label: res.fullName,
-              value: res.user_account,
-              fullname: res.fullName,
-              avatar: res.avatar,
-              employeeLevel: res.employee_level,
-              pnl: res.pnl,
-              orglv2Id: res.orglv2_id,
-              account: res.user_account,
-              current_position: res.title,
-              department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
+              label: res?.fullName,
+              value: res?.user_account,
+              fullName: res?.fullName,
+              avatar: res?.avatar,
+              employeeLevel: res?.employee_level,
+              pnl: res?.pnl,
+              organizationLv2: res?.orglv2_id,
+              account: res?.user_account,
+              jobTitle: res?.title,
+              department: `${res?.division || ""}${res?.department ? `/${res?.department}` : ""}${res?.part ? `/${res?.part}` : ""}`
             }
           })
           this.setState({ users: directManager ? users.filter(user => user.account !== directManager.account) : users, isSearching: false })
@@ -194,40 +137,39 @@ class DirectManagerInfoComponent extends React.PureComponent {
       })
     }
     const { t, isEdit } = this.props
-    const { directManager, isSearching } = this.state
+    const { directManager, isSearching, users } = this.state
 
     return <div className="block direct-manager">
               <div className="box shadow">
                 <h6 className="block-title has-border-bottom">{t('DirectManager')}</h6>
                 <div className="row">
                   <div className="col-4">
-                      <p className="title">{t('FullName')}<span className="required">(*)</span></p>
-                      <div>
-                        <Select
-                          isLoading={isSearching}
-                          isDisabled={isEdit}
-                          isClearable={true}
-                          styles={customStyles}
-                          components={{ Option: MyOption }}
-                          onInputChange={this.onInputChange.bind(this)}
-                          onChange={directManagerOption => this.handleSelectChange('directManager', directManagerOption)}
-                          value={this.state.directManager}
-                          placeholder={t('Search') + '...'}
-                          key="directManager"
-                          options={this.state.users} />
-                      </div>
-                      {this.props.errors && this.props.errors['directManager'] ? <p className="text-danger">{this.props.errors['directManager']}</p> : null}
+                    <p className="title">{t('FullName')}<span className="required">(*)</span></p>
+                    <div>
+                      <Select
+                        isLoading={isSearching}
+                        isDisabled={isEdit}
+                        isClearable={true}
+                        styles={customStyles}
+                        components={{ Option: MyOption }}
+                        onInputChange={this.onInputChange.bind(this)}
+                        onChange={directManagerOption => this.handleSelectChange('directManager', directManagerOption)}
+                        value={directManager}
+                        placeholder={t('Search') + '...'}
+                        key="directManager"
+                        options={users} />
+                    </div>
                   </div>
                   <div className="col-4">
                     <p className="title">{t('Position')}</p>
                     <div>
-                        <input type="text" className="form-control" value={directManager?.current_position || ""} readOnly />
+                      <input type="text" className="form-control" value={directManager?.jobTitle || ""} readOnly />
                     </div>
                   </div>
                   <div className="col-4">
                     <p className="title">{t('DepartmentManage')}</p>
                     <div>
-                        <input type="text" className="form-control" value={directManager?.department || ""} readOnly />
+                      <input type="text" className="form-control" value={directManager?.department || ""} readOnly />
                     </div>
                   </div>
                 </div>
