@@ -53,7 +53,12 @@ class RegistrationEmploymentTermination extends React.Component {
     const qlttInfo = resignInfo.user
     const userInfos = resignInfo.requestInfo.terminationUserInfo
     const approvalInfo = resignInfo.approver || {};
-    const files = resignInfo?.requestDocuments || [];
+    const files = (resignInfo?.requestDocuments || []).map(item => {
+        return {
+            name: item.fileName,
+            fileUrl: item.fileUrl || ""
+        }
+    })
 
     return (
       <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
