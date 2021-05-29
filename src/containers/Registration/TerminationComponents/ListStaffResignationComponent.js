@@ -209,9 +209,9 @@ class ListStaffResignationComponent extends React.PureComponent {
         this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
-    handleCheckboxChange = (index, code, requestHistoryId, isUploadFile, employeeNo, e) => {
+    handleCheckboxChange = (index, code, requestStatusProcessId, isUploadFile, employeeNo, e) => {
         const requestIdChecked = [...this.state.requestIdChecked]
-        requestIdChecked[index] = {key: code, value: e.target.checked, requestHistoryId: requestHistoryId, isUploadFile: isUploadFile, employeeNo: employeeNo}
+        requestIdChecked[index] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo}
 
         this.setState({requestIdChecked: requestIdChecked})
         this.props.updateTerminationRequestList("requestIdChecked", requestIdChecked)
@@ -261,13 +261,13 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 const userInfos = item.userInfo
                                                 const reason = item.reason
                                                 const attachments = item.profileDocuments
-                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.id}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
+                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.requestStatusProcessId}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
 
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
                                                                     <input type="checkbox" checked={requestIdChecked[index] && requestIdChecked[index].value ? requestIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.id, item.requestHistoryId, item.isUploadFile, userInfos?.employeeNo, e)} />
+                                                                    onChange={e => this.handleCheckboxChange(index, item.id, item.requestStatusProcessId, item.isUploadFile, userInfos?.employeeNo, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
                                                                 </div>
                                                             </td>

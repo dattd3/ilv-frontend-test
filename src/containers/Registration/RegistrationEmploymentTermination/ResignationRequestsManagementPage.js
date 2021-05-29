@@ -182,10 +182,10 @@ class ResignationRequestsManagementPage extends React.Component {
         })
         .map(item => item.key)
 
-        const requestHistoryIds = requestIdChecked.filter(item => {
+        const requestStatusProcessIds = requestIdChecked.filter(item => {
             return item && item.value
         })
-        .map(item => item.requestHistoryId)
+        .map(item => item.requestStatusProcessId)
 
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
@@ -211,7 +211,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 break
             case HANDOVER_STATUS:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/exporttowordbienbanbangiao`)
-                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
+                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
                 break
             case RESIGNATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
@@ -222,15 +222,15 @@ class ResignationRequestsManagementPage extends React.Component {
                 break
             case LIQUIDATION_AGREEMENT:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_bienban_thanhly_hopdong`)
-                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
+                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
                 break
             case CONTRACT_TERMINATION_AGREEMENT:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_thoathuan_chamdut_hopdong`)
-                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
+                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
                 break
             case DECISION_CONTRACT_TERMINATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_quyetdinh_chamdut_hopdong`)
-                requestObj = {...requestConfig, ...{data: {ids: requestHistoryIds}}}
+                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
                 break
         }
 
