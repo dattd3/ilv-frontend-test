@@ -156,7 +156,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         id: id
     })
 
-    let url = `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/getbangiaoinfo?id=${id}`;
+    let url = `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/getbangiaoinfo?requestStatusProcessId=${id}`;
     axios.get(url, getRequestConfigs())
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
