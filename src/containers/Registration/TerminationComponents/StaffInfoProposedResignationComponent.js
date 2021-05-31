@@ -5,6 +5,7 @@ import moment from 'moment'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
+import Constants from '../../../commons/Constants'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -39,7 +40,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             employeeTyping: "",
             employeeIdChecked: [],
         }
-        this.onInputChange = debounce(this.getEmployeeInfos, 800)
+        this.onInputChange = debounce(this.getEmployeeInfos, 1000)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -58,10 +59,11 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
 
     addEmployees = () => {
         let { userInfos, employee } = this.state
-        const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.account?.toLowerCase())
+        const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.email?.toLowerCase())
+        const errorObj = {employees: "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ!"}
 
         if (!itemExist || itemExist.length === 0 && employee) {
-            let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
+            errorObj.employees = "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
             const employeeTemp = {
                 employeeNo: employee.employee_no,
                 ad: employee.account?.toLowerCase(),
@@ -85,13 +87,13 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     
             userInfos = userInfos.concat([{...employeeTemp}])
             if (userInfos.length > 0) {
-                errorObj = {employees: null}
+                errorObj.employees = null
             }
 
             this.setState({userInfos: userInfos})
             this.props.updateUserInfos(userInfos)
-            this.props.updateErrors(errorObj)
         }
+        this.props.updateErrors(errorObj)
     }
 
     handleCheckboxChange = (index, code, e) => {
@@ -155,7 +157,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         date_start_work: null,
                         contract_type: null, // need update
                         contract_name: null, // need update
-                        email: `${res.user_account?.toLowerCase()}vingroup.net`, // need check
+                        email: `${res.user_account?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
                         unit_name: null, // need update
                         orglv1_id: null, // need update
                         orglv2_id: res.orglv2_id, // need check
