@@ -24,6 +24,7 @@ const Constants = {
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
   ONBOARDING: 6,
+  RESIGN_SELF: 7,
 
   //Status request
   STATUS_PENDING: 0,
@@ -103,6 +104,11 @@ const Constants = {
   QAAlreadyExist: "QAAlreadyExist",
 
   PAGE_INDEX_DEFAULT: 1,
-  PAGE_SIZE_DEFAULT: 10
+  PAGE_SIZE_DEFAULT: 10,
+
+  // Register and Proposed contract termination
+  REGISTER_CONTRACT_TERMINATION_CODE: 1,
+  PROPOSED_CONTRACT_TERMINATION_CODE: 2,
+  GROUP_EMAIL_EXTENSION: "@vingroup.net"
 };
 export default Constants

@@ -1741,8 +1741,8 @@ span.badge-notification[data-badge]::after {
             .detailed-reason {
               width: 200px;
             }
-            .created-by {
-              width: 140px;
+            &.created-by {
+              width: 180px;
             }
             .attachment {
               width: 300px;

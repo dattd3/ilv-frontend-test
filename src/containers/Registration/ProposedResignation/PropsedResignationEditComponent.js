@@ -6,15 +6,20 @@ import { Progress } from "reactstrap"
 import { ToastContainer, toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
-import { getRequestConfigs } from '../../../commons/commonFunctions'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import DirectManagerInfoComponent from '../TerminationComponents/DirectManagerInfoComponent'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
 import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
-import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
+import StaffTerminationDetailComponent from '../TerminationComponents/StaffTerminationDetailComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import "react-toastify/dist/ReactToastify.css"
+
+const config = {
+    headers: {            
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    }
+}
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -46,12 +51,13 @@ class RegistrationEmploymentTerminationForm extends React.Component {
     }
 
     initialData = async () => {
-        const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
+        const reasonTypeForEmployee = 1
+        const reasonTypesEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/list?type=${reasonTypeForEmployee}`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
-        const requestReasonTypes = axios.get(reasonTypesEndpoint, getRequestConfigs())
-        const requestUserInfos = axios.get(userInfosEndpoint, getRequestConfigs())
-        const requestUserContractInfos = axios.get(userContractInfosEndpoint, getRequestConfigs())
+        const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
+        const requestUserInfos = axios.get(userInfosEndpoint, config)
+        const requestUserContractInfos = axios.get(userContractInfosEndpoint, config)
 
         await axios.all([requestReasonTypes, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
@@ -79,14 +85,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
-                    unitName: infos.unit || "",
-                    organizationLv1: localStorage.getItem('organizationLv1'),
-                    organizationLv2: localStorage.getItem('organizationLv2'),
-                    organizationLv6: localStorage.getItem('organizationLv6'),
-                    regionId: localStorage.getItem("organizationLv4"),
-                    departmentId: localStorage.getItem("organizationLv3"),
-                    unitId: localStorage.getItem("organizationLv5"),
-                    rankId: localStorage.getItem("employeeLevel")
+                    unitName: infos.unit || ""
                 }
             }
         }
@@ -107,12 +106,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
 
     prepareReasonTypes = responses => {
         if (responses && responses.data) {
-            const reasonTypeCodeForEmployee = "ZG"
             const reasonTypes = responses.data.data
-            const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForEmployee)
-            .map(item => {
-                return {value: item.code02, label: item.text}
+            const results = (reasonTypes || []).map(item => {
+                return {value: item.code, label: item.name}
             })
             return results
         }
@@ -144,35 +140,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         return listMessages[0]
     }
 
-    isDirectManagerValid = async () => {
-        const directManager = {...this.state.directManager}
-        const userAccount = directManager.account?.toLowerCase()
-
-        try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
-            const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
-            
-            if (realUserAccounts.includes(userAccount)) {
-                return true
-            }
-
-            return false
-        } catch (errors) {
-            return false
-        }
-    }
-
-    getUserAccountDirectManagerByResponses = responses => {
-        if (responses && responses.data && responses.data.data) {
-            const listUsers = responses.data.data
-            const accounts = (listUsers || []).map(item => item.userid?.toLowerCase())
-
-            return accounts && accounts.length > 0 ? accounts : []
-        }
-
-        return []
-    }
-
     submit = async () => {
         const { t } = this.props
         const {
@@ -183,18 +150,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             files
         } = this.state
         const isValid = this.isValidData()
-        const fileInfoValidation = this.validateAttachmentFile()
-        const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
-            return
-        } else if (!isDirectManagerValid) {
-            toast.error("Cán bộ QLTT không có thẩm quyền")
-            return
-        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
-            toast.error(fileInfoValidation.files)
             return
         }
 
@@ -219,8 +178,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
-        bodyFormData.append('formResignation', Constants.REGISTER_CONTRACT_TERMINATION_CODE)
+        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
+        bodyFormData.append('formResignation', 1)
         bodyFormData.append('supervisorId', `${directManager?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
         bodyFormData.append('supervisorInfo', JSON.stringify(directManagerToSubmit))
         bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
@@ -233,7 +192,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
 
         try {
-            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, getRequestConfigs())
+            const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, config)
 
             if (responses && responses.data && responses.data.result) {
                 const result = responses.data.result
@@ -255,41 +214,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
     }
 
-    validateAttachmentFile = () => {
-        const files = this.state.files
-        const errors = {}
-        const fileExtension = [
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/pdf',
-            'image/png',
-            'image/jpeg'
-        ]
-    
-        let sizeTotal = 0
-        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
-            const file = files[index]
-            if (!fileExtension.includes(file.type)) {
-                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
-                break
-            } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
-                break
-            } else {
-                errors.files = null
-            }
-            sizeTotal += parseInt(file.size)
-        }
-    
-        if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
-        }
-
-        return errors
-    }
-
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     }
@@ -308,7 +232,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         this.setState({ isUpdateFiles: status })
     }
 
-    updateResignationReasons = infos => {
+    updateStaffTerminationDetail = infos => {
         this.setState({ staffTerminationDetail: infos })
     }
 
@@ -317,7 +241,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         errors[approvalType] = null
 
         if (!isDirectManager) {
-            errors[approvalType] = approvalType === "directManager" ? "Cán bộ QLTT không có thẩm quyền" : this.props.t("InvalidApprover")
+            errors[approvalType] = this.props.t("InvalidApprover")
         }
 
         this.setState({ [approvalType]: approver, errors: errors })
@@ -355,7 +279,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             <div className="leave-of-absence registration-employment-termination">
                 <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                 <StaffInfoComponent userInfos={userInfos} />
-                <ReasonResignationComponent reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors} />
+                <StaffTerminationDetailComponent reasonTypes={reasonTypes} updateStaffTerminationDetail={this.updateStaffTerminationDetail} updateErrors={this.updateErrors} />
                 <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />

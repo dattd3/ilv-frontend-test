@@ -4,6 +4,8 @@ import LeaveOfAbsenceDetailComponent from '../Registration/LeaveOfAbsence/LeaveO
 import BusinessTripDetailComponent from '../Registration/BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from '../Registration/InOutTimeUpdate/InOutUpdateDetailComponent'
 import SubstitutionDetailComponent from '../Registration/Substitution/SubstitutionDetailComponent'
+import ProposeTerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/PropsedResignationDetail';
+import TerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/RegistrationTerminationDetail';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
@@ -35,9 +37,8 @@ class TaskDetailModal extends React.Component {
             if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
               return window.location.href = map.NotFound;
             }
-            const response = data.data
+            const response = data.data ? data.data : {};
             this.setState({data: response })
-            console.log(this.state.data);
           }
         }).catch(error => {
           console.log(error)
@@ -46,6 +47,10 @@ class TaskDetailModal extends React.Component {
     }
     render() {
         const { t } = this.props
+        const data = this.state.data;
+        if(!data) {
+          return null;
+        }
         return (
             <Modal backdrop="static" keyboard={false}
                 size="xl"
@@ -56,10 +61,12 @@ class TaskDetailModal extends React.Component {
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <div className="registration-section">
-                        {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent action={this.props.action} leaveOfAbsence={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={this.props.action} businessTrip={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={this.props.action} substitution={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 2 ? <ProposeTerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 1 ? <TerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent action={this.props.action} leaveOfAbsence={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={this.props.action} businessTrip={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={this.props.action} substitution={this.state.data}/> : null}
                     </div>
                 </Modal.Body>
             </Modal>

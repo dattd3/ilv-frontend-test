@@ -3,6 +3,8 @@ import LeaveOfAbsenceDetailComponent from './LeaveOfAbsence/LeaveOfAbsenceDetail
 import BusinessTripDetailComponent from './BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from './InOutTimeUpdate/InOutUpdateDetailComponent'
 import SubstitutionDetailComponent from './Substitution/SubstitutionDetailComponent'
+import TerminationDetailComponent from './RegistrationEmploymentTermination/RegistrationTerminationDetail';
+import ProposeTerminationDetailComponent from './RegistrationEmploymentTermination/PropsedResignationDetail';
 import RegistrationConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
@@ -38,7 +40,6 @@ class RegistrationDetailComponent extends React.Component {
         subid: subId
       }
     }
-  
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
     .then(res => {
       if (res && res.data) {
@@ -56,16 +57,19 @@ class RegistrationDetailComponent extends React.Component {
 
   render() {
     const data = this.state.data
+    const action = this.props.action
 
     return (
       <>
       <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage} 
         type={this.state.typeRequest} urlName={this.state.requestUrl} onHide={this.onHideModalRegistrationConfirm} />
       <div className="registration-section">
-        {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposeTerminationDetailComponent action={action} resignInfo={data}/> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action={action} resignInfo={data}/> : null}
+        {data && data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={data}/> : null}
+        {data && data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={data}/> : null}
+        {data && data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={data}/> : null}
+        {data && data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={data}/> : null}
 
         {/* {
           data.status == 0 && this.getTypeDetail() === "request" ?

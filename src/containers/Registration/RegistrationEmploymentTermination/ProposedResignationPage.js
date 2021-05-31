@@ -169,10 +169,10 @@ class ProposedResignationPage extends React.Component {
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
         bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
-        bodyFormData.append('formResignation', 2)
+        bodyFormData.append('formResignation', Constants.PROPOSED_CONTRACT_TERMINATION_CODE)
         bodyFormData.append('supervisorId', localStorage.getItem('email'))
         bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
-        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}@vingroup.net`)
+        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
         bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
 
         if (files && files.length > 0) {

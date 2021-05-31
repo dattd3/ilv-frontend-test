@@ -565,9 +565,15 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                             tasks.map((child, index) => {
-                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiser, child.requestType.id);
-                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id);
-                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id, child.actionType);
+                                const requestTypeId = child.requestTypeId || null
+                                const isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiser, requestTypeId);
+                                const isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, requestTypeId);
+                                let actionType = child?.actionType || null
+                                if (requestTypeId == Constants.RESIGN_SELF) {
+                                    const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
+                                    actionType = requestItem ? requestItem.actionType : null
+                                }
+                                const isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, requestTypeId, actionType);
                                 let totalTime = null;
                                 let editLink = null
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {

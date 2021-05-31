@@ -34,7 +34,12 @@ class AttachmentComponent extends React.PureComponent {
                         return <li className="list-inline-item" key={index}>
                             <span className="file-name">
                                 <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
-                                <i className="fa fa-times remove" aria-hidden="true" onClick={e => this.removeFile(index)}></i>
+                                {
+                                    !this.props.isEdit ?
+                                    <i className="fa fa-times remove" aria-hidden="true" onClick={e => this.removeFile(index)}></i> :
+                                    null
+                                }
+                                
                             </span>
                         </li>
                     })}

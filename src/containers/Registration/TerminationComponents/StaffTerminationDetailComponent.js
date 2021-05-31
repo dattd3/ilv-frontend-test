@@ -2,12 +2,12 @@ import React from 'react'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
+import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
-import _ from 'lodash';
 
-class ReasonResignationComponent extends React.PureComponent {
+class StaffTerminationDetailComponent extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -21,12 +21,12 @@ class ReasonResignationComponent extends React.PureComponent {
         infos.reason = null
 
         if (e) {
-            infos.reason = {value: e.value, label: e.label}
             errorObj = {reason: null}
+            infos.reason = {value: e.value, label: e.label}
         }
 
         this.setState({infos: infos})
-        this.props.updateResignationReasons(infos)
+        this.props.updateStaffTerminationDetail(infos)
         this.props.updateErrors(errorObj)
     }
 
@@ -43,7 +43,7 @@ class ReasonResignationComponent extends React.PureComponent {
         }
 
         this.setState({infos: infos})
-        this.props.updateResignationReasons(infos)
+        this.props.updateStaffTerminationDetail(infos)
         this.props.updateErrors(errorObj)
     }
 
@@ -52,7 +52,7 @@ class ReasonResignationComponent extends React.PureComponent {
             const infos = {...this.state.infos}
             infos.reasonDetailed = e.target.value || ""
             this.setState({infos: infos})
-            this.props.updateResignationReasons(infos)
+            this.props.updateStaffTerminationDetail(infos)
         }
     }
 
@@ -61,6 +61,7 @@ class ReasonResignationComponent extends React.PureComponent {
             this.setState({infos: nextProps.data});
         }
     }
+
 
     render() {
         const customStyles = {
@@ -73,13 +74,13 @@ class ReasonResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit, reasonTypes } = this.props
+        const { t, reasonTypes } = this.props
         const infos = this.state.infos
 
-        return <div className="block reason-resignation-block">
-                    <h6 className="block-title">II. Lý do CBLĐ TT đề xuất cho nghỉ</h6>
+        return <div className="block staff-information-block">
+                    <h6 className="block-title">II. {t('StaffInformationProposedToTerminateContract')}</h6>
                     <div className="box shadow">
-                    <div className="row">
+                        <div className="row">
                             <div className="col-4">
                                 <p className="title">{t('LastWorkingDay')}<span className="required">(*)</span></p>
                                 <div className="content input-container">
@@ -106,7 +107,7 @@ class ReasonResignationComponent extends React.PureComponent {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}<span className="required">(*)</span></p>
                                 <div>
-                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} />
+                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} isClearable={true} />
                                 </div>
                             </div>
                         </div>
@@ -123,4 +124,4 @@ class ReasonResignationComponent extends React.PureComponent {
     }
 }
 
-export default withTranslation()(ReasonResignationComponent)
+export default withTranslation()(StaffTerminationDetailComponent)
