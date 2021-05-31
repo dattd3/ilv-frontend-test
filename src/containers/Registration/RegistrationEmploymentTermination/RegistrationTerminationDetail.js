@@ -52,7 +52,12 @@ class RegistrationEmploymentTermination extends React.Component {
         return null;
     }
 
-    const userInfos = resignInfo.user
+    let userInfos = {}
+    // terminationUserInfo có 1 item cho trường hợp Đăng ký
+    if (resignInfo?.subTypeWorkOff == Constants.REGISTER_CONTRACT_TERMINATION_CODE && resignInfo?.requestInfo.terminationUserInfo && resignInfo?.requestInfo.terminationUserInfo.length == 1) {
+        userInfos = resignInfo?.requestInfo.terminationUserInfo[0]
+    }
+
     const requestInfo = resignInfo.requestInfo
     const requestTypeId = resignInfo.requestTypeId
     const approvalInfo = resignInfo.approver || {}
