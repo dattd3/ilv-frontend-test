@@ -36,7 +36,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         typingTimeout: 0,
         seniorExecutiveTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 800)
+    this.onInputChange = debounce(this.getApproverInfo, 1000)
   }
 
   componentWillReceiveProps(nextProps) {

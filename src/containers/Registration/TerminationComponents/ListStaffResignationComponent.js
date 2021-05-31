@@ -148,24 +148,24 @@ class ListStaffResignationComponent extends React.PureComponent {
             }),
             control: (base) => ({
                 ...base,
-                color: '#a6afb6',
-                border: '1px solid #a6afb6',
+                color: '#000000',
+                border: '1px solid #000000',
                 boxShadow: 'none',
                 cursor: 'pointer',
                 borderRadius: '0px',
                 padding: '0 10px',
                 height: '35px',
             "&:hover": {
-                borderColor: "#a6afb6",
-                color: "#a6afb6"
+                borderColor: "#000000",
+                color: "#000000"
             }
             }),
             dropdownIndicator: base => ({
                 ...base,
-                color: '#a6afb6',
+                color: '#000000',
                 fontWeight: 'normal',
                 "&:hover": {
-                    color: "#a6afb6"
+                    color: "#000000"
                 }
             })
         }

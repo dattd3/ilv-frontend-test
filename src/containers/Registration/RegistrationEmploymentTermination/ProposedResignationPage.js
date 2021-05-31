@@ -337,6 +337,12 @@ class ProposedResignationPage extends React.Component {
 
     updateErrors = (errorObj) => {
         const errors = {...this.state.errors, ...errorObj}
+
+        if (errorObj?.employees) {
+            toast.error(errorObj?.employees)
+            return
+        }
+
         this.setState({errors: errors})
     }
 
