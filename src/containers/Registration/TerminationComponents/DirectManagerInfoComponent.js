@@ -38,7 +38,7 @@ class DirectManagerInfoComponent extends Component {
       typingTimeout: 0,
       directManagerTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 800)
+    this.onInputChange = debounce(this.getApproverInfo, 1000)
   }
 
   componentWillReceiveProps(nextProps) {
