@@ -44,7 +44,7 @@ class RegistrationEmploymentTermination extends React.Component {
         dateStartWork
     } = this.state
 
-    if(!resignInfo.requestInfo) {
+    if (!resignInfo.requestInfo) {
         return null;
     }
 

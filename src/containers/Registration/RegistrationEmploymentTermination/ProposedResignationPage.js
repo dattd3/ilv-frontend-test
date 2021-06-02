@@ -68,11 +68,11 @@ class ProposedResignationPage extends React.Component {
                 return {
                     account: infos?.username?.toUpperCase() || "",
                     avatar: "",
-                    current_position: infos?.current_position || "",
+                    jobTitle: infos?.current_position || "",
                     department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
                     employeeLevel: infos?.employee_level || "",
-                    fullname: infos?.fullname || "",
-                    orglv2Id: infos?.organization_lv2 || "",
+                    fullName: infos?.fullname || "",
+                    organizationLv2: infos?.organization_lv2 || "",
                     pnl: infos?.pnl || ""
                 }
             }
@@ -162,7 +162,6 @@ class ProposedResignationPage extends React.Component {
             delete seniorExecutive.label
         }
         const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
-
         let bodyFormData = new FormData()
         bodyFormData.append('userInfo', JSON.stringify(userInfos))
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
@@ -291,18 +290,6 @@ class ProposedResignationPage extends React.Component {
         } catch (error) {
             return []
         }
-    }
-
-    error(name, groupId, groupItem) {
-        const { requestInfo } = this.state
-        let indexReq
-        if (groupItem) {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-        } else {
-            indexReq = requestInfo.findIndex(req => req.groupId === groupId)
-        }
-        const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
