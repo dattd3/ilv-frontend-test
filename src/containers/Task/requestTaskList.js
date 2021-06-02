@@ -644,7 +644,7 @@ class RequestTaskList extends React.Component {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
                                             let actionType = child?.actionType || null
-                                            if (requestTypeId == Constants.RESIGN_SELF) {
+                                            if (child?.requestTypeId == Constants.RESIGN_SELF) {
                                                 const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
                                                 actionType = requestItem ? requestItem.actionType : null
                                             }
