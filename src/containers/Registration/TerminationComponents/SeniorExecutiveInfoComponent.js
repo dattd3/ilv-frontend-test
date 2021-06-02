@@ -40,8 +40,18 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { seniorExecutive } = nextProps;
+    const { seniorExecutive } = nextProps
     const companiesUsing = ['V070','V077', 'V060']
+
+    if (seniorExecutive) {
+      this.setState({
+        seniorExecutive: {
+          ...seniorExecutive,
+          label: seniorExecutive.fullName,
+          value: seniorExecutive.account,
+        }
+      })
+    }
 
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       return
@@ -57,7 +67,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
       })
     }
   }
-    
+
   handleSelectChange = (name, value) => {
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
@@ -93,8 +103,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
   }
     
   getApproverInfo = value => {   
-    const { seniorExecutive } = this.props
-
     if (value !== "") {
       this.setState({isSearching: true})
 
@@ -116,7 +124,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
               department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
             }
           })
-          this.setState({ users: seniorExecutive ? users.filter(user => user.account !== seniorExecutive.account) : users, isSearching: false })
+          this.setState({ users: users, isSearching: false })
         }
       }).catch(error => {
         this.setState({isSearching: false})
