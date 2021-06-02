@@ -42,8 +42,18 @@ class DirectManagerInfoComponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { directManager } = nextProps;
+    const { directManager } = nextProps
     const companiesUsing = ['V070','V077', 'V060']
+
+    if (directManager) {
+      this.setState({
+        directManager: {
+          ...directManager,
+          label: directManager.fullName,
+          value: directManager.account,
+        }
+      })
+    }
 
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       return
@@ -111,7 +121,7 @@ class DirectManagerInfoComponent extends Component {
               department: `${res?.division || ""}${res?.department ? `/${res?.department}` : ""}${res?.part ? `/${res?.part}` : ""}`
             }
           })
-          this.setState({ users: directManager ? users.filter(user => user.account !== directManager.account) : users, isSearching: false })
+          this.setState({ users: users, isSearching: false })
         }
       }).catch(error => {
         this.setState({isSearching: false})
