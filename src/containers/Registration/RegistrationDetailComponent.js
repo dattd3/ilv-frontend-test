@@ -57,8 +57,8 @@ class RegistrationDetailComponent extends React.Component {
       <RegistrationConfirmationModal show={isShowModalRegistrationConfirm} id={taskId} title={modalTitle} message={modalMessage}
         type={typeRequest} urlName={requestUrl} onHide={this.onHideModalRegistrationConfirm} />
       <div className="registration-section">
-        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 2 ? <ProposeTerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
-        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 1 ? <TerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposeTerminationDetailComponent action={action} resignInfo={data}/> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action={action} resignInfo={data}/> : null}
         {data && data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={data}/> : null}
         {data && data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={data}/> : null}
         {data && data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={data}/> : null}

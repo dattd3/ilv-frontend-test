@@ -47,13 +47,13 @@ class TaskEditComponent extends React.Component {
 
     render() {
       const {data} = this.state
-
+      
       return (
       <div className="registration-section">
         {data && data.requestTypeId === Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceComponent leaveOfAbsence={data} isEdit={true} /> : null}
         {data && data.requestTypeId === Constants.BUSINESS_TRIP ? <BusinessTripComponent businessTrip={data} isEdit={true} /> : null}
-        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action="edit" resignInfo={data} /> : null}
-        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposedResignationEdit action="edit" resignInfo={data} /> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action="edit" resignInfo={data} /> : null}
+        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposedResignationEdit action="edit" resignInfo={data} /> : null}
         {/* {this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutTimeUpdateComponent inOutTimeUpdate={this.state.data}/> : null}
         {this.state.data.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionComponent substitution={this.state.data}/> : null} */}
       </div>

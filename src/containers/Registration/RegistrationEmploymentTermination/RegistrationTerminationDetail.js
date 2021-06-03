@@ -41,7 +41,6 @@ class RegistrationEmploymentTermination extends React.Component {
         isShowStatusModal,
         isSuccess,
         reasonTypes,
-        
         infos,
         directManager,
         seniorExecutive,
@@ -54,7 +53,7 @@ class RegistrationEmploymentTermination extends React.Component {
 
     let userInfos = {}
     // terminationUserInfo có 1 item cho trường hợp Đăng ký
-    if (resignInfo?.subTypeWorkOff == Constants.REGISTER_CONTRACT_TERMINATION_CODE && resignInfo?.requestInfo.terminationUserInfo && resignInfo?.requestInfo.terminationUserInfo.length == 1) {
+    if (resignInfo?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE && resignInfo?.requestInfo.terminationUserInfo && resignInfo?.requestInfo.terminationUserInfo.length == 1) {
         userInfos = resignInfo?.requestInfo.terminationUserInfo[0]
     }
 
