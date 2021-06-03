@@ -8,6 +8,7 @@ export default function processingDataReq (dataRawFromApi, tab)  {
                 if(element.requestTypeId == Constants.RESIGN_SELF) {
                     element.id = element.id + '.1';
                     element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
+                    element.startDate = ""
                 }
                 taskList.push(element);
             }else{

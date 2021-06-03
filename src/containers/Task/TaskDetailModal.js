@@ -61,8 +61,8 @@ class TaskDetailModal extends React.Component {
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <div className="registration-section">
-                        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 2 ? <ProposeTerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
-                        {data && data.requestTypeId == Constants.RESIGN_SELF && data.subTypeWorkOff == 1 ? <TerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposeTerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
                         {data && data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent action={this.props.action} leaveOfAbsence={this.state.data}/> : null}
                         {data && data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={this.props.action} businessTrip={this.state.data}/> : null}
                         {data && data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}

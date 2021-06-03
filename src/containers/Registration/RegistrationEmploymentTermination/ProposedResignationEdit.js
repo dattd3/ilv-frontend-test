@@ -41,8 +41,10 @@ class ProposedResignationEdit extends React.Component {
     componentDidMount() {
         const {action, resignInfo} = this.props
         const result = {...this.state}
+
         if (resignInfo) {
             const requestInfo = resignInfo?.requestInfo
+            result.id = resignInfo?.id
             result.userInfos = resignInfo?.requestInfo?.terminationUserInfo
             result.staffTerminationDetail = {
                 reason: requestInfo?.absenceType,
@@ -50,6 +52,7 @@ class ProposedResignationEdit extends React.Component {
                 dateTermination: requestInfo?.dateTermination,
                 lastWorkingDay: requestInfo?.lastWorkingDay
             };
+            result.files = resignInfo?.requestDocuments
             result.directManager = resignInfo?.user
             result.seniorExecutive = resignInfo?.approver
             this.setState(result);
@@ -114,58 +117,37 @@ class ProposedResignationEdit extends React.Component {
     submit = async () => {
         const { t } = this.props
         const {
+            id,
             userInfos,
             staffTerminationDetail,
             directManager,
             seniorExecutive
         } = this.state
-
         const isValid = this.isValidData()
+        
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
             return
         }
 
-        // this.setDisabledSubmitButton(true)
-
-        console.log("KHKHKHKHKH")
-        console.log(userInfos)
-        console.log(staffTerminationDetail)
-        console.log(directManager)
-        console.log(seniorExecutive)
-
-        return
+        this.setDisabledSubmitButton(true)
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
+        const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
+
         let bodyFormData = new FormData()
-
-        // if (files && files.length > 0) {
-        //     files.forEach(file => {
-        //         bodyFormData.append('attachedFiles', file)
-        //     })
-        // }
-
-        // let bodyFormData = new FormData()
-        // bodyFormData.append('userInfo', JSON.stringify(userInfos))
-        // bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
-        // bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
-        // bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        // bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
-        // bodyFormData.append('formResignation', Constants.PROPOSED_CONTRACT_TERMINATION_CODE)
-        // bodyFormData.append('supervisorId', localStorage.getItem('email'))
-        // bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
-        // bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
-        // bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
-
-        const requestInfo = this.props.resignInfo.requestInfo;
-        requestInfo.UserInfo =  JSON.stringify(userInfos);
-        requestInfo.LastWorkingDay = staffTerminationDetail.lastWorkingDay;
-        requestInfo.DateTermination = staffTerminationDetail.dateTermination;
-        requestInfo.Reason = JSON.stringify(reasonToSubmit);
-        requestInfo.ReasonDetailed = staffTerminationDetail.reasonDetailed || '';
-        bodyFormData.append('requestInfo', JSON.stringify(requestInfo));
-        bodyFormData.append('id', this.props.resignInfo.id)
+        bodyFormData.append('requestHistoryId', id)
+        bodyFormData.append('userInfo', JSON.stringify(userInfos))
+        bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
+        bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
+        bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
+        bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
+        bodyFormData.append('formResignation', Constants.PROPOSED_CONTRACT_TERMINATION_CODE)
+        bodyFormData.append('supervisorId', localStorage.getItem('email'))
+        bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
+        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
+        bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
 
         try {
             const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, getRequestConfigs())
@@ -234,6 +216,14 @@ class ProposedResignationEdit extends React.Component {
             seniorExecutive,
             staffTerminationDetail
         } = this.state
+
+        const attachments = (files || []).map(item => {
+            return {
+                name: item.fileName,
+                fileUrl: item.fileUrl || ""
+            }
+        })
+
         return (
             <>
             <ToastContainer autoClose={2000} />
@@ -246,7 +236,7 @@ class ProposedResignationEdit extends React.Component {
                 <StaffInfoProposedResignationComponent userInfos={userInfos} updateUserInfos={this.updateUserInfos}  updateErrors={this.updateErrors} />
                 <ReasonResignationComponent reasonTypes={reasonTypes} data={staffTerminationDetail} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors}/>
                 <SeniorExecutiveInfoComponent isEdit={true} seniorExecutive={seniorExecutive} />
-                <AttachmentComponent files={files} updateFiles={this.updateFiles} isEdit={true} />
+                <AttachmentComponent files={attachments} updateFiles={this.updateFiles} isEdit={true} />
                 <ButtonComponent isEdit={true} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>
             </>
