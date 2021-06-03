@@ -116,6 +116,8 @@ class ProposedResignationEdit extends React.Component {
         const {
             userInfos,
             staffTerminationDetail,
+            directManager,
+            seniorExecutive
         } = this.state
 
         const isValid = this.isValidData()
@@ -128,23 +130,15 @@ class ProposedResignationEdit extends React.Component {
         // this.setDisabledSubmitButton(true)
 
         console.log("KHKHKHKHKH")
-        console.log(this.state.errors)
+        console.log(userInfos)
+        console.log(staffTerminationDetail)
+        console.log(directManager)
+        console.log(seniorExecutive)
 
         return
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
         let bodyFormData = new FormData()
-
-        // bodyFormData.append('userInfo', JSON.stringify(userInfos))
-        // bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
-        // bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
-        // bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
-        // bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed)
-        // bodyFormData.append('formResignation', 2)
-        // bodyFormData.append('supervisorId', localStorage.getItem('email'))
-        // bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
-        // bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
-        // bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
 
         // if (files && files.length > 0) {
         //     files.forEach(file => {
