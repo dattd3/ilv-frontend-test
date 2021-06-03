@@ -201,7 +201,7 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.account != null && statusOriginal == 5) {
+        if(taskData?.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
@@ -234,7 +234,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -244,7 +244,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser?.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId) => {
@@ -252,7 +252,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))){
                 isShow = true;
             } else {
                 isShow = false;
