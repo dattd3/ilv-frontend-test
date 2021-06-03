@@ -62,15 +62,16 @@ class ProposedResignationEdit extends React.Component {
     }
 
     initialData = async () => {
-        const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
-        const requestReasonTypes = axios.get(reasonTypesEndpoint, getRequestConfigs())
-        await axios.all([requestReasonTypes]).then(axios.spread((...responses) => {
-            const reasonTypes = this.prepareReasonTypes(responses[0])
+        try {
+            const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
+            const responses = await axios.get(reasonTypesEndpoint, getRequestConfigs())
+            const reasonTypes = this.prepareReasonTypes(responses)
 
             this.setState({reasonTypes: reasonTypes})
-        })).catch(errors => {
-            return null
-        })
+
+        } catch (error) {
+            // No processing
+        }
     }
 
     prepareReasonTypes = responses => {
@@ -119,9 +120,7 @@ class ProposedResignationEdit extends React.Component {
         const {
             id,
             userInfos,
-            staffTerminationDetail,
-            directManager,
-            seniorExecutive
+            staffTerminationDetail
         } = this.state
         const isValid = this.isValidData()
         
@@ -134,8 +133,6 @@ class ProposedResignationEdit extends React.Component {
         this.setDisabledSubmitButton(true)
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
-        const seniorExecutiveToSubmit = !_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0 ? seniorExecutive : {}
-
         let bodyFormData = new FormData()
         bodyFormData.append('requestHistoryId', id)
         bodyFormData.append('userInfo', JSON.stringify(userInfos))
@@ -143,11 +140,6 @@ class ProposedResignationEdit extends React.Component {
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
         bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
-        bodyFormData.append('formResignation', Constants.PROPOSED_CONTRACT_TERMINATION_CODE)
-        bodyFormData.append('supervisorId', localStorage.getItem('email'))
-        bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
-        bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`)
-        bodyFormData.append('approverInfo', JSON.stringify(seniorExecutiveToSubmit))
 
         try {
             const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/createresignation`, bodyFormData, getRequestConfigs())
