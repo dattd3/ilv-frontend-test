@@ -5,7 +5,10 @@ export default function processingDataReq (dataRawFromApi, tab)  {
     let taskList = [];
         dataRawFromApi.forEach(element => {
             if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF) {
-                element.id = element.requestTypeId == Constants.RESIGN_SELF ? element.id + '.1' : element.id;
+                if(element.requestTypeId == Constants.RESIGN_SELF) {
+                    element.id = element.id + '.1';
+                    element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
+                }
                 taskList.push(element);
             }else{
                 if(element.requestInfo) {
