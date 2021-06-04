@@ -119,7 +119,6 @@ class ProposedResignationEdit extends React.Component {
         const { t } = this.props
         const {
             id,
-            userInfos,
             staffTerminationDetail
         } = this.state
         const isValid = this.isValidData()
@@ -135,7 +134,6 @@ class ProposedResignationEdit extends React.Component {
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
         let bodyFormData = new FormData()
         bodyFormData.append('requestHistoryId', id)
-        bodyFormData.append('userInfo', JSON.stringify(userInfos))
         bodyFormData.append('lastWorkingDay', staffTerminationDetail.lastWorkingDay)
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
@@ -225,7 +223,7 @@ class ProposedResignationEdit extends React.Component {
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence proposed-registration-employment-termination">
                 <h5 className="page-title">{t('ProposeForEmployeesResignation')}</h5>
-                <StaffInfoProposedResignationComponent userInfos={userInfos} updateUserInfos={this.updateUserInfos}  updateErrors={this.updateErrors} />
+                <StaffInfoProposedResignationComponent isEdit={true} userInfos={userInfos} updateUserInfos={this.updateUserInfos}  updateErrors={this.updateErrors} />
                 <ReasonResignationComponent reasonTypes={reasonTypes} data={staffTerminationDetail} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors}/>
                 <SeniorExecutiveInfoComponent isEdit={true} seniorExecutive={seniorExecutive} />
                 <AttachmentComponent files={attachments} updateFiles={this.updateFiles} isEdit={true} />
