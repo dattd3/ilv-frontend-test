@@ -12,6 +12,7 @@ import StaffInfoProposedResignationComponent from '../TerminationComponents/Staf
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
+import LoadingModal from '../../../components/Common/LoadingModal'
 import "react-toastify/dist/ReactToastify.css"
 
 class ProposedResignationPage extends React.Component {
@@ -31,6 +32,7 @@ class ProposedResignationPage extends React.Component {
             messageModal: "",
             disabledSubmitButton: false,
             loaded: 0,
+            isShowLoadingModal: false,
             errors: {
                 employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!",
                 lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
@@ -155,6 +157,9 @@ class ProposedResignationPage extends React.Component {
             }
         }
 
+        this.setState({isShowLoadingModal: true})
+        this.setDisabledSubmitButton(true)
+
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
 
         if (!_.isNull(seniorExecutive) && _.size(seniorExecutive) > 0) {
@@ -168,7 +173,7 @@ class ProposedResignationPage extends React.Component {
         bodyFormData.append('dateTermination', staffTerminationDetail.dateTermination)
         bodyFormData.append('reason', JSON.stringify(reasonToSubmit))
         bodyFormData.append('reasonDetailed', staffTerminationDetail.reasonDetailed || "")
-        bodyFormData.append('formResignation', 2)
+        bodyFormData.append('formResignation', Constants.PROPOSED_CONTRACT_TERMINATION_CODE)
         bodyFormData.append('supervisorId', localStorage.getItem('email'))
         bodyFormData.append('supervisorInfo', JSON.stringify(directManager))
         bodyFormData.append('approverId', `${seniorExecutive?.account.toLowerCase()}@vingroup.net`)
@@ -188,18 +193,22 @@ class ProposedResignationPage extends React.Component {
                 if (result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
+                    this.setState({isShowLoadingModal: false})
                 } else {
                     this.showStatusModal(t("Notification"), result.message, false)
                     this.setDisabledSubmitButton(false)
+                    this.setState({isShowLoadingModal: false})
                 }
             } else {
                 this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                 this.setDisabledSubmitButton(false)
+                this.setState({isShowLoadingModal: false})
             }
 
         } catch (errors) {
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false)
+            this.setState({isShowLoadingModal: false})
         }
     }
 
@@ -346,11 +355,13 @@ class ProposedResignationPage extends React.Component {
             isSuccess,
             userInfos,
             reasonTypes,
-            seniorExecutive
+            seniorExecutive,
+            isShowLoadingModal
         } = this.state
 
         return (
             <div className='registration-section'>
+            <LoadingModal show={isShowLoadingModal} />
             <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
