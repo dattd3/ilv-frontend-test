@@ -200,6 +200,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         return <div className="block staff-information-proposed-resignation-block">
                     <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
                     <div className="box shadow">
+                        { !isEdit ?
                         <div className="row search-action-block">
                             <div className="col-4">
                                 <div>
@@ -222,6 +223,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                 <button type="button" className="btn-action delete" onClick={this.removeEmployees}>Xóa</button>
                             </div>
                         </div>
+                        : null
+                        }
                         <div className="row">
                             <div className="col-12">
                                 <table className="list-staff">
