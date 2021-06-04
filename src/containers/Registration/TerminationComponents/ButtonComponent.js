@@ -38,13 +38,13 @@ class ButtonComponent extends React.PureComponent {
     }
 
     render() {
-        const {t} = this.props
+        const {t, disabledSubmitButton, isEdit} = this.props
 
         return <div className="bottom">
             <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit} disabled={this.props.disabledSubmitButton}>
+                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit} disabled={disabledSubmitButton}>
                     {
-                        !this.props.disabledSubmitButton ?
+                        !disabledSubmitButton ?
                         <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
                         :
                         <Spinner
@@ -59,7 +59,7 @@ class ButtonComponent extends React.PureComponent {
                     {t('Send')}
                 </button>
                 {
-                    !this.props.isEdit ?
+                    !isEdit ?
                     <>
                         <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange} multiple />
                         <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction}><i className="fas fa-paperclip"></i> {t('AttachmentFile')}</button>
