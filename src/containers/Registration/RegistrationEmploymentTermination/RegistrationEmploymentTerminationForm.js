@@ -14,6 +14,7 @@ import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
+import LoadingModal from '../../../components/Common/LoadingModal'
 import "react-toastify/dist/ReactToastify.css"
 
 class RegistrationEmploymentTerminationForm extends React.Component {
@@ -32,6 +33,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             messageModal: "",
             disabledSubmitButton: false,
             loaded: 0,
+            isShowLoadingModal: false,
             errors: {
                 lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
                 reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
@@ -197,6 +199,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             toast.error(fileInfoValidation.files)
             return
         }
+        this.setState({isShowLoadingModal: true})
+        this.setDisabledSubmitButton(true)
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
@@ -240,18 +244,22 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                 if (result.code != Constants.API_ERROR_CODE) {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
+                    this.setState({isShowLoadingModal: false})
                 } else {
                     this.showStatusModal(t("Notification"), result.message, false)
                     this.setDisabledSubmitButton(false)
+                    this.setState({isShowLoadingModal: false})
                 }
             } else {
                 this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                 this.setDisabledSubmitButton(false)
+                this.setState({isShowLoadingModal: false})
             }
 
         } catch (errors) {
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false)
+            this.setState({isShowLoadingModal: false})
         }
     }
 
@@ -342,11 +350,13 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             reasonTypes,
             userInfos,
             directManager,
-            seniorExecutive
+            seniorExecutive,
+            isShowLoadingModal
         } = this.state
 
         return (
             <>
+            <LoadingModal show={isShowLoadingModal} />
             <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
