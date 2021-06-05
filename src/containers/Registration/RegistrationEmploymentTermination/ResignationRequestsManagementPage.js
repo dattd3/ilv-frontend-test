@@ -35,29 +35,15 @@ class ResignationRequestsManagementPage extends React.Component {
             requestIdChecked: [],
             isShowLoadingModal: false,
             isShowStatusModal: false,
-            approver: null,
-            appraiser: null,
             annualLeaveSummary: null,
             files: [],
             isUpdateFiles: false,
             isEdit: false,
             titleModal: "",
             messageModal: "",
-            disabledSubmitButton: false,
             loaded: 0,
             errors: {}
         }
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { leaveOfAbsence } = nextProps
-        if (leaveOfAbsence) {
-            return ({
-                approver: leaveOfAbsence.approver,
-                appraiser: leaveOfAbsence.appraiser
-            })
-        }
-        return prevState
     }
 
     componentDidMount() {
@@ -112,10 +98,6 @@ class ResignationRequestsManagementPage extends React.Component {
 
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
-    }
-
-    setDisabledSubmitButton(status) {
-        this.setState({ disabledSubmitButton: status });
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -362,17 +344,7 @@ class ResignationRequestsManagementPage extends React.Component {
             toast.error(fileInfoValidation.files)
             return
         } else {
-            let itemsChecked = []
-
-            for (let i = 0, requestIdCheckedLength = requestIdChecked.length; i < requestIdCheckedLength; i++) {
-                const requestIdCheckedItem = requestIdChecked[i]
-                for (let j = 0, userInfosLength = listUserTerminations.length; j < userInfosLength; j++) {
-                    const userTerminationItem = listUserTerminations[j]
-                    if (requestIdCheckedItem && requestIdCheckedItem.key === userTerminationItem.id && requestIdCheckedItem.value) {
-                        itemsChecked = itemsChecked.concat(userTerminationItem)
-                    }
-                }
-            }
+            const itemsChecked = (requestIdChecked || []).filter(item => item?.value).map(item => item?.item)
 
             if (itemsChecked.length > 0) {
                 this.setState({isShowLoadingModal: true})
@@ -433,11 +405,8 @@ class ResignationRequestsManagementPage extends React.Component {
         const {
             listUserTerminations,
             totalUserTerminations,
-            isEdit,
-            errors,
             titleModal,
             messageModal,
-            disabledSubmitButton,
             isShowStatusModal,
             isSuccess,
             isShowLoadingModal,
