@@ -19,6 +19,7 @@ const Constants = {
   KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport',
 
   //Type request
+  UPDATE_PROFILE: 1,
   LEAVE_OF_ABSENCE: 2,
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
