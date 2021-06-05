@@ -573,7 +573,7 @@ class RequestTaskList extends React.Component {
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                     totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                 }
-                                if(child.requestType.id == 4 || child.requestType.id == 5)
+                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1)
                                 {
                                     editLink = null;
                                 }
@@ -585,7 +585,7 @@ class RequestTaskList extends React.Component {
                                         <td scope="col" className="check-box">
                                             
                                         </td>
-                                        <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                        <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                         <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
                                         <td className="day-off">{child.startDate}</td>
                                         <td className="break-time text-center">{totalTime}</td>
