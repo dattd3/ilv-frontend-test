@@ -44,10 +44,8 @@ class ListStaffResignationComponent extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            listUserTerminations: props.listUserTerminations,
-            requestIdChecked: [],
-            appraiser: null,
-            users: []
+            listUserTerminations: [],
+            requestIdChecked: {}
         }
     }
 
@@ -209,16 +207,16 @@ class ListStaffResignationComponent extends React.PureComponent {
         this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
-    handleCheckboxChange = (index, code, requestStatusProcessId, isUploadFile, employeeNo, e) => {
-        const requestIdChecked = [...this.state.requestIdChecked]
-        requestIdChecked[index] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo}
+    handleCheckboxChange = (item, code, requestStatusProcessId, isUploadFile, employeeNo, e) => {
+        const requestIdChecked = {...this.state.requestIdChecked}
+        requestIdChecked[requestStatusProcessId] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo, item: item}
 
         this.setState({requestIdChecked: requestIdChecked})
-        this.props.updateTerminationRequestList("requestIdChecked", requestIdChecked)
+        this.props.updateTerminationRequestList("requestIdChecked", Object.values(requestIdChecked))
     }
 
     render() {
-        const { t, isEdit } = this.props
+        const { t } = this.props
         const {listUserTerminations, requestIdChecked} = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
@@ -266,8 +264,8 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
-                                                                    <input type="checkbox" checked={requestIdChecked[index] && requestIdChecked[index].value ? requestIdChecked[index].value : false} 
-                                                                    onChange={e => this.handleCheckboxChange(index, item.id, item.requestStatusProcessId, item.isUploadFile, userInfos?.employeeNo, e)} />
+                                                                    <input type="checkbox" checked={requestIdChecked[item?.requestStatusProcessId]?.value || false} 
+                                                                    onChange={e => this.handleCheckboxChange(item, item.id, item.requestStatusProcessId, item.isUploadFile, userInfos?.employeeNo, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
                                                                 </div>
                                                             </td>
@@ -290,7 +288,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div></td>
                                                             <td className="handover-liabilities-col"><div className="data handover-liabilities">{this.renderStatus(index, item.isHandoverDebt, item.statusDebt, "statusDebt")}</div></td>
                                                             <td className="handover-software-col"><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
-                                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, false, item.statusConfirmation, "statusConfirmation")}</div></td>
+                                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
                                                             <td className="approval-status-col"><div className="data approval-status">{item?.processStatusString || ""}</div></td>
                                                             <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">{this.renderInsuranceBookStatus(item?.statusSocialClosing)}</div></td>
                                                             <td className="leave-salary-col"><div className="data leave-salary">{item?.statusLastPaymentString || ""}</div></td>
