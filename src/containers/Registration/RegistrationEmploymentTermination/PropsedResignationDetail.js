@@ -186,7 +186,14 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    {
+                    <div className="col-4">
+                        <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
+                        <div>
+                            <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
+                        </div>
+                    </div>
+
+                    {/* {
                         resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
                         <div className="col-4">
                             <p className="title">Lý do không duyệt</p>
@@ -195,7 +202,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             </div>
                         </div>
                         : null
-                    }
+                    } */}
                 </div>
             </div>
         </div>

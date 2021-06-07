@@ -33,21 +33,8 @@ class RegistrationEmploymentTermination extends React.Component {
 
   render() {
     const { t, resignInfo } = this.props
-    const {
-        isEdit,
-        titleModal,
-        messageModal,
-        disabledSubmitButton,
-        isShowStatusModal,
-        isSuccess,
-        reasonTypes,
-        infos,
-        directManager,
-        seniorExecutive,
-        dateStartWork
-    } = this.state
 
-    if (!resignInfo.requestInfo || !resignInfo.user) {
+    if (!resignInfo.requestInfo) {
         return null;
     }
 
@@ -117,30 +104,42 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">{t('LastWorkingDay')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.lastWorkingDay ? moment(requestInfo.lastWorkingDay, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.lastWorkingDay ? moment(requestInfo.lastWorkingDay, "YYYY-MM-DD").format('DD/MM/YYYY') : ''} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('ContractTerminationDate')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.dateTermination ? moment(requestInfo.dateTermination, "YYYY-MM-DD").format('DD/MM/YYYY') : ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.dateTermination ? moment(requestInfo.dateTermination, "YYYY-MM-DD").format('DD/MM/YYYY') : ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('ReasonForContractTermination')}</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.absenceType ? requestInfo.absenceType.label : ''} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.absenceType ? requestInfo.absenceType.label : ''} readOnly />
                         </div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-12">
-                        <p className="title">{t('DetailedReason')}</p>
+                        <p className="title">Lý do chi tiết chấm dứt hợp đồng</p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo.reasonDetailed || ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.reasonDetailed || ""} readOnly />
                         </div>
                     </div>
                 </div>
+                {
+                    requestInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title">Lý do hủy yêu cầu</p>
+                            <div>
+                                <input type="text" className="form-control" value={requestInfo?.commentExtend || ""} readOnly />
+                            </div>
+                        </div>
+                    </div>
+                    : null
+                }
             </div>
         </div>
 
@@ -167,16 +166,12 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={appraiserInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    {
-                        resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
-                        <div className="col-4">
-                            <p className="title">Lý do không duyệt</p>
-                            <div>
-                                <input type="text" className="form-control" value={resignInfo.appraiserComment || ""} readOnly />
-                            </div>
+                    <div className="col-12">
+                        <p className="title">Ý kiến thẩm định của CBQL trực tiếp </p>
+                        <div>
+                            <input type="text" className="form-control" value={requestInfo?.a || ""} readOnly />
                         </div>
-                        : null
-                    }
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,16 +198,12 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    {
-                        resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
-                        <div className="col-4">
-                            <p className="title">Lý do không duyệt</p>
-                            <div>
-                                <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
-                            </div>
+                    <div className="col-12">
+                        <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
+                        <div>
+                            <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
                         </div>
-                        : null
-                    }
+                    </div>
                 </div>
             </div>
         </div>
