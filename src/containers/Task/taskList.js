@@ -501,8 +501,6 @@ class TaskList extends React.Component {
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
-                                        if(!child.user)
-                                            return null;
                                         return (
                                             <tr key={index}>
                                                 {

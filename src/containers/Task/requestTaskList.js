@@ -569,10 +569,10 @@ class RequestTaskList extends React.Component {
                                 const isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiser, requestTypeId);
                                 const isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, requestTypeId);
                                 let actionType = child?.actionType || null
-                                if (requestTypeId == Constants.RESIGN_SELF) {
-                                    const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
-                                    actionType = requestItem ? requestItem.actionType : null
-                                }
+                                // if (requestTypeId == Constants.RESIGN_SELF) {
+                                //     const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
+                                //     actionType = requestItem ? requestItem.actionType : null
+                                // }
                                 const isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, requestTypeId, actionType);
                                 let totalTime = null;
                                 let editLink = null

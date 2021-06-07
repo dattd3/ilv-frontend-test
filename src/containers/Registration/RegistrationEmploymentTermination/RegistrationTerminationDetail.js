@@ -211,9 +211,9 @@ class RegistrationEmploymentTermination extends React.Component {
         <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[resignInfo.processStatusId].className}`}>{(this.props.action == "consent" && resignInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[resignInfo.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
         </div>
-        {(resignInfo.processStatusId === 8 || (this.props.action != "consent" && resignInfo.processStatusId === 5) || resignInfo.processStatusId === 2) ? 
+        {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ? 
         <DetailButtonComponent 
           dataToSap={[{
             "id": resignInfo.id,
@@ -224,10 +224,10 @@ class RegistrationEmploymentTermination extends React.Component {
               }
             ]
           }]}
-          isShowRevocationOfApproval={resignInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
-          isShowApproval={resignInfo.processStatusId === Constants.STATUS_WAITING}
-          isShowConsent = {resignInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {resignInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
+          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+          isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
+          isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+          isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
           id={resignInfo.id}
           urlName={'requestattendance'}
           requestTypeId={requestTypeId}
