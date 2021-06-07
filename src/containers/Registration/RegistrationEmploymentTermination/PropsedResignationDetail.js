@@ -189,20 +189,9 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-4">
                         <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
                         <div>
-                            <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
                         </div>
                     </div>
-
-                    {/* {
-                        resignInfo.processStatusId == Constants.STATUS_NOT_APPROVED || resignInfo.processStatusId == Constants.STATUS_NO_CONSENTED || resignInfo.processStatusId == Constants.STATUS_EVICTION ?
-                        <div className="col-4">
-                            <p className="title">Lý do không duyệt</p>
-                            <div>
-                                <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
-                            </div>
-                        </div>
-                        : null
-                    } */}
                 </div>
             </div>
         </div>

@@ -169,7 +169,7 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-12">
                         <p className="title">Ý kiến thẩm định của CBQL trực tiếp </p>
                         <div>
-                            <input type="text" className="form-control" value={requestInfo?.a || ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.appraiserComment || ""} readOnly />
                         </div>
                     </div>
                 </div>
@@ -201,7 +201,7 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="col-12">
                         <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
                         <div>
-                            <input type="text" className="form-control" value={resignInfo.approverComment || ""} readOnly />
+                            <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
                         </div>
                     </div>
                 </div>
