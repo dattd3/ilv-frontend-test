@@ -48,7 +48,7 @@ class ProposedResignationEdit extends React.Component {
             result.userInfos = resignInfo?.requestInfo?.terminationUserInfo
             result.staffTerminationDetail = {
                 reason: requestInfo?.absenceType,
-                reasonDetailed: requestInfo?.comment,
+                reasonDetailed: requestInfo?.reasonDetailed || "",
                 dateTermination: requestInfo?.dateTermination,
                 lastWorkingDay: requestInfo?.lastWorkingDay
             };
