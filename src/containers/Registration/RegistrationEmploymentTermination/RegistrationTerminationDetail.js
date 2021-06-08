@@ -166,12 +166,16 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={appraiserInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    <div className="col-12">
-                        <p className="title">Ý kiến thẩm định của CBQL trực tiếp </p>
-                        <div>
-                            <input type="text" className="form-control" value={requestInfo?.appraiserComment || ""} readOnly />
+                    {
+                        requestInfo?.appraiserComment != null && requestInfo?.appraiserComment != undefined && requestInfo?.appraiserComment != "" ?
+                        <div className="col-12">
+                            <p className="title">Lý do từ chối</p>
+                            <div>
+                                <input type="text" className="form-control" value={requestInfo?.appraiserComment || ""} readOnly />
+                            </div>
                         </div>
-                    </div>
+                        : null
+                    }
                 </div>
             </div>
         </div>
@@ -198,12 +202,16 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    <div className="col-12">
-                        <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
-                        <div>
-                            <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
+                    {
+                        requestInfo?.approverComment != null && requestInfo?.approverComment != undefined && requestInfo?.approverComment != "" ?
+                        <div className="col-12">
+                            <p className="title">Lý do từ chối</p>
+                            <div>
+                                <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
+                            </div>
                         </div>
-                    </div>
+                        : null
+                    }
                 </div>
             </div>
         </div>

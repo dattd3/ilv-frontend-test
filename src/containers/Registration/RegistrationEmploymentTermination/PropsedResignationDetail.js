@@ -155,12 +155,24 @@ class RegistrationEmploymentTermination extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-12">
-                        <p className="title">{t('DetailedReason')}</p>
+                        <p className="title">Lý do chi tiết chấm dứt hợp đồng</p>
                         <div>
                             <input type="text" className="form-control" value={requestInfo.reasonDetailed || ""} readOnly />
                         </div>
                     </div>
                 </div>
+                {
+                    requestInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title">Lý do hủy yêu cầu</p>
+                            <div>
+                                <input type="text" className="form-control" value={requestInfo?.commentExtend || ""} readOnly />
+                            </div>
+                        </div>
+                    </div>
+                    : null
+                }
             </div>
         </div>
 
@@ -186,13 +198,19 @@ class RegistrationEmploymentTermination extends React.Component {
                             <input type="text" className="form-control" value={approvalInfo?.department || ""} readOnly />
                         </div>
                     </div>
-                    <div className="col-4">
-                        <p className="title">Ý kiến phê duyệt của CBLĐ phê duyệt</p>
-                        <div>
-                            <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
+                </div>
+                {
+                    requestInfo?.approverComment != null && requestInfo?.approverComment != undefined && requestInfo?.approverComment != "" ?
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title">Lý do từ chối</p>
+                            <div>
+                                <input type="text" className="form-control" value={requestInfo?.approverComment || ""} readOnly />
+                            </div>
                         </div>
                     </div>
-                </div>
+                    : null
+                }
             </div>
         </div>
 
