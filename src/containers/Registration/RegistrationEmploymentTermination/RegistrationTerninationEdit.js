@@ -50,7 +50,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             result.userInfos = requestInfo?.terminationUserInfo[0]
             result.staffTerminationDetail = {
                 reason: requestInfo?.absenceType,
-                reasonDetailed: requestInfo?.comment,
+                reasonDetailed: requestInfo?.reasonDetailed || "",
                 dateTermination: requestInfo?.dateTermination,
                 lastWorkingDay: requestInfo?.lastWorkingDay
             };
