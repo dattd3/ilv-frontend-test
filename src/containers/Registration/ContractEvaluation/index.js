@@ -163,10 +163,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
+    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.startDate), 'days') > 7 ? true : false;
     let shouldDisable = false;
     switch(data.processStatus) {
       case 9: 
-        if((this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase())){
+        if(!isAfterT_7 || (this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
@@ -193,8 +194,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       default:
         shouldDisable = true;
     }
-    if(this.state.type == 'edit' && data.processStatus == 9){
-      shouldDisable = data.canAddJob ? false : true;
+    if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
+      shouldDisable = false;
     }
     this.setState({
       disableComponent: {...this.state.disableComponent, disableAll: shouldDisable}
