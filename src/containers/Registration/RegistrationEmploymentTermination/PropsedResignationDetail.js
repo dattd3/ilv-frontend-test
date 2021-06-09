@@ -230,7 +230,8 @@ class RegistrationEmploymentTermination extends React.Component {
               }
             ]
           }]}
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+          isShowRevocationOfApproval={false}
+          //isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")
           isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
           isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
