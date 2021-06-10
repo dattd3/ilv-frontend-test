@@ -160,10 +160,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
 
-  checkAuthorize = () => {
+  checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.startDate), 'days') > 7 ? true : false;
+    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > -7 ? true : false;
     let shouldDisable = false;
     switch(data.processStatus) {
       case 9: 
@@ -195,11 +195,39 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         shouldDisable = true;
     }
     if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
-      shouldDisable = false;
+      const subordinates = await this.getSubordinates()
+      const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeEmail.toLowerCase(), subordinates)
+      shouldDisable = directManagerValidation ? false : true;
     }
     this.setState({
       disableComponent: {...this.state.disableComponent, disableAll: shouldDisable}
     })
+  }
+
+  getSubordinates = async () => {
+    try {
+        const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigs())
+
+        if (responses && responses.data) {
+            const employees = responses.data.employees
+
+            if (employees && employees.length > 0) {
+                return employees
+            }
+
+            return []
+        }
+    } catch (error) {
+        return []
+    }
+  }
+
+  validateDirectManager = (employeeEmail, subordinates) => {
+    const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION)
+    if(subordinateAds.indexOf(employeeEmail) != -1){
+      return true;
+    }
+    return false;
   }
 
   constructor(props) {
@@ -820,7 +848,7 @@ renderEvalution = (name, data, isDisable) => {
       </td>
       <td style={{width: '8%'}}>
         {
-          item.canEdit ? 
+          !isDisable && item.canEdit ? 
           <div className="action-group">
             <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isEditing', item.id)} />
             <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isDeleted', item.id)} />
