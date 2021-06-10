@@ -289,7 +289,7 @@ class RequestComponent extends React.Component {
       }
     }
 
-    axios.post(`${process.env.REACT_APP_REQUEST_URL}api/managementPoints`, result, config)
+    axios.post(`${process.env.REACT_APP_HRDX_REQUEST_URL}api/managementPoints`, result, config)
     .then( response => {
       let message = 'Lưu thông tin thành công.';
         this.setState({
