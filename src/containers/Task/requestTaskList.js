@@ -41,7 +41,14 @@ class RequestTaskList extends React.Component {
             dataToUpdate: [],
             isShowModalRegistrationConfirm: false,
             statusSelected:null,
-            query: null
+            query: null,
+            dataForSearch: {
+                pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
+                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
+                id: '',
+                status: 0,
+                needRefresh: false
+            }
         }
 
         this.manager = {
@@ -78,7 +85,15 @@ class RequestTaskList extends React.Component {
     }
 
     onChangePage = index => {
-        this.setState({ pageNumber: index })
+        index = index < Constants.TASK_PAGE_INDEX_DEFAULT ? Constants.TASK_PAGE_INDEX_DEFAULT : index;
+        index = index * this.state.dataForSearch.pageSize > this.props.total ? (1 + parseInt(this.props.total / this.state.dataForSearch.pageSize)) : index;
+        this.setState({ pageNumber: index, dataForSearch: {
+            ...this.state.dataForSearch,
+            pageIndex: index
+        }}, () => {
+            this.seachRemoteData(false);
+        });
+        //this.setState({ pageNumber: index })
     }
 
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
@@ -201,7 +216,7 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData.account != null && statusOriginal == 5) {
+        if(taskData?.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
@@ -234,7 +249,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))) {
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -244,7 +259,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser?.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId) => {
@@ -252,7 +267,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser.account))){
+            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))){
                 isShow = true;
             } else {
                 isShow = false;
@@ -260,43 +275,6 @@ class RequestTaskList extends React.Component {
         }
         return isShow;
     }
-
-    handleAllChecked = event => {
-        let tasks = this.props.tasks;
-        tasks.forEach((task,index) => {
-            task.isChecked = event.target.checked
-            if(task.isChecked)
-            {
-                this.state.taskChecked.push(task.id);
-            }
-            else
-            {
-                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
-            }
-        });
-        this.setState({ tasks: tasks });
-        this.props.handleChange(this.state.taskChecked);
-    };
-    
-    handleCheckChieldElement = event => {
-        let tasks = this.props.tasks;
-        tasks.forEach((task,index) => {
-          if (task.id == event.target.value)
-          {
-            task.isChecked = event.target.checked;
-            if(task.isChecked)
-            {
-                this.state.taskChecked.push(task.id);
-            }
-            else
-            {
-                this.state.taskChecked.splice(this.state.taskChecked.indexOf(task.id),1);
-            }
-          }
-        });
-        this.setState({ tasks: tasks });
-        // this.props.handleChange(this.state.taskChecked);
-    };
 
     getTaskLink = id => {
         if (this.props.page == "approval") {
@@ -439,58 +417,47 @@ class RequestTaskList extends React.Component {
         return dataToSAP
     }
     handleSelectChange(name, value) {
-        this.setState({ [name]: value })
-        let cloneTask = this.props.tasks;
-        let result = [];
-        if(value && value.value > 0)
-        {
-            result = cloneTask.filter(req => {
-                switch (value.value) {
-                    case 8:
-                        return (req.processStatusId == 5 && req.appraiser.account == null) || req.processStatusId == 8
-                    case 5:
-                        return req.processStatusId == 5 && req.appraiser.account
-                    case 4:
-                        return req.processStatusId == 3 || req.processStatusId == 4
-                    case 1:  
-                        return req.processStatusId == 1 || req.processStatusId == 7
-                    default:
-                        return req.processStatusId == value.value
-                }
-            });   
-            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
-        }
-        else{
-            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
-        }
+        this.setState({ [name]: value, dataForSearch: {
+            ...this.state.dataForSearch,
+            status: value,
+            pageIndex: 1
+        }});
+
     }
 
+    //re code
     handleInputChange = (event) => {
-        let data = null;
-        let cloneTask = this.state.taskFiltered ? this.state.taskFiltered : this.props.tasks;
-        this.setState({
-            query: event.target.value
-          }, () => {
-              if(this.state.query)
-              {
-                data = cloneTask.filter(x => x.id.includes(this.state.query));
-              }
-              else if (this.state.statusSelected){
-                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
-              }
-              else {
-                data = this.props.tasks
-              }
-            
-            this.setState({tasks:data});
-          })
+        this.setState({  query: event.target.value, dataForSearch: {
+            ...this.state.dataForSearch,
+            id: event.target.value,
+            pageIndex: 1
+        }});
     }
+
+    seachRemoteData = (isSearch) => {
+        const dataForSearch = this.state.dataForSearch;
+        let needRefresh = false;
+        if(isSearch){
+            dataForSearch.pageIndex = 1;
+            needRefresh = true;
+        }
+        let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
+        params += dataForSearch.id ? `id=${dataForSearch.id}&` : '';
+        params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        this.setState({dataForSearch: {
+            ...dataForSearch,
+            needRefresh: needRefresh
+        }})
+        this.props.requestRemoteData(params);  
+    }
+
+
 
     render() {
         const recordPerPage = 10
-        const { t } = this.props
-        let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
-        let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
+        const { t, total, tasks } = this.props
+        // let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
+        // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         return (
             <>
@@ -507,8 +474,8 @@ class RequestTaskList extends React.Component {
                     />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
-                <div className="row w-75 mt-2 mb-3">
-                    <div className="col-xl-6">
+                <div className="row w-100 mt-2 mb-3">
+                    <div className="col-xl-4">
                         <InputGroup className="d-flex">
                         <InputGroup.Prepend className="">
                             <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
@@ -530,7 +497,7 @@ class RequestTaskList extends React.Component {
                                 })}/>
                         </InputGroup>
                     </div>
-                    <div className="col-xl-6">
+                    <div className="col-xl-4">
                     <InputGroup className="">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
@@ -542,6 +509,9 @@ class RequestTaskList extends React.Component {
                         onChange={this.handleInputChange}
                         />
                     </InputGroup>
+                    </div>
+                    <div className="col-4">
+                        <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
                 <div className="block-title">
@@ -621,10 +591,10 @@ class RequestTaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={tasksRaw.length} />
+                        <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh}/>
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {tasksRaw.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {total}</div>
                 </div> : null}
             </>)
     }
