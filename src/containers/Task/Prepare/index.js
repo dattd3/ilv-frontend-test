@@ -104,7 +104,7 @@ class RequestComponent extends React.Component {
         },
         params: params
     }
-    const SupportEndpoint = `${process.env.REACT_APP_HRDX_REQUEST_URL}api/managementPoints/listPreparingOnboardCandidate`;
+    const SupportEndpoint = `${process.env.REACT_APP_HRDX_REQUEST_URL}api/managementPoints`;
     const StaffContractEndpoint = `${process.env.REACT_APP_REQUEST_URL}StaffContract/subordinate`;
     const requestSupport = axios.get(SupportEndpoint, config);
     const requestStaffContract = axios.get(StaffContractEndpoint, config);
