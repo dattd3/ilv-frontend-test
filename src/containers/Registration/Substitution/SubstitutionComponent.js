@@ -149,7 +149,7 @@ class SubstitutionComponent extends React.Component {
         note: item.note,
         shiftHours: item.shiftHours,
         shiftId: item.shiftId,
-        shiftIndex: item.shiftIndex,
+        shiftIndex: 1,
         // shiftType: item.shiftType,
         startBreakTimeEdited: item.startBreakTime ? moment(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         fromTimeEdited: item.startTime ? moment(item.startTime , Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //sửa giờ bắt đầu
@@ -409,13 +409,13 @@ class SubstitutionComponent extends React.Component {
       .then(res => {
         if (res && res.data && res.data.data) {
           let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
-          const shifts = ['1', '2']
           const timesheets = dataSorted.flatMap(timesheet => {
-            return shifts.map(shiftIndex => {
-              return timesheet[`from_time${shiftIndex}`] && timesheet[`from_time${shiftIndex}`] !== '#' ? {
+              return timesheet[`from_time1`] && timesheet[`from_time1`] !== '#' ? {
                 date: timesheet.date,
-                fromTime: timesheet[`from_time${shiftIndex}`],
-                toTime: timesheet[`to_time${shiftIndex}`],
+                fromTime: timesheet[`from_time1`],
+                toTime: timesheet[`to_time1`],
+                fromTime2: timesheet[`from_time2`],
+                toTime2: timesheet[`to_time2`],
                 isEdited: false,
                 note: null,
                 error: {},
@@ -426,14 +426,12 @@ class SubstitutionComponent extends React.Component {
                 shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftId: null,
                 shiftHours: null,
-                shiftIndex: shiftIndex,
                 substitutionType: null,
                 shiftCodeFilter: "",
                 startTimeFilter: null,
                 endTimeFilter: null,
                 shifts: this.state.shifts
               } : undefined
-            })
           }).filter(t => t !== undefined)
           this.setState({ timesheets: timesheets })
         }
@@ -587,7 +585,8 @@ class SubstitutionComponent extends React.Component {
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
                 <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
-                <p>{t("Start")} {timesheet.shiftIndex}: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} {timesheet.shiftIndex}: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
+                <p>{t("Start")} 1: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 1: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
+                {!this.isNullCustomize(timesheet.fromTime2)? <p>{t("Start")} 2: <b>{ moment(timesheet.fromTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 2: <b>{!this.isNullCustomize(timesheet.fromTime2)?moment(timesheet.toTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b></p> : ''}
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdited
