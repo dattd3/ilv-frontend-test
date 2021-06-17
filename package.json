@@ -10,6 +10,7 @@
     "chart.js": "^2.8.0",
     "chart.piecelabel.js": "^0.15.0",
     "clsx": "^1.0.4",
+    "env-cmd": "^10.1.0",
     "i18next": "^17.0.12",
     "lodash": "^4.17.19",
     "mobx": "^5.13.0",
@@ -41,7 +42,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "env-cmd -f .env.development npm run build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:staging:linux": "mv .env.staging .env.production.local && npm run-script build && mv .env.production.local .env.staging",
     "build:production": "mv .env.production .env.production.local && npm run-script --max_old_space_size=256 build && mv .env.production.local .env.production",
