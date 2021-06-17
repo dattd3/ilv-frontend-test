@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "env-cmd -f .env.development npm run build",
+    "build": "react-scripts build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:staging:linux": "mv .env.staging .env.production.local && npm run-script build && mv .env.production.local .env.staging",
     "build:production": "mv .env.production .env.production.local && npm run-script --max_old_space_size=256 build && mv .env.production.local .env.production",
