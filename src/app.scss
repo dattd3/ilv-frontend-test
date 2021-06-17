@@ -1502,3 +1502,140 @@ span.badge-notification[data-badge]::after {
   top: -20px;
   left: 46%;
 }
+
+.describer{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+    .item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+    .box {
+      width: 25px;
+      height: 10px;
+      margin-right: 5px;
+    }
+    .title{
+      color: #000000
+    }
+}
+
+.timesheet-table{
+  
+  td, th {
+    border: 1px solid #707070;
+    text-align: left;
+    padding: 2px 0px;
+    height: 30px;
+    max-width: 50px;    
+    text-align: center;
+  }
+  thead {
+    td, th {
+      text-align: left;
+      padding: 10px 0px;
+      height: 30px;
+      max-width: 50px;    
+      text-align: center;
+      border: none;
+      color: #C11D2A;
+      background-color: #FFA2001A;
+      font-weight: bold;
+
+    }
+  }
+  .divide{
+    border: none;
+    height: 10px;
+  }
+  .date{
+    color: #C11D2A;
+
+  }
+  .ke_hoach{
+    background-color: #B7EDF1;
+    font-weight: bold;
+    color: #000000;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .ke_hoach_dai{
+    background-color: #B7EDF1;
+    font-weight: bold;
+    color: #000000;
+    border-bottom: none;
+    text-align: start;
+    padding-left: 20px;
+  }
+  .thuc_te{
+    background-color: #CAF0D2;
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .loi_cong{
+    background-color: #FFA0A0;
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 20px;
+  }
+  .gio_nghi{
+    background-color: #FFDA9A;
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .cong_tac{
+    background-color: #C1DCFF;
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .ot {
+    background-color: #D4B9E9;
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
