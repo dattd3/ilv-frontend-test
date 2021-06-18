@@ -1,3 +1,8 @@
+
+.arrow::after, .bs-popover-bottom .arrow::after {
+    border-left-color: #6CB5F9 !important;
+    border-right-color: #6CB5F9 !important;
+}
 .timesheet-section {
     margin-bottom: 30px;
     .timesheet-box {
@@ -48,10 +53,7 @@
     }
     .detail {
         margin-top: 30px;
-        .arrow::after, .bs-popover-bottom .arrow::after {
-            border-left-color: #6CB5F9 !important;
-            border-right-color: #6CB5F9 !important;
-        }
+        
         .btn-link {
             text-decoration: none;
             color: #858796;

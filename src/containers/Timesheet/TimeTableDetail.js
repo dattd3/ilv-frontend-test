@@ -80,14 +80,37 @@ function RenderRow1(props) {
 }
 
 function RenderTooltip(props) {
-    return props.item ?  
+    return props.item || props.timeExpand || props.shift_id ?  
     <OverlayTrigger 
     key={"td"}
     placement="right"
     overlay={
         <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white" }} >
         <Popover.Content>
-          <span style={{color: '#FFFFFF'}}><strong>{props.item.baseTypeModel.label}</strong>:{props.item.user_Comment}</span>
+            {
+                props.timeExpand ? 
+                <div style={{color: '#FFFFFF'}}><strong>{props.timeExpand}</strong></div>
+                : null
+            }
+            {
+                props.item ? 
+                    <>
+                    <div style={{color: '#FFFFFF'}}><strong>{props.item.baseTypeModel.label}</strong>:</div>
+                    <span style={{color: '#FFFFFF'}}>{props.item.user_Comment}</span>
+                    </>
+                : null
+            }
+            {
+                props.shift_id ? 
+                <>
+                <div style={{color: '#FFFFFF'}}><strong>Mã ca:</strong></div>
+                <span style={{color: '#FFFFFF'}}>{props.shift_id}</span>
+                </>
+                : null
+
+            }
+            
+          
         </Popover.Content>
       </Popover>
     }>
@@ -106,30 +129,38 @@ function RenderItem(props) {
             if(item.line1.count) {
                 let times = item.line1.subtype[0] == 1 ? `${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` : '';
                 times += item.line1.subtype[1] == 1 ? ` | ${moment(item.line1.from_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time2, 'HHmmss').format('HH:mm:ss')}` : '';
-                return <div className={EVENT_STYLE.EVENT_KE_HOACH_CONTINUE}><div>{times} </div></div>;
+                return <RenderTooltip shift_id = {item.line1.shift_id}>
+                        <div className={EVENT_STYLE.EVENT_KE_HOACH_CONTINUE}><div>{times} </div></div>
+                    </RenderTooltip>
             }
             return <div style={{display: 'flex'}}>
                 {
                     item.line1.subtype[0] == 1 ?
-                    <div className={EVENT_STYLE.EVENT_KEHOACH}>{`${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` }</div> : null 
+                    <RenderTooltip shift_id = {item.line1.shift_id} timeExpand = {item.line1.subtype =='11' ? `${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <div className={EVENT_STYLE.EVENT_KEHOACH}>{`${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
+                    </RenderTooltip>
+                    : null 
                 }
                 {
                     item.line1.subtype[1] == 1 ?
-                    <div className={EVENT_STYLE.EVENT_KEHOACH}  style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line1.from_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time2, 'HHmmss').format('HH:mm:ss')}` }</div> : null 
+                    <RenderTooltip shift_id = {item.line1.shift_id} timeExpand = {item.line1.subtype =='11' ? `${moment(item.line1.from_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <div className={EVENT_STYLE.EVENT_KEHOACH}  style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line1.from_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time2, 'HHmmss').format('HH:mm:ss')}` }</div> 
+                    </RenderTooltip>
+                    : null 
                 }
             </div>
              
         case EVENT_TYPE.EVENT_CONGTAC: 
             return <div style={{display: 'flex'}}>
                 { item.line3.subtype[0] == 1 ?
-                    <RenderTooltip item = {item.line3.trip_start_time1_comment}>
+                    <RenderTooltip item = {item.line3.trip_start_time1_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_CONGTAC}>{`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
                     </RenderTooltip>
                     : null
                 }
                 
                 { item.line3.subtype[1] == 1 ?
-                    <RenderTooltip item = {item.line3.trip_start_time2_comment}>
+                    <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.trip_start_time2} - ${item.line3.trip_end_time2}` }</div>
                     </RenderTooltip>
                      : null
@@ -140,7 +171,7 @@ function RenderItem(props) {
             return <div style={{display: 'flex'}}>
                 { item.line3.subtype[0] == 1 ?
                     
-                    <RenderTooltip item = {item.line3.leave_start_time1_comment}>
+                    <RenderTooltip item = {item.line3.leave_start_time1_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_GIONGHI}>{`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
                     </RenderTooltip>
                     
@@ -148,7 +179,7 @@ function RenderItem(props) {
                 }
                 
                 { item.line3.subtype[1] == 1 ?
-                    <RenderTooltip item = {item.line3.leave_start_time2_comment}>
+                    <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
                     </RenderTooltip>
                      : null
@@ -159,15 +190,19 @@ function RenderItem(props) {
             return <div style = {{display: 'flex'}}>
                 {
                     item.line2.subtype[0] == 1 ?
-                        item.line2.type1[0] == EVENT_TYPE.EVENT_GIOTHUCTE ? 
-                        <div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
+                        item.line2.type1[0] == EVENT_TYPE.EVENT_GIOTHUCTE ?
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                            <div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
+                        </RenderTooltip> 
                         : <div className={EVENT_STYLE.EVENT_LOICONG}></div> 
                     : null
                 }
                 {
                     item.line2.subtype[1] == 1 ? 
                         item.line2.type1[1] == EVENT_TYPE.EVENT_GIOTHUCTE ? 
-                        <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                            <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
+                        </RenderTooltip>
                         :<div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} ></div>
                     : null
                 }
@@ -195,7 +230,7 @@ function RenderItem(props) {
             return <div style = {{display: 'flex'}}>
                 {
                     item.line4.subtype[0] == 1 ?
-                        <RenderTooltip>
+                        <RenderTooltip >
                             <div className={EVENT_STYLE.EVENT_OT}>{`${moment(item.line4.ot_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line4.ot_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip>
                      : null
@@ -348,6 +383,7 @@ function TimeTableDetail(props) {
   const { t } = useTranslation()
   if(!props.timesheets || props.timesheets.length == 0)
     return null;
+    
   return (
     <div className="detail">
       <div className="card shadow">
