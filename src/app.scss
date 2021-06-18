@@ -1527,9 +1527,12 @@ span.badge-notification[data-badge]::after {
 }
 
 .timesheet-table{
-  
+  .arrow::after, .bs-popover-bottom .arrow::after {
+    border-left-color: #6CB5F9 !important;
+    border-right-color: #6CB5F9 !important;
+  }
   td, th {
-    border: 1px solid #707070;
+    border: 2px solid #707070;
     text-align: left;
     padding: 2px 0px;
     height: 30px;

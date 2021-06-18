@@ -75,8 +75,8 @@ class Timesheet extends React.Component {
     }
 
     search(startDate, endDate) {
-      const start = moment(startDate).format('YYYYMMDD').toString()
-      const end = moment(endDate).format('YYYYMMDD').toString()
+      let start = moment(startDate).format('YYYYMMDD').toString()
+      let end = moment(endDate).format('YYYYMMDD').toString()
       const headers = {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
@@ -100,6 +100,12 @@ class Timesheet extends React.Component {
               const res = responses[1];
               if (res && res.data && res.data.data) {
                 let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
+                if(dataSorted && dataSorted.length > 0) {
+                  const startReal =   moment( dataSorted[dataSorted.length - 1].date, 'DD-MM-YYYY').format('YYYYMMDD');
+                  start = startReal > start ? startReal : start;
+                  const endReal = moment(dataSorted[0].date, 'DD-MM-YYYY').format('YYYYMMDD'); 
+                  end = endReal < end ? endReal : end;
+                } 
                 const data = this.processDataForTable(dataSorted,start, end, responses[0].data.data);
                 this.setState({ timeTables: data})
               }
@@ -112,7 +118,7 @@ class Timesheet extends React.Component {
     }
   
     getDayOffset = (currentDate, offset) => {
-      const tomorrow = new Date();
+      const tomorrow = new Date(currentDate.getTime());
       tomorrow.setDate(currentDate.getDate()+ offset);
       return tomorrow;
   
@@ -223,12 +229,14 @@ class Timesheet extends React.Component {
             day: moment(item.date, 'DD-MM-YYYY').format('DD/MM'),
             date_type : DATE_TYPE.DATE_OFF, //ngày OFF
           }
+          continue;
         }
         const timeSteps = [];
         //gio ke hoach  type( 0:khong co event , 1:  co 1 event, 2: event dang tiep tu,), subtype (0, khong co, 1 : etime 1, 2 time 2, 3 ca 2 time)
         const line1 = {type : EVENT_TYPE.NO_EVENT,
            subtype: '00', 
            count: item.count,
+            shift_id : item.shift_id != '****' ? item.shift_id : null,
             to_time1: item.to_time1,
             to_time2: item.to_time2, 
             from_time2: item.from_time2, 
@@ -244,7 +252,7 @@ class Timesheet extends React.Component {
           //timeSteps.push({start: item.from_time2, end: item.from_time2});
         }
         const nextItem = index + 1 < data.length ? data[index + 1 ] : null;
-        if(nextItem && this.checkExist(item.from_time1) && nextItem.from_time1 == item.from_time1 && nextItem.to_time1 == item.to_time1 && nextItem.from_time2 == item.from_time2 && nextItem.to_time2 == item.to_time2) {
+        if(nextItem &&  moment(item.date, 'DD-MM-YYYY').toDate().getDay() != 1 && this.checkExist(item.from_time1) && nextItem.from_time1 == item.from_time1 && nextItem.to_time1 == item.to_time1 && nextItem.from_time2 == item.from_time2 && nextItem.to_time2 == item.to_time2) {
           line1.type = EVENT_TYPE.EVENT_KE_HOACH_CONTINUE;
           line1.subtype = '00';
           nextItem.count = line1.count ? line1.count + 1 : 2;
@@ -430,7 +438,7 @@ class Timesheet extends React.Component {
             ...line4
           }
         }
-
+        
         
         
       }
