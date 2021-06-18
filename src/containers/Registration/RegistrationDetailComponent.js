@@ -7,6 +7,7 @@ import RegistrationConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import UpdateProfileDetailComponent from '../Task/RequestDetail'
 
 class RegistrationDetailComponent extends React.Component {
   constructor(props) {
@@ -66,7 +67,7 @@ class RegistrationDetailComponent extends React.Component {
         {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
-
+        {this.state.data && this.state.data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent/> : null}
         {/* {
           data.status == 0 && this.getTypeDetail() === "request" ?
           <div className="clearfix mb-5 registration-detail">
