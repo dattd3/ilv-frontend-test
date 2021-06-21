@@ -191,7 +191,7 @@ function RenderItem(props) {
                 {
                     item.line2.subtype[0] == 1 ?
                         item.line2.type1[0] == EVENT_TYPE.EVENT_GIOTHUCTE ?
-                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip> 
                         : <div className={EVENT_STYLE.EVENT_LOICONG}></div> 
@@ -200,7 +200,7 @@ function RenderItem(props) {
                 {
                     item.line2.subtype[1] == 1 ? 
                         item.line2.type1[1] == EVENT_TYPE.EVENT_GIOTHUCTE ? 
-                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip>
                         :<div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} ></div>
