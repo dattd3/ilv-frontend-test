@@ -20,7 +20,7 @@ const DATE_TYPE = {
     EVENT_OT: 7
   };
   const EVENT_STYLE = {
-    NO_EVENT: "",
+    NO_EVENT: "no-event",
     EVENT_KEHOACH: "ke_hoach",
     EVENT_KE_HOACH_CONTINUE: 'ke_hoach_dai',
     EVENT_GIOTHUCTE : "thuc_te",
@@ -194,7 +194,8 @@ function RenderItem(props) {
                         <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip> 
-                        : <div className={EVENT_STYLE.EVENT_LOICONG}></div> 
+                        : item.line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ?  <div className={EVENT_STYLE.EVENT_LOICONG}>&nbsp;</div> 
+                        : <div className={EVENT_STYLE.NO_EVENT}>&nbsp;</div> 
                     : null
                 }
                 {
@@ -203,7 +204,8 @@ function RenderItem(props) {
                         <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip>
-                        :<div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} ></div>
+                        :  item.line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ?   <div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} >&nbsp;</div>
+                        : <div style={{borderLeft: '1px solid #707070'}} className={EVENT_STYLE.NO_EVENT}>&nbsp;</div>
                     : null
                 }
                 {/* {

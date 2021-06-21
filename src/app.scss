@@ -1603,7 +1603,17 @@ span.badge-notification[data-badge]::after {
     flex: 1;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 20px;
+  }
+  .no-event{
+    font-weight: bold;
+    color: #000000;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .gio_nghi{
     background-color: #FFDA9A;
