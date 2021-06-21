@@ -257,9 +257,8 @@ class Timesheet extends React.Component {
           line1.subtype = '00';
           nextItem.count = line1.count ? line1.count + 1 : 2;
           data[index + 1] = nextItem;
-        }
-        
-        
+        }        
+
         //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong
         let line2 = {type: EVENT_TYPE.NO_EVENT, 
         type1: '00', 
@@ -275,7 +274,7 @@ class Timesheet extends React.Component {
           line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
           
           if(this.checkExist(item.end_time1_fact)) {
-            line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.subtype[1];
+            line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
             line2.subtype = 1 + line2.subtype[1];
             timeSteps.push(this.getDatetimeForCheckFail(item.start_time1_fact, item.end_time1_fact, currentDay, nextDay));
           } else {
@@ -286,11 +285,11 @@ class Timesheet extends React.Component {
         if(this.checkExist(item.start_time2_fact)) {
           line2.type =  EVENT_TYPE.EVENT_GIOTHUCTE;
           if(this.checkExist(item.end_time2_fact)) {
-            line2.type1 = line2.subtype[0] + EVENT_TYPE.EVENT_GIOTHUCTE;
+            line2.type1 = line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE;
             line2.subtype = line2.subtype[0] + 1
             timeSteps.push(this.getDatetimeForCheckFail(item.start_time2_fact, item.end_time2_fact, currentDay, nextDay));
           } else {
-            line2.type1 = line2.subtype[0] + EVENT_TYPE.EVENT_LOICONG;
+            line2.type1 = line2.type1[0] + EVENT_TYPE.EVENT_LOICONG;
             line2.subtype = line2.subtype[0] + 1
           }
           
@@ -367,26 +366,40 @@ class Timesheet extends React.Component {
         let timeStepsSorted = timeSteps.sort((a, b) => a.start > b.start ? 1 : -1);
         let isValid1 = true;
         let isValid2 = true;
+        let isShift1 = true;
         let minStart = 0, maxEnd = 0, minStart2 = null, maxEnd2 = null;  
+        const kehoach1 = this.getDatetimeForCheckFail(item.from_time1, item.to_time1, currentDay, nextDay)
+        const kehoach2 = this.getDatetimeForCheckFail(item.from_time2, item.to_time2, currentDay, nextDay);
         if(timeSteps && timeSteps.length > 0) {
           minStart = timeStepsSorted[0].start;
           maxEnd = timeStepsSorted[0].end
+          minStart2 = timeStepsSorted[0].start;;
+          maxEnd2 = timeStepsSorted[0].end;
           for(let i = 0, j = 1; j < timeStepsSorted.length; i++, j++) {
-            minStart = timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
-            minStart2 = minStart2 && (timeStepsSorted[i].start < minStart2) ? timeStepsSorted[i].start : minStart2;
+            minStart = isShift1 && timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
+            minStart2 = (timeStepsSorted[i].start < minStart2) ? timeStepsSorted[i].start : minStart2;
 
-            maxEnd = timeStepsSorted[j].end >  maxEnd ? timeStepsSorted[j].end : maxEnd; 
-            maxEnd2 = maxEnd2 && (timeStepsSorted[j].end > maxEnd2) ? timeStepsSorted[j].end : maxEnd2;
+            if(timeStepsSorted[j].start > kehoach1.end) {
+              isShift1 = false;
+            }
+            maxEnd = isShift1 && timeStepsSorted[j].end >  maxEnd ? timeStepsSorted[j].end : maxEnd; 
+            maxEnd2 =  (timeStepsSorted[j].end > maxEnd2) ? timeStepsSorted[j].end : maxEnd2;
 
             if(timeStepsSorted[i].end < timeStepsSorted[j].start) {
-              if(line2.subtype == '11' && minStart2 == null && maxEnd2 == null) {
+
+              if(line1.subtype == '11' && (timeStepsSorted[i].end >= kehoach1.end && timeStepsSorted[j].start <= kehoach2.start)) {
+                isShift1 = false;
                 maxEnd = timeStepsSorted[i].end;
                 minStart2 = timeStepsSorted[j].start;
+                maxEnd2 = timeStepsSorted[j].end;
               } else {
-                //isValid = false;
-                if(minStart2 == null) {
+                minStart2 = timeStepsSorted[j].start;
+                maxEnd2 = timeStepsSorted[j].end;
+                if(timeStepsSorted[i].end < kehoach1.end) {
                   isValid1 = false;
-                } else {
+                }
+               
+                if(timeStepsSorted[j].start > kehoach2.start) {
                   isValid2 = false;
                 }
               }
@@ -397,7 +410,6 @@ class Timesheet extends React.Component {
         }
         //check with propose time
         if(this.checkExist(item.from_time1)) {
-          const kehoach1 = this.getDatetimeForCheckFail(item.from_time1, item.to_time1, currentDay, nextDay)
           isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
           
           line2.type1 = isValid1 == false ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
@@ -408,8 +420,7 @@ class Timesheet extends React.Component {
         }
         
         if(this.checkExist(item.from_time2)) {
-          const kehoach2 = this.getDatetimeForCheckFail(item.from_time2, item.to_time2, currentDay, nextDay);
-          isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid1 ? true : false;
+          isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2 ? true : false;
           line2.type1 = isValid2 == false ?  line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
           if(line2.type1[1] == EVENT_TYPE.EVENT_LOICONG) {
             line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
