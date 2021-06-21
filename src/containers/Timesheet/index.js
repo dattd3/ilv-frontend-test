@@ -219,6 +219,7 @@ class Timesheet extends React.Component {
             day: moment(this.getDayOffset(toDate, index + 1)).format('DD/MM')
           }
       })
+      const today = moment(new Date()).format("YYYYMMDD")
       for(let index = 0; index < data.length; index++) {
         const item = data[index];
         const currentDay = moment(item.date, "DD-MM-YYYY").format("YYYYMMDD");
@@ -412,22 +413,27 @@ class Timesheet extends React.Component {
         if(this.checkExist(item.from_time1)) {
           isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
           
-          line2.type1 = isValid1 == false ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
+          line2.type1 = isValid1 == false && currentDay <= today  ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
           if(line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
             line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
+            line2.subtype = '1' + line2.subtype[1];
+          }
+          if(line2.type1[0] == 0) {
             line2.subtype = '1' + line2.subtype[1];
           }
         }
         
         if(this.checkExist(item.from_time2)) {
           isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2 ? true : false;
-          line2.type1 = isValid2 == false ?  line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
+          line2.type1 = isValid2 == false && currentDay <= today ?  line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
           if(line2.type1[1] == EVENT_TYPE.EVENT_LOICONG) {
             line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
             line2.subtype = line2.subtype[0] + '1';
           }
+          if( line2.type1[1] == 0) {
+            line2.subtype = line2.subtype[0] + '1';
+          }
         }
-
         //get Comment
 
         line3 = this.getComment(moment(item.date, 'DD-MM-YYYY').format('YYYYMMDD'), line1, line3, reasonData);
