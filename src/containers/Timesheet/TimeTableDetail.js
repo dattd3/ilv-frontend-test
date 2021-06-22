@@ -318,7 +318,7 @@ function RenderRow4(props) {
 
 function Content(props) {
     const { t } = useTranslation();
-    let filterType = [{title: 'Giờ kế hoạch', color: '#B7EDF1'}, {title: 'Giờ thực tế', color: '#CAF0D2'}, {title: 'Lỗi chấm công', color: '#FFA0A0'} , {title: 'Nghỉ', color: '#FFDA9A'}, {title: 'Công tác/Đào tạo/WFH', color: '#C1DCFF'}, {title: 'OT', color: '#D4B9E9'}];
+    let filterType = [{title: 'Giờ kế hoạch', color: '#00B3FF'}, {title: 'Giờ thực tế', color: '#39B54A'}, {title: 'Lỗi chấm công', color: '#E44235'} , {title: 'Nghỉ', color: '#F7931E'}, {title: 'Công tác/Đào tạo/WFH', color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
     <>
         <div >
