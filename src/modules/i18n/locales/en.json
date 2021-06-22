@@ -561,7 +561,7 @@
   "ThirdPayment": "Third Payment",
   "Timesheet": "Timesheet",
   "TimesheetDetailsOfDay": "Working Days Detail",
-  "TimesheetNotice": "* The timesheet is only updated after HR Department finalizes on SAP. Should you have any questions, kindly contact HR Department.",
+  "TimesheetNotice": "* The timesheet summary is only updated after HR Department finalizes on SAP. Should you have any questions, kindly contact HR Department.",
   "TimePlan" : "Planned Hour",
   "TimeActual": "Actual Hour",
   "Leave" : "Leave",
