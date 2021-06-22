@@ -180,15 +180,15 @@ class Timesheet extends React.Component {
             line2.leave_start_time2_comment = item;
           } 
         } else if(this.checkExist(line1.from_time1) && this.checkExist(line1.to_time1)) {
-          if(line2.trip_start_time1 && line2.trip_end_time1) {
+          if(this.checkExist(line2.trip_start_time1) && this.checkExist(line2.trip_end_time1)) { 
             line2.trip_start_time1_comment = item;
-          } else if( line2.leave_start_time1 && line2.leave_end_time1 ) {
+          } else if( this.checkExist(line2.leave_start_time1) && this.checkExist(line2.leave_end_time1) ) {
             line2.leave_start_time1_comment = item;
           }
-        } else if(this.checkExist(line1.from_time2) && this.checkExist(line1.to_time1)) {
-          if(line2.trip_start_time2 && line2.trip_end_time2) {
+        } else if(this.checkExist(line1.from_time2) && this.checkExist(line1.to_time2)) {
+          if(this.checkExist(line2.trip_start_time2) && this.checkExist(line2.trip_end_time2)) {
             line2.trip_start_time2_comment = item;
-          } else if( line2.leave_start_time2 && line2.leave_end_time2 ) {
+          } else if( this.checkExist(line2.leave_start_time2) && this.checkExist(line2.leave_end_time2) ) {
             line2.leave_start_time2_comment = item;
           }
         }
