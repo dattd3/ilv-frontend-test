@@ -80,6 +80,7 @@ function RenderRow1(props) {
 }
 
 function RenderTooltip(props) {
+    const { t } = useTranslation();
     return props.item || props.timeExpand || props.shift_id ?  
     <OverlayTrigger 
     key={"td"}
@@ -103,7 +104,7 @@ function RenderTooltip(props) {
             {
                 props.shift_id ? 
                 <>
-                <div style={{color: '#FFFFFF'}}><strong>Mã ca:</strong></div>
+                <div style={{color: '#FFFFFF'}}><strong>{t('ShiftCode')}:</strong></div>
                 <span style={{color: '#FFFFFF'}}>{props.shift_id}</span>
                 </>
                 : null
@@ -318,7 +319,7 @@ function RenderRow4(props) {
 
 function Content(props) {
     const { t } = useTranslation();
-    let filterType = [{title: 'Giờ kế hoạch', color: '#00B3FF'}, {title: 'Giờ thực tế', color: '#39B54A'}, {title: 'Lỗi chấm công', color: '#E44235'} , {title: 'Nghỉ', color: '#F7931E'}, {title: 'Công tác/Đào tạo/WFH', color: '#93278F'}, {title: 'OT', color: '#808000'}];
+    let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
     <>
         <div >
