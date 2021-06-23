@@ -20,7 +20,7 @@ const DATE_TYPE = {
     EVENT_OT: 7
   };
   const EVENT_STYLE = {
-    NO_EVENT: "",
+    NO_EVENT: "no-event",
     EVENT_KEHOACH: "ke_hoach",
     EVENT_KE_HOACH_CONTINUE: 'ke_hoach_dai',
     EVENT_GIOTHUCTE : "thuc_te",
@@ -80,6 +80,7 @@ function RenderRow1(props) {
 }
 
 function RenderTooltip(props) {
+    const { t } = useTranslation();
     return props.item || props.timeExpand || props.shift_id ?  
     <OverlayTrigger 
     key={"td"}
@@ -103,7 +104,7 @@ function RenderTooltip(props) {
             {
                 props.shift_id ? 
                 <>
-                <div style={{color: '#FFFFFF'}}><strong>Mã ca:</strong></div>
+                <div style={{color: '#FFFFFF'}}><strong>{t('ShiftCode')}:</strong></div>
                 <span style={{color: '#FFFFFF'}}>{props.shift_id}</span>
                 </>
                 : null
@@ -191,19 +192,21 @@ function RenderItem(props) {
                 {
                     item.line2.subtype[0] == 1 ?
                         item.line2.type1[0] == EVENT_TYPE.EVENT_GIOTHUCTE ?
-                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip> 
-                        : <div className={EVENT_STYLE.EVENT_LOICONG}></div> 
+                        : item.line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ?  <div className={EVENT_STYLE.EVENT_LOICONG}>{`${item.line2.start_time1_fact != '#' ? moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time1_fact != '#' ? moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div> 
+                        : <div className={EVENT_STYLE.NO_EVENT}>&nbsp;</div> 
                     : null
                 }
                 {
                     item.line2.subtype[1] == 1 ? 
                         item.line2.type1[1] == EVENT_TYPE.EVENT_GIOTHUCTE ? 
-                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
+                        <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` : null}>
                             <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss')}` }</div>
                         </RenderTooltip>
-                        :<div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} ></div>
+                        :  item.line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ?   <div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} >{`${item.line2.start_time2_fact != '#' ? moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time2_fact != '#' ? moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div>
+                        : <div style={{borderLeft: '1px solid #707070'}} className={EVENT_STYLE.NO_EVENT}>&nbsp;</div>
                     : null
                 }
                 {/* {
@@ -316,7 +319,7 @@ function RenderRow4(props) {
 
 function Content(props) {
     const { t } = useTranslation();
-    let filterType = [{title: 'Giờ kế hoạch', color: '#B7EDF1'}, {title: 'Giờ thực tế', color: '#CAF0D2'}, {title: 'Lỗi chấm công', color: '#FFA0A0'} , {title: 'Nghỉ', color: '#FFDA9A'}, {title: 'Công tác/Đào tạo/WFH', color: '#C1DCFF'}, {title: 'OT', color: '#D4B9E9'}];
+    let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
     <>
         <div >
