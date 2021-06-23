@@ -116,6 +116,10 @@ class Timesheet extends React.Component {
     checkExist = (text) => {
       return text && text != '#'; 
     }
+
+    isHoliday = (item) => {
+      return item.shift_id == 'OFF' || item.is_holiday == 1
+    }
   
     getDayOffset = (currentDate, offset) => {
       const tomorrow = new Date(currentDate.getTime());
@@ -225,13 +229,6 @@ class Timesheet extends React.Component {
         const currentDay = moment(item.date, "DD-MM-YYYY").format("YYYYMMDD");
         const nextDay = moment(this.getDayOffset( moment(item.date, 'DD-MM-YYYY').toDate(), 1)).format('YYYYMMDD');
         
-        if(item.shift_id == 'OFF') {
-          data[index] = {
-            day: moment(item.date, 'DD-MM-YYYY').format('DD/MM'),
-            date_type : DATE_TYPE.DATE_OFF, //ngày OFF
-          }
-          continue;
-        }
         const timeSteps = [];
         //gio ke hoach  type( 0:khong co event , 1:  co 1 event, 2: event dang tiep tu,), subtype (0, khong co, 1 : etime 1, 2 time 2, 3 ca 2 time)
         const line1 = {type : EVENT_TYPE.NO_EVENT,
@@ -242,18 +239,18 @@ class Timesheet extends React.Component {
             to_time2: item.to_time2, 
             from_time2: item.from_time2, 
             from_time1: item.from_time1 };
-        if(this.checkExist(item.from_time1)) {
+        if(this.checkExist(item.from_time1) && !this.isHoliday(item)) {
           line1.type = EVENT_TYPE.EVENT_KEHOACH;
           line1.subtype =  1 + line1.subtype[0]
           
         }
-        if(this.checkExist(item.from_time2)) {
+        if(this.checkExist(item.from_time2) && !this.isHoliday(item)) {
           line1.type = EVENT_TYPE.EVENT_KEHOACH;
           line1.subtype = line1.subtype[0] + 1
           //timeSteps.push({start: item.from_time2, end: item.from_time2});
         }
         const nextItem = index + 1 < data.length ? data[index + 1 ] : null;
-        if(nextItem &&  moment(item.date, 'DD-MM-YYYY').toDate().getDay() != 1 && this.checkExist(item.from_time1) && nextItem.from_time1 == item.from_time1 && nextItem.to_time1 == item.to_time1 && nextItem.from_time2 == item.from_time2 && nextItem.to_time2 == item.to_time2) {
+        if(nextItem &&  moment(item.date, 'DD-MM-YYYY').toDate().getDay() != 1 && this.checkExist(item.from_time1) && nextItem.from_time1 == item.from_time1 && nextItem.to_time1 == item.to_time1 && nextItem.from_time2 == item.from_time2 && nextItem.to_time2 == item.to_time2 && !this.isHoliday(data[index + 1]) && !this.isHoliday(item)) {
           line1.type = EVENT_TYPE.EVENT_KE_HOACH_CONTINUE;
           line1.subtype = '00';
           nextItem.count = line1.count ? line1.count + 1 : 2;
@@ -279,7 +276,7 @@ class Timesheet extends React.Component {
             line2.subtype = 1 + line2.subtype[1];
             timeSteps.push(this.getDatetimeForCheckFail(item.start_time1_fact, item.end_time1_fact, currentDay, nextDay));
           } else {
-            line2.type1 =  EVENT_TYPE.EVENT_LOICONG + line2.type1[1];
+            line2.type1 =  this.isHoliday(item) ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : EVENT_TYPE.EVENT_LOICONG + line2.type1[1];
             line2.subtype = '1' + line2.subtype[1];
           }
         }
@@ -290,7 +287,7 @@ class Timesheet extends React.Component {
             line2.subtype = line2.subtype[0] + 1
             timeSteps.push(this.getDatetimeForCheckFail(item.start_time2_fact, item.end_time2_fact, currentDay, nextDay));
           } else {
-            line2.type1 = line2.type1[0] + EVENT_TYPE.EVENT_LOICONG;
+            line2.type1 = this.isHoliday(item) ? line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE : line2.type1[0] + EVENT_TYPE.EVENT_LOICONG;
             line2.subtype = line2.subtype[0] + 1
           }
           
@@ -410,7 +407,7 @@ class Timesheet extends React.Component {
           
         }
         //check with propose time
-        if(this.checkExist(item.from_time1)) {
+        if(this.checkExist(item.from_time1) && !this.isHoliday(item)) {
           isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
           
           line2.type1 = isValid1 == false && currentDay <= today  ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
@@ -423,7 +420,7 @@ class Timesheet extends React.Component {
           }
         }
         
-        if(this.checkExist(item.from_time2)) {
+        if(this.checkExist(item.from_time2) && !this.isHoliday(item)) {
           isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2 ? true : false;
           line2.type1 = isValid2 == false && currentDay <= today ?  line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
           if(line2.type1[1] == EVENT_TYPE.EVENT_LOICONG) {
@@ -440,7 +437,8 @@ class Timesheet extends React.Component {
 
         data[index] = {
             day: moment(item.date, 'DD-MM-YYYY').format('DD/MM'),
-            date_type : DATE_TYPE.DATE_NORMAL, // ngày bt
+            date_type : this.isHoliday(item) ? DATE_TYPE.DATE_OFF : DATE_TYPE.DATE_NORMAL, // ngày bt
+            is_holiday: item.is_holiday,
           //date: 1,  // thu 3
           line1 : { // type( 0:khong co event , 1:  co 1 event, 2: event dang tiep tu,), subtype (0, khong co, 1 : etime 1, 2 time 2, 3 ca 2 time)
             ...line1
