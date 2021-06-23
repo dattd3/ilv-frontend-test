@@ -562,6 +562,7 @@
   "Timesheet": "Timesheet",
   "TimesheetDetailsOfDay": "Working Days Detail",
   "TimesheetNotice": "* The timesheet summary is only updated after HR Department finalizes on SAP. Should you have any questions, kindly contact HR Department.",
+  "Holiday": "Holiday",
   "TimePlan" : "Planned Hour",
   "TimeActual": "Actual Hour",
   "Leave" : "Leave",

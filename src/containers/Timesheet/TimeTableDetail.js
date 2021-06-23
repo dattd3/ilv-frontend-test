@@ -63,7 +63,11 @@ function RenderRow1(props) {
         {
              props.timesheets.map((item, index) => {
                  if(item.date_type == DATE_TYPE.DATE_OFF) {
-                    return <td key = {index} rowSpan={4}><div style = {{fontWeight: 'bold', color: '#000000'}}>OFF</div></td>
+                    return <td key = {index}>
+                        <RenderTooltip is_holiday = {item.is_holiday}>
+                            <div style = {{fontWeight: 'bold', color: '#000000'}}>OFF</div>
+                        </RenderTooltip>
+                        </td>
                  } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
                     return <td key = {index} rowSpan={4} style={{backgroundColor: '#FFA2001A'}}></td>
                  }
@@ -81,13 +85,18 @@ function RenderRow1(props) {
 
 function RenderTooltip(props) {
     const { t } = useTranslation();
-    return props.item || props.timeExpand || props.shift_id ?  
+    return props.item || props.timeExpand || props.shift_id || props.is_holiday == 1 ?  
     <OverlayTrigger 
     key={"td"}
     placement="right"
     overlay={
         <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white" }} >
         <Popover.Content>
+            {
+                props.is_holiday == 1 ? 
+                <div style={{color: '#FFFFFF'}}><strong>{t('Holiday')}</strong></div>
+                : null
+            }
             {
                 props.timeExpand ? 
                 <div style={{color: '#FFFFFF'}}><strong>{props.timeExpand}</strong></div>
@@ -261,7 +270,7 @@ function RenderRow2(props) {
     return <>
         {
             props.timesheets.map((item, index) => {
-                if(item.date_type == DATE_TYPE.DATE_OFF || item.date_type == DATE_TYPE.DATE_OFFSET) {
+                if(item.date_type == DATE_TYPE.DATE_OFFSET) {
                     return null;
                  }
                  if(item.line2.type == EVENT_TYPE.NO_EVENT) {
@@ -283,7 +292,7 @@ function RenderRow3(props) {
     return <>
     {
         props.timesheets.map((item, index) => {
-            if(item.date_type == DATE_TYPE.DATE_OFF || item.date_type == DATE_TYPE.DATE_OFFSET) {
+            if( item.date_type == DATE_TYPE.DATE_OFFSET) {
                 return null;
             }
             if(item.line3.type == EVENT_TYPE.NO_EVENT) {
@@ -302,7 +311,7 @@ function RenderRow4(props) {
     return <>
     {
         props.timesheets.map((item, index) => {
-            if(item.date_type == DATE_TYPE.DATE_OFF || item.date_type == DATE_TYPE.DATE_OFFSET) {
+            if(item.date_type == DATE_TYPE.DATE_OFFSET) {
                 return null;
             }
             if(item.line4.type == EVENT_TYPE.NO_EVENT) {
