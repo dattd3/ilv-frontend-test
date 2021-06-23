@@ -1562,9 +1562,9 @@ span.badge-notification[data-badge]::after {
 
   }
   .ke_hoach{
-    background-color: #B7EDF1;
+    background-color: #00B3FF;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-bottom: none;
     white-space: nowrap;
     text-align: center;
@@ -1573,17 +1573,17 @@ span.badge-notification[data-badge]::after {
     overflow: hidden;
   }
   .ke_hoach_dai{
-    background-color: #B7EDF1;
+    background-color: #00B3FF;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-bottom: none;
     text-align: start;
     padding-left: 20px;
   }
   .thuc_te{
-    background-color: #CAF0D2;
+    background-color: #39B54A;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-top: none;
     border-bottom: none;
     white-space: nowrap;
@@ -1593,9 +1593,9 @@ span.badge-notification[data-badge]::after {
     overflow: hidden;
   }
   .loi_cong{
-    background-color: #FFA0A0;
+    background-color: #E44235;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-top: none;
     border-bottom: none;
     white-space: nowrap;
@@ -1603,12 +1603,22 @@ span.badge-notification[data-badge]::after {
     flex: 1;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 20px;
+  }
+  .no-event{
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .gio_nghi{
-    background-color: #FFDA9A;
+    background-color: #F7931E;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-top: none;
     border-bottom: none;
     white-space: nowrap;
@@ -1618,9 +1628,9 @@ span.badge-notification[data-badge]::after {
     overflow: hidden;
   }
   .cong_tac{
-    background-color: #C1DCFF;
+    background-color: #93278F;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-top: none;
     border-bottom: none;
     white-space: nowrap;
@@ -1630,9 +1640,9 @@ span.badge-notification[data-badge]::after {
     overflow: hidden;
   }
   .ot {
-    background-color: #D4B9E9;
+    background-color: #808000;
     font-weight: bold;
-    color: #000000;
+    color: #FFFFFF;
     border-top: none;
     white-space: nowrap;
     text-align: center;
