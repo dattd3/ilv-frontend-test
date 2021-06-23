@@ -308,7 +308,6 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 totalTimes = time.hours
                                 totalDays = time.days
                             }
-
                         })
                         return {
                             ...req,
