@@ -70,8 +70,7 @@ function NewsOnHome(props) {
                                                 <Card.Title>{obj.title}</Card.Title>
                                             </a>
                                             <Card.Text className="small text-gray-600">{SubStringDescription(obj.description)}...</Card.Text>
-                                            <span className="small"><i className="far fa-clock"></i> {moment(obj.publishedDate).format('DD/MM/YYYY')}</span>
-                                            <span className="blockquote-footer"> {obj.sourceSite}</span>
+                                            <span className="small"><i className="far fa-clock"></i> {moment(obj.publishedDate).format('DD/MM/YYYY')} - {obj.sourceSite}</span>
                                         </div>
                                     </ListGroup.Item>
 
