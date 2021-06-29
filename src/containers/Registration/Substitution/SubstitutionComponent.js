@@ -31,7 +31,7 @@ class SubstitutionComponent extends React.Component {
       timesheets: [],
       shifts: [],
       approver: null,
-      appraiser:null,
+      appraiser: null,
       files: [],
       isUpdateFiles: false,
       errors: {},
@@ -141,7 +141,7 @@ class SubstitutionComponent extends React.Component {
       return {
         pernr: localStorage.getItem('employeeNo'),
         isEdited: item.isEdited,
-        date:  moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+        date: moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
         endBreakTimeEdited: item.endBreakTime ? moment(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         toTimeEdited: item.endTime ? moment(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // sửa giờ kết thúc
         // endTimeFilter: item.endTimeFilter ? moment(item.endTimeFilter, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
@@ -152,14 +152,14 @@ class SubstitutionComponent extends React.Component {
         shiftIndex: 1,
         // shiftType: item.shiftType,
         startBreakTimeEdited: item.startBreakTime ? moment(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
-        fromTimeEdited: item.startTime ? moment(item.startTime , Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //sửa giờ bắt đầu
+        fromTimeEdited: item.startTime ? moment(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //sửa giờ bắt đầu
         substitutionType: item.substitutionType,
         toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //giờ kết thúc theo kế hoạch
         startDateSearching: moment(this.state.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
         endDateSearching: moment(this.state.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString()
       }
     })
-    
+
     timesheets = timesheets.filter(item => item.isEdited)
     const approver = { ...this.state.approver }
     const appraiser = this.state.appraiser ? this.state.appraiser : null
@@ -300,9 +300,9 @@ class SubstitutionComponent extends React.Component {
     this.setState({ appraiser: appraiser })
     const errors = { ...this.state.errors }
     if (!isAppraiser) {
-        errors.appraiser = this.props.t("InvalidAppraiser")
+      errors.appraiser = this.props.t("InvalidAppraiser")
     } else {
-        errors.appraiser = null
+      errors.appraiser = null
     }
     this.setState({ errors: errors })
   }
@@ -343,8 +343,8 @@ class SubstitutionComponent extends React.Component {
     let timesheets = this.state.timesheets
     timesheets[index].shiftId = shift.shift_id
     timesheets[index].shiftHours = shift.hours.trim()
-    timesheets[index].startTime = shift.from_time.replace("#","") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
-    timesheets[index].endTime =shift.to_time.replace("#","") ?  moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
+    timesheets[index].startTime = shift.from_time.replace("#", "") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
+    timesheets[index].endTime = shift.to_time.replace("#", "") ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : null
     this.setState({
       timesheets: [...timesheets]
     }, () => { this.verifyInput() })
@@ -410,28 +410,28 @@ class SubstitutionComponent extends React.Component {
         if (res && res.data && res.data.data) {
           let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
           const timesheets = dataSorted.flatMap(timesheet => {
-              return timesheet[`from_time1`] && timesheet[`from_time1`] !== '#' ? {
-                date: timesheet.date,
-                fromTime: timesheet[`from_time1`],
-                toTime: timesheet[`to_time1`],
-                fromTime2: timesheet[`from_time2`],
-                toTime2: timesheet[`to_time2`],
-                isEdited: false,
-                note: null,
-                error: {},
-                startTime: null,
-                endTime: null,
-                startBreakTime: null,
-                endBreakTime: null,
-                shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
-                shiftId: null,
-                shiftHours: null,
-                substitutionType: null,
-                shiftCodeFilter: "",
-                startTimeFilter: null,
-                endTimeFilter: null,
-                shifts: this.state.shifts
-              } : undefined
+            return  {
+              date: timesheet.date,
+              fromTime: timesheet[`from_time1`],
+              toTime: timesheet[`to_time1`],
+              fromTime2: timesheet[`from_time2`],
+              toTime2: timesheet[`to_time2`],
+              isEdited: false,
+              note: null,
+              error: {},
+              startTime: null,
+              endTime: null,
+              startBreakTime: null,
+              endBreakTime: null,
+              shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
+              shiftId: null,
+              shiftHours: null,
+              substitutionType: null,
+              shiftCodeFilter: "",
+              startTimeFilter: null,
+              endTimeFilter: null,
+              shifts: this.state.shifts
+            }
           }).filter(t => t !== undefined)
           this.setState({ timesheets: timesheets })
         }
@@ -585,8 +585,8 @@ class SubstitutionComponent extends React.Component {
               <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
                 <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
-                <p>{t("Start")} 1: <b>{moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 1: <b>{moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b></p>
-                {!this.isNullCustomize(timesheet.fromTime2)? <p>{t("Start")} 2: <b>{ moment(timesheet.fromTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 2: <b>{!this.isNullCustomize(timesheet.fromTime2)?moment(timesheet.toTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b></p> : ''}
+                <p>{t("Start")} 1: <b>{!this.isNullCustomize(timesheet.fromTime) ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b> | {t("End")} 1: <b>{ !this.isNullCustomize(timesheet.toTime)? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b></p>
+                {!this.isNullCustomize(timesheet.fromTime2) ? <p>{t("Start")} 2: <b>{moment(timesheet.fromTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 2: <b>{!this.isNullCustomize(timesheet.fromTime2) ? moment(timesheet.toTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ''}</b></p> : ''}
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdited
@@ -699,12 +699,12 @@ class SubstitutionComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? 
-        <>
-        <AssesserComponent isEdit={t.isEdited} errors={this.state.errors} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} appraiser={this.props.substitution ? this.props.substitution.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
-        <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} /> 
-        </>
-        : null}
+        {this.state.timesheets.filter(t => t.isEdited).length > 0 ?
+          <>
+            <AssesserComponent isEdit={t.isEdited} errors={this.state.errors} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} appraiser={this.props.substitution ? this.props.substitution.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+            <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.substitution ? this.props.substitution.userProfileInfo.approver : null} />
+          </>
+          : null}
 
         <ul className="list-inline">
           {this.state.files.map((file, index) => {
