@@ -28,7 +28,7 @@ class ApprovalDetail extends React.Component {
       modalMessage: "",
       typeRequest: 1,
       userInfo: {},
-      status: 5,
+      processStatusId: 5,
       hrComment: ""
     }
 
@@ -48,36 +48,36 @@ class ApprovalDetail extends React.Component {
   }
 
   processBlockStatuses = (response) => {
-    if (response && response.result) {
+    if (response && response.data) {
       const data = response.data;
-      const code = response.result.code;
-      if (code != Constants.API_ERROR_CODE) {
-        if ((data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) 
-        || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.length > 0)) {
+      //const code = response.result.code;
+      //if (code != Constants.API_ERROR_CODE) {
+        if ((data.requestInfo.create && data.requestInfo.create.educations && data.requestInfo.create.educations.length > 0) 
+        || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryEducation && data.requestInfo.update.userProfileHistoryEducation.length > 0)) {
           this.setState({isShowEducationComponent : true});
         }
-        if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.NewFamily)) {
+        if ((data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.NewFamily)) {
           this.setState({isShowFamilyComponent : true});
         }
-        if (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
-          && _.size(data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo) > 0) {
+        if (data.requestInfo.update && data.requestInfo.update.userProfileHistoryMainInfo && data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
+          && _.size(data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo) > 0) {
           this.setState({isShowPersonalComponent : true});
         }
-        if (data.userProfileInfoDocuments && data.userProfileInfoDocuments.length > 0) {
+        if (data.requestDocuments && data.requestDocuments.length > 0) {
           this.setState({isShowDocumentComponent : true});
         }
-      }
+      //}
     }
   }
 
   processEducationInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.userProfileInfo.create && data.userProfileInfo.create.educations && data.userProfileInfo.create.educations.length > 0) {
-        this.setState({userEducationCreate : response.data.userProfileInfo.create.educations});
+      if (data && data.requestInfo.create && data.requestInfo.create.educations && data.requestInfo.create.educations.length > 0) {
+        this.setState({userEducationCreate : response.data.requestInfo.create.educations});
       }
-      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation) {
-        this.setState({userEducationUpdate : data.userProfileInfo.update.userProfileHistoryEducation});
+      if (data && data.requestInfo.update && data.requestInfo.update.userProfileHistoryEducation) {
+        this.setState({userEducationUpdate : data.requestInfo.update.userProfileHistoryEducation});
       }
     }
   }
@@ -85,11 +85,11 @@ class ApprovalDetail extends React.Component {
   // processFamilyInfo = response => {
   //   if (response && response.data) {
   //     const data = response.data;
-  //     if (data && data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) {
-  //       this.setState({userFamilyCreate : response.data.userProfileInfo.create.families});
+  //     if (data && data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) {
+  //       this.setState({userFamilyCreate : response.data.requestInfo.create.families});
   //     }
-  //     if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.length > 0) {
-  //       this.setState({userFamilyUpdate : data.userProfileInfo.update.userProfileHistoryFamily});
+  //     if (data && data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.length > 0) {
+  //       this.setState({userFamilyUpdate : data.requestInfo.update.userProfileHistoryFamily});
   //     }
   //   }
   // }
@@ -97,8 +97,8 @@ class ApprovalDetail extends React.Component {
   processMainInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null) {
-        const mainInfos = this.prepareMainInfo(data.userProfileInfo.update.userProfileHistoryMainInfo);
+      if (data && data.requestInfo.update && data.requestInfo.update.userProfileHistoryMainInfo && data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo != null) {
+        const mainInfos = this.prepareMainInfo(data.requestInfo.update.userProfileHistoryMainInfo);
         this.setState({userMainInfo : mainInfos});
       }
     }
@@ -107,8 +107,8 @@ class ApprovalDetail extends React.Component {
   processDocumentInfo = response => {
     if (response && response.data) {
       const data = response.data;
-      if (data && data.userProfileInfoDocuments) {
-        this.setState({documents : data.userProfileInfoDocuments});
+      if (data && data.requestDocuments) {
+        this.setState({documents : data.requestDocuments});
       }
     }
   }
@@ -153,8 +153,8 @@ class ApprovalDetail extends React.Component {
   }
 
   processUserInfo = response => {
-    if (response && response.data && response.data.userProfileInfo) {
-      const info = response.data.userProfileInfo;
+    if (response && response.data && response.data.requestInfo) {
+      const info = response.data.requestInfo;
       const staff = info.staff;
       const manager = info.manager;
       let managerToShow = null;
@@ -181,39 +181,50 @@ class ApprovalDetail extends React.Component {
 
   prepareStatus = response => {
     if (response && response.data) {
-      this.setState({status: response.data.status});
-      this.setState({hrComment: response.data.hrComment ? response.data.hrComment : ""});
+      this.setState({processStatusId: response.data.processStatusId});
+      this.setState({approverComment: response.data.approverComment ? response.data.approverComment : ""});
     }
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': localStorage.getItem('accessToken')
-      }
+    if (this.props.data) {
+      const response = this.props;
+      this.processBlockStatuses(response);
+      this.processEducationInfo(response);
+      // this.processFamilyInfo(response);
+      this.processMainInfo(response);
+      this.processDocumentInfo(response);
+      this.processUserInfo(response);
+      this.prepareStatus(response);
     }
+
+    // let config = {
+    //   headers: {
+    //     'Authorization': localStorage.getItem('accessToken')
+    //   }
+    // }
   
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.getUserProfileHistoryId()}`, config)
-    .then(res => {
-      if (res && res.data) {
-        const response = res.data;
-        this.processBlockStatuses(response);
-        this.processEducationInfo(response);
-        // this.processFamilyInfo(response);
-        this.processMainInfo(response);
-        this.processDocumentInfo(response);
-        this.processUserInfo(response);
-        this.prepareStatus(response);
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    // axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.getUserProfileHistoryId()}`, config)
+    // .then(res => {
+    //   if (res && res.data) {
+        // const response = res.data;
+        // this.processBlockStatuses(response);
+        // this.processEducationInfo(response);
+        // // this.processFamilyInfo(response);
+        // this.processMainInfo(response);
+        // this.processDocumentInfo(response);
+        // this.processUserInfo(response);
+        // this.prepareStatus(response);
+      //}
+    // }).catch(error => {
+    //   console.log(error);
+    // });
   }
 
   render() {
     const { t } = this.props
 
-    const status = {
+    const determineStatus = {
       5: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
@@ -251,7 +262,7 @@ class ApprovalDetail extends React.Component {
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
         {
-          (this.state.userInfo.manager && (this.state.status == 2 || this.state.status == 1)) ?
+          (this.state.userInfo.manager && (this.state.processStatusId == 2 || this.state.processStatusId == 1)) ?
           <>
           <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
@@ -270,11 +281,11 @@ class ApprovalDetail extends React.Component {
               </div>
             </div>
             {
-              this.state.status == 1 ?
+              this.state.processStatusId == 1 ?
               <div className="row item-info">
                 <div className="col-12">
                   <div className="label">Lý do không phê duyệt</div>
-                  <div className="detail">{this.state.hrComment}</div>
+                  <div className="detail">{this.state.approverComment}</div>
                 </div>
               </div>
               : null
@@ -283,8 +294,8 @@ class ApprovalDetail extends React.Component {
           </>
           : null
         }
-        <div className="block-status">
-          <span className={`status ${status[this.state.status].className}`}>{status[this.state.status].label}</span>
+        <div className="block-processStatusId">
+          <span className={`status ${determineStatus[this.state.processStatusId].className}`}>{determineStatus[this.state.processStatusId].label}</span>
         </div>
         { this.state.isShowDocumentComponent ? 
           <>
@@ -294,7 +305,7 @@ class ApprovalDetail extends React.Component {
           : null
         }
         {
-          this.state.status == 5 ?
+          this.state.processStatusId == 5 ?
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
