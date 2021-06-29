@@ -28,7 +28,7 @@ class ApprovalDetail extends React.Component {
       modalMessage: "",
       typeRequest: 1,
       userInfo: {},
-      status: 0,
+      status: 5,
       hrComment: ""
     }
 
@@ -41,9 +41,10 @@ class ApprovalDetail extends React.Component {
   }
 
   getUserProfileHistoryId = () => {
-    const pathName = window.location.pathname;
-    const pathNameArr = pathName.split('/');
-    return pathNameArr[pathNameArr.length - 1];
+    //const pathName = window.location.pathname;
+    //const pathNameArr = pathName.split('/');
+    //return pathNameArr[pathNameArr.length - 1];
+    return this.props.id;
   }
 
   processBlockStatuses = (response) => {
@@ -213,7 +214,7 @@ class ApprovalDetail extends React.Component {
     const { t } = this.props
 
     const status = {
-      0: {label: t("Waiting"), className: ''},
+      5: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: ''}
@@ -293,7 +294,7 @@ class ApprovalDetail extends React.Component {
           : null
         }
         {
-          this.state.status == 0 ?
+          this.state.status == 5 ?
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
