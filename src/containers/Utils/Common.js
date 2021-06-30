@@ -1,7 +1,7 @@
 import moment from 'moment'
 import Constants from '../../commons/Constants'
 
-export default function processingDataReq (dataRawFromApi, tab)  {
+export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
         dataRawFromApi.forEach(element => {
             if(element.requestTypeId == Constants.ONBOARDING) {
@@ -14,6 +14,10 @@ export default function processingDataReq (dataRawFromApi, tab)  {
                         e.requestType = element.requestType
                         e.requestTypeId = element.requestTypeId
                         e.startDate = e.startDate ? moment(e.startDate).format("DD/MM/YYYY") : '';
+                        if (element.requestTypeId == Constants.UPDATE_PROFILE) {
+                            e.processStatusId = element.processStatusId
+                            e.id = element.id.toString()
+                        }
                         if(element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.SUBSTITUTION)
                         {
                           e.processStatusId = element.processStatusId

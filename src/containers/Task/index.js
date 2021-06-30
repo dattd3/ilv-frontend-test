@@ -22,26 +22,6 @@ class Task extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const config = {
-          headers: {
-            'Authorization': `${localStorage.getItem('accessToken')}`
-          }
-        }
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/approval?companyCode=`+localStorage.getItem("companyCode"), config)
-        .then(res => {
-          if (res && res.data && res.data.data && res.data.result) {
-            const result = res.data.result;
-            if (result.code != Constants.API_ERROR_CODE) {
-              let tasksOrdered = res.data.data.requests
-              let taskList = processingDataReq(tasksOrdered, "approval")
-              const shouldShowPrepareJob = ['V030'].includes(localStorage.getItem("companyCode"));
-              this.setState({tasks : taskList , isShowPrepareTab: true});
-            }
-          }
-        }).catch(error => {})
-      }
-
     updateTabLink = key => {
         this.props.history.push('?tab=' + key);
         this.setState({tabActive : key})

@@ -39,6 +39,13 @@ class TaskList extends React.Component {
             query: "",
             statusSelected: null,
             checkedAll:false,
+            dataForSearch: {
+                pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
+                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
+                sender: '',
+                status: 0,
+                needRefresh: false
+            }
         }
 
         this.manager = {
@@ -61,13 +68,14 @@ class TaskList extends React.Component {
     }
 
     onChangePage = index => {
-        this.setState({ pageNumber: index, checkedAll: false })
-        let tasks = TableUtil.updateData(this.props.tasks  || [], index - 1, 5)
-        let canEdit = tasks.filter(child => child.canChecked)
-        let number = tasks.filter(child => child.isChecked);
-        if (number.length > 0 && number.length == canEdit.length ) {
-            this.setState({checkedAll: true})
-        }
+        index = index < Constants.TASK_PAGE_INDEX_DEFAULT ? Constants.TASK_PAGE_INDEX_DEFAULT : index;
+        index = index * this.state.dataForSearch.pageSize > this.props.total ? (1 + parseInt(this.props.total / this.state.dataForSearch.pageSize)) : index;
+        this.setState({ pageNumber: index, checkedAll: false, dataForSearch: {
+            ...this.state.dataForSearch,
+            pageIndex: index
+        }}, () => {
+            this.seachRemoteData(false);
+        })
     }
 
     onChangeStatus = (option, taskId, request, status, taskData, statusOriginal) => {
@@ -118,7 +126,7 @@ class TaskList extends React.Component {
 
     onHideisShowTaskDetailModal= () => {
         if(this.state.statusSelected){
-            this.setState({ tasks:  this.state.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
+            this.setState({ tasks:  this.props.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
         }
         this.setState({ isShowTaskDetailModal: false });
     }
@@ -230,7 +238,7 @@ class TaskList extends React.Component {
 
     handleAllChecked = event => {
         // let tasks = this.props.tasks;
-        let tasks = TableUtil.updateData(this.props.tasks  || [], this.state.pageNumber - 1, 5)
+        let tasks = this.props.tasks;
         tasks.forEach((child) => {
             if(child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10 || ((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval")){
                 child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
@@ -314,45 +322,48 @@ class TaskList extends React.Component {
     }
 
     handleSelectChange(name, value) {
-        this.setState({ [name]: value })
-        let cloneTask = this.props.tasks;
-        let result = [];
-        if(value && value.value > 0)
-        {
-            result = cloneTask.filter(req => req.processStatusId == value.value);
-            this.setState({statusSelected:value.value, tasks:result, taskFiltered : result});
-        }
-        else{
-            this.setState({statusSelected:null, tasks:this.props.tasks, taskFiltered : this.props.tasks});
-        }
+        this.setState({ [name]: value, dataForSearch: {
+            ...this.state.dataForSearch,
+            status: value,
+            pageIndex: 1
+        }});
     }
     
     handleInputChange = (event) => {
-        let data = null;
-        let cloneTask = this.state.taskFiltered ? this.state.taskFiltered : this.props.tasks;
-        this.setState({
-            query: event.target.value
-          }, () => {
-              if(this.state.query)
-              {
-                data = cloneTask.filter(x => x.user?.fullName?.toLowerCase().includes(this.state.query) || (x.id +'' ).toLowerCase().includes(this.state.query));
-              }
-              else if (this.state.statusSelected){
-                data = cloneTask.filter(x => x.processStatusId == this.state.statusSelected)
-              }
-              else {
-                data = this.props.tasks
-              }
-            
-            this.setState({tasks:data});
-          })
+        this.setState({  query: event.target.value, dataForSearch: {
+            ...this.state.dataForSearch,
+            sender: event.target.value,
+            pageIndex: 1
+        }});
     }
+
+    seachRemoteData = (isSearch) => {
+        const dataForSearch = this.state.dataForSearch;
+        let needRefresh = false;
+        if(isSearch){
+            dataForSearch.pageIndex = 1;
+            needRefresh = true;
+        }
+
+        let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
+        params += dataForSearch.sender ? `sender=${dataForSearch.sender}&` : '';
+        params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        this.setState({
+            approveTasks: [],
+            tasks: [],
+            taskChecked: [],
+            dataToPrepareToSAP: {},
+            checkedAll:false,
+            dataForSearch: {
+            ...dataForSearch,
+            needRefresh: needRefresh
+        }})
+        this.enableBtn([]);
+        this.props.requestRemoteData(params);
+    }
+
     render() {
-        const recordPerPage = 5
-        // let taskRaw = this.state.tasks.length || this.state.statusSelected || this.state.query  ? this.state.tasks : this.props.tasks
-        let taskRaw = this.state.tasks
-        let tasks = TableUtil.updateData(taskRaw  || [], this.state.pageNumber - 1, recordPerPage)
-        const { t } = this.props
+        const { t, tasks, total} = this.props
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
             2: t("LineManagerSResponse"),
@@ -365,8 +376,8 @@ class TaskList extends React.Component {
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3">
-                    <div className="row w-75">
-                        <div className="col-xl-6">
+                    <div className="row w-100">
+                        <div className="col-xl-4">
                             <InputGroup className="d-flex">
                             <InputGroup.Prepend className="">
                                 <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
@@ -390,7 +401,7 @@ class TaskList extends React.Component {
                                     })}/>
                             </InputGroup>
                         </div>
-                        <div className="col-xl-6">
+                        <div className="col-xl-4">
                             <InputGroup className="">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
@@ -402,6 +413,9 @@ class TaskList extends React.Component {
                             onChange={this.handleInputChange}
                             />
                         </InputGroup>
+                        </div>
+                        <div className="col-4">
+                            <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
                    
@@ -455,9 +469,9 @@ class TaskList extends React.Component {
                                         // }
                                         //     return (
                                         //         <tr key={index}>
-                                                    
-                                                   
-                        
+
+
+
                                         //             {
                                         //                 this.props.page == "approval" ?
                                         //                     <td className="appraiser text-center">{child.appraiser?.fullname}</td>
@@ -508,22 +522,22 @@ class TaskList extends React.Component {
                                                     <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
-                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled/></td>
+                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                 }
-                                                
+
                                                 <td className="code sticky-col" onClick={() => { if(child.requestType.id != 6) this.showModalTaskDetail(child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0], child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1])}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
-                                                {/* { <td className="code"><a href={child.requestType.id == 6 ? 
+                                                {/* { <td className="code"><a href={child.requestType.id == 6 ?
                                                         this.getLinkEvalution(child.id) :
-                                                         child.requestType.id == 4 || child.requestType.id == 5 ? 
-                                                         this.getLinkUserProfileHistory(child.id) : 
-                                                         this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} 
+                                                         child.requestType.id == 4 || child.requestType.id == 5 ?
+                                                         this.getLinkUserProfileHistory(child.id) :
+                                                         this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])}
                                                          title={child.id} className="task-title">
                                                              {this.getTaskCode(child.id)}
                                                         </a>
                                                         </td>} */
                                                 }
-                                                
+
 
 
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user.fullName}</td> : null}
@@ -579,10 +593,10 @@ class TaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={recordPerPage} onChangePage={this.onChangePage.bind(this)} totalRecords={taskRaw.length} />
+                        <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh}/>
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {taskRaw.length}</div>
+                    <div className="col-sm text-right">{t("Total")}: {total}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)

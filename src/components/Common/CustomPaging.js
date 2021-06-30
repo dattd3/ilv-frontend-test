@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Pagination } from 'react-bootstrap';
 
 function CustomPaging(props) {
-    const { pageSize = 5, totalRecords = 0, onChangePage } = props;
+    const { pageSize = 5, totalRecords = 0, onChangePage , needRefresh} = props;
     const [currentPage, SetCurrentPage] = useState(1);
 
     useEffect(() => { SetCurrentPage(1); }, [pageSize]);
@@ -30,7 +30,7 @@ function CustomPaging(props) {
     var pages = [...Array((endPage + 1) - startPage).keys()].map(i => startPage + i);
     let pager = ({
         totalItems: totalRecords,
-        currentPage: currentPage,
+        currentPage: needRefresh ? 1: currentPage,
         pageSize: pageSize,
         totalPages: totalPages,
         startPage: startPage,

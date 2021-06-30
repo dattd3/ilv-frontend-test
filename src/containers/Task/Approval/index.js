@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next"
 import TaskList from '../taskList'
 import ConfirmRequestModal from '../ConfirmRequestModal'
 import Constants from '../../../commons/Constants'
+import processingDataReq from "../../Utils/Common"
 
 class ApprovalComponent extends React.Component {
   constructor(props) {
@@ -13,7 +14,13 @@ class ApprovalComponent extends React.Component {
     this.state = {
       tasks: [],
       dataToSap: [],
+      totalRecord: 0
     }
+  }
+
+  componentDidMount() {
+    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    this.requestRemoteData(params);
   }
   
   exportToExcel = () => {
@@ -34,6 +41,27 @@ class ApprovalComponent extends React.Component {
     });
   }
 
+  requestRemoteData = (params) => {
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/approval?${params}companyCode=`+localStorage.getItem("companyCode"), config)
+        .then(res => {
+          if (res && res.data && res.data.data && res.data.result) {
+            const result = res.data.result;
+            if (result.code != Constants.API_ERROR_CODE) {
+              let tasksOrdered = res.data.data.requests
+              let taskList = processingDataReq(tasksOrdered, "approval")
+              this.setState({tasks : taskList, totalRecord: res.data.data.total});
+            }
+          }
+    }).catch(error => {
+      this.setState({tasks : [], totalRecord: 0});
+    })
+  }
+
   handleSelectChange(name, value) {
     this.setState({ [name]: value })
   }
@@ -51,7 +79,7 @@ class ApprovalComponent extends React.Component {
     return (
       <>
         <div className="task-section">
-          <TaskList tasks={this.props.tasks} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
+          <TaskList tasks={this.state.tasks} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
         </div>
       </>
     )
