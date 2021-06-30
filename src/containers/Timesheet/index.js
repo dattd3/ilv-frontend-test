@@ -411,6 +411,7 @@ class Timesheet extends React.Component {
           isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
           
           line2.type1 = isValid1 == false && currentDay <= today  ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
+          line2.type1 = isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : line2.type1;
           if(line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
             line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
             line2.subtype = '1' + line2.subtype[1];
@@ -419,10 +420,10 @@ class Timesheet extends React.Component {
             line2.subtype = '1' + line2.subtype[1];
           }
         }
-        
         if(this.checkExist(item.from_time2) && !this.isHoliday(item)) {
           isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2 ? true : false;
           line2.type1 = isValid2 == false && currentDay <= today ?  line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
+          line2.type1 = isValid2 == true && line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ? line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE : line2.type1;
           if(line2.type1[1] == EVENT_TYPE.EVENT_LOICONG) {
             line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
             line2.subtype = line2.subtype[0] + '1';
