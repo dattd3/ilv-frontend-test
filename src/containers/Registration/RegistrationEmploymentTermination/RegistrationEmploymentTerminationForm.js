@@ -184,14 +184,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         } = this.state
         const isValid = this.isValidData()
         const fileInfoValidation = this.validateAttachmentFile()
-        const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
-            return
-        } else if (!isDirectManagerValid) {
-            toast.error("Cán bộ QLTT không có thẩm quyền")
             return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
