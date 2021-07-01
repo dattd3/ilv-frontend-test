@@ -312,9 +312,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const errors = { ...this.state.errors }
         errors[approvalType] = null
 
-        if (!isDirectManager) {
-            errors[approvalType] = approvalType === "directManager" ? "Cán bộ QLTT không có thẩm quyền" : this.props.t("InvalidApprover")
-        }
+        // if (!isDirectManager) {
+        //     errors[approvalType] = approvalType === "directManager" ? "Cán bộ QLTT không có thẩm quyền" : this.props.t("InvalidApprover")
+        // }
 
         this.setState({ [approvalType]: approver, errors: errors })
     }
