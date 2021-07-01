@@ -149,10 +149,9 @@ class ProposedResignationPage extends React.Component {
             toast.error(fileInfoValidation.files)
             return
         } else {
-            const subordinates = await this.getSubordinates()
-            const directManagerValidation = this.validateDirectManager(subordinates)
-            if (!directManagerValidation.isValid) {
-                toast.error(directManagerValidation.messages)
+            const employeeValidations = this.validateEmployees()
+            if (!employeeValidations.isValid) {
+                toast.error(employeeValidations.messages)
                 return
             }
         }
@@ -247,7 +246,7 @@ class ProposedResignationPage extends React.Component {
         return errors
     }
 
-    validateDirectManager = (subordinates) => {
+    validateEmployees = () => {
         const userInfos = this.state.userInfos
 
         if (!userInfos || userInfos.length === 0) {
@@ -257,47 +256,9 @@ class ProposedResignationPage extends React.Component {
             }
         }
 
-        if (!subordinates || subordinates.length === 0) {
-            return {
-                isValid: false,
-                messages: "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT"
-            }
-        }
-
-        const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase())
-        const userNotInSubordinates = userInfos.filter(item => !subordinateAds.includes(item.ad.toLowerCase()))
-        .map(item => item.fullName)
-
-        const objValid = {
+        return {
             isValid: true,
             messages: ""
-        }
-        if (userNotInSubordinates && userNotInSubordinates.length > 0) {
-            objValid.isValid = false
-            objValid.messages = `Nhân viên (${userNotInSubordinates.join(', ')}) đề xuất cho nghỉ không thuộc thẩm quyền của QLTT`
-        } else {
-            objValid.isValid = true
-            objValid.messages = ""
-        }
-
-        return objValid
-    }
-
-    getSubordinates = async () => {
-        try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigs())
-
-            if (responses && responses.data) {
-                const employees = responses.data.employees
-
-                if (employees && employees.length > 0) {
-                    return employees
-                }
-
-                return []
-            }
-        } catch (error) {
-            return []
         }
     }
 

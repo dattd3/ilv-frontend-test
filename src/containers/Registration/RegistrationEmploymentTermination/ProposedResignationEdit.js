@@ -92,6 +92,21 @@ class ProposedResignationEdit extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
+    validateEmployees = () => {
+        const userInfos = this.state.userInfos
+
+        if (!userInfos || userInfos.length === 0) {
+            return {
+                isValid: false,
+                messages: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+            }
+        }
+        return {
+            isValid: true,
+            messages: ""
+        }
+    }
+
     isValidData = () => {
         const errors = this.state.errors
         const isEmpty = !Object.values(errors).some(item => item != null && item != "")
@@ -127,6 +142,12 @@ class ProposedResignationEdit extends React.Component {
             const message = this.getMessageValidation()
             toast.error(message)
             return
+        } else {
+            const employeeValidations = this.validateEmployees()
+            if (!employeeValidations.isValid) {
+                toast.error(employeeValidations.messages)
+                return
+            }
         }
 
         this.setDisabledSubmitButton(true)
