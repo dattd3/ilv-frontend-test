@@ -464,6 +464,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
+                                    { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance'},
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                 ]
