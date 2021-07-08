@@ -493,14 +493,14 @@ class TaskList extends React.Component {
                                                         </Popover>}>
                                                         <img alt="Note task" src={notetButton} title={t("Reason")} />
                                                     </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                    {child.hrComment ? <OverlayTrigger
+                                                    {child.approverComment ? <OverlayTrigger
                                                         rootClose
                                                         trigger="click"
                                                         placement="left"
                                                         overlay={<Popover id={'comment-task-' + index}>
                                                             <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
                                                             <Popover.Content>
-                                                                {child.hrComment}
+                                                                {child.approverComment}
                                                             </Popover.Content>
                                                         </Popover>}>
                                                         <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
