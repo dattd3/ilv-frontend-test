@@ -331,4 +331,12 @@ export default class Api {
     })
  };
 
+ fetchIntroduce = async (id) => {
+   return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {
+     params: {
+       id: id
+     }
+   })
+ }
+
 }
