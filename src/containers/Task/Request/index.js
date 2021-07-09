@@ -11,29 +11,14 @@ class RequestComponent extends React.Component {
     super();
     this.state = {
       tasks: [],
+      totalRecord: 0,
       dataResponse: {}
     }
   }
 
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`
-      }
-    }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?companyCode=`+localStorage.getItem("companyCode"), config)
-    .then(res => {
-      if (res && res.data && res.data.data && res.data.result) {
-        const result = res.data.result;
-        if (result.code != Constants.API_ERROR_CODE) {
-          let tasksOrdered = res.data.data.requests
-          let taskList = processingDataReq(tasksOrdered,"request")
-          this.setState({tasks : taskList, dataResponse: res.data.data});
-        }
-      }
-    }).catch(error => { 
-      this.setState({tasks : []});
-    });
+    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    this.requestRemoteData(params);
   }
 
   exportToExcel = () => {
@@ -53,6 +38,27 @@ class RequestComponent extends React.Component {
 
     });
   }
+ 
+  requestRemoteData = (params) => {
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`
+      }
+    }
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
+    .then(res => {
+      if (res && res.data && res.data.data && res.data.result) {
+        const result = res.data.result;
+        if (result.code != Constants.API_ERROR_CODE) {
+          let tasksOrdered = res.data.data.requests
+          let taskList = processingDataReq(tasksOrdered,"request")
+          this.setState({tasks : taskList, totalRecord: res.data.data.total, dataResponse: res.data.data});
+        }
+      }
+    }).catch(error => { 
+      this.setState({tasks : [], totalRecord: 0});
+    });
+  }
 
   render() {
     const { t } = this.props
@@ -69,7 +75,7 @@ class RequestComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <div className="task-section">
-        <RequestTaskList tasks={this.state.tasks} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
+        <RequestTaskList tasks={this.state.tasks} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
       <LoadingSpinner />
     )

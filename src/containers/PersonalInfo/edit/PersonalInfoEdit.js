@@ -391,7 +391,7 @@ class PersonalInfoEdit extends React.Component {
         }
         if (localStorage.getItem("companyCode") === "V073") {
           if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
-            errors.personalIdentifyNumber = '('+t("Invalid format (9 or 12 digits)")+')'
+            errors.personalIdentifyNumber = '(' + t("Invalid format (9 or 12 digits)") + ')'
           }
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
@@ -502,6 +502,13 @@ class PersonalInfoEdit extends React.Component {
     return false
   }
 
+  hasValue = (value) => {
+    if (value !== null && value !== undefined && value !== '#' && value !== 'null' && value != '') {
+      return true;
+    }
+    return false;
+  }
+
   submitRequest = (comment) => {
     const { t } = this.props;
     let dataClone = this.removeItemForValueNull({ ...this.state.data })
@@ -516,14 +523,31 @@ class PersonalInfoEdit extends React.Component {
 
     const updateFields = this.getFieldUpdates();
     const dataPostToSAP = this.getDataPostToSap(this.state.data);
+    let userInfo = {
+      employeeNo: localStorage.getItem('employeeNo'),
+      fullName: localStorage.getItem('fullName'),
+      jobTitle: localStorage.getItem('jobTitle'),
+      department: localStorage.getItem('department')
+    };
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
     bodyFormData.append('Comment', comment);
     bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
     bodyFormData.append('UpdateField', JSON.stringify(updateFields));
     bodyFormData.append('Region', localStorage.getItem('region'));
+    bodyFormData.append('OrgLv2Id', this.hasValue(localStorage.getItem('organizationLv2')) ? localStorage.getItem('organizationLv2') : '');
+    bodyFormData.append('OrgLv2Text', this.hasValue(localStorage.getItem('company')) ? localStorage.getItem('company') : '');
+    bodyFormData.append('DivisionId', this.hasValue(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : '');
+    bodyFormData.append('Division', this.hasValue(localStorage.getItem('division')) ? localStorage.getItem('division') : '');
+    bodyFormData.append('RegionId', this.hasValue(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : '');
+    bodyFormData.append('Region', this.hasValue(localStorage.getItem('region')) ? localStorage.getItem('region') : '');
+    bodyFormData.append('UnitId', this.hasValue(localStorage.getItem('unitId')) ? localStorage.getItem('unitId') : '');
+    bodyFormData.append('Unit', this.hasValue(localStorage.getItem('unit')) ? localStorage.getItem('unit') : '');
+    bodyFormData.append('PartId', this.hasValue(localStorage.getItem('partId')) ? localStorage.getItem('partId') : '');
+    bodyFormData.append('Part', this.hasValue(localStorage.getItem('part')) ? localStorage.getItem('part') : '');
     bodyFormData.append('CompanyCode', localStorage.getItem('companyCode'));
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataPostToSAP));
+    bodyFormData.append('User', JSON.stringify(userInfo));
     const fileSelected = this.state.files;
     for (let key in fileSelected) {
       bodyFormData.append('Files', fileSelected[key]);

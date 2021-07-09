@@ -1502,3 +1502,152 @@ span.badge-notification[data-badge]::after {
   top: -20px;
   left: 46%;
 }
+
+.describer{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+    .item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+    .box {
+      width: 25px;
+      height: 10px;
+      margin-right: 5px;
+    }
+    .title{
+      color: #000000
+    }
+}
+
+.timesheet-table{
+  .arrow::after, .bs-popover-bottom .arrow::after {
+    border-left-color: #6CB5F9 !important;
+    border-right-color: #6CB5F9 !important;
+  }
+  td, th {
+    border: 1px solid #707070;
+    text-align: left;
+    padding: 2px 0px;
+    height: 30px;
+    max-width: 50px;    
+    text-align: center;
+  }
+  thead {
+    td, th {
+      text-align: left;
+      padding: 10px 0px;
+      height: 30px;
+      max-width: 50px;    
+      text-align: center;
+      border: none;
+      color: #C11D2A;
+      background-color: #FFA2001A;
+      font-weight: bold;
+
+    }
+  }
+  .divide{
+    border: none;
+    height: 10px;
+  }
+  .date{
+    color: #C11D2A;
+
+  }
+  .ke_hoach{
+    background-color: #00B3FF;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .ke_hoach_dai{
+    background-color: #00B3FF;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-bottom: none;
+    text-align: center;
+  }
+  .thuc_te{
+    background-color: #39B54A;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .loi_cong{
+    background-color: #E44235;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .no-event{
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .gio_nghi{
+    background-color: #F7931E;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .cong_tac{
+    background-color: #93278F;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .ot {
+    background-color: #808000;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-top: none;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+

@@ -87,7 +87,7 @@ function Authorize(props) {
                             tokenExpired: '',
                             email: vgEmail,
                             plEmail: user.company_email,
-                            avatar: '',
+                            avatar: user.avatar,
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
@@ -184,12 +184,19 @@ function Authorize(props) {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
+            avatar: userProfile.avatar,
             jobTitle: userProfile.job_name,
             benefitLevel: userProfile.employee_level,
             companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
-            culture: localStorage.getItem('locale').split("-")[0]
+            culture: localStorage.getItem('locale').split("-")[0],
+            orgLv2Id: userProfile.organization_lv2,
+            orgLv3Id: userProfile.organization_lv3,
+            orgLv4Id: userProfile.organization_lv4,
+            orgLv5Id: userProfile.organization_lv5,
+            divisionName: userProfile.division,
+            unitName: userProfile.unit
         }
 
         axios({
