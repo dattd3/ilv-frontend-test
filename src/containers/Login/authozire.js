@@ -189,7 +189,13 @@ function Authorize(props) {
             companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
-            culture: localStorage.getItem('locale').split("-")[0]
+            culture: localStorage.getItem('locale').split("-")[0],
+            orgLv2Id: userProfile.organization_lv2,
+            orgLv3Id: userProfile.organization_lv3,
+            orgLv4Id: userProfile.organization_lv4,
+            orgLv5Id: userProfile.organization_lv5,
+            divisionName: userProfile.division,
+            unitName: userProfile.unit
         }
 
         axios({

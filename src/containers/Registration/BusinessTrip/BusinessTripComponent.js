@@ -721,6 +721,8 @@ class BusinessTripComponent extends React.Component {
                 { value: 'CT03', label: t('BizTripNoPerDiemHasMeals') },
                 { value: 'CT04', label: t('BizTripNoPerDiemNoMeals') },
                 { value: 'DT01', label: t('Menu_Training') },
+                { value: 'WFH1', label: t('WFHNoPerDiemHasMeals') },
+                { value: 'WFH2', label: t('WFHNoPerDiemNoMeals') },
             ]
         }
         return (

@@ -27,11 +27,14 @@ function Header(props) {
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
-    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"))
+    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"));
+    const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
+    const [totalNotificationCount, setTotalNotificationCount] = useState(0);
     const guard = useGuardStore();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
-    let totalNotificationUnRead = 0;
+    let lastNotificationIdSeen = 0;
+    let dataNotificationsUnRead = "";
     const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
@@ -73,20 +76,49 @@ function Header(props) {
             });
     }
 
-    let dataNotificationsUnRead = "";
+    const OnClickBellFn = (isOpen) => {
+        if (isOpen && lastNotificationIdSeen > 0 && totalNotificationUnRead) {
+            var axios = require('axios');
+            var data = '';
+            var config = {
+                method: 'post',
+                url: `${process.env.REACT_APP_REQUEST_URL}notifications/SetLastNotificationIdSeen/` + lastNotificationIdSeen,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+            axios(config)
+                .then(function (response) {
+                    setTotalNotificationUnRead("");
+                })
+                .catch(function (error) {
+                    setTotalNotificationUnRead("");
+                });
+        }
+    }
+
     const result = usePreload([companyCode, lv3, lv4, lv5]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
         if (res.code != 1) {
             if (data.notifications && data.notifications.length > 0) {
-                if (data.total > 99) {
-                    totalNotificationUnRead = "+99";
-                } else if (data.total == 0) {
-                    totalNotificationUnRead = "";
-                } else {
-                    totalNotificationUnRead = data.total;
+                if (data.total > 99 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("+99");
+                } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead("");
+                } else if (data.total !== totalNotificationCount) {
+                    setTotalNotificationCount(data.total)
+                    setTotalNotificationUnRead(data.total);
                 }
+                if (data.notifications[0]) {
+                    lastNotificationIdSeen = data.notifications[0].id;
+                }
+
                 dataNotificationsUnRead = <>
                     {
                         data.notifications.map((item, i) => {
@@ -96,7 +128,10 @@ function Header(props) {
                                     case 0:
                                         return `/notifications/${item.id}`
                                     case 1:
-                                        return `/registration/${item.userProfileHistoryId}/approval`
+                                        if (item.title.indexOf("thẩm định") > 0)
+                                            return `/tasks?tab=consent`
+                                        else
+                                            return `/tasks?tab=approval`
                                     case 5:
                                         return item.url
                                     default:
@@ -141,14 +176,14 @@ function Header(props) {
         SetIsShow(!isShow);
         setShow(isShow);
     }
-    
+
     const onChangeLocale = lang => {
         setActiveLang(lang)
     }
 
-    useEffect(() => { 
-        localizeStore.setLocale(activeLang || "vi-VN") 
-      }, [activeLang, localizeStore]);
+    useEffect(() => {
+        localizeStore.setLocale(activeLang || "vi-VN")
+    }, [activeLang, localizeStore]);
 
     return (
         isApp ? null :
@@ -163,9 +198,7 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
-
-
-                    <Dropdown id="notifications-block">
+                    <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
                         <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
                             <Dropdown.Toggle>
                                 <span className="notifications-block">
@@ -199,11 +232,11 @@ function Header(props) {
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
                             <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
                                 {t("LangViet")}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
                                 {t("LangEng")}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -212,7 +245,7 @@ function Header(props) {
                         </Dropdown.Menu>
                     </Dropdown>
                 </Navbar>
-            </div>
+            </div >
     );
 }
 

@@ -29,7 +29,7 @@ class RequestDetail extends React.Component {
       modalMessage: "",
       typeRequest: 1,
       userInfo: {},
-      status: 0,
+      status: 5,
       taskId: 0
     }
   }
@@ -37,7 +37,7 @@ class RequestDetail extends React.Component {
   getUserProfileHistoryId = () => {
     const pathName = window.location.pathname;
     const pathNameArr = pathName.split('/');
-    return pathNameArr[pathNameArr.length - 1];
+    return pathNameArr[2];
   }
 
   processBlockStatuses = (response) => {
@@ -203,7 +203,7 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const status = {
-      0: {label: t("Waiting"), className: ''},
+      5: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: ''}
