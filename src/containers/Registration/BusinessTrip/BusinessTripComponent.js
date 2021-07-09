@@ -283,7 +283,7 @@ class BusinessTripComponent extends React.Component {
                 else {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.startTimeAndEndTime = this.props.t("AnErrorOccurred")
+                        errors.startTimeAndEndTime =  res.data.result.message
                         return {
                             ...req,
                             errors,
@@ -428,7 +428,7 @@ class BusinessTripComponent extends React.Component {
             requestInfo[indexReq].errors["startTime"] = !startTime && !isAllDay && !req.isAllDayCheckbox ? this.props.t('Required') : null
             requestInfo[indexReq].errors["endTime"] = !endTime && !isAllDay && !req.isAllDayCheckbox ?  this.props.t('Required') : null
             requestInfo[indexReq].errors.attendanceQuotaType = !attendanceQuotaType ? this.props.t('Required') : null
-            if(attendanceQuotaType?.value != "DT01") {
+            if(attendanceQuotaType?.value != "DT01" && localStorage.getItem("companyCode") != 'V073') {
                 requestInfo[indexReq].errors.vehicle = !vehicle ? this.props.t('Required') : null
                 requestInfo[indexReq].errors.place = !place ? this.props.t('Required') : null
             }
@@ -713,6 +713,8 @@ class BusinessTripComponent extends React.Component {
             { value: 'CT03', label: t('BizTripNoPerDiemHasMeals') },
             { value: 'CT04', label: t('BizTripNoPerDiemNoMeals') },
             { value: 'DT01', label: t('Menu_Training') },
+            { value: 'WFH1', label: t('WFHNoPerDiemHasMeals') },
+            { value: 'WFH2', label: t('WFHNoPerDiemNoMeals') },
         ]
         if (['V073'].includes(localStorage.getItem("companyCode"))) {
             attendanceQuotaTypes = [
@@ -778,7 +780,7 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
-                                                                            minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                                                                            minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
@@ -825,7 +827,7 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}

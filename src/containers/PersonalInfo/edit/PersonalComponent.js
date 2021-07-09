@@ -81,8 +81,8 @@ class PersonalComponent extends React.Component {
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             }
         }
         const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
