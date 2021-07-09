@@ -199,6 +199,7 @@ class SubstitutionDetailComponent extends React.Component {
             ]
           } //this.getData()
           id={this.props.substitution.id}
+          isShowApproval={this.props.substitution.processStatusId === Constants.STATUS_WAITING}
           isShowRevocationOfApproval={this.props.substitution.processStatusId === Constants.STATUS_APPROVED}
           isShowConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING_CONSENTED}
           isShowRevocationOfConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING && this.props.substitution.appraiser}

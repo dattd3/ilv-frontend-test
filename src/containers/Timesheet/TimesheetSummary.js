@@ -63,6 +63,12 @@ class TimesheetSummary extends React.Component {
               <div className="content text-center text-danger">{ _.ceil(this.props.timsheetSummary.salary_wh, 2) || 0 }</div>
             </div>
           </div> : null}
+          <div className="row">
+            <div className="col">
+              <div className="content text-danger notice">{t('TimesheetNotice')}</div>
+            </div>
+          
+          </div>
         </div>
       </div>
     </div>

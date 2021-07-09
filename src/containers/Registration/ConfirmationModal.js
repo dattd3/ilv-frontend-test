@@ -33,7 +33,7 @@ class ConfirmationModal extends React.Component {
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
-                this.props.dataToSap[0].sub[0].ApproverComment = this.state.message;
+                this.props.dataToSap[0].sub[0].comment = this.state.message;
                 console.log(this.props.dataToSap);
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
@@ -48,7 +48,7 @@ class ConfirmationModal extends React.Component {
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
-                this.props.dataToSap[0].sub[0].AppraiserComment = this.state.message;
+                this.props.dataToSap[0].sub[0].comment = this.state.message;
                 this.reject(this.props.dataToSap);
                 break;
             case Constants.STATUS_REVOCATION: // hủy
