@@ -14,28 +14,33 @@ class ConsentComponent extends React.Component {
       tasks: [],
       taskCheckeds: [],
       dataResponse: {},
+      totalRecord: 0
     }
   }
 
   componentDidMount() {
+    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    this.requestRemoteData(params);
+  }
+
+  requestRemoteData = (params) => {
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/assessing?companyCode=`+localStorage.getItem("companyCode"), config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/assessing?${params}companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
         if (result.code != Constants.API_ERROR_CODE) {
           let tasksOrdered =res.data.data.requests
           let taskList = processingDataReq(tasksOrdered,"consent")
-          // console.log(taskList);
-          this.setState({tasks : taskList, dataResponse: res.data.data});
+          this.setState({tasks : taskList, totalRecord: res.data.data.total, dataResponse: res.data.data});
         }
       }
     }).catch(error => {
-      this.setState({tasks : []});
+      this.setState({tasks : [], totalRecord: 0});
     });
   }
 
@@ -54,7 +59,7 @@ class ConsentComponent extends React.Component {
       this.state.dataResponse ?
       <>
         <div className="task-section">
-          <TaskList tasks={this.state.tasks} filterdata={statusFiler} page="consent" title={t("ConsentManagement")}/>       
+          <TaskList tasks={this.state.tasks} filterdata={statusFiler} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} page="consent" title={t("ConsentManagement")}/>       
         </div>
       </> : 
       <LoadingSpinner />
