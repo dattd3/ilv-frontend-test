@@ -15,7 +15,8 @@ class SubmitQuestionModal extends React.Component {
             categorySelectedId: 0,
             validated: false,
             questionContent: "",
-            supervise: {}
+            supervise: {},
+            targetQuest: 0
         };
     }
     componentWillMount() {
@@ -27,6 +28,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
+                    console.log("Debug check data", tes.data.data);
                     let categoriesResult = res.data.data;
                     this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
                 }
@@ -44,6 +46,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
+                    console.log("Debug check immediatesupervise", res.data.data);
                     this.setState({ supervise: res.data.data[0] })
                 }
             }).catch(error => {
@@ -65,6 +68,10 @@ class SubmitQuestionModal extends React.Component {
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
+    handleChangeTargetQues(event) {
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(this.state[event.target.name]);
+    }
     handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
@@ -79,27 +86,9 @@ class SubmitQuestionModal extends React.Component {
     };
 
     submitQuestion(questionId, categoryId, questionContent, alertSuccess, alertFail) {
-        var axios = require('axios');
-        var data = (questionId && this.props.isEdit) ? JSON.stringify({
-            "id": questionId,
-            "subject": questionContent,
-            "content": questionContent,
-            "ticketstatusid": 1,
-            "userid": `${localStorage.getItem('email')}`,
-            "userjobtitle": `${localStorage.getItem('jobTitle')}`,
-            "useremployeeno": `${localStorage.getItem('employeeNo')}`,
-            "userdepartmentname": `${localStorage.getItem('department')}`,
-            "userfullname": `${localStorage.getItem('fullName')}`,
-            "useravatar": `${localStorage.getItem('avatar')}`,
-            "agentid": this.state.supervise.userid.toLowerCase() + "@vingroup.net",
-            "agentjobtitle": this.state.supervise.title,
-            "agentemployeeno": "",
-            "agentdepartmentname": this.state.supervise.department,
-            "agentfullname": this.state.supervise.fullname,
-            "agentavatar": this.state.supervise.avatar,
-            "ticketcategoryid": categoryId
-        })
-            : JSON.stringify({
+        var axios = require('axios'),
+            obj_data = {
+                "id": questionId,
                 "subject": questionContent,
                 "content": questionContent,
                 "ticketstatusid": 1,
@@ -116,8 +105,11 @@ class SubmitQuestionModal extends React.Component {
                 "agentfullname": this.state.supervise.fullname,
                 "agentavatar": this.state.supervise.avatar,
                 "ticketcategoryid": categoryId
-            });
-
+            },
+            data = JSON.stringify( // Check edit
+                (questionId && this.props.isEdit) ? obj_data['id'] = questionId : obj_data
+            );
+        console.log("Debug - check data request", data);
         var config = {
             method: 'post',
             url: (questionId && this.props.isEdit) ? `${process.env.REACT_APP_REQUEST_URL}ticket/edit` : `${process.env.REACT_APP_REQUEST_URL}ticket/Create`,
@@ -127,13 +119,13 @@ class SubmitQuestionModal extends React.Component {
             },
             data: data
         };
-        axios(config)
-            .then(function (response) {
-                alertSuccess();
-            })
-            .catch(function (error) {
+        // axios(config)
+        //     .then(function (response) {
+        //         alertSuccess();
+        //     })
+        //     .catch(function (error) {
 
-            });
+        //     });
     }
 
     updateEditDate(question, isEdit) {
@@ -182,14 +174,56 @@ class SubmitQuestionModal extends React.Component {
                                     {t("EnterQuestion")}
                                 </Form.Control.Feedback>
                             </Form.Group>
+
+                            <div className="w-100 border py-2"></div>
+
+                            <div className="form-group">
+                                {/* <label className="form-label">{t("Target")}</label> */}
+                                <div className="target input-container d-flex align-items-center justify-content-between">
+                                    <div className="form-check">
+                                        <input className="form-check-input" 
+                                            type="radio" 
+                                            value="0" 
+                                            name="targetQues"
+                                            onChange={this.handleChangeTargetQues(this)}/>
+                                        <label className="form-check-label" for="exampleRadios1">
+                                            {t("LineManager")}
+                                        </label>
+                                    </div>
+
+                                    <div className="form-check">
+                                        <input className="form-check-input" 
+                                            type="radio" 
+                                            value="1" 
+                                            name="targetQues"
+                                            onChange={this.handleChangeTargetQues(this)}/>
+                                        <label className="form-check-label" for="exampleRadios1">
+                                            {t("Menu_HumanResource")}
+                                        </label>
+                                    </div>
+
+                                    <div className="form-check">
+                                        <input className="form-check-input" 
+                                        type="radio" 
+                                        value="2" 
+                                        name="targetQues"
+                                        onChange={this.handleChangeTargetQues(this)}/>
+                                        <label className="form-check-label" for="exampleRadios1">
+                                            {t("Tckt")}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <Form.Group controlId="submitQuestionForm.CBQL">
                                 <Form.Label>{t("LineManager")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.fullname} readOnly />
                             </Form.Group>
+
                             <Form.Group controlId="submitQuestionForm.Title">
                                 <Form.Label>{t("Title")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.title} readOnly />
                             </Form.Group>
+
                             <Form.Group controlId="submitQuestionForm.Department">
                                 <Form.Label>{t("DepartmentManage")}</Form.Label>
                                 <Form.Control type="text" placeholder={this.state.supervise.department} readOnly />
