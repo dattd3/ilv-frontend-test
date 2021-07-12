@@ -55,7 +55,6 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    console.log("Debug check data", res.data.data);
                     let categoriesResult = res.data.data;
                     this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
                 }
