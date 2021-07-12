@@ -86,6 +86,7 @@
   "VinID": "Số thẻ VinID",
   "Tckt": "TCKT",
   "BankAccountNumber": "Số TK ngân hàng",
+  "Tckt": "TCKT",
   "BankName": "Ngân hàng",
   "LegalInformation": "Thông tin người thân",
   "FamilyAllowances": "Giảm / Trừ",
@@ -873,5 +874,6 @@
   "SelectEmployees": "Lựa chọn nhân viên",
   "EnterKeywords": "Nhập từ khóa",
   "CancelSearch": "Hủy",
-  "ApplySearch": "Áp dụng"
+  "ApplySearch": "Áp dụng",
+  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!"
 }
