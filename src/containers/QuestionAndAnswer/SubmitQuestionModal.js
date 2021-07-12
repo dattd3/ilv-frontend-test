@@ -55,6 +55,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
+                    console.log("Debug check data", res.data.data);
                     let categoriesResult = res.data.data;
                     this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
                 }
@@ -167,7 +168,10 @@ class SubmitQuestionModal extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
         console.log(this.state[event.target.name]);
     }
-
+    handleChangeTargetQues(event) {
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(this.state[event.target.name]);
+    }
     handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
