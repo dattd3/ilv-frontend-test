@@ -84,6 +84,7 @@
   "HealthInsuranceNumber": "Số BHYT",
   "VinID": "Số thẻ VinID",
   "BankAccountNumber": "Số TK ngân hàng",
+  "Tckt": "TCKT",
   "BankName": "Ngân hàng",
   "LegalInformation": "Thông tin người thân",
   "FamilyAllowances": "Giảm / Trừ",
@@ -861,5 +862,6 @@
   "successfulConsentReq": "Thẩm định yêu cầu thành công !",
   "successfulRejectConsentReq": "Từ chối thẩm định yêu cầu thành công !",
   "AnErrorOccurred": "Đã có lỗi xảy ra",
-  "successfulRevocationApproval": "Thu hổi phê duyệt thành công !"
+  "successfulRevocationApproval": "Thu hổi phê duyệt thành công !",
+  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!"
 }
