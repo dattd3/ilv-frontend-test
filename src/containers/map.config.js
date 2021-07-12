@@ -70,4 +70,8 @@ export default {
   QuestionAndAnswerDetails:"/question-and-answer-details/:id",
 
   LeaveFund: "/leave-fund",
+  //workflow management
+  EmployeeTimeSheets: "/workflow-management/employee-timesheets",
+  // LeaveFund: "/workflow-management/leave-fund",
+  PersonalDetails: "/workflow-management/personal-details"
 };
