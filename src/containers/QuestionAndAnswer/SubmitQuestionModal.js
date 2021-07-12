@@ -50,6 +50,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
+                    console.log("Debug check data", tes.data.data);
                     let categoriesResult = res.data.data;
                     this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
                 }
@@ -69,6 +70,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
+                    console.log("Debug check immediatesupervise", res.data.data);
                     this.setState({ supervise: res.data.data[0] })
                 }
             }).catch(error => {
@@ -116,6 +118,10 @@ class SubmitQuestionModal extends React.Component {
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
+    }
+    handleChangeTargetQues(event) {
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(this.state[event.target.name]);
     }
     handleSubmit = (event) => {
         const form = event.currentTarget;
