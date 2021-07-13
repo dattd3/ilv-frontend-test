@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react"
-import IconSuccess from '../../assets/img/ic-success.svg'
-import IconFailed from '../../assets/img/ic-failed.svg'
-import { Modal, Image, Form, Button } from 'react-bootstrap'
+import React  from "react";
+// import IconSuccess from '../../assets/img/ic-success.svg'
+// import IconFailed from '../../assets/img/ic-failed.svg'
+import { Modal, Form, Button } from 'react-bootstrap'
 import Constants from '../../commons/Constants';
 import Select from 'react-select'
 import axios from 'axios';
-import _ from 'lodash'
+// import _ from 'lodash'
 import { withTranslation } from 'react-i18next';
 
 const MyOption = props => {
@@ -38,6 +38,7 @@ class SubmitQuestionModal extends React.Component {
             validated: false,
             questionContent: "",
             supervise: {},
+            superviseDefault: {},
             solverid: Constants.SOLVER_MANAGER
         };
     }
@@ -70,7 +71,10 @@ class SubmitQuestionModal extends React.Component {
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     console.log("Debug check immediatesupervise", res.data.data);
-                    this.setState({ supervise: res.data.data[0] })
+                    this.setState({ 
+                        // supervise: res.data.data[0],
+                        superviseDefault: res.data.data[0],
+                    })
                 }
             }).catch(error => {
 
@@ -137,6 +141,7 @@ class SubmitQuestionModal extends React.Component {
 
     submitQuestion(questionId, categoryId, questionContent, alertSuccess, alertFail) {
         var axios = require('axios');
+        var supervise = this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault : this.state.supervise;
         var dataRequest = {
             "subject": questionContent,
             "content": questionContent,
@@ -147,18 +152,19 @@ class SubmitQuestionModal extends React.Component {
             "userdepartmentname": `${localStorage.getItem('department')}`,
             "userfullname": `${localStorage.getItem('fullName')}`,
             "useravatar": `${localStorage.getItem('avatar')}`,
-            "agentid": this.state.supervise.userid.toLowerCase() + "@vingroup.net",
-            "agentjobtitle": this.state.supervise.title,
+            "agentid": supervise.userid.toLowerCase() + "@vingroup.net",
+            "agentjobtitle": supervise.title,
             "agentemployeeno": "",
-            "agentdepartmentname": this.state.supervise.department,
-            "agentfullname": this.state.supervise.fullname,
-            "agentavatar": this.state.supervise.avatar,
+            "agentdepartmentname": supervise.department,
+            "agentfullname": supervise.fullname,
+            "agentavatar": supervise.avatar,
             "ticketcategoryid": categoryId,
             "solverId": this.state.solverid // 1: Manager, 2: resource, 3: tckt
         };
         if( questionId && this.props.isEdit ){
             dataRequest['id'] = questionId
         }
+
         var config = {
             method: 'post',
             url:  `${process.env.REACT_APP_REQUEST_URL}ticket/${(questionId && this.props.isEdit ? 'edit': 'Create')}`,
@@ -176,7 +182,18 @@ class SubmitQuestionModal extends React.Component {
     }
 
     updateEditDate(question, isEdit) {
-        this.setState({ questionContent: (question && isEdit) ? question.content : '' })
+        // console.log(question.agentId.split("@")[0]);
+        this.setState({ 
+            questionContent: (question && isEdit) ? question.content : '',
+            solverid: (question && isEdit) ? question.solverId : Constants.SOLVER_MANAGER,
+            supervise: {
+                title: (question && isEdit) ? question.agentTitle : '',
+                department: (question && isEdit) ? question.agentDepartmentName : '',
+                fullname: (question && isEdit) ? question.agentName : '',
+                userid: (question && isEdit) ? question.agentId.split("@")[0] : ''
+            },
+            categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories[0].id
+        })
     }
 
     render() {
@@ -221,7 +238,8 @@ class SubmitQuestionModal extends React.Component {
                                 <label className="form-label">{t("Categoryques")}</label>
                                 <div className="content input-container ">
                                     <Select
-                                        defaultValue={categoriesDisplay[0]}
+                                        // defaultValue={categoriesDisplay[0]}
+                                        value={this.state.categorySelectedId ? categoriesDisplay.filter((c) => c.value === this.state.categorySelectedId) : categoriesDisplay[0]}
                                         placeholder={t("SelectCategory")}
                                         options={categoriesDisplay}
                                         onChange={this.setCategory.bind(this)} />
@@ -249,6 +267,7 @@ class SubmitQuestionModal extends React.Component {
                                             value={Constants.SOLVER_MANAGER}
                                             name="solverid"
                                             checked={this.state.solverid == Constants.SOLVER_MANAGER}
+                                            disabled={this.props.isEdit}
                                             onChange={this.handleChange.bind(this)} />
                                         {t("LineManager")}
                                     </div>
@@ -259,6 +278,7 @@ class SubmitQuestionModal extends React.Component {
                                             value={Constants.SOLVER_RESOURCE}
                                             name="solverid"
                                             checked={this.state.solverid == Constants.SOLVER_RESOURCE}
+                                            disabled={this.props.isEdit}
                                             onChange={this.handleChange.bind(this)} />
                                         {t("Menu_HumanResource")}
                                     </div>
@@ -269,13 +289,14 @@ class SubmitQuestionModal extends React.Component {
                                             value={Constants.SOLVER_TCKT}
                                             name="solverid"
                                             checked={this.state.solverid == Constants.SOLVER_TCKT}
+                                            disabled={this.props.isEdit}
                                             onChange={this.handleChange.bind(this)} />
                                         {t("Tckt")}
                                     </div>
                                 </div>
 
                                 {
-                                    this.state.solverid == Constants.SOLVER_TCKT ? <span className="text-danger text-xs text-center">
+                                    this.state.solverid != Constants.SOLVER_MANAGER ? <span className="text-danger text-xs text-center">
                                         {t("NoticeQuest")}
                                     </span> : undefined
                                 }
@@ -284,36 +305,40 @@ class SubmitQuestionModal extends React.Component {
                                 this.state.solverid == Constants.SOLVER_MANAGER ? 
                                     <Form.Group controlId="submitQuestionForm.CBQL">
                                         <Form.Label>{t("LineManager")}</Form.Label>
-                                        <Form.Control type="text" placeholder={this.state.supervise.fullname} readOnly />
+                                        <Form.Control type="text" placeholder={this.state.superviseDefault.fullname} readOnly />
                                     </Form.Group> :
-                                this.state.solverid == Constants.SOLVER_RESOURCE ?
+                                // this.state.solverid == Constants.SOLVER_RESOURCE ?
                                     <Form.Group>
                                         <Form.Label>{t("Select")}</Form.Label>
                                         <Select
                                             placeholder={t("Select")}
                                             components={{ Option: MyOption }}
                                             options={hrProfileDisplay}
+                                            isDisabled={this.props.isEdit}
+                                            value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
                                             onChange={this.setProfile.bind(this)} />   
-                                    </Form.Group>:
-                                this.state.solverid ==  Constants.SOLVER_TCKT? 
-                                    <Form.Group>
-                                        <Form.Label>{t("Select")}</Form.Label>
-                                        <Select
-                                            placeholder={t("Select")}
-                                            components={{ Option: MyOption }}
-                                            options={hrProfileDisplay}
-                                            onChange={this.setProfile.bind(this)} />   
-                                    </Form.Group> : undefined
+                                    </Form.Group>
+                                // this.state.solverid ==  Constants.SOLVER_TCKT? 
+                                //     <Form.Group>
+                                //         <Form.Label>{t("Select")}</Form.Label>
+                                //         <Select
+                                //             placeholder={t("Select")}
+                                //             components={{ Option: MyOption }}
+                                //             options={hrProfileDisplay}
+                                //             defaultValue={this.state.supervise}
+                                //             onChange={this.setProfile.bind(this)} />   
+                                //     </Form.Group> : undefined
                             }
                             
                             <Form.Group controlId="submitQuestionForm.Title">
                                 <Form.Label>{t("Title")}</Form.Label>
-                                <Form.Control type="text" placeholder={this.state.supervise.title} readOnly />
+                                <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.title :
+                                    this.state.supervise.title} readOnly />
                             </Form.Group>
 
                             <Form.Group controlId="submitQuestionForm.Department">
                                 <Form.Label>{t("DepartmentManage")}</Form.Label>
-                                <Form.Control type="text" placeholder={this.state.supervise.department} readOnly />
+                                <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.department : this.state.supervise.department} readOnly />
                             </Form.Group>
                         </div>
                         <div className="clearfix edit-button text-right">
