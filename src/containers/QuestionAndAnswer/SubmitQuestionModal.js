@@ -208,6 +208,7 @@ class SubmitQuestionModal extends React.Component {
         if( questionId && this.props.isEdit ){
             dataRequest['id'] = questionId
         }
+
         var config = {
             method: 'post',
             url:  `${process.env.REACT_APP_REQUEST_URL}ticket/${(questionId && this.props.isEdit ? 'edit': 'Create')}`,
