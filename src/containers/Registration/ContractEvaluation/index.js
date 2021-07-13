@@ -209,7 +209,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigs())
 
         if (responses && responses.data) {
-            const employees = responses.data.employees
+            const employees = responses.data.data
 
             if (employees && employees.length > 0) {
                 return employees
@@ -223,7 +223,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   validateDirectManager = (employeeEmail, subordinates) => {
-    const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION)
+    const subordinateAds = subordinates.map(item => item.username?.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION)
     if(subordinateAds.indexOf(employeeEmail) != -1){
       return true;
     }
