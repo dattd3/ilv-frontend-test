@@ -98,5 +98,19 @@
     .card{
         width: 100% !important;
     }
+    .employee-time-sheets td{
+        width: 130px;
+        text-align: center;
+        border: 1px solid black;
+        border-right: none;
+        text-transform: capitalize;
+        font-weight: 600;
+        color: #333;
+        padding:1.2rem;
+    }
+    .employee-time-sheets .divide{
+        border:none;
+        height: 10px;
+    }
 }
 
