@@ -127,9 +127,9 @@ class PersonalDetails extends Component {
               Ngày phép năm
             </div>
             <div className="card-body">
-              <table class="table table-striped">
+              <table class="table table-striped table-borderless">
                 <thead>
-                  <tr>
+                  <tr className="text-primary">
                     <th scope="col">Tháng</th>
                     <th scope="col">Số ngày phép phát sinh</th>
                     <th scope="col">Số ngày phép đã sử dụng</th>
@@ -151,7 +151,26 @@ class PersonalDetails extends Component {
             <div className="card-header bg-info text-white text-uppercase">
               Ngày nghỉ bù
             </div>
-            <div className="card-body"></div>
+            <div className="card-body">
+            <table class="table table-striped table-borderless">
+                <thead>
+                  <tr className="text-primary">
+                    <th scope="col">Tháng</th>
+                    <th scope="col">Số ngày bù phát sinh</th>
+                    <th scope="col">Số ngày bù đã sử dụng</th>
+                    <th scope="col">Ngày đã sử dụng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>12/2020</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
