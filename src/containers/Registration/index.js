@@ -35,9 +35,12 @@ class RegistrationComponent extends React.Component {
             <SubstitutionComponent />
           </Tab> : null
           }
-          <Tab eventKey="InOutTimeUpdate" title={t('InOutChangeRequest')}>
-            <InOutTimeUpdate />
-          </Tab>
+          {
+            !['V061'].includes(localStorage.getItem("companyCode")) ?
+            <Tab eventKey="InOutTimeUpdate" title={t('InOutChangeRequest')}>
+              <InOutTimeUpdate />
+            </Tab> : null
+          }
         </Tabs>
       </div>
     )
