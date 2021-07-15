@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import FilterData from "../../ShareComponents/FilterData";
+import LeaveTimeCard from "../../ShareComponents/LeaveTimeData";
 import axios from "axios";
 import moment from "moment";
+import { withTranslation } from "react-i18next";
 
 class PersonalDetails extends Component {
   constructor() {
     super();
     this.state = {
       timsheetSummary: {},
-      timesheets: [],
-      timeTables: [],
+      annualLeaveSummary: [],
+      annualLeaves: [],
+      compensatoryLeaves: [],
       isSearch: false,
     };
   }
@@ -118,64 +121,37 @@ class PersonalDetails extends Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <div className="timesheet-section">
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
         <div className="detail">
-          <div className="card shadow">
-            <div className="card-header bg-primary text-white text-uppercase">
-              Ngày phép năm
-            </div>
-            <div className="card-body">
-              <table class="table table-striped table-borderless">
-                <thead>
-                  <tr className="text-primary">
-                    <th scope="col">Tháng</th>
-                    <th scope="col">Số ngày phép phát sinh</th>
-                    <th scope="col">Số ngày phép đã sử dụng</th>
-                    <th scope="col">Ngày đã sử dụng</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>12/2020</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="card shadow mt-2">
-            <div className="card-header bg-info text-white text-uppercase">
-              Ngày nghỉ bù
-            </div>
-            <div className="card-body">
-            <table class="table table-striped table-borderless">
-                <thead>
-                  <tr className="text-primary">
-                    <th scope="col">Tháng</th>
-                    <th scope="col">Số ngày bù phát sinh</th>
-                    <th scope="col">Số ngày bù đã sử dụng</th>
-                    <th scope="col">Ngày đã sử dụng</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>12/2020</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <LeaveTimeCard
+            bg="primary"
+            headerTitle={t("LeavesYear")}
+            headers={{
+              month: t("Month"),
+              annualLeaveOfArising: t("NewUsableLeaves"),
+              usedAnnualLeave: t("UsedLeaves"),
+              daysOfAnnualLeave: t("DateOfLeaves"),
+            }}
+            data={this.state.annualLeaves}
+          />
+          <LeaveTimeCard
+            bg="info"
+            headerTitle={t("ToilDay")}
+            headers={{
+              month: t("Month"),
+              annualLeaveOfArising: "Số ngày bù phát sinh",
+              usedAnnualLeave: "Số ngày bù đã sử dụng",
+              daysOfAnnualLeave: t("DateOfLeaves"),
+            }}
+            data={this.state.compensatoryLeaves}
+          />
         </div>
       </div>
     );
   }
 }
 
-export default PersonalDetails;
+export default withTranslation()(PersonalDetails);
