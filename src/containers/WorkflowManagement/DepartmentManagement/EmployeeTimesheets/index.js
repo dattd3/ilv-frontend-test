@@ -152,58 +152,60 @@ class EmployeeTimesheets extends Component {
     return (
       <div className="timesheet-section">
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
-        <div className="detail">
-          <div className="card shadow">
-            {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
-            <div className="card-body">
-              <div className="row pr-2 pl-2 pb-4">
-                <div className="col-md-12 col-xl-12 describer mb-2">
-                  {filterType.map((item, index) => {
-                    return (
-                      <div className="item" key={index}>
-                        <div
-                          className="box"
-                          style={{ backgroundColor: item.color }}
-                        ></div>
-                        <div className="title">{item.title}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="table-responsive">
-                  <table className="employee-time-sheets">
-                    <thead>
-                      <tr className="d-flex">
-                        <td className="text-danger">Họ tên</td>
-                        {this.state.dayList.map((item, index) => {
-                          return (
-                            <td key={index}>
-                              {moment(item).format("dddd DD/MM")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                      <tr className="divide"></tr>
-                    </thead>
-                    <tbody>
-                    <tr className="d-flex">
-                        <td className="text-danger">Trần Lan Anh</td>
-                        {this.state.dayList.map((item, index) => {
-                          return (
-                            <td key={index}>
-                              {moment(item).format("dddd DD/MM")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                      <tr className="divide"></tr>
-                    </tbody>
-                  </table>
+        {this.state.dayList ? (
+          <div className="detail">
+            <div className="card shadow">
+              {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
+              <div className="card-body">
+                <div className="row pr-2 pl-2 pb-4">
+                  <div className="col-md-12 col-xl-12 describer mb-2">
+                    {filterType.map((item, index) => {
+                      return (
+                        <div className="item" key={index}>
+                          <div
+                            className="box"
+                            style={{ backgroundColor: item.color }}
+                          ></div>
+                          <div className="title">{item.title}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="table-responsive">
+                    <table className="employee-time-sheets">
+                      <thead>
+                        <tr className="d-flex">
+                          <td className="text-danger">Họ tên</td>
+                          {this.state.dayList.map((item, index) => {
+                            return (
+                              <td key={index}>
+                                {moment(item).format("dddd DD/MM")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                        <tr className="divide"></tr>
+                      </thead>
+                      <tbody>
+                        <tr className="d-flex">
+                          <td className="text-danger">Trần Lan Anh</td>
+                          {this.state.dayList.map((item, index) => {
+                            return (
+                              <td key={index}>
+                                {moment(item).format("dddd DD/MM")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                        <tr className="divide"></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     );
   }
