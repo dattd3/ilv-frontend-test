@@ -1,0 +1,19 @@
+.member-list {
+    // padding: 10px;
+    width: 350px;
+    border-radius: 5px;
+    box-shadow: #e7e7e7 0px 10px 15px -3px, #e7e7e7 0px 4px 6px -2px;
+    position: absolute;
+    z-index: 99;
+    background: #fff;
+    right: 180px;
+    height: 400px;
+    overflow-y: scroll;
+}
+.box-input {
+    width: 100%;
+    height: 38px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #d1d3e2;
+}
