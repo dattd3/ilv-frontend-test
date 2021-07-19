@@ -1,45 +1,96 @@
-import React from "react";
+import React, { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { withTranslation } from "react-i18next";
-import Select from 'react-select';
+// import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import vi from "date-fns/locale/vi";
+import axios from "axios";
+import {InputGroup, FormControl} from 'react-bootstrap'
 registerLocale("vi", vi);
 
-const memberOption = (props) => {
-  const { innerProps, innerRef } = props;
-  const addDefaultSrc = (ev) => {
-    ev.target.src = props.avatar;
+const MemberOption = (props, onChange) => {
+  const { innerProps, innerRef } = props.data;
+  // const [checkedAll, setCheckedAll] = useState(false);
+  const [members, setMembers] = useState(props.data);
+  const [memberDefault] = useState(props.data);
+
+  console.log(members);
+  const handleAllChecked  = event => {
+    const newMembers = [...members];
+    newMembers.forEach(member => member.checked = event.target.checked) 
+    setMembers(newMembers);
+  }
+  const handleChange = event => {
+    const newMembers = [...members];
+    newMembers.forEach(member => {
+       if (member.uid === parseInt(event.target.value))
+       member.checked =  event.target.checked
+    })
+    setMembers(newMembers);
   };
 
+  const onSearch = event => {
+    console.log(event.target.value);
+    const  newMembers = [...memberDefault];
+    const filtered  = event.target.value ? newMembers.filter(member => {return member.fullname.toLowerCase().includes(event.target.value.toLowerCase())}) : [...memberDefault];
+    setMembers(filtered);
+  }
+
+  const confirmSelectedMember = () => {
+    props.saveSelectedMember(members)
+  }
   return (
-    <div ref={innerRef} {...innerProps} className="">
-      <div className="d-block clearfix border-bottom py-1 text-dark btn btn-light">
-        <div className="float-left mr-2 w-20">
-          <img
-            className="avatar rounded-circle"
-            src={`data:image/png;base64,${props.data.avatar}`}
-            onError={addDefaultSrc}
-            alt="avatar"
-            width="40"
-            height="40"
-          />
+    <>
+    <div className="member-list">
+      <div className="action bg-light d-flex justify-content-center p-2">
+        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Hủy</button>
+        <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>Áp dụng</button>
+      </div>
+      <div className="mt-2 p-2">
+          {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
+          <InputGroup className="">
+            <InputGroup.Prepend>
+            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder='Tìm kiếm'
+              aria-label="SearchRequester"
+              aria-describedby="basic-addon2"
+              onChange={onSearch}/> 
+          </InputGroup>
         </div>
-        <div className="float-left text-left text-wrap w-75">
-          <div className="">
-            {props.data.fullName} ({props.data.code})
-          </div>
-          <div className="text-xs">
-            <i>
-              ({props.data.userid}) {props.data.current_position}
-            </i>
+      <div className="p-3"> 
+        <div>
+          <div className="d-flex border-bottom text-dark btn ">
+            <input type="checkbox" className="form-check-input"  value="checkedall" onChange={handleAllChecked}/>
+            <div className="float-left text-left text-wrap w-75">
+              <div className="">Tất cả</div>
+            </div>
           </div>
         </div>
+        
+        {members.map((item, index) => {
+          return (
+            <div key={item.uid} ref={innerRef} {...innerProps}>
+              <div className="d-flex border-bottom text-dark btn ">
+                <input type="checkbox" className="form-check-input" value={item.uid} name={item.uid} checked={item.checked}
+              onChange={handleChange}/>
+                <div className="float-left text-left text-wrap w-75">
+                    <div className="">{item.fullname}</div>
+                  <div className="text-xs">
+                    <span>{item.job_name}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
+    </>
   );
-};
+}
 class FilterData extends React.Component {
   constructor() {
     super();
@@ -49,10 +100,16 @@ class FilterData extends React.Component {
         "DD/MM/YYYY"
       ).toDate(),
       endDate: new Date(),
+      users: [],
+      checkedMemberIds: [],
+      showMemberOption: false,
     };
 
     this.setStartDate = this.setStartDate.bind(this);
     this.setEndDate = this.setEndDate.bind(this);
+    this.onShowMembers = this.onShowMembers.bind(this);
+    this.onHideMembers = this.onHideMembers.bind(this);
+    this.getSelecteMembers = this.getSelecteMembers.bind(this);
     this.search = this.search.bind(this);
   }
 
@@ -63,7 +120,31 @@ class FilterData extends React.Component {
     preMonth = preMonth === 0 ? 12 : preMonth;
     return `26/${preMonth}/${currentYear}`;
   };
+  componentDidMount() {
+    this.getApproverInfo();
+  }
+  getApproverInfo = () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
+        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
+      },
+    };
 
+    axios
+      .get(
+        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`,
+        config
+      )
+      .then((res) => {
+        if (res && res.data && res.data.data) {
+          const users = res.data.data || [];
+          this.setState({ users: users });
+        }
+      })
+      .catch((error) => {});
+  };
   setStartDate(startDate) {
     this.setState({
       startDate: startDate,
@@ -78,14 +159,45 @@ class FilterData extends React.Component {
   }
 
   search() {
-    this.props.clickSearch(this.state.startDate, this.state.endDate);
+    this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds);
   }
 
+  getSelecteMembers (data) {
+    this.setState({ users: data, showMemberOption: false, checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid)) });
+  }
+
+  onShowMembers() {
+    this.setState({ showMemberOption: true });
+  }
+
+  onHideMembers() {
+    this.setState({ showMemberOption: false });
+  }
   render() {
     const { t } = this.props;
+    let hrProfileDisplay = [];
+    if (this.state.users && this.state.users.length > 0) {
+      hrProfileDisplay = this.state.users.map((profile) => {
+        return {
+          uid: profile.uid,
+          // label: profile.fullname,
+          fullname: profile.fullname,
+          job_name: profile.job_name,
+          companyCode: profile.companyCode,
+          orgLv3Text: profile.orgLv3Text,
+          // userid: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
+          checked: profile.checked || false 
+        };
+      });
+    }
+
     return (
       <>
         <div className="timesheet-box shadow">
+          {this.state.showMemberOption ? (
+            <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers}/>
+          ) : null}
+
           <div className="row">
             <div className="col-lg-3">
               <div className="title">{t("From")}</div>
@@ -133,16 +245,9 @@ class FilterData extends React.Component {
             <div className="col-lg-3">
               <div className="title">{t("Lựa chọn nhân viên")}</div>
               <div className="content input-container">
-                <Select
-                  placeholder={t("Select")}
-                  components={{ Option: memberOption }}
-                  // options={hrProfileDisplay}
-                  // isDisabled={this.props.isEdit}
-                  // value={hrProfileDisplay.filter(
-                  //   (value) => value.userid === this.state.supervise.userid
-                  // )}
-                  // onChange={this.setProfile.bind(this)}
-                />
+                <div className="box-input" onClick={this.onShowMembers}>
+                  {this.state.users ? this.state.users.filter(u => u.checked)[0]?.fullname : ''}
+                </div>
               </div>
             </div>
             <div className="col-lg-3">
