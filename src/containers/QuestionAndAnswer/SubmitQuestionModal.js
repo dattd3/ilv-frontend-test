@@ -1,7 +1,7 @@
 import React  from "react";
 // import IconSuccess from '../../assets/img/ic-success.svg'
 // import IconFailed from '../../assets/img/ic-failed.svg'
-import { Modal, Form, Button } from 'react-bootstrap'
+import { Modal, Form, Button, Spinner } from 'react-bootstrap'
 import Constants from '../../commons/Constants';
 import Select from 'react-select'
 import axios from 'axios';
@@ -34,15 +34,18 @@ class SubmitQuestionModal extends React.Component {
         this.state = {
             categories: {},
             hrProfiles: {},
+            tcktProfiles: {},
             categorySelectedId: 0,
             validated: false,
             questionContent: "",
             supervise: {},
             targetQuest: 0,
             superviseDefault: {},
-            solverid: Constants.SOLVER_MANAGER
+            solverid: Constants.SOLVER_MANAGER,
+            isLoading: false
         };
     }
+
     componentWillMount() {
         let config = {
             headers: {
@@ -71,7 +74,7 @@ class SubmitQuestionModal extends React.Component {
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
-                    console.log("Debug check immediatesupervise", res.data.data);
+                    // console.log("Debug check immediatesupervise", res.data.data);
                     this.setState({ 
                         // supervise: res.data.data[0],
                         superviseDefault: res.data.data[0],
@@ -79,32 +82,22 @@ class SubmitQuestionModal extends React.Component {
                 }
             }).catch(error => {
 
-            });
-        
-        config = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
-
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}Ticket/GetUserProfilePermission`, config)
-        .then(res => {
-            if(res && res.data && res.data.data){
-                this.setState({ hrProfiles: res.data.data });
-            }
-        }).catch(error => {
-            console.log("Debug - error" , error);
         });
+     
     }
+
     alertSuccess = () => {
         this.props.showStatusModal('Gửi câu hỏi thành công !', true);
     }
+
     alertFail = () => {
         this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!', false)
     }
+
     setCategory(category) {
         this.setState({ categorySelectedId: category.value });
     }
+
     setProfile(p) {
         if(p && p.fullName){
             this.setState({
@@ -120,13 +113,61 @@ class SubmitQuestionModal extends React.Component {
     setValidated(value) {
         this.setState({ validated: value });
     }
-    handleChange(event) {
-        this.setState({ [event.target.name]: event.target.value });
+
+    fetchUserFinancialAccounting () {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+        this.setState({isLoading: true});
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/GetUserFinancialAccounting`, config)
+        .then(res => {
+            if(res && res.data && res.data.data){
+                this.setState({ hrProfiles: res.data.data, isLoading: false });
+            }
+        }).catch(error => {
+            console.log("Debug - error" , error);
+        });
     }
+
+    fetchUserProfilePermission () {
+       const config = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+        this.setState({isLoading: true});
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}Ticket/GetUserProfilePermission`, config)
+        .then(res => {
+            if(res && res.data && res.data.data) {
+                this.setState({ hrProfiles: res.data.data, isLoading: false });
+            }
+        }).catch(error => {
+            console.log("Debug - error" , error);
+        });
+    }
+
+    handleChange(event) {
+        switch (parseInt(event.target.value)) {
+            case Constants.SOLVER_RESOURCE:
+                this.fetchUserProfilePermission();
+                break;
+            case Constants.SOLVER_TCKT:
+                this.fetchUserFinancialAccounting();
+                break;
+            default:
+                break;
+        }
+        this.setState({ [event.target.name]: event.target.value, supervise: {} });
+        console.log(event.target.value);
+    }
+
     handleChangeTargetQues(event) {
         this.setState({ [event.target.name]: event.target.value });
         console.log(this.state[event.target.name]);
     }
+
     handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
@@ -183,7 +224,6 @@ class SubmitQuestionModal extends React.Component {
     }
 
     updateEditDate(question, isEdit) {
-        // console.log(question.agentId.split("@")[0]);
         this.setState({ 
             questionContent: (question && isEdit) ? question.content : '',
             solverid: (question && isEdit) ? question.solverId : Constants.SOLVER_MANAGER,
@@ -195,6 +235,19 @@ class SubmitQuestionModal extends React.Component {
             },
             categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories[0].id
         })
+
+        if (isEdit) {
+            switch (parseInt(question.solverId)) {
+                case Constants.SOLVER_RESOURCE:
+                    this.fetchUserProfilePermission();
+                    break;
+                case Constants.SOLVER_TCKT:
+                    this.fetchUserFinancialAccounting();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     render() {
@@ -224,7 +277,7 @@ class SubmitQuestionModal extends React.Component {
                 }
             });
         }
-
+        
         return (
             <Modal backdrop="static" keyboard={false} className='info-modal-common position-apply-modal' centered show={this.props.show}
                 onHide={this.props.onHide}
@@ -233,7 +286,8 @@ class SubmitQuestionModal extends React.Component {
                     <Modal.Title>{t("CreateQuestions")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
+                    {
+                        !this.state.isLoading ?  <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
                         <div className="wrap-result text-left">
                             <div className="form-group">
                                 <label className="form-label">{t("Categoryques")}</label>
@@ -347,6 +401,14 @@ class SubmitQuestionModal extends React.Component {
                             <Button type="Submit" variant="primary" className="pr-4 pl-4">Gửi</Button>
                         </div>
                     </Form>
+                    : <div className="bg-light text-center mt-2"><Spinner
+                        as="span"
+                        animation="border"
+                        size="lg"
+                        role="status"
+                        aria-hidden="true"
+                        className="mr-2"/></div>
+                    }
                 </Modal.Body>
             </Modal>
         )
