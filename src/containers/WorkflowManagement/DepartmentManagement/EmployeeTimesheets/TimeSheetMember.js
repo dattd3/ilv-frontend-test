@@ -314,7 +314,7 @@ function Content(props) {
                 <table className="employee-time-sheets">
                   <thead>
                   <tr className="">
-                          <td className="text-danger sticky-col">Họ tên</td>
+                          <td className="">Họ tên</td>
                           {props.dayList.map((item, index) => {
                             return (
                               <td key={index}>
@@ -329,7 +329,7 @@ function Content(props) {
                   { props.timeTables.map( (timesheet, index) => {
                     return  <React.Fragment key = {index}>
                         <tr style={{borderTop: ' 1px solid #333'}}>
-                            <td rowSpan="4" className="text-danger sticky-col">{timesheet.name}</td>
+                            <td rowSpan="4" className="">{timesheet.name}</td>
                             <RenderRow1 member = {timesheet}/>
                         </tr>
                         <tr>
