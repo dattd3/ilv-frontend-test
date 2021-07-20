@@ -124,7 +124,7 @@ class PersonalDetails extends Component {
     const { t } = this.props;
     return (
       <div className="timesheet-section">
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
+        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} type="singleChoice"/>
         <div className="detail">
           <LeaveTimeCard
             bg="primary"
