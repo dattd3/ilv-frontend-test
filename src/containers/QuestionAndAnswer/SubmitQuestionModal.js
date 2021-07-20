@@ -166,10 +166,7 @@ class SubmitQuestionModal extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
         console.log(this.state[event.target.name]);
     }
-    handleChangeTargetQues(event) {
-        this.setState({ [event.target.name]: event.target.value });
-        console.log(this.state[event.target.name]);
-    }
+   
     handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {

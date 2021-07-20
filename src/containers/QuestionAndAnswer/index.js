@@ -127,10 +127,13 @@ class MyComponent extends React.Component {
     return (
       <div className="personal-info">
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
-        <SubmitQuestionModal
+        {
+          this.state.isShowSubmitQuestionModal ? <SubmitQuestionModal
           isEdit={this.state.isEditQuestion}
           editQuestion={this.state.questionContent}
-          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
+          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} /> : null
+        }
+        
         <HistoryModal show={this.state.isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
           showStatusModal={this.showStatusModal.bind(this)}
           showEditModal={this.showEditModal.bind(this)}
