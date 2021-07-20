@@ -24,6 +24,9 @@ const MemberOption = (props, onChange) => {
   const handleChange = event => {
     const newMembers = [...members];
     newMembers.forEach(member => {
+      if (props.type === 'singleChoice') {
+        member.checked = false;
+      }
        if (member.uid === parseInt(event.target.value))
        member.checked =  event.target.checked
     })
@@ -45,7 +48,7 @@ const MemberOption = (props, onChange) => {
     <div className="member-list">
       <div className="action bg-light d-flex justify-content-center p-2">
         <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Hủy</button>
-        <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>Áp dụng</button>
+        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>Áp dụng</button>
       </div>
       <div className="mt-2 p-2">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
@@ -60,22 +63,30 @@ const MemberOption = (props, onChange) => {
               onChange={onSearch}/> 
           </InputGroup>
         </div>
-      <div className="p-3"> 
+      <div className="show-list p-1"> 
         <div>
-          <div className="d-flex border-bottom text-dark btn ">
-            <input type="checkbox" className="form-check-input"  value="checkedall" onChange={handleAllChecked}/>
+          {
+            props.type !== 'singleChoice' ? 
+            <div className="d-flex border-bottom text-dark btn ">
+            <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked}/>
             <div className="float-left text-left text-wrap w-75">
               <div className="">Tất cả</div>
             </div>
-          </div>
+          </div> : null
+          }
         </div>
         
         {members.map((item, index) => {
           return (
             <div key={item.uid} ref={innerRef} {...innerProps}>
               <div className="d-flex border-bottom text-dark btn ">
-                <input type="checkbox" className="form-check-input" value={item.uid} name={item.uid} checked={item.checked}
-              onChange={handleChange}/>
+                {
+                  props.type !== 'singleChoice' ?
+                  <input type="checkbox" className="mtmr5" value={item.uid} name={item.uid} checked={item.checked}
+                  onChange={handleChange}/> : 
+                  <input type="radio" className="mtmr5" id={item.uid} value={item.uid} name="flexRadioDefault" checked={item.checked} onChange={handleChange}/>
+                }
+               
                 <div className="float-left text-left text-wrap w-75">
                     <div className="">{item.fullname}</div>
                   <div className="text-xs">
@@ -195,7 +206,7 @@ class FilterData extends React.Component {
       <>
         <div className="timesheet-box shadow">
           {this.state.showMemberOption ? (
-            <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers}/>
+            <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
           ) : null}
 
           <div className="row">
