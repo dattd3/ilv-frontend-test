@@ -440,6 +440,14 @@ export default [
             path: map.QuestionAndAnswerDetails
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
+        },
+        {
+          key: "leave-fund",
+          routeProps: {
+            exact: true,
+            path: map.LeaveFund
+          },
+          component: lazy(() => import("./LeaveFund"))
         }
       ],
     },
