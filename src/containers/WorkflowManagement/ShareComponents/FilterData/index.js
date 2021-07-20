@@ -6,7 +6,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import vi from "date-fns/locale/vi";
 import axios from "axios";
-import {InputGroup, FormControl} from 'react-bootstrap'
+import { InputGroup, FormControl } from 'react-bootstrap'
+import { trimString } from "../../../Utils/StringHelpers"
 registerLocale("vi", vi);
 
 const MemberOption = (props, onChange) => {
@@ -15,12 +16,12 @@ const MemberOption = (props, onChange) => {
   const [members, setMembers] = useState(props.data);
   const [memberDefault] = useState(props.data);
 
-  console.log(members);
   const handleAllChecked  = event => {
     const newMembers = [...members];
     newMembers.forEach(member => member.checked = event.target.checked) 
     setMembers(newMembers);
   }
+
   const handleChange = event => {
     const newMembers = [...members];
     newMembers.forEach(member => {
@@ -47,7 +48,7 @@ const MemberOption = (props, onChange) => {
     <>
     <div className="member-list">
       <div className="action bg-light d-flex justify-content-center p-2">
-        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Hủy</button>
+        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Đóng</button>
         <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>Áp dụng</button>
       </div>
       <div className="mt-2 p-2">
@@ -68,7 +69,7 @@ const MemberOption = (props, onChange) => {
           {
             props.type !== 'singleChoice' ? 
             <div className="d-flex border-bottom text-dark btn ">
-            <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked}/>
+            <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
             <div className="float-left text-left text-wrap w-75">
               <div className="">Tất cả</div>
             </div>
@@ -113,6 +114,7 @@ class FilterData extends React.Component {
       endDate: new Date(),
       users: [],
       checkedMemberIds: [],
+      selectedMembers: [],
       showMemberOption: false,
     };
 
@@ -134,6 +136,7 @@ class FilterData extends React.Component {
   componentDidMount() {
     this.getApproverInfo();
   }
+
   getApproverInfo = () => {
     const config = {
       headers: {
@@ -174,7 +177,13 @@ class FilterData extends React.Component {
   }
 
   getSelecteMembers (data) {
-    this.setState({ users: data, showMemberOption: false, checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid)) });
+    this.setState(
+      { 
+        users: data, 
+        showMemberOption: false, 
+        selectedMembers: (data.filter(a => a.checked)),
+        checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid)) 
+      });
   }
 
   onShowMembers() {
@@ -255,10 +264,17 @@ class FilterData extends React.Component {
             </div>
             <div className="col-lg-3">
               <div className="title">{t("Lựa chọn nhân viên")}</div>
-              <div className="content input-container">
-                <div className="box-input" onClick={this.onShowMembers}>
-                  {this.state.users ? this.state.users.filter(u => u.checked)[0]?.fullname : ''}
+              <div className="content input-container d-flex" onClick={this.onShowMembers}>
+                <div className="box-input d-flex justify-content-between" data-toggle="tooltip" data-placement="top" title={this.state.selectedMembers.map(u=>u.fullname).toString()}>
+                  {this.state.selectedMembers ? trimString(this.state.selectedMembers.map(u=>u.fullname).toString(),18,'...') : ''}
                 </div>
+                <div className="box-icon">
+                  {
+                    this.state.selectedMembers.length > 1 ?
+                    <div className="number-selected">{this.state.selectedMembers.length }</div> 
+                    : <i className="fa fa-sort-down"></i>
+                  }
+                  </div> 
               </div>
             </div>
             <div className="col-lg-3">
