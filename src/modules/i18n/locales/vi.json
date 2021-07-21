@@ -595,6 +595,8 @@
   "ToilHours": "Giờ nghỉ bù",
   "ToilHoursBalance": "Giờ bù tồn",
   "ToilHoursThisYear": "Giờ bù tồn năm nay",
+  "staff_selection_warning": "Vui lòng lựa chọn nhân viên!",
+  "staff_selection_label": "Lựa chọn nhân viên",
   "Total": "Tổng",
   "TotalAvaiableLeaves": "Tổng số ngày phép còn được sử dụng",
   "TotalAvailableToilHours": "Tổng số giờ bù còn được sử dụng",

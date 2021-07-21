@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import FilterData from "../../ShareComponents/FilterData";
 import LeaveTimeCard from "../../ShareComponents/LeaveTimeData";
+import TimeTableDetail from '../../../Timesheet/TimeTableDetail'
 import axios from "axios";
 import moment from "moment";
 import { withTranslation } from "react-i18next";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class PersonalDetails extends Component {
   constructor() {
@@ -13,86 +16,52 @@ class PersonalDetails extends Component {
       annualLeaveSummary: [],
       annualLeaves: [],
       compensatoryLeaves: [],
+      timeTableData: null,
       isSearch: false,
+      isTableSearch: true
     };
   }
 
-  searchTimesheetByDate(startDate, endDate) {
-    this.setState({ isSearch: false });
-    this.search(startDate, endDate);
-    //this.requestReasonAndComment(startDate, endDate);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-      },
-    };
+  search(startDate, endDate, members) {
+    const { t } = this.props
+    if(!members || members.length == 0) {
+      toast.error(t('staff_selection_warning'));
+      return;
+    }
 
-    const start = moment(startDate).format("YYYYMMDD").toString();
-    const end = moment(endDate).format("YYYYMMDD").toString();
-
-    axios
-      .get(
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`,
-        config
-      )
-      .then((res) => {
-        if (res && res.data && res.data.data) {
-          const defaultData = {
-            actual_working: 0,
-            attendance: 0,
-            paid_leave: 0,
-            salary_wh: 0,
-            total_overtime: 0,
-            trainning: 0,
-            unpaid_leave: 0,
-            working_day_plan: 0,
-            working_deal: 0,
-          };
-          const timsheetSummary = res.data.data[0]
-            ? res.data.data[0]
-            : defaultData;
-          this.setState({ timsheetSummary: timsheetSummary, isSearch: true });
-        }
-      })
-      .catch((error) => {
-        // localStorage.clear();
-        // window.location.href = map.Login;
-      });
-  }
-
-  search(startDate, endDate) {
+    this.setState({ isSearch: false, isTableSearch: false });
     let start = moment(startDate).format("YYYYMMDD").toString();
     let end = moment(endDate).format("YYYYMMDD").toString();
     const headers = {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-      // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+       'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+       'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
     };
 
-    const timeoverviewParams = {
+
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview/subordinate`;
+    const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/leaveofabsence/detail/subordinate`;
+    const requestTimeoverview = axios.post(timOverviewEndpoint, {
+      personal_no_list: members,
       from_date: start,
-      to_date: end,
-    };
-    const reasonParams = {
-      startdate: start,
-      endDate: end,
-    };
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`;
-    const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
-    const requestTimOverview = axios.get(timOverviewEndpoint, {
-      headers,
-      params: timeoverviewParams,
-    });
-    const requestReson = axios.get(ReasonEndpoint, {
-      headers,
-      params: reasonParams,
-    });
-    axios.all([requestReson, requestTimOverview]).then(
-      axios.spread((...responses) => {
-        if (responses[1]) {
-          const res = responses[1];
+      to_date: end
+    }, {
+      headers
+    })
+    const requestleaveAbsenceDetail = axios.post(leaveAbsenceDetailEndpoint, {
+      personal_no_list: members,
+      from_date: start,
+      to_date: end
+    }, {
+      headers
+    })
+
+
+    Promise.allSettled([requestTimeoverview, requestleaveAbsenceDetail]).then((responses) => {
+        const localState = {...this.state};
+        //process time overview
+        if (responses[0].status="fulfilled") {
+          const res = responses[0].value;
           if (res && res.data && res.data.data) {
             let dataSorted = res.data.data.sort((a, b) =>
               moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") <
@@ -111,21 +80,83 @@ class PersonalDetails extends Component {
               );
               end = endReal < end ? endReal : end;
             }
-            // const data = this.processDataForTable(dataSorted,start, end, responses[0].data.data);
-            const data = [];
-            this.setState({ timeTables: data });
+            localState.isTableSearch = true;
+            localState.timeTableData = {
+              dataSorted,
+              start,
+              end,
+              members,
+              reason: []
+            }
           }
         }
-      })
+
+        //process Leave absence
+        if(responses[1].status == 'fulfilled') {
+          const res = responses[1].value;
+          if (res && res.data && res.data.data) {
+            const months = this.getMonths(res.data.data)
+            const annualLeaves = months.map((month) => {
+                  return {
+                    month: month.replace(/-/, '/'),
+                    usedLeave: res.data.data.used_annual_leave_detail.filter((usedAnnualLeave) =>  usedAnnualLeave.month == month ),
+                    arisingLeave: res.data.data.arising_annual_leave_detail.filter((arisingAnnualLeave) => arisingAnnualLeave.month == month ),
+                  }
+              })
+
+              const compensatoryLeaves = months.map((month) => {
+                return {
+                  month: month.replace(/-/, '/'),
+                  usedLeave: res.data.data.used_compensatory_leave_detail.filter((usedCompensatoryLeave) => usedCompensatoryLeave.month == month ),
+                  arisingLeave: res.data.data.arising_compensatory_leave_detail.filter((arisingCompensatoryLeave) => arisingCompensatoryLeave.month == month ),
+                }
+            })
+            localState.annualLeaves = annualLeaves;
+            localState.compensatoryLeaves = compensatoryLeaves;
+          }
+        }
+
+        this.setState(localState);
+      }
     );
+  }
+
+  getMonths(data) {
+    let months = []
+    data.used_annual_leave_detail.forEach(used_annual_leave => {
+        if (months.indexOf(used_annual_leave.month) === -1) {
+          months.push(used_annual_leave.month)
+        }
+      })
+
+    data.used_compensatory_leave_detail.forEach(used_compensatory_leave_detail => {
+      if (months.indexOf(used_compensatory_leave_detail.month) === -1) {
+        months.push(used_compensatory_leave_detail.month)
+      }
+    })
+
+    data.arising_annual_leave_detail.forEach(arising_annual_leave_detail => {
+      if (months.indexOf(arising_annual_leave_detail.month) === -1) {
+        months.push(arising_annual_leave_detail.month)
+      }
+    })
+
+    data.arising_compensatory_leave_detail.forEach(arising_compensatory_leave_detail => {
+      if (months.indexOf(arising_compensatory_leave_detail.month) === -1) {
+        months.push(arising_compensatory_leave_detail.month)
+      }
+    })
+    return months.sort((a, b) => parseInt(a.split("-").reverse().join("")) - parseInt(b.split("-").reverse().join("")))
   }
 
   render() {
     const { t } = this.props;
     return (
       <div className="timesheet-section">
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} type="singleChoice"/>
+        <ToastContainer />
+        <FilterData clickSearch={this.search.bind(this)} type="singleChoice"/>
         <div className="detail">
+        <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {true} isOpen = {false} /> 
           <LeaveTimeCard
             bg="primary"
             headerTitle={t("LeavesYear")}
