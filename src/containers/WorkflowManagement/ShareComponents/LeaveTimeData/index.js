@@ -13,7 +13,7 @@ export default function LeaveTimeCard(props) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
-    <div className="leave-time-card mb-2">
+    <div className=" leave-time-card mb-2">
       <div className="card shadow">
         <div
           className={"card-header clearfix text-white " + "bg-" + props.bg}
@@ -46,7 +46,7 @@ export default function LeaveTimeCard(props) {
                   {props.data.map((value, key) => {
                     return value.arisingLeave.length > 0 ||
                       value.usedLeave.length > 0 ? (
-                      <div className="row text-left">
+                      <div className="row text-left" key={key}>
                         <div className="col-md-2">{value.month}</div>
                         <div className="col-md-3 text-center">
                           {value.arisingLeave.length > 0
