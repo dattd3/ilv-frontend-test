@@ -67,5 +67,7 @@ export default {
 
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
-  QuestionAndAnswerDetails:"/question-and-answer-details/:id"
+  QuestionAndAnswerDetails:"/question-and-answer-details/:id",
+
+  LeaveFund: "/leave-fund",
 };
