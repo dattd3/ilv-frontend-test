@@ -1,12 +1,69 @@
-import React from 'react';
-import axios from 'axios';
-import { withTranslation } from 'react-i18next';
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import moment from 'moment';
-import map from '../map.config';
-import WorkingProcessSearch from './workingProcessSearch';
-class MyComponent extends React.Component {
+import React from 'react'
+import axios from 'axios'
+import { withTranslation, useTranslation } from 'react-i18next'
+import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
+import moment from 'moment'
+import map from '../map.config'
+import { getRequestConfigurations } from "../../commons/Utils"
+import WorkingProcessSearch from './workingProcessSearch'
+import Constants from '../../commons/Constants'
 
+const ChangeWorkingAppointment = (props) => {
+    const { userChangeWorkingAppointments } = props
+    const { t } = useTranslation()
+
+    const formatDateBySAPDate = dateInput => {
+        if (!dateInput || dateInput === "#") {
+            return ""
+        }
+
+        const date = moment(dateInput, "YYYYMMDD")
+        return date.isValid() ? date.format("DD/MM/YYYY") : ""
+    }
+
+    const formatValueBySAPValue = value => {
+        return (!value || value === "#") ? "" : value
+    }
+
+    return (
+        userChangeWorkingAppointments.length > 0 ?
+            <div className="change-working-appointment-wrapper">
+                <table className="change-working-appointment-table">
+                    <thead>
+                        <tr>
+                            <th className="start-date">{t("StartDate")}</th>
+                            <th className="end-date">{t("EndDate")}</th>
+                            <th className="job-title">{t("Title")}</th>
+                            <th className="block">{t("DivisionName")}</th>
+                            <th className="part">{t("DepartmentName")}</th>
+                            <th className="unit">{t("PropertyName")}</th>
+                            <th className="region">{t("RegionName")}</th>
+                            <th className="company">{t("PAndL")}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            userChangeWorkingAppointments.map((item, index) => {
+                                return <tr key={index}>
+                                            <td className="start-date"><span>{formatDateBySAPDate(item.from_time)}</span></td>
+                                            <td className="end-date"><span className="same-width">{formatDateBySAPDate(item.to_time)}</span></td>
+                                            <td className="job-title"><span className="same-width">{formatValueBySAPValue(item.title)}</span></td>
+                                            <td className="block">{formatValueBySAPValue(item.division)}</td>
+                                            <td className="part"><span className="same-width">{formatValueBySAPValue(item.part)}</span></td>
+                                            <td className="unit"><span className="same-width">{formatValueBySAPValue(item.unit)}</span></td>
+                                            <td className="region"><span className="same-width">{formatValueBySAPValue(item.department)}</span></td>
+                                            <td className="company"><span className="same-width">{formatValueBySAPValue(item.company)}</span></td>
+                                        </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
+        : t("NoDataFound")
+    )
+}
+
+class MyComponent extends React.Component {
     constructor(props) {
         super(props);
 
@@ -15,7 +72,8 @@ class MyComponent extends React.Component {
             userBonuses: {},
             userPenalties: {},
             userBonusesRoot: {},
-            userPenaltiesRoot: {}
+            userPenaltiesRoot: {},
+            userChangeWorkingAppointments: []
         };
     }
 
@@ -65,6 +123,20 @@ class MyComponent extends React.Component {
                 // localStorage.clear();
                 // window.location.href = map.Login;
             });
+
+        this.fetchUserChangeWorkingAppointment()
+    }
+
+    fetchUserChangeWorkingAppointment = async () => {
+        const changeWorkingAppointmentResponses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/workprocess`, getRequestConfigurations())
+
+        if (changeWorkingAppointmentResponses && changeWorkingAppointmentResponses.data ) {
+            const result = changeWorkingAppointmentResponses.data.result
+            if (result && result.code != Constants.API_ERROR_CODE) {
+                const data = changeWorkingAppointmentResponses.data.data
+                this.setState({userChangeWorkingAppointments: data && data.length > 0 ? data : []})       
+            }
+        }
     }
 
     search(startDate, endDate) {
@@ -75,6 +147,7 @@ class MyComponent extends React.Component {
             userPenalties: this.filterPenalties(this.state.userPenaltiesRoot, start, end)
         });
     }
+
     filterBonus(bonuses, startDate, endDate) {
         return bonuses && bonuses.length > 0 ?
         bonuses.filter(bonus => Date.parse(moment(bonus.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(bonus.effective_date) <= Date.parse(endDate))
@@ -86,7 +159,6 @@ class MyComponent extends React.Component {
     }
 
     render() {
-
         function isNotNull(input) {
             if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
                 return true;
@@ -95,6 +167,7 @@ class MyComponent extends React.Component {
         }
 
         const { t } = this.props;
+        const { userChangeWorkingAppointments } = this.state
 
         return (
             <div className="personal-info">
@@ -146,7 +219,6 @@ class MyComponent extends React.Component {
                     </Tab>
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
-
                             <Container fluid className="p-0">
                                 <div className="timesheet-section p-0 search-box">
                                     <WorkingProcessSearch clickSearch={this.search.bind(this)} />
@@ -196,14 +268,12 @@ class MyComponent extends React.Component {
                                     </Container>;
                                 }) : t("NoDataFound")
                             }
-
                         </Row>
                         <Row>
                             <Col>
                                 <h4>{t("Penalties")}</h4>
                             </Col>
                             <>
-
                                 {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0) ?
                                     this.state.userPenalties.map((item, i) => {
                                         let penaltiesTitle = (item.dimiss ? 'Sa thải | ' : '');
@@ -263,11 +333,14 @@ class MyComponent extends React.Component {
                                         </Container>
                                     }) : t("NoDataFound")
                                 }
-
                             </>
                         </Row>
                     </Tab>
-
+                    <Tab eventKey="ChangeWorkingAppointment" title={t("ChangeWorkingAppointment")}>
+                        <Container fluid className="info-tab-content shadow">
+                            <ChangeWorkingAppointment userChangeWorkingAppointments={userChangeWorkingAppointments} />
+                        </Container>
+                    </Tab>
                 </Tabs>
             </div>
         )
@@ -281,4 +354,3 @@ export default function App() {
         <WorkingProcess />
     );
 }
-
