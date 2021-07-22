@@ -127,7 +127,7 @@ class LeaveTimePage extends React.Component {
             <LeaveTimeDetail 
                 bg="success" 
                 headerTitle={t("ToilDay")}
-                headers={{month: t("Month"), annualLeaveOfArising: 'Số ngày bù phát sinh', usedAnnualLeave: 'Số ngày bù đã sử dụng', daysOfAnnualLeave: t("DateOfLeaves")}}
+                headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableToil"), usedAnnualLeave: t("UsedToil"), daysOfAnnualLeave: t("DateOfLeaves")}}
                 data={this.state.compensatoryLeaves} 
             />
             </> : null}
