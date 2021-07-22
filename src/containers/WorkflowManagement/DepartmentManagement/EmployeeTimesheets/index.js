@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import FilterData from "../../ShareComponents/FilterData";
 import axios from "axios";
 import moment from "moment";
+import { Spinner } from 'react-bootstrap';
 import { withTranslation } from "react-i18next";
 // import { useTranslation } from "react-i18next";
 import TimeSheetMember from './TimeSheetMember'
@@ -30,6 +31,7 @@ class EmployeeTimesheets extends Component {
       timeTables: [],
       isSearch: false,
       dayList: [],
+      isLoading: false
     };
   }
 
@@ -72,7 +74,7 @@ class EmployeeTimesheets extends Component {
           const timsheetSummary = res.data.data[0]
             ? res.data.data[0]
             : defaultData;
-          this.setState({ timsheetSummary: timsheetSummary, isSearch: true });
+          this.setState({ timsheetSummary: timsheetSummary});
         }
       })
       .catch((error) => {
@@ -120,7 +122,8 @@ class EmployeeTimesheets extends Component {
       startdate: parseInt(start),
       endDate: parseInt(end),
     };
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview/subordinate`;
+    this.setState({isLoading: true});
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
     const requestTimOverview = axios.post(
       timOverviewEndpoint,
@@ -136,7 +139,6 @@ class EmployeeTimesheets extends Component {
         if (responses[1]) {
           const res = responses[1];
           if (res && res.data && res.data.data) {
-            console.log(res.data.data)
             let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
             if(dataSorted && dataSorted.length > 0) {
               const startReal =   moment( dataSorted[dataSorted.length - 1].date, 'DD-MM-YYYY').format('YYYYMMDD');
@@ -161,8 +163,7 @@ class EmployeeTimesheets extends Component {
               let aip =  {...q, timesheets: this.processDataForTable(q.timesheets,start, end, responses[0].data.data)}
               return aip
             });
-
-            this.setState({ timeTables: data });
+            this.setState({ timeTables: data, isLoading: false, isSearch: true });
           }
         }
       })
@@ -601,7 +602,8 @@ class EmployeeTimesheets extends Component {
         {
           (this.state.isSearch && this.state.timeTables.length > 0)  ?
           <TimeSheetMember timesheets={this.state.timeTables} dayList={this.state.dayList}/> : 
-          this.state.isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> : null
+          this.state.isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> : 
+          this.state.isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }
       </div>
     );
