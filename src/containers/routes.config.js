@@ -441,6 +441,7 @@ export default [
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
         },
+        
         {
           key: "leave-fund",
           routeProps: {
@@ -448,6 +449,23 @@ export default [
             path: map.LeaveFund
           },
           component: lazy(() => import("./LeaveFund"))
+          // component: lazy(() => import("./WorkflowManagement/DepartmentManagement/LeaveFund"))
+        },
+        {
+          key: "personal-details",
+          routeProps: {
+            exact: true,
+            path: map.PersonalDetails
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/PersonalDetails"))
+        },
+        {
+          key: "employee-timesheets",
+          routeProps: {
+            exact: true,
+            path: map.EmployeeTimeSheets
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
         }
       ],
     },

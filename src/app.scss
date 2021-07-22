@@ -1,5 +1,7 @@
 @import "./assets/scss/job-description.scss";
 @import "./assets/scss/timesheet.scss";
+@import "./assets/scss/leave-fund.scss";
+@import "./assets/scss/filterdata.scss";
 @import "./assets//scss/leaveTime.scss";
 @import "./assets/scss/internal-recruitment.scss";
 @import "./assets/scss/payslip.scss";
@@ -1593,7 +1595,7 @@ span.badge-notification[data-badge]::after {
     }
 }
 
-.timesheet-table{
+.timesheet-table {
   .arrow::after, .bs-popover-bottom .arrow::after {
     border-left-color: #6CB5F9 !important;
     border-right-color: #6CB5F9 !important;
@@ -2020,4 +2022,7 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+}
+.mtmr5 {
+  margin: 5px 5px 0 0;
 }
