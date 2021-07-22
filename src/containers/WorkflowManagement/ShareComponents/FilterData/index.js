@@ -202,6 +202,7 @@ class FilterData extends React.Component {
 
   render() {
     const { t } = this.props;
+    console.log(this.props.useDateFilter)
     let hrProfileDisplay = [];
     if (this.state.users && this.state.users.length > 0) {
       hrProfileDisplay = this.state.users.map((profile) => {
@@ -221,33 +222,33 @@ class FilterData extends React.Component {
     return (
       <>
         <div className="timesheet-box shadow">
-          {this.state.showMemberOption ? (
-            <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
-          ) : null}
-
           <div className="row">
-            <div className="col-lg-3">
-              <div className="title">{t("From")}</div>
-              <div className="content input-container">
-                <label>
-                  <DatePicker
-                    name="startDate"
-                    selectsStart
-                    selected={this.state.startDate}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    onChange={this.setStartDate}
-                    dateFormat="dd/MM/yyyy"
-                    locale="vi"
-                    className="form-control"
-                  />
-                  <span className="input-group-addon input-img">
-                    <i className="fas fa-calendar-alt"></i>
-                  </span>
-                </label>
+            {
+              
+              this.props.useDateFilter === false ? null :
+            <>
+              <div className="col-lg-3">
+                <div className="title">{t("From")}</div>
+                <div className="content input-container">
+                  <label>
+                    <DatePicker
+                      name="startDate"
+                      selectsStart
+                      selected={this.state.startDate}
+                      startDate={this.state.startDate}
+                      endDate={this.state.endDate}
+                      onChange={this.setStartDate}
+                      dateFormat="dd/MM/yyyy"
+                      locale="vi"
+                      className="form-control"
+                    />
+                    <span className="input-group-addon input-img">
+                      <i className="fas fa-calendar-alt"></i>
+                    </span>
+                  </label>
+                </div>
               </div>
-            </div>
-            <div className="col-lg-3">
+              <div className="col-lg-3">
               <div className="title">{t("To")}</div>
               <div className="content input-container">
                 <label>
@@ -270,11 +271,14 @@ class FilterData extends React.Component {
                 </label>
               </div>
             </div>
+            </>
+            }
             <div className="col-lg-3">
               <div className="title">{t("Lựa chọn nhân viên")}</div>
               <div className="content input-container d-flex" onClick={this.onShowMembers}>
                 <div className="box-input d-flex justify-content-between" data-toggle="tooltip" data-placement="top" title={this.state.selectedMembers.map(u=>u.fullname).toString()}>
                   {this.state.selectedMembers ? trimString(this.state.selectedMembers.map(u=>u.fullname).toString(),18,'...') : ''}
+
                 </div>
                 <div className="box-icon">
                   {
@@ -284,6 +288,9 @@ class FilterData extends React.Component {
                   }
                   </div> 
               </div>
+              {this.state.showMemberOption ? (
+              <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
+              ) : null}
             </div>
             <div className="col-lg-3">
               <div className="title">&nbsp;</div>
