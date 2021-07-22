@@ -164,12 +164,12 @@ class DropdownCustomize extends React.Component {
 
     filterUser = (value) => {
         const {options} = this.state
+        debugger
 
         if (value !== "") {
             this.setState({isShowLoadingFilter: true})
-
             const valueToFilter = removeAccents(value.trim().toLowerCase())
-            const usersMapped = options.filter(item => (removeAccents(item.value?.toLowerCase()) === valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter)))
+            const usersMapped = options.filter(item => item.value == valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter))
 
             this.setState({isShowLoadingFilter: false, isSelectedAll: false, optionsFilter: usersMapped})
         } else {
@@ -208,8 +208,11 @@ class DropdownCustomize extends React.Component {
 
     render() {
         const { isListOpen, keyword, options, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
-        const { placeholderText } = this.props
+        const { placeholderText, t } = this.props
         const isDisabledButton = !options || options.length === 0
+
+        console.log("kjgkkfdgjg")
+        console.log(optionsFilter)
 
         return (
             <div className="dropdown-customize">
@@ -232,11 +235,11 @@ class DropdownCustomize extends React.Component {
                         isListOpen ?
                             <div role="menu" className="dd-menu" onClick={e => e.stopPropagation()}>
                                 <div className="button-block">
-                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>Hủy</button>
-                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>Áp dụng</button>
+                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>{t("CancelSearch")}</button>
+                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>{t("ApplySearch")}</button>
                                 </div>
                                 <div className="input-search-block">
-                                    <input type="text" placeholder="Nhập tìm kiếm" value={keyword || ""} onChange={e => this.handleInputChange(e)} />
+                                    <input type="text" placeholder={t("EnterKeywords")} value={keyword || ""} onChange={e => this.handleInputChange(e)} />
                                 </div>
                                 {/* <DropdownList onClick={e => e.stopPropagation()} /> */}
 
@@ -251,7 +254,7 @@ class DropdownCustomize extends React.Component {
                                     ?   <div role="list" className="dd-list">
                                             <label className="select-all">
                                                 <input type="checkbox" checked={isSelectedAll} onChange={e => this.handleCheckboxChange(null, e)} />
-                                                <span>Tất cả</span>
+                                                <span>{t("All")}</span>
                                             </label>
                                             <div className="items">
                                                 {
@@ -268,7 +271,7 @@ class DropdownCustomize extends React.Component {
                                                 }
                                             </div>
                                         </div>
-                                    : <div className="text-danger no-results">Không tìm thấy kết quả</div>
+                                    : <div className="text-danger no-results">{t("NoDataFound")}</div>
                                 }
                             </div>
                         : null

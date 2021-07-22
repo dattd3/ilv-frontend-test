@@ -1729,8 +1729,11 @@ span.badge-notification[data-badge]::after {
       justify-content: space-between;
       cursor: pointer;
       .dd-header-title {
+        display: flex;
+        align-items: center;
+        height: 35px;
         flex: 1;
-        padding: 5px 8px;
+        padding: 0 8px;
         min-width: 0;
         .placeholder {
           font-style: italic;
@@ -1924,6 +1927,14 @@ span.badge-notification[data-badge]::after {
         background: #f6c23e;
         color: #FFFFFF;
         padding: 0.5rem 0;
+        &:active {
+          outline: none;
+          box-shadow: none;
+        }
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
       }
     }
     .employee__drop-down-customize {
