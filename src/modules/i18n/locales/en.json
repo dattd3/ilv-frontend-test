@@ -378,6 +378,8 @@
   "LeavesThisYear": "Annual Leave",
   "LeavesYear": "Leaves Of Year",
   "LeavesAndToil": "Leaves/TOIL",
+  "NewUsableToil": "New Usable TOIL",
+  "UsedToil": "Used TOIL",
   "LineManager": "Line Manager",
   "LineManagerSEvaluation": "Line Manager's Evaluation",
   "LineManagerSResponse": "Line Manager's Response",
