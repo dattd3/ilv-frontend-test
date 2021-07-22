@@ -128,3 +128,31 @@
         }
     }
 }
+
+.leave-time-card {
+    .card {
+        margin: 20px 0;
+        border: none;
+    }
+
+    .header {
+        font-weight: bold;
+        color: #4e73df;
+        margin-bottom: 10px;
+        font-size: 16px;
+        background-color: #fff !important;
+       
+    }
+
+    .row {
+        padding: 10px;
+    }
+    
+    p {
+        margin: 2px 0;
+    }
+
+    .row:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+}
