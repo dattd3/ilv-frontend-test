@@ -1,24 +1,22 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
 import _, { debounce } from 'lodash'
-import { getRequestConfigurations } from "../../commons/Utils";
+import { getRequestConfigurations, removeAccents } from "../../commons/Utils"
 
 const DropdownValue = (props) => {
     const { labels } = props
 
-    const removeItem = index => {
-    }
-
     return (
         <div className="value-wrapper">
-            {
+            <div className="value-item">{labels.join(", ")}</div>
+            {/* {
                 labels.map((label, index) => {
                     return <span className="value-item" key={index}>
                                 <span>{label}</span>
                                 <span onClick={removeItem(index)}>x</span>
                             </span>
                 })
-            }
+            } */}
         </div>  
     )
 }
@@ -99,10 +97,27 @@ class DropdownCustomize extends React.Component {
         super(props)
         this.state = {
             isListOpen: false,
-            keyword: ""
+            keyword: "",
+            options: props.options,
+            optionsFilter: props.options,
+            isSelectedAll: false,
+            optionsSelected: {},
+            optionsSelectedConfirmed: {},
+            isShowLoadingFilter: false
         }
 
-        this.handleInputFilter = debounce(this.filterUser, 1000)
+        this.handleInputFilter = debounce(this.filterUser, 800)
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { options } = nextProps
+        if (options) {
+            return ({
+                options: options,
+                optionsFilter: options
+            })
+        }
+        return prevState
     }
 
     componentDidUpdate(){
@@ -128,29 +143,73 @@ class DropdownCustomize extends React.Component {
     }
 
     handleButtonClick = (e, type) => {
-        e.stopPropagation()
+        let optionsSelectedConfirmed = {...this.state.optionsSelectedConfirmed}
+
+        if (type === this.buttonType.cancel) {
+            optionsSelectedConfirmed = {}
+        } else {
+            const optionsSelected = {...this.state.optionsSelected}
+            optionsSelectedConfirmed = {...optionsSelectedConfirmed, ...optionsSelected}
+            this.props.updateParent(optionsSelectedConfirmed)
+        }
+
+        this.setState({optionsSelectedConfirmed: optionsSelectedConfirmed})
     }
 
     handleInputChange = e => {
-        // e.stopPropagation()
         const val = e != null ? e.target.value : ""
         this.setState({keyword: val})
         this.handleInputFilter(val)
     }
 
     filterUser = (value) => {
+        const {options} = this.state
+
         if (value !== "") {
-            // const responses = await axios.get(`${process.env.REACT_APP_HRDX_REQUEST_API_URL}${apiPath}${value}`, getRequestConfigurations())
+            this.setState({isShowLoadingFilter: true})
+
+            const valueToFilter = removeAccents(value.trim().toLowerCase())
+            const usersMapped = options.filter(item => (removeAccents(item.value?.toLowerCase()) === valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter)))
+
+            this.setState({isShowLoadingFilter: false, isSelectedAll: false, optionsFilter: usersMapped})
+        } else {
+            const optionsFilter = this.state.options
+            this.setState({isSelectedAll: false, optionsFilter: optionsFilter})
         }
     }
 
-    handleCheckboxChange = () => {
+    handleCheckboxChange = (key, e) => {
+        let optionsSelected = {...this.state.optionsSelected}
+        const checkedValue = e.target.checked
+        let isSelectedAll = false
+        const optionsFilter = [...this.state.optionsFilter]
 
+        if (key === null) {
+            let optionsSelectedTemp = {}
+            for (let i = 0, len = optionsFilter.length; i < len; i++) {
+                optionsSelectedTemp[optionsFilter[i].value] = {selected: checkedValue}
+            }
+            optionsSelected = optionsSelectedTemp
+            isSelectedAll = checkedValue
+        } else {
+            optionsSelected[key] = {selected: checkedValue}
+            isSelectedAll = Object.values(optionsFilter).every(i => optionsSelected[i.value]?.selected)
+        }
+
+        this.setState({isSelectedAll: isSelectedAll, optionsSelected: optionsSelected})
     }
 
+    getListNameUsers = () => {
+        const { optionsSelectedConfirmed, options } = this.state
+        const userNames = options.filter(item => optionsSelectedConfirmed[item.value]?.selected).map(i => i.label)
+
+        return userNames
+    } 
+
     render() {
-        const { isListOpen } = this.state
-        const { options, placeholderText } = this.props
+        const { isListOpen, keyword, options, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
+        const { placeholderText } = this.props
+        const isDisabledButton = !options || options.length === 0
 
         return (
             <div className="dropdown-customize">
@@ -158,9 +217,9 @@ class DropdownCustomize extends React.Component {
                     <div className="dd-header" onClick={this.toggleList}>
                         <div className="dd-header-title">
                             {
-                                placeholderText 
-                                ? <span className="placeholder">{placeholderText}</span>
-                                : <DropdownValue labels={[]} />
+                                _.size(optionsSelectedConfirmed) > 0
+                                ? <DropdownValue labels={this.getListNameUsers()} />
+                                : <span className="placeholder">{placeholderText}</span>
                             }
                         </div>
                         {
@@ -171,72 +230,46 @@ class DropdownCustomize extends React.Component {
                     </div>
                     {
                         isListOpen ?
-                            <div role="menu" className="dd-menu">
+                            <div role="menu" className="dd-menu" onClick={e => e.stopPropagation()}>
                                 <div className="button-block">
-                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)}>Hủy</button>
-                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)}>Áp dụng</button>
+                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>Hủy</button>
+                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>Áp dụng</button>
                                 </div>
                                 <div className="input-search-block">
-                                    <input type="text" placeholder="Nhập tìm kiếm" value="" readOnly={true} onClick={e => e.stopPropagation()} onChange={e => this.handleInputChange(e)} />
+                                    <input type="text" placeholder="Nhập tìm kiếm" value={keyword || ""} onChange={e => this.handleInputChange(e)} />
                                 </div>
                                 {/* <DropdownList onClick={e => e.stopPropagation()} /> */}
-                                <div role="list" className="dd-list">
-                                    <div className="select-all">
-                                        <input type="checkbox" checked={false} onClick={e => e.stopPropagation()} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                        <span>Tất cả</span>
-                                    </div>
-                                    <div className="items">
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
-                                        <label className="item">
-                                            <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-                                            <div className="label">
-                                                <p className="main">Trần Lan Anh</p>
-                                                <p className="sub">Chuyên viên kỹ thuật</p>
-                                            </div>
-                                        </label>
+
+                                <div className="justify-content-center loading-block" style={{display: `${isShowLoadingFilter ? 'flex' : 'none'}`}}>
+                                    <div className="spinner-border ic-loading" role="status">
+                                        <span className="sr-only">Loading...</span>
                                     </div>
                                 </div>
+
+                                {
+                                    optionsFilter.length > 0 
+                                    ?   <div role="list" className="dd-list">
+                                            <label className="select-all">
+                                                <input type="checkbox" checked={isSelectedAll} onChange={e => this.handleCheckboxChange(null, e)} />
+                                                <span>Tất cả</span>
+                                            </label>
+                                            <div className="items">
+                                                {
+                                                    optionsFilter.map((item, index) => {
+                                                        let key = item.value
+                                                        return <label className="item" key={index}>
+                                                                    <input type="checkbox" className="i_checkbox" checked={optionsSelected[key]?.selected || false} onChange={e => this.handleCheckboxChange(key, e)} />
+                                                                    <div className="label">
+                                                                        <p className="main">{item.label || ""}</p>
+                                                                        <p className="sub">{item.jobTitle || ""}</p>
+                                                                    </div>
+                                                                </label>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    : <div className="text-danger no-results">Không tìm thấy kết quả</div>
+                                }
                             </div>
                         : null
                     }

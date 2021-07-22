@@ -8,4 +8,34 @@ const getRequestConfigurations = () => {
     }
 }
 
-export { getRequestConfigurations }
+const removeAccents = value => {
+    if (value === "" || value == null || value == undefined) {
+        return ""
+    }
+
+    const accentsMap = [
+        "aàảãáạăằẳẵắặâầẩẫấậ",
+        "AÀẢÃÁẠĂẰẲẴẮẶÂẦẨẪẤẬ",
+        "dđ", "DĐ",
+        "eèẻẽéẹêềểễếệ",
+        "EÈẺẼÉẸÊỀỂỄẾỆ",
+        "iìỉĩíị",
+        "IÌỈĨÍỊ",
+        "oòỏõóọôồổỗốộơờởỡớợ",
+        "OÒỎÕÓỌÔỒỔỖỐỘƠỜỞỠỚỢ",
+        "uùủũúụưừửữứự",
+        "UÙỦŨÚỤƯỪỬỮỨỰ",
+        "yỳỷỹýỵ",
+        "YỲỶỸÝỴ"
+    ]
+
+    for (let i = 0; i < accentsMap.length; i++) {
+        var result = new RegExp('[' + accentsMap[i].substr(1) + ']', 'g')
+        var char = accentsMap[i][0]
+        value = value.replace(result, char)
+    }
+
+    return value
+}
+
+export { getRequestConfigurations, removeAccents }

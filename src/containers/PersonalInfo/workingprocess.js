@@ -13,7 +13,8 @@ const ChangeWorkingAppointment = (props) => {
     const { t } = useTranslation()
 
     const formatDateBySAPDate = dateInput => {
-        if (!dateInput || dateInput === "#") {
+        const yearForFuture = "9999"
+        if (!dateInput || dateInput === "#" || dateInput.startsWith(yearForFuture)) {
             return ""
         }
 
@@ -33,10 +34,12 @@ const ChangeWorkingAppointment = (props) => {
                         <tr>
                             <th className="start-date">{t("StartDate")}</th>
                             <th className="end-date">{t("EndDate")}</th>
+                            <th className="process">{t("Action")}</th>
+                            <th className="reason">{t("Reason")}</th>
                             <th className="job-title">{t("Title")}</th>
                             <th className="block">{t("DivisionName")}</th>
                             <th className="part">{t("DepartmentName")}</th>
-                            <th className="unit">{t("PropertyName")}</th>
+                            <th className="unit">{t("ChangeWorkingAppointmentTeam")}</th>
                             <th className="region">{t("RegionName")}</th>
                             <th className="company">{t("PAndL")}</th>
                         </tr>
@@ -45,14 +48,16 @@ const ChangeWorkingAppointment = (props) => {
                         {
                             userChangeWorkingAppointments.map((item, index) => {
                                 return <tr key={index}>
-                                            <td className="start-date"><span>{formatDateBySAPDate(item.from_time)}</span></td>
-                                            <td className="end-date"><span className="same-width">{formatDateBySAPDate(item.to_time)}</span></td>
-                                            <td className="job-title"><span className="same-width">{formatValueBySAPValue(item.title)}</span></td>
+                                            <td className="start-date">{formatDateBySAPDate(item.from_time)}</td>
+                                            <td className="end-date">{formatDateBySAPDate(item.to_time)}</td>
+                                            <td className="process">{formatValueBySAPValue(item?.action)}</td>
+                                            <td className="reason">{formatValueBySAPValue(item?.reason)}</td>
+                                            <td className="job-title">{formatValueBySAPValue(item.title)}</td>
                                             <td className="block">{formatValueBySAPValue(item.division)}</td>
-                                            <td className="part"><span className="same-width">{formatValueBySAPValue(item.part)}</span></td>
-                                            <td className="unit"><span className="same-width">{formatValueBySAPValue(item.unit)}</span></td>
-                                            <td className="region"><span className="same-width">{formatValueBySAPValue(item.department)}</span></td>
-                                            <td className="company"><span className="same-width">{formatValueBySAPValue(item.company)}</span></td>
+                                            <td className="part">{formatValueBySAPValue(item.part)}</td>
+                                            <td className="unit">{formatValueBySAPValue(item.unit)}</td>
+                                            <td className="region">{formatValueBySAPValue(item.department)}</td>
+                                            <td className="company">{formatValueBySAPValue(item.company)}</td>
                                         </tr>
                             })
                         }
@@ -133,8 +138,8 @@ class MyComponent extends React.Component {
         if (changeWorkingAppointmentResponses && changeWorkingAppointmentResponses.data ) {
             const result = changeWorkingAppointmentResponses.data.result
             if (result && result.code != Constants.API_ERROR_CODE) {
-                const data = changeWorkingAppointmentResponses.data.data
-                this.setState({userChangeWorkingAppointments: data && data.length > 0 ? data : []})       
+                const data = changeWorkingAppointmentResponses.data.data?.sort((a, b) => Date.parse(a.to_time) <= Date.parse(b.to_time) ? 1 : -1)
+                this.setState({userChangeWorkingAppointments: data && data.length > 0 ? data : []})
             }
         }
     }
