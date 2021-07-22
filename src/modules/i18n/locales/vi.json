@@ -68,7 +68,7 @@
   "WorkingInformation": "Thông tin công việc",
   "BasicInformation": "Hồ sơ cơ bản",
   "WorkingProcess": "Quá trình làm việc",
-  "ChangeWorkingAppointment": "Điều chuyển & Bổ nhiệm",
+  "ChangeWorkingAppointment": "Điều chuyển/Bổ nhiệm",
   "Certificate": "Chứng chỉ chuyên môn",
   "PersonalRelations": "Quan hệ nhân thân",
   "CommendationViolation": "Khen thưởng & Vi phạm",
@@ -862,5 +862,7 @@
   "successfulConsentReq": "Thẩm định yêu cầu thành công !",
   "successfulRejectConsentReq": "Từ chối thẩm định yêu cầu thành công !",
   "AnErrorOccurred": "Đã có lỗi xảy ra",
-  "successfulRevocationApproval": "Thu hổi phê duyệt thành công !"
+  "successfulRevocationApproval": "Thu hổi phê duyệt thành công !",
+  "Action": "Quá trình",
+  "ChangeWorkingAppointmentTeam": "Cơ sở/Phòng TW"
 }
