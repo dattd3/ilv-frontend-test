@@ -391,6 +391,8 @@
   "LeavesThisYear": "Ngày phép năm nay",
   "LeavesYear": "Ngày phép năm",
   "LeavesAndToil": "Thông tin ngày nghỉ phép, nghỉ bù",
+  "NewUsableToil": "Số ngày bù phát sinh",
+  "UsedToil": "Số ngày bù đã sử dụng",
   "LineManager": "CBQL trực tiếp",
   "LineManagerSEvaluation": "CBQL đánh giá",
   "LineManagerSResponse": "Phản hồi của CBLĐ",

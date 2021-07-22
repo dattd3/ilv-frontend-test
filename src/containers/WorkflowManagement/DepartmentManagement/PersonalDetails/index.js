@@ -38,9 +38,9 @@ class PersonalDetails extends Component {
        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
     };
 
-
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview/subordinate`;
-    const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/leaveofabsence/detail/subordinate`;
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
+    const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence/detail`;
+    const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment_subordinate `;
     const requestTimeoverview = axios.post(timOverviewEndpoint, {
       personal_no_list: members,
       from_date: start,
@@ -50,6 +50,14 @@ class PersonalDetails extends Component {
     })
     const requestleaveAbsenceDetail = axios.post(leaveAbsenceDetailEndpoint, {
       personal_no_list: members,
+      from_time: start,
+      to_time: end
+    }, {
+      headers
+    })
+
+    const requestReason = axios.post(ReasonEndpoint, {
+      personal_no_list: members,
       from_date: start,
       to_date: end
     }, {
@@ -57,7 +65,7 @@ class PersonalDetails extends Component {
     })
 
 
-    Promise.allSettled([requestTimeoverview, requestleaveAbsenceDetail]).then((responses) => {
+    Promise.allSettled([requestTimeoverview, requestleaveAbsenceDetail, requestReason]).then((responses) => {
         const localState = {...this.state};
         //process time overview
         if (responses[0].status="fulfilled") {
@@ -86,7 +94,7 @@ class PersonalDetails extends Component {
               start,
               end,
               members,
-              reason: []
+              reason: responses[2].status == 'fulfilled' ?  responses[2].value.data.data : []
             }
           }
         }
@@ -94,21 +102,21 @@ class PersonalDetails extends Component {
         //process Leave absence
         if(responses[1].status == 'fulfilled') {
           const res = responses[1].value;
-          if (res && res.data && res.data.data) {
-            const months = this.getMonths(res.data.data)
+          if (res && res.data && res.data.data && res.data.data.length > 0) {
+            const months = this.getMonths(res.data.data[0])
             const annualLeaves = months.map((month) => {
                   return {
                     month: month.replace(/-/, '/'),
-                    usedLeave: res.data.data.used_annual_leave_detail.filter((usedAnnualLeave) =>  usedAnnualLeave.month == month ),
-                    arisingLeave: res.data.data.arising_annual_leave_detail.filter((arisingAnnualLeave) => arisingAnnualLeave.month == month ),
+                    usedLeave: res.data.data[0].used_annual_leave_detail.filter((usedAnnualLeave) =>  usedAnnualLeave.month == month ),
+                    arisingLeave: res.data.data[0].arising_annual_leave_detail.filter((arisingAnnualLeave) => arisingAnnualLeave.month == month ),
                   }
               })
 
               const compensatoryLeaves = months.map((month) => {
                 return {
                   month: month.replace(/-/, '/'),
-                  usedLeave: res.data.data.used_compensatory_leave_detail.filter((usedCompensatoryLeave) => usedCompensatoryLeave.month == month ),
-                  arisingLeave: res.data.data.arising_compensatory_leave_detail.filter((arisingCompensatoryLeave) => arisingCompensatoryLeave.month == month ),
+                  usedLeave: res.data.data[0].used_compensatory_leave_detail.filter((usedCompensatoryLeave) => usedCompensatoryLeave.month == month ),
+                  arisingLeave: res.data.data[0].arising_compensatory_leave_detail.filter((arisingCompensatoryLeave) => arisingCompensatoryLeave.month == month ),
                 }
             })
             localState.annualLeaves = annualLeaves;
@@ -173,8 +181,8 @@ class PersonalDetails extends Component {
             headerTitle={t("ToilDay")}
             headers={{
               month: t("Month"),
-              annualLeaveOfArising: "Số ngày bù phát sinh",
-              usedAnnualLeave: "Số ngày bù đã sử dụng",
+              annualLeaveOfArising: t("NewUsableToil"),
+              usedAnnualLeave: t("UsedToil"),
               daysOfAnnualLeave: t("DateOfLeaves"),
             }}
             data={this.state.compensatoryLeaves}
