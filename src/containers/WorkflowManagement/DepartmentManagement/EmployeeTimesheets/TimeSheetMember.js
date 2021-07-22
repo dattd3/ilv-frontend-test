@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import Button from 'react-bootstrap/Button'
 import {OverlayTrigger,Tooltip, Popover} from 'react-bootstrap'
-import Fade from 'react-bootstrap/Fade'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
+import TableUtil from '../../../../components/Common/table'
+import CustomPaging from '../../../../components/Common/CustomPaging'
 const DATE_TYPE = {
     DATE_OFFSET: 0,
     DATE_NORMAL: 1,
@@ -294,6 +295,11 @@ function RenderRow4(props) {
 }
 
 function Content(props) {
+    const [pageNumber, setPageNumber] = useState(1);
+    const onChangePage = index => {
+        setPageNumber(index)
+    }
+    const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 5)
     const { t } = useTranslation();
     let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
@@ -326,7 +332,7 @@ function Content(props) {
                       <tr className="divide"></tr>
                   </thead>
                   <tbody >
-                  { props.timeTables.map( (timesheet, index) => {
+                  { memberTimeData.map( (timesheet, index) => {
                     return  <React.Fragment key = {index}>
                         <tr style={{borderTop: ' 1px solid #333'}}>
                             <td rowSpan="4" className="">{timesheet.name}</td>
@@ -348,6 +354,15 @@ function Content(props) {
               </table>
              </div>
           </div>
+          {memberTimeData.length > 0 ? <div className="row paging mt-2">
+                    <div className="col-sm"></div>
+                    <div className="col-sm"></div>
+                    <div className="col-sm">
+                        <CustomPaging pageSize={5} onChangePage={onChangePage} totalRecords={props.timeTables.length} />
+                    </div>
+                    <div className="col-sm"></div>
+                    <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>
+                </div> : null}
         </div>
     </>
   )
