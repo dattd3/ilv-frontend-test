@@ -193,6 +193,13 @@ class FilterData extends React.Component {
   onHideMembers() {
     this.setState({ showMemberOption: false });
   }
+
+  addDays(date, days) {
+    const copy = new Date(Number(date))
+    copy.setDate(date.getDate() + days)
+    return copy
+  }
+
   render() {
     const { t } = this.props;
     let hrProfileDisplay = [];
@@ -251,6 +258,7 @@ class FilterData extends React.Component {
                     minDate={this.state.startDate}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
+                    maxDate={this.addDays(this.state.startDate, 31)}
                     onChange={this.setEndDate}
                     dateFormat="dd/MM/yyyy"
                     locale="vi"
