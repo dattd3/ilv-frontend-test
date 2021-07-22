@@ -271,7 +271,7 @@ class FilterData extends React.Component {
               </div>
             </div>
             <div className="col-lg-3">
-              <div className="title">{t("Lựa chọn nhân viên")}</div>
+              <div className="title">{t("staff_selection_label")}</div>
               <div className="content input-container d-flex" onClick={this.onShowMembers}>
                 <div className="box-input d-flex justify-content-between" data-toggle="tooltip" data-placement="top" title={this.state.selectedMembers.map(u=>u.fullname).toString()}>
                   {this.state.selectedMembers ? trimString(this.state.selectedMembers.map(u=>u.fullname).toString(),18,'...') : ''}
