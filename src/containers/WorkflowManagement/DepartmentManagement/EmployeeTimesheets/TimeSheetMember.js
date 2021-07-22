@@ -221,7 +221,7 @@ function RenderRow1(props) {
                  if(item.date_type == DATE_TYPE.DATE_OFF) {
                     return <td key = {index}>
                         <RenderTooltip is_holiday = {item.is_holiday}>
-                            <div style = {{fontWeight: 'bold', color: '#000000'}}>OFF</div>
+                            <div>OFF</div>
                         </RenderTooltip>
                         </td>
                  } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
@@ -320,11 +320,13 @@ function Content(props) {
                 <table className="employee-time-sheets">
                   <thead>
                   <tr className="">
-                          <td className="">Họ tên</td>
+                          <td className="">Họ và tên</td>
                           {props.dayList.map((item, index) => {
                             return (
                               <td key={index}>
-                                {moment(item).format("dddd DD/MM")}
+                                {moment(item).format("dddd")}
+                                <br/>
+                                <span style={{fontWeight: 'normal' }}>{moment(item).format("DD/MM")}</span>
                               </td>
                             );
                           })}
@@ -334,7 +336,7 @@ function Content(props) {
                   <tbody >
                   { memberTimeData.map( (timesheet, index) => {
                     return  <React.Fragment key = {index}>
-                        <tr style={{borderTop: ' 1px solid #333'}}>
+                        <tr style={{borderTop: ' 0.5px solid #707070'}}>
                             <td rowSpan="4" className="">{timesheet.name}</td>
                             <RenderRow1 member = {timesheet}/>
                         </tr>
