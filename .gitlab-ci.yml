@@ -4,7 +4,7 @@ cache:
   untracked: true
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-    - ./node_modules/
+    - node_modules
 
 stages:
   - build
@@ -21,7 +21,7 @@ build_development:
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
     paths:
-      - ./builds
+      - builds
     expire_in: 3 days
   only:
     refs:
@@ -39,7 +39,7 @@ deploy_to_development_environment:
   artifacts:
     expire_in: 1 hour
     paths:
-      - ./builds
+      - builds
   only:
       - develop
       - /^feature1/.*$/
