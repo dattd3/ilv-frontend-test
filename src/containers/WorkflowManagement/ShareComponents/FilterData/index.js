@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { withTranslation } from "react-i18next";
 // import Select from 'react-select';
@@ -12,6 +12,7 @@ registerLocale("vi", vi);
 
 const MemberOption = (props, onChange) => {
   const { innerProps, innerRef } = props.data;
+  const ref = useRef(null);
   // const [checkedAll, setCheckedAll] = useState(false);
   const [members, setMembers] = useState(props.data);
   const [memberDefault] = useState(props.data);
@@ -44,12 +45,27 @@ const MemberOption = (props, onChange) => {
   const confirmSelectedMember = () => {
     props.saveSelectedMember(members)
   }
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          props.hideMembers()
+        }
+    }
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [props, ref]);
+  
   return (
     <>
-    <div className="member-list">
+    <div ref={ref} className="member-list">
       <div className="action bg-light d-flex justify-content-center p-2">
         <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Đóng</button>
-        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>Áp dụng</button>
+        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember} disabled={members.filter(m => m.checked).length === 0}>Áp dụng</button>
       </div>
       <div className="mt-2 p-2">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
