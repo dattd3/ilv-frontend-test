@@ -1,11 +1,3 @@
-before_script:
-  
-cache:
-  untracked: true
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - node_modules/
-
 stages:
   - build
   - deploy
@@ -21,11 +13,6 @@ build_development:
   script:
     - python3 ~/deployment.py build web dev
     - echo "Build successful"
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
-    paths:
-      - public
-    expire_in: 3 days
   only:
     refs:
       - develop
@@ -41,9 +28,5 @@ deploy_to_development_environment:
     - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
   when: manual
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - public
   only:
       - develop
