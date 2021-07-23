@@ -1,10 +1,10 @@
 before_script:
-
+  
 cache:
   untracked: true
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-    - node_modules
+    - node_modules/
 
 stages:
   - build
@@ -15,6 +15,9 @@ build_development:
   environment: development
   tags:
     - hrms
+  before_script:
+    - echo "prepare to build development"
+    - pwd
   script:
     - python3 ~/deployment.py build web dev
     - echo "Build successful"
@@ -26,12 +29,14 @@ build_development:
   only:
     refs:
       - develop
-      - /^feature1/.*$/
 
 deploy_to_development_environment:
   stage: deploy
   tags:
     - hrms
+  before_script:
+    - echo "prepare to deploy development"
+    - pwd
   script:
     - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
@@ -42,4 +47,3 @@ deploy_to_development_environment:
       - builds
   only:
       - develop
-      - /^feature1/.*$/
