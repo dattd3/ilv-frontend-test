@@ -77,6 +77,7 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   showEditModal = (question) => {
+    console.log("Debug question - ", question);
     this.setState({ questionContent: question });
     this.showSubmitModal(true, true);
     this.showHistoryModal(false);
