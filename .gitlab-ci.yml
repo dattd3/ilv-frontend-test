@@ -1,5 +1,5 @@
 before_script:
-
+  
 cache:
   untracked: true
   key: "$CI_COMMIT_REF_SLUG"
@@ -15,42 +15,28 @@ build_development:
   environment: development
   tags:
     - hrms
+  before_script:
+    - echo "prepare to build development"
+    - pwd
   script:
     - python3 ~/deployment.py build web dev
     - echo "Build successful"
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
     paths:
-      - build/
+      - builds
     expire_in: 3 days
   only:
     refs:
       - develop
-      - /^feature1/.*$/
-
-build_production:
-  stage: build
-  environment: development
-  tags:
-    - hrms-production
-  script:
-    - ls
-    - python3 ~/deployment.py build web prod
-    - echo "Build successful"
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
-    paths:
-      - build/
-    expire_in: 3 days
-  only:
-    refs:
-      - master
-      - feature/rollout
 
 deploy_to_development_environment:
   stage: deploy
   tags:
     - hrms
+  before_script:
+    - echo "prepare to deploy development"
+    - pwd
   script:
     - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
@@ -58,24 +44,6 @@ deploy_to_development_environment:
   artifacts:
     expire_in: 1 hour
     paths:
-      - public
+      - builds
   only:
       - develop
-      - /^feature1/.*$/
-
-deploy_to_production_environment:
-  stage: deploy
-  environment: Production
-  tags:
-    - hrms-production
-  script:
-    - python3 ~/deployment.py deploy web prod
-    - echo "Deployed"
-  when: manual
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - public
-  only:
-      - master
-      - feature/rollout
