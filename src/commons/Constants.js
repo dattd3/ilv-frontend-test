@@ -100,5 +100,11 @@ const Constants = {
 
   //other
   QAAlreadyExist: "QAAlreadyExist",
+
+  // Ticket 
+
+  SOLVER_MANAGER: 1,
+  SOLVER_RESOURCE: 2,
+  SOLVER_TCKT: 3,
 };
 export default Constants
