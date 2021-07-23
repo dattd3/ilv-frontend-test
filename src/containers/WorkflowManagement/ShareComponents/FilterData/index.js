@@ -189,7 +189,8 @@ class FilterData extends React.Component {
   }
 
   search() {
-    this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds);
+    const checkedMemberUsernames = (this.state.selectedMembers || []).map(item => item.username);
+    this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds, checkedMemberUsernames );
   }
 
   getSelecteMembers (data) {
@@ -229,6 +230,7 @@ class FilterData extends React.Component {
           job_name: profile.job_name,
           companyCode: profile.companyCode,
           orgLv3Text: profile.orgLv3Text,
+          username: profile.username,
           // userid: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
           checked: profile.checked || false 
         };
