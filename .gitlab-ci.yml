@@ -19,7 +19,7 @@ build_development:
     - echo "prepare to build development"
     - pwd
   script:
-    - python3 ~/gitlab-runner/deployment.py build web dev
+    - python3 ~/deployment.py build web dev
     - echo "Build successful"
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
@@ -38,7 +38,7 @@ deploy_to_development_environment:
     - echo "prepare to deploy development"
     - pwd
   script:
-    - python3 ~/gitlab-runner/deployment.py deploy web dev
+    - python3 ~/deployment.py deploy web dev
     - echo "Deployed"
   when: manual
   artifacts:
