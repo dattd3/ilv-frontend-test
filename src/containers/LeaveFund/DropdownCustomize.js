@@ -91,7 +91,9 @@ class DropdownCustomize extends React.Component {
             this.setState({isShowLoadingFilter: false, isSelectedAll: false, optionsFilter: usersMapped})
         } else {
             const optionsFilter = options
-            this.setState({isSelectedAll: false, optionsFilter: optionsFilter})
+            const { optionsSelected } = this.state
+            const isSelectedAll = optionsFilter.every(i => optionsSelected[i.value]?.selected)  
+            this.setState({isSelectedAll: isSelectedAll, optionsFilter: optionsFilter})
         }
     }
 
@@ -154,16 +156,16 @@ class DropdownCustomize extends React.Component {
                                     <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>{t("ApplySearch")}</button>
                                 </div>
                                 <div className="input-search-block">
-                                    <input type="text" placeholder={t("EnterKeywords")} value={keyword || ""} onChange={e => this.handleInputChange(e)} />
+                                    <div className="wrap-input">
+                                        <i className="fas fa-search ic-search"></i>
+                                        <input type="text" placeholder={t("EnterKeywords")} value={keyword || ""} onChange={e => this.handleInputChange(e)} />
+                                    </div>
                                 </div>
-                                {/* <DropdownList onClick={e => e.stopPropagation()} /> */}
-
-                                <div className="justify-content-center loading-block" style={{display: `${isShowLoadingFilter ? 'flex' : 'none'}`}}>
+                                 <div className="justify-content-center loading-block" style={{display: `${isShowLoadingFilter ? 'flex' : 'none'}`}}>
                                     <div className="spinner-border ic-loading" role="status">
                                         <span className="sr-only">Loading...</span>
                                     </div>
                                 </div>
-
                                 {
                                     optionsFilter.length > 0 
                                     ?   <div role="list" className="dd-list">
