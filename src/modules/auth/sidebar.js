@@ -31,14 +31,14 @@ export const Navigation = [
     to: map.InternalRecruitment,
     role: ['V030']
   },
-  {
-    id: 12,
-    parentId: 0,
-    icon: 'c-task',
-    label: "Menu_Task",
-    to: map.Task,
-    role: 'U'
-  },
+  // {
+  //   id: 12,
+  //   parentId: 0,
+  //   icon: 'c-task',
+  //   label: "Menu_Task",
+  //   to: map.Task,
+  //   role: 'U'
+  // },
   {
     id: 3,
     parentId: 2,
@@ -249,4 +249,54 @@ export const Navigation = [
     to: map.QuestionAndAnswer,
     role: ['V030','V096','V060','V073']
   },
+
+  //workflow management
+  {
+    id: 999,
+    parentId: 0,
+    icon: 'c-task',
+    to: "",
+    label: "Quản lý công việc",
+    role: "U",
+  },
+  {
+    id:1000,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.Task,
+    label: 'Quản lý yêu cầu',
+    role: 'U'
+  },
+  {
+    id:1001,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: "",
+    label: 'Quản lý bộ phận',
+    role: 'U'
+  },
+  {
+    id:1002,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.EmployeeTimeSheets,
+    label: 'Bảng chấm công',
+    role: 'U'
+  },
+  {
+    id:1003,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.LeaveFund,
+    label: 'Quỹ phép',
+    role: 'U'
+  },
+  {
+    id:1004,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.PersonalDetails,
+    label: 'Chi tiết cá nhân',
+    role: 'U'
+  }
 ];
