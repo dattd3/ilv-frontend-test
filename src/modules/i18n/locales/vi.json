@@ -875,5 +875,11 @@
   "EnterKeywords": "Nhập từ khóa",
   "CancelSearch": "Hủy",
   "ApplySearch": "Áp dụng",
+  "MenuTaskManagement": "Quản lý công việc",
+  "MenuRequestManagement": "Quản lý yêu cầu",
+  "MenuMyTeam": "Quản lý bộ phận",
+  "SubMenuTimesheetManagement": "Bảng chấm công",
+  "MenuLeaveTOILManagement": "Quỹ phép",
+  "MenuIndividualManagement": "Chi tiết cá nhân",
   "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!"
 }
