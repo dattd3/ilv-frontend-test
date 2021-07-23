@@ -1321,7 +1321,7 @@ span.badge-notification[data-badge]::after {
 
   .change-working-appointment-wrapper {
     overflow: auto;
-    max-height: 600px;
+    max-height: 300px;
     &::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -1366,6 +1366,20 @@ span.badge-notification[data-badge]::after {
         }
         &.process, &.reason {
           width: 200px;
+        }
+        &.sticky-column {
+          position: sticky;
+          z-index: 0;
+          background: #FFFFFF;
+          &.start-date {
+            left: 0;
+          }
+          &.end-date {
+            left: 150px;
+          }
+          &.process {
+            left: 300px;
+          }
         }
       }
       .same-width {
@@ -1737,11 +1751,15 @@ span.badge-notification[data-badge]::after {
         flex: 1;
         padding: 0 8px;
         min-width: 0;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
         .placeholder {
           font-style: italic;
           color: #BBBBBB;
         }
         .value-wrapper {
+          width: 100%;
           .value-item {
             white-space: nowrap;
             overflow: hidden !important;
@@ -1797,19 +1815,29 @@ span.badge-notification[data-badge]::after {
       }
       .input-search-block {
         padding: 6px 10px;
-        input {
-          font-size: 13px;
-          width: 100%;
+        .wrap-input {
+          display: flex;
+          align-items: center;
           border: 1px solid #B3B3B3;
           border-radius: 4px;
           padding: 4px 6px;
-          &:active {
-            border-color: #B3B3B3;
-            outline: none;
+          .ic-search {
+            font-weight: 600;
+            font-size: 15px;
+            margin-right: 5px;
           }
-          &:focus {
-            border-color: #B3B3B3;
-            outline: none;
+          input {
+            flex: 1 1;
+            font-size: 13px;
+            border: none;
+            &:active {
+              border-color: #B3B3B3;
+              outline: none;
+            }
+            &:focus {
+              border-color: #B3B3B3;
+              outline: none;
+            }
           }
         }
       }

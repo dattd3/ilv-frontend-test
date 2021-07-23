@@ -32,9 +32,9 @@ const ChangeWorkingAppointment = (props) => {
                 <table className="change-working-appointment-table">
                     <thead>
                         <tr>
-                            <th className="start-date">{t("StartDate")}</th>
-                            <th className="end-date">{t("EndDate")}</th>
-                            <th className="process">{t("Action")}</th>
+                            <th className="start-date sticky-column">{t("StartDate")}</th>
+                            <th className="end-date sticky-column">{t("EndDate")}</th>
+                            <th className="process sticky-column">{t("Action")}</th>
                             <th className="reason">{t("Reason")}</th>
                             <th className="job-title">{t("Title")}</th>
                             <th className="block">{t("DivisionName")}</th>
@@ -48,9 +48,9 @@ const ChangeWorkingAppointment = (props) => {
                         {
                             userChangeWorkingAppointments.map((item, index) => {
                                 return <tr key={index}>
-                                            <td className="start-date">{formatDateBySAPDate(item.from_time)}</td>
-                                            <td className="end-date">{formatDateBySAPDate(item.to_time)}</td>
-                                            <td className="process">{formatValueBySAPValue(item?.action)}</td>
+                                            <td className="start-date sticky-column">{formatDateBySAPDate(item.from_time)}</td>
+                                            <td className="end-date sticky-column">{formatDateBySAPDate(item.to_time)}</td>
+                                            <td className="process sticky-column">{formatValueBySAPValue(item?.action)}</td>
                                             <td className="reason">{formatValueBySAPValue(item?.reason)}</td>
                                             <td className="job-title">{formatValueBySAPValue(item.title)}</td>
                                             <td className="block">{formatValueBySAPValue(item.division)}</td>
