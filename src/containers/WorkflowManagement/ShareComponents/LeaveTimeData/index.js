@@ -61,7 +61,7 @@ export default function LeaveTimeCard(props) {
                         <div className="col-md-4 text-center text-capitalize">
                           {value.usedLeave.length > 0
                             ? value.usedLeave.map((d, k) => (
-                                <p>
+                                <p key={k}>
                                   {d.date.replace(/-/g, "/")} - {d.days}{" "}
                                   {t("Day")}
                                 </p>
