@@ -22,7 +22,7 @@ class PersonalDetails extends Component {
     };
   }
 
-  search(startDate, endDate, members) {
+  search(startDate, endDate, members, usernames) {
     const { t } = this.props
     if(!members || members.length == 0) {
       toast.error(t('staff_selection_warning'));
@@ -57,9 +57,9 @@ class PersonalDetails extends Component {
     })
 
     const requestReason = axios.post(ReasonEndpoint, {
-      personal_no_list: members,
-      from_date: start,
-      to_date: end
+      usernames: usernames,
+      startDate: start,
+      endDate: end
     }, {
       headers
     })
