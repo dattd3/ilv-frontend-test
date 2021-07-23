@@ -1,7 +1,7 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
 import _, { debounce } from 'lodash'
-import { getRequestConfigurations, removeAccents } from "../../commons/Utils"
+import { removeAccents } from "../../commons/Utils"
 
 const DropdownValue = (props) => {
     const { labels } = props
@@ -9,84 +9,9 @@ const DropdownValue = (props) => {
     return (
         <div className="value-wrapper">
             <div className="value-item">{labels.join(", ")}</div>
-            {/* {
-                labels.map((label, index) => {
-                    return <span className="value-item" key={index}>
-                                <span>{label}</span>
-                                <span onClick={removeItem(index)}>x</span>
-                            </span>
-                })
-            } */}
         </div>  
     )
 }
-
-// const DropdownList = (props) => {
-//     const { labels } = props
-
-//     const removeItem = index => {
-//     }
-
-//     return (
-//         <div role="list" className="dd-list">
-//             <div className="select-all">
-//                 <input type="checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                 <span>Tất cả</span>
-//             </div>
-//             <div className="items">
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//                 <label className="item">
-//                     <input type="checkbox" className="i_checkbox" checked={false} onChange={e => this.handleCheckboxChange(1, e, "currentAddressIndicator")} />
-//                     <div className="label">
-//                         <p className="main">Trần Lan Anh</p>
-//                         <p className="sub">Chuyên viên kỹ thuật</p>
-//                     </div>
-//                 </label>
-//             </div>
-//         </div>
-//     )
-// }
 
 class DropdownCustomize extends React.Component {
     buttonType = {
@@ -98,8 +23,7 @@ class DropdownCustomize extends React.Component {
         this.state = {
             isListOpen: false,
             keyword: "",
-            options: props.options,
-            optionsFilter: props.options,
+            optionsFilter: [],
             isSelectedAll: false,
             optionsSelected: {},
             optionsSelectedConfirmed: {},
@@ -109,15 +33,10 @@ class DropdownCustomize extends React.Component {
         this.handleInputFilter = debounce(this.filterUser, 800)
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { options } = nextProps
-        if (options) {
-            return ({
-                options: options,
-                optionsFilter: options
-            })
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.options !== this.props.options) {
+            this.setState({ optionsFilter: nextProps.options })
         }
-        return prevState
     }
 
     componentDidUpdate(){
@@ -163,17 +82,15 @@ class DropdownCustomize extends React.Component {
     }
 
     filterUser = (value) => {
-        const {options} = this.state
+        const { options } = this.props
 
         if (value !== "") {
             this.setState({isShowLoadingFilter: true})
-
             const valueToFilter = removeAccents(value.trim().toLowerCase())
-            const usersMapped = options.filter(item => (removeAccents(item.value?.toLowerCase()) === valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter)))
-
+            const usersMapped = options.filter(item => (removeAccents(item.AD.toLowerCase()) == valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter)))
             this.setState({isShowLoadingFilter: false, isSelectedAll: false, optionsFilter: usersMapped})
         } else {
-            const optionsFilter = this.state.options
+            const optionsFilter = options
             this.setState({isSelectedAll: false, optionsFilter: optionsFilter})
         }
     }
@@ -200,15 +117,16 @@ class DropdownCustomize extends React.Component {
     }
 
     getListNameUsers = () => {
-        const { optionsSelectedConfirmed, options } = this.state
+        const { optionsSelectedConfirmed } = this.state
+        const { options } = this.props
         const userNames = options.filter(item => optionsSelectedConfirmed[item.value]?.selected).map(i => i.label)
 
         return userNames
     } 
 
     render() {
-        const { isListOpen, keyword, options, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
-        const { placeholderText } = this.props
+        const { isListOpen, keyword, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
+        const { placeholderText, options, t } = this.props
         const isDisabledButton = !options || options.length === 0
 
         return (
@@ -232,11 +150,11 @@ class DropdownCustomize extends React.Component {
                         isListOpen ?
                             <div role="menu" className="dd-menu" onClick={e => e.stopPropagation()}>
                                 <div className="button-block">
-                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>Hủy</button>
-                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>Áp dụng</button>
+                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>{t("CancelSearch")}</button>
+                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>{t("ApplySearch")}</button>
                                 </div>
                                 <div className="input-search-block">
-                                    <input type="text" placeholder="Nhập tìm kiếm" value={keyword || ""} onChange={e => this.handleInputChange(e)} />
+                                    <input type="text" placeholder={t("EnterKeywords")} value={keyword || ""} onChange={e => this.handleInputChange(e)} />
                                 </div>
                                 {/* <DropdownList onClick={e => e.stopPropagation()} /> */}
 
@@ -251,7 +169,7 @@ class DropdownCustomize extends React.Component {
                                     ?   <div role="list" className="dd-list">
                                             <label className="select-all">
                                                 <input type="checkbox" checked={isSelectedAll} onChange={e => this.handleCheckboxChange(null, e)} />
-                                                <span>Tất cả</span>
+                                                <span>{t("All")}</span>
                                             </label>
                                             <div className="items">
                                                 {
@@ -268,7 +186,7 @@ class DropdownCustomize extends React.Component {
                                                 }
                                             </div>
                                         </div>
-                                    : <div className="text-danger no-results">Không tìm thấy kết quả</div>
+                                    : <div className="text-danger no-results">{t("NoDataFound")}</div>
                                 }
                             </div>
                         : null
