@@ -872,5 +872,11 @@
   "SelectEmployees": "Lựa chọn nhân viên",
   "EnterKeywords": "Nhập từ khóa",
   "CancelSearch": "Hủy",
-  "ApplySearch": "Áp dụng"
+  "ApplySearch": "Áp dụng",
+  "MenuTaskManagement": "Quản lý công việc",
+  "MenuRequestManagement": "Quản lý yêu cầu",
+  "MenuMyTeam": "Quản lý bộ phận",
+  "SubMenuTimesheetManagement": "Bảng chấm công",
+  "MenuLeaveTOILManagement": "Quỹ phép",
+  "MenuIndividualManagement": "Chi tiết cá nhân"
 }
