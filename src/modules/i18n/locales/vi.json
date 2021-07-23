@@ -868,5 +868,9 @@
   "AnErrorOccurred": "Đã có lỗi xảy ra",
   "successfulRevocationApproval": "Thu hổi phê duyệt thành công !",
   "Action": "Quá trình",
-  "ChangeWorkingAppointmentTeam": "Cơ sở/Phòng TW"
+  "ChangeWorkingAppointmentTeam": "Cơ sở/Phòng TW",
+  "SelectEmployees": "Lựa chọn nhân viên",
+  "EnterKeywords": "Nhập từ khóa",
+  "CancelSearch": "Hủy",
+  "ApplySearch": "Áp dụng"
 }

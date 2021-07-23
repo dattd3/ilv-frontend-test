@@ -847,5 +847,9 @@
   "AnErrorOccurred": "Something went wrong",
   "successfulRevocationApproval": "Successfully revocation approval",
   "Action": "Action",
-  "ChangeWorkingAppointmentTeam": "Team"
+  "ChangeWorkingAppointmentTeam": "Team",
+  "SelectEmployees": "Select employees",
+  "EnterKeywords": "Enter keywords",
+  "CancelSearch": "Cancel",
+  "ApplySearch": "Apply"
 }
