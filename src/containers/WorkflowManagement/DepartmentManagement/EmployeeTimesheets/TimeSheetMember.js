@@ -317,7 +317,7 @@ function Content(props) {
                 <table className="employee-time-sheets">
                   <thead>
                   <tr className="">
-                        <td className="full-name fixed-col" style={{ height: '45px' }}>{t('FullName')}</td>
+                        <td className="full-name fixed-col" style={{ height: '46px' }}>{t('FullName')}</td>
                     </tr>
                   <tr className="">
                           <td className="full-name">{t('FullName')}</td>
