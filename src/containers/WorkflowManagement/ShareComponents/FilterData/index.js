@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
-import { withTranslation } from "react-i18next";
+import { withTranslation, useTranslation } from "react-i18next";
 // import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
@@ -11,6 +11,7 @@ import { trimString } from "../../../Utils/StringHelpers"
 registerLocale("vi", vi);
 
 const MemberOption = (props, onChange) => {
+  const { t } = useTranslation();
   const { innerProps, innerRef } = props.data;
   const ref = useRef(null);
   // const [checkedAll, setCheckedAll] = useState(false);
@@ -63,8 +64,8 @@ const MemberOption = (props, onChange) => {
     <>
     <div ref={ref} className="member-list">
       <div className="action bg-light d-flex justify-content-center p-2">
-        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>Hủy</button>
-        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>Áp dụng</button>
+        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
+        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
       </div>
       <div className="mt-2 p-2">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
@@ -73,7 +74,7 @@ const MemberOption = (props, onChange) => {
             <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
-              placeholder='Nhập tìm kiếm'
+              placeholder={t('EnterKeywords')}
               aria-label="SearchRequester"
               aria-describedby="basic-addon2"
               onChange={onSearch}/> 
@@ -87,7 +88,7 @@ const MemberOption = (props, onChange) => {
             <label className="lable-custom">
               <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
               <div className="float-left text-left text-wrap w-75">
-                <div className="">Tất cả</div>
+                <div className="">{t('All')}</div>
               </div>
             </label>
           </div> : null
@@ -309,8 +310,7 @@ class FilterData extends React.Component {
               <div className="title">{t("staff_selection_label")}</div>
               <div className="content input-container d-flex" onClick={this.onShowMembers}>
                 <div className="box-input d-flex justify-content-between" data-toggle="tooltip" data-placement="top" title={this.state.selectedMembers.map(u=>u.fullname).toString()}>
-                  {this.state.selectedMembers ? trimString(this.state.selectedMembers.map(u=>u.fullname).toString(),18,'...') : ''}
-
+                  {this.state.selectedMembers.length > 0 ? trimString(this.state.selectedMembers.map(u=>u.fullname).toString(),18,'...') : <i className="text-secondary" style={{fontSize: "16px"}}>{t("staff_selection_label")}</i>}
                 </div>
                 <div className="box-icon">
                   {
