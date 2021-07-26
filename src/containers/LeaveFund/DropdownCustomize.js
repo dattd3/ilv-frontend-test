@@ -1,7 +1,7 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
 import _, { debounce } from 'lodash'
-import { removeAccents } from "../../commons/Utils"
+import { removeAccents, formatStringByMuleValue } from "../../commons/Utils"
 
 const DropdownValue = (props) => {
     const { labels } = props
@@ -177,11 +177,13 @@ class DropdownCustomize extends React.Component {
                                                 {
                                                     optionsFilter.map((item, index) => {
                                                         let key = item.value
+                                                        let ad = formatStringByMuleValue(item?.AD)
+                                                        let subValue = ad ? `(${ad}) ${formatStringByMuleValue(item.jobTitle)}` : formatStringByMuleValue(item.jobTitle)
                                                         return <label className="item" key={index}>
                                                                     <input type="checkbox" className="i_checkbox" checked={optionsSelected[key]?.selected || false} onChange={e => this.handleCheckboxChange(key, e)} />
                                                                     <div className="label">
                                                                         <p className="main">{item.label || ""}</p>
-                                                                        <p className="sub">{item.jobTitle || ""}</p>
+                                                                        <p className="sub">{subValue}</p>
                                                                     </div>
                                                                 </label>
                                                     })

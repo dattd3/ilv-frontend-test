@@ -38,4 +38,8 @@ const removeAccents = value => {
     return value
 }
 
-export { getRequestConfigurations, removeAccents }
+const formatStringByMuleValue = value => {
+    return (value === null || value === undefined || value === "" || value === "#") ? "" : value
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue }

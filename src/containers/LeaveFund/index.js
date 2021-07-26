@@ -178,7 +178,7 @@ class LeaveFund extends React.Component {
         /* End Giờ bù tồn năm nay */
 
         return  <tr key={index}>
-                  <td className="full-name text-center"><span>{item?.fullname || ""}</span></td>
+                  <td className="full-name"><span>{item?.fullname || ""}</span></td>
                   {/* Ngày phép tồn năm trước */}
                   <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveLastYear)}</span></td>
                   <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear)}</span></td>
