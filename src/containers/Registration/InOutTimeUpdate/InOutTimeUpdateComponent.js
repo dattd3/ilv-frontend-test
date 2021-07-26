@@ -60,8 +60,16 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
+  processTimeZero(time) {
+    let t = new Date(time);
+    if (t.getHours() == 0 && t.getMinutes() == 0 && t.getSeconds() == 0) {
+      t.setSeconds(t.getSeconds() + 1);
+    }
+    return t;
+  }
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
+    let t = this.processTimeZero(startTime)
+    this.state.timesheets[index][name] = moment(t).isValid() && moment(t).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -69,7 +77,8 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
+    let t = this.processTimeZero(endTime)
+    this.state.timesheets[index][name] = moment(t).isValid() && moment(t).format('HHmmss')
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -156,10 +165,13 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   isNullCustomize = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    //|| value == 0 
+    debugger
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
   submit() {
+    debugger
     this.setDisabledSubmitButton(true)
     const { t } = this.props
     const errors = this.verifyInput()
@@ -172,7 +184,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const timesheets = [...this.state.timesheets].filter(item => item.isEdited)
     const approver = { ...this.state.approver }
     const appraiser = this.state.appraiser ? this.state.appraiser  : null
-    
+     
     delete approver.avatar
     // delete appraiser.avatar
 
@@ -196,12 +208,12 @@ class InOutTimeUpdateComponent extends React.Component {
         employeeNo: localStorage.getItem('employeeNo')
     }
 
-    timesheets.map( item => {
-        Object.assign(item,
-          {
-            hours: item.hours ? parseFloat(item.hours) : null,
-            date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
-          });
+    timesheets.map( item => { 
+      Object.assign(item,
+        {
+          hours: item.hours ? parseFloat(item.hours) : null,
+          date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
+        });
     })
     
     const comments = timesheets
@@ -336,11 +348,13 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   isNullCustomize = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    //|| value == 0 |
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
   formatData = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? "" : value
+    //|| value == 0 |
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? "" : value
   }
 
   printTimeFormat = value => {
