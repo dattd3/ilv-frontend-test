@@ -33,6 +33,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            isShowHintLeaveForMother: false,
             approver: null,
             appraiser: null,
             annualLeaveSummary: null,
@@ -158,8 +159,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         const end = endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) > endDate)
             || !requestInfo[indexReq].isAllDay ? moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) : endDate
         requestInfo[indexReq].startDate = start
-        requestInfo[indexReq].endDate = end
-        requestInfo[indexReq].errors.startDate = null
+        
+        if(this.state.isShowHintLeaveForMother === true){
+            requestInfo[indexReq].endDate = endDate
+        }else{
+            requestInfo[indexReq].endDate = end
+        }
+ 
+        requestInfo[indexReq].errors.startDate = null 
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
@@ -174,12 +181,17 @@ class LeaveOfAbsenceComponent extends React.Component {
         const start = !requestInfo[indexReq].isAllDay ? moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : startDate
         const end = moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT)
 
-        requestInfo[indexReq].startDate = start
+        if(this.state.isShowHintLeaveForMother === true){
+            requestInfo[indexReq].startDate = startDate 
+        }else{
+            requestInfo[indexReq].startDate = start 
+        }
+        
         requestInfo[indexReq].endDate = end
         requestInfo[indexReq].errors.endDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
+        this.calculateTotalTime(start, end, startTime, endTime, indexReq) 
     }
 
     setStartTime(startTime, groupId, groupItem) {
@@ -276,7 +288,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo.forEach(req => {
             const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
             const endTime = req.endTime ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
-            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
+            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox)) {
                 times.push({
                     id: req.groupItem,
                     // subid:req.id,
@@ -397,21 +409,33 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+
         const { requestInfo } = this.state
         let newRequestInfo = []
-        if (name === "absenceType") {
+        if (name === "absenceType") { 
+            if (value.value === "PN02") {
+                this.setState({ isShowHintLeaveForMother: true });
+            }
+            else{
+                this.setState({ isShowHintLeaveForMother: false });
+            }
+
             newRequestInfo = requestInfo.map(req => {
                 const errors = {
                     ...req.errors,
                     absenceType: null
                 }
                 if (req.groupId === groupId) {
+
                     return {
                         ...req,
                         absenceType: value,
                         errors
                     }
                 }
+
+
+
                 return { ...req }
             })
         } else if (name === "funeralWeddingInfo") {
@@ -611,13 +635,12 @@ class LeaveOfAbsenceComponent extends React.Component {
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
-        if(!isEdit)
-        {
+        if (!isEdit) {
             files.forEach(file => {
                 bodyFormData.append('Files', file)
             })
         }
-       
+
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
@@ -629,8 +652,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
-                else
-                {
+                else {
                     this.showStatusModal(t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
@@ -701,7 +723,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ isShowNoteModal: false });
     }
 
-    handleCheckboxChange = (e) => {
+    handleCheckboxChange = (e) => { 
         const { requestInfo } = this.state
         requestInfo.forEach(req => {
             if (e.target.value.split(".")[0] == req.groupId && e.target.value.split(".")[1] == req.groupItem) {
@@ -812,16 +834,46 @@ class LeaveOfAbsenceComponent extends React.Component {
                         <div className="box shadow position-relative" key={index}>
                             <div className="form">
                                 <div className="row">
-                                    <div className="col-7">
-                                        <p className="text-uppercase"><b>{t('SelectLeaveDate')}</b></p>
-                                        <div className="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('FullDay')}
-                                            </label>
-                                            <label onClick={this.updateLeaveType.bind(this, false, req[0].groupId)} style={{ zIndex: "unset" }} className={!req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('ByHours')}
-                                            </label>
+                                    <div className="col-lg-8 col-xl-8">
+                                        <div className="row">
+                                            <div className="col-lg-6 col-xl-6">
+                                                <p className="">{t('SelectLeaveType')}</p>
+                                                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                                    <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                        {t('FullDay')}
+                                                    </label>
+                                                    <label onClick={this.updateLeaveType.bind(this, false, req[0].groupId)} style={{ zIndex: "unset" }} className={!req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                        {t('ByHours')}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-6 col-xl-6">
+                                                <div>
+                                                    <p className="title">{t('LeaveCategory')}</p>
+                                                    <div>
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                                    </div>
+                                                    {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
+
+                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
+                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
+                                                        <div>
+                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
+                                                        </div>
+                                                        :
+                                                        null}
+                                                    {req[0].errors.funeralWeddingInfo ? this.error('funeralWeddingInfo', req[0].groupId) : null}
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div className="col-lg-4 col-xl-4">
+                                        {
+                                            this.state.isShowHintLeaveForMother ?
+                                                <p className="message-danger"><i className="text-danger">* Cho phép Đăng ký nghỉ 1 khung giờ trong nhiều ngày liên tiếp (Giới hạn trong chu kỳ lương).</i></p>
+                                                : ''
+                                        }
+
                                     </div>
                                 </div>
                                 <div className="row">
@@ -829,12 +881,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         {req.map((reqDetail, indexDetail) => (
                                             <div className="time-area" key={index + indexDetail}>
                                                 {
-                                                    !req[0].isAllDay ? 
-                                                    <div className="all-day-area">
-                                                        <input type="checkbox" value={reqDetail.groupId+"."+reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
-                                                        <label>Nghỉ cả ngày</label>                                              
-                                                    </div>                                                    
-                                                    : null
+                                                    !req[0].isAllDay ?
+                                                        <div className="all-day-area">
+                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <label>Nghỉ cả ngày</label>
+                                                        </div>
+                                                        : null
                                                 }
                                                 <div className="row p-2">
                                                     <div className="col-lg-12 col-xl-6">
@@ -967,24 +1019,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 </div>
 
                                 <div className="row">
-                                    <div className="col-5">
-                                        <p className="title">{t('LeaveCategory')}</p>
-                                        <div>
-                                            <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
-                                        </div>
-                                        {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
-
-                                        {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
-                                        {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
-                                            <div>
-                                                <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
-                                            </div>
-                                            :
-                                            null}
-                                        {req[0].errors.funeralWeddingInfo ? this.error('funeralWeddingInfo', req[0].groupId) : null}
-                                    </div>
-
-                                    <div className="col-7">
+                                    <div className="col-12">
                                         <p className="title">{t('ReasonRequestLeave')}</p>
                                         <div>
                                             <textarea className="form-control" value={req[0].comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
