@@ -159,14 +159,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         const end = endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) > endDate)
             || !requestInfo[indexReq].isAllDay ? moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) : endDate
         requestInfo[indexReq].startDate = start
-        
-        if(this.state.isShowHintLeaveForMother === true){
+
+        if (this.state.isShowHintLeaveForMother === true) {
             requestInfo[indexReq].endDate = endDate
-        }else{
+        } else {
             requestInfo[indexReq].endDate = end
         }
- 
-        requestInfo[indexReq].errors.startDate = null 
+
+        requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
@@ -181,17 +181,17 @@ class LeaveOfAbsenceComponent extends React.Component {
         const start = !requestInfo[indexReq].isAllDay ? moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : startDate
         const end = moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT)
 
-        if(this.state.isShowHintLeaveForMother === true){
-            requestInfo[indexReq].startDate = startDate 
-        }else{
-            requestInfo[indexReq].startDate = start 
+        if (this.state.isShowHintLeaveForMother === true) {
+            requestInfo[indexReq].startDate = startDate
+        } else {
+            requestInfo[indexReq].startDate = start
         }
-        
+
         requestInfo[indexReq].endDate = end
         requestInfo[indexReq].errors.endDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq) 
+        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
     setStartTime(startTime, groupId, groupItem) {
@@ -412,11 +412,11 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         const { requestInfo } = this.state
         let newRequestInfo = []
-        if (name === "absenceType") { 
+        if (name === "absenceType") {
             if (value.value === "PN02") {
                 this.setState({ isShowHintLeaveForMother: true });
             }
-            else{
+            else {
                 this.setState({ isShowHintLeaveForMother: false });
             }
 
@@ -723,7 +723,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.setState({ isShowNoteModal: false });
     }
 
-    handleCheckboxChange = (e) => { 
+    handleCheckboxChange = (e) => {
         const { requestInfo } = this.state
         requestInfo.forEach(req => {
             if (e.target.value.split(".")[0] == req.groupId && e.target.value.split(".")[1] == req.groupItem) {
@@ -888,104 +888,212 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         </div>
                                                         : null
                                                 }
-                                                <div className="row p-2">
-                                                    <div className="col-lg-12 col-xl-6">
-                                                        <p className="title">{t('StartDateTime')}</p>
-                                                        <div className="row">
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            name="startDate"
-                                                                            selectsStart
-                                                                            autoComplete="off"
-                                                                            selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            dateFormat="dd/MM/yyyy"
-                                                                            placeholderText={t('Select')}
-                                                                            locale={t("locale")}
-                                                                            className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                                                                    </label>
+                                                {
+                                                    this.state.isShowHintLeaveForMother ?
+                                                        (
+                                                            <div className="row p-2">
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <p className="title">Giờ bắt đầu</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelect
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('Endtime')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        showTimeSelect
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div> 
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
-                                                            </div>
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
-                                                                            onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm"
-                                                                            timeFormat="HH:mm"
-                                                                            placeholderText={t('Select')}
-                                                                            className="form-control input"
-                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
-                                                                        />
-                                                                    </label>
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <div className="row">
+                                                                    <div className="col-6">
+                                                                            <p className="title">{t('StartDate')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="startDate"
+                                                                                        selectsStart
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('EndDate')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="endDate"
+                                                                                        selectsEnd
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div> 
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 col-xl-6">
-                                                        <p className="title">{t('EndDateTime')}</p>
-                                                        <div className="row">
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            name="endDate"
-                                                                            selectsEnd
-                                                                            autoComplete="off"
-                                                                            selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            dateFormat="dd/MM/yyyy"
-                                                                            placeholderText={t('Select')}
-                                                                            locale={t("locale")}
-                                                                            className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                                                                    </label>
+                                                        )
+                                                        :
+                                                        (
+                                                            <div className="row p-2">
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <p className="title">{t('StartDateTime')}</p>
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="startDate"
+                                                                                        selectsStart
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelect
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
-                                                            </div>
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
-                                                                            onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            showTimeSelect
-                                                                            autoComplete="off"
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm"
-                                                                            timeFormat="HH:mm"
-                                                                            placeholderText={t('Select')}
-                                                                            className="form-control input"
-                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
-                                                                        />
-                                                                    </label>
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <p className="title">{t('EndDateTime')}</p>
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="endDate"
+                                                                                        selectsEnd
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        showTimeSelect
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        )
+                                                }
 
                                                 {!indexDetail ?
                                                     !isEdit &&
