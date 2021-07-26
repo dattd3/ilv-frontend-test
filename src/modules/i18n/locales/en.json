@@ -289,6 +289,7 @@
   "Division": "Division",
   "Domestic": "Domestic",
   "Edit": "Edit",
+  "EditQuestion": "Edit",
   "EditBasicProfile": "Edit Basic Profile",
   "Effective": "Effective",
   "EffectiveReductionDate": "Effective date",
@@ -330,7 +331,7 @@
   "GradeByTitle": "Grade by Title",
   "HealthCheck": "Health Check",
   "History": "History",
-  "HistoryAnswer": "History",
+  "HistoryAnswer": "Answer History",
   "Home": "Home",
   "HousingSupport": "Housing Support",
   "HR": "HR",
@@ -441,6 +442,7 @@
   "Penalties": "Penalties",
   "Pending": "Pending",
   "Waiting": "Waiting",
+  "Processing": "Processing",
   "Canceled": "Canceled",
   "Consented": "Consented",
   "NotConsent": "Not Consent",
@@ -857,5 +859,6 @@
   "MenuMyTeam": "My Team",
   "SubMenuTimesheetManagement": "Timesheet Management",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
-  "MenuIndividualManagement": "Individual Management"
+  "MenuIndividualManagement": "Individual Management",
+  "Withdraw": "Withdraw"
 }
