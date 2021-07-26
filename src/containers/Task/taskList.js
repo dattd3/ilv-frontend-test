@@ -468,7 +468,7 @@ class TaskList extends React.Component {
                                                 <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
-                                                <td className="user-title">{child.user?.jobTitle??''}</td>
+                                                <td className="user-title">{child.user?.jobTitle || ''}</td>
                                                 <td className="request-type">{child.requestType.name}</td>
                                                 <td className="day-off">{child.startDate}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
