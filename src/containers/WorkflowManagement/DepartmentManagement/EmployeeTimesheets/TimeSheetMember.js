@@ -185,9 +185,6 @@ function RenderItem(props) {
             </div>
         case EVENT_TYPE.EVENT_OT: 
             return <div style = {{display: 'flex'}}>
-                  <span>
-                    {item.fullname}
-                </span>
                 {
                     item.line4.subtype[0] == 1 ?
                         <RenderTooltip >
@@ -299,7 +296,7 @@ function Content(props) {
     const onChangePage = index => {
         setPageNumber(index)
     }
-    const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 5)
+    const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 50)
     const { t } = useTranslation();
     let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
@@ -320,7 +317,10 @@ function Content(props) {
                 <table className="employee-time-sheets">
                   <thead>
                   <tr className="">
-                          <td className="">Họ và tên</td>
+                        <td className="full-name fixed-col" style={{ height: '45px' }}>{t('FullName')}</td>
+                    </tr>
+                  <tr className="">
+                          <td className="full-name">{t('FullName')}</td>
                           {props.dayList.map((item, index) => {
                             return (
                               <td key={index}>
@@ -336,8 +336,10 @@ function Content(props) {
                   <tbody >
                   { memberTimeData.map( (timesheet, index) => {
                     return  <React.Fragment key = {index}>
+                        <tr><td  className="full-name fixed-col">{timesheet.name}</td></tr>
                         <tr style={{borderTop: ' 0.5px solid #707070'}}>
-                            <td rowSpan="4" className="">{timesheet.name}</td>
+                            
+                            <td rowSpan="4" className="full-name">{timesheet.name}</td>
                             <RenderRow1 member = {timesheet}/>
                         </tr>
                         <tr>
@@ -360,7 +362,7 @@ function Content(props) {
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={5} onChangePage={onChangePage} totalRecords={props.timeTables.length} />
+                        <CustomPaging pageSize={50} onChangePage={onChangePage} totalRecords={props.timeTables.length} />
                     </div>
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>

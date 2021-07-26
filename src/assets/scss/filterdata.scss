@@ -39,3 +39,16 @@
     justify-content: center;
     padding: 6px;
 }
+.lable-custom {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+}
+/* Hide the browser's default checkbox */
+.lable-custom input {
+    position: absolute;
+    left: 0;
+    cursor: pointer;
+}
