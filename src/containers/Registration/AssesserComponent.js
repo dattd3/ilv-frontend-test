@@ -82,13 +82,13 @@ class AssesserComponent extends React.Component {
         const { appraiser } = this.props
         if (appraiser) {
             this.setState({
-              appraiser: {
-                ...appraiser,
-                label: appraiser.fullName,
-                value: appraiser.account,
-              }
+                appraiser: {
+                    ...appraiser,
+                    label: appraiser.fullName,
+                    value: appraiser.account,
+                }
             })
-          }
+        }
     }
 
     handleSelectChange(name, value) {
@@ -107,8 +107,8 @@ class AssesserComponent extends React.Component {
     isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
         const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
         let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter },0);
+
+        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
 
         if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
             return false
@@ -184,8 +184,13 @@ class AssesserComponent extends React.Component {
         return <div className="appraiser">
             <div className="box shadow">
                 <div className="row">
+                    <div className="col-12 col-xl-12">
+                        <div className="box-bottom"><b className="text-uppercase black-color">CBQL Thẩm định </b><i className="text-danger">{"(Vui lòng bỏ qua bước này nếu CBQL thẩm định trùng với CBLĐ phê duyệt)"}</i></div>
+                    </div>
+                </div>
+                <div className="row">
                     <div className="col-12 col-xl-4">
-                        <p className="title">{t('Consenter')}</p>
+                        <p className="title">Họ và tên</p>
                         <div>
                             <Select
                                 isDisabled={isEdit}
@@ -204,7 +209,7 @@ class AssesserComponent extends React.Component {
                         {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
                     </div>
                     <div className="col-12 col-xl-4">
-                        <p className="title">{t('Position')}</p>
+                        <p className="title">Chức danh</p>
                         <div>
                             <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
                         </div>
