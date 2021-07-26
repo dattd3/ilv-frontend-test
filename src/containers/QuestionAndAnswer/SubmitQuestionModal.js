@@ -285,8 +285,7 @@ class SubmitQuestionModal extends React.Component {
                     <Modal.Title>{t("CreateQuestions")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {
-                        !this.state.isLoading ?  <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
+                    <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
                         <div className="wrap-result text-left">
                             <div className="form-group">
                                 <label className="form-label">{t("Categoryques")}</label>
@@ -316,36 +315,42 @@ class SubmitQuestionModal extends React.Component {
                             <div className="form-group">
                                 <div className="target input-container d-flex align-items-center justify-content-center">
                                     <div className="form-check">
-                                        <input className="form-check-input" 
-                                            type="radio" 
-                                            value={Constants.SOLVER_MANAGER}
-                                            name="solverid"
-                                            checked={this.state.solverid == Constants.SOLVER_MANAGER}
-                                            disabled={this.props.isEdit}
-                                            onChange={this.handleChange.bind(this)} />
-                                        {t("LineManager")}
+                                        <label>
+                                            <input className="form-check-input" 
+                                                type="radio" 
+                                                value={Constants.SOLVER_MANAGER}
+                                                name="solverid"
+                                                checked={this.state.solverid == Constants.SOLVER_MANAGER}
+                                                disabled={this.props.isEdit}
+                                                onChange={this.handleChange.bind(this)} />
+                                            {t("LineManager")}
+                                        </label>
                                     </div>
 
                                     <div className="form-check mx-4">
-                                        <input className="form-check-input" 
-                                            type="radio" 
-                                            value={Constants.SOLVER_RESOURCE}
-                                            name="solverid"
-                                            checked={this.state.solverid == Constants.SOLVER_RESOURCE}
-                                            disabled={this.props.isEdit}
-                                            onChange={this.handleChange.bind(this)} />
-                                        {t("Menu_HumanResource")}
+                                        <label>
+                                            <input className="form-check-input" 
+                                                type="radio" 
+                                                value={Constants.SOLVER_RESOURCE}
+                                                name="solverid"
+                                                checked={this.state.solverid == Constants.SOLVER_RESOURCE}
+                                                disabled={this.props.isEdit}
+                                                onChange={this.handleChange.bind(this)} />
+                                            {t("Menu_HumanResource")}   
+                                        </label>
                                     </div>
 
                                     <div className="form-check">
-                                        <input className="form-check-input" 
-                                            type="radio" 
-                                            value={Constants.SOLVER_TCKT}
-                                            name="solverid"
-                                            checked={this.state.solverid == Constants.SOLVER_TCKT}
-                                            disabled={this.props.isEdit}
-                                            onChange={this.handleChange.bind(this)} />
-                                        {t("Tckt")}
+                                        <label>
+                                            <input className="form-check-input" 
+                                                type="radio" 
+                                                value={Constants.SOLVER_TCKT}
+                                                name="solverid"
+                                                checked={this.state.solverid == Constants.SOLVER_TCKT}
+                                                disabled={this.props.isEdit}
+                                                onChange={this.handleChange.bind(this)} />
+                                            {t("Tckt")}
+                                        </label>
                                     </div>
                                 </div>
 
@@ -356,58 +361,53 @@ class SubmitQuestionModal extends React.Component {
                                 }
                             </div>
                             {
-                                this.state.solverid == Constants.SOLVER_MANAGER ? 
-                                    <Form.Group controlId="submitQuestionForm.CBQL">
-                                        <Form.Label>{t("LineManager")}</Form.Label>
-                                        <Form.Control type="text" placeholder={this.state.superviseDefault.fullname} readOnly />
-                                    </Form.Group> :
-                                // this.state.solverid == Constants.SOLVER_RESOURCE ?
-                                    <Form.Group>
-                                        <Form.Label>{t("Select")}</Form.Label>
-                                        <Select
-                                            placeholder={t("Select")}
-                                            components={{ Option: MyOption }}
-                                            options={hrProfileDisplay}
-                                            isDisabled={this.props.isEdit}
-                                            value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
-                                            onChange={this.setProfile.bind(this)} />   
+                                !this.state.isLoading ? 
+                                <div className="asker-info">
+                                    {
+                                        this.state.solverid == Constants.SOLVER_MANAGER ? 
+                                            <Form.Group controlId="submitQuestionForm.CBQL">
+                                                <Form.Label>{t("LineManager")}</Form.Label>
+                                                <Form.Control type="text" placeholder={this.state.superviseDefault.fullname} readOnly />
+                                            </Form.Group> :
+                                            <Form.Group>
+                                                <Form.Label>{t("Select")}</Form.Label>
+                                                <Select
+                                                    placeholder={t("Select")}
+                                                    components={{ Option: MyOption }}
+                                                    options={hrProfileDisplay}
+                                                    isDisabled={this.props.isEdit}
+                                                    value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
+                                                    onChange={this.setProfile.bind(this)} />   
+                                            </Form.Group>
+                                    }
+                                
+                                    <Form.Group controlId="submitQuestionForm.Title">
+                                        <Form.Label>{t("Title")}</Form.Label>
+                                        <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.title :
+                                            this.state.supervise.title} readOnly />
                                     </Form.Group>
-                                // this.state.solverid ==  Constants.SOLVER_TCKT? 
-                                //     <Form.Group>
-                                //         <Form.Label>{t("Select")}</Form.Label>
-                                //         <Select
-                                //             placeholder={t("Select")}
-                                //             components={{ Option: MyOption }}
-                                //             options={hrProfileDisplay}
-                                //             defaultValue={this.state.supervise}
-                                //             onChange={this.setProfile.bind(this)} />   
-                                //     </Form.Group> : undefined
-                            }
-                            
-                            <Form.Group controlId="submitQuestionForm.Title">
-                                <Form.Label>{t("Title")}</Form.Label>
-                                <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.title :
-                                    this.state.supervise.title} readOnly />
-                            </Form.Group>
 
-                            <Form.Group controlId="submitQuestionForm.Department">
-                                <Form.Label>{t("DepartmentManage")}</Form.Label>
-                                <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.department : this.state.supervise.department} readOnly />
-                            </Form.Group>
+                                    <Form.Group controlId="submitQuestionForm.Department">
+                                        <Form.Label>{t("DepartmentManage")}</Form.Label>
+                                        <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.department : this.state.supervise.department} readOnly />
+                                    </Form.Group>
+                                </div> : 
+                                <div className="bg-light d-flex justify-content-center align-items-center text-center mt-2" style={{ height: '247.27px' }}>
+                                    <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="lg"
+                                    role="status"
+                                    aria-hidden="true"
+                                    className="mr-2"/>
+                                </div>
+                            }
                         </div>
                         <div className="clearfix edit-button text-right">
                             <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onHide}>{t("Cancel")}</Button>{' '}
                             <Button type="Submit" variant="primary" className="pr-4 pl-4">Gửi</Button>
                         </div>
                     </Form>
-                    : <div className="bg-light text-center mt-2"><Spinner
-                        as="span"
-                        animation="border"
-                        size="lg"
-                        role="status"
-                        aria-hidden="true"
-                        className="mr-2"/></div>
-                    }
                 </Modal.Body>
             </Modal>
         )
