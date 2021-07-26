@@ -36,7 +36,6 @@ const MemberOption = (props, onChange) => {
   };
 
   const onSearch = event => {
-    console.log(event.target.value);
     const  newMembers = [...memberDefault];
     const filtered  = event.target.value ? newMembers.filter(member => {return member.fullname.toLowerCase().includes(event.target.value.toLowerCase())}) : [...memberDefault];
     setMembers(filtered);
@@ -64,8 +63,8 @@ const MemberOption = (props, onChange) => {
     <>
     <div ref={ref} className="member-list">
       <div className="action bg-light d-flex justify-content-center p-2">
-        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.hideMembers}>Đóng</button>
-        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember} disabled={members.filter(m => m.checked).length === 0}>Áp dụng</button>
+        <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>Hủy</button>
+        <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>Áp dụng</button>
       </div>
       <div className="mt-2 p-2">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
@@ -74,7 +73,7 @@ const MemberOption = (props, onChange) => {
             <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
-              placeholder='Tìm kiếm'
+              placeholder='Nhập tìm kiếm'
               aria-label="SearchRequester"
               aria-describedby="basic-addon2"
               onChange={onSearch}/> 
@@ -85,10 +84,12 @@ const MemberOption = (props, onChange) => {
           {
             props.type !== 'singleChoice' ? 
             <div className="d-flex border-bottom text-dark btn ">
-            <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
-            <div className="float-left text-left text-wrap w-75">
-              <div className="">Tất cả</div>
-            </div>
+            <label className="lable-custom">
+              <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
+              <div className="float-left text-left text-wrap w-75">
+                <div className="">Tất cả</div>
+              </div>
+            </label>
           </div> : null
           }
         </div>
@@ -96,20 +97,22 @@ const MemberOption = (props, onChange) => {
         {members.map((item, index) => {
           return (
             <div key={item.uid} ref={innerRef} {...innerProps}>
+              
               <div className="d-flex border-bottom text-dark btn ">
+                <label className="lable-custom">
                 {
                   props.type !== 'singleChoice' ?
                   <input type="checkbox" className="mtmr5" value={item.uid} name={item.uid} checked={item.checked}
                   onChange={handleChange}/> : 
                   <input type="radio" className="mtmr5" id={item.uid} value={item.uid} name="flexRadioDefault" checked={item.checked} onChange={handleChange}/>
                 }
-               
-                <div className="float-left text-left text-wrap w-75">
+                 <div className="float-left text-left text-wrap w-100">
                     <div className="">{item.fullname}</div>
                   <div className="text-xs">
-                    <span>{item.job_name}</span>
+                    <span>{item.company_email} - {item.job_name}</span>
                   </div>
                 </div>
+               </label>
               </div>
             </div>
           );
@@ -139,6 +142,7 @@ class FilterData extends React.Component {
     this.onShowMembers = this.onShowMembers.bind(this);
     this.onHideMembers = this.onHideMembers.bind(this);
     this.getSelecteMembers = this.getSelecteMembers.bind(this);
+    this.resetSelectedMember = this.resetSelectedMember.bind(this);
     this.search = this.search.bind(this);
   }
 
@@ -211,6 +215,17 @@ class FilterData extends React.Component {
     this.setState({ showMemberOption: false });
   }
 
+  resetSelectedMember() {
+    const resetedMember = [...this.state.users]
+    this.setState(
+      { 
+        users: resetedMember.map(member => { return {...member, checked: false}}) , 
+        showMemberOption: false, 
+        selectedMembers: [],
+        checkedMemberIds: []
+      });
+  }
+
   addDays(date, days) {
     const copy = new Date(Number(date))
     copy.setDate(date.getDate() + days)
@@ -219,7 +234,6 @@ class FilterData extends React.Component {
 
   render() {
     const { t } = this.props;
-    console.log(this.props.useDateFilter)
     let hrProfileDisplay = [];
     if (this.state.users && this.state.users.length > 0) {
       hrProfileDisplay = this.state.users.map((profile) => {
@@ -231,7 +245,7 @@ class FilterData extends React.Component {
           companyCode: profile.companyCode,
           orgLv3Text: profile.orgLv3Text,
           username: profile.username,
-          // userid: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
+          company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
           checked: profile.checked || false 
         };
       });
@@ -307,7 +321,7 @@ class FilterData extends React.Component {
                   </div> 
               </div>
               {this.state.showMemberOption ? (
-              <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
+              <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
               ) : null}
             </div>
             <div className="col-lg-3">
