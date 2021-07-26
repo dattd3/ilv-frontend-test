@@ -166,12 +166,10 @@ class InOutTimeUpdateComponent extends React.Component {
 
   isNullCustomize = value => {
     //|| value == 0 
-    debugger
     return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
   submit() {
-    debugger
     this.setDisabledSubmitButton(true)
     const { t } = this.props
     const errors = this.verifyInput()
