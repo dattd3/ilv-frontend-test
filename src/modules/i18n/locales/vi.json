@@ -308,6 +308,7 @@
   "Division": "Ban/Chuỗi/Khối",
   "Domestic": "Trong nước",
   "Edit": "Sửa thông tin",
+  "EditQuestion": "Chỉnh sửa",
   "EditBasicProfile": "Chỉnh sửa hồ sơ cơ bản",
   "Effective": "Giảm / Trừ",
   "EffectiveReductionDate": "Hiệu lực giảm trừ",
@@ -457,6 +458,7 @@
   "Penalties": "Quyết định xử lý vi phạm",
   "Pending": "Đang xử lý",
   "Waiting": "Đang chờ xử lý",
+  "Processing": "Đang xử lý",
   "Canceled": "Đã hủy",
   "Consented": "Đã thẩm định",
   "NotConsent": "Từ chối thẩm định",
@@ -882,5 +884,6 @@
   "SubMenuTimesheetManagement": "Bảng chấm công",
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
-  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!"
+  "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!",
+  "Withdraw": "Thu hồi"
 }
