@@ -181,11 +181,11 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   submitSelectSupporterModal = (supporter) => {
-    let question = this.state.question
-    let _self = this
+    const question = this.state.question
+
     if (question && supporter && supporter.userAccount) {
-      var axios = require('axios');
-      var data = JSON.stringify({
+      const axios = require('axios');
+      const data = JSON.stringify({
         "id": question.id,
         "subject": question.subject,
         "content": question.content,
@@ -207,9 +207,10 @@ class QuestionAndAnswerDetails extends React.Component {
         "supporterdepartmentname": supporter.part,
         "supporterfullname": supporter.fullname,
         "supporteravatar": supporter.avatar,
-        "ticketcategoryid": question.ticketCategoryId
+        "ticketcategoryid": question.ticketCategoryId,
+        "solverid": question.solverId
       })
-      var config = {
+      const config = {
         method: 'post',
         url: `${process.env.REACT_APP_REQUEST_URL}ticket/edit`,
         headers: {
@@ -220,11 +221,11 @@ class QuestionAndAnswerDetails extends React.Component {
       };
 
       axios(config)
-        .then(function (response) {
-          _self.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
+        .then(response => {
+          this.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
         })
-        .catch(function (error) {
-          _self.showStatusModal("Rất tiếc, đã có lỗi xảy ra!")
+        .catch(error => {
+          this.showStatusModal("Rất tiếc, đã có lỗi xảy ra!")
         });
     }
   }
@@ -258,7 +259,7 @@ class QuestionAndAnswerDetails extends React.Component {
             onHide={() => this.showSelectSupporterModal(false)}
             onAcceptClick={this.submitSelectSupporterModal}
             onCancelClick={() => this.showSelectSupporterModal(false)}
-            modalHeader="GỬI ĐẾN CBLĐ/ HR GIẢI ĐÁP"
+            modalHeader={t("EscalateToManagerOrHr")}
           />
           <div className="personal-info">
             <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
