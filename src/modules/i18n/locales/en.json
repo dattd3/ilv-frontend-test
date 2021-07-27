@@ -860,5 +860,11 @@
   "SubMenuTimesheetManagement": "Timesheet Management",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
-  "Withdraw": "Withdraw"
+  "Withdraw": "Withdraw",
+  "AppraisalDuplicateApproval": "Please skip if Consenter is the same as Approver.",
+  "AllowRegisterFor1Hour":"Allow to apply leave for the same period in consecutive days (Limited in payroll cycle).",
+  "APPROVER":"APPROVER",
+  "CONSENTER":"CONSENTER",
+  "Position":"Position",
+  "StartTime": "Start Time"
 }

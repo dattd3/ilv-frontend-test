@@ -185,12 +185,13 @@ class AssesserComponent extends React.Component {
             <div className="box shadow">
                 <div className="row">
                     <div className="col-12 col-xl-12">
-                        <div className="box-bottom"><b className="text-uppercase black-color">CBQL Thẩm định </b><i className="text-danger">{"(Vui lòng bỏ qua bước này nếu CBQL thẩm định trùng với CBLĐ phê duyệt)"}</i></div>
+                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b><i className="text-danger">
+                        ({t('AppraisalDuplicateApproval')})</i></div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-12 col-xl-4">
-                        <p className="title">Họ và tên</p>
+                        <p className="title">{t('FullName')}</p>
                         <div>
                             <Select
                                 isDisabled={isEdit}
@@ -209,7 +210,7 @@ class AssesserComponent extends React.Component {
                         {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
                     </div>
                     <div className="col-12 col-xl-4">
-                        <p className="title">Chức danh</p>
+                        <p className="title">{t('Position')}</p>
                         <div>
                             <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
                         </div>
