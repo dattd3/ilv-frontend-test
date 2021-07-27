@@ -884,5 +884,9 @@
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
   "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!",
-  "Withdraw": "Thu hồi"
+  "Withdraw": "Thu hồi",
+  "FinanceAccountingPIC": "Phụ trách TCKT",
+  "HrPIC": "Nhân sự phụ trách",
+  "EscalateToManagerOrHr": "Gửi đến CBLĐ/ HR giải đáp",
+  "NoteQnABottomPage": "*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn \"Từ chối\" để yêu cầu CBNV tự tra cứu trên MyVingroup"
 }
