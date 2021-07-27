@@ -185,7 +185,7 @@ class AssesserComponent extends React.Component {
             <div className="box shadow">
                 <div className="row">
                     <div className="col-12 col-xl-12">
-                        <div className="box-bottom"><b className="text-uppercase black-color">CBQL Thẩm định </b><i className="text-danger">{"(Vui lòng bỏ qua bước này nếu CBQL thẩm định trùng với CBLĐ phê duyệt)"}</i></div>
+                        <div className="box-bottom"><b className="text-uppercase black-color">{t("Consenter")}</b><i className="text-danger">{"(Vui lòng bỏ qua bước này nếu CBQL thẩm định trùng với CBLĐ phê duyệt)"}</i></div>
                     </div>
                 </div>
                 <div className="row">

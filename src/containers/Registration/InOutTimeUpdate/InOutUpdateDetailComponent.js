@@ -86,7 +86,7 @@ class InOutUpdateDetailComponent extends React.Component {
   
     return (
       <div className="leave-of-absence">
-        <h5>Thông tin CBNV đăng ký</h5>
+        <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -163,12 +163,12 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <h5>Thông tin CBQL thẩm định</h5>
+        <h5>{t("ConsenterInformation")}</h5>
         <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
            this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
             <>
-              <h5>Thông tin phê duyệt</h5>
+              <h5>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.processStatusId} hrComment={this.props.inOutTimeUpdate.approverComment} />
             </> : null
             // <div className="block-status">
