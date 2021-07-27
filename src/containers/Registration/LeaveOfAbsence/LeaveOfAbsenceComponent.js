@@ -755,8 +755,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.validateTimeRequest(requestInfo)
     }
 
-    getMaxDate() { 
-        return new Date(2021,7,25) 
+    getMinDate() {
+        let date = moment(new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26),Constants.LEAVE_DATE_FORMAT).toDate();
+        return date;
+    }
+
+    getMaxDate() {
+        let date = moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 25),Constants.LEAVE_DATE_FORMAT).toDate();
+        return date;
     }
 
     render() {
@@ -927,7 +933,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
                                                                                         timeIntervals={15}
-                                                                                        timeCaption={t("Hour")}
+                                                                                        timeCaption={t("Hour")}                                                                                     
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
                                                                                         placeholderText={t('Select')}
@@ -972,12 +978,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         name="startDate"
                                                                                         selectsStart
                                                                                         autoComplete="off"
-                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        selected={reqDetail.startDate ? this.getMinDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-
+                                                                                        minDate={this.getMinDate()}
+                                                                                        maxDate={this.getMaxDate()}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
@@ -996,12 +1002,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         name="endDate"
                                                                                         selectsEnd
                                                                                         autoComplete="off"
-                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        selected={reqDetail.endDate ? this.getMaxDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                                        maxDate={() => this.getMaxDate()}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate()}
+                                                                                        maxDate={this.getMaxDate()}
                                                                                         onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
