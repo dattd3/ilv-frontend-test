@@ -182,8 +182,8 @@ class ApproverComponent extends React.Component {
     return <div className="approver">
       <div className="box shadow">
       <div className="row">
-                    <div className="col-12 col-xl-12">
-                        <div className="box-bottom-mg"><b className="text-uppercase black-color">{t('APPROVER')} </b></div>
+                    <div className="col-12 col-xl-12"> 
+                        <div className="box-bottom-mg"><b className="text-uppercase black-color">{t('APPROVER')} </b></div> 
                     </div>
                 </div>
         <div className="row">

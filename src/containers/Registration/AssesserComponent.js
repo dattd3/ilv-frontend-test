@@ -184,9 +184,9 @@ class AssesserComponent extends React.Component {
         return <div className="appraiser">
             <div className="box shadow">
                 <div className="row">
-                    <div className="col-12 col-xl-12">
+                    <div className="col-12 col-xl-12"> 
                         <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b><i className="text-danger">
-                        ({t('AppraisalDuplicateApproval')})</i></div>
+                        ({t('AppraisalDuplicateApproval')})</i></div> 
                     </div>
                 </div>
                 <div className="row">
