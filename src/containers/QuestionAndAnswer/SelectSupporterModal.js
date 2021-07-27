@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { Modal, Image, Form, Button } from 'react-bootstrap'
+import React from "react"
+import { Modal, Form, Button } from 'react-bootstrap'
 import _ from 'lodash'
 import { debounce } from 'lodash';
 import Select from 'react-select'
@@ -17,7 +17,7 @@ const MyOption = props => {
         </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullname}</div>
-          <div className="comment"><i>({props.data.userAccount}) {props.data.current_position}</i></div>
+          <div className="comment" style={{fontStyle: 'italic'}}>({props.data.userAccount}) {props.data.current_position}</div>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@ const MyOption = props => {
 class SelectSupporterModal extends React.Component {
   constructor(props) {
     super(props);
-    this.onInputChange = debounce(this.getsupporterInfo, 1000);
+    this.onInputChange = debounce(this.getSupporterInfo, 1000);
     this.state = {
       supporterTyping: "",
       users: [],
@@ -44,7 +44,7 @@ class SelectSupporterModal extends React.Component {
     })
   }
 
-  getsupporterInfo = (value) => {
+  getSupporterInfo = (value) => {
     if (value !== "") {
       const config = {
         headers: {
@@ -60,9 +60,9 @@ class SelectSupporterModal extends React.Component {
             const data = res.data.data
             const users = data.map(res => {
               return {
-                label: res.fullname,
+                label: res.fullName,
                 value: res.user_account,
-                fullname: res.fullname,
+                fullname: res.fullName,
                 avatar: res.avatar,
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
@@ -90,8 +90,9 @@ class SelectSupporterModal extends React.Component {
         cursor: 'pointer',
       })
     }
+    const { supporter, users } = this.state
+    const { t } = this.props
 
-    const { t } = this.props;
     return (
       <Modal backdrop="static" keyboard={false}
         className='info-modal-common position-apply-modal'
@@ -106,21 +107,27 @@ class SelectSupporterModal extends React.Component {
             <div className="form-group">
               <label className="form-label">{t("FullName")}</label>
               <div className="content input-container ">
-                <Select styles={customStyles} components={{ Option: MyOption }} onInputChange={this.onInputChange.bind(this)} name="supporter" onChange={supporter => this.handleSelectChange('supporter', supporter)} value={this.state.supporter} placeholder="Tìm kiếm..." key="supporter" options={this.state.users} />
+                <Select 
+                  options={users}
+                  value={supporter}
+                  styles={customStyles} components={{ Option: MyOption }} 
+                  onInputChange={this.onInputChange.bind(this)} name="supporter" 
+                  onChange={item => this.handleSelectChange('supporter', item)} 
+                  placeholder={t("SearchTextPlaceholder")} key="supporter" />
               </div>
             </div>
             <Form.Group controlId="submitQuestionForm.Title">
               <Form.Label>{t("Title")}</Form.Label>
-              <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.current_position : ''} readOnly />
+              <Form.Control type="text" placeholder={supporter ? supporter.current_position : ''} readOnly />
             </Form.Group>
             <Form.Group controlId="submitQuestionForm.Department">
               <Form.Label>{t("DepartmentManage")}</Form.Label>
-              <Form.Control type="text" placeholder={this.state.supporter ? this.state.supporter.department : ''} readOnly />
+              <Form.Control type="text" placeholder={supporter ? supporter.department : ''} readOnly />
             </Form.Group>
           </div>
           <div className="clearfix edit-button text-right">
             <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("No")}</Button>{' '}
-            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(this.state.supporter)}>{t("Yes")}</Button>
+            <Button variant="primary" className="pr-4 pl-4" onClick={() => this.props.onAcceptClick(supporter)}>{t("Yes")}</Button>
           </div>
         </Modal.Body>
       </Modal>
