@@ -30,22 +30,22 @@ class ChangeReqBtnComponent extends React.Component {
 
     approval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt những yêu cầu này?", typeRequest: Constants.STATUS_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("ConfirmApproveRequests"), typeRequest: Constants.STATUS_APPROVED })
     }
     
     disApproval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NOT_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle: t("RejectApproveRequest"), modalMessage: t("ReasonRejectingRequest"), typeRequest: Constants.STATUS_NOT_APPROVED })
     }
 
     consent = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thẩm định", modalMessage: "Bạn có đồng ý thẩm định những yêu cầu này?", typeRequest: Constants.STATUS_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequests"), typeRequest: Constants.STATUS_CONSENTED })
     }
     
     reject = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do từ chối thẩm định (Bắt buộc)", typeRequest: Constants.STATUS_NO_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: t("RejectConsenterRequest"), modalMessage: t("ReasonRejectRequest"), typeRequest: Constants.STATUS_NO_CONSENTED })
     }
 
     onHideModalConfirm() {

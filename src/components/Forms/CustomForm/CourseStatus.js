@@ -17,7 +17,7 @@ class CourseStatus extends React.Component {
         return <span className="course-status inprogress">{t("ClassInprogress")}</span>
       case 'Discontinued':
       case 'Cancelled':
-        return <span className="course-status cancelled">Đã hủy</span>
+        return <span className="course-status cancelled">{t('Canceled')}</span>
       case 'Overdue':
         return <span className="course-status overdue">Quá hạn</span>;
       case 0:

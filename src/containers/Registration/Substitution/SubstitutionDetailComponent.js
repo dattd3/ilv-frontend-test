@@ -68,7 +68,7 @@ class SubstitutionDetailComponent extends React.Component {
 
     return (
       <div className="leave-of-absence">
-        <h5>Thông tin CBNV đăng ký</h5>
+        <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -157,12 +157,12 @@ class SubstitutionDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <h5>Thông tin CBQL thẩm định</h5>
+        <h5>{t("ConsenterInformation")}</h5>
         <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
         {
           this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) ?
           <>
-            <h5>Thông tin phê duyệt</h5>
+            <h5>{t("ApproverInformation")}</h5>
             <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
           </> : null
         }

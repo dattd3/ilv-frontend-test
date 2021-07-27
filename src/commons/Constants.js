@@ -44,35 +44,35 @@ const Constants = {
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,8],
   STATUS_USE_COMMENT: [0,1,3,4,7],
   mappingStatus: {
-    1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
+    1: {label: 'Rejected', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt
-    3: {label: 'Đã hủy', className: ''}, // đã thu hồi
-    4: {label: 'Đã hủy', className: ''}, // đã hủy
+    3: {label: 'Canceled', className: ''}, // đã thu hồi
+    4: {label: 'Canceled', className: ''}, // đã hủy
     5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    6: {label: 'Đã thẩm định', className: ''},
-    7: {label: 'Từ chối', className: ''},// từ chối thẩm định
+    6: {label: 'Consented', className: ''},
+    7: {label: 'Rejected', className: ''},// từ chối thẩm định
     8: {label: 'Waiting', className: ''} // đang chờ thẩm định
   },
 
   //
   mappingActionType : {
     'INS': {
-      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleLeave: 'LeaveRequestInformation',
       TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonLeaveRequest'
     },
     'MOD': {
       TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
       TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do chỉnh sửa đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonEditLeaveRequest'
     },
     'DEL': {
-      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleLeave: 'LeaveRequestInformation',
       TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do hủy đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do hủy đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonCancelLeaveRequest'
     }
   },
   //DateTime
