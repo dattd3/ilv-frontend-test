@@ -106,5 +106,7 @@ const Constants = {
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
   SOLVER_TCKT: 3,
+
+  ROLE_ASSIGMENT_APPROVE: ["ZCPS_CBLD_CC", "ZCPS_QLNSTD", "ZCPS_QLCPNL", "CVNS"]
 };
 export default Constants
