@@ -159,12 +159,10 @@ class SubmitQuestionModal extends React.Component {
                 break;
         }
         this.setState({ [event.target.name]: event.target.value, supervise: {} });
-        console.log(event.target.value);
     }
 
     handleChangeTargetQues(event) {
         this.setState({ [event.target.name]: event.target.value });
-        console.log(this.state[event.target.name]);
     }
    
     handleSubmit = (event) => {
@@ -251,6 +249,7 @@ class SubmitQuestionModal extends React.Component {
 
     render() {
         const {t} = this.props;
+        const {solverid} = this.state
         let categoriesDisplay = [];
         if (this.state.categories && this.state.categories.length > 0) {
             categoriesDisplay = this.state.categories.map(category => {
@@ -275,6 +274,11 @@ class SubmitQuestionModal extends React.Component {
                     userid: profile.userName.split("@")[0]
                 }
             });
+        }
+        const labelManagerTitle = {
+            [Constants.SOLVER_MANAGER]: t("LineManager"),
+            [Constants.SOLVER_RESOURCE]: t("HrPIC"),
+            [Constants.SOLVER_TCKT]: t("FinanceAccountingPIC")
         }
         
         return (
@@ -320,7 +324,7 @@ class SubmitQuestionModal extends React.Component {
                                                 type="radio" 
                                                 value={Constants.SOLVER_MANAGER}
                                                 name="solverid"
-                                                checked={this.state.solverid == Constants.SOLVER_MANAGER}
+                                                checked={solverid == Constants.SOLVER_MANAGER}
                                                 disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("LineManager")}
@@ -333,7 +337,7 @@ class SubmitQuestionModal extends React.Component {
                                                 type="radio" 
                                                 value={Constants.SOLVER_RESOURCE}
                                                 name="solverid"
-                                                checked={this.state.solverid == Constants.SOLVER_RESOURCE}
+                                                checked={solverid == Constants.SOLVER_RESOURCE}
                                                 disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Menu_HumanResource")}   
@@ -346,16 +350,15 @@ class SubmitQuestionModal extends React.Component {
                                                 type="radio" 
                                                 value={Constants.SOLVER_TCKT}
                                                 name="solverid"
-                                                checked={this.state.solverid == Constants.SOLVER_TCKT}
+                                                checked={solverid == Constants.SOLVER_TCKT}
                                                 disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Tckt")}
                                         </label>
                                     </div>
                                 </div>
-
                                 {
-                                    this.state.solverid != Constants.SOLVER_MANAGER ? <span className="text-danger text-xs text-center">
+                                    solverid != Constants.SOLVER_MANAGER ? <span className="text-danger text-xs text-center">
                                         {t("NoticeQuest")}
                                     </span> : undefined
                                 }
@@ -363,33 +366,30 @@ class SubmitQuestionModal extends React.Component {
                             {
                                 !this.state.isLoading ? 
                                 <div className="asker-info">
-                                    {
-                                        this.state.solverid == Constants.SOLVER_MANAGER ? 
-                                            <Form.Group controlId="submitQuestionForm.CBQL">
-                                                <Form.Label>{t("LineManager")}</Form.Label>
-                                                <Form.Control type="text" placeholder={this.state.superviseDefault.fullname} readOnly />
-                                            </Form.Group> :
-                                            <Form.Group>
-                                                <Form.Label>{t("Select")}</Form.Label>
-                                                <Select
-                                                    placeholder={t("Select")}
-                                                    components={{ Option: MyOption }}
-                                                    options={hrProfileDisplay}
-                                                    isDisabled={this.props.isEdit}
-                                                    value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
-                                                    onChange={this.setProfile.bind(this)} />   
-                                            </Form.Group>
-                                    }
+                                    <Form.Group controlId="submitQuestionForm.CBQL">
+                                        <Form.Label>{labelManagerTitle[solverid]}</Form.Label>
+                                        {
+                                            solverid == Constants.SOLVER_MANAGER 
+                                            ? <Form.Control type="text" placeholder={this.state.superviseDefault?.fullname || ""} readOnly />
+                                            : <Select
+                                                placeholder={t("Select")}
+                                                components={{ Option: MyOption }}
+                                                options={hrProfileDisplay}
+                                                isDisabled={this.props.isEdit}
+                                                value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
+                                                onChange={this.setProfile.bind(this)} />
+                                        }
+                                    </Form.Group>
                                 
                                     <Form.Group controlId="submitQuestionForm.Title">
                                         <Form.Label>{t("Title")}</Form.Label>
-                                        <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.title :
+                                        <Form.Control type="text" placeholder={solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.title :
                                             this.state.supervise.title} readOnly />
                                     </Form.Group>
 
                                     <Form.Group controlId="submitQuestionForm.Department">
                                         <Form.Label>{t("DepartmentManage")}</Form.Label>
-                                        <Form.Control type="text" placeholder={this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.department : this.state.supervise.department} readOnly />
+                                        <Form.Control type="text" placeholder={solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault.department : this.state.supervise.department} readOnly />
                                     </Form.Group>
                                 </div> : 
                                 <div className="bg-light d-flex justify-content-center align-items-center text-center mt-2" style={{ height: '247.27px' }}>

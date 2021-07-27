@@ -129,6 +129,13 @@ class SubstitutionComponent extends React.Component {
     return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
   }
 
+  formatTime(time, defaultFormat, format="HHmm00") {
+    if (time == "00:00:00") {
+      format = "HHmm01"
+    }
+    return moment(time, defaultFormat).format(format).toString()
+  }
+
   submit() {
     this.setDisabledSubmitButton(true)
     const errors = this.verifyInput()
@@ -137,13 +144,14 @@ class SubstitutionComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
+    debugger
     let timesheets = [...this.state.timesheets].map(item => {
       return {
         pernr: localStorage.getItem('employeeNo'),
         isEdited: item.isEdited,
         date: moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-        endBreakTimeEdited: item.endBreakTime ? moment(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
-        toTimeEdited: item.endTime ? moment(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // sửa giờ kết thúc
+        endBreakTimeEdited: item.endBreakTime ? this.formatTime(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT): null,
+        toTimeEdited: item.endTime ? this.formatTime(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, // sửa giờ kết thúc
         // endTimeFilter: item.endTimeFilter ? moment(item.endTimeFilter, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
         fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
@@ -151,8 +159,8 @@ class SubstitutionComponent extends React.Component {
         shiftId: item.shiftId,
         shiftIndex: 1,
         // shiftType: item.shiftType,
-        startBreakTimeEdited: item.startBreakTime ? moment(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null,
-        fromTimeEdited: item.startTime ? moment(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //sửa giờ bắt đầu
+        startBreakTimeEdited: item.startBreakTime ? this.formatTime(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT) : null,
+        fromTimeEdited: item.startTime ? this.formatTime(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, //sửa giờ bắt đầu
         substitutionType: item.substitutionType,
         toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //giờ kết thúc theo kế hoạch
         startDateSearching: moment(this.state.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),

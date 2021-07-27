@@ -67,7 +67,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const { t } = this.props
     return (
       <div className="leave-of-absence">
-        <h5>Thông tin CBNV đăng ký</h5>
+        <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-2">
@@ -115,7 +115,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleLeave}</h5>
+        <h5>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-xl-3">
@@ -144,7 +144,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div> : null}
           <div className="row">
             <div className="col">
-              {Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave}
+              {t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}
               <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
             </div>
           </div>
@@ -153,7 +153,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         {
           requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId )) ? 
           <>
-            <h5>Thông tin CBQL thẩm định</h5>
+            <h5>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
           : null
@@ -162,7 +162,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           // this.getTypeDetail() === "request" ?
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
-              <h5>Thông tin phê duyệt</h5>
+              <h5>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }

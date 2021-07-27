@@ -347,10 +347,10 @@ class ConfirmationModal extends React.Component {
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
-                        <Modal.Title>{this.props.title}</Modal.Title>
+                        <Modal.Title>{t(this.props.title)}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>{this.props.message}</p>
+                        <p>{t(this.props.message)}</p>
                         {
                             Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
                                 <div className="message">

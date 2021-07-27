@@ -127,18 +127,20 @@ class ApprovalDetail extends React.Component {
   }
 
   disApproval = () => {
+    const {t} = this.props;
     this.setState({
-      modalTitle: "Xác nhận không phê duyệt",
-      modalMessage: "Lý do không phê duyệt (Bắt buộc)",
+      modalTitle: t("RejectApproveRequest"),
+      modalMessage:t("ReasonRejectingRequest"),
       typeRequest: 1
     });
     this.onShowModalConfirm();
   }
 
   approval = () => {
+    const {t} = this.props;
     this.setState({
-      modalTitle: "Xác nhận phê duyệt",
-      modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+      modalTitle: t("ApproveRequest"),
+      modalMessage: t("ConfirmApproveChangeRequest"),
       typeRequest: 2
     });
     this.onShowModalConfirm();
@@ -235,7 +237,7 @@ class ApprovalDetail extends React.Component {
       <>
       <ConfirmationModal data={this.props.data} show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
-      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4></div>
+      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">{t("EmployeeInfomation")}</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
           <div className="row item-info">
@@ -309,7 +311,7 @@ class ApprovalDetail extends React.Component {
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
-            <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> Không duyệt</button>
+            <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> {t('Reject')}</button>
           </div>
           : null
         }

@@ -109,18 +109,19 @@ class RequestTaskList extends React.Component {
     }
 
     showModalConfirm = (status, requestId) => {
-        const requestUpdateProfile = 1
+        const {t} = this.props;
+         const requestUpdateProfile = 1
         if (requestId == requestUpdateProfile) {
             this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt thay đổi này ?",
+                modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveChangeRequest"),
                 isShowModalConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED
             });
         } else {
             this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + this.requestRegistraion[requestId].request + " này ?",
+                modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveRequestHolder", {name: t(this.requestRegistraion[requestId].request)}),
                 isShowModalRegistrationConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
                 requestUrl: this.requestRegistraion[requestId].requestUrl
@@ -129,6 +130,7 @@ class RequestTaskList extends React.Component {
     }
 
     evictionRequest = (requestTypeId, child) => {
+        const {t} = this.props;
         let prepareDataForRevoke =
             {
                 id: parseInt(child.id.split(".")[0]),
@@ -140,8 +142,8 @@ class RequestTaskList extends React.Component {
                 ]
             }
         this.setState({
-            modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Lý do thu hồi yêu cầu (bắt buộc)",
+            modalTitle: t("ConfirmRequestRecall"),
+            modalMessage: t("SureApprovalRecall"),
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
             dataToUpdate: prepareDataForRevoke
@@ -149,6 +151,7 @@ class RequestTaskList extends React.Component {
     }
 
     deleteRequest = (requestTypeId, child) => {
+        const {t} = this.props;
         let prepareDataForCancel =
             {
                 id: parseInt(child.id.split(".")[0]),
@@ -161,8 +164,8 @@ class RequestTaskList extends React.Component {
             }
         // console.log(prepareDataForCancel);
         this.setState({
-            modalTitle: "Xác nhận hủy yêu cầu",
-            modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
+            modalTitle: t("CancelRequest"),
+            modalMessage: t("ConfirmCancelRequest"),
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_REVOCATION,
             dataToUpdate: prepareDataForCancel
@@ -503,7 +506,7 @@ class RequestTaskList extends React.Component {
                         <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
-                        placeholder={t('Tìm kiếm mã yêu cầu')}
+                        placeholder={t('SearchRequester')}
                         aria-label="SearchRequester"
                         aria-describedby="basic-addon2"
                         onChange={this.handleInputChange}

@@ -42,7 +42,7 @@ class BusinessTripDetailComponent extends React.Component {
     const { t } = this.props
     return (
       <div className="business-trip">
-        <h5>Thông tin CBNV đăng ký</h5>
+        <h5>{t("EmployeeInfomation")}</h5>
         <RequesterDetailComponent user={businessTrip.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>{Constants.mappingActionType[requestInfo.actionType].TitleTripAndTrainning}</h5>
@@ -86,7 +86,7 @@ class BusinessTripDetailComponent extends React.Component {
         {
           requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) ? 
           <>
-            <h5>Thông tin CBQL thẩm định</h5>
+            <h5>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={businessTrip.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
           : null
@@ -94,7 +94,7 @@ class BusinessTripDetailComponent extends React.Component {
         {
           this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)?
           <>
-            <h5>Thông tin phê duyệt</h5>
+            <h5>{t("ApproverInformation")}</h5>
             <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={requestInfo.approverComment} />
           </> : null
         }

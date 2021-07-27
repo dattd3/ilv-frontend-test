@@ -133,10 +133,10 @@ class QuestionAndAnswerDetails extends React.Component {
       data: data
     };
     axios(config)
-      .then(function (response) {
+      .then(response => {
         callBack(this.props.t("ResponseSentSuccessfully"), true);
       })
-      .catch(function (error) {
+      .catch(error => {
         callBack("Rất tiếc, có lỗi xảy ra!");
       });
   }
@@ -280,7 +280,7 @@ class QuestionAndAnswerDetails extends React.Component {
               {
                 this.state.question && this.state.isShowCommentEditor ?
                   <div className="col-6 pull-right text-right">
-                    <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)} >Gửi đến CBLĐ/ HR giải đáp</Button>
+                    <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)} >{t("EscalateToManagerOrHr")}</Button>
                   </div>
                   : null
               }
@@ -464,7 +464,7 @@ class QuestionAndAnswerDetails extends React.Component {
             </Container>
             {this.state.question && this.state.isShowCommentEditor ?
               <div className="dannger-note">
-                <p>*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn "Từ chối" để yêu cầu CBNV tự tra cứu trên MyVingroup</p>
+                <p>{t('NoteQnABottomPage')}</p>
               </div> : null
             }
           </div>
