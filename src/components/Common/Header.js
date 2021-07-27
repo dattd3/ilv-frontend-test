@@ -132,6 +132,8 @@ function Header(props) {
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
+                                    case 7:
+                                        return `/tasks`
                                     case 5:
                                         return item.url
                                     default:
