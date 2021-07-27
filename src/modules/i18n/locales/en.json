@@ -81,6 +81,7 @@
   "SocialInsuranceNumber": "Social insurance number",
   "HealthInsuranceNumber": "Health Insurance Number",
   "VinID": "VinID number",
+  "Tckt": "FI/Accounting",
   "BankAccountNumber": "Bank account number",
   "BankName": "Bank name",
   "LegalInformation": "Legal information",
@@ -850,7 +851,7 @@
   "successfulRevocationApproval": "Successfully revocation approval",
   "Action": "Action",
   "ChangeWorkingAppointmentTeam": "Team",
-  "SelectEmployees": "Select employees",
+  "SelectEmployees": "Select employee",
   "EnterKeywords": "Enter keywords",
   "CancelSearch": "Cancel",
   "ApplySearch": "Apply",
@@ -860,6 +861,12 @@
   "SubMenuTimesheetManagement": "Timesheet Management",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
+  "NoticeQuest": "Please contact Line Manager to know who is the PIC of your question!",
+  "Withdraw": "Withdraw",
+  "FinanceAccountingPIC": "Finance/Accounting PIC",
+  "HrPIC": "HR PIC",
+  "EscalateToManagerOrHr": "Escalate to Manager/HR",
+  "NoteQnABottomPage": "*Note: In case the question is already in the Q&A section, you can choose \"Reject\" to request employees to find the answer on MyVingroup",
   "Withdraw": "Withdraw",
   "EmployeeInfomation" : "EMPLOYEE INFORMATION",
   "LeaveRequestInformation": "LEAVE REQUEST INFORMATION",
@@ -882,5 +889,4 @@
   "ConfirmCancelRequest": "Are you sure to cancel this request?",
   "ReasonRejectRequest": "Reason for rejecting request (Required)",
   "ReasonReject": "Reason for rejecting"
-
 }
