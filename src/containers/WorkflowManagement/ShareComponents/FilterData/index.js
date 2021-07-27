@@ -43,7 +43,18 @@ const MemberOption = (props, onChange) => {
   }
 
   const confirmSelectedMember = () => {
-    props.saveSelectedMember(members)
+    if(members.length !== memberDefault.length) {
+      let mapMembers = memberDefault.map(a => {
+        let obj = members.find(a2=> a2.uid == a.uid);
+        if (obj) return obj;
+        return a;
+    })
+      props.saveSelectedMember(mapMembers)
+    }
+    else {
+      props.saveSelectedMember(members)
+    }
+    
   }
 
   useEffect(() => {
