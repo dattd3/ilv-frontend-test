@@ -113,7 +113,8 @@ function Authorize(props) {
                             unitId: user.organization_lv5,
                             unit: user.unit,
                             partId: user.organization_lv6,
-                            part: user.part
+                            part: user.part,
+                            role_assigment: user.role_assigment
                         });
                     }
                 })
@@ -149,7 +150,8 @@ function Authorize(props) {
                         unitId: user.organization_lv5,
                         unit: user.unit,
                         partId: user.organization_lv6,
-                        part: user.part
+                        part: user.part,
+                        role_assigment: user.role_assigment
                     });
                 })
                 .finally(result => {
