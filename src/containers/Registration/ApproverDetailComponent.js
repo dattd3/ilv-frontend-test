@@ -21,7 +21,7 @@ function ApproverDetailComponent(props) {
       {
       props.status == Constants.STATUS_NOT_APPROVED || props.status == Constants.STATUS_NO_CONSENTED || props.status == Constants.STATUS_EVICTION ?
       <div className="col-xl-4 auto-height">
-        Lý do không duyệt
+        {t('ReasonReject')}
         <div className="detail">
           <span className="hr-comments">{props.hrComment ? props.hrComment : ""}</span>
         </div>
