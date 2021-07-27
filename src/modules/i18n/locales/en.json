@@ -860,5 +860,27 @@
   "SubMenuTimesheetManagement": "Timesheet Management",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
-  "Withdraw": "Withdraw"
+  "Withdraw": "Withdraw",
+  "EmployeeInfomation" : "EMPLOYEE INFORMATION",
+  "LeaveRequestInformation": "LEAVE REQUEST INFORMATION",
+  "ConsenterInformation": "CONSENTER INFORMATION",
+  "ApproverInformation": "APPROVER INFORMATION",
+  "RejectApproveRequest": "REJECT REQUEST",
+  "RejectConsenterRequest": "REJECT REQUEST",
+  "ReasonRejectingRequest": "Reason for rejecting request (Required)",
+  "ReasonLeaveRequest": "Reason for leave request",
+  "ReasonCancelLeaveRequest": "Reason for canceling leave request",
+  "ReasonEditLeaveRequest": "Reason for editing leave request",
+  "ApproveRequest": "APPROVE REQUEST",
+  "ConfirmApproveRequest": "Are you sure to approve this request?",
+  "ConfirmApproveRequests": "Are you sure to approve these requests?",
+  "ConfirmApproveChangeRequest": "Are you sure to approve this change?",
+  "ConfirmApproveRequestHolder": "Are you sure to approve this {{name}}?",
+  "ConfirmConsentRequestHolder": "Are you sure to consent this {{name}}?",
+  "ConfirmConsentRequests": "Are you sure to consent these requests?",
+  "CancelRequest": "CANCEL REQUEST",
+  "ConfirmCancelRequest": "Are you sure to cancel this request?",
+  "ReasonRejectRequest": "Reason for rejecting request (Required)",
+  "ReasonReject": "Reason for rejecting"
+
 }

@@ -183,7 +183,7 @@ class ApproverComponent extends React.Component {
       <div className="box shadow">
       <div className="row">
                     <div className="col-12 col-xl-12">
-                        <div className="box-bottom-mg"><b className="text-uppercase black-color">CBQL Phê duyệt </b></div>
+                        <div className="box-bottom-mg"><b className="text-uppercase black-color">{t("ApproverInformation")} </b></div>
                     </div>
                 </div>
         <div className="row">
