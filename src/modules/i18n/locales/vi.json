@@ -567,6 +567,7 @@
   "WorkStartDate": "Ngày bắt đầu làm việc",
   "StartDateRequired": "(Thời gian bắt đầu là bắt buộc)",
   "StartDateTime": "Ngày/giờ bắt đầu",
+  "StartTime": "Giờ bắt đầu",
   "Status": "Trạng thái",
   "Street": "Đường phố",
   "StudyProgress": "Quá trình học tập",
@@ -590,7 +591,7 @@
   "OT" : "OT",
   "Miss": "Lỗi chấm công",
   "Biztrip" : "Công tác/Đào tạo/WFH",
-  
+  "AppraisalDuplicateApproval":"Vui lòng bỏ qua bước này nếu CBQL thẩm định trùng với CBLĐ phê duyệt",
   "TimesheetDetails": "Thông tin công",
   "TimesheetSummary": "Tổng hợp ngày công",
   "TitleGrade": "Cấp bậc chức danh",
@@ -884,5 +885,9 @@
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
   "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!",
-  "Withdraw": "Thu hồi"
+  "Withdraw": "Thu hồi", 
+  "AllowRegisterFor1Hour":"Cho phép Đăng ký nghỉ 1 khung giờ trong nhiều ngày liên tiếp (Giới hạn trong chu kỳ lương",
+  "CONSENTER":"CBQL THẨM ĐỊNH",
+  "APPROVER":"CBLĐ PHÊ DUYỆT",
+  "Position":"Chức danh"
 }

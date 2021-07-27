@@ -183,12 +183,12 @@ class ApproverComponent extends React.Component {
       <div className="box shadow">
       <div className="row">
                     <div className="col-12 col-xl-12">
-                        <div className="box-bottom-mg"><b className="text-uppercase black-color">CBQL Phê duyệt </b></div>
+                        <div className="box-bottom-mg"><b className="text-uppercase black-color">{t('APPROVER')} </b></div>
                     </div>
                 </div>
         <div className="row">
           <div className="col-4">
-            <p className="title2">Họ và tên</p>
+            <p className="title2">{t('FullName')}</p>
             <div>
               <Select
                 isClearable={true}
@@ -207,7 +207,7 @@ class ApproverComponent extends React.Component {
             {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
           </div>
           <div className="col-4">
-            <p className="title2">Chức danh</p>
+            <p className="title2">{t('Position')}</p>
             <div>
               <input type="text" className="form-control" value={this.state.approver?.current_position || ""} readOnly />
             </div>
