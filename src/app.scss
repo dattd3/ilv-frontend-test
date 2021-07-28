@@ -1770,7 +1770,21 @@ span.badge-notification[data-badge]::after {
         }
       }
       .indicator {
-        flex: 0 0 25px;
+        flex: 0 0 35px;
+        text-align: center;
+        border-left: 1px solid #d1d3e2;
+        .total-confirmed {
+          font-size: 13px;
+          background: #FCE8E6;
+          color: #d93025;
+          font-weight: bold;
+          width: 24px;
+          height: 24px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 15px;
+        }
       }
     }
     .dd-menu {
@@ -1793,28 +1807,25 @@ span.badge-notification[data-badge]::after {
           font-size: 13px;
           border-color: unset;
           padding: 5px;
-          button {
-            font-weight: normal;
-            &.focus {
-              outline: none;
-              border: none;
-              box-shadow: unset;
-            }
-            &:focus {
-              outline: none;
-              border: none;
-              box-shadow: unset;
-            }
-            &:active {
-              outline: none;
-              border: none;
-              box-shadow: unset;
-            }
+        }
+        button {
+          font-weight: normal;
+          &.focus {
+            outline: none;
+            box-shadow: none;
+          }
+          &:focus {
+            outline: none;
+            box-shadow: none;
+          }
+          &:active {
+            outline: none;
+            box-shadow: none;
           }
         }
       }
       .input-search-block {
-        padding: 6px 10px;
+        padding: 10px 10px 8px 10px;
         .wrap-input {
           display: flex;
           align-items: center;
