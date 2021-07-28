@@ -68,8 +68,8 @@ class InOutTimeUpdateComponent extends React.Component {
     return t;
   }
   setStartTime(index, name, startTime) {
-    let t = this.processTimeZero(startTime)
-    this.state.timesheets[index][name] = moment(t).isValid() && moment(t).format('HHmmss')
+    // let t = this.processTimeZero(startTime)
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime)
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -77,8 +77,8 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setEndTime(index, name, endTime) {
-    let t = this.processTimeZero(endTime)
-    this.state.timesheets[index][name] = moment(t).isValid() && moment(t).format('HHmmss')
+    // let t = this.processTimeZero(endTime)
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime)
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -170,6 +170,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
+    debugger
     this.setDisabledSubmitButton(true)
     const { t } = this.props
     const errors = this.verifyInput()
@@ -210,7 +211,11 @@ class InOutTimeUpdateComponent extends React.Component {
       Object.assign(item,
         {
           hours: item.hours ? parseFloat(item.hours) : null,
-          date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
+          date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString(),
+          end_time1_fact_update: moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss'),
+          end_time2_fact_update: moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss'),
+          start_time1_fact_update: moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss'),
+          start_time2_fact_update: moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss'),
         });
     })
     
@@ -537,8 +542,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
@@ -560,8 +565,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
@@ -586,8 +591,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
@@ -609,8 +614,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
