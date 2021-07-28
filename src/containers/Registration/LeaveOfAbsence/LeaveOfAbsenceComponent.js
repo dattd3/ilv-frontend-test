@@ -756,8 +756,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     getMinDate() { 
-        let currentDay = new Date().getDate();
-        debugger
+        let currentDay = new Date().getDate();                                           
         if(currentDay>26){ 
             return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 26),Constants.LEAVE_DATE_FORMAT).toDate();
         }else{
@@ -987,7 +986,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         name="startDate"
                                                                                         selectsStart
                                                                                         autoComplete="off"
-                                                                                        selected={reqDetail.startDate ? this.getMinDate() : null}
+                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1010,8 +1009,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                     <DatePicker
                                                                                         name="endDate"
                                                                                         selectsEnd
-                                                                                        autoComplete="off"
-                                                                                        selected={reqDetail.endDate ? this.getMaxDate() : null}
+                                                                                        autoComplete="off" 
+                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
