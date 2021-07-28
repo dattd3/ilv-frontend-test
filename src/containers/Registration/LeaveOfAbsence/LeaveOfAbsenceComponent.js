@@ -991,7 +991,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={this.getMinDate()}
-                                                                                        maxDate={this.getMaxDate()}
+                                                                                        // maxDate={this.getMaxDate()}
+                                                                                        maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate()}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
