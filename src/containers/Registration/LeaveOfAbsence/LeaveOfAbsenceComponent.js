@@ -755,22 +755,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.validateTimeRequest(requestInfo)
     }
 
-    getMinDate() { 
-        let currentDay = new Date().getDate();                                           
-        if(currentDay>26){ 
-            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 26),Constants.LEAVE_DATE_FORMAT).toDate();
-        }else{
-            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26),Constants.LEAVE_DATE_FORMAT).toDate();
-        } 
+    getMinDate() {
+        let currentDay = new Date().getDate();
+        return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), currentDay), Constants.LEAVE_DATE_FORMAT).toDate();
     }
 
     getMaxDate() {
         let currentDay = new Date().getDate();
-        if(currentDay>26){ 
-            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() + 1), 25),Constants.LEAVE_DATE_FORMAT).toDate();
-        }else{
-            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 25),Constants.LEAVE_DATE_FORMAT).toDate();
-        }  
+        return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() + 1), currentDay), Constants.LEAVE_DATE_FORMAT).toDate();
     }
 
     render() {
@@ -919,7 +911,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <input disabled={req[0].isShowHintLeaveForMother ? "disabled" : ""} type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
                                                             <label>{t('FullDay')}</label>
                                                         </div>
                                                         : null
@@ -941,7 +933,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
                                                                                         timeIntervals={15}
-                                                                                        timeCaption={t("Hour")}                                                                                     
+                                                                                        timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
                                                                                         placeholderText={t('Select')}
@@ -989,9 +981,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={this.getMinDate()}
-                                                                                        // maxDate={this.getMaxDate()}
+                                                                                        minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate()}
                                                                                         maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate()}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
@@ -1003,14 +993,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             </div>
                                                                             {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
                                                                         </div>
-                                                                        <div className="col-6"> 
+                                                                        <div className="col-6">
                                                                             <p className="title">{t('EndDate')}</p>
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
                                                                                         name="endDate"
                                                                                         selectsEnd
-                                                                                        autoComplete="off" 
+                                                                                        autoComplete="off"
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
