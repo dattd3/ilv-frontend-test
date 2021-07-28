@@ -1033,7 +1033,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         )
                                                         :
                                                         (
-                                                            <div className="row p-2">
+                                                            <div className="row p-4">
                                                                 <div className="col-lg-12 col-xl-6">
                                                                     <p className="title">{t('StartDateTime')}</p>
                                                                     <div className="row">
