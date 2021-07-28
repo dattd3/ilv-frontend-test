@@ -755,14 +755,23 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.validateTimeRequest(requestInfo)
     }
 
-    getMinDate() {
-        let date = moment(new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26),Constants.LEAVE_DATE_FORMAT).toDate();
-        return date;
+    getMinDate() { 
+        let currentDay = new Date().getDate();
+        debugger
+        if(currentDay>26){ 
+            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 26),Constants.LEAVE_DATE_FORMAT).toDate();
+        }else{
+            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26),Constants.LEAVE_DATE_FORMAT).toDate();
+        } 
     }
 
     getMaxDate() {
-        let date = moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 25),Constants.LEAVE_DATE_FORMAT).toDate();
-        return date;
+        let currentDay = new Date().getDate();
+        if(currentDay>26){ 
+            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() + 1), 25),Constants.LEAVE_DATE_FORMAT).toDate();
+        }else{
+            return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), 25),Constants.LEAVE_DATE_FORMAT).toDate();
+        }  
     }
 
     render() {
