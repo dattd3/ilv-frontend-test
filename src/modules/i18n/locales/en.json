@@ -893,5 +893,6 @@
   "CancelRequest": "CANCEL REQUEST",
   "ConfirmCancelRequest": "Are you sure to cancel this request?",
   "ReasonRejectRequest": "Reason for rejecting request (Required)",
-  "ReasonReject": "Reason for rejecting" 
+  "ReasonReject": "Reason for rejecting",
+  "SelectLeaveType":"Select Leave Type"
 }
