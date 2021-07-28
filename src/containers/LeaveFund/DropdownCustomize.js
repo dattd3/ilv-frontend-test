@@ -63,16 +63,22 @@ class DropdownCustomize extends React.Component {
 
     handleButtonClick = (e, type) => {
         let optionsSelectedConfirmed = {...this.state.optionsSelectedConfirmed}
+        let optionsSelected = {...this.state.optionsSelected}
+        let isSelectedAll = {...this.state.isSelectedAll}
 
         if (type === this.buttonType.cancel) {
             optionsSelectedConfirmed = {}
+            optionsSelected = {}
+            isSelectedAll = false
         } else {
             const optionsSelected = {...this.state.optionsSelected}
             optionsSelectedConfirmed = {...optionsSelectedConfirmed, ...optionsSelected}
+            isSelectedAll = (_.size(optionsSelected) > 0 && Object.values(optionsSelected).every(item => item && item.selected)) || false
             this.props.updateParent(optionsSelectedConfirmed)
+            this.closeMenu()
         }
 
-        this.setState({optionsSelectedConfirmed: optionsSelectedConfirmed})
+        this.setState({optionsSelectedConfirmed: optionsSelectedConfirmed, optionsSelected: optionsSelected, isSelectedAll: isSelectedAll})
     }
 
     handleInputChange = e => {
@@ -130,6 +136,7 @@ class DropdownCustomize extends React.Component {
         const { isListOpen, keyword, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
         const { placeholderText, options, t } = this.props
         const isDisabledButton = !options || options.length === 0
+        const totalItemConfirmed = Object.values(optionsSelectedConfirmed).filter(item => item.selected).length
 
         return (
             <div className="dropdown-customize">
@@ -137,13 +144,15 @@ class DropdownCustomize extends React.Component {
                     <div className="dd-header" onClick={this.toggleList}>
                         <div className="dd-header-title">
                             {
-                                _.size(optionsSelectedConfirmed) > 0
+                                totalItemConfirmed > 0
                                 ? <DropdownValue labels={this.getListNameUsers()} />
                                 : <span className="placeholder">{placeholderText}</span>
                             }
                         </div>
                         {
-                            isListOpen
+                           totalItemConfirmed > 0
+                            ? <span className="indicator"><span className="total-confirmed">{totalItemConfirmed}</span></span>
+                            : isListOpen
                             ? <i className='fa fa-angle-up indicator up'></i>
                             : <i className='fa fa-angle-down indicator down'></i>
                         }
