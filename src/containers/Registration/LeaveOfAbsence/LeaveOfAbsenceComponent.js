@@ -265,32 +265,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.calculateTotalTime(startDate, endDate, start, end, indexReq)
     }
 
-    setEndTimeForPN02(endTime, groupId, groupItem) {
-        let { requestInfo } = this.state
-        const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startTime, startDate, endDate } = request
-        const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-
-        const endTimeToSave = moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        let start = startTime
-
-        // if (startTime === undefined || (moment(endTime).isValid() && moment(endTimeToSave, Constants.LEAVE_TIME_FORMAT) < moment(startTime, Constants.LEAVE_TIME_FORMAT))) {
-        //     start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        // }
-
-        // if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-        //     && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") < moment("08:00", "HH:mm"))) {
-        //     start = startTime
-        // }
-
-        const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].startTime = start
-        requestInfo[indexReq].endTime = end
-        requestInfo[indexReq].errors.endTime = null
-        requestInfo[indexReq].errors.totalDaysOff = null
-        this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
-    }
     isOverlapDateTime(startDateTime, endDateTime, indexReq) {
         let { requestInfo } = this.state
 
@@ -1002,9 +976,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        selected={reqDetail.endTime ? this.setSelectedEndTime(reqDetail.endTime, reqDetail.startTime) : null}
-                                                                                        mode="time"
-                                                                                        onChange={time => this.setEndTimeForPN02(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
                                                                                         autoComplete="off"
                                                                                         showTimeSelectOnly
@@ -1012,8 +985,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
-                                                                                        minTime={reqDetail.startTime ? this.setMinTime(reqDetail.startTime) : null}
-                                                                                        maxTime={ reqDetail.startTime ? this.setMaxTime(reqDetail.startTime)  : null}
+                                                                                        // minTime={reqDetail.startTime ? this.setMinTime(reqDetail.startTime) : null}
+                                                                                        // maxTime={ reqDetail.startTime ? this.setMaxTime(reqDetail.startTime)  : null}
                                                                                         placeholderText={t('Select')}
                                                                                         className="form-control input"
                                                                                         disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
@@ -1037,7 +1010,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate()}
+                                                                                        minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(this.getMaxDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate())}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
@@ -1060,7 +1033,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate())}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate())}
                                                                                         maxDate={this.getMaxDate()}
                                                                                         onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
