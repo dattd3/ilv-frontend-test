@@ -720,7 +720,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger p-2">{errorMsg}</p> : null
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -1016,7 +1016,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         maxTime={ reqDetail.startTime ? this.setMaxTime(reqDetail.startTime)  : null}
                                                                                         placeholderText={t('Select')}
                                                                                         className="form-control input"
-                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox || !reqDetail.startTime}
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                                     />
                                                                                 </label>
                                                                             </div>
@@ -1037,7 +1037,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate()}
                                                                                         // maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(this.getMaxDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate())}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
@@ -1060,7 +1060,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate())}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate())}
                                                                                         maxDate={this.getMaxDate()}
                                                                                         onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
