@@ -450,8 +450,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                         ...req,
                         absenceType: value,
                         isShowHintLeaveForMother: check,
-                        isChecked: check ? false : req.isChecked,
-                        isAllDayCheckbox: check ? false : req.isChecked,
+                        // isChecked: check ? false : req.isChecked,
+                        isAllDayCheckbox: req.isChecked,
                         startDate: check ? null : req.startDate,
                         endDate: check ? null : req.endDate,
                         errors
@@ -770,28 +770,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() + 1), currentDay), Constants.LEAVE_DATE_FORMAT).toDate();
     }
 
-    setMinTime (time) {
-        return time ? setHours(setMinutes(new Date(), parseInt(time.split(':')[1])), (parseInt(time.split(':')[0]))) : null
+    addDays(date, days) {
+        const copy = new Date(moment(date, Constants.LEAVE_DATE_FORMAT).toDate())
+        copy.setDate(copy.getDate() + days)
+        return copy
     }
 
-    setMaxTime(time) {
-        return time ? setHours(setMinutes(new Date(), parseInt(time.split(':')[1])), (parseInt(time.split(':')[0]) + 1)) : null
-    }
-
-    setSelectedEndTime (endTime, flagTime) {
-        let cvtedEndTime = moment(endTime, Constants.LEAVE_TIME_FORMAT);
-        let cvtedMaxTime = moment(this.setMaxTime(flagTime), Constants.LEAVE_TIME_FORMAT);
-        let cvtedMinTime = moment(this.setMinTime(flagTime), Constants.LEAVE_TIME_FORMAT);
-
-        if (cvtedEndTime > cvtedMaxTime) {
-            return cvtedMaxTime.toDate();
-        }
-        if (cvtedEndTime < cvtedMinTime) {
-            return cvtedMinTime.toDate();
-        }
-
-        return cvtedEndTime.toDate();
-    }
     render() {
         const { t } = this.props;
         let absenceTypes = [
@@ -938,7 +922,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input disabled={req[0].isShowHintLeaveForMother ? "disabled" : ""} type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <input  type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
                                                             <label>{t('FullDay')}</label>
                                                         </div>
                                                         : null
@@ -1010,7 +994,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                                        minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={reqDetail.endDate ? this.addDays(reqDetail.endDate, -31) : ['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         // maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(this.getMaxDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate())}
                                                                                         onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
@@ -1034,7 +1018,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate())}
-                                                                                        maxDate={this.getMaxDate()}
+                                                                                        maxDate={reqDetail.startDate ? this.addDays(reqDetail.startDate, 31) : null}
                                                                                         onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
