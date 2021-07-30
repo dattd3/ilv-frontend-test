@@ -77,7 +77,6 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   showEditModal = (question) => {
-    console.log("Debug question - ", question);
     this.setState({ questionContent: question });
     this.showSubmitModal(true, true);
     this.showHistoryModal(false);
@@ -91,7 +90,7 @@ class QuestionAndAnswerDetails extends React.Component {
     if (event.key === 'Enter') {
       if(this.state.comment === "")
       {
-        this.showStatusModal("Nhập câu trả lời để tiếp tục!");
+        this.showStatusModal(this.props.t("EnterAnswerToContinue"));
         return;
       }
       this.setState({ comment: event.target.value })
@@ -108,15 +107,15 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   rejectComment = () => {
-    const { t } = this.props
     let userId = localStorage.getItem('email')
-    const rejectReason = t("Constants.QAAlreadyExist")
+    const rejectReason = this.props.t("QAAlreadyExist")
     this.completeQuestion(this.state.question.id)
     this.submitComment(rejectReason, userId, this.state.question.id, this.showStatusModal)
   }
 
 
   submitComment = (comment, userid, ticketid, callBack) => {
+    const { t } = this.props
     var axios = require('axios');
     var data = JSON.stringify({
       "content": comment,
@@ -134,10 +133,10 @@ class QuestionAndAnswerDetails extends React.Component {
     };
     axios(config)
       .then(response => {
-        callBack(this.props.t("ResponseSentSuccessfully"), true);
+        callBack(t("ResponseSentSuccessfully"), true);
       })
       .catch(error => {
-        callBack("Rất tiếc, có lỗi xảy ra!");
+        callBack(t("HasErrorOccurred"));
       });
   }
 
@@ -163,6 +162,7 @@ class QuestionAndAnswerDetails extends React.Component {
         return false
       });
   }
+
   showConfirmModal = (modalStatus) => {
     this.setState({ isShowConfirmModal: modalStatus });
   }
@@ -170,6 +170,7 @@ class QuestionAndAnswerDetails extends React.Component {
   showSelectSupporterModal = (modalStatus) => {
     this.setState({ isShowSelectSupporterModal: modalStatus });
   }
+
   checkRole = () => {
     let userId = localStorage.getItem('email').toLowerCase();
     this.setState({
@@ -181,6 +182,7 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   submitSelectSupporterModal = (supporter) => {
+    const { t } = this.props
     const question = this.state.question
 
     if (question && supporter && supporter.userAccount) {
@@ -222,10 +224,10 @@ class QuestionAndAnswerDetails extends React.Component {
 
       axios(config)
         .then(response => {
-          this.showStatusModal("Gửi/ chuyển câu hỏi thành công!", true)
+          this.showStatusModal(t("QuestionSubmissionSuccessful"), true)
         })
         .catch(error => {
-          this.showStatusModal("Rất tiếc, đã có lỗi xảy ra!")
+          this.showStatusModal(t("HasErrorOccurred"))
         });
     }
   }
@@ -243,6 +245,7 @@ class QuestionAndAnswerDetails extends React.Component {
     }
     const question = this.state.question
     const comments = question.ticketComments
+
     return (
       question && question.content ?
         <>
@@ -252,7 +255,7 @@ class QuestionAndAnswerDetails extends React.Component {
             onAcceptClick={() => this.submit(true)}
             onCancelClick={() => this.submit(false)}
             confirmHeader={t("CloseQA")}
-            confirmContent="Bạn xác nhận muốn kết thúc giải đáp này?"
+            confirmContent={t("ConfirmEndedAnswers")}
           />
           <SelectSupporterModal
             show={this.state.isShowSelectSupporterModal}
@@ -396,7 +399,6 @@ class QuestionAndAnswerDetails extends React.Component {
                     }
                   </div>
                 </Carousel.Item>
-
               </Carousel>
             </Container>
 
@@ -455,13 +457,12 @@ class QuestionAndAnswerDetails extends React.Component {
                       </div>
                     </div>
                     <div className="mt-2 text-right">
-                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("Rejected")}</Button>{' '}
+                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("Reject")}</Button>{' '}
                       <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
                     </div>
                   </div>
                   : null
               }
-
             </Container>
             {this.state.question && this.state.isShowCommentEditor ?
               <div className="dannger-note">

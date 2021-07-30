@@ -175,7 +175,7 @@
   "Registration_V073": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "RegistrationSeconds": "Đăng ký nghỉ, công tác, sửa giờ vào ra",
   "BonusAndPenalty": "Khen thưởng & vi phạm",
-  "QAAlreadyExist": "Nội dung câu trả lời đã có trong bộ Q&A của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên Myvinpearl",
+  "QAAlreadyExist": "Nội dung câu trả lời đã có trong bộ câu hỏi và trả lời của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên ILoveVingroup",
   "Deducted": "trừ thưởng",
   "13ThMonthSalary": "Thưởng tháng lương 13 (chỉ áp dụng tại thời điểm chi trả)",
   "About": "Thông tin tập đoàn",
@@ -914,5 +914,9 @@
   "CancelRequest": "Xác nhận hủy yêu cầu",
   "ConfirmCancelRequest": "Bạn có đồng ý hủy yêu cầu này?",
   "ReasonRejectRequest": "Lý do từ chối thẩm định (Bắt buộc)",
-  "ReasonReject": "Lý do không duyệt" 
+  "ReasonReject": "Lý do không duyệt",
+  "QuestionSubmissionSuccessful": "Gửi/chuyển câu hỏi thành công!",
+  "HasErrorOccurred": "Rất tiếc, đã có lỗi xảy ra!",
+  "EnterAnswerToContinue": "Nhập câu trả lời để tiếp tục!",
+  "ConfirmEndedAnswers": "Bạn xác nhận muốn kết thúc giải đáp này?"
 }
