@@ -457,7 +457,7 @@ class QuestionAndAnswerDetails extends React.Component {
                       </div>
                     </div>
                     <div className="mt-2 text-right">
-                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("Reject")}</Button>{' '}
+                      <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("RejectQuestionButtonLabel")}</Button>{' '}
                       <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
                     </div>
                   </div>
