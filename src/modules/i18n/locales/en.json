@@ -898,5 +898,6 @@
   "QuestionSubmissionSuccessful": "Question submission/transfer successful!",
   "HasErrorOccurred": "Sorry, an error occurred!",
   "EnterAnswerToContinue": "Enter your answer to continue!",
-  "ConfirmEndedAnswers": "Are you sure to end this conversation?"
+  "ConfirmEndedAnswers": "Are you sure to end this conversation?",
+  "RejectQuestionButtonLabel": "Reject"
 }
