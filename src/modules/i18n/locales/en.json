@@ -1,5 +1,5 @@
 {
-  "LangViet": "Tiếng Việt",
+  "LangViet": "Vietnamese",
   "LangEng": "English",
   "HelpToLogin": "Login Instruction",
   "Login": "Login",
@@ -159,7 +159,7 @@
   "Registration_V073": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "RegistrationSeconds": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "BonusAndPenalty": "Awards/Penalties",
-  "QAAlreadyExist": "Nội dung câu trả lời đã có trong bộ Q&A của phần hỗ trợ giải đáp, CBNV vui lòng tra cứu trên Myvinpearl",
+  "QAAlreadyExist": "The question is already in the Q&A section, please find the answer on ILoveVingroup",
   "Deducted": " Deducted",
   "13ThMonthSalary": "13th month salary (At time of payment)",
   "About": "About",
@@ -894,5 +894,9 @@
   "ConfirmCancelRequest": "Are you sure to cancel this request?",
   "ReasonRejectRequest": "Reason for rejecting request (Required)",
   "ReasonReject": "Reason for rejecting",
-  "SelectLeaveType":"Select Leave Type"
+  "SelectLeaveType":"Select Leave Type",
+  "QuestionSubmissionSuccessful": "Question submission/transfer successful!",
+  "HasErrorOccurred": "Sorry, an error occurred!",
+  "EnterAnswerToContinue": "Enter your answer to continue!",
+  "ConfirmEndedAnswers": "Are you sure to end this conversation?"
 }
