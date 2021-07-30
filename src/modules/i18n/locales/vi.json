@@ -918,5 +918,6 @@
   "QuestionSubmissionSuccessful": "Gửi/chuyển câu hỏi thành công!",
   "HasErrorOccurred": "Rất tiếc, đã có lỗi xảy ra!",
   "EnterAnswerToContinue": "Nhập câu trả lời để tiếp tục!",
-  "ConfirmEndedAnswers": "Bạn xác nhận muốn kết thúc giải đáp này?"
+  "ConfirmEndedAnswers": "Bạn xác nhận muốn kết thúc giải đáp này?",
+  "RejectQuestionButtonLabel": "Từ chối"
 }
