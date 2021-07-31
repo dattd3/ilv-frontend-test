@@ -584,7 +584,7 @@ class RequestTaskList extends React.Component {
                                                 : null
                                             }
                                             {
-                                                isShowEvictionButton ?
+                                                isShowEvictionButton && child.absenceType?.value != "PN02" ?
                                                     <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                     : null
                                             }
