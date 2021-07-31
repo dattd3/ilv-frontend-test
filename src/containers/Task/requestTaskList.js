@@ -567,7 +567,7 @@ class RequestTaskList extends React.Component {
                                 }
                                 return (
                                     <tr key={index}>
-                                        <td scope="col" className="check-box">
+                                        <td scope="col" className="check-box"> 
                                             
                                         </td>
                                         <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
