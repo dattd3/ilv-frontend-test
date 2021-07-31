@@ -556,7 +556,7 @@ class RequestTaskList extends React.Component {
                                 let totalTime = null;
                                 let editLink = null
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                    totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                    totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                 }
                                 if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1)
                                 {
