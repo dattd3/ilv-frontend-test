@@ -71,7 +71,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: "",
     label: 'MenuMyTeam',
-    role: 'U'
+    role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
   },
   {
     id:1002,
