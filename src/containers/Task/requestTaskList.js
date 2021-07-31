@@ -264,7 +264,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -282,7 +282,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)){
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)){
                 isShow = true;
             } else {
                 isShow = false;
@@ -577,7 +577,7 @@ class RequestTaskList extends React.Component {
                                         <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
                                         <td className="tool">
                                             {
-                                                isShowEditButton ? 
+                                                isShowEditButton && child.absenceType?.value != "PN02" ? 
                                                     <>
                                                         <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                     </>
