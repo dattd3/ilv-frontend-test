@@ -919,5 +919,7 @@
   "HasErrorOccurred": "Rất tiếc, đã có lỗi xảy ra!",
   "EnterAnswerToContinue": "Nhập câu trả lời để tiếp tục!",
   "ConfirmEndedAnswers": "Bạn xác nhận muốn kết thúc giải đáp này?",
-  "RejectQuestionButtonLabel": "Từ chối"
+  "RejectQuestionButtonLabel": "Từ chối",
+  "HourUnit": "giờ",
+  "DayUnit": "ngày"
 }
