@@ -899,5 +899,7 @@
   "HasErrorOccurred": "Sorry, an error occurred!",
   "EnterAnswerToContinue": "Enter your answer to continue!",
   "ConfirmEndedAnswers": "Are you sure to end this conversation?",
-  "RejectQuestionButtonLabel": "Reject"
+  "RejectQuestionButtonLabel": "Reject",
+  "HourUnit": "hours",
+  "DayUnit": "days"
 }
