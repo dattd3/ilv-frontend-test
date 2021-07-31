@@ -470,7 +470,7 @@ class TaskList extends React.Component {
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                 <td className="user-title">{child.user?.jobTitle || ''}</td>
                                                 <td className="request-type">{child.requestType.name}</td>
-                                                <td className="day-off">{child.startDate}</td>
+                                                <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
                                                     this.props.page == "approval" ?
