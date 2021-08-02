@@ -170,7 +170,6 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
-    debugger
     this.setDisabledSubmitButton(true)
     const { t } = this.props
     const errors = this.verifyInput()
@@ -213,9 +212,9 @@ class InOutTimeUpdateComponent extends React.Component {
           hours: item.hours ? parseFloat(item.hours) : null,
           date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString(),
           end_time1_fact_update: moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss'),
-          end_time2_fact_update: moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss'),
+          end_time2_fact_update: item.end_time2_fact_update ? moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss') : null,
           start_time1_fact_update: moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss'),
-          start_time2_fact_update: moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss'),
+          start_time2_fact_update: item.start_time2_fact_update ? moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss') : null,
         });
     })
     
@@ -593,7 +592,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm:ss"
                                 timeFormat="HH:mm:ss"
-                                className="form-control input" />
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'start_time2_fact_update')}
@@ -616,7 +616,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm:ss"
                                 timeFormat="HH:mm:ss"
-                                className="form-control input" />
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'end_time2_fact_update')}
