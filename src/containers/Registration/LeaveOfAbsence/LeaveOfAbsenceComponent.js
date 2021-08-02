@@ -930,7 +930,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     req[0].isShowHintLeaveForMother ?
                                                         (
-                                                            <div className="row p-2">
+                                                            <div className="row p-4">
                                                                 <div className="col-lg-12 col-xl-6">
                                                                     <div className="row">
                                                                         <div className="col-6">
