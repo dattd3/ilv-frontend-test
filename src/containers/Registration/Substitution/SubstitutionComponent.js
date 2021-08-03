@@ -143,8 +143,7 @@ class SubstitutionComponent extends React.Component {
     if (hasErrors) {
       this.setDisabledSubmitButton(false)
       return
-    }
-    debugger
+    }    
     let timesheets = [...this.state.timesheets].map(item => {
       return {
         pernr: localStorage.getItem('employeeNo'),
