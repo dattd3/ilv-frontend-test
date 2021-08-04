@@ -249,14 +249,17 @@ class RequestTaskList extends React.Component {
 
     checkDateLessThanPayPeriod = (date) => {
         let convertedDate = moment(date,'DD/MM/YYYY');
-        let day = convertedDate.format("DD")
-        if (day < 26 && convertedDate < new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)) {
-            return false
+        let minDate = null;
+        let today = new Date();
+        let currentDay = today.getDate();
+        if (currentDay < 26) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
         }
-        if (day > 26 && convertedDate < new Date((new Date()).getFullYear(), (new Date().getMonth() ), 26)) {
-            return false
+        if (currentDay > 26) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() ), 26)
         }
-        return true
+
+        return convertedDate < minDate ? false : true
     }
     isShowEditButton = (status, appraiser, requestTypeId, startdate) => {
         let isShow = true;
