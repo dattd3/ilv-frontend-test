@@ -155,7 +155,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073'].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    // errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073'].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
@@ -170,7 +170,6 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   submit() {
-    debugger
     this.setDisabledSubmitButton(true)
     const { t } = this.props
     const errors = this.verifyInput()
@@ -213,9 +212,9 @@ class InOutTimeUpdateComponent extends React.Component {
           hours: item.hours ? parseFloat(item.hours) : null,
           date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString(),
           end_time1_fact_update: moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss'),
-          end_time2_fact_update: moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss'),
+          end_time2_fact_update: item.end_time2_fact_update ? moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss') : null,
           start_time1_fact_update: moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss'),
-          start_time2_fact_update: moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss'),
+          start_time2_fact_update: item.start_time2_fact_update ? moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss') : null,
         });
     })
     
@@ -593,7 +592,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm:ss"
                                 timeFormat="HH:mm:ss"
-                                className="form-control input" />
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'start_time2_fact_update')}
@@ -616,7 +616,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 timeCaption="Giờ"
                                 dateFormat="HH:mm:ss"
                                 timeFormat="HH:mm:ss"
-                                className="form-control input" />
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'end_time2_fact_update')}
@@ -658,11 +659,11 @@ class InOutTimeUpdateComponent extends React.Component {
           })}
         </ul>
 
-        {
+        {/* {
           (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
-        }
+        } */}
         {this.errorWithoutItem("files")}
 
         {this.state.timesheets.filter(t => t.isEdited).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
