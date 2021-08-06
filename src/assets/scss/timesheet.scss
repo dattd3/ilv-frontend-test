@@ -5,6 +5,7 @@
 .timesheet-section {
   margin-bottom: 30px;
   .timesheet-box {
+    font-size: 15px;
     display: block;
     background-color: #fff;
     width: 100%;
@@ -20,8 +21,10 @@
     }
     .input-container {
       position: relative;
+      cursor: pointer;
       label {
         position: relative;
+        cursor: pointer;
       }
       .input {
         margin: 0;
@@ -31,16 +34,82 @@
       }
       .input-img {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 8px;
+        right: 2px;
       }
       i {
         font-size: 20px;
         font-weight: 100;
       }
+      input {
+        font-size: 14px;
+      }
     }
     .btnSearch {
       width: 100%;
+    }
+    .box-input {
+      i {
+        font-size: 14px !important;
+      }
+    }
+    .member-list {
+      width: 300px !important;
+      height: auto;
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+      .action {
+        padding: 10px 0 !important;
+        justify-content: space-evenly !important;
+        button {
+          width: 80px;
+          font-size: 13px;
+        }
+      }
+      .input-search {
+        margin-top: 0 !important;
+        input {
+          font-size: 14px;
+        }
+      }
+      .show-list {
+        height: auto !important;
+        max-height: 300px;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+          width: 8px;
+          background-color: #f5f5f5;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: #a4afb7;
+          border-left: 1px solid white;
+          border-right: 1px solid white;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-track {
+          background-color: #d3d3d3;
+          border-left: 3.5px solid white;
+          border-right: 3.5px solid white;
+        }
+        .option-item {
+          &:last-child {
+            .border-bottom {
+              border-bottom: none !important;
+            }
+          }
+          .full-name {
+            font-size: 14px;
+          }
+          .account-job {
+            font-style: italic;
+          }
+        }
+        .lable-custom {
+          margin-bottom: 0;
+        }
+        .label-select-all {
+          font-size: 14px;
+        }
+      }
     }
   }
   .searchTitle {
@@ -49,7 +118,6 @@
   }
   .summary {
     margin-top: 30px;
-
     .notice {
       margin-top: 12px;
       font-size: 13px;
@@ -57,7 +125,6 @@
   }
   .detail {
     margin-top: 30px;
-
     .btn-link {
       text-decoration: none;
       color: #858796;
@@ -98,42 +165,114 @@
     width: 100% !important;
   }
   .employee-time-sheets {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    .fixed-col {
+      position: sticky;
+    }
+    .title {
+      font-size: 13px;
+    }
+    .date {
+      font-size: 13px;
+      font-weight: normal;
+    }
     td {
-      width: 200px;
-      font-family: 'Helvetica Neue' !important;
       text-align: center;
       border: 0.5px solid #707070;
+      border-right: none;
       text-transform: capitalize;
-      // font-weight: 500;
       color: #000000;
       font-size: 14px;
       min-width: 150px;
+      padding: 0;
     }
-    thead td {
-      font-weight: bold;
+    thead {
+      td {
+        font-weight: bold;
+        &.full-name {
+          text-align: left;
+          padding-left: 5px;
+          left: 0;
+          background: #FFFFFF;
+          border: 0.5px solid #707070;
+          border-right: none;
+          span {
+            display: inline-block;
+            width: 160px;
+          }
+        }
+        &.room-part-group {
+          left: 165.8px;
+          background: #FFFFFF;
+          border: 0.5px solid #707070;
+          // border-left: none;
+          span {
+            display: inline-block;
+            width: 200px;
+          }
+        }
+        &:nth-child(3) {
+          border-left: none;
+        }
+        &:last-child {
+          border-right: 1px solid #707070;
+        }
+      }
     }
-    tbody td {
-      font-weight: normal;
-    }
-    .full-name {
-      text-align: start !important;
-      padding-left: 5px;
-    }
-    .fixed-col{
-      position: absolute;
-      display: inline-block;
-      border: 0.5px solid #707070;
-      background-color: #fff;
-      width: 155px;
-      height: 95px;
-      left: 12px;
-      display: flex;
-      align-items: center;
-
+    tbody {
+      tr {
+        td {
+          font-weight: bold;
+          font-size: 12px;
+          &.full-name {
+            text-align: left;
+            padding-left: 5px;
+            left: 0;
+            background: #FFFFFF;
+            border: 0.5px solid #707070;
+            border-right: none;
+            font-weight: normal;
+            span {
+              display: inline-block;
+              width: 160px;
+            }
+          }
+          &.room-part-group {
+            text-align: left;
+            padding-left: 5px;
+            left: 165.8px;
+            background: #FFFFFF;
+            border: 0.5px solid #707070;
+            // border-left: none;
+            font-weight: normal;
+            span {
+              display: inline-block;
+              width: 200px;
+            }
+          }
+          &:nth-child(3) {
+            border-left: none;
+          }
+        }
+        &.no-border-left {
+          td {
+            &:first-child {
+              border-left: none;
+            }
+          }
+          &:nth-child(2) {
+            td {
+              padding: 5px 0;
+            }
+          }
+        }
+      }
     }
     .ke_hoach {
+      padding: 4px 0;
       background-color: #00b3ff;
-      font-weight: bold;
       color: #ffffff;
       border-bottom: none;
       white-space: nowrap;
@@ -143,15 +282,15 @@
       overflow: hidden;
     }
     .ke_hoach_dai {
+      padding: 4px 0;
       background-color: #00b3ff;
-      font-weight: bold;
       color: #ffffff;
       border-bottom: none;
       text-align: center;
     }
     .thuc_te {
+      padding: 4px 0;
       background-color: #39b54a;
-      font-weight: bold;
       color: #ffffff;
       border-top: none;
       border-bottom: none;
@@ -162,8 +301,8 @@
       overflow: hidden;
     }
     .loi_cong {
+      padding: 4px 0;
       background-color: #e44235;
-      font-weight: bold;
       color: #ffffff;
       border-top: none;
       border-bottom: none;
@@ -174,7 +313,7 @@
       overflow: hidden;
     }
     .no-event {
-      font-weight: bold;
+      padding: 4px 0;
       color: #ffffff;
       border-top: none;
       border-bottom: none;
@@ -185,8 +324,8 @@
       overflow: hidden;
     }
     .gio_nghi {
+      padding: 4px 0;
       background-color: #f7931e;
-      font-weight: bold;
       color: #ffffff;
       border-top: none;
       border-bottom: none;
@@ -197,8 +336,8 @@
       overflow: hidden;
     }
     .cong_tac {
+      padding: 4px 0;
       background-color: #93278f;
-      font-weight: bold;
       color: #ffffff;
       border-top: none;
       border-bottom: none;
@@ -209,8 +348,8 @@
       overflow: hidden;
     }
     .ot {
+      padding: 4px 0;
       background-color: #808000;
-      font-weight: bold;
       color: #ffffff;
       border-top: none;
       white-space: nowrap;
@@ -222,6 +361,33 @@
     .divide {
       border: none;
       height: 10px;
+    }
+  }
+  .describer {
+    .title {
+      font-size: 14px;
+    }
+  }
+  .table-responsive {
+    // font-size: 15px;
+    &::-webkit-scrollbar {
+      height: 8px;
+      background-color: #f5f5f5;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #a4afb7;
+      border-left: 1px solid #FFFFFF;
+      border-right: 1px solid #FFFFFF;
+      border-top: 1px solid #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #d3d3d3;
+      border-left: 3.5px solid #FFFFFF;
+      border-right: 3.5px solid #FFFFFF;
+      border-top: 3.5px solid #FFFFFF;
+      border-bottom: 3.5px solid #FFFFFF;
     }
   }
 }

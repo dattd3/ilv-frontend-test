@@ -596,14 +596,19 @@ class EmployeeTimesheets extends Component {
   
   render() {
     const { t } = this.props;
+    const {isSearch, timeTables, dayList, isLoading} = this.state
+
+    console.log("kakakak")
+    console.log(timeTables)
+
     return (
       <div className="timesheet-section">
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
         {
-          (this.state.isSearch && this.state.timeTables.length > 0)  ?
-          <TimeSheetMember timesheets={this.state.timeTables} dayList={this.state.dayList}/> : 
-          this.state.isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> : 
-          this.state.isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
+          (isSearch && timeTables.length > 0)  ?
+          <TimeSheetMember timesheets={timeTables} dayList={dayList}/> : 
+          isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> : 
+          isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }
       </div>
     );
