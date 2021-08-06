@@ -38,7 +38,7 @@ function RenderTooltip(props) {
     key={"td"}
     placement="right"
     overlay={
-        <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white" }} >
+        <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white", fontSize: '12px', fontFamily: 'Helvetica, Arial, sans-serif'}} >
         <Popover.Content>
             {
                 props.is_holiday == 1 ? 
@@ -80,18 +80,17 @@ function RenderItem(props) {
     // eslint-disable-next-line default-case
     switch(type) {
         case EVENT_TYPE.EVENT_KEHOACH: 
-            if(item.line1.count) {
+            if (item.line1.count) {
                 let times = item.line1.subtype[0] == 1 ? `${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` : '';
                 times += item.line1.subtype[1] == 1 ? ` | ${moment(item.line1.from_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time2, 'HHmmss').format('HH:mm:ss')}` : '';
                 return <RenderTooltip shift_id = {item.line1.shift_id}>
-                        <div className={EVENT_STYLE.EVENT_KE_HOACH_CONTINUE}><div>{times} </div></div>
+                        <div className={EVENT_STYLE.EVENT_KE_HOACH_CONTINUE}><div>{times}</div></div>
                     </RenderTooltip>
             }
             return <div style={{display: 'flex'}}>
                 {
                     item.line1.subtype[0] == 1 ?
                     <RenderTooltip shift_id = {item.line1.shift_id} timeExpand = {item.line1.subtype =='11' ? `${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
-                      
                         <div className={EVENT_STYLE.EVENT_KEHOACH}>{`${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
                     </RenderTooltip>
                     : null 
@@ -113,7 +112,6 @@ function RenderItem(props) {
                     </RenderTooltip>
                     : null
                 }
-                
                 { item.line3.subtype[1] == 1 ?
                     <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.trip_start_time2} - ${item.line3.trip_end_time2}` }</div>
@@ -125,14 +123,11 @@ function RenderItem(props) {
         case EVENT_TYPE.EVENT_GIONGHI: 
             return <div style={{display: 'flex'}}>
                 { item.line3.subtype[0] == 1 ?
-                    
                     <RenderTooltip item = {item.line3.leave_start_time1_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_GIONGHI}>{`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
                     </RenderTooltip>
-                    
                     : null
                 }
-                
                 { item.line3.subtype[1] == 1 ?
                     <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
@@ -206,34 +201,35 @@ function RenderItem(props) {
                     </RenderTooltip>
                      : null
                 }
-                
             </div>
     }
     return null;
 }
+
 function RenderRow1(props) {
     return <>
         {
-            props.member.timesheets.map((item, index) => {
-                 if(item.date_type == DATE_TYPE.DATE_OFF) {
+            (props?.member?.timesheets || []).map((item, index) => {
+                if(item.date_type == DATE_TYPE.DATE_OFF) {
                     return <td key = {index}>
                         <RenderTooltip is_holiday = {item.is_holiday}>
                             <div>OFF</div>
                         </RenderTooltip>
                         </td>
-                 } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
+                } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
                     return <td key = {index} rowSpan={4} style={{backgroundColor: '#FFA2001A'}}></td>
-                 }
-                 if(item.line1.type == EVENT_TYPE.NO_EVENT) {
+                }
+                if(item.line1.type == EVENT_TYPE.NO_EVENT) {
                     return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-                 } else if( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
-                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
-                 } 
-                 return null;
-             })
+                } else if( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
+                    return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
+                } 
+                return null;
+            })
         }
     </>
 }
+
 function RenderRow2(props) {
     return <>
         {
@@ -298,84 +294,82 @@ function Content(props) {
     }
     const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 50)
     const { t } = useTranslation();
-    let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
-  return (
-    <>
-        <div >
-          <div className="row pr-2 pl-2 pb-4">
-              <div className="col-md-12 col-xl-12 describer mb-2">
-                {
-                    filterType.map( (item, index) => {
-                        return <div className="item" key = {index}>
-                            <div className="box" style={{backgroundColor: item.color}}></div>
-                            <div className="title">{item.title}</div>
+    const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
+    
+    return (
+        <>
+            <div className="row pr-2 pl-2 pb-4">
+                <div className="col-md-12 col-xl-12 describer mb-2">
+                    {
+                        filterType.map((item, index) => {
+                            return <div className="item" key={index}>
+                                <div className="box" style={{backgroundColor: item.color}}></div>
+                                <div className="title">{item.title}</div>
+                            </div>
+                        })
+                    }   
+                </div>
+                <div className="table-responsive">
+                    <table className="employee-time-sheets">
+                        <thead>
+                            <tr>
+                                <td className="text-uppercase fixed-col full-name"><span className="title">{t('FullName')}</span></td>
+                                <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
+                                {props.dayList.map((item, index) => {
+                                    return (
+                                    <td className="text-uppercase" key={index}>
+                                        <span className="title">{moment(item).format("dddd")}</span>
+                                        <br/>
+                                        <span className="date">{moment(item).format("DD/MM")}</span>
+                                    </td>
+                                    );
+                                })}
+                            </tr>
+                            <tr className="divide"></tr>
+                        </thead>
+                    <tbody >
+                    { memberTimeData.map((timesheet, index) => {
+                        return <React.Fragment key={index}>
+                            <tr style={{borderTop: '1px solid #707070'}}>
+                                <td rowSpan="4" className="fixed-col full-name"><span>{timesheet.name || ""}</span></td>
+                                <td rowSpan="4" className="fixed-col room-part-group"><span>{timesheet.name || ""}</span></td>
+                                <RenderRow1 member = {timesheet} />
+                            </tr>
+                            <tr className="no-border-left">
+                                <RenderRow2 member = {timesheet} />
+                            </tr>
+                            <tr className="no-border-left">
+                                <RenderRow3 member={timesheet} />
+                            </tr>
+                            <tr className="no-border-left">
+                                <RenderRow4 member={timesheet} />
+                            </tr>
+                            <tr className="divide"></tr>
+                        </React.Fragment>     
+                        })}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            {
+                memberTimeData.length > 0 
+                ?   <div className="row paging mt-2">
+                        <div className="col-sm"></div>
+                        <div className="col-sm"></div>
+                        <div className="col-sm">
+                            <CustomPaging pageSize={50} onChangePage={onChangePage} totalRecords={props.timeTables.length} />
                         </div>
-                    })
-                }   
-              </div>
-              <div className="table-responsive">
-                <table className="employee-time-sheets">
-                  <thead>
-                  <tr className="">
-                        <td className="full-name fixed-col" style={{ height: '46px' }}>{t('FullName')}</td>
-                    </tr>
-                  <tr className="">
-                          <td className="full-name">{t('FullName')}</td>
-                          {props.dayList.map((item, index) => {
-                            return (
-                              <td key={index}>
-                                {moment(item).format("dddd")}
-                                <br/>
-                                <span style={{fontWeight: 'normal' }}>{moment(item).format("DD/MM")}</span>
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      <tr className="divide"></tr>
-                  </thead>
-                  <tbody >
-                  { memberTimeData.map( (timesheet, index) => {
-                    return  <React.Fragment key = {index}>
-                        <tr><td  className="full-name fixed-col">{timesheet.name}</td></tr>
-                        <tr style={{borderTop: ' 0.5px solid #707070'}}>
-                            
-                            <td rowSpan="4" className="full-name">{timesheet.name}</td>
-                            <RenderRow1 member = {timesheet}/>
-                        </tr>
-                        <tr>
-                            <RenderRow2 member = {timesheet}/>
-                        </tr>
-                        <tr>
-                            <RenderRow3 member={timesheet}/>
-                        </tr>
-                        <tr>
-                            <RenderRow4 member={timesheet}/>
-                        </tr>
-                        <tr className="divide"></tr>
-                      </React.Fragment>     
-                    })}
-                  </tbody>
-              </table>
-             </div>
-          </div>
-          {memberTimeData.length > 0 ? <div className="row paging mt-2">
-                    <div className="col-sm"></div>
-                    <div className="col-sm"></div>
-                    <div className="col-sm">
-                        <CustomPaging pageSize={50} onChangePage={onChangePage} totalRecords={props.timeTables.length} />
+                        <div className="col-sm"></div>
+                        <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>
                     </div>
-                    <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>
-                </div> : null}
-        </div>
-    </>
-  )
+                : null
+            }
+        </>
+    )
 }
 
 function TimeSheetMember(props) {
-//   const { t } = useTranslation()
-  if(!props.timesheets || props.timesheets.length == 0)
-    return null;
+  if (!props.timesheets || props.timesheets.length == 0) return null
     
   return (
     <div className="detail">

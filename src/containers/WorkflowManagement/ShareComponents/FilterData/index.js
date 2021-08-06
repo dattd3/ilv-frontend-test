@@ -78,7 +78,7 @@ const MemberOption = (props, onChange) => {
         <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
         <button type="button" className="btn btn-primary btn-sm"  onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
       </div>
-      <div className="mt-2 p-2">
+      <div className="mt-2 p-2 input-search">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
           <InputGroup className="">
             <InputGroup.Prepend>
@@ -97,9 +97,9 @@ const MemberOption = (props, onChange) => {
             props.type !== 'singleChoice' ? 
             <div className="d-flex border-bottom text-dark btn ">
             <label className="lable-custom">
-              <input type="checkbox" className="mtmr5"  value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
+              <input type="checkbox" className="mtmr5" value="checkedall" onChange={handleAllChecked} checked={members.filter(m => m.checked).length === members.length}/>
               <div className="float-left text-left text-wrap w-75">
-                <div className="">{t('All')}</div>
+                <div className="label-select-all">{t('All')}</div>
               </div>
             </label>
           </div> : null
@@ -108,9 +108,8 @@ const MemberOption = (props, onChange) => {
         
         {members.map((item, index) => {
           return (
-            <div key={item.uid} ref={innerRef} {...innerProps}>
-              
-              <div className="d-flex border-bottom text-dark btn ">
+            <div key={item.uid} ref={innerRef} {...innerProps} className="option-item">
+              <div className="d-flex border-bottom text-dark btn">
                 <label className="lable-custom">
                 {
                   props.type !== 'singleChoice' ?
@@ -118,13 +117,13 @@ const MemberOption = (props, onChange) => {
                   onChange={handleChange}/> : 
                   <input type="radio" className="mtmr5" id={item.uid} value={item.uid} name="flexRadioDefault" checked={item.checked} onChange={handleChange}/>
                 }
-                 <div className="float-left text-left text-wrap w-100">
-                    <div className="">{item.fullname}</div>
-                  <div className="text-xs">
-                    <span>{item.company_email} - {item.job_name}</span>
+                  <div className="float-left text-left text-wrap w-100">
+                    <div className="full-name">{item.fullname}</div>
+                    <div className="text-xs account-job">
+                      <span>({item.company_email}) {item.job_name}</span>
+                    </div>
                   </div>
-                </div>
-               </label>
+                </label>
               </div>
             </div>
           );

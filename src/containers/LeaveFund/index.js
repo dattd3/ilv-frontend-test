@@ -138,11 +138,19 @@ class LeaveFund extends React.Component {
   }
 
   renderListData = () => {
-    const { isShowLoadingModal, subordinateLeaveOfAbsences } = this.state
+    const { subordinateLeaveOfAbsences } = this.state
     const lastYear = this.currentYear - 1
+
+    const getDepartmentPartGroupByListData = listData => {
+      const result = listData.find(item => item && item !== '#')
+      return result
+    }
 
     return (
       subordinateLeaveOfAbsences.map((item, index) => {
+        let profile = item.profile
+        const departmentPartGroup = getDepartmentPartGroupByListData([profile.part, profile.unit, profile.department, profile.division, profile.pnl])
+
         let usedAnnualLeaveLastYear = (item.used_annual_leave || []).find(a => a.year == lastYear)
         let unusedAnnualLeaveLastYear = (item.unused_annual_leave || []).find(a => a.year == lastYear)
         let usedCompensatoryLeaveLastYear = (item.used_compensatory_leave || []).find(a => a.year == lastYear)
@@ -178,14 +186,15 @@ class LeaveFund extends React.Component {
         /* End Giờ bù tồn năm nay */
 
         return  <tr key={index}>
-                  <td className="full-name"><span>{item?.fullname || ""}</span></td>
+                  <td className="full-name"><span>{profile?.fullname || ""}</span></td>
+                  <td className="room-part-group"><span>{departmentPartGroup || ""}</span></td>
                   {/* Ngày phép tồn năm trước */}
                   <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveLastYear)}</span></td>
                   <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear)}</span></td>
                   <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveLastYear}</span></td>
                   {/* End Ngày phép tồn năm trước */}
                   {/* Ngày phép năm nay */}
-                  <td className="text-center"><span className="sum-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveThisYear)}</span></td>
+                  <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveThisYear)}</span></td>
                   <td className="text-center text-primary"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveThisYear)}</span></td>
                   <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveThisYear}</span></td>
                   {/* End Ngày phép năm nay */}
@@ -242,19 +251,16 @@ class LeaveFund extends React.Component {
       /* Ngày phép năm nay */
       let numberUsedAnnualLeaveThisYear = this.convertToFloatByValue(usedAnnualLeaveThisYear?.days)
       let numberUnusedAnnualLeaveThisYear = this.convertToFloatByValue(unusedAnnualLeaveThisYear?.days)
-      let expiryDateUnusedAnnualLeaveThisYear = this.formatDateByMuleValue(unusedAnnualLeaveThisYear?.expire_date)
       /* End Ngày phép năm nay */
 
       /* Giờ bù tồn năm trước */
       let numberUsedCompensatoryLeaveLastYear = this.convertToFloatByValue(usedCompensatoryLeaveLastYear?.days)
       let numberUnusedCompensatoryLeaveLastYear = this.convertToFloatByValue(unusedCompensatoryLeaveLastYear?.days)
-      let expiryDateUnusedCompensatoryLeaveLastYear = this.formatDateByMuleValue(unusedCompensatoryLeaveLastYear?.expire_date)
       /* End Giờ bù tồn năm trước */
 
       /* Giờ bù tồn năm nay */
       let numberUsedCompensatoryLeaveThisYear = this.convertToFloatByValue(usedCompensatoryLeaveThisYear?.days)
       let numberUnusedCompensatoryLeaveThisYear = this.convertToFloatByValue(unusedCompensatoryLeaveThisYear?.days)
-      let expiryDateUnusedCompensatoryLeaveThisYear = this.formatDateByMuleValue(unusedCompensatoryLeaveThisYear?.expire_date)
       /* End Giờ bù tồn năm nay */
       
       totalNumberUsedAnnualLeaveLastYear += numberUsedAnnualLeaveLastYear
@@ -271,14 +277,14 @@ class LeaveFund extends React.Component {
 
     return (
       <tr>
-        <th className="full-name text-center text-uppercase font-weight-bold"><span>{t("Total")}</span></th>
+        <th className="full-name text-center text-uppercase font-weight-bold" colSpan="2"><span>{t("Total")}</span></th>
         <th className="text-center font-weight-bold"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUsedAnnualLeaveLastYear)}</span></th>
         <th className="text-warning text-center font-weight-bold"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUnusedAnnualLeaveLastYear)}</span></th>
         <th className="text-center font-weight-bold"><span className="same-width"></span></th>
-        <th className="font-weight-bold text-center"><span className="sum-width">{this.formatNumberStandardByValue(totalNumberUsedAnnualLeaveThisYear)}</span></th>
+        <th className="font-weight-bold text-center"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUsedAnnualLeaveThisYear)}</span></th>
         <th className="text-center font-weight-bold text-primary"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUnusedAnnualLeaveThisYear)}</span></th>
         <th className="text-center font-weight-bold"><span className="same-width"></span></th>
-        <th className="text-center font-weight-bold text-danger"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUnusedAnnualLeave)}</span></th>
+        <th className="text-center font-weight-bold text-danger"><span className="sum-width">{this.formatNumberStandardByValue(totalNumberUnusedAnnualLeave)}</span></th>
         <th className="text-center font-weight-bold"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUsedCompensatoryLeaveLastYear)}</span></th>
         <th className="text-warning text-center font-weight-bold"><span className="same-width">{this.formatNumberStandardByValue(totalNumberUnusedCompensatoryLeaveLastYear)}</span></th>
         <th className="text-success text-center font-weight-bold"><span className="same-width"></span></th>
@@ -313,13 +319,18 @@ class LeaveFund extends React.Component {
           </div>
         </div>
         {
-          subordinateLeaveOfAbsences.length > 0 
-          ? <div className="card border shadow result-block">
+          subordinateLeaveOfAbsences.length > 0 ?
+          <>
+            <div className="btn-block">
+              <button type="button" className="btn btn-outline-success"><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
+            </div>
+            <div className="card border shadow result-block">
               <div className="result-wrap-table">
                 <table className="result-table">
                   <thead>
                     <tr>
                       <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("FullName")}</th>
+                      <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("RoomPartGroup")}</th>
                       <th className="text-center text-uppercase font-weight-bold text-warning" colSpan="3">{t("RemainingLeavesFromLastYear")}</th>
                       <th className="text-center text-uppercase font-weight-bold text-primary" colSpan="3">{t("LeavesThisYear")}</th>
                       <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("TotalAvaiableLeaves")}</th>
@@ -349,6 +360,7 @@ class LeaveFund extends React.Component {
                 </table>
               </div>
             </div>
+          </>
           : null
         }
       </div>
