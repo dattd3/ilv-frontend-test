@@ -97,6 +97,7 @@ const Constants = {
   // user level
   CONSENTER_LIST_LEVEL : ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
 
   //other
   QAAlreadyExist: "QAAlreadyExist",
