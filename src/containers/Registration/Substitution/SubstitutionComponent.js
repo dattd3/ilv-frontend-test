@@ -55,7 +55,8 @@ class SubstitutionComponent extends React.Component {
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
+          const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index).sort((a,b) => (a.shift_id.includes("OFF")) ? -1 : 1)
+          console.log(shifts);
           this.setState({ shifts: shifts })
         }
       }).catch(error => { })
