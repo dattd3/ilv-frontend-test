@@ -41,46 +41,6 @@ class EmployeeTimesheets extends Component {
       dayList: this.getDates(startDate, endDate),
     });
     this.search(startDate, endDate, memberIds);
-    //this.requestReasonAndComment(startDate, endDate);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-      },
-    };
-
-    const start = moment(startDate).format("YYYYMMDD").toString();
-    const end = moment(endDate).format("YYYYMMDD").toString();
-
-    axios
-      .get(
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`,
-        config
-      )
-      .then((res) => {
-        if (res && res.data && res.data.data) {
-          const defaultData = {
-            actual_working: 0,
-            attendance: 0,
-            paid_leave: 0,
-            salary_wh: 0,
-            total_overtime: 0,
-            trainning: 0,
-            unpaid_leave: 0,
-            working_day_plan: 0,
-            working_deal: 0,
-          };
-          const timsheetSummary = res.data.data[0]
-            ? res.data.data[0]
-            : defaultData;
-          this.setState({ timsheetSummary: timsheetSummary});
-        }
-      })
-      .catch((error) => {
-        // localStorage.clear();
-        // window.location.href = map.Login;
-      });
   }
   getDates(startDate, endDate) {
     const dates = [];
