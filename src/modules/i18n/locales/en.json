@@ -901,5 +901,7 @@
   "ConfirmEndedAnswers": "Are you sure to end this conversation?",
   "RejectQuestionButtonLabel": "Reject",
   "HourUnit": "hours",
-  "DayUnit": "days"
+  "DayUnit": "days",
+  "RoomPartGroup": "Department/Team",
+  "ExportFile": "Export file"
 }

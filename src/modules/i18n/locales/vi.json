@@ -640,7 +640,7 @@
   "UnpaidLeaveWork": "Công không hưởng lương",
   "UnpaidLeaveDays": "Số ngày nghỉ không hưởng lương",
   "UnpaidLeave": "Nghỉ không lương",
-  "Used": " Đã sử dụng",
+  "Used": "Đã sử dụng",
   "UsedLeaves": "Số ngày phép đã sử dụng",
   "VfRentalSupport": "Hỗ trợ thuê xe VF",
   "VingroupOnboardDate": "Ngày vào tập đoàn",
@@ -921,5 +921,7 @@
   "ConfirmEndedAnswers": "Bạn xác nhận muốn kết thúc giải đáp này?",
   "RejectQuestionButtonLabel": "Từ chối",
   "HourUnit": "giờ",
-  "DayUnit": "ngày"
+  "DayUnit": "ngày",
+  "RoomPartGroup": "Phòng/Bộ phận/Nhóm",
+  "ExportFile": "Xuất tệp tin"
 }
