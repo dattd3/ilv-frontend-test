@@ -347,7 +347,7 @@
 
 #content-wrapper {
   background-color: #f2f2f2 !important;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 .text-color-vp {
   color: #293281 !important;
@@ -1985,6 +1985,17 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .btn-block {
+    font-size: 14px;
+    margin-top: 1.5rem;
+    button {
+      font-size: inherit;
+      background: #FFFFFF;
+      i {
+        margin-right: 8px;
+      }
+    }
+  }
   .result-block {
     color: #000000;
     font-size: 13px;
@@ -2030,6 +2041,16 @@ span.badge-notification[data-badge]::after {
             width: 140px;
           }
         }
+        .room-part-group {
+          background: #FFFFFF;
+          position: sticky;
+          left: 158px;
+          z-index: 0;
+          span {
+            display: inline-block;
+            width: 200px;
+          }
+        }
         thead {
           position: sticky;
           top: 0;
@@ -2041,6 +2062,13 @@ span.badge-notification[data-badge]::after {
               position: sticky;
               top: 0;
               left: 0;
+              z-index: 1;
+            }
+            th:nth-child(2) {
+              background: #FFFFFF;
+              position: sticky;
+              top: 0;
+              left: 158px;
               z-index: 1;
             }
           }
