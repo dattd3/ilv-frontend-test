@@ -327,12 +327,12 @@ function Content(props) {
                             </tr>
                             <tr className="divide"></tr>
                         </thead>
-                    <tbody >
+                    <tbody>
                     { memberTimeData.map((timesheet, index) => {
                         return <React.Fragment key={index}>
                             <tr style={{borderTop: '1px solid #707070'}}>
                                 <td rowSpan="4" className="fixed-col full-name"><span>{timesheet.name || ""}</span></td>
-                                <td rowSpan="4" className="fixed-col room-part-group"><span>{timesheet.name || ""}</span></td>
+                                <td rowSpan="4" className="fixed-col room-part-group"><span>{timesheet.departmentPartGroup || ""}</span></td>
                                 <RenderRow1 member = {timesheet} />
                             </tr>
                             <tr className="no-border-left">
