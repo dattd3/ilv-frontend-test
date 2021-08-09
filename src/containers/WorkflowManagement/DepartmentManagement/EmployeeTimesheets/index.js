@@ -68,9 +68,7 @@ class EmployeeTimesheets extends Component {
     let start = moment(startDate).format("YYYYMMDD").toString();
     let end = moment(endDate).format("YYYYMMDD").toString();
     const headers = {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-      // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
     };
 
     const timeoverviewParams = {
@@ -94,6 +92,12 @@ class EmployeeTimesheets extends Component {
       headers,
       params: reasonParams,
     });
+
+    const getDepartmentPartGroupByListData = listData => {
+      const result = listData.find(item => item && item !== '#')
+      return result
+    }
+
     axios.all([requestReson, requestTimOverview]).then(
       axios.spread((...responses) => {
         if (responses[1]) {
@@ -113,7 +117,8 @@ class EmployeeTimesheets extends Component {
               return {
                 per: key,
                 name: group_to_values[key][0].fullname,
-                timesheets: group_to_values[key],
+                departmentPartGroup: getDepartmentPartGroupByListData([group_to_values[key][0].part, group_to_values[key][0].unit, group_to_values[key][0].department, group_to_values[key][0].division, group_to_values[key][0].pnl]),
+                timesheets: group_to_values[key]
               };
             });
 
@@ -557,9 +562,6 @@ class EmployeeTimesheets extends Component {
   render() {
     const { t } = this.props;
     const {isSearch, timeTables, dayList, isLoading} = this.state
-
-    console.log("kakakak")
-    console.log(timeTables)
 
     return (
       <div className="timesheet-section">
