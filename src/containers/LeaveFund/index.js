@@ -2,6 +2,8 @@ import React from 'react'
 import { registerLocale } from 'react-datepicker'
 import axios from 'axios'
 import moment from 'moment'
+import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx-js-style'
 import DropdownCustomize from "./DropdownCustomize"
 import { getRequestConfigurations } from "../../commons/Utils"
 import Constants from '../../commons/Constants'
@@ -296,6 +298,34 @@ class LeaveFund extends React.Component {
     )
   }
 
+  exportLeaveFundToExcel = () => {
+    const { t } = this.props
+    const title = t("MenuLeaveTOILManagement").replace(/[\\//]/g, '_')
+    const fileNameForExport = `${title}.xlsx`
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('result-table'))
+    const cellHeaderForStyles = ['A1', 'A3', 'B1', 'C1', 'F1', 'I1', 'J1', 'M1', 'P1', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2']
+
+    for (let i = 0, len = cellHeaderForStyles.length; i < len; i++) {
+      ws[cellHeaderForStyles[i]].s = {
+        alignment: {
+          wrapText: true,
+          horizontal: "center",
+          vertical: "center"
+        }
+      }
+    }
+    
+    ws['!cols'] = [
+      {width: 20}, {width: 30}, {width: 13}, {width: 18}, {width: 14}, {width: 13}, {width: 18}, {width: 14},
+      {width: 15}, {width: 13}, {width: 18}, {width: 15}, {width: 13}, {width: 18}, {width: 14}, {width: 15}
+    ]
+    const wb = {Sheets: {[fileNameForExport]: ws}, SheetNames: [fileNameForExport]}
+    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
+    const data = new Blob([excelBuffer], {type: fileType})
+    FileSaver.saveAs(data, fileNameForExport)
+  }
+
   render() {
     const { t } = this.props
     const { filter, subordinateLeaveOfAbsences } = this.state
@@ -322,11 +352,11 @@ class LeaveFund extends React.Component {
           subordinateLeaveOfAbsences.length > 0 ?
           <>
             <div className="btn-block">
-              <button type="button" className="btn btn-outline-success"><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
+              <button type="button" className="btn btn-outline-success" onClick={this.exportLeaveFundToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
             </div>
             <div className="card border shadow result-block">
               <div className="result-wrap-table">
-                <table className="result-table">
+                <table className="result-table" id="result-table">
                   <thead>
                     <tr>
                       <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("FullName")}</th>
