@@ -673,7 +673,7 @@
   "Time": "Date",
   "Result": "Result",
   "DownloadCV": "Download CV",
-  "StartTime": "Start Time",
+  "StartHour": "Start Time",
   "EndTime": "End Time",
   "Yes": "Yes",
   "No": "No",
