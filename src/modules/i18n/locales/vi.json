@@ -567,7 +567,7 @@
   "WorkStartDate": "Ngày bắt đầu làm việc",
   "StartDateRequired": "(Thời gian bắt đầu là bắt buộc)",
   "StartDateTime": "Ngày/giờ bắt đầu",
-  "StartTime": "Giờ bắt đầu",
+  "StartHour": "Giờ bắt đầu",
   "Status": "Trạng thái",
   "Street": "Đường phố",
   "StudyProgress": "Quá trình học tập",
