@@ -19,7 +19,7 @@ class ShiftTable extends React.Component {
                     <thead className="bg-primary text-white text-center">
                         <tr>
                             <th scope="col">{t("SelectShiftCode")}</th>
-                            <th scope="col">{t("StartTime")}</th>
+                            <th scope="col">{t("StartHour")}</th>
                             <th scope="col">{t("Endtime")}</th>
                             <th scope="col">{t("WorkHours")}</th>
                             <th scope="col">{t("ShiftCode")}</th>
