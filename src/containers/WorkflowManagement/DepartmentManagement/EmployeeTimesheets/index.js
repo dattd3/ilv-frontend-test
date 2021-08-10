@@ -4,7 +4,8 @@ import axios from "axios";
 import moment from "moment";
 import { Spinner } from 'react-bootstrap';
 import { withTranslation } from "react-i18next";
-// import { useTranslation } from "react-i18next";
+import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -107,10 +108,10 @@ class EmployeeTimesheets extends Component {
             if(dataSorted && dataSorted.length > 0) {
               const startReal =   moment( dataSorted[dataSorted.length - 1].date, 'DD-MM-YYYY').format('YYYYMMDD');
               start = startReal > start ? startReal : start;
-              const endReal = moment(dataSorted[0].date, 'DD-MM-YYYY').format('YYYYMMDD'); 
+              const endReal = moment(dataSorted[0].date, 'DD-MM-YYYY').format('YYYYMMDD');
               end = endReal < end ? endReal : end;
-            } 
-            
+            }
+
             //group data by pernr
             var group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
             var groups = Object.keys(group_to_values).map(function (key) {
@@ -158,9 +159,9 @@ class EmployeeTimesheets extends Component {
 
   getComment = (dateString, line1,  line2, reasonData) =>{
     const reasonForCurrentDaty = reasonData.filter( item => (item.startDate <= dateString && item.endDate >= dateString) || (item.startDate == dateString && item.endDate == dateString))
-    
+
     if(reasonForCurrentDaty.length == 0) {
-      return line2;  
+      return line2;
     }
 
     for(let i = 0; i < reasonForCurrentDaty.length; i++) {
@@ -177,9 +178,9 @@ class EmployeeTimesheets extends Component {
           line2.leave_start_time1_comment = item;
         } else if( startTime == line2.leave_start_time2 && endTime == line2.leave_end_time2) {
           line2.leave_start_time2_comment = item;
-        } 
+        }
       } else if(this.checkExist(line1.from_time1) && this.checkExist(line1.to_time1)) {
-        if(this.checkExist(line2.trip_start_time1) && this.checkExist(line2.trip_end_time1)) { 
+        if(this.checkExist(line2.trip_start_time1) && this.checkExist(line2.trip_end_time1)) {
           line2.trip_start_time1_comment = item;
         } else if( this.checkExist(line2.leave_start_time1) && this.checkExist(line2.leave_end_time1) ) {
           line2.leave_start_time1_comment = item;
@@ -193,7 +194,7 @@ class EmployeeTimesheets extends Component {
       }
     }
     return line2;
-    
+
   }
 
   processDataForTable = (data1, fromDateString, toDateString, reasonData) => {
@@ -333,7 +334,7 @@ class EmployeeTimesheets extends Component {
           )
         );
       }
-      
+
       if (this.checkExist(item.leave_start_time2)) {
         line3.type = EVENT_TYPE.EVENT_GIONGHI;
         line3.subtype = line3.subtype[0] + 1;
@@ -558,7 +559,35 @@ class EmployeeTimesheets extends Component {
 
     return [...data.reverse()];
   };
-  
+
+  exportTimeSheetsToExcel = () => {
+    const { t } = this.props
+    const title = t("Timesheet").replace(/[\\//]/g, '_')
+    const fileNameForExport = `${title}.xlsx`
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('result-table'))
+    // const cellHeaderForStyles = ['A1', 'A3', 'B1', 'C1', 'F1', 'I1', 'J1', 'M1', 'P1', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2']
+
+    // for (let i = 0, len = cellHeaderForStyles.length; i < len; i++) {
+    //   ws[cellHeaderForStyles[i]].s = {
+    //     alignment: {
+    //       wrapText: true,
+    //       horizontal: "center",
+    //       vertical: "center"
+    //     }
+    //   }
+    // }
+
+    // ws['!cols'] = [
+    //   {width: 20}, {width: 30}, {width: 13}, {width: 18}, {width: 14}, {width: 13}, {width: 18}, {width: 14},
+    //   {width: 15}, {width: 13}, {width: 18}, {width: 15}, {width: 13}, {width: 18}, {width: 14}, {width: 15}
+    // ]
+    const wb = {Sheets: {[fileNameForExport]: ws}, SheetNames: [fileNameForExport]}
+    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
+    const data = new Blob([excelBuffer], {type: fileType})
+    FileSaver.saveAs(data, fileNameForExport)
+  }
+
   render() {
     const { t } = this.props;
     const {isSearch, timeTables, dayList, isLoading} = this.state
@@ -568,8 +597,93 @@ class EmployeeTimesheets extends Component {
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
         {
           (isSearch && timeTables.length > 0)  ?
-          <TimeSheetMember timesheets={timeTables} dayList={dayList}/> : 
-          isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> : 
+          <>
+          <div className="btn-block">
+            <button type="button" className="btn btn-outline-success" onClick={this.exportTimeSheetsToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
+          </div>
+          <table id="result-table" style={{display: 'none', border: '1px solid red'}}>
+            <thead>
+              <tr>
+                <th rowSpan="2">{t("FullName")}</th>
+                <th rowSpan="2">{t("RoomPartGroup")}</th>
+                <th rowSpan="2"></th>
+                {
+                  dayList.map((item, i) => {
+                    return <th className="text-center text-uppercase font-weight-bold" key={i}>{moment(item).format("dddd").toLocaleUpperCase()}</th>
+                  })
+                }
+              </tr>
+              <tr>
+                {
+                  dayList.map((item, i) => {
+                    return <th key={i}>{moment(item).format("DD/MM")}</th>
+                  })
+                }
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowSpan="3">a</td>
+                <td rowSpan="3">1</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+              </tr>
+              <tr>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+                <td>22</td>
+              </tr>
+              <tr>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+                <td>33</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <TimeSheetMember timesheets={timeTables} dayList={dayList}/></> :
+          isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> :
           isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }
       </div>

@@ -1994,6 +1994,9 @@ span.badge-notification[data-badge]::after {
       i {
         margin-right: 8px;
       }
+      &:hover {
+        color: #1cc88a;
+      }
     }
   }
   .result-block {
