@@ -3,14 +3,16 @@ import Button from 'react-bootstrap/Button'
 import {OverlayTrigger,Tooltip, Popover} from 'react-bootstrap'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
+import { formatStringByMuleValue } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
+
 const DATE_TYPE = {
     DATE_OFFSET: 0,
     DATE_NORMAL: 1,
     DATE_OFF: 2
-  };
-  const EVENT_TYPE = {
+};
+const EVENT_TYPE = {
     NO_EVENT: 0,
     EVENT_KEHOACH: 1,
     EVENT_KE_HOACH_CONTINUE: 2,
@@ -19,8 +21,8 @@ const DATE_TYPE = {
     EVENT_GIONGHI: 5,
     EVENT_CONGTAC: 6,
     EVENT_OT: 7
-  };
-  const EVENT_STYLE = {
+};
+const EVENT_STYLE = {
     NO_EVENT: "no-event",
     EVENT_KEHOACH: "ke_hoach",
     EVENT_KE_HOACH_CONTINUE: 'ke_hoach_dai',
@@ -29,7 +31,7 @@ const DATE_TYPE = {
     EVENT_GIONGHI: 'gio_nghi',
     EVENT_CONGTAC: 'cong_tac',
     EVENT_OT: 'ot'
-  }
+}
 
 function RenderTooltip(props) {
     const { t } = useTranslation();
@@ -255,15 +257,24 @@ function RenderRow3(props) {
     return <>
     {
         props.member.timesheets.map((item, index) => {
-            if( item.date_type == DATE_TYPE.DATE_OFFSET) {
-                return null;
+            if ( item.date_type == DATE_TYPE.DATE_OFFSET) {
+                return null
             }
-            if(item.line3.type == EVENT_TYPE.NO_EVENT) {
-                return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-            } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
-                return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item= {item} type = {item.line3.type}/></td>
+
+            if (props.isShowLineOT) {
+                if (item.line3.type == EVENT_TYPE.NO_EVENT) {
+                    return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
+                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
+                    return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item= {item} type = {item.line3.type}/></td>
+                }
+            } else {
+                if (item.line3.type == EVENT_TYPE.NO_EVENT) {
+                    return <td style={{borderTop: 'none'}} key = {index}><div>&nbsp;</div></td>
+                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
+                    return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item= {item} type = {item.line3.type}/></td>
+                }
             }
-            return null;
+            return null
         })
     }
     </>
@@ -295,7 +306,7 @@ function Content(props) {
     const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 50)
     const { t } = useTranslation();
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
-    
+
     return (
         <>
             <div className="row pr-2 pl-2 pb-4">
@@ -328,22 +339,30 @@ function Content(props) {
                             <tr className="divide"></tr>
                         </thead>
                     <tbody>
-                    { memberTimeData.map((timesheet, index) => {
+                    { memberTimeData.map((timeSheet, index) => {
+                        let isShowLineOT = (timeSheet?.timesheets || [])
+                        .every(item => formatStringByMuleValue(item.line4?.ot_end_time1) && formatStringByMuleValue(item.line4?.ot_end_time2) 
+                        && formatStringByMuleValue(item.line4?.ot_end_time3) && formatStringByMuleValue(item.line4?.ot_start_time1) && 
+                        formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
                         return <React.Fragment key={index}>
-                            <tr style={{borderTop: '1px solid #707070'}}>
-                                <td rowSpan="4" className="fixed-col full-name"><span>{timesheet.name || ""}</span></td>
-                                <td rowSpan="4" className="fixed-col room-part-group"><span>{timesheet.departmentPartGroup || ""}</span></td>
-                                <RenderRow1 member = {timesheet} />
+                            <tr style={{borderTop: '1px solid #707070'}} className="line1">
+                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span>{timeSheet.name || ""}</span></td>
+                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col room-part-group"><span>{timeSheet.departmentPartGroup || ""}</span></td>
+                                <RenderRow1 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left">
-                                <RenderRow2 member = {timesheet} />
+                            <tr className="no-border-left" className="line2">
+                                <RenderRow2 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left">
-                                <RenderRow3 member={timesheet} />
+                            <tr className="no-border-left" className="line3">
+                                <RenderRow3 member={timeSheet} isShowLineOT={isShowLineOT} />
                             </tr>
-                            <tr className="no-border-left">
-                                <RenderRow4 member={timesheet} />
-                            </tr>
+                            {
+                                isShowLineOT ? 
+                                <tr className="no-border-left" className="line4">
+                                    <RenderRow4 member={timeSheet} />
+                                </tr>
+                                : null
+                            }
                             <tr className="divide"></tr>
                         </React.Fragment>     
                         })}
