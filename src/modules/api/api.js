@@ -79,19 +79,20 @@ export default class Api {
     );
   };
 
-  fetchSabaLearning_OnGoing = async (pageIndex, pageSize) => {
+  fetchSabaLearning_OnGoing = async (pageIndex, pageSize, year) => {
     return await this.request.get(
       `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`,
       {
         params: {
           page_no: pageIndex,
           page_size: pageSize,
+          year: year
         },
       }
     );
   };
 
-  fetchSabaLearning_Transcript = async (status, pageIndex, pageSize) => {
+  fetchSabaLearning_Transcript = async (status, pageIndex, pageSize, year) => {
     return await this.request.get(
       `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`,
       {
@@ -99,12 +100,13 @@ export default class Api {
           status: status,
           page_no: pageIndex,
           page_size: pageSize,
+          year: year
         },
       }
     );
   };
 
-  fetchSabaIntruction = async (user_id, status, pageIndex, pageSize) => {
+  fetchSabaIntruction = async (user_id, status, pageIndex, pageSize, year) => {
     return await this.request.get(
       `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`,
       {
@@ -113,6 +115,7 @@ export default class Api {
           status: status,
           page_no: pageIndex,
           page_size: pageSize,
+          year: year
         },
       }
     );

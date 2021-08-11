@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
@@ -19,15 +19,16 @@ const usePreload = (params) => {
     return sabaEnrollments;
 };
 
-function OnGoingClass(props) {
+function OnGoingClass({_year}) {
     const { t } = useTranslation();
     document.title = `Learning`;
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
+    const [refresh, SetRefresh] = useState(false);
     const guard = useGuardStore();
     const user = guard.getCurentUser()
    
-    const sabaEnrollments = usePreload([user.sabaId, 100, pageIndex, pageSize]);
+    const sabaEnrollments = usePreload([user.sabaId, 100, pageIndex, pageSize, _year]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
@@ -39,6 +40,11 @@ function OnGoingClass(props) {
         SetPageSize(evt.target.value);
         SetPageIndex(1);
     }
+
+    useEffect(() => {
+        SetPageIndex(1);
+        SetRefresh(!refresh)
+    }, [_year])
 
     try {
         if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
@@ -91,7 +97,7 @@ function OnGoingClass(props) {
                                     {t("Total")}: {sabaEnrollments.data.total} {t("Course")}
                                 </Col>
                                 <Col className='paging'>
-                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
+                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} needReset={refresh}/>
                                 </Col>
                                 <Col>
                                     <Form.Control as="select" onChange={onChangePageSize} className='w-auto float-right'>
