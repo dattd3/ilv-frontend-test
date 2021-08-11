@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Pagination } from 'react-bootstrap';
 
 function CustomPaging(props) {
-    const { pageSize = 5, totalRecords = 0, onChangePage , needRefresh} = props;
+    const { pageSize = 5, totalRecords = 0, onChangePage , needRefresh, needReset} = props;
     const [currentPage, SetCurrentPage] = useState(1);
 
-    useEffect(() => { SetCurrentPage(1); }, [pageSize]);
+    useEffect(() => { SetCurrentPage(1); }, [pageSize, needReset]);
 
     var totalPages = Math.ceil(totalRecords / pageSize);
     var startPage, endPage;
