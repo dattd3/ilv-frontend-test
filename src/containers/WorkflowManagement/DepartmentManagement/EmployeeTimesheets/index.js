@@ -7,6 +7,9 @@ import { withTranslation } from "react-i18next";
 import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
+import Constants from "../../../../commons/Constants";
+import { formatStringByMuleValue } from "../../../../commons/Utils"
+
 const DATE_TYPE = {
   DATE_OFFSET: 0,
   DATE_NORMAL: 1,
@@ -560,10 +563,11 @@ class EmployeeTimesheets extends Component {
     return [...data.reverse()];
   };
 
-  exportTimeSheetsToExcel = () => {
+  exportTimeSheetsToExcel = () => {  
     const { t } = this.props
+    const {dayList, timeTables} = this.state
     const title = t("Timesheet").replace(/[\\//]/g, '_')
-    const fileNameForExport = `${title}.xlsx`
+    const fileNameForExport = `${moment().format("YYYYMMDDHHmmss")} ${title}.xlsx`
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
     const ws = XLSX.utils.table_to_sheet(document.getElementById('result-table'))
     // const cellHeaderForStyles = ['A1', 'A3', 'B1', 'C1', 'F1', 'I1', 'J1', 'M1', 'P1', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2']
@@ -578,18 +582,56 @@ class EmployeeTimesheets extends Component {
     //   }
     // }
 
-    // ws['!cols'] = [
-    //   {width: 20}, {width: 30}, {width: 13}, {width: 18}, {width: 14}, {width: 13}, {width: 18}, {width: 14},
-    //   {width: 15}, {width: 13}, {width: 18}, {width: 15}, {width: 13}, {width: 18}, {width: 14}, {width: 15}
-    // ]
-    const wb = {Sheets: {[fileNameForExport]: ws}, SheetNames: [fileNameForExport]}
-    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
+    let widthColumnInitial = [{width: 20}, {width: 30}, {width: 25}]
+    for (let j = 0, len = dayList.length; j < len; j++) {
+      widthColumnInitial = widthColumnInitial.concat({width: 20})
+    }
+
+    ws['!cols'] = widthColumnInitial
+    const wb = {Sheets: {[title]: ws}, SheetNames: [title]}
+    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array', cellDates: false})
     const data = new Blob([excelBuffer], {type: fileType})
     FileSaver.saveAs(data, fileNameForExport)
   }
 
+  renderDataPerDate = (data, key, type) => {
+    const { t } = this.props
+    const showRangeDate = (start, end) => {
+      if (!formatStringByMuleValue(start) || !formatStringByMuleValue(end)) {
+        return ""
+      }
+      return `${moment(start, 'HHmmss').format('HH:mm:ss')} - ${moment(end, 'HHmmss').format('HH:mm:ss')}`
+    }
+
+    return data.map((item, index) => {
+      let val = ""
+      switch (key) {
+        case 'line1':
+          val = t("DayOffLabel")
+          if (item.date_type != Constants.DATE_TYPE.DATE_OFF) {
+            val = [showRangeDate(item[key].from_time1, item[key].to_time1), showRangeDate(item[key].from_time2, item[key].to_time2)].join("\r\n")
+          }
+          break
+        case 'line2':
+          val = [showRangeDate(item[key].start_time1_fact, item[key].end_time1_fact), showRangeDate(item[key].start_time2_fact, item[key].end_time2_fact), showRangeDate(item[key].start_time3_fact, item[key].end_time3_fact)].join("\r\n")
+          break
+        case 'line3':
+          if (type === "leave") {
+            val = [showRangeDate(item[key].leave_start_time1, item[key].leave_end_time1), showRangeDate(item[key].leave_start_time2, item[key].leave_end_time2)].join("\r\n")
+          } else if (type === "trip") {
+            val = [showRangeDate(item[key].trip_start_time1, item[key].trip_end_time1), showRangeDate(item[key].trip_start_time2, item[key].trip_end_time2)].join("\r\n")
+          }
+          break
+        case 'line4':
+          val = [showRangeDate(item[key].ot_start_time1, item[key].ot_end_time1), showRangeDate(item[key].ot_start_time2, item[key].ot_end_time2), showRangeDate(item[key].ot_start_time3, item[key].ot_end_time3)].join("\r\n")
+          break
+      }
+      return <td key={index}>{val}</td>
+    })   
+  }
+
   render() {
-    const { t } = this.props;
+    const { t } = this.props
     const {isSearch, timeTables, dayList, isLoading} = this.state
 
     return (
@@ -601,7 +643,8 @@ class EmployeeTimesheets extends Component {
           <div className="btn-block">
             <button type="button" className="btn btn-outline-success" onClick={this.exportTimeSheetsToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
           </div>
-          <table id="result-table" style={{display: 'none', border: '1px solid red'}}>
+          {/* Temp render table to export table to excel */}
+          <table id="result-table" style={{display: 'none'}}>
             <thead>
               <tr>
                 <th rowSpan="2">{t("FullName")}</th>
@@ -622,66 +665,37 @@ class EmployeeTimesheets extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td rowSpan="3">a</td>
-                <td rowSpan="3">1</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-                <td>11</td>
-              </tr>
-              <tr>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-                <td>22</td>
-              </tr>
-              <tr>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-                <td>33</td>
-              </tr>
-
+              {
+                timeTables.map((item, i) => {
+                  return <React.Fragment key={i}>
+                    <tr>
+                      <td rowSpan="5">{item.name}</td>
+                      <td rowSpan="5">{item.departmentPartGroup}</td>
+                      <td>{t("TimePlan")}</td>
+                      {this.renderDataPerDate(item.timesheets, 'line1')}
+                    </tr>
+                    <tr>
+                      <td>{t("TimeActual")}</td>
+                      {this.renderDataPerDate(item.timesheets, 'line2')}
+                    </tr>
+                    <tr>
+                      <td>{t("Leave")}</td>
+                      {this.renderDataPerDate(item.timesheets, 'line3', 'leave')}
+                    </tr>
+                    <tr>
+                      <td>{t("Biztrip")}</td>
+                      {this.renderDataPerDate(item.timesheets, 'line3', 'trip')}
+                    </tr>
+                    <tr>
+                      <td>{t("OT")}</td>
+                      {this.renderDataPerDate(item.timesheets, 'line4')}
+                    </tr>
+                  </React.Fragment>
+                })
+              }
             </tbody>
           </table>
-
+          {/* End Temp render table to export table to excel */}
           <TimeSheetMember timesheets={timeTables} dayList={dayList}/></> :
           isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> :
           isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
