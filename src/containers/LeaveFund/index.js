@@ -301,7 +301,7 @@ class LeaveFund extends React.Component {
   exportLeaveFundToExcel = () => {
     const { t } = this.props
     const title = t("MenuLeaveTOILManagement").replace(/[\\//]/g, '_')
-    const fileNameForExport = `${title}.xlsx`
+    const fileNameForExport = `${moment().format("YYYYMMDDHHmmss")} ${title}.xlsx`
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
     const ws = XLSX.utils.table_to_sheet(document.getElementById('result-table'))
     const cellHeaderForStyles = ['A1', 'A3', 'B1', 'C1', 'F1', 'I1', 'J1', 'M1', 'P1', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2']
@@ -320,7 +320,7 @@ class LeaveFund extends React.Component {
       {width: 20}, {width: 30}, {width: 13}, {width: 18}, {width: 14}, {width: 13}, {width: 18}, {width: 14},
       {width: 15}, {width: 13}, {width: 18}, {width: 15}, {width: 13}, {width: 18}, {width: 14}, {width: 15}
     ]
-    const wb = {Sheets: {[fileNameForExport]: ws}, SheetNames: [fileNameForExport]}
+    const wb = {Sheets: {[title]: ws}, SheetNames: [title]}
     const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
     const data = new Blob([excelBuffer], {type: fileType})
     FileSaver.saveAs(data, fileNameForExport)
