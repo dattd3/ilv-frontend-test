@@ -570,26 +570,45 @@ class EmployeeTimesheets extends Component {
     const fileNameForExport = `${moment().format("YYYYMMDDHHmmss")} ${title}.xlsx`
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
     const ws = XLSX.utils.table_to_sheet(document.getElementById('result-table'))
-    // const cellHeaderForStyles = ['A1', 'A3', 'B1', 'C1', 'F1', 'I1', 'J1', 'M1', 'P1', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2']
-
-    // for (let i = 0, len = cellHeaderForStyles.length; i < len; i++) {
-    //   ws[cellHeaderForStyles[i]].s = {
-    //     alignment: {
-    //       wrapText: true,
-    //       horizontal: "center",
-    //       vertical: "center"
-    //     }
-    //   }
-    // }
-
+    const cellHeaderInitialForStyles = ['A1', 'B1', 'A3', 'B3']
     let widthColumnInitial = [{width: 20}, {width: 30}, {width: 25}]
-    for (let j = 0, len = dayList.length; j < len; j++) {
+
+    for (let i = 0, len = dayList.length; i < len; i++) {
       widthColumnInitial = widthColumnInitial.concat({width: 20})
+    }
+
+    for (let j = 0, len = cellHeaderInitialForStyles.length; j < len; j++) {
+      ws[cellHeaderInitialForStyles[j]].s = {
+        alignment: {
+          wrapText: true,
+          vertical: "center"
+        }
+      }
+    }
+
+    let rowOffsetNumber = 3
+    const rowSpanPerStep = 5
+    if (timeTables.length > 1) {
+      for (let k = 0, len = timeTables.length - 1; k < len; k++) {
+        rowOffsetNumber += rowSpanPerStep
+        ws[[`A${rowOffsetNumber}`]].s = {
+          alignment: {
+            wrapText: true,
+            vertical: "center"
+          }
+        }
+        ws[[`B${rowOffsetNumber}`]].s = {
+          alignment: {
+            wrapText: true,
+            vertical: "center"
+          }
+        }
+      }
     }
 
     ws['!cols'] = widthColumnInitial
     const wb = {Sheets: {[title]: ws}, SheetNames: [title]}
-    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array', cellDates: false})
+    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
     const data = new Blob([excelBuffer], {type: fileType})
     FileSaver.saveAs(data, fileNameForExport)
   }
@@ -659,7 +678,7 @@ class EmployeeTimesheets extends Component {
               <tr>
                 {
                   dayList.map((item, i) => {
-                    return <th key={i}>{moment(item).format("DD/MM")}</th>
+                    return <th key={i}>{moment(item).format("DD/MM/YYYY")}</th>
                   })
                 }
               </tr>
