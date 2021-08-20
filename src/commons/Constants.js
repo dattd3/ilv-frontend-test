@@ -28,6 +28,7 @@ const Constants = {
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
+  CHNAGE_DIVISON_SHIFT: 8,
 
   //Status request
   STATUS_PENDING: 0,

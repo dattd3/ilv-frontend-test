@@ -477,6 +477,8 @@ class RequestTaskList extends React.Component {
         // let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
         // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
+        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHNAGE_DIVISON_SHIFT]
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -561,7 +563,7 @@ class RequestTaskList extends React.Component {
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                     totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                 }
-                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1)
+                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8)
                                 {
                                     editLink = null;
                                 }
@@ -573,7 +575,8 @@ class RequestTaskList extends React.Component {
                                         <td scope="col" className="check-box"> 
                                             
                                         </td>
-                                        <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                        {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
+                                        <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                         <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
                                         <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                         <td className="break-time text-center">{totalTime}</td>
