@@ -451,8 +451,8 @@ class TaskList extends React.Component {
                                 tasks.length > 0 ?
                                     tasks.map((child, index) => {
                                         let totalTime = null;
-                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
-                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
