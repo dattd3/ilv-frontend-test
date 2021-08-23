@@ -6,7 +6,7 @@ import SideBar from '../../components/Common/Sidebar';
 import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
 import ScrollToTop from '../../components/Common/ScrollToTop';
-// import map from "../map.config";
+import map from "../map.config";
 // import { useTranslation } from "react-i18next";
 
 
@@ -24,12 +24,16 @@ function MainLayout(props) {
   const isApp = searchParams.get('isApp') || false;
 
   // if (props.location.pathname.indexOf("training") < 0 || props.location.pathname.indexOf("news") < 0) {
-  //   const { history } = props;
+    const { history } = props;
   //   let is404 = props.routes.filter(r => r.routeProps.path === props.location.pathname).length <= 0;
   //   if (is404) {
   //     history.push(map.NotFound);
   //   }
   // }
+
+  if (props.location.pathname.indexOf("training") > 0 && localStorage.getItem("companyCode") !== "V030") {
+    history.push(map.NotFound);
+  }
 
   return (
     <>
