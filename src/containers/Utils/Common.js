@@ -30,6 +30,12 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 taskList.push(e);
             })
         }
+        if (element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT) {
+            // if (element.processStatusId == 8 || (element.processStatusId == 5 && tab == "approval")) {
+            //     element.canChecked = true
+            // }
+            taskList.push(element);
+        }
     });
 
     taskList = taskList.filter(function (e, index, b) {
