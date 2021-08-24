@@ -896,6 +896,7 @@
   "EscalateToManagerOrHr": "Gửi đến CBLĐ/ HR giải đáp",
   "NoteQnABottomPage": "*Lưu ý: Trường hợp câu hỏi đã có trong bộ Q&A của phần hỗ trợ giải đáp, có thể chọn \"Từ chối\" để yêu cầu CBNV tự tra cứu trên MyVingroup",
   "EmployeeInfomation" : "Thông tin CBNV đăng ký",
+  "AdminInformation" : "Thông tin Admin chấm công gửi yêu cầu",
   "LeaveRequestInformation": "Thông tin đăng kí nghỉ",
   "ConsenterInformation": "Thông tin CBQL thẩm định",
   "ApproverInformation": "Thông tin phê duyệt",
@@ -924,5 +925,12 @@
   "HourUnit": "giờ",
   "DayUnit": "ngày",
   "RoomPartGroup": "Phòng/Bộ phận/Nhóm",
-  "ExportFile": "Xuất tệp tin"
+  "ExportFile": "Xuất tệp tin",
+  "DepartmentShiftInformation": "Thông tin Phân ca Bộ phận",
+  "BreakStart" : "Giờ bắt đầu nghỉ ca",
+  "BreakEnd" : "Giờ kết thúc nghỉ ca",
+  "ShiftBreakHour": "Số giờ nghỉ ca",
+  "Paid": "Có hưởng lương",
+  "Workshift":"Hệ số ca làm việc",
+  "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận"
 }
