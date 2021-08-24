@@ -875,6 +875,7 @@
   "NoteQnABottomPage": "*Note: In case the question is already in the Q&A section, you can choose \"Reject\" to request employees to find the answer on MyVingroup",
   "Withdraw": "Withdraw",
   "EmployeeInfomation" : "EMPLOYEE INFORMATION",
+  "AdminInformation" : "ADMIN INFORMATION",
   "LeaveRequestInformation": "LEAVE REQUEST INFORMATION",
   "ConsenterInformation": "CONSENTER INFORMATION",
   "ApproverInformation": "APPROVER INFORMATION",
@@ -904,5 +905,12 @@
   "HourUnit": "hours",
   "DayUnit": "days",
   "RoomPartGroup": "Department/Team",
-  "ExportFile": "Export file"
+  "ExportFile": "Export file",
+  "DepartmentShiftInformation": "Department Shift Information",
+  "BreakStart" : "Break Start",
+  "BreakEnd" : "Break End",
+  "ShiftBreakHour": "Shift Break Hour",
+  "Paid": "Paid",
+  "Workshift":"Workshift",
+  "ReasonRegisteringChangeDivision": "Reason"
 }

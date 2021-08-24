@@ -54,7 +54,7 @@ class ChangeDivisionShiftDetail extends React.Component {
     const listChangeShift = TableUtil.updateData(this.props.substitution.requestInfo, this.state.pageNumber - 1, 10)
     return (
       <div className="leave-of-absence">
-        <h5>{t("EmployeeInfomation")}</h5>
+        <h5>{t("AdminInformation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -76,28 +76,30 @@ class ChangeDivisionShiftDetail extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký thay đổi phân ca bộ phận</h5>
+        <h5>{t('DepartmentShiftInformation')}</h5>
         <div className="box shadow">
-        <div className="change-shift">
+          {listChangeShift.length > 0 ? 
+            <>
+            <div className="change-shift">
             <table className="table">
               <thead>
                 <tr>
-                  <th className="sticky-col number-order sms-width text-center"> STT </th>
-                  <th className="sticky-col uid sm-width text-center"> Mã <br/>nhân viên </th>
-                  <th className="sticky-col full-name mid-width"> Họ tên </th>
-                  <th className="sticky-col department xl-width"> Phòng/Bộ phận/Nhóm </th>
-                  <th className="sm-width text-center"> Loại <br/>phân ca </th>
-                  <th className="mid-width text-center"> Ngày bắt đầu </th>
-                  <th className="mid-width text-center"> Ngày kết thúc </th>
-                  <th className="sm-width text-center"> Mã ca </th>
-                  <th className="sm-width text-center"> Giờ bắt đầu </th>
-                  <th className="sm-width text-center"> Giờ kết thúc </th>
-                  <th className="mid-width text-center"> Giờ bắt đầu nghỉ </th>
-                  <th className="mid-width text-center"> Giờ kết thúc nghỉ </th>
-                  <th className="xl-width text-center"> Số giờ nghỉ ca <br/> (Có hưởng lương) </th>
-                  <th className="xl-width text-center"> Số giờ nghỉ ca <br/> (không hưởng lương) </th>
-                  <th className="xl-width text-center"> Daily WS class <br/> (Hệ số ca làm việc) </th>
-                  <th className="mid-width"> Lý do </th>
+                  <th className="sticky-col number-order sms-width text-center"> {t('NumberOrder')} </th>
+                  <th className="sticky-col uid sm-width text-center"> {t('EmployeeNo')} </th>
+                  <th className="sticky-col full-name mid-width"> {t('FullName')} </th>
+                  <th className="sticky-col department xl-width"> {t('RoomPartGroup')} </th>
+                  <th className="sm-width text-center"> {t('ShiftCategory')} </th>
+                  <th className="mid-width text-center"> {t('StartDate')} </th>
+                  <th className="mid-width text-center"> {t('EndDate')} </th>
+                  <th className="sm-width text-center"> {t('ShiftCode')} </th>
+                  <th className="sm-width text-center"> {t('StartHour')} </th>
+                  <th className="sm-width text-center"> {t('Endtime')} </th>
+                  <th className="mid-width text-center"> {t('BreakStart')} </th>
+                  <th className="mid-width text-center"> {t('BreakEnd')} </th>
+                  <th className="xl-width text-center"> {t('ShiftBreakHour')} <br/> ({t('Paid')}) </th>
+                  <th className="xl-width text-center"> {t('ShiftBreakHour')} <br/> ({t('Unpaid')}) </th>
+                  <th className="xl-width text-center"> Daily WS class <br/> ({t('Workshift')}) </th>
+                  <th className="mid-width"> {t('Reason')} </th>
                 </tr>
               </thead>
               <tbody>
@@ -139,6 +141,15 @@ class ChangeDivisionShiftDetail extends React.Component {
                     </div>
                 : null
             }
+             <div className="row group mt-2">
+                <div className="col-xl-12 auto-height">
+                  {t('ReasonRegisteringChangeDivision')}
+                  <div className="detail">{this.props.substitution.comment ? this.props.substitution.comment : null}</div>
+                </div>
+              </div>
+            </>
+          : null}
+        
         </div>
         
         <h5>{t("ConsenterInformation")}</h5>
