@@ -5,7 +5,6 @@ import SuccessFactorInfo from "./SuccessFactorInfo";
 import { withTranslation } from "react-i18next";
 
 class ShowKPIDetail extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -16,14 +15,16 @@ class ShowKPIDetail extends React.Component {
       KpiIsLeader1: "false",
       KpiIsLeader2: "false",
       KpiIsLeader3: "false",
-      KpiIsLeader4: "false",
-      Period: props.Period
+      KpiIsLeader4: "false"
     };    
-    this.loadData = this.loadData.bind(this);
   }
 
-  componentDidMount() {    
-    this.loadData(this.state.Period);    
+  componentDidMount() {
+    this.loadData("2020")
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadData(nextProps.Period)
   }
 
   resetData() {
@@ -46,7 +47,6 @@ class ShowKPIDetail extends React.Component {
     }
 
     this.resetData();
-    this.setState({ Period: Period });
     
     let config = {
       headers: {
@@ -98,24 +98,22 @@ class ShowKPIDetail extends React.Component {
   }
 
   render() {
-    const {t} = this.props;
+    const {t, Period} = this.props
+
     return (
       <div className="kpi-detail">
-        <div className="title-group mb-4">
-          {t("DetailedResult")}
-          </div>
+        <div className="title-group mb-4">{t("DetailedResult")}</div>
 
-        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={Period} Quarter="1" Color="#347EF9" />
 
-        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader2} kpiInfo={this.state.KpiQuarter2} Period={this.state.Period} Quarter="2" Color="#05BD29" />
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader2} kpiInfo={this.state.KpiQuarter2} Period={Period} Quarter="2" Color="#05BD29" />
 
-        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader3} kpiInfo={this.state.KpiQuarter3} Period={this.state.Period} Quarter="3" Color="#FF7F00" />
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader3} kpiInfo={this.state.KpiQuarter3} Period={Period} Quarter="3" Color="#FF7F00" />
 
-        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader4} kpiInfo={this.state.KpiQuarter4} Period={this.state.Period} Quarter="4" Color="#00999E" />
+        <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader4} kpiInfo={this.state.KpiQuarter4} Period={Period} Quarter="4" Color="#00999E" />
 
         {/* Thực hiện đánh giá / Thông tin chi tiết về kết quả đánh giá truy cập Success Factor */}
         <SuccessFactorInfo />
-
       </div>
     )
   }
