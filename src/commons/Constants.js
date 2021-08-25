@@ -7,6 +7,9 @@ const Constants = {
   TASK_PAGE_INDEX_DEFAULT: 1,
   TASK_PAGE_SIZE_DEFAULT: 10,
 
+  // success code
+  API_SUCCESS_CODE: "000000",
+
   //error_code
   API_ERROR_CODE: 1,
   API_ERROR_NOT_FOUND_CODE: "404",
