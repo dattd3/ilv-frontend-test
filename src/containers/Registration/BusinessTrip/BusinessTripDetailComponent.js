@@ -35,6 +35,12 @@ class BusinessTripDetailComponent extends React.Component {
     this.setState({ isShowStatusModal: false });
   }
 
+  showStatus = (status, appraiser) => {
+    if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
+      return Constants.mappingStatusRequest[status].label;
+    } 
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+  }
   render() {
     const businessTrip = this.props.businessTrip
     const requestInfo = this.props.businessTrip.requestInfo[0]
@@ -118,7 +124,7 @@ class BusinessTripDetailComponent extends React.Component {
           : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && businessTrip.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
         </div>
         {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ? 
         <DetailButtonComponent 

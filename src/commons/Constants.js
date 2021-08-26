@@ -53,11 +53,22 @@ const Constants = {
     3: {label: 'Canceled', className: ''}, // đã thu hồi
     4: {label: 'Canceled', className: ''}, // đã hủy
     5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    6: {label: 'Consented', className: ''},
+    6: {label: 'Consented', className: 'warning'},
     7: {label: 'Rejected', className: ''},// từ chối thẩm định
-    8: {label: 'Waiting', className: ''} // đang chờ thẩm định
+    8: {label: 'Waiting', className: ''}, // đang chờ thẩm định
   },
 
+  mappingStatusRequest: {
+    1: { label: 'Rejected', className: 'fail' },
+    2: { label: 'Approved', className: 'success' },
+    3: { label: 'Canceled', className: '' },
+    4: { label: 'Canceled', className: '' },
+    5: { label: "PendingApproval", className: '' },
+    6: { label: "PartiallySuccessful", className: 'warning' },
+    7: { label: "Rejected", className: 'fail' },
+    8: { label: "PendingConsent", className: '' },
+    20:{ label: "Consented", className: '' }
+  },
   //
   mappingActionType : {
     'INS': {
