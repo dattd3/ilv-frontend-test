@@ -20,7 +20,7 @@ class ShowKPIDetail extends React.Component {
   }
 
   componentDidMount() {
-    this.loadData("2020")
+    this.loadData(this.props.Period)
   }
 
   componentWillReceiveProps(nextProps) {
