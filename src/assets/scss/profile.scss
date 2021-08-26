@@ -25,6 +25,11 @@
             border-color: #FF0000;
             color: #FF0000;
         }
+        &.warning {
+            border-color: #FFA200;
+            color: #FFA200;
+            background: #FFFFFF;
+        }
     }
     .hr-comments-block {
         color: #FF0000;
