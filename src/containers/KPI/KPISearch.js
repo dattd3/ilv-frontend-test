@@ -38,7 +38,7 @@ function KPISearch(props) {
               <td style={{'width': '350px', paddingLeft: 20}}>
                 <Select style={{'color':'black'}}
                   selectedValue={years}
-                  defaultValue={ years.length > 0 ? years[years.length-1] : "" }
+                  defaultValue={years.find(item => item.value == props.period)}
                   options={years} 
                   styles={customStyles}
                   ref={selectRef} />
