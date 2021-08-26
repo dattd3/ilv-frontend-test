@@ -915,5 +915,6 @@
   "ShiftBreakHour": "Shift Break Hour",
   "Paid": "Paid",
   "Workshift":"Workshift",
-  "ReasonRegisteringChangeDivision": "Reason"
+  "ReasonRegisteringChangeDivision": "Reason",
+  "ApprovalResults": "Approval Results"
 }
