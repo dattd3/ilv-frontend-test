@@ -9,6 +9,7 @@ import Constants from '../.../../../../commons/Constants'
 import TableUtil from '../../../components/Common/table'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import ExcelIcon from "../../../assets/img/excel-icon.svg";
+import axios from 'axios'
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -55,6 +56,46 @@ class ChangeDivisionShiftDetail extends React.Component {
       return Constants.mappingStatusRequest[status].label;
     } 
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+  }
+
+  exportErrorFile = () => {
+    let fileName = `RequestHistory_${moment(new Date(),'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`
+    
+    const config = {
+      responseType: 'blob',
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'application/octet-stream'
+      },
+      params: {
+        requestHistoryID: this.props.substitution.id,
+      }
+    }
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}Request/ExportExcelSubstitutionUploadError`, config)
+    .then(res => {
+      var blob = new Blob([res.data], { type: "application/octetstream" });
+
+      //Check the Browser type and download the File.
+      var isIE = false || !!document.documentMode;
+
+      if (isIE) {
+        window.navigator.msSaveBlob(blob, fileName);
+      } 
+      else {
+        var url = window.URL || window.webkitURL;
+        let link = url.createObjectURL(blob);
+        var a = document.createElement("a");
+
+        a.setAttribute("download", fileName);
+        a.setAttribute("href", link);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+      }
+    }).catch(error => {
+
+    });
   }
   render() {
     const { t } = this.props
@@ -189,7 +230,26 @@ class ChangeDivisionShiftDetail extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
+          {
+            this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ? 
+            <div className="d-flex result justify-content-center align-items-center">
+            <div className="mr-2">
+              <i className="fas fa-check mr-1 text-success"></i> Thành công: <strong className="text-success">{this.props.substitution.recordInfo?.success}</strong>
+            </div>
+            <div className="vertical-line mr-2"></div>
+            <div className="mr-2">
+              <i className="fas fa-times mr-1 text-danger"></i> Không thành công: <strong className="text-danger">{this.props.substitution.recordInfo?.fail}</strong>
+            </div>
+            <div className="vertical-line mr-2"></div>
+            <div className="mr-2">
+              <button  className="btn-export-err text-primary" onClick={this.exportErrorFile}><i className="fas fa-download mr-1"></i> Xem chi tiết lỗi</button>
+            </div>
+            </div>
+            : null 
+          }
+         
         </div>
+       
         { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.substitution.processStatusId === 2 ) ? <DetailButtonComponent 
           dataToSap={
             [

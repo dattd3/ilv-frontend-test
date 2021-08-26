@@ -73,3 +73,37 @@
       }
     }
 }
+
+.result {
+    width: 480px;
+    height: 32px;
+    padding: 8px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #347EF9;
+    border-radius: 12px;
+    opacity: 1;
+    font-size: 14px;
+}
+.vertical-line {
+    border: 0.5px solid #c0c0c0;
+    height: 100%;
+}
+.vertical-line-lg {
+    border: 0.5px solid #c0c0c0;
+    height: 100%;
+}
+.btn-export-err {
+    background: #fff;
+    border: none;
+}
+.btn-export-err:focus {
+    outline: none !important;
+}
+
+.result-box {
+    table, th, td {
+        border: 1px solid rgb(184, 184, 184);
+        width: 450px;
+    }
+}
+
