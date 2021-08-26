@@ -8,6 +8,7 @@ import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import TableUtil from '../../../components/Common/table'
 import CustomPaging from '../../../components/Common/CustomPaging'
+import ExcelIcon from "../../../assets/img/excel-icon.svg";
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -169,7 +170,10 @@ class ChangeDivisionShiftDetail extends React.Component {
           <ul className="list-inline">
             {this.props.substitution.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
-                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+                <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>
+                  {file.fileType == "xls" ? <img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> : null}
+                  {file.fileName}
+                </a>
               </li>
             })}
           </ul>
