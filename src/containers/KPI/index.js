@@ -9,7 +9,7 @@ class General extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      period: "2020",
+      period: new Date().getFullYear().toString(),
       years: []
     }
   }
@@ -62,7 +62,7 @@ class General extends React.Component {
         {
           years.length > 0 ?
             <>
-            <KPISearch years={years} selectPeriodCompleted={this.selectPeriodCompleted} />
+            <KPISearch years={years} period={period} selectPeriodCompleted={this.selectPeriodCompleted} />
             <ShowKPIDetail Period={period} />
             </>
           : <div className="alert alert-warning text-center" role="alert">Không có dữ liệu về KPI</div>
