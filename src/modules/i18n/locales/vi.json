@@ -935,5 +935,6 @@
   "ShiftBreakHour": "Số giờ nghỉ ca",
   "Paid": "Có hưởng lương",
   "Workshift":"Hệ số ca làm việc",
-  "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận"
+  "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận",
+  "ApprovalResults": "Kết quả phê duyệt"
 }
