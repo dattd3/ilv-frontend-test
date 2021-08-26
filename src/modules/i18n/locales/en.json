@@ -443,6 +443,9 @@
   "Penalties": "Penalties",
   "Pending": "Pending",
   "Waiting": "Waiting",
+  "PendingConsent": "Pending Consent",
+  "PendingApproval": "Pending Approval",
+  "PartiallySuccessful": "Partially Successful",
   "Processing": "Processing",
   "Canceled": "Canceled",
   "Consented": "Consented",
@@ -912,5 +915,6 @@
   "ShiftBreakHour": "Shift Break Hour",
   "Paid": "Paid",
   "Workshift":"Workshift",
-  "ReasonRegisteringChangeDivision": "Reason"
+  "ReasonRegisteringChangeDivision": "Reason",
+  "ApprovalResults": "Approval Results"
 }

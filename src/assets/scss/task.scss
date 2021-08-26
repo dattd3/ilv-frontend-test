@@ -163,6 +163,11 @@
                     color: #FF0000;
                     background: #FFFFFF;
                 }
+                &.warning {
+                    border-color: #FFA200;
+                    color: #FFA200;
+                    background: #FFFFFF;
+                }
             }
             .task-title {
                 font-weight: normal;

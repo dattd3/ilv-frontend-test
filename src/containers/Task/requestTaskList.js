@@ -200,10 +200,11 @@ class RequestTaskList extends React.Component {
             2: { label: this.props.t('Approved'), className: 'request-status success' },
             3: { label: this.props.t('Canceled'), className: 'request-status' },
             4: { label: this.props.t('Canceled'), className: 'request-status' },
-            5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Consented"), className: 'request-status' },
+            5: { label: this.props.t("PendingApproval"), className: 'request-status' },
+            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' }
+            8: { label: this.props.t("PendingConsent"), className: 'request-status' },
+            20: { label: this.props.t("Consented"), className: 'request-status' }
         }
 
         const options = [
@@ -219,9 +220,9 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData?.account != null && statusOriginal == 5) {
-            statusOriginal = 6;
-        }
+        // if(taskData != null && statusOriginal == 5) {
+        //     statusOriginal = 20;
+        // }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -267,7 +268,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -277,7 +278,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser?.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5)  ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5)  ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
@@ -285,7 +286,8 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser?.account)) && this.checkDateLessThanPayPeriod(startdate)){
+            // || (status == 5 && appraiser)
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
                 isShow = true;
             } else {
                 isShow = false;
@@ -555,9 +557,9 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                             tasks.map((child, index) => {
-                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiser, child.requestType.id, child.startDate);
-                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, child.requestType.id, child.startDate);
-                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, child.requestType.id, child.actionType, child.startDate);
+                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
+                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
+                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
                                 let totalTime = null;
                                 let editLink = null
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
@@ -580,7 +582,7 @@ class RequestTaskList extends React.Component {
                                         <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
                                         <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                         <td className="break-time text-center">{totalTime}</td>
-                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                         <td className="tool">
                                             {
                                                 isShowEditButton && child.absenceType?.value != "PN02" ? 
