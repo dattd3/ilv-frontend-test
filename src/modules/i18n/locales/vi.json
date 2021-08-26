@@ -457,6 +457,9 @@
   "Penalties": "Quyết định xử lý vi phạm",
   "Pending": "Đang xử lý",
   "Waiting": "Đang chờ xử lý",
+  "PendingConsent": "Đang chờ thẩm định",
+  "PendingApproval": "Đang chờ phê duyệt",
+  "PartiallySuccessful": "Không thành công",
   "Processing": "Đang xử lý",
   "Canceled": "Đã hủy",
   "Consented": "Đã thẩm định",
@@ -932,5 +935,6 @@
   "ShiftBreakHour": "Số giờ nghỉ ca",
   "Paid": "Có hưởng lương",
   "Workshift":"Hệ số ca làm việc",
-  "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận"
+  "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận",
+  "ApprovalResults": "Kết quả phê duyệt"
 }

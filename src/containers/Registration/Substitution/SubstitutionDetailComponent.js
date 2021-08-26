@@ -62,6 +62,12 @@ class SubstitutionDetailComponent extends React.Component {
     return moment.duration(differenceInMs).asHours()
   }
 
+  showStatus = (status, appraiser) => {
+    if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
+      return Constants.mappingStatusRequest[status].label;
+    } 
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+  }
   render() {
     const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
@@ -182,7 +188,7 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{(this.props.action == "consent" && this.props.substitution.processStatusId == 5 && this.props.substitution.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.substitution.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
         </div>
         { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.substitution.processStatusId === 2 ) ? <DetailButtonComponent 
           dataToSap={

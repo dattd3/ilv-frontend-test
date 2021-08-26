@@ -153,9 +153,10 @@ class TaskList extends React.Component {
             3: { label: this.props.t('Canceled'), className: 'request-status' },
             4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Consented"), className: 'request-status' },
+            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' }
+            8: { label: this.props.t("Waiting"), className: 'request-status' },
+            20: { label: this.props.t("Consented"), className: 'request-status' }
         }
 
         const options = [
@@ -171,7 +172,7 @@ class TaskList extends React.Component {
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
         if(this.props.page === "consent" && statusOriginal == 5) {
-            statusOriginal = 6;
+            statusOriginal = 20;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
