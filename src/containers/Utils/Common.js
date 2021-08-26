@@ -8,6 +8,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             element.requestInfo.forEach(e => {
                 e.user = element.user
                 e.appraiser = element.appraiser
+                e.appraiserId = element.appraiserId
                 e.requestType = element.requestType
                 e.requestTypeId = element.requestTypeId
                 e.startDate = moment(e.startDate).format("DD/MM/YYYY")
