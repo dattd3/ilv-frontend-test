@@ -31,7 +31,7 @@ class Task extends React.Component {
                     <RequestComponent />
                 </Tab>
                 {
-                  Constants.CONSENTER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ? 
+                  Constants.CONSENTER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) || (localStorage.getItem("companyCode") == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(localStorage.getItem("employeeLevel"))) ? 
                   <Tab eventKey="consent" title={t("Consent")}>
                     <ConsentComponent />
                   </Tab>
