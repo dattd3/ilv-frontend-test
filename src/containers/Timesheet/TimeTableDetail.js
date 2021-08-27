@@ -410,7 +410,7 @@ function TimeTableDetail(props) {
   }, [props.isSearch])
 
   const isHoliday = (item) => {
-    return item.shift_id == 'OFF' || item.is_holiday == 1
+    return item.shift_id == 'OFF' || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060")
   }
 
   const getDayOffset = (currentDate, offset) => {
