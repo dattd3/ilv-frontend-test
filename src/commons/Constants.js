@@ -40,7 +40,8 @@ const Constants = {
   STATUS_EVICTION: 3, // thu hồi
   STATUS_REVOCATION: 4, // hủy
   STATUS_WAITING: 5, // chờ phê duyệt
-  STATUS_CONSENTED: 6,// thẩm định
+  STATUS_CONSENTED: 20,// thẩm định
+  STATUS_PARTIALLY_SUCCESSFUL: 6, //không thành công
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
 
