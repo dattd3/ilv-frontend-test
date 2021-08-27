@@ -51,6 +51,7 @@ class ConsentComponent extends React.Component {
       { value: Constants.STATUS_WAITING_CONSENTED , label: t("Waiting") },
       { value: Constants.STATUS_WAITING , label: t("Consented") },
       { value: Constants.STATUS_APPROVED, label: t("Approved") },
+      { value: Constants.STATUS_PARTIALLY_SUCCESSFUL , label: t("PartiallySuccessful") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
