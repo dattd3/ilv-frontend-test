@@ -170,7 +170,7 @@ class ChangeDivisionShiftDetail extends React.Component {
                     <td className="xl-width text-center">{member.numberHoursPaid}</td>
                     <td className="xl-width text-center">{member.unpaidHours}</td>
                     <td className="xl-width text-center">{member.dailyWSClass}</td>
-                    <td className="mid-width">{member.course}</td>
+                    <td className="mid-width">{member.couse}</td>
                   </tr>
                  )
               })}
