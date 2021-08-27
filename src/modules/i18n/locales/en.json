@@ -916,5 +916,8 @@
   "Paid": "Paid",
   "Workshift":"Workshift",
   "ReasonRegisteringChangeDivision": "Reason",
-  "ApprovalResults": "Approval Results"
+  "ApprovalResults": "Approval Results",
+  "Unsuccessful": "Unsuccessful",
+  "SeeErrorDetails": "View error details",
+  "TotalNumberRecords": "Total number of records"
 }
