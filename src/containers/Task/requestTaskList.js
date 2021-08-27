@@ -252,11 +252,11 @@ class RequestTaskList extends React.Component {
         let minDate = null;
         let today = new Date();
         let currentDay = today.getDate();
-        if (currentDay < 26) {
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
+        if (currentDay < 29) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 29)
         }
-        if (currentDay > 26) {
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() ), 26)
+        if (currentDay > 29) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() ), 29)
         }
 
         return convertedDate < minDate ? false : true
