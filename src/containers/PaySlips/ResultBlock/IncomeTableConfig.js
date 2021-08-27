@@ -637,6 +637,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualPerformanceBonusAtTimeOfPayment"), field: 'lunar_new_year_bonus' },
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
+                                    { label: t("ManagementEfficiencyBonus"), field: 'effect_management' },
                                     { label: t("PerformanceBasedIncentiveForNurses"), field: 'nursing_bonus' },
                                     { label: t("DoctorCaseBonus"), field: 'doctor_effective_working_bonus' },
                                     { label: t("Medicine_sales_bonus"), field: 'medicine_sales_bonus' },
