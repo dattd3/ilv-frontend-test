@@ -234,15 +234,15 @@ class ChangeDivisionShiftDetail extends React.Component {
             this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ? 
             <div className="d-flex result justify-content-center align-items-center">
             <div className="mr-2">
-              <i className="fas fa-check mr-1 text-success"></i> Thành công: <strong className="text-success">{this.props.substitution.recordInfo?.success}</strong>
+              <i className="fas fa-check mr-1 text-success"></i> {t('Successful')}: <strong className="text-success">{this.props.substitution.recordInfo?.success}</strong>
             </div>
             <div className="vertical-line mr-2"></div>
             <div className="mr-2">
-              <i className="fas fa-times mr-1 text-danger"></i> Không thành công: <strong className="text-danger">{this.props.substitution.recordInfo?.fail}</strong>
+              <i className="fas fa-times mr-1 text-danger"></i> {t('Unsuccessful')}: <strong className="text-danger">{this.props.substitution.recordInfo?.fail}</strong>
             </div>
             <div className="vertical-line mr-2"></div>
             <div className="mr-2">
-              <button  className="btn-export-err text-primary" onClick={this.exportErrorFile}><i className="fas fa-download mr-1"></i> Xem chi tiết lỗi</button>
+              <button  className="btn-export-err text-primary" onClick={this.exportErrorFile}><i className="fas fa-download mr-1"></i> {t('SeeErrorDetails')}</button>
             </div>
             </div>
             : null 
