@@ -232,7 +232,7 @@ class ChangeDivisionShiftDetail extends React.Component {
           <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
           {
             this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ? 
-            <div className="d-flex result justify-content-center align-items-center">
+            <div className="d-flex result-change-shift justify-content-center align-items-center">
             <div className="mr-2">
               <i className="fas fa-check mr-1 text-success"></i> {t('Successful')}: <strong className="text-success">{this.props.substitution.recordInfo?.success}</strong>
             </div>
