@@ -470,7 +470,7 @@ class TaskList extends React.Component {
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                 <td className="user-title">{child.user?.jobTitle || ''}</td>
-                                                <td className="request-type">{child.requestType.name}</td>
+                                                <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
                                                 <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
