@@ -150,7 +150,7 @@ class EmployeeTimesheets extends Component {
   };
 
   isHoliday = (item) => {
-    return item.shift_id == "OFF" || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
+    return item.shift_id == 'OFF' || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
   };
 
   getDatetimeForCheckFail(startTime, endTime, currentDay, nextDay) {
