@@ -20,14 +20,7 @@ class PaySlipsComponent extends React.Component {
     }
   }
 
-  
-
-  componentWillMount() {
-    
-  }
-
   componentDidMount() {
-
     const queryParams = new URLSearchParams(this.props.history.location.search)
     if (queryParams.has('accesstoken')) {
       queryParams.delete('accesstoken')
