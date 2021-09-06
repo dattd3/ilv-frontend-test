@@ -268,7 +268,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -278,7 +278,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5)  ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8)  ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
@@ -287,7 +287,7 @@ class RequestTaskList extends React.Component {
             isShow = false;
         } else {
             // || (status == 5 && appraiser)
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
                 isShow = true;
             } else {
                 isShow = false;
