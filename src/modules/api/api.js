@@ -111,7 +111,7 @@ export default class Api {
       `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`,
       {
         params: {
-          user_id: user_id,
+          user_id: '',//user_id,
           status: status,
           page_no: pageIndex,
           page_size: pageSize,
