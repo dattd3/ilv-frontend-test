@@ -35,6 +35,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             // if (element.processStatusId == 8 || (element.processStatusId == 5 && tab == "approval")) {
             //     element.canChecked = true
             // }
+            element.id = element.id.toString()
             taskList.push(element);
         }
     });
