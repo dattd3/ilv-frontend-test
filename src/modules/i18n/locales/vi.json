@@ -940,5 +940,10 @@
   "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận",
   "ApprovalResults": "Kết quả phê duyệt",
   "SeeErrorDetails": "Xem chi tiết lỗi",
-  "TotalNumberRecords": "Tổng số bản ghi"
+  "TotalNumberRecords": "Tổng số bản ghi",
+  "ChangeAvatar": "Thay ảnh đại diện",
+  "UploadAvatar": "Thay ảnh",
+  "RemoveAvatar": "Xóa ảnh",
+  "SaveAvatar": "Lưu ảnh",
+  "MessageUploadAvatarSuccess": "Ảnh đại diện đã được tải lên thành công. Vui lòng chờ khoảng 1 ngày để hệ thống đồng bộ"
 }
