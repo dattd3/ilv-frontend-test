@@ -920,5 +920,10 @@
   "ApprovalResults": "Approval Results",
   "Unsuccessful": "Unsuccessful",
   "SeeErrorDetails": "View error details",
-  "TotalNumberRecords": "Total number of records"
+  "TotalNumberRecords": "Total number of records",
+  "ChangeAvatar": "Change Avatar",
+  "UploadAvatar": "Upload",
+  "RemoveAvatar": "Delete",
+  "SaveAvatar": "Save Avatar",
+  "MessageUploadAvatarSuccess": "Your Avatar has been uploaded successfully. Please wait about 1 day for the system to sync"
 }
