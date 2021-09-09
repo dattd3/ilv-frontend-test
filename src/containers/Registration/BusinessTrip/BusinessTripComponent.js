@@ -245,7 +245,7 @@ class BusinessTripComponent extends React.Component {
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     to_time: !req.isAllDay && !req.isAllDayCheckbox ? endTime : "",
-                    leave_type: null,
+                    leave_type: "CTDT",
                     group_id: req.groupId
                 })
             }
