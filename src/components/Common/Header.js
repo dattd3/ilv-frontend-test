@@ -7,6 +7,8 @@ import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
+import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
+import UploadAvatar from '../../containers/UploadAvatar'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -30,6 +32,7 @@ function Header(props) {
     const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"));
     const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
     const [totalNotificationCount, setTotalNotificationCount] = useState(0);
+    const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
     const guard = useGuardStore();
     const { t } = useTranslation();
 
@@ -185,6 +188,13 @@ function Header(props) {
         setActiveLang(lang)
     }
 
+    const openUploadAvatarPopup = () => {
+        setIsShowUploadAvatar(true);
+    }
+
+    const onHideUploadAvatar = () => {
+        setIsShowUploadAvatar(false);
+    }
     useEffect(() => {
         localizeStore.setLocale(activeLang || "vi-VN")
     }, [activeLang, localizeStore]);
@@ -192,6 +202,7 @@ function Header(props) {
     return (
         isApp ? null :
             <div>
+                <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
                 <Navbar expand="lg" className="navigation-top-bar-custom">
                     <Button variant="outline-secondary" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
                     <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
@@ -235,6 +246,10 @@ function Header(props) {
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
+                            <Dropdown.Item onClick={openUploadAvatarPopup}>
+                                <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
+                                {t("ChangeAvatar")}
+                            </Dropdown.Item>
                             <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
                                 <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
                                 {t("LangViet")}
