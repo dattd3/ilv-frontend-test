@@ -89,9 +89,9 @@ const UploadAvatar = (props) => {
                             <h3 className="title-popup mb-5">{t('ChangeAvatar')}</h3>
                             {
                                 (localStorage.getItem('avatar') != null && localStorage.getItem('avatar') !== '' && localStorage.getItem('avatar') !== 'null') ?
-                                    <img className="ml-2 avatar rounded-circle" src={`data:image/png;base64, ${localStorage.getItem('avatar')}`} alt={localStorage.getItem('fullName')} />
+                                    <img className="ml-2 avatar-op1 rounded-circle" src={`data:image/png;base64, ${localStorage.getItem('avatar')}`} alt={localStorage.getItem('fullName')} />
                                     :
-                                    <img className="ml-2 avatar rounded-circle" src={AVATAR_DEFAULT} />
+                                    <img className="ml-2 avatar-op1 rounded-circle" src={AVATAR_DEFAULT} />
                             }
                             <h3 className="title-popup mt-4">{localStorage.getItem('fullName')}</h3>
                             <span className="subtitle-popup">{(localStorage.getItem('jobTitle') != null && localStorage.getItem('jobTitle') !== '' && localStorage.getItem('jobTitle') !== 'null') ? localStorage.getItem('jobTitle') : ''}</span>
@@ -102,13 +102,13 @@ const UploadAvatar = (props) => {
                                     <input type="file" onChange={onFileChange} accept="image/*" style={{ display: "none" }}/>
                                     <img src={Upload} className="mr-2" alt="excel-icon" />{t('UploadAvatar')}
                                 </label>
-                                <div className="vertical-line-40"></div>
-                                <button type="button" className="d-flex custom-btn-op1 bg-grey-mix mr-3 align-items-center justify-content-center" 
+                                {/* <div className="vertical-line-40"></div> */}
+                                {/* <button type="button" className="d-flex custom-btn-op1 bg-grey-mix mr-3 align-items-center justify-content-center" 
                                     disabled={localStorage.getItem('avatar') == null || localStorage.getItem('avatar') == '' || localStorage.getItem('avatar') == 'null'}
                                     onClick={openConfirmRemoveAvatar}
                                 >
                                     <img src={Remove} className="mr-2" alt="excel-icon" /> {t('RemoveAvatar')}
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     )}
