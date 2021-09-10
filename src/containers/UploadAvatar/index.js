@@ -102,13 +102,13 @@ const UploadAvatar = (props) => {
                                     <input type="file" onChange={onFileChange} accept="image/*" style={{ display: "none" }}/>
                                     <img src={Upload} className="mr-2" alt="excel-icon" />{t('UploadAvatar')}
                                 </label>
-                                <div className="vertical-line-40"></div>
-                                <button type="button" className="d-flex custom-btn-op1 bg-grey-mix mr-3 align-items-center justify-content-center" 
+                                {/* <div className="vertical-line-40"></div> */}
+                                {/* <button type="button" className="d-flex custom-btn-op1 bg-grey-mix mr-3 align-items-center justify-content-center" 
                                     disabled={localStorage.getItem('avatar') == null || localStorage.getItem('avatar') == '' || localStorage.getItem('avatar') == 'null'}
                                     onClick={openConfirmRemoveAvatar}
                                 >
                                     <img src={Remove} className="mr-2" alt="excel-icon" /> {t('RemoveAvatar')}
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     )}
