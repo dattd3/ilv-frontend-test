@@ -141,7 +141,7 @@
   "BenefitRegime": "Chế độ phúc lợi",
   "BenefitNumber": "STT",
   "BenefitService": "Dịch vụ",
-  "LoginError": "Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng liên hệ IT cơ sở để được trợ giúp!",
+  "LoginError": " Đã có vấn đề kết nối tới SAP, vui lòng kiểm tra lại mạng hoặc ngắt kết nối VPN!",
   "NotConnectToSaba": "Tài khoản không hợp lệ. Vui lòng liên hệ IT cơ sở để được trợ giúp!",
   "Notification": "Thông báo",
   "ShowAll": "Hiển thị tất cả",
@@ -940,5 +940,6 @@
   "ReasonRegisteringChangeDivision" : "Lý do đăng ký Phân ca bộ phận",
   "ApprovalResults": "Kết quả phê duyệt",
   "SeeErrorDetails": "Xem chi tiết lỗi",
-  "TotalNumberRecords": "Tổng số bản ghi"
+  "TotalNumberRecords": "Tổng số bản ghi",
+  "NotFoundUserOnSap":"Không tìm thấy người dùng trên SAP"
 }
