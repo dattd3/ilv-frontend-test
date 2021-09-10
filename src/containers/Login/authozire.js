@@ -43,6 +43,9 @@ function Authorize(props) {
                     checkUser(userProfile, jwtToken, vgEmail);
                     updateUser(userProfile,jwtToken)
                 }
+                else {
+                    SetNotifyContent(t("NotFoundUserOnSap"));
+                }
             })
             .catch(error => {
                 console.log("Call getUser error:", error);
