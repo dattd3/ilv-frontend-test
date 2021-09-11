@@ -58,7 +58,7 @@ function Authorize(props) {
 
     const checkUser = (user, jwtToken, vgEmail) => {
         if (user == null || user.uid == null) {
-            SetNotifyContent(t("LoginError"));
+            SetNotifyContent(t("NotFoundUserOnSap"));
             SetIsloading(false);
         } else {
             SetNotifyContent(t("WaitNotice"));
