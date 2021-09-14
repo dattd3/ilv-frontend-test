@@ -308,13 +308,12 @@ function Header(props) {
             .withUrl("https://myvpapi.cloudvst.net/notify")
             .build();
 
-        connection.on("ReceivedMessage", data => {
+        connection.on("send", data => {
             console.log(data);
         });
 
         connection.start()
-            .then(() => console.info('SignalR Connected'))
-            .catch(err => console.error('SignalR Connection Error: ', err));
+            .then(() => connection.invoke("send", "Hello"));
         return (() => connection.stop());
     }, [activeLang, localizeStore, onNotifReceived]);
 
