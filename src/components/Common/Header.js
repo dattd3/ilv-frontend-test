@@ -280,9 +280,9 @@ function Header(props) {
         localizeStore.setLocale(activeLang || "vi-VN")
 
         // Listen notify
-        // const protocol = new signalR.JsonHubProtocol();
+        //const protocol = new signalR.JsonHubProtocol();
 
-        // const transport = signalR.HttpTransportType.WebSockets;
+        //const transport = signalR.HttpTransportType.WebSockets;
 
         // const options = {
         //     transport,
@@ -304,8 +304,18 @@ function Header(props) {
         //     .then(() => console.info('SignalR Connected'))
         //     .catch(err => console.error('SignalR Connection Error: ', err));
         // return (() => connection.stop())
+
+        const transport = signalR.HttpTransportType.WebSockets;
+        const options = {
+            transport,
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace,
+            accessTokenFactory: () => {
+                return localStorage.getItem('accessToken');
+            }
+        };
         let connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://myvpapi.cloudvst.net/notify")
+            .withUrl("https://myvpapi.cloudvst.net/notify", options)
             .build();
 
         connection.on("ReceivedMessage", data => {
