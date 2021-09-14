@@ -280,31 +280,42 @@ function Header(props) {
         localizeStore.setLocale(activeLang || "vi-VN")
 
         // Listen notify
-        const protocol = new signalR.JsonHubProtocol();
+        // const protocol = new signalR.JsonHubProtocol();
 
-        const transport = signalR.HttpTransportType.WebSockets;
+        // const transport = signalR.HttpTransportType.WebSockets;
 
-        const options = {
-            transport,
-            logMessageContent: true,
-            logger: signalR.LogLevel.Trace,
-            accessTokenFactory: () => {
-                return localStorage.getItem('accessToken');
-            }
-        };
+        // const options = {
+        //     transport,
+        //     logMessageContent: true,
+        //     logger: signalR.LogLevel.Trace,
+        //     accessTokenFactory: () => {
+        //         return localStorage.getItem('accessToken');
+        //     }
+        // };
 
-        // create the connection instance
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notify", options)
-            .withHubProtocol(protocol)
+        // // create the connection instance
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("https://myvpapi.cloudvst.net/Signalr/SendMessage")
+        //     .build();
+
+        // connection.on("ReceivedMessage", onNotifReceived);
+
+        // connection.start()
+        //     .then(() => console.info('SignalR Connected'))
+        //     .catch(err => console.error('SignalR Connection Error: ', err));
+        // return (() => connection.stop())
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://myvpapi.cloudvst.net/notify")
             .build();
 
-        connection.on("ReceivedMessage", onNotifReceived);
+        connection.on("ReceivedMessage", data => {
+            console.log(data);
+        });
 
         connection.start()
             .then(() => console.info('SignalR Connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
-        return (() => connection.stop())
+        return (() => connection.stop());
     }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
