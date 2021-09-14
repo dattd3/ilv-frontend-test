@@ -308,12 +308,12 @@ function Header(props) {
             .withUrl("https://myvpapi.cloudvst.net/notify")
             .build();
 
-        connection.on("send", data => {
+        connection.on("ReceivedMessage", data => {
             console.log(data);
         });
 
         connection.start()
-            .then(() => connection.invoke("send", "Hello"));
+            .then(() => connection.invoke("ReceivedMessage", "Hello"));
         return (() => connection.stop());
     }, [activeLang, localizeStore, onNotifReceived]);
 
