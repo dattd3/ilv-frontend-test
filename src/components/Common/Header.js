@@ -305,30 +305,48 @@ function Header(props) {
         //     .catch(err => console.error('SignalR Connection Error: ', err));
         // return (() => connection.stop())
 
-        const transport = signalR.HttpTransportType.WebSockets;
+        const transport = signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling;
         const options = {
-            transport,
+            transport: transport,
             logMessageContent: true,
             logger: signalR.LogLevel.Trace,
             accessTokenFactory: () => {
                 return localStorage.getItem('accessToken');
-            }
+            },
+            // skipNegotiation: false
         };
+
+        // const options = {
+        //     headers: { "Authorization": `Bearer ${localStorage.getItem('accessToken')}` },
+        //     skipNegotiation: false,
+        //     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+        // };
+
+        const hubURL = "https://myvpapi.cloudvst.net/notify"
+
         let connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://myvpapi.cloudvst.net/notify", options)
+            .withUrl(hubURL, options)
             .withAutomaticReconnect()
             .build();
 
 
 
-        connection.start()
-            .then(
-                result => connection.on("ReceivedMessage", data => {
-                    console.log(data);
-                }))
-            .catch(err => console.error('SignalR Connection Error: ', err));
         // connection.start()
-        //     .then(() => connection.invoke("ReceivedMessage", "Hello"));
+        //     .then(
+        //         result => connection.on("ReceivedMessage", data => {
+        //             console.log(data);
+        //         }))
+        //     .catch(err => console.error('SignalR Connection Error: ', err));
+        connection.start()
+            .then(() => {
+                console.log("connected")
+                connection.on("ReceivedMessage", data => {
+                    // console.log
+                    console.log("======================")
+                    console.log(data);
+                })
+                // connection.invoke("ReceivedMessage", "Hello")
+            });
     }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
