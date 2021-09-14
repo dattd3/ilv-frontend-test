@@ -123,7 +123,7 @@
   "BenefitRegime": "Benefit regime",
   "BenefitNumber": "No",
   "BenefitService": "Service",
-  "LoginError": "Login Error. Please contact IT Department for assistance",
+  "LoginError": "There was a problem connecting to SAP, please check the network again or disconnect the VPN!",
   "NotConnectToSaba": "Invalid account. Please contact IT Department for assistance!",
   "Notification": "Notification",
   "ShowAll": "Show All",
@@ -920,5 +920,6 @@
   "ApprovalResults": "Approval Results",
   "Unsuccessful": "Unsuccessful",
   "SeeErrorDetails": "View error details",
-  "TotalNumberRecords": "Total number of records"
+  "TotalNumberRecords": "Total number of records",
+  "NotFoundUserOnSap":"User information not found on SAP"
 }
