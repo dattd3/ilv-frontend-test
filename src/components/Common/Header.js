@@ -1,4 +1,4 @@
-import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 import { Auth } from 'aws-amplify';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from "react";
@@ -295,7 +295,7 @@ function Header(props) {
 
         // create the connection instance
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://myvpapi.cloudvst.net/notify", options)
+            .withUrl("/notify", options)
             .withHubProtocol(protocol)
             .build();
 
