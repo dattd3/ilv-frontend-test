@@ -16,6 +16,7 @@ build_development:
   only:
     refs:
       - develop
+      - khanhnn17
 
 deploy_to_development_environment:
   stage: deploy
@@ -30,6 +31,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
+      - khanhnn17
       
 build_production:
   stage: build
