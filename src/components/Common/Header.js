@@ -299,7 +299,7 @@ function Header(props) {
             .withHubProtocol(protocol)
             .build();
 
-        connection.on("Hub dev", onNotifReceived);
+        connection.on("ReceivedMessage", onNotifReceived);
 
         connection.start()
             .then(() => console.info('SignalR Connected'))
