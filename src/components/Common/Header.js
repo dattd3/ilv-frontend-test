@@ -210,7 +210,7 @@ function Header(props) {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 'Content-Type': 'application/json'
             },
-            data: param 
+            data: param
         };
         axios(config)
             .then(function (response) {
@@ -280,34 +280,31 @@ function Header(props) {
         localizeStore.setLocale(activeLang || "vi-VN")
 
         // Listen notify
-        // const protocol = new signalR.JsonHubProtocol();
+        const protocol = new signalR.JsonHubProtocol();
 
-        // const transport = signalR.HttpTransportType.WebSockets;
+        const transport = signalR.HttpTransportType.WebSockets;
 
-        // const options = {
-        //     transport,
-        //     logMessageContent: true,
-        //     logger: signalR.LogLevel.Trace,
-        //     accessTokenFactory: localStorage.getItem('accessToken'),
-        // };
+        const options = {
+            transport,
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace,
+            accessTokenFactory: () => {
+                return localStorage.getItem('accessToken');
+            }
+        };
 
         // create the connection instance
-        // const connection = new signalR.HubConnectionBuilder()
-        //     .withUrl(this.props.connectionHub, options)
-        //     .withHubProtocol(protocol)
-        //     .build();
-
-        // connection.on(this.props.DatabaseOperation, onNotifReceived);
-
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:5001/chathub")
+            .withUrl("https://myvpapi.cloudvst.net/notify", options)
+            .withHubProtocol(protocol)
             .build();
 
-        connection.on("ReceiveMessage", onNotifReceived);
+        connection.on("Hub dev", onNotifReceived);
 
         connection.start()
             .then(() => console.info('SignalR Connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
+        return (() => connection.stop())
     }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
