@@ -38,24 +38,31 @@ function Authorize(props) {
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
+                if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
                     updateUser(userProfile,jwtToken)
                 }
+                else {
+                    SetNotifyContent(t("NotFoundUserOnSap"));
+                    SetIsloading(false);
+                    SetIsLoadingUser(false);
+                    SetIsGetUser(true)
+                }
             })
             .catch(error => {
-                console.log("Call getUser error:", error);
+                // console.log("Call getUser error:", error);
                 SetNotifyContent(t("LoginError"));
                 SetIsloading(false);
                 SetIsLoadingUser(false);
+                SetIsGetUser(true)
             }
             );
     }
 
     const checkUser = (user, jwtToken, vgEmail) => {
         if (user == null || user.uid == null) {
-            SetNotifyContent(t("LoginError"));
+            SetNotifyContent(t("NotFoundUserOnSap"));
             SetIsloading(false);
         } else {
             SetNotifyContent(t("WaitNotice"));
