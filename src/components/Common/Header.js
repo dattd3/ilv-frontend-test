@@ -316,14 +316,16 @@ function Header(props) {
         };
         let connection = new signalR.HubConnectionBuilder()
             .withUrl("https://myvpapi.cloudvst.net/notify", options)
+            .withAutomaticReconnect()
             .build();
 
-        connection.on("ReceivedMessage", data => {
-            console.log(data);
-        });
+
 
         connection.start()
-            .then(() => console.info('SignalR Connected'))
+            .then(
+                result => connection.on("ReceivedMessage", data => {
+                    console.log(data);
+                }))
             .catch(err => console.error('SignalR Connection Error: ', err));
         // connection.start()
         //     .then(() => connection.invoke("ReceivedMessage", "Hello"));
