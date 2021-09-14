@@ -323,8 +323,10 @@ function Header(props) {
         });
 
         connection.start()
-            .then(() => connection.invoke("ReceivedMessage", "Hello"));
-        return (() => connection.stop());
+            .then(() => console.info('SignalR Connected'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+        // connection.start()
+        //     .then(() => connection.invoke("ReceivedMessage", "Hello"));
     }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
