@@ -123,7 +123,7 @@
   "BenefitRegime": "Benefit regime",
   "BenefitNumber": "No",
   "BenefitService": "Service",
-  "LoginError": "There was a problem connecting to SAP, please check the network again or disconnect the VPN!",
+  "LoginError": "There was a problem connecting to Mulesoft, please check the network again or disconnect the VPN!",
   "NotConnectToSaba": "Invalid account. Please contact IT Department for assistance!",
   "Notification": "Notification",
   "ShowAll": "Show All",
