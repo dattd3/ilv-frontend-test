@@ -220,7 +220,7 @@ function Header(props) {
                         if (data.total > 99 && data.total !== totalNotificationCount) {
                             setTotalNotificationCount(data.total)
                             setTotalNotificationUnRead("+99");
-                        } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                        } else if (data.total === 0 && data.total !== totalNotificationCount) {
                             setTotalNotificationCount(data.total)
                             setTotalNotificationUnRead("");
                         } else if (data.total !== totalNotificationCount) {
@@ -278,33 +278,7 @@ function Header(props) {
     }, [companyCode, getTimePost, lv3, lv4, lv5, result.data, t, totalNotificationCount])
     useEffect(() => {
         localizeStore.setLocale(activeLang || "vi-VN")
-
-        // Listen notify
-        //const protocol = new signalR.JsonHubProtocol();
-
-        //const transport = signalR.HttpTransportType.WebSockets;
-
-        // const options = {
-        //     transport,
-        //     logMessageContent: true,
-        //     logger: signalR.LogLevel.Trace,
-        //     accessTokenFactory: () => {
-        //         return localStorage.getItem('accessToken');
-        //     }
-        // };
-
-        // // create the connection instance
-        // const connection = new signalR.HubConnectionBuilder()
-        //     .withUrl("https://myvpapi.cloudvst.net/Signalr/SendMessage")
-        //     .build();
-
-        // connection.on("ReceivedMessage", onNotifReceived);
-
-        // connection.start()
-        //     .then(() => console.info('SignalR Connected'))
-        //     .catch(err => console.error('SignalR Connection Error: ', err));
-        // return (() => connection.stop())
-
+        // SignalR
         const transport = signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling;
         const options = {
             transport: transport,
@@ -312,41 +286,21 @@ function Header(props) {
             logger: signalR.LogLevel.Trace,
             accessTokenFactory: () => {
                 return localStorage.getItem('accessToken');
-            },
-            // skipNegotiation: false
+            }
         };
 
-        // const options = {
-        //     headers: { "Authorization": `Bearer ${localStorage.getItem('accessToken')}` },
-        //     skipNegotiation: false,
-        //     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
-        // };
-
-        const hubURL = "https://myvpapi.cloudvst.net/notify"
-
-        let connection = new signalR.HubConnectionBuilder()
+        const hubURL = `${process.env.REACT_APP_REQUEST_URL}notify`;
+        const connection = new signalR.HubConnectionBuilder()
             .withUrl(hubURL, options)
             .withAutomaticReconnect()
             .build();
 
-
-
-        // connection.start()
-        //     .then(
-        //         result => connection.on("ReceivedMessage", data => {
-        //             console.log(data);
-        //         }))
-        //     .catch(err => console.error('SignalR Connection Error: ', err));
         connection.start()
             .then(() => {
-                console.log("connected")
-                connection.on("ReceivedMessage", data => {
-                    // console.log
-                    console.log("======================")
-                    console.log(data);
-                })
-                // connection.invoke("ReceivedMessage", "Hello")
-            });
+                console.info('SignalR Connected');
+                connection.on("ReceivedMessage", onNotifReceived);
+            })
+            .catch(err => console.error('SignalR Connection Error: ', err));
     }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
