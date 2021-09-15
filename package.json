@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",
+    "@microsoft/signalr": "^5.0.9",
     "aws-amplify": "^1.1.38",
     "aws-sdk": "^2.524.0",
     "axios": "^0.21.1",

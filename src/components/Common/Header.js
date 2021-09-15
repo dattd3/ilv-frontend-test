@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import * as signalR from '@microsoft/signalr';
 import { Auth } from 'aws-amplify';
-import { useGuardStore } from '../../modules';
-import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
-import { useTranslation } from "react-i18next";
-import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
+import React, { useCallback, useEffect, useState } from "react";
 import { Animated } from "react-animated-css";
-import { useLocalizeStore } from '../../modules';
-import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
-import UploadAvatar from '../../containers/UploadAvatar'
+import { Button, Dropdown, Form, FormControl, InputGroup, Navbar } from 'react-bootstrap';
+import { useTranslation } from "react-i18next";
+import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg';
+import UploadAvatar from '../../containers/UploadAvatar';
+import { useApi, useFetcher, useGuardStore, useLocalizeStore } from '../../modules';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -32,18 +31,18 @@ function Header(props) {
     const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"));
     const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
     const [totalNotificationCount, setTotalNotificationCount] = useState(0);
-    const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
+    const [isShowUploadAvatar, setIsShowUploadAvatar] = useState(false);
     const guard = useGuardStore();
     const { t } = useTranslation();
 
-    let lastNotificationIdSeen = 0;
-    let dataNotificationsUnRead = "";
+    const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
+    const [dataNotificationsUnRead, setDataNotificationsUnRead] = useState("");
     const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
 
-    const getTimePost = (createdDateInput) => {
+    const getTimePost = useCallback((createdDateInput) => {
         let timePost = moment(createdDateInput).format("DD/MM/YYYY");
         const createdDate = moment(createdDateInput);
         const now = moment();
@@ -56,7 +55,7 @@ function Header(props) {
             timePost = Math.floor(hours) + t("hoursAgo");
         }
         return timePost;
-    }
+    }, [t])
 
     const clickNotification = (id) => {
         var axios = require('axios');
@@ -119,10 +118,13 @@ function Header(props) {
                     setTotalNotificationUnRead(data.total);
                 }
                 if (data.notifications[0]) {
-                    lastNotificationIdSeen = data.notifications[0].id;
-                }
 
-                dataNotificationsUnRead = <>
+                    let notifyIdSeen = 0;
+                    notifyIdSeen = data.notifications[0].id;
+                    setLastNotificationIdSeen(notifyIdSeen);
+                }
+                let notifyUnread = '';
+                notifyUnread = <>
                     {
                         data.notifications.map((item, i) => {
                             const timePost = getTimePost(item.createdDate);
@@ -156,6 +158,7 @@ function Header(props) {
                         })
                     }
                 </>;
+                setDataNotificationsUnRead(notifyUnread);
             }
         }
     }
@@ -195,9 +198,156 @@ function Header(props) {
     const onHideUploadAvatar = () => {
         setIsShowUploadAvatar(false);
     }
+
+    const onNotifReceived = useCallback((res) => {
+        //console.info('Yayyyyy, I just received a notification!!!', res);
+        var axios = require('axios');
+        var param = [companyCode, lv3, lv4, lv5];
+        var config = {
+            method: 'get',
+            url: `${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json'
+            },
+            data: param
+        };
+        axios(config)
+            .then(function (response) {
+                if (response.data) {
+                    const data = result.data;
+                    if (data.notifications && data.notifications.length > 0) {
+                        if (data.total > 99 && data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead("+99");
+                        } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead("");
+                        } else if (data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead(data.total);
+                        }
+                        if (data.notifications[0]) {
+
+                            let notifyIdSeen = 0;
+                            notifyIdSeen = data.notifications[0].id;
+                            setLastNotificationIdSeen(notifyIdSeen);
+                        }
+                        let notifyUnread = '';
+                        notifyUnread = <>
+                            {
+                                data.notifications.map((item, i) => {
+                                    const timePost = getTimePost(item.createdDate);
+                                    let notificationLink = (type) => {
+                                        switch (type) {
+                                            case 0:
+                                                return `/notifications/${item.id}`
+                                            case 1:
+                                                if (item.title.indexOf("thẩm định") > 0)
+                                                    return `/tasks?tab=consent`
+                                                else
+                                                    return `/tasks?tab=approval`
+                                            case 7:
+                                                return `/tasks`
+                                            case 8:
+                                                return `/tasks?tab=approval`
+                                            case 5:
+                                                return item.url
+                                            default:
+                                                return `${item.url}`
+                                        }
+                                    }
+                                    return <div key={i} className="item">
+                                        <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
+                                        <p className="description">{item.description != null ? item.description : ""}</p>
+                                        <div className="time-file">
+                                            <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                                            {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
+                                        </div>
+                                    </div>
+                                })
+                            }
+                        </>;
+                        setDataNotificationsUnRead(notifyUnread);
+                    }
+                }
+            })
+            .catch(function (error) {
+
+            });
+    }, [companyCode, getTimePost, lv3, lv4, lv5, result.data, t, totalNotificationCount])
     useEffect(() => {
         localizeStore.setLocale(activeLang || "vi-VN")
-    }, [activeLang, localizeStore]);
+
+        // Listen notify
+        //const protocol = new signalR.JsonHubProtocol();
+
+        //const transport = signalR.HttpTransportType.WebSockets;
+
+        // const options = {
+        //     transport,
+        //     logMessageContent: true,
+        //     logger: signalR.LogLevel.Trace,
+        //     accessTokenFactory: () => {
+        //         return localStorage.getItem('accessToken');
+        //     }
+        // };
+
+        // // create the connection instance
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("https://myvpapi.cloudvst.net/Signalr/SendMessage")
+        //     .build();
+
+        // connection.on("ReceivedMessage", onNotifReceived);
+
+        // connection.start()
+        //     .then(() => console.info('SignalR Connected'))
+        //     .catch(err => console.error('SignalR Connection Error: ', err));
+        // return (() => connection.stop())
+
+        const transport = signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling;
+        const options = {
+            transport: transport,
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace,
+            accessTokenFactory: () => {
+                return localStorage.getItem('accessToken');
+            },
+            // skipNegotiation: false
+        };
+
+        // const options = {
+        //     headers: { "Authorization": `Bearer ${localStorage.getItem('accessToken')}` },
+        //     skipNegotiation: false,
+        //     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+        // };
+
+        const hubURL = "https://myvpapi.cloudvst.net/notify"
+
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl(hubURL, options)
+            .withAutomaticReconnect()
+            .build();
+
+
+
+        // connection.start()
+        //     .then(
+        //         result => connection.on("ReceivedMessage", data => {
+        //             console.log(data);
+        //         }))
+        //     .catch(err => console.error('SignalR Connection Error: ', err));
+        connection.start()
+            .then(() => {
+                console.log("connected")
+                connection.on("ReceivedMessage", data => {
+                    // console.log
+                    console.log("======================")
+                    console.log(data);
+                })
+                // connection.invoke("ReceivedMessage", "Hello")
+            });
+    }, [activeLang, localizeStore, onNotifReceived]);
 
     return (
         isApp ? null :
@@ -247,7 +397,7 @@ function Header(props) {
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
                             <Dropdown.Item onClick={openUploadAvatarPopup}>
-                                <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
+                                <img alt="cam" src={uploadAvatarIcon} className="mr-2" />
                                 {t("ChangeAvatar")}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
