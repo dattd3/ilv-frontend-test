@@ -1,4 +1,4 @@
-import * as signalR from '@microsoft/signalr';
+// import * as signalR from '@microsoft/signalr';
 import { Auth } from 'aws-amplify';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from "react";
@@ -37,6 +37,9 @@ function Header(props) {
 
     const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
     const [dataNotificationsUnRead, setDataNotificationsUnRead] = useState("");
+    const [totalUnRead, setTotalUnread] = useState(0);
+    const [notificationsUnRead, setnotificationsUnRead] = useState([]);
+
     const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
@@ -107,6 +110,10 @@ function Header(props) {
         const data = result.data;
         if (res.code != 1) {
             if (data.notifications && data.notifications.length > 0) {
+                // Unread preload informatin
+                setDataNotificationsUnRead(data.notifications);
+                setTotalUnread(data.total);
+                
                 if (data.total > 99 && data.total !== totalNotificationCount) {
                     setTotalNotificationCount(data.total)
                     setTotalNotificationUnRead("+99");
@@ -199,109 +206,90 @@ function Header(props) {
         setIsShowUploadAvatar(false);
     }
 
-    const onNotifReceived = useCallback((res) => {
-        //console.info('Yayyyyy, I just received a notification!!!', res);
-        var axios = require('axios');
-        var param = [companyCode, lv3, lv4, lv5];
-        var config = {
-            method: 'get',
-            url: `${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'application/json'
-            },
-            data: param
-        };
-        axios(config)
-            .then(function (response) {
-                if (response.data) {
-                    const data = result.data;
-                    if (data.notifications && data.notifications.length > 0) {
-                        if (data.total > 99 && data.total !== totalNotificationCount) {
-                            setTotalNotificationCount(data.total)
-                            setTotalNotificationUnRead("+99");
-                        } else if (data.total === 0 && data.total !== totalNotificationCount) {
-                            setTotalNotificationCount(data.total)
-                            setTotalNotificationUnRead("");
-                        } else if (data.total !== totalNotificationCount) {
-                            setTotalNotificationCount(data.total)
-                            setTotalNotificationUnRead(data.total);
-                        }
-                        if (data.notifications[0]) {
+    const onNotifReceived = useCallback((data) => {
+        const total = totalUnRead + 1;
+        const notifications = notificationsUnRead.push(data);
+        setTotalUnread(totalUnRead);
+        setnotificationsUnRead(notifications);
+        if (total > 99 && total !== totalNotificationCount) {
+            setTotalNotificationCount(total)
+            setTotalNotificationUnRead("+99");
+        } else if (total === 0 && total !== totalNotificationCount) {
+            setTotalNotificationCount(total)
+            setTotalNotificationUnRead("");
+        } else if (total !== totalNotificationCount) {
+            setTotalNotificationCount(total)
+            setTotalNotificationUnRead(total);
+        }
+        // if (data.notifications[0]) {
 
-                            let notifyIdSeen = 0;
-                            notifyIdSeen = data.notifications[0].id;
-                            setLastNotificationIdSeen(notifyIdSeen);
+        //     let notifyIdSeen = 0;
+        //     notifyIdSeen = data.notifications[0].id;
+        //     setLastNotificationIdSeen(notifyIdSeen);
+        // }
+        let notifyUnread = '';
+        notifyUnread = <>
+            {
+                notifications.map((item, i) => {
+                    const timePost = getTimePost(item.createdDate);
+                    let notificationLink = (type) => {
+                        switch (type) {
+                            case 0:
+                                return `/notifications/${item.id}`
+                            case 1:
+                                if (item.title.indexOf("thẩm định") > 0)
+                                    return `/tasks?tab=consent`
+                                else
+                                    return `/tasks?tab=approval`
+                            case 7:
+                                return `/tasks`
+                            case 8:
+                                return `/tasks?tab=approval`
+                            case 5:
+                                return item.url
+                            default:
+                                return `${item.url}`
                         }
-                        let notifyUnread = '';
-                        notifyUnread = <>
-                            {
-                                data.notifications.map((item, i) => {
-                                    const timePost = getTimePost(item.createdDate);
-                                    let notificationLink = (type) => {
-                                        switch (type) {
-                                            case 0:
-                                                return `/notifications/${item.id}`
-                                            case 1:
-                                                if (item.title.indexOf("thẩm định") > 0)
-                                                    return `/tasks?tab=consent`
-                                                else
-                                                    return `/tasks?tab=approval`
-                                            case 7:
-                                                return `/tasks`
-                                            case 8:
-                                                return `/tasks?tab=approval`
-                                            case 5:
-                                                return item.url
-                                            default:
-                                                return `${item.url}`
-                                        }
-                                    }
-                                    return <div key={i} className="item">
-                                        <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
-                                        <p className="description">{item.description != null ? item.description : ""}</p>
-                                        <div className="time-file">
-                                            <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                            {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
-                                        </div>
-                                    </div>
-                                })
-                            }
-                        </>;
-                        setDataNotificationsUnRead(notifyUnread);
                     }
-                }
-            })
-            .catch(function (error) {
-
-            });
-    }, [companyCode, getTimePost, lv3, lv4, lv5, result.data, t, totalNotificationCount])
+                    return <div key={i} className="item">
+                        <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
+                        <p className="description">{item.description != null ? item.description : ""}</p>
+                        <div className="time-file">
+                            <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                            {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
+                        </div>
+                    </div>
+                })
+            }
+        </>;
+        setDataNotificationsUnRead(notifyUnread);
+    }, [getTimePost, notificationsUnRead, t, totalNotificationCount, totalUnRead])
     useEffect(() => {
         localizeStore.setLocale(activeLang || "vi-VN")
         // SignalR
-        const transport = signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling;
-        const options = {
-            transport: transport,
-            logMessageContent: true,
-            logger: signalR.LogLevel.Trace,
-            accessTokenFactory: () => {
-                return localStorage.getItem('accessToken');
-            }
-        };
+        // const transport = signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling;
+        // const options = {
+        //     transport: transport,
+        //     logMessageContent: true,
+        //     logger: signalR.LogLevel.Trace,
+        //     accessTokenFactory: () => {
+        //         return localStorage.getItem('accessToken');
+        //     }
+        // };
 
-        const hubURL = `${process.env.REACT_APP_REQUEST_URL}notify`;
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubURL, options)
-            .withAutomaticReconnect()
-            .build();
+        // const hubURL = `${process.env.REACT_APP_REQUEST_URL}notify`;
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl(hubURL, options)
+        //     .withAutomaticReconnect()
+        //     .build();
 
-        connection.start()
-            .then(() => {
-                console.info('SignalR Connected');
-                connection.on("ReceivedMessage", onNotifReceived);
-            })
-            .catch(err => console.error('SignalR Connection Error: ', err));
-    }, [activeLang, localizeStore, onNotifReceived]);
+        // connection.start()
+        //     .then(() => {
+        //         console.info('SignalR Connected');
+        //         connection.on("ReceivedMessageObject", onNotifReceived);
+        //     })
+        //     .catch(err => console.error('SignalR Connection Error: ', err));
+    }, [activeLang, localizeStore]);
 
     return (
         isApp ? null :
