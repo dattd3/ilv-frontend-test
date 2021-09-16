@@ -137,8 +137,8 @@ class InOutTimeUpdateComponent extends React.Component {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
         } else {
-          errors['start_time1_fact_update' + index] = null;
-          errors['end_time1_fact_update' + index] = null
+          errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? this.props.t("Required") : null;
+          errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? this.props.t("Required") : null
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
@@ -211,9 +211,9 @@ class InOutTimeUpdateComponent extends React.Component {
         {
           hours: item.hours ? parseFloat(item.hours) : null,
           date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString(),
-          end_time1_fact_update: moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss'),
+          end_time1_fact_update: item.end_time1_fact_update ? moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss') : null,
           end_time2_fact_update: item.end_time2_fact_update ? moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss') : null,
-          start_time1_fact_update: moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss'),
+          start_time1_fact_update: item.start_time1_fact_update ? moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss') : null,
           start_time2_fact_update: item.start_time2_fact_update ? moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss') : null,
         });
     })
