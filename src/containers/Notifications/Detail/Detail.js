@@ -104,7 +104,11 @@ class NotificationDetailComponent extends React.Component {
               <h4 className="h4 title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h4>
             </div>
             <div className="col-md-4">
-              <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
+              {
+                ['V030','V096','V060','V070','V077','V073'].includes(localStorage.getItem("companyCode")) ? 
+                <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
+                : null
+              }
             </div>
           </div>
           <div className="card shadow mb-4">
