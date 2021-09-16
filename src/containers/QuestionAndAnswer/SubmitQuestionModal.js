@@ -230,7 +230,7 @@ class SubmitQuestionModal extends React.Component {
                 fullname: (question && isEdit) ? question.agentName : '',
                 userid: (question && isEdit) ? question.agentId.split("@")[0] : ''
             },
-            categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories[0].id
+            categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories[0]?.id
         })
 
         if (isEdit) {
