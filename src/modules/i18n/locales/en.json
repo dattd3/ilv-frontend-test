@@ -866,6 +866,7 @@
   "SubMenuTimesheetManagement": "Timesheet Management",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
+  "MenuChangeShiftReport": "Change Shift Report",
   "AppraisalDuplicateApproval": "Please skip if Consenter is the same as Approver",
   "AllowRegisterFor1Hour":"Allow to apply leave for the same period in consecutive days (Limited in payroll cycle).",
   "APPROVER":"APPROVER",
@@ -926,5 +927,11 @@
   "RemoveAvatar": "Delete",
   "SaveAvatar": "Save Avatar",
   "MessageUploadAvatarSuccess": "Your Avatar has been uploaded successfully. Please wait about 1 day for the system to sync",
-  "NotFoundUserOnSap":"User information not found on SAP"
+  "NotFoundUserOnSap":"User information not found on SAP",
+  "DetailReport": "Detail Report",
+  "SumaryReport": "Sumary Report",
+  "LabelTypeReport": "Type Report",
+  "LabelDownloadReport": "Download Report",
+  "RoomAreaRegion": "Room/Area/Region",
+  "MemberUnits": "Member Units"
 }

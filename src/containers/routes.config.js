@@ -460,6 +460,14 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/PersonalDetails"))
         },
         {
+          key: "change-shift-report",
+          routeProps: {
+            exact: true,
+            path: map.ChangeShiftReport
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ChangeShiftReport"))
+        },
+        {
           key: "employee-timesheets",
           routeProps: {
             exact: true,

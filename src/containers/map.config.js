@@ -72,5 +72,6 @@ export default {
   //workflow management
   EmployeeTimeSheets: "/workflow-management/employee-timesheets",
   LeaveFund: "/workflow-management/leave-fund",
-  PersonalDetails: "/workflow-management/personal-details"
+  PersonalDetails: "/workflow-management/personal-details",
+  ChangeShiftReport: "/workflow-management/change-shift-report"
 };
