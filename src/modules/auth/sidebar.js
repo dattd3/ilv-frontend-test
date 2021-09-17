@@ -298,4 +298,12 @@ export const Navigation = [
     to: map.QuestionAndAnswer,
     role: ['V030','V096','V060','V073']
   },
+  {
+    id: 99999,
+    parentId: 17,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "vaccination",
+    to: map.VaxcinList,
+    role: 'U'
+  }
 ];

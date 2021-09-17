@@ -466,6 +466,14 @@ export default [
             path: map.EmployeeTimeSheets
           },
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
+        },
+        {
+          key: "vaccination",
+          routeProps: {
+            exact: true,
+            path: map.VaxcinList
+          },
+          component: lazy(() => import("./Vaccination/List"))
         }
       ],
     },
