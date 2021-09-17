@@ -890,6 +890,7 @@
   "SubMenuTimesheetManagement": "Bảng chấm công",
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
+  "MenuChangeShiftReport": "Báo cáo thay đổi phân ca",
   "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!", 
   "Withdraw": "Thu hồi", 
   "AllowRegisterFor1Hour":"Cho phép Đăng ký nghỉ 1 khung giờ trong nhiều ngày liên tiếp (Giới hạn trong chu kỳ lương)",
@@ -946,5 +947,11 @@
   "RemoveAvatar": "Xóa ảnh",
   "SaveAvatar": "Lưu ảnh",
   "MessageUploadAvatarSuccess": "Ảnh đại diện đã được tải lên thành công. Vui lòng chờ khoảng 1 ngày để hệ thống đồng bộ",
-  "NotFoundUserOnSap":"Không tìm thấy người dùng trên SAP"
+  "NotFoundUserOnSap":"Không tìm thấy người dùng trên SAP",
+  "DetailReport": "Báo cáo chi tiết",
+  "SumaryReport": "Báo cáo tổng hợp",
+  "LabelTypeReport": "Loại báo cáo",
+  "LabelDownloadReport": "Tải về báo cáo",
+  "RoomAreaRegion": "Phòng/Vùng/Miền",
+  "MemberUnits": "Các đơn vị thành viên"
 }
