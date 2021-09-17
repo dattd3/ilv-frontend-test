@@ -98,6 +98,14 @@ export const Navigation = [
     role: 'U'
   },
   {
+    id:1005,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.ChangeShiftReport,
+    label: 'MenuChangeShiftReport',
+    role: 'U'
+  },
+  {
     id: 4,
     parentId: 2,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
@@ -296,7 +304,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: ['V030','V096','V060','V073']
+    role: ['V030','V096','V060','V070','V077','V073']
   },
   {
     id: 99999,

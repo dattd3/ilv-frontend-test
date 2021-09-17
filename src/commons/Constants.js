@@ -130,6 +130,10 @@ const Constants = {
     DATE_OFFSET: 0,
     DATE_NORMAL: 1,
     DATE_OFF: 2
+  },
+  TYPE_REPORT: {
+    DETAIL_REPORT: 0,
+    SUMARY_REPORT: 1
   }
 };
 export default Constants
