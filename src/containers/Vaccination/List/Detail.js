@@ -259,7 +259,6 @@ class VaccinationDetail extends React.Component {
         delete dataRequest.type;
         delete dataRequest.department;
         delete dataRequest.branch;
-
         var message = t('successfulCreateVaccination');
         if(this.props.rowId !== null || this.props.rowId){
             dataRequest['id'] = this.props.rowId;
@@ -459,13 +458,13 @@ class VaccinationDetail extends React.Component {
                                                         return <tr key={index}>
                                                             <td>{(index + 1)+"."+v.name}</td>
                                                             <td  className="text-center">
-                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 0 ).length ? true: false} type="radio" value={0} name={v.id +"_0"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
-                                                            </td>
-                                                            <td className="text-center">
                                                                 <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                             </td>
+                                                            <td className="text-center">
+                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
+                                                            </td>
                                                             <td  className="text-center">
-                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
+                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                                 <input className="d-none" type="radio" value="4" name={v.id} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                             </td>
                                                         </tr>
