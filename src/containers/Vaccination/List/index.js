@@ -15,6 +15,7 @@ class Vaccination extends React.Component {
             listData: [],
             showModelDetail: false,
             rowId: null,
+            loadSuccess: false
         };
     }
 
@@ -29,8 +30,14 @@ class Vaccination extends React.Component {
             if (res && res.data && res.data.data) {
                 this.setState({listData: res.data.data});
             }
+            this.setState({loadSuccess: true});
         }).catch(error => {
+            this.setState({loadSuccess: true});
         });
+    }
+
+    exportExcel(){
+        
     }
     
     render() {
@@ -38,11 +45,12 @@ class Vaccination extends React.Component {
         return <>
             <h1 className="h3 text-uppercase text-gray-800">{t("VaccinantionInformation")}</h1>
             <div className="clearfix edit-button">
-                <Button variant="primary" size="sm" onClick={() => this.setState({showModelDetail: true})}><i className="fa  fa-plus"></i> {t('AddMore')}</Button>
+                <Button disabled={!this.state.loadSuccess} variant="info" onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('AddMore')}</Button>
+                <Button disabled={!this.state.loadSuccess} variant="primary" className="ml-3" onClick={() => this.exportExcel()}><i className="fas fa-file-excel"></i> Xuất báo cáo</Button>
             </div>
             <div className="table">
                 <div className="card border mb-4 mt-2">
-                    <table className="table">
+                    <table className="table m-0">
                         <thead>
                             <tr>
                                 <th>{t('vaccination_injections_mumber')}</th>
@@ -56,11 +64,11 @@ class Vaccination extends React.Component {
                         <tbody>
                             {this.state.listData.map(v => {
                                 return (<tr className="px-2" key={v.id}>
-                                    <td>{v.number}</td>
-                                    <td>{v.vaccin?.name }</td>
-                                    <td>{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
-                                    <td>{v.department?.name}</td>
-                                    <td className="">
+                                    <td className="align-middle">{v.number}</td>
+                                    <td className="align-middle">{v.vaccin?.name }</td>
+                                    <td className="align-middle">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
+                                    <td className="align-middle">{v.department?.name}</td>
+                                    <td className="align-middle">
                                         <OverlayTrigger 
                                             placement="left" 
                                             overlay={
@@ -69,17 +77,17 @@ class Vaccination extends React.Component {
                                                     style={{ fontFamily: "Arial, Helvetica, sans-serif", 
                                                     fontSize: 11, whiteSpace: "normal" }}>
                                                     {
-                                                        v.vaccinEffects.map(v => {
-                                                            return <div className="text-left">{"- " + v.name}</div>
+                                                        v.vaccinEffects.map((v,i) => {
+                                                            return <div key={i} className="text-left">{"- " + v.name}</div>
                                                         })
                                                     }
                                                 </Tooltip>
                                             }>
-                                            <i className="fas fa-info-circle"></i>
+                                            <i className="fas fa-info-circle px-3 py-2"></i>
                                         </OverlayTrigger>
                                     </td>
-                                    <td>
-                                        <div class="btn" onClick={() => {
+                                    <td className="align-middle">
+                                        <div className="btn" onClick={() => {
                                             this.setState({showModelDetail: true, rowId: v.id});
                                         }}>
                                             <OverlayTrigger 
@@ -102,7 +110,7 @@ class Vaccination extends React.Component {
                     </table>
                 </div>
             </div>
-            <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} onCancelClick={() => this.setState({showModelDetail: false})} />
+            {this.state.loadSuccess && <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} number={this.state.listData.length} onCancelClick={() => this.setState({showModelDetail: false})} />}
         </>
     }
 }
