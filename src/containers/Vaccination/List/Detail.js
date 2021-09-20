@@ -21,7 +21,7 @@ class VaccinationDetail extends React.Component {
         super(props);
         this.state = {
             formData: {
-                number: 1,
+                number: props.number + 1,
                 type: 1,
                 injectedAt: null,
                 department: null,
@@ -389,7 +389,7 @@ class VaccinationDetail extends React.Component {
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">{t('District')}<span className="text-danger">(*)</span></label>
                                                         <Select
-                                                            isDisabled={!this.state.formData.city}
+                                                            isDisabled={!this.state.formData.city && !this.state.districts.length}
                                                             styles={customStyles}
                                                             name="district"
                                                             onChange={district => this.handleChangeDistrict(district)}
@@ -404,7 +404,7 @@ class VaccinationDetail extends React.Component {
                                                     <div className="form-group">
                                                         <label htmlFor="exampleInputEmail1">{t('Ward')}<span className="text-danger">(*)</span></label>
                                                         <Select
-                                                            isDisabled={!this.state.formData.district}
+                                                            isDisabled={!this.state.formData.district && !this.state.wards.length}
                                                             styles={customStyles}
                                                             name="ward"
                                                             onChange={ward => this.handleChangeWard(ward)}
