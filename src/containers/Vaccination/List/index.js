@@ -67,24 +67,19 @@ class Vaccination extends React.Component {
                                     <td className="align-middle">{v.number}</td>
                                     <td className="align-middle">{v.vaccin?.name }</td>
                                     <td className="align-middle">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
-                                    <td className="align-middle">{v.department?.name}</td>
+                                    <td className="align-middle">{
+                                        (v.department !== null ? (
+                                            v.department['id'] == 1 ? v.branch.name : v.department['id'] == 2 ? (v.city + " - " + v.district + " - " + v.ward ) : v.address
+                                        ) : undefined)
+                                    }</td>
                                     <td className="align-middle">
-                                        <OverlayTrigger 
-                                            placement="left" 
-                                            overlay={
-                                                <Tooltip 
-                                                    className="recruiting-detail-tooltip" 
-                                                    style={{ fontFamily: "Arial, Helvetica, sans-serif", 
-                                                    fontSize: 11, whiteSpace: "normal" }}>
-                                                    {
-                                                        v.vaccinEffects.map((v,i) => {
-                                                            return <div key={i} className="text-left">{"- " + v.name}</div>
-                                                        })
-                                                    }
-                                                </Tooltip>
-                                            }>
-                                            <i className="fas fa-info-circle px-3 py-2"></i>
-                                        </OverlayTrigger>
+                                        {
+                                            v.vaccinEffects.map((v,i) => {
+                                                if(v.status == 1){
+                                                    return <div key={i} className="text-left">{"- " + v.name}</div>
+                                                }
+                                            })
+                                        }
                                     </td>
                                     <td className="align-middle">
                                         <div className="btn" onClick={() => {
