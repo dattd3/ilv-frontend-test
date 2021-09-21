@@ -318,7 +318,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="form-group">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_type')}<span className="text-danger">(*)</span></label>
+                                        <label htmlFor="exampleInputEmail1">{t('vaccination_type')}<span className="text-danger">( * )</span></label>
                                         <Select
                                             isClearable={true}
                                             styles={customStyles}
@@ -333,7 +333,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_time')}<span className="text-danger">(*)</span></label>
+                                        <label htmlFor="exampleInputEmail1">{t('vaccination_time')}<span className="text-danger">( * )</span></label>
                                         <div className="content position-relative input-container">
                                             <DatePicker
                                                 name="injectedAt"
@@ -354,7 +354,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="form-group">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_department')}<span className="text-danger">(*)</span></label>
+                                        <label htmlFor="exampleInputEmail1">{t('vaccination_department')}<span className="text-danger">( * )</span></label>
                                         <Select
                                             isClearable={true}
                                             styles={customStyles}
@@ -373,7 +373,7 @@ class VaccinationDetail extends React.Component {
                                             <div className="row">
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('Province_City')}<span className="text-danger">(*)</span></label>
+                                                        <label htmlFor="exampleInputEmail1">{t('Province_City')}<span className="text-danger">( * )</span></label>
                                                         <Select
                                                             styles={customStyles}
                                                             name="city"
@@ -387,7 +387,7 @@ class VaccinationDetail extends React.Component {
                                                 </div>
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('District')}<span className="text-danger">(*)</span></label>
+                                                        <label htmlFor="exampleInputEmail1">{t('District')}<span className="text-danger">( * )</span></label>
                                                         <Select
                                                             isDisabled={!this.state.formData.city && !this.state.districts.length}
                                                             styles={customStyles}
@@ -402,7 +402,7 @@ class VaccinationDetail extends React.Component {
                                                 </div>
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('Ward')}<span className="text-danger">(*)</span></label>
+                                                        <label htmlFor="exampleInputEmail1">{t('Ward')}<span className="text-danger">( * )</span></label>
                                                         <Select
                                                             isDisabled={!this.state.formData.district && !this.state.wards.length}
                                                             styles={customStyles}
@@ -419,7 +419,7 @@ class VaccinationDetail extends React.Component {
                                         </div>
                                     : this.state.formData.department == 1 ? <div className="col-md-4 col-xs-12"> 
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">{t('vaccination_branch')}<span className="text-danger">(*)</span></label>
+                                            <label htmlFor="exampleInputEmail1">{t('vaccination_branch')}<span className="text-danger">( * )</span></label>
                                             <Select
                                                 isClearable={true}
                                                 styles={customStyles}
