@@ -243,9 +243,32 @@ class FilterData extends React.Component {
     return copy
   }
 
+  list_to_tree(list) {
+    // O(n)
+    var map = {}, node, roots = [], i;
+
+    for (i = 0; i < list.length; i += 1) {
+      map[list[i].uid] = i; // initialize the map
+      list[i].children = []; // initialize the children
+      list[i].nodeIndex = 1;
+    }
+    for (i = 0; i < list.length; i += 1) {
+      node = list[i];
+      if (node.manager !== "0" && list[map[node.manager]] !== undefined) {
+        // if  have dangling branches check that map[node.parentId] exists
+        node.nodeIndex = list[map[node.manager]].nodeIndex + 1
+        node.children = node.children.map(i => ({ ...i, nodeIndex: i.nodeIndex + 1 }))
+        list[map[node.manager]].children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+    return roots;
+  }
   render() {
     const { t } = this.props;
     let hrProfileDisplay = [];
+    let employeeGrTree = []
     if (this.state.users && this.state.users.length > 0) {
       hrProfileDisplay = this.state.users.map((profile) => {
         return {
@@ -256,10 +279,13 @@ class FilterData extends React.Component {
           companyCode: profile.companyCode,
           orgLv3Text: profile.orgLv3Text,
           username: profile.username,
+          manager: profile.manager,
           company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
-          checked: profile.checked || false 
+          checked: profile.checked || false,
+          isExpand: profile.isExpand || false,
         };
       });
+      // employeeGrTree = this.list_to_tree(hrProfileDisplay)
     }
 
     return (
@@ -331,6 +357,7 @@ class FilterData extends React.Component {
                   </div> 
               </div>
               {this.state.showMemberOption ? (
+                //employeeGrTree
               <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type}/>
               ) : null}
             </div>
