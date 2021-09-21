@@ -166,7 +166,7 @@ class Vaccination extends React.Component {
                         </table>
                     </div>
                 </div>
-                {this.state.loadSuccess && <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} number={this.state.listData.length} onCancelClick={() => this.setState({showModelDetail: false})} />}
+                {this.state.loadSuccess && this.state.showModelDetail && <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} number={this.state.listData.length} onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} />}
             </div>
         </>
     }
