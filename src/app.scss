@@ -178,6 +178,13 @@
     content: "\e901";
   }
 }
+.collapse-content.collapsed {
+  display: none;
+}
+
+.collapsed-content.expanded {
+  display: block;
+}
 .icon-contact {
   &:before {
     content: "\e902";
