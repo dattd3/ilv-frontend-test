@@ -110,11 +110,11 @@
           border-right: 3.5px solid white;
         }
         .option-item {
-          &:last-child {
-            .border-bottom {
-              border-bottom: none !important;
-            }
-          }
+          // &:last-child {
+          //   .border-bottom {
+          //     border-bottom: none !important;
+          //   }
+          // }
           .full-name {
             font-size: 14px;
           }
