@@ -233,12 +233,10 @@ const MemberOption = (props, onChange) => {
             aria-expanded={upAll}>
             {renderTreeMember(treeMembers)}
           </div>
-
-
-          <div className="action bg-light d-flex justify-content-center p-2">
-            <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
-            <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
-          </div>
+        </div>
+        <div className="action bg-light d-flex justify-content-center p-2">
+          <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
+          <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
         </div>
       </div>
     </>
