@@ -4,6 +4,7 @@
   "Unsuccessful": "Không thành công",
   "LangViet": "Tiếng Việt",
   "LangEng": "English",
+  "langCode": "vi",
   "HelpToLogin": "Hướng dẫn đăng nhập ứng dụng",
   "Login": "Đăng nhập",
   "Logout": "Đăng xuất",
@@ -967,5 +968,6 @@
   "LabelTypeReport": "Loại báo cáo",
   "LabelDownloadReport": "Tải về báo cáo",
   "RoomAreaRegion": "Phòng/Vùng/Miền",
-  "MemberUnits": "Các đơn vị thành viên"
+  "MemberUnits": "Các đơn vị thành viên",
+  "DepartmentTimeSheetInformation": "Thông tin bảng chấm công bộ phận"
 }
