@@ -6,8 +6,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import vi from "date-fns/locale/vi";
 import axios from "axios";
-import { trimString } from "../../../Utils/StringHelpers"
 import MemberOption from "../MemberOption"
+import SelectTab from "../SelectTab"
 registerLocale("vi", vi);
 
 class FilterData extends React.Component {
@@ -32,6 +32,9 @@ class FilterData extends React.Component {
     this.getSelecteMembers = this.getSelecteMembers.bind(this);
     this.resetSelectedMember = this.resetSelectedMember.bind(this);
     this.search = this.search.bind(this);
+    this.onClickSelectTab = this.onClickSelectTab.bind(this);
+    this.onCloseTabEvent = this.onCloseTabEvent.bind(this);
+    this.onCloseAllEvent = this.onCloseAllEvent.bind(this);
   }
 
   getClosingSalaryDatePreMonth = () => {
@@ -119,6 +122,20 @@ class FilterData extends React.Component {
     copy.setDate(date.getDate() + days)
     return copy
   }
+
+  onClickSelectTab() {
+    this.setState({ showMemberOption: true });
+  }
+  onCloseTabEvent(uid) {
+    const members = this.state.users;
+    const closeMember = members.find(val => val.uid === uid);
+    closeMember.checked = false;
+    this.getSelecteMembers(members);
+  }
+  onCloseAllEvent() {
+    this.resetSelectedMember();
+  }
+
   render() {
     const { t } = this.props;
     let hrProfileDisplay = [];
@@ -196,18 +213,8 @@ class FilterData extends React.Component {
             }
             <div className="col-lg-3">
               <div className="title">{t("staff_selection_label")}</div>
-              <div className="content input-container d-flex" onClick={this.onShowMembers}>
-                <div className="box-input d-flex justify-content-between" data-toggle="tooltip" data-placement="top" title={this.state.selectedMembers.map(u => u.fullname).toString()}>
-                  {this.state.selectedMembers.length > 0 ? trimString(this.state.selectedMembers.map(u => u.fullname).toString(), 18, '...') : <i className="text-secondary" style={{ fontSize: "16px" }}>{t("staff_selection_label")}</i>}
-                </div>
-                <div className="box-icon">
-                  {
-                    this.state.selectedMembers.length > 1 ?
-                      <div className="number-selected">{this.state.selectedMembers.length}</div>
-                      : <i className="fa fa-sort-down"></i>
-                  }
-                </div>
-              </div>
+              <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
+                onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
               {this.state.showMemberOption ? (
                 //employeeGrTree
                 <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
