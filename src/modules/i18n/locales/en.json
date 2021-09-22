@@ -859,6 +859,7 @@
   "PITReduction": "PIT Reduction",
   "BirthCity": "Birth City",
   "Recalled": "Recalled",
+  "langCode": "en",
   "successfulRecallReq": "Successfully submitted recall request",
   "successfulCancelReq": "Successfully cancel request",
   "successfulApprvalReq": "Successfully approve request",

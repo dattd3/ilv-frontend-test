@@ -43,6 +43,7 @@ class VaccinationDetail extends React.Component {
             isShowStatusModal: false,
             content: "",
             isSuccess: false,
+            show: props.show
         };
     }
 
@@ -62,7 +63,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getInfo(id){
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}`, config)
+        const { t } = this.props;
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}?lang=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 const stateData = this.state.formData;
@@ -97,7 +99,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getEffect() {
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/effects`, config)
+        const { t } = this.props;
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/effects?lang=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({
@@ -110,7 +113,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getMasterData() {
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas/`, config)
+        const { t } = this.props;
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas?lang=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({
@@ -163,11 +167,14 @@ class VaccinationDetail extends React.Component {
 
     handleChangeCity(e) {
         this.updateState('city', e.label);
+        this.updateState('district', null);
+        this.updateState('ward', null);
         this.getListDistrict(e.value);
     }
 
     handleChangeDistrict(e){
         this.updateState('district', e.label);
+        this.updateState('ward', null);
         this.getListWard(e.value);
     }
 
@@ -242,8 +249,7 @@ class VaccinationDetail extends React.Component {
     }
 
     showStatusModal(e, b){
-        this.setState({ isShowStatusModal: true, content: e, isSuccess: b, isShowConfirmModal: false });
-        this.isHideModel();
+        this.setState({ isShowStatusModal: true, content: e, isSuccess: b, isShowConfirmModal: false, show: false });
     }
 
     onUpdateOrCreateData(){
@@ -271,10 +277,6 @@ class VaccinationDetail extends React.Component {
         });
     }
 
-    isHideModel(){
-        this.props.onCancelClick();
-    }
-
     render(){
         const { t } = this.props;
         const customStyles = {
@@ -297,13 +299,13 @@ class VaccinationDetail extends React.Component {
                 <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
                 <Modal backdrop="static" keyboard={false}
                     className='info-modal-common position-apply-modal'
-                    centered show={this.props.show}
+                    centered show={this.state.show}
                     onHide={this.props.onHide}
                     size="xl"
                     >
                     <Modal.Header className='apply-position-modal' >
                         <Modal.Title>{t(this.props.rowId ? "EditQuestion": "Add")}</Modal.Title>
-                        <button type="button" className="close" onClick={() => this.isHideModel()}>
+                        <button type="button" className="close" onClick={() => this.props.onCancelClick()}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
@@ -478,7 +480,7 @@ class VaccinationDetail extends React.Component {
                             </div>
                         </div>
                         <div className="clearfix edit-button text-right mt-3">
-                            <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.isHideModel()}>{t("Cancel")}</Button>
+                            <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
                                 !(this.state.formData.type && this.state.formData.injectedAt && 
                                 (
