@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { formatStringByMuleValue } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
+import ShiftUpdateModal from "../modals/ShiftUpdateModal"
 
 const DATE_TYPE = {
     DATE_OFFSET: 0,
@@ -300,6 +301,13 @@ function RenderRow4(props) {
 
 function Content(props) {
     const [pageNumber, setPageNumber] = useState(1);
+    const [isShowShiftUpdateModal, setIsShowShiftUpdateModal] = useState(false)
+    const [dateInfo, setDateInfo] = useState("")
+    // const [dateInfo, setDateInfo] = useState("")
+
+
+    
+
     const onChangePage = index => {
         setPageNumber(index)
     }
@@ -307,8 +315,23 @@ function Content(props) {
     const { t } = useTranslation();
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
+    const handleShowModalShiftChange = (date, day) => {
+        const backDateConfig = 1
+        const duration = moment().diff(date, 'days')
+        if (duration > backDateConfig) {
+            return
+        }
+        setIsShowShiftUpdateModal(true)
+        setDateInfo(`${day} ${t("Day")} ${moment(date, 'YYYY-MM-DD').format("DD/MM/YYYY")}`)
+    }
+
+    const onHideShiftUpdateModal = () => {
+        setIsShowShiftUpdateModal(false)
+    }
+
     return (
         <>
+            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} onHideShiftUpdateModal={onHideShiftUpdateModal} />
             <div className="row pr-2 pl-2 pb-4">
                 <div className="col-md-12 col-xl-12 describer mb-2">
                     {
@@ -328,7 +351,7 @@ function Content(props) {
                                 <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
                                 {props.dayList.map((item, index) => {
                                     return (
-                                    <td className="text-uppercase" key={index}>
+                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYY-MM-DD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
