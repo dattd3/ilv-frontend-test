@@ -195,7 +195,7 @@ class VaccinationDetail extends React.Component {
                 this.setState({
                     citys: res.data.data.map(v => {
                         var e = v.name.split("-");
-                        return {value: e[0].trim() * 1, label: e[1].trim()}
+                        return {value: e[0].trim(), label: e[1].trim()}
                     })
                 });
                 if(call){
@@ -214,7 +214,7 @@ class VaccinationDetail extends React.Component {
                 this.setState({
                     districts: res.data.data.map(v => {
                         var e = v.name.split("-");
-                        return {value: e[0].trim() * 1, label: e[1].trim()}
+                        return {value: e[0].trim(), label: e[1].trim()}
                     })
                 });
                 if(call){
@@ -233,7 +233,7 @@ class VaccinationDetail extends React.Component {
                 this.setState({
                     wards: res.data.data.map(v => {
                         var e = v.name.split("-");
-                        return {value: e[0].trim() * 1, label: e[1].trim()}
+                        return {value: e[0].trim(), label: e[1].trim()}
                     })
                 });
             }
