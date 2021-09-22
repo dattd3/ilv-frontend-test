@@ -869,6 +869,7 @@
   "AnErrorOccurred": "Something went wrong",
   "successfulRevocationApproval": "Successfully revocation approval",
   "VaccinantionInformation": "COVID-19 Vaccination Information",
+  "vaccination": "COVID-19 Vaccination Information",
   "action": "Action",
   "ChangeWorkingAppointmentTeam": "Team",
   "SelectEmployees": "Select employee",
