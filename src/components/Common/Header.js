@@ -185,7 +185,10 @@ function Header(props) {
     }
 
     const onChangeLocale = lang => {
-        setActiveLang(lang)
+        setActiveLang(lang);
+        if(window.location.pathname.match('vaccination')){
+            window.location.reload();
+        }
     }
 
     const openUploadAvatarPopup = () => {
