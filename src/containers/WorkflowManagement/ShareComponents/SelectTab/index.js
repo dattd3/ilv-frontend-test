@@ -34,9 +34,10 @@ export default function SelectTab(props) {
 
       </div>
       <div className="d-flex justify-content-between align-items-center">
-        <div className="number-selected">{selectedMembers.length}</div>
-        <i className="fa fa-close p-1 iconPointer" aria-hidden="true" onClick = {onCloseAllEvent}></i>
-          <i className="fa fa-sort-down downIcon" onClick={onClickSelectTab}></i>
+        {selectedMembers.length > 0 && <div className="number-selected">{selectedMembers.length}</div>
+        }
+        {selectedMembers.length > 0 && <i className="fa fa-close p-1 iconPointer" aria-hidden="true" onClick={onCloseAllEvent}></i>}
+        <i className="fa fa-sort-down downIcon" onClick={onClickSelectTab}></i>
       </div>
 
     </div>
