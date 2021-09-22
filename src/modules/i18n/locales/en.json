@@ -859,6 +859,7 @@
   "PITReduction": "PIT Reduction",
   "BirthCity": "Birth City",
   "Recalled": "Recalled",
+  "langCode": "en",
   "successfulRecallReq": "Successfully submitted recall request",
   "successfulCancelReq": "Successfully cancel request",
   "successfulApprvalReq": "Successfully approve request",
@@ -868,6 +869,7 @@
   "AnErrorOccurred": "Something went wrong",
   "successfulRevocationApproval": "Successfully revocation approval",
   "VaccinantionInformation": "COVID-19 Vaccination Information",
+  "vaccination": "COVID-19 Vaccination Information",
   "action": "Action",
   "ChangeWorkingAppointmentTeam": "Team",
   "SelectEmployees": "Select employee",
@@ -947,5 +949,6 @@
   "LabelTypeReport": "Type Report",
   "LabelDownloadReport": "Download Report",
   "RoomAreaRegion": "Room/Area/Region",
-  "MemberUnits": "Member Units"
+  "MemberUnits": "Member Units",
+  "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation"
 }

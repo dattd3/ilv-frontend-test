@@ -14,12 +14,9 @@ class ChangeShiftReport extends Component {
       compensatoryLeaves: [],
       timeTableData: null,
       isSearch: false,
-      isTableSearch: true
+      isTableSearch: true,
+      error: {}
     };
-  }
-
-  dowload(startDate, endDate, members, usernames) {
-    console.log("Download Report")
   }
 
   getMonths(data) {
@@ -54,7 +51,7 @@ class ChangeShiftReport extends Component {
     return (
       <div className="timesheet-section">
         <ToastContainer />
-        <FilterDataShirfReport clickDownload={this.dowload.bind(this)} type="singleChoice" />
+        <FilterDataShirfReport />
       </div>
     );
   }

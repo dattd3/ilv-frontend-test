@@ -268,7 +268,7 @@ class RequestTaskList extends React.Component {
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -278,7 +278,7 @@ class RequestTaskList extends React.Component {
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8)  ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9)  ? true : false;
     }
     
     isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
@@ -287,7 +287,7 @@ class RequestTaskList extends React.Component {
             isShow = false;
         } else {
             // || (status == 5 && appraiser)
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
                 isShow = true;
             } else {
                 isShow = false;
@@ -480,7 +480,7 @@ class RequestTaskList extends React.Component {
         // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
-        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHNAGE_DIVISON_SHIFT]
+        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHNAGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -565,7 +565,7 @@ class RequestTaskList extends React.Component {
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                     totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                 }
-                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8)
+                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9)
                                 {
                                     editLink = null;
                                 }

@@ -337,7 +337,7 @@ function Content(props) {
                     {
                         filterType.map( (item, index) => {
                             return <div className="item" key = {index}>
-                                    <div className="box" style={{backgroundColor: item.color}}></div>
+                                    <div className="box-op1" style={{backgroundColor: item.color}}></div>
                                     <div className="title">{item.title}</div>
                                 </div>
                         })
