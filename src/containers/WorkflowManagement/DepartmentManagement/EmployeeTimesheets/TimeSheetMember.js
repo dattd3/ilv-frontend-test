@@ -314,7 +314,7 @@ function Content(props) {
                     {
                         filterType.map((item, index) => {
                             return <div className="item" key={index}>
-                                <div className="box" style={{backgroundColor: item.color}}></div>
+                                <div className="box-op1" style={{backgroundColor: item.color}}></div>
                                 <div className="title">{item.title}</div>
                             </div>
                         })
@@ -391,7 +391,7 @@ function TimeSheetMember(props) {
   if (!props.timesheets || props.timesheets.length == 0) return null
     
   return (
-    <div className="detail">
+    <div className="detail-timesheet">
       <div className="card shadow">
         {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
         <div className="card-body">
