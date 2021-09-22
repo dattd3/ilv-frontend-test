@@ -39,7 +39,7 @@ const removeAccents = value => {
 }
 
 const formatStringByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#") ? "" : value
+    return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
 }
 
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue }
