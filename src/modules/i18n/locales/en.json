@@ -949,5 +949,6 @@
   "LabelTypeReport": "Type Report",
   "LabelDownloadReport": "Download Report",
   "RoomAreaRegion": "Room/Area/Region",
-  "MemberUnits": "Member Units"
+  "MemberUnits": "Member Units",
+  "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation"
 }
