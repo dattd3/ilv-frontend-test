@@ -64,7 +64,7 @@ class VaccinationDetail extends React.Component {
 
     getInfo(id){
         const { t } = this.props;
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}?lang=${t('langCode')}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 const stateData = this.state.formData;
@@ -100,7 +100,7 @@ class VaccinationDetail extends React.Component {
 
     getEffect() {
         const { t } = this.props;
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/effects?lang=${t('langCode')}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/effects?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({
@@ -114,7 +114,7 @@ class VaccinationDetail extends React.Component {
 
     getMasterData() {
         const { t } = this.props;
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas?lang=${t('langCode')}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({
