@@ -20,12 +20,13 @@ class Vaccination extends React.Component {
     }
 
     componentDidMount() {
+        const { t } = this.props;
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
             }
         }
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/list`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/list?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({listData: res.data.data});
@@ -34,10 +35,6 @@ class Vaccination extends React.Component {
         }).catch(error => {
             this.setState({loadSuccess: true});
         });
-    }
-
-    exportExcel(){
-        
     }
     
     render() {
@@ -111,19 +108,6 @@ class Vaccination extends React.Component {
                                                                             }
                                                                             </Popover.Content>
                                                                         </Popover>
-
-                                                                        // <Tooltip 
-                                                                        //     className="recruiting-detail-tooltip tooltip-white"
-                                                                        //     style={{ fontFamily: "Arial, Helvetica, sans-serif", 
-                                                                        //     fontSize: 11, whiteSpace: "normal" }}>
-                                                                        //     {
-                                                                        //         e.map((v,i) => {
-                                                                        //             if(v.status == 1){
-                                                                        //                 return <div key={i} className="text-left">{"- " + v.name}</div>
-                                                                        //             }
-                                                                        //         })
-                                                                        //     }
-                                                                        // </Tooltip>
                                                                     }>
                                                                     <div className="" style={{cursor:"pointer"}}>
                                                                         ...
