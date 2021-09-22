@@ -1,0 +1,50 @@
+.tabControl
+{
+    border-color: rgb(204, 204, 204);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    .tabContainer {
+        align-items: center;
+        background-color: rgb(255, 255, 255);
+        cursor: default;
+        display: flex;
+        flex-wrap: wrap;
+        min-height: 35px;
+        .tabContent {
+            background-color: rgb(230, 230, 230);
+            border-radius: 2px;
+            display: flex;
+            margin: 2px;
+            min-width: 0px;
+            box-sizing: border-box;
+        
+            .tabLabel {
+                border-radius: 2px;
+                color: rgb(51, 51, 51);
+                font-size: 85%;
+                overflow: hidden;
+                padding: 3px 3px 3px 6px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                box-sizing: border-box;
+            }
+        }
+    }
+}
+
+.downIcon {
+    border: 1px solid #d1d3e2;
+    width: 40px;
+    min-height: 38px;
+    border-bottom: none;
+    border-right: none;
+    border-top: none;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+}
+.iconPointer {
+    cursor: pointer;
+}
+
