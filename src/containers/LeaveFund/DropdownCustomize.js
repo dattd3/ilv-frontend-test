@@ -1,214 +1,157 @@
-import React from 'react'
-import { withTranslation } from "react-i18next"
-import _, { debounce } from 'lodash'
-import { removeAccents, formatStringByMuleValue } from "../../commons/Utils"
-
-const DropdownValue = (props) => {
-    const { labels } = props
-
-    return (
-        <div className="value-wrapper">
-            <div className="value-item">{labels.join(", ")}</div>
-        </div>  
-    )
-}
+import React from "react";
+import { registerLocale } from "react-datepicker";
+import { withTranslation } from "react-i18next";
+// import Select from 'react-select';
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import vi from "date-fns/locale/vi";
+import axios from "axios";
+import MemberOption from "../WorkflowManagement/ShareComponents/MemberOption"
+import SelectTab from "../WorkflowManagement/ShareComponents/SelectTab"
+import "./dropdown-customize.scss"
+registerLocale("vi", vi);
 
 class DropdownCustomize extends React.Component {
-    buttonType = {
-        cancel: 0,
-        apply: 1
-    }
-    constructor(props) {
-        super(props)
+    constructor() {
+        super();
         this.state = {
-            isListOpen: false,
-            keyword: "",
-            optionsFilter: [],
-            isSelectedAll: false,
-            optionsSelected: {},
-            optionsSelectedConfirmed: {},
-            isShowLoadingFilter: false
-        }
+            users: [],
+            checkedMemberIds: [],
+            selectedMembers: [],
+            showMemberOption: false,
+        };
 
-        this.handleInputFilter = debounce(this.filterUser, 800)
+        this.onShowMembers = this.onShowMembers.bind(this);
+        this.onHideMembers = this.onHideMembers.bind(this);
+        this.getSelecteMembers = this.getSelecteMembers.bind(this);
+        this.resetSelectedMember = this.resetSelectedMember.bind(this);
+        this.onClickSelectTab = this.onClickSelectTab.bind(this);
+        this.onCloseTabEvent = this.onCloseTabEvent.bind(this);
+        this.onCloseAllEvent = this.onCloseAllEvent.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.options !== this.props.options) {
-            this.setState({ optionsFilter: nextProps.options })
-        }
+    getClosingSalaryDatePreMonth = () => {
+        const now = moment();
+        let preMonth = now.month();
+        const currentYear = preMonth === 0 ? now.year() - 1 : now.year();
+        preMonth = preMonth === 0 ? 12 : preMonth;
+        return `26/${preMonth}/${currentYear}`;
+    };
+    componentDidMount() {
+        this.getApproverInfo();
     }
 
-    componentDidUpdate(){
-        const { isListOpen } = this.state
-      
-        setTimeout(() => {
-            if(isListOpen){
-                window.addEventListener('click', this.closeMenu)
-            } else{
-                window.removeEventListener('click', this.closeMenu)
-            }
-        }, 0)
+    getApproverInfo = () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                client_id: process.env.REACT_APP_MULE_CLIENT_ID,
+                client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
+            },
+        };
+
+        axios
+            .get(
+                `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`,
+                config
+            )
+            .then((res) => {
+                if (res && res.data && res.data.data) {
+                    const users = res.data.data || [];
+                    this.setState({ users: users });
+                }
+            })
+            .catch((error) => { });
+    };
+
+    getSelecteMembers(data) {
+        this.setState(
+            {
+                users: data,
+                showMemberOption: false,
+                selectedMembers: (data.filter(a => a.checked)),
+                checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid))
+            });
+        const dataChecks = data.filter(a => a.checked);
+        const ids = dataChecks.map(itm => itm.uid);
+        this.props.getSelecteMembers(ids);
     }
 
-    toggleList = () => {
-        this.setState(prevState => ({
-            isListOpen: !prevState.isListOpen
-        }))
+    onShowMembers() {
+        this.setState({ showMemberOption: true });
     }
 
-    closeMenu = () => {
-        this.setState({isListOpen: false})
+    onHideMembers() {
+        this.setState({ showMemberOption: false });
     }
 
-    handleButtonClick = (e, type) => {
-        let optionsSelectedConfirmed = {...this.state.optionsSelectedConfirmed}
-        let optionsSelected = {...this.state.optionsSelected}
-        let isSelectedAll = {...this.state.isSelectedAll}
-
-        if (type === this.buttonType.cancel) {
-            optionsSelectedConfirmed = {}
-            optionsSelected = {}
-            isSelectedAll = false
-        } else {
-            const optionsSelected = {...this.state.optionsSelected}
-            optionsSelectedConfirmed = {...optionsSelectedConfirmed, ...optionsSelected}
-            isSelectedAll = (_.size(optionsSelected) > 0 && Object.values(optionsSelected).every(item => item && item.selected)) || false
-            this.props.updateParent(optionsSelectedConfirmed)
-            this.closeMenu()
-        }
-
-        this.setState({optionsSelectedConfirmed: optionsSelectedConfirmed, optionsSelected: optionsSelected, isSelectedAll: isSelectedAll})
+    resetSelectedMember() {
+        const resetedMember = [...this.state.users]
+        this.setState(
+            {
+                users: resetedMember.map(member => { return { ...member, checked: false } }),
+                showMemberOption: false,
+                selectedMembers: [],
+                checkedMemberIds: []
+            });
+        this.props.resetSelectedMember([]);
     }
 
-    handleInputChange = e => {
-        const val = e != null ? e.target.value : ""
-        this.setState({keyword: val})
-        this.handleInputFilter(val)
+    addDays(date, days) {
+        const copy = new Date(Number(date))
+        copy.setDate(date.getDate() + days)
+        return copy
     }
 
-    filterUser = (value) => {
-        const { options } = this.props
-
-        if (value !== "") {
-            this.setState({isShowLoadingFilter: true})
-            const valueToFilter = removeAccents(value.trim().toLowerCase())
-            const usersMapped = options.filter(item => (removeAccents(item.AD.toLowerCase()) == valueToFilter || removeAccents(item.label?.toLowerCase())?.includes(valueToFilter)))
-            this.setState({isShowLoadingFilter: false, isSelectedAll: false, optionsFilter: usersMapped})
-        } else {
-            const optionsFilter = options
-            const { optionsSelected } = this.state
-            const isSelectedAll = optionsFilter.every(i => optionsSelected[i.value]?.selected)  
-            this.setState({isSelectedAll: isSelectedAll, optionsFilter: optionsFilter})
-        }
+    onClickSelectTab() {
+        this.setState({ showMemberOption: true });
     }
-
-    handleCheckboxChange = (key, e) => {
-        let optionsSelected = {...this.state.optionsSelected}
-        const checkedValue = e.target.checked
-        let isSelectedAll = false
-        const optionsFilter = [...this.state.optionsFilter]
-
-        if (key === null) {
-            let optionsSelectedTemp = {}
-            for (let i = 0, len = optionsFilter.length; i < len; i++) {
-                optionsSelectedTemp[optionsFilter[i].value] = {selected: checkedValue}
-            }
-            optionsSelected = optionsSelectedTemp
-            isSelectedAll = checkedValue
-        } else {
-            optionsSelected[key] = {selected: checkedValue}
-            isSelectedAll = Object.values(optionsFilter).every(i => optionsSelected[i.value]?.selected)
-        }
-
-        this.setState({isSelectedAll: isSelectedAll, optionsSelected: optionsSelected})
+    onCloseTabEvent(uid) {
+        const members = this.state.users;
+        const closeMember = members.find(val => val.uid === uid);
+        closeMember.checked = false;
+        this.getSelecteMembers(members);
+        const dataChecks = members.filter(a => a.checked);
+        const ids = dataChecks.map(itm => itm.uid);
+        this.props.onCloseTabEvent(ids);
     }
-
-    getListNameUsers = () => {
-        const { optionsSelectedConfirmed } = this.state
-        const { options } = this.props
-        const userNames = options.filter(item => optionsSelectedConfirmed[item.value]?.selected).map(i => i.label)
-
-        return userNames
-    } 
+    onCloseAllEvent() {
+        this.resetSelectedMember();
+        this.props.onCloseAllEvent([]);
+    }
 
     render() {
-        const { isListOpen, keyword, isSelectedAll, optionsSelected, isShowLoadingFilter, optionsFilter, optionsSelectedConfirmed } = this.state
-        const { placeholderText, options, t } = this.props
-        const isDisabledButton = !options || options.length === 0
-        const totalItemConfirmed = Object.values(optionsSelectedConfirmed).filter(item => item.selected).length
+        const { t } = this.props;
+        let hrProfileDisplay = [];
+        if (this.state.users && this.state.users.length > 0) {
+            hrProfileDisplay = this.state.users.map((profile) => {
+                return {
+                    uid: profile.uid,
+                    // label: profile.fullname,
+                    fullname: profile.fullname,
+                    job_name: profile.job_name,
+                    companyCode: profile.companyCode,
+                    orgLv3Text: profile.orgLv3Text,
+                    username: profile.username,
+                    manager: profile.manager,
+                    company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
+                    checked: profile.checked || false,
+                    isExpand: profile.isExpand || false,
+                };
+            });
+        }
 
         return (
-            <div className="dropdown-customize">
-                <div className="dd-wrapper">
-                    <div className="dd-header" onClick={this.toggleList}>
-                        <div className="dd-header-title">
-                            {
-                                totalItemConfirmed > 0
-                                ? <DropdownValue labels={this.getListNameUsers()} />
-                                : <span className="placeholder">{placeholderText}</span>
-                            }
-                        </div>
-                        {
-                           totalItemConfirmed > 0
-                            ? <span className="indicator"><span className="total-confirmed">{totalItemConfirmed}</span></span>
-                            : isListOpen
-                            ? <i className='fa fa-angle-up indicator up'></i>
-                            : <i className='fa fa-angle-down indicator down'></i>
-                        }
-                    </div>
-                    {
-                        isListOpen ?
-                            <div role="menu" className="dd-menu" onClick={e => e.stopPropagation()}>
-                                <div className="button-block">
-                                    <button type="button" className="btn btn-secondary cancel" onClick={e => this.handleButtonClick(e, this.buttonType.cancel)} disabled={isDisabledButton}>{t("CancelSearch")}</button>
-                                    <button type="button" className="btn btn-primary apply" onClick={e => this.handleButtonClick(e, this.buttonType.apply)} disabled={isDisabledButton}>{t("ApplySearch")}</button>
-                                </div>
-                                <div className="input-search-block">
-                                    <div className="wrap-input">
-                                        <i className="fas fa-search ic-search"></i>
-                                        <input type="text" placeholder={t("EnterKeywords")} value={keyword || ""} onChange={e => this.handleInputChange(e)} />
-                                    </div>
-                                </div>
-                                 <div className="justify-content-center loading-block" style={{display: `${isShowLoadingFilter ? 'flex' : 'none'}`}}>
-                                    <div className="spinner-border ic-loading" role="status">
-                                        <span className="sr-only">Loading...</span>
-                                    </div>
-                                </div>
-                                {
-                                    optionsFilter.length > 0 
-                                    ?   <div role="list" className="dd-list">
-                                            <label className="select-all">
-                                                <input type="checkbox" checked={isSelectedAll} onChange={e => this.handleCheckboxChange(null, e)} />
-                                                <span>{t("All")}</span>
-                                            </label>
-                                            <div className="items">
-                                                {
-                                                    optionsFilter.map((item, index) => {
-                                                        let key = item.value
-                                                        let ad = formatStringByMuleValue(item?.AD)
-                                                        let subValue = ad ? `(${ad}) ${formatStringByMuleValue(item.jobTitle)}` : formatStringByMuleValue(item.jobTitle)
-                                                        return <label className="item" key={index}>
-                                                                    <input type="checkbox" className="i_checkbox" checked={optionsSelected[key]?.selected || false} onChange={e => this.handleCheckboxChange(key, e)} />
-                                                                    <div className="label">
-                                                                        <p className="main">{item.label || ""}</p>
-                                                                        <p className="sub">{subValue}</p>
-                                                                    </div>
-                                                                </label>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    : <div className="text-danger no-results">{t("NoDataFound")}</div>
-                                }
-                            </div>
-                        : null
-                    }
-    
-                </div>
+            <div className="timesheet-box">
+                <div className="title">{t("SelectEmployees")}</div>
+                <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
+                    onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
+                {this.state.showMemberOption ? (
+                    //employeeGrTree
+                    <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                ) : null}
             </div>
-        )
+        );
     }
 }
-
-export default withTranslation()(DropdownCustomize)
+export default withTranslation()(DropdownCustomize);

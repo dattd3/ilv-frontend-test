@@ -13,31 +13,31 @@ export default function SelectTab(props) {
     onCloseAll();
   }
   const renderSelectTab = selectedMembers => {
-    return selectedMembers.map(item => {
+    return selectedMembers.map((item,key) => {
       const fullname = item.fullname;
       return (
-        <span>
+        <span key={key}>
           <span className="tabContent">
             <span className="tabLabel">
               {fullname}
             </span>
-            <i className="fa fa-close p-1 iconPointer" aria-hidden="true" onClick={() => onCloseTabEvent(item.uid)}></i>
+            <i className="fa fa-close p-1 closeIcon" aria-hidden="true" onClick={() => onCloseTabEvent(item.uid)}></i>
           </span>
         </span>
       )
     });
   }
   return (
-    <div className="d-flex justify-content-between align-items-center tabControl">
+    <div className="tabControl" onClick={onClickSelectTab}>
       <div className="tabContainer">
         {renderSelectTab(selectedMembers)}
 
       </div>
       <div className="d-flex justify-content-between align-items-center">
-        {selectedMembers.length > 0 && <div className="number-selected">{selectedMembers.length}</div>
+        {selectedMembers.length > 0 && <div className="total">{selectedMembers.length}</div>
         }
-        {selectedMembers.length > 0 && <i className="fa fa-close p-1 iconPointer" aria-hidden="true" onClick={onCloseAllEvent}></i>}
-        <i className="fa fa-sort-down downIcon" onClick={onClickSelectTab}></i>
+        {selectedMembers.length > 0 && <i className="fa fa-close p-1 closeIconAll" aria-hidden="true" onClick={onCloseAllEvent}></i>}
+        <i className="fa fa-angle-down downIcon" onClick={onClickSelectTab}></i>
       </div>
 
     </div>
