@@ -28,7 +28,7 @@ export default function SelectTab(props) {
     });
   }
   return (
-    <div className="tabControl">
+    <div className="tabControl" onClick={onClickSelectTab}>
       <div className="tabContainer">
         {renderSelectTab(selectedMembers)}
 
