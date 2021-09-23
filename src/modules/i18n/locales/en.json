@@ -950,5 +950,6 @@
   "LabelDownloadReport": "Download Report",
   "RoomAreaRegion": "Room/Area/Region",
   "MemberUnits": "Member Units",
-  "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation"
+  "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation",
+  "baseNameBCCFile": "Department Timesheet"
 }

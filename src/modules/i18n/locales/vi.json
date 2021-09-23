@@ -969,5 +969,6 @@
   "LabelDownloadReport": "Tải về báo cáo",
   "RoomAreaRegion": "Phòng/Vùng/Miền",
   "MemberUnits": "Các đơn vị thành viên",
-  "DepartmentTimeSheetInformation": "Thông tin bảng chấm công bộ phận"
+  "DepartmentTimeSheetInformation": "Thông tin bảng chấm công bộ phận",
+  "baseNameBCCFile": "Bảng chấm công Bộ phận"
 }
