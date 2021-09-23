@@ -78,7 +78,8 @@ class DepartmentTimeSheetDetail extends React.Component {
   }
 
   exportTimeSheetsFile = () => {
-    let fileName = `Bang_cham_cong_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`
+    const { t }=this.props
+    let fileName = `${t('baseNameBCCFile')} ${this.props.substitution.createField.replace('/','_')}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`
 
     const config = {
       responseType: 'blob',
@@ -187,13 +188,13 @@ class DepartmentTimeSheetDetail extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
           {
-            this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ?
+            // this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ?
               <div className="d-flex justify-content-center align-items-center">
                 <div className="mr-2">
-                  <button className="btn-export-err p-2 text-dark" onClick={this.exportTimeSheetsFile}><img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> {t('Bảng chấm công bộ phận.xlsx')}</button>
+                  <button className="btn-export-err p-2 text-dark" onClick={this.exportTimeSheetsFile}><img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> {`${t('baseNameBCCFile')} ${this.props.substitution.createField.replace('/','_')}.xlsx`}</button>
                 </div>
               </div>
-              : null
+              // : null
           }
 
         </div>

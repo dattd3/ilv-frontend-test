@@ -56,7 +56,7 @@ class LeaveFund extends React.Component {
       if (result && result.code != Constants.API_ERROR_CODE) {
         const data = responses.value.data.data
         const subordinates = (data || []).map(item => {
-          return {value: item.uid, label: item.fullname, AD: item.username, jobTitle: this.formatStringByMuleValue(item.job_name)}
+          return { value: item.uid, label: item.fullname, AD: item.username, jobTitle: this.formatStringByMuleValue(item.job_name) }
         })
 
         this.setState({
@@ -73,7 +73,7 @@ class LeaveFund extends React.Component {
     if (responses && responses.status === "fulfilled" && responses.value && responses.value.data) {
       const result = responses.value.data.result
       if (result && result.code != Constants.API_ERROR_CODE) {
-        this.setState({subordinateLeaveOfAbsencesOriginal: responses.value.data.data || []})
+        this.setState({ subordinateLeaveOfAbsencesOriginal: responses.value.data.data || [] })
       }
     }
   }
@@ -92,27 +92,28 @@ class LeaveFund extends React.Component {
 
   submitFilter = () => {
     const { filter, subordinateLeaveOfAbsencesOriginal } = this.state
-    const subordinateLeaveOfAbsences = subordinateLeaveOfAbsencesOriginal.filter(item => filter.employeeCodeToSearch.includes(item.personal_number.toString()))
+    const subordinateLeaveOfAbsences = subordinateLeaveOfAbsencesOriginal.filter(item => filter.employeeCodeToSearch.includes(item.personal_number))
 
-    this.setState({subordinateLeaveOfAbsences: subordinateLeaveOfAbsences})
+    this.setState({ subordinateLeaveOfAbsences: subordinateLeaveOfAbsences })
   }
 
-  updateParent = optionsSelectedConfirmed => {
-    let employeeCodeToSearch = []
-
-    for (const [key, value] of Object.entries(optionsSelectedConfirmed)) {
-      if (value?.selected) {
-        employeeCodeToSearch = employeeCodeToSearch.concat(key)
-      }
-    }
-
+  updateParent = data => {
     this.setState({
       filter: {
         ...this.state.filter,
-        employeeCodeToSearch: employeeCodeToSearch
+        employeeCodeToSearch: data
       },
     })
   }
+  resetSelectedMember = data => {
+    this.setState({
+      filter: {
+        ...this.state.filter,
+        employeeCodeToSearch: data
+      },
+    })
+  }
+
 
   formatStringByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#") ? "" : value
@@ -187,32 +188,32 @@ class LeaveFund extends React.Component {
         let expiryDateUnusedCompensatoryLeaveThisYear = this.formatDateByMuleValue(unusedCompensatoryLeaveThisYear?.expire_date)
         /* End Giờ bù tồn năm nay */
 
-        return  <tr key={index}>
-                  <td className="full-name"><span>{profile?.fullname || ""}</span></td>
-                  <td className="room-part-group"><span>{departmentPartGroup || ""}</span></td>
-                  {/* Ngày phép tồn năm trước */}
-                  <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveLastYear)}</span></td>
-                  <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear)}</span></td>
-                  <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveLastYear}</span></td>
-                  {/* End Ngày phép tồn năm trước */}
-                  {/* Ngày phép năm nay */}
-                  <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveThisYear)}</span></td>
-                  <td className="text-center text-primary"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveThisYear)}</span></td>
-                  <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveThisYear}</span></td>
-                  {/* End Ngày phép năm nay */}
-                  <td className="text-center text-danger"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear + numberUnusedAnnualLeaveThisYear)}</span></td>
-                  {/* Giờ bù tồn năm trước */}
-                  <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedCompensatoryLeaveLastYear)}</span></td>
-                  <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveLastYear)}</span></td>
-                  <td className="text-center"><span className="same-width">{expiryDateUnusedCompensatoryLeaveLastYear}</span></td>
-                  {/* End Giờ bù tồn năm trước */}
-                  {/* Giờ bù tồn năm nay */}
-                  <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedCompensatoryLeaveThisYear)}</span></td>
-                  <td className="text-primary text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveThisYear)}</span></td>
-                  <td className="text-center"><span className="same-width">{expiryDateUnusedCompensatoryLeaveThisYear}</span></td>
-                  {/* End Giờ bù tồn năm nay */}
-                  <td className="font-weight-bold text-danger text-center"><span className="sum-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveLastYear + numberUnusedCompensatoryLeaveThisYear)}</span></td>
-                </tr>
+        return <tr key={index}>
+          <td className="full-name"><span>{profile?.fullname || ""}</span></td>
+          <td className="room-part-group"><span>{departmentPartGroup || ""}</span></td>
+          {/* Ngày phép tồn năm trước */}
+          <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveLastYear)}</span></td>
+          <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear)}</span></td>
+          <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveLastYear}</span></td>
+          {/* End Ngày phép tồn năm trước */}
+          {/* Ngày phép năm nay */}
+          <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedAnnualLeaveThisYear)}</span></td>
+          <td className="text-center text-primary"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveThisYear)}</span></td>
+          <td className="text-center"><span className="same-width">{expiryDateUnusedAnnualLeaveThisYear}</span></td>
+          {/* End Ngày phép năm nay */}
+          <td className="text-center text-danger"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedAnnualLeaveLastYear + numberUnusedAnnualLeaveThisYear)}</span></td>
+          {/* Giờ bù tồn năm trước */}
+          <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedCompensatoryLeaveLastYear)}</span></td>
+          <td className="text-warning text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveLastYear)}</span></td>
+          <td className="text-center"><span className="same-width">{expiryDateUnusedCompensatoryLeaveLastYear}</span></td>
+          {/* End Giờ bù tồn năm trước */}
+          {/* Giờ bù tồn năm nay */}
+          <td className="text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUsedCompensatoryLeaveThisYear)}</span></td>
+          <td className="text-primary text-center"><span className="same-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveThisYear)}</span></td>
+          <td className="text-center"><span className="same-width">{expiryDateUnusedCompensatoryLeaveThisYear}</span></td>
+          {/* End Giờ bù tồn năm nay */}
+          <td className="font-weight-bold text-danger text-center"><span className="sum-width">{this.formatNumberStandardByValue(numberUnusedCompensatoryLeaveLastYear + numberUnusedCompensatoryLeaveThisYear)}</span></td>
+        </tr>
       })
     )
   }
@@ -232,7 +233,7 @@ class LeaveFund extends React.Component {
     let totalNumberUnusedCompensatoryLeaveThisYear = 0
     let totalNumberUnusedAnnualLeave = 0
     let totalNumberUnusedCompensatoryLeave = 0
-    
+
     subordinateLeaveOfAbsences.forEach(item => {
       let usedAnnualLeaveLastYear = (item.used_annual_leave || []).find(a => a.year == lastYear)
       let unusedAnnualLeaveLastYear = (item.unused_annual_leave || []).find(a => a.year == lastYear)
@@ -264,7 +265,7 @@ class LeaveFund extends React.Component {
       let numberUsedCompensatoryLeaveThisYear = this.convertToFloatByValue(usedCompensatoryLeaveThisYear?.days)
       let numberUnusedCompensatoryLeaveThisYear = this.convertToFloatByValue(unusedCompensatoryLeaveThisYear?.days)
       /* End Giờ bù tồn năm nay */
-      
+
       totalNumberUsedAnnualLeaveLastYear += numberUsedAnnualLeaveLastYear
       totalNumberUnusedAnnualLeaveLastYear += numberUnusedAnnualLeaveLastYear
       totalNumberUsedAnnualLeaveThisYear += numberUsedAnnualLeaveThisYear
@@ -315,14 +316,14 @@ class LeaveFund extends React.Component {
         }
       }
     }
-    
+
     ws['!cols'] = [
-      {width: 20}, {width: 30}, {width: 13}, {width: 18}, {width: 14}, {width: 13}, {width: 18}, {width: 14},
-      {width: 15}, {width: 13}, {width: 18}, {width: 15}, {width: 13}, {width: 18}, {width: 14}, {width: 15}
+      { width: 20 }, { width: 30 }, { width: 13 }, { width: 18 }, { width: 14 }, { width: 13 }, { width: 18 }, { width: 14 },
+      { width: 15 }, { width: 13 }, { width: 18 }, { width: 15 }, { width: 13 }, { width: 18 }, { width: 14 }, { width: 15 }
     ]
-    const wb = {Sheets: {[title]: ws}, SheetNames: [title]}
-    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
-    const data = new Blob([excelBuffer], {type: fileType})
+    const wb = { Sheets: { [title]: ws }, SheetNames: [title] }
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const data = new Blob([excelBuffer], { type: fileType })
     FileSaver.saveAs(data, fileNameForExport)
   }
 
@@ -335,10 +336,8 @@ class LeaveFund extends React.Component {
         <div className="card border shadow container-fluid filter-block">
           <div className="row">
             <div className="col-md-3 column">
-              <div className="title">{t("SelectEmployees")}</div>
-              <div className="content input-container">
-                <DropdownCustomize options={filter.subordinates} placeholderText={t("SelectEmployees")} updateParent={this.updateParent} />
-              </div>
+              <DropdownCustomize getSelecteMembers = {this.updateParent} resetSelectedMember = {this.updateParent}
+              onCloseTabEvent = {this.updateParent} onCloseAllEvent = {this.updateParent}/>
             </div>
             <div className="col-md-3 column">
               <div className="title">&nbsp;</div>
@@ -350,48 +349,48 @@ class LeaveFund extends React.Component {
         </div>
         {
           subordinateLeaveOfAbsences.length > 0 ?
-          <>
-            <div className="btn-block">
-              <button type="button" className="btn btn-outline-success" onClick={this.exportLeaveFundToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
-            </div>
-            <div className="card border shadow result-block">
-              <div className="result-wrap-table">
-                <table className="result-table" id="result-table">
-                  <thead>
-                    <tr>
-                      <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("FullName")}</th>
-                      <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("RoomPartGroup")}</th>
-                      <th className="text-center text-uppercase font-weight-bold text-warning" colSpan="3">{t("RemainingLeavesFromLastYear")}</th>
-                      <th className="text-center text-uppercase font-weight-bold text-primary" colSpan="3">{t("LeavesThisYear")}</th>
-                      <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("TotalAvaiableLeaves")}</th>
-                      <th className="text-center text-uppercase font-weight-bold text-warning" colSpan="3">{t("RemaingToilHoursLastYear")}</th>
-                      <th className="text-center text-uppercase font-weight-bold text-primary" colSpan="3">{t("ToilHoursThisYear")}</th>
-                      <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("TotalAvailableToilHours")}</th>
-                    </tr>
-                    <tr>
-                      <th className="text-center"><span className="same-width">{t("Used")}</span></th>
-                      <th className="text-center text-warning"><span className="same-width">{t("Available")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("Used")}</span></th>
-                      <th className="text-center text-primary"><span className="same-width">{t("Available")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("Used")}</span></th>
-                      <th className="text-center text-warning"><span className="same-width">{t("Available")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("Used")}</span></th>
-                      <th className="text-center text-primary"><span className="same-width">{t("Available")}</span></th>
-                      <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
-                    </tr>
-                    { this.renderCount() }
-                  </thead>
-                  <tbody>
-                    { this.renderListData() }
-                  </tbody>
-                </table>
+            <>
+              <div className="btn-block">
+                <button type="button" className="btn btn-outline-success" onClick={this.exportLeaveFundToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
               </div>
-            </div>
-          </>
-          : null
+              <div className="card border shadow result-block">
+                <div className="result-wrap-table">
+                  <table className="result-table" id="result-table">
+                    <thead>
+                      <tr>
+                        <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("FullName")}</th>
+                        <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("RoomPartGroup")}</th>
+                        <th className="text-center text-uppercase font-weight-bold text-warning" colSpan="3">{t("RemainingLeavesFromLastYear")}</th>
+                        <th className="text-center text-uppercase font-weight-bold text-primary" colSpan="3">{t("LeavesThisYear")}</th>
+                        <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("TotalAvaiableLeaves")}</th>
+                        <th className="text-center text-uppercase font-weight-bold text-warning" colSpan="3">{t("RemaingToilHoursLastYear")}</th>
+                        <th className="text-center text-uppercase font-weight-bold text-primary" colSpan="3">{t("ToilHoursThisYear")}</th>
+                        <th className="text-center text-uppercase font-weight-bold" rowSpan="2">{t("TotalAvailableToilHours")}</th>
+                      </tr>
+                      <tr>
+                        <th className="text-center"><span className="same-width">{t("Used")}</span></th>
+                        <th className="text-center text-warning"><span className="same-width">{t("Available")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("Used")}</span></th>
+                        <th className="text-center text-primary"><span className="same-width">{t("Available")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("Used")}</span></th>
+                        <th className="text-center text-warning"><span className="same-width">{t("Available")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("Used")}</span></th>
+                        <th className="text-center text-primary"><span className="same-width">{t("Available")}</span></th>
+                        <th className="text-center"><span className="same-width">{t("ExpireDate")}</span></th>
+                      </tr>
+                      {this.renderCount()}
+                    </thead>
+                    <tbody>
+                      {this.renderListData()}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+            : null
         }
       </div>
     )
