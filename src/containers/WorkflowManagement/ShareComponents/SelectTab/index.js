@@ -13,10 +13,10 @@ export default function SelectTab(props) {
     onCloseAll();
   }
   const renderSelectTab = selectedMembers => {
-    return selectedMembers.map(item => {
+    return selectedMembers.map((item,key) => {
       const fullname = item.fullname;
       return (
-        <span>
+        <span key={key}>
           <span className="tabContent">
             <span className="tabLabel">
               {fullname}
