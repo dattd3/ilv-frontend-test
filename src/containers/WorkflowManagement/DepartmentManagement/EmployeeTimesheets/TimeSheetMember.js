@@ -301,12 +301,8 @@ function RenderRow4(props) {
 
 function Content(props) {
     const [pageNumber, setPageNumber] = useState(1);
-    const [isShowShiftUpdateModal, setIsShowShiftUpdateModal] = useState(false)
-    const [dateInfo, setDateInfo] = useState("")
-    // const [dateInfo, setDateInfo] = useState("")
-
-
-    
+    const [isShowShiftUpdateModal, SetIsShowShiftUpdateModal] = useState(false)
+    const [dateInfo, SetDateInfo] = useState({})
 
     const onChangePage = index => {
         setPageNumber(index)
@@ -321,17 +317,17 @@ function Content(props) {
         if (duration > backDateConfig) {
             return
         }
-        setIsShowShiftUpdateModal(true)
-        setDateInfo(`${day} ${t("Day")} ${moment(date, 'YYYY-MM-DD').format("DD/MM/YYYY")}`)
+        SetIsShowShiftUpdateModal(true)
+        SetDateInfo({day: day, date: date})
     }
 
     const onHideShiftUpdateModal = () => {
-        setIsShowShiftUpdateModal(false)
+        SetIsShowShiftUpdateModal(false)
     }
 
     return (
         <>
-            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} onHideShiftUpdateModal={onHideShiftUpdateModal} />
+            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} employeesForFilter={props.employeesForFilter} onHideShiftUpdateModal={onHideShiftUpdateModal} />
             <div className="row pr-2 pl-2 pb-4">
                 <div className="col-md-12 col-xl-12 describer mb-2">
                     {
@@ -351,7 +347,7 @@ function Content(props) {
                                 <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
                                 {props.dayList.map((item, index) => {
                                     return (
-                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYY-MM-DD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
+                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYYMMDD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
@@ -418,7 +414,7 @@ function TimeSheetMember(props) {
       <div className="card shadow">
         {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
         <div className="card-body">
-            <Content timeTables={props.timesheets} dayList={props.dayList}/>
+            <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} />
         </div>
       </div>
     </div>
