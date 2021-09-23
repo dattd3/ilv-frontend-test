@@ -35,7 +35,8 @@ class EmployeeTimesheets extends Component {
       timeTables: [],
       isSearch: false,
       dayList: [],
-      isLoading: false
+      isLoading: false,
+      employeesForFilter: []
     };
   }
 
@@ -649,13 +650,17 @@ class EmployeeTimesheets extends Component {
     })   
   }
 
+  updateEmployees = (employeesForFilter) => {
+    this.setState({employeesForFilter: employeesForFilter})
+  }
+
   render() {
     const { t } = this.props
-    const {isSearch, timeTables, dayList, isLoading} = this.state
+    const {isSearch, timeTables, dayList, isLoading, employeesForFilter} = this.state
 
     return (
       <div className="timesheet-section">
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
+        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
           <>
@@ -715,7 +720,7 @@ class EmployeeTimesheets extends Component {
             </tbody>
           </table>
           {/* End Temp render table to export table to excel */}
-          <TimeSheetMember timesheets={timeTables} dayList={dayList}/></> :
+          <TimeSheetMember timesheets={timeTables} dayList={dayList} employeesForFilter={employeesForFilter} /></> :
           isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> :
           isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }

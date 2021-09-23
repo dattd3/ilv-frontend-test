@@ -5,12 +5,14 @@ import _ from 'lodash'
 // import IconSuccess from '../../assets/img/ic-success.svg';
 // import IconFailed from '../../assets/img/ic-failed.svg';
 import Select, { components } from 'react-select'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import { Modal, Image, Dropdown, Button } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 import Constants from "../../../../commons/Constants"
-import { formatStringByMuleValue } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
 import './ShiftUpdateModal.scss'
+import 'react-datepicker/dist/react-datepicker.css'
 
 function ShiftUpdateModal(props) {
     const { t } = useTranslation()
@@ -21,10 +23,10 @@ function ShiftUpdateModal(props) {
         { value: '01', label: t("Shiftchange") },
         { value: '02', label: t("IntermittenShift") },
         { value: '03', label: t("CoastShoreShiftChange") }
-      ]
+    ]
     const [shiftStartTimeOptionsFilter, SetShiftStartTimeOptionsFilter] = useState([])
     const [shiftEndTimeOptionsFilter, SetShiftEndTimeOptionsFilter] = useState([])
-
+    const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
     const [shiftList, SetShiftList] = useState([])
     const [shiftInfos, SetShiftInfos] = useState([
         {
@@ -35,18 +37,18 @@ function ShiftUpdateModal(props) {
                 shiftCodeFilter: "",
                 startTimeFilter: null,
                 endTimeFilter: null,
-                shiftList: null
+                shiftList: null,
+                shiftSelected: {}
             },
+            startTime: null,
+            endTime: null,
+            employees: [],
             reason: ""
         }
     ])
-
     const [isDisabledSubmitButton, setIsDisabledSubmitButton] = useState(false)
 
-    const sendQuery = (index, query, t) => {
- 
-    }
-    
+    const sendQuery = (index, query, t) => {}
     // const delayedQuery = useRef(_.debounce((i, q) => sendQuery(i, q), 800)).current
 
     const setShiftTimeFilter = shifts => {
@@ -76,7 +78,7 @@ function ShiftUpdateModal(props) {
 
     useEffect(() => {
         function prepareShifts(responses) {
-            if (responses && responses.data && responses.data.data) {
+            if (responses && responses.data) {
                 const result = responses.data.result
                 if (result.code == Constants.API_SUCCESS_CODE) {
                     const data = responses.data?.data
@@ -108,10 +110,48 @@ function ShiftUpdateModal(props) {
         getShiftList()
     }, [])
 
+    useEffect(() => {
+        function prepareSubordinateTimeOverviews(responses) {
+            if (responses && responses.data) {
+                const result = responses.data.result
+                if (result.code == Constants.API_SUCCESS_CODE) {
+                    const data = responses.data?.data
+                    return data
+                }
+                return []
+            }
+            return []
+        }
+
+        async function getSubordinateTimeOverview() {
+            try {
+                const config = {
+                    headers: {
+                      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                }
+                const data = {
+                    from_date: moment(props.dateInfo.date, 'YYYY-MM-DD').format("YYYYMMDD"),
+                    to_date: moment(props.dateInfo.date, 'YYYY-MM-DD').format("YYYYMMDD"),
+                    personal_no_list: [],
+                    page_no: 1,
+                    page_size: 10000
+                }
+
+                const responses = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`, data, config)
+                const timeOverviews = prepareSubordinateTimeOverviews(responses)
+                SetSubordinateTimeOverviews(timeOverviews)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        getSubordinateTimeOverview()
+    }, [props.dateInfo.date])
+
     const handleShiftUpdateType = (index, type) => {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftUpdateType = type
-
         SetShiftInfos(newShiftInfos)
     }
 
@@ -120,8 +160,12 @@ function ShiftUpdateModal(props) {
         newShiftInfos[index][key] = option
         if (key === 'startTimeFilter' || key === 'endTimeFilter') {
             newShiftInfos[index].shiftFilter[key] = option
+            const startTime = key === 'startTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.startTimeFilter?.originValue
+            const endTime = key === 'endTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.endTimeFilter?.originValue
+            const shiftCode = newShiftInfos[index].shiftFilter.shiftCodeFilter
+            const shifts = filterShiftListByTimesAndShiftCode(startTime, endTime, shiftCode)
+            newShiftInfos[index].shiftFilter.shiftList = shifts
         }
-
         SetShiftInfos(newShiftInfos)
     }
 
@@ -135,24 +179,21 @@ function ShiftUpdateModal(props) {
             newShiftInfos[index].shiftFilter.shiftList = shifts
             // delayedQuery(index, val)
         }
-
         SetShiftInfos(newShiftInfos)
     }
 
     const filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
         const shifts = shiftList.filter(item => {
-            return (startTime ? item.from_time.trim() === startTime.trim() : true) 
-            && (endTime ? item.to_time.trim() === endTime.trim() : true) 
-            && (shiftCode ? item.shift_id.trim().toUpperCase() === shiftCode.trim().toUpperCase() : true)
+            return (startTime ? item.from_time?.trim() === startTime?.toString().trim() : true) 
+            && (endTime ? item.to_time?.trim() === endTime?.toString().trim() : true) 
+            && (shiftCode ? item.shift_id?.trim().toUpperCase() === shiftCode?.trim().toUpperCase() : true)
         })
-
         return shifts
     }
 
     const toggleOpenInputShiftCodeFilter = (index, status) => {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftFilter.isOpenInputShiftCodeFilter = !status
-
         SetShiftInfos(newShiftInfos)
     }
 
@@ -164,8 +205,46 @@ function ShiftUpdateModal(props) {
 
     }
 
-    const handleShiftSelect = (indexItem, shiftIndex) => {
+    const handleShiftSelect = (indexItem, shiftIndex, shift) => {
+        const newShiftInfos = [...shiftInfos]
+        newShiftInfos[indexItem].shiftFilter.shiftSelected = {...{index: shiftIndex}, ...shift}
+        const employees = getEmployeesByShift(shift)
+        newShiftInfos[indexItem].employees = employees
+        SetShiftInfos(newShiftInfos)
+    }
 
+    const getEmployeesByShift = shift => {
+        // console.log("fetch employees")
+        // console.log(shift)
+        // console.log(props.employeesForFilter)
+        // console.log(subordinateTimeOverviews)
+
+        let employees = []
+        _.forEach(subordinateTimeOverviews, function(itemParent) {
+            _.forEach(props.employeesForFilter, function(itemChild) {
+                if (itemParent.shift_id == shift.shift_id && itemParent.pernr == itemChild.uid && employees.findIndex(item => item?.employeeCode == itemParent.pernr) === -1) {
+                    employees.push({
+                        employeeCode: itemParent.pernr || "",
+                        fullName: itemParent.fullname || "",
+                        jobTitle: itemChild.job_name || ""
+                    })
+                }
+            })
+        })
+        return employees
+    }
+
+    const handleTimeInputChange = (index, time, stateName) => {
+        console.log("____________")
+        console.log(index)
+        console.log(time)
+        console.log(stateName)
+
+        // TODO
+
+        const newShiftInfos = [...shiftInfos]
+        newShiftInfos[index][stateName] = moment(time).format('HHmmss')
+        SetShiftInfos(newShiftInfos)
     }
 
     const customizeSelectStyles = {
@@ -275,11 +354,11 @@ function ShiftUpdateModal(props) {
         <>
         <Modal backdrop="static" keyboard={false} size="xl" className='shift-update-modal' centered show={props.show} onHide={props.onHideShiftUpdateModal}>
             <Modal.Body className='shift-update-modal-body'>
-                <h6 className="text-uppercase font-14 header-body"><i className="fas fa-calendar-alt"></i>{props.dateInfo || "'"}</h6>
+                <h6 className="text-uppercase font-14 header-body"><i className="fas fa-calendar-alt"></i>{`${props.dateInfo?.day} ${t("Day")} ${moment(props.dateInfo?.date, 'YYYYMMDD').format("DD/MM/YYYY")}`}</h6>
                 <div className="wrap-items">
                     {
                         shiftInfos.map((item, index) => {
-
+                            let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">
                                             <span className="bg-primary add-item-button" onClick={addNewItems}><i className="fas fa-plus"></i>Thêm phân ca</span>
@@ -305,126 +384,153 @@ function ShiftUpdateModal(props) {
                                                 </div>
                                                 {/* {this.error(index, 'substitutionType')} */}
                                             </div>
-                                            <div className="content-for-shift-select">
-                                                <div className="shift-table">
-                                                    <table className="shift">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className="col-select-shift"><span className="select-shift title">Lựa chọn ca</span></th>
-                                                                <th className="col-start-time">
-                                                                    <div className="start-time title">
-                                                                        <Select 
-                                                                            components={{ DropdownIndicator }}
-                                                                            value={item.shiftFilter.startTimeFilter} 
-                                                                            onChange={startTime => handleSelectChange(index, startTime, 'startTimeFilter')} 
-                                                                            placeholder={t("StartHour")} 
-                                                                            options={shiftStartTimeOptionsFilter}
-                                                                            styles={customizeSelectStyles}
-                                                                            isSearchable={false}
-                                                                            isClearable={true} />
-                                                                    </div>
-                                                                </th>
-                                                                <th className="col-end-time">
-                                                                    <div className="end-time title">
-                                                                        <Select 
-                                                                            components={{ DropdownIndicator }}
-                                                                            value={item.shiftFilter.endTimeFilter} 
-                                                                            onChange={endTime => handleSelectChange(index, endTime, 'endTimeFilter')} 
-                                                                            placeholder={t("Endtime")} 
-                                                                            options={shiftEndTimeOptionsFilter}
-                                                                            styles={customizeSelectStyles}
-                                                                            isSearchable={false}
-                                                                            isClearable={true} />
-                                                                    </div>
-                                                                </th>
-                                                                <th className="col-working-time"><span className="working-time title">Giờ làm việc</span></th>
-                                                                <th className="col-shift-code">
-                                                                    <div className="shift-code title">
-                                                                        <Dropdown onToggle={() => toggleOpenInputShiftCodeFilter(index, item.shiftFilter.isOpenInputShiftCodeFilter)}>
-                                                                            <Dropdown.Toggle>
-                                                                                <span className="shift-code">Mã ca</span>
-                                                                            </Dropdown.Toggle>
-                                                                            <Dropdown.Menu className="shift-code-popup">
-                                                                                <div className="input-shift-code">
-                                                                                    <input type="text" placeholder="Nhập mã ca" value={item.shiftFilter.shiftCodeFilter || ""} onChange={e => handleInputTextChange(index, e, "shiftCodeFilter")} />
-                                                                                </div>
-                                                                            </Dropdown.Menu>
-                                                                        </Dropdown>
-                                                                    </div>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                (item.shiftFilter.shiftList || shiftList).map((shift, i) => {
-                                                                    const formatTime = (time) => {
-                                                                        let timeResult = formatStringByMuleValue(time) 
-                                                                        timeResult = timeResult ? moment(timeResult, "HHmmss").format("HH:mm:ss") : ""
-                                                                        return timeResult
-                                                                    }
+                                            {
+                                                item.shiftUpdateType == shiftSelectCode ?
+                                                <div className="content-for-shift-select">
+                                                    <div className="shift-table">
+                                                        <table className="shift">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className="col-select-shift"><span className="select-shift title">Lựa chọn ca</span></th>
+                                                                    <th className="col-start-time">
+                                                                        <div className="start-time title">
+                                                                            <Select 
+                                                                                components={{ DropdownIndicator }}
+                                                                                value={item.shiftFilter.startTimeFilter} 
+                                                                                onChange={startTime => handleSelectChange(index, startTime, 'startTimeFilter')} 
+                                                                                placeholder={t("StartHour")} 
+                                                                                options={shiftStartTimeOptionsFilter}
+                                                                                styles={customizeSelectStyles}
+                                                                                isSearchable={false}
+                                                                                isClearable={true} />
+                                                                        </div>
+                                                                    </th>
+                                                                    <th className="col-end-time">
+                                                                        <div className="end-time title">
+                                                                            <Select 
+                                                                                components={{ DropdownIndicator }}
+                                                                                value={item.shiftFilter.endTimeFilter} 
+                                                                                onChange={endTime => handleSelectChange(index, endTime, 'endTimeFilter')} 
+                                                                                placeholder={t("Endtime")} 
+                                                                                options={shiftEndTimeOptionsFilter}
+                                                                                styles={customizeSelectStyles}
+                                                                                isSearchable={false}
+                                                                                isClearable={true} />
+                                                                        </div>
+                                                                    </th>
+                                                                    <th className="col-working-time"><span className="working-time title">Giờ làm việc</span></th>
+                                                                    <th className="col-shift-code">
+                                                                        <div className="shift-code title">
+                                                                            <Dropdown onToggle={() => toggleOpenInputShiftCodeFilter(index, item.shiftFilter.isOpenInputShiftCodeFilter)}>
+                                                                                <Dropdown.Toggle>
+                                                                                    <span className="shift-code">Mã ca</span>
+                                                                                </Dropdown.Toggle>
+                                                                                <Dropdown.Menu className="shift-code-popup">
+                                                                                    <div className="input-shift-code">
+                                                                                        <input type="text" placeholder="Nhập mã ca" value={item.shiftFilter.shiftCodeFilter || ""} onChange={e => handleInputTextChange(index, e, "shiftCodeFilter")} />
+                                                                                    </div>
+                                                                                </Dropdown.Menu>
+                                                                            </Dropdown>
+                                                                        </div>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    shifts && shifts.length > 0 ?
+                                                                    (item.shiftFilter.shiftList || shiftList).map((shift, i) => {
+                                                                        const formatTime = (time) => {
+                                                                            let timeResult = formatStringByMuleValue(time) 
+                                                                            timeResult = timeResult ? moment(timeResult, "HHmmss").format("HH:mm:ss") : ""
+                                                                            return timeResult
+                                                                        }
 
-                                                                    return <tr key={i}>
-                                                                                <td>
-                                                                                    <input type="radio" value={i} checked={true} onChange={() => handleShiftSelect(index, i)} />
-                                                                                </td>
-                                                                                <td>{formatTime(shift?.from_time)}</td>
-                                                                                <td>{formatTime(shift?.to_time)}</td>
-                                                                                <td>{formatStringByMuleValue(shift?.hours)}</td>
-                                                                                <td className="col-shift-code">{formatStringByMuleValue(shift?.shift_id)}</td>
-                                                                            </tr>
-                                                                })
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div className="list-employees-block">
-                                                    <div className="list-employees-header">
-                                                        <h6 className="text-uppercase font-14">Danh sách nhân viên</h6>
-                                                        <span>Tổng số nhân viên: <span className="font-weight-bold">06</span></span>
+                                                                        return <tr key={i}>
+                                                                                    <td>
+                                                                                        <input type="radio" value={i} checked={item.shiftFilter.shiftSelected?.index === i} onChange={() => handleShiftSelect(index, i, shift)} />
+                                                                                    </td>
+                                                                                    <td>{formatTime(shift?.from_time)}</td>
+                                                                                    <td>{formatTime(shift?.to_time)}</td>
+                                                                                    <td>{formatStringByMuleValue(shift?.hours)}</td>
+                                                                                    <td className="col-shift-code">{formatStringByMuleValue(shift?.shift_id)}</td>
+                                                                                </tr>
+                                                                    })
+                                                                    :
+                                                                    <tr>
+                                                                        <td colSpan="5">Không tồn tại dữ liệu</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                    <div className="list-employees">
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
+                                                    {
+                                                        item.employees && item.employees.length > 0 ?
+                                                        <div className="list-employees-block">
+                                                            <div className="list-employees-header">
+                                                                <h6 className="text-uppercase font-14">Danh sách nhân viên</h6>
+                                                                <span>Tổng số nhân viên: <span className="font-weight-bold">{formatNumberInteger(item.employees.length)}</span></span>
+                                                            </div>
+                                                            <div className="list-employees">
+                                                                {
+                                                                    item.employees.map((employee, ii) => {
+                                                                        return <div className="employee-item" key={ii}>
+                                                                                    <div className="item">
+                                                                                        <p className="text-truncate full-name">{employee.fullName}</p>
+                                                                                        <p className="text-truncate position">({employee.jobTitle})</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                    })
+                                                                }
                                                             </div>
                                                         </div>
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
+                                                        : null
+                                                    }
+                                                </div>
+                                                :
+                                                <div className="content-for-enter-shift-time">
+                                                    <div className="time-configuration">
+                                                        <div className="time-planing">
+                                                            <div className="time-data">
+                                                                <div className="start-time">
+                                                                    <label>Bắt đầu 1 - Thay đổi</label>
+                                                                    <DatePicker
+                                                                        selected={item.startTime ? moment(item.startTime, 'HHmmss').toDate() : null}
+                                                                        onChange={startTime => handleTimeInputChange(index, startTime, "startTime")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                </div>
+                                                                <div className="end-time">
+                                                                    <label>Kết thúc 1 - Thay đổi</label>
+                                                                    <DatePicker
+                                                                        selected={item.endTime ? moment(item.endTime, 'HHmmss').toDate() : null}
+                                                                        onChange={endTime => handleTimeInputChange(index, endTime, "endTime")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                </div>
                                                             </div>
+                                                            {/* <p>Lỗi</p> */}
                                                         </div>
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="employee-item">
-                                                            <div className="item">
-                                                                <p className="text-truncate full-name">Trần Lan Anh</p>
-                                                                <p className="text-truncate position">(Chuyên viên kỹ thuật)</p>
-                                                            </div>
+                                                        <div className="time-total">
+                                                            <label>Tổng thời gian</label>
+                                                            <p className="total">aaaaaa</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="content-for-enter-shift-time">
-                
-                                            </div>
+                                            }
                                             <div className="reason">
                                                 <label>Lý do</label>
                                                 <input type="text" placeholder="Nhập lý do" value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />

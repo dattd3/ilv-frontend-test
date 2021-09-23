@@ -42,4 +42,15 @@ const formatStringByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue }
+const formatNumberInteger = value => {
+    if (isNaN(value)) {
+        return 0
+    }
+    const number = parseInt(value)
+    if (number < 10) {
+        return `0${number}`
+    }
+    return number.toString()
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger }

@@ -63,6 +63,7 @@ class FilterData extends React.Component {
         if (res && res.data && res.data.data) {
           const users = res.data.data || [];
           this.setState({ users: users });
+          this.props.updateEmployees(users)
         }
       })
       .catch((error) => { });
