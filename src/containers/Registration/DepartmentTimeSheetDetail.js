@@ -87,11 +87,14 @@ class DepartmentTimeSheetDetail extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`,
         'Content-Type': 'application/octet-stream'
       },
+      params: {
+        requestHistoryId: this.props.substitution.id
+      }
     }
 
-    let formData = new FormData();
-    formData.append('requestHistoryId', this.props.substitution.id);
-    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/exportexceldepartmenttimesheet`, formData, config)
+    // let formData = new FormData();
+    // formData.append('requestHistoryId', this.props.substitution.id);
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/exportexceldepartmenttimesheet`, config)
       .then(res => {
         var blob = new Blob([res.data], { type: "application/octetstream" });
 
