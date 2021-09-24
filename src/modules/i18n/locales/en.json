@@ -951,5 +951,7 @@
   "RoomAreaRegion": "Room/Area/Region",
   "MemberUnits": "Member Units",
   "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation",
-  "baseNameBCCFile": "Department Timesheet"
+  "baseNameBCCFile": "Department Timesheet",
+  "NodataExport" : "No data!",
+  "SelectReportType" : "Please select report type!"
 }
