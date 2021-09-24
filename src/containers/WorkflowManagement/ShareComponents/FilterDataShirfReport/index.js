@@ -110,6 +110,7 @@ class FilterDataShirfReport extends React.Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate
     }
+    const { t } = this.props;
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
       .then(responses => {
@@ -125,7 +126,7 @@ class FilterDataShirfReport extends React.Component {
           const err = this.state.errors;
           const errNew = {
             ...err,
-            data: "Không có dữ liệu!"
+            data: t("NodataExport")
           }
           this.setState({ errors: errNew });
         }
@@ -170,13 +171,14 @@ class FilterDataShirfReport extends React.Component {
   }
 
   isValidDataToCreate() {
-    let isValid = true
+    let isValid = true;
+    const { t } = this.props;
     if (this.state.reportType === -1) {
 
       const err = this.state.errors;
       const errNew = {
         ...err,
-        type: "Vui lòng chọn loại báo cáo!"
+        type: t("SelectReportType")
       }
       this.setState({ errors: errNew });
       isValid = false;
