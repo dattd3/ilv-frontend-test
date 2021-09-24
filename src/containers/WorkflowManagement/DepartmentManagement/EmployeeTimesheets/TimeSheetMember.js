@@ -327,7 +327,7 @@ function Content(props) {
 
     return (
         <>
-            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} employeesForFilter={props.employeesForFilter} onHideShiftUpdateModal={onHideShiftUpdateModal} />
+            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} onHideShiftUpdateModal={onHideShiftUpdateModal} />
             <div className="row pr-2 pl-2 pb-4">
                 <div className="col-md-12 col-xl-12 describer mb-2">
                     {
@@ -414,7 +414,7 @@ function TimeSheetMember(props) {
       <div className="card shadow">
         {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
         <div className="card-body">
-            <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} />
+            <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} />
         </div>
       </div>
     </div>

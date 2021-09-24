@@ -44,6 +44,7 @@ class FilterData extends React.Component {
     preMonth = preMonth === 0 ? 12 : preMonth;
     return `26/${preMonth}/${currentYear}`;
   };
+  
   componentDidMount() {
     this.getApproverInfo();
   }
@@ -66,11 +67,12 @@ class FilterData extends React.Component {
         if (res && res.data && res.data.data) {
           const users = res.data.data || [];
           this.setState({ users: users });
-          this.props.updateEmployees(users)
+          this.props.updateEmployees(users, 'employeesForFilter')
         }
       })
       .catch((error) => { });
   };
+
   setStartDate(startDate) {
     this.setState({
       startDate: startDate,
@@ -85,8 +87,10 @@ class FilterData extends React.Component {
   }
 
   search() {
-    const checkedMemberUsernames = (this.state.selectedMembers || []).map(item => item.username);
+    const {selectedMembers} = this.state
+    const checkedMemberUsernames = (selectedMembers || []).map(item => item.username);
     this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds, checkedMemberUsernames);
+    this.props.updateEmployees(selectedMembers, 'employeeSelectedFilter')
   }
 
   getSelecteMembers(data) {
