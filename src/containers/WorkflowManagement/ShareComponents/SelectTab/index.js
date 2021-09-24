@@ -7,11 +7,11 @@ export default function SelectTab(props) {
     onClick();
   }
   const onCloseTabEvent = (e,uid) => {
-    e.preventDefault();
+    e.stopPropagation();
     onCloseTab(uid);
   }
   const onCloseAllEvent = (e) => {
-    e.preventDefault();
+    e.stopPropagation();
     onCloseAll();
   }
   const renderSelectTab = selectedMembers => {
@@ -30,7 +30,7 @@ export default function SelectTab(props) {
     });
   }
   return (
-    <div className="tabControl">
+    <div className="tabControl" onClick={onClickSelectTab}>
       <div className="tabContainer">
         {renderSelectTab(selectedMembers)}
 
@@ -39,7 +39,7 @@ export default function SelectTab(props) {
         {selectedMembers.length > 0 && <div className="total">{selectedMembers.length}</div>
         }
         {selectedMembers.length > 0 && <i className="fa fa-close p-1 closeIconAll" aria-hidden="true" onClick={(e) => onCloseAllEvent(e)}></i>}
-        <i className="fa fa-angle-down downIcon" onClick={onClickSelectTab}></i>
+        <i className="fa fa-angle-down downIcon"></i>
       </div>
 
     </div>
