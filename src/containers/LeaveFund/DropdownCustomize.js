@@ -37,7 +37,12 @@ class DropdownCustomize extends React.Component {
         preMonth = preMonth === 0 ? 12 : preMonth;
         return `26/${preMonth}/${currentYear}`;
     };
+
     componentDidMount() {
+        const {employeeSelectedFilter} = this.props
+        if (employeeSelectedFilter && employeeSelectedFilter.length > 0) {
+            return
+        }
         this.getApproverInfo();
     }
 
@@ -121,10 +126,12 @@ class DropdownCustomize extends React.Component {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, employeeSelectedFilter, label } = this.props;
+        const {users} = this.state
         let hrProfileDisplay = [];
-        if (this.state.users && this.state.users.length > 0) {
-            hrProfileDisplay = this.state.users.map((profile) => {
+
+        if (users && users.length > 0) {
+            hrProfileDisplay = users.map((profile) => {
                 return {
                     uid: profile.uid,
                     // label: profile.fullname,
@@ -143,12 +150,12 @@ class DropdownCustomize extends React.Component {
 
         return (
             <div className="timesheet-box">
-                <div className="title">{t("SelectEmployees")}</div>
+                <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
                 <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {this.state.showMemberOption ? (
                     //employeeGrTree
-                    <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                    <MemberOption data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
                 ) : null}
             </div>
         );

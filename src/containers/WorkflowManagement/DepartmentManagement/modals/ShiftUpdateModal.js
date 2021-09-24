@@ -11,6 +11,7 @@ import { Modal, Image, Dropdown, Button } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 import Constants from "../../../../commons/Constants"
 import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
+import DropdownCustomize from "../../../LeaveFund/DropdownCustomize"
 import './ShiftUpdateModal.scss'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -42,6 +43,7 @@ function ShiftUpdateModal(props) {
             },
             startTime: null,
             endTime: null,
+            totalTime: null,
             employees: [],
             reason: ""
         }
@@ -198,11 +200,37 @@ function ShiftUpdateModal(props) {
     }
 
     const handleSubmit = () => {
-
+        // TODO
     }
 
     const addNewItems = () => {
+        const newItem = {
+            shiftUpdateType: shiftSelectCode,
+            shiftType: null,
+            shiftFilter: {
+                isOpenInputShiftCodeFilter: false,
+                shiftCodeFilter: "",
+                startTimeFilter: null,
+                endTimeFilter: null,
+                shiftList: null,
+                shiftSelected: {}
+            },
+            startTime: null,
+            endTime: null,
+            totalTime: null,
+            employees: [],
+            reason: ""
+        }
+        
+        let newShiftInfos = [...shiftInfos]
+        newShiftInfos = newShiftInfos.concat(newItem)
+        SetShiftInfos(newShiftInfos)
+    }
 
+    const removeItems = index => {
+        const shiftInfosClone = [...shiftInfos]
+        const newShiftInfos = shiftInfosClone.filter((item, i) => i !== index)
+        SetShiftInfos(newShiftInfos)
     }
 
     const handleShiftSelect = (indexItem, shiftIndex, shift) => {
@@ -235,16 +263,27 @@ function ShiftUpdateModal(props) {
     }
 
     const handleTimeInputChange = (index, time, stateName) => {
-        console.log("____________")
-        console.log(index)
-        console.log(time)
-        console.log(stateName)
-
-        // TODO
-
         const newShiftInfos = [...shiftInfos]
+        let totalTime = 0
+
+        if (stateName === "startTime" && time) {
+            totalTime = getDuration(time, newShiftInfos[index].endTime)
+        } else if (stateName === "endTime" && time) {
+            totalTime = getDuration(newShiftInfos[index].startTime, time)
+        }
+        newShiftInfos[index].totalTime = totalTime
         newShiftInfos[index][stateName] = moment(time).format('HHmmss')
         SetShiftInfos(newShiftInfos)
+    }
+
+    const getDuration = (start, end) => {
+        if (start && end) {
+            const startTime = moment(start, "HH:mm:ss")
+            const endTime = moment(end, "HH:mm:ss")
+            const duration = moment.duration(endTime.diff(startTime))
+            return duration.asHours().toFixed(2)
+        }
+        return 0
     }
 
     const customizeSelectStyles = {
@@ -342,6 +381,12 @@ function ShiftUpdateModal(props) {
         }
     }
 
+    // Trả về dữ liệu sau sau khi chọn Người áp dụng về modal
+    const updateParent = data => {
+        console.log("=============")
+        console.log(data)
+    }
+
     const DropdownIndicator = props => {
         return (
             <components.DropdownIndicator {...props}>
@@ -361,7 +406,11 @@ function ShiftUpdateModal(props) {
                             let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">
-                                            <span className="bg-primary add-item-button" onClick={addNewItems}><i className="fas fa-plus"></i>Thêm phân ca</span>
+                                            {
+                                                index === 0 
+                                                ? <span className="bg-primary add-item-button" onClick={addNewItems}><i className="fas fa-plus"></i>Thêm phân ca</span>
+                                                : <span className="bg-danger add-item-button" onClick={() => removeItems(index)}><i className="fas fa-times"></i>Hủy phân ca</span>
+                                            }
                                         </div>
                                         <div className="main-content-item">
                                             <h6 className="text-uppercase font-14 font-weight-bold">Lựa chọn hình thức thay đổi phân ca</h6>
@@ -526,7 +575,7 @@ function ShiftUpdateModal(props) {
                                                         </div>
                                                         <div className="time-total">
                                                             <label>Tổng thời gian</label>
-                                                            <p className="total">aaaaaa</p>
+                                                            <p className="total">{item.totalTime || 0}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -536,12 +585,13 @@ function ShiftUpdateModal(props) {
                                                 <input type="text" placeholder="Nhập lý do" value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
                                             </div>
                                             <div className="applicable-object">
-                                                <label>Đối tượng áp dụng</label>
-                                                <Select 
-                                                    value={null} 
-                                                    onChange={substitutionType => handleSelectChange(index, substitutionType)} 
-                                                    placeholder={t("Select")} 
-                                                    options={substitutionTypes} />
+                                                <DropdownCustomize 
+                                                    label="Đối tượng áp dụng"
+                                                    employeeSelectedFilter={props.employeeSelectedFilter}
+                                                    getSelecteMembers={updateParent} 
+                                                    resetSelectedMember={updateParent}
+                                                    onCloseTabEvent={updateParent} 
+                                                    onCloseAllEvent={updateParent} />
                                             </div>
                                         </div>
                                     </div>

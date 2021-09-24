@@ -22,12 +22,12 @@
             }
         }
         .wrap-items {
-            max-height: 890px;
+            max-height: 560px;
             padding-right: 0.3rem;
             overflow-y: auto;
             &::-webkit-scrollbar {
                 background-color: #F5F5F5;
-                width: 6px;
+                width: 8px;
             }
             &::-webkit-scrollbar-thumb {
                 background-color: #a4afb7;
@@ -348,6 +348,7 @@
         .buttons-block {
             display: flex;
             justify-content: flex-end;
+            padding: 10px 0;
             button {
                 font-size: inherit;
                 width: 90px;
