@@ -655,6 +655,7 @@ class EmployeeTimesheets extends Component {
 
     return (
       <div className="timesheet-section">
+        <h1 className="h3 text-uppercase text-gray-800">{t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} />
         {
           (isSearch && timeTables.length > 0)  ?
