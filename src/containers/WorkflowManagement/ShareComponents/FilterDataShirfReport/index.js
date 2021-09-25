@@ -107,8 +107,8 @@ class FilterDataShirfReport extends React.Component {
     const data = {
       reportType: this.state.reportType,
       employeeCodes: ids,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate
+      startDate: moment(this.state.startDate ).format("YYYY-MM-DD[T]00:00:00.000"),
+      endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
 
