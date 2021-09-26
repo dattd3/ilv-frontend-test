@@ -79,7 +79,7 @@ class Vaccination extends React.Component {
                                         <td className="align-middle">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
                                         <td className="align-middle">{
                                             (v.department !== null ? (
-                                                v.department['id'] == 1 ? v.branch.name : v.department['id'] == 2 ? (v.city + " - " + v.district + " - " + v.ward ) : v.address
+                                                v.department['id'] == 1 ? v.branch.name : v.department['id'] == 2 ? (v.ward + " - " + v.district + " - " + v.city ) : v.address
                                             ) : undefined)
                                         }</td>
                                         <td className="align-middle">
