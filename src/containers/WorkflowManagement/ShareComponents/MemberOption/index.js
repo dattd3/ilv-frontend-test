@@ -173,8 +173,8 @@ const MemberOption = (props, onChange) => {
                 </div>
               </div>
             </label>
-            {downAllChild[id] === true && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={() => downAllChildClick(item.uid)}></i>}
-            {upAllChild[id] === true && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={() => upAllChildClick(item.uid)}></i>}
+            {item.children.length > 0 && downAllChild[id] === true && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={() => downAllChildClick(item.uid)}></i>}
+            {item.children.length > 0 && upAllChild[id] === true && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={() => upAllChildClick(item.uid)}></i>}
           </div>
           {item.children.length > 0 &&
             <div className={`collapse-content ${upAllChild[id] === true ? 'collapsed' : 'expanded'}`}
@@ -225,8 +225,8 @@ const MemberOption = (props, onChange) => {
                     <div className="label-select-all">{t('All')}</div>
                   </div>
                 </label>
-                {downAll && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={downAllClick}></i>}
-                {upAll && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={upAllClick}></i>}
+                {treeMembers.length > 0 && downAll && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={downAllClick}></i>}
+                {treeMembers.length > 0 && upAll && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={upAllClick}></i>}
               </div> : null
           }
           <div className={`collapse-content ${upAll ? 'collapsed' : 'expanded'}`}
