@@ -258,6 +258,9 @@
             span {
               display: inline-block;
               width: 160px;
+              &.updating {
+                color: #00b3ff;
+              }
             }
           }
           &.room-part-group {

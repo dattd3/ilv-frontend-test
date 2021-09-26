@@ -655,6 +655,52 @@ class EmployeeTimesheets extends Component {
     this.setState({[stateName]: employeesForFilter})
   }
 
+  updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjectIds) => {
+    const timeTables = [...this.state.timeTables]
+    const dataChangedForObject = this.convertDataChangedToObj(dataChanged)
+
+    console.log(dataChangedForObject)
+
+    // console.log("----------TIMESHEET---------")
+    // console.log(dateChanged)
+    // console.log(dataChanged)
+    // console.log(uniqueApplicableObjectIds)
+    // console.log("---------------------")
+    // console.log(timeTables)
+
+    let timeTablesClone = []
+    for (let i = 0, lenParent = timeTables.length; i < lenParent; i++) {
+      let item = timeTables[i]
+      if (uniqueApplicableObjectIds.includes(parseInt(item.per))) {
+        item.isUpdating = true
+      }
+      for (let j = 0, lenChild = item.timesheets?.length; j < lenChild; j++) {
+        // console.log("BBBBBB")
+        // console.log(item.timesheets[j].day)
+        // console.log(dateChanged)
+        if (item.timesheets[j].day === dateChanged && dataChangedForObject[item.per]) {
+          item.timesheets[j].line1.from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.from_time
+          item.timesheets[j].line1.to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.to_time
+          item.timesheets[j].line1.shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected.shift_id || ""
+          item.timesheets[j].line1.count = 1
+        }
+      }
+      timeTablesClone = timeTablesClone.concat(item)
+    }
+    this.setState({timeTables: timeTablesClone})
+  }
+
+  convertDataChangedToObj = dataChanged => {
+    const obj = {}
+    for (let i = 0, lenParent = dataChanged.length; i < lenParent; i++) {
+      let parent = dataChanged[i]
+      for (let j = 0, lenChild = parent.applicableObjects?.length; j < lenChild; j++) {
+        obj[parent.applicableObjects[j].toString()] = parent
+      }
+    }
+    return obj
+  }
+
   render() {
     const { t } = this.props
     const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter} = this.state
@@ -722,7 +768,7 @@ class EmployeeTimesheets extends Component {
             </tbody>
           </table>
           {/* End Temp render table to export table to excel */}
-          <TimeSheetMember timesheets={timeTables} dayList={dayList} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} /></> :
+          <TimeSheetMember timesheets={timeTables} updateTimeSheetsParent={this.updateTimeSheetsParent} dayList={dayList} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} /></> :
           isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> :
           isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }

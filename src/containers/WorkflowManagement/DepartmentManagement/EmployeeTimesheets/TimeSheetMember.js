@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Button from 'react-bootstrap/Button'
 import {OverlayTrigger,Tooltip, Popover} from 'react-bootstrap'
 import moment from 'moment'
+import _ from 'lodash'
 import { useTranslation } from "react-i18next"
 import { formatStringByMuleValue } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
@@ -325,9 +326,25 @@ function Content(props) {
         SetIsShowShiftUpdateModal(false)
     }
 
+    const updateParentData = dataChanged => {
+        onHideShiftUpdateModal()
+        const dateChanged = moment(dateInfo?.date, 'YYYYMMDD').format("DD/MM")
+        const uniqueApplicableObjectIds = dataChanged.reduce(function(arr, item) {
+            arr = _.uniq(arr.concat(item.applicableObjects))  
+            return arr
+        }, [])
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjectIds)
+    }
+
     return (
         <>
-            <ShiftUpdateModal show={isShowShiftUpdateModal} dateInfo={dateInfo} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} onHideShiftUpdateModal={onHideShiftUpdateModal} />
+            <ShiftUpdateModal 
+                show={isShowShiftUpdateModal} 
+                dateInfo={dateInfo} 
+                employeesForFilter={props.employeesForFilter} 
+                employeeSelectedFilter={props.employeeSelectedFilter} 
+                onHideShiftUpdateModal={onHideShiftUpdateModal}
+                updateParentData={updateParentData} />
             <div className="row pr-2 pl-2 pb-4">
                 <div className="col-md-12 col-xl-12 describer mb-2">
                     {
@@ -365,7 +382,7 @@ function Content(props) {
                         formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
                         return <React.Fragment key={index}>
                             <tr style={{borderTop: '1px solid #707070'}} className="line1">
-                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span>{timeSheet.name || ""}</span></td>
+                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span className={timeSheet.isUpdating === true ? 'updating' : ''}>{timeSheet.name || ""}</span></td>
                                 <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col room-part-group"><span>{timeSheet.departmentPartGroup || ""}</span></td>
                                 <RenderRow1 member = {timeSheet} />
                             </tr>
@@ -407,18 +424,22 @@ function Content(props) {
 }
 
 function TimeSheetMember(props) {
-  if (!props.timesheets || props.timesheets.length == 0) return null
-    
-  return (
-    <div className="detail-timesheet">
-      <div className="card shadow">
-        {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
-        <div className="card-body">
-            <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} />
+    if (!props.timesheets || props.timesheets.length == 0) return null
+
+    const updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjectIds) => {
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjectIds)
+    }
+
+    return (
+        <div className="detail-timesheet">
+            <div className="card shadow">
+                {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
+                <div className="card-body">
+                    <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} updateTimeSheetsParent={updateTimeSheetsParent} />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  )
+    )
 }
 
 export default TimeSheetMember
