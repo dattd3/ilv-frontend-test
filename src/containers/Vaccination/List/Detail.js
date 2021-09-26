@@ -260,6 +260,10 @@ class VaccinationDetail extends React.Component {
             dataRequest.vaccinHospitalId = 0
         }
 
+        if (dataRequest.injectedAt) {
+            dataRequest.injectedAt = moment(dataRequest.injectedAt).format('YYYY-MM-DD[T]00:00:00')
+        }
+
         var message = t('successfulCreateVaccination');
         if(this.props.rowId !== null || this.props.rowId){
             dataRequest['id'] = this.props.rowId;
