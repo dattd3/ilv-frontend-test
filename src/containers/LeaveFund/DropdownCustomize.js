@@ -79,7 +79,11 @@ class DropdownCustomize extends React.Component {
             });
         const dataChecks = data.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
-        this.props.getSelecteMembers(ids);
+        if (this.props.index === null) {
+            this.props.getSelecteMembers(ids);
+        } else {
+            this.props.getSelecteMembers(this.props.index, ids);
+        }
     }
 
     onShowMembers() {
@@ -99,7 +103,11 @@ class DropdownCustomize extends React.Component {
                 selectedMembers: [],
                 checkedMemberIds: []
             });
-        this.props.resetSelectedMember([]);
+        if (this.props.index === null) {
+            this.props.resetSelectedMember([]);
+        } else {
+            this.props.resetSelectedMember(this.props.index, []);
+        }
     }
 
     addDays(date, days) {
@@ -111,6 +119,7 @@ class DropdownCustomize extends React.Component {
     onClickSelectTab() {
         this.setState({ showMemberOption: true });
     }
+
     onCloseTabEvent(uid) {
         const members = this.state.users;
         const closeMember = members.find(val => val.uid === uid);
@@ -118,11 +127,21 @@ class DropdownCustomize extends React.Component {
         this.getSelecteMembers(members);
         const dataChecks = members.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
-        this.props.onCloseTabEvent(ids);
+
+        if (this.props.index === null) {
+            this.props.onCloseTabEvent(ids);
+        } else {
+            this.props.onCloseTabEvent(this.props.index, ids);
+        }
     }
+
     onCloseAllEvent() {
         this.resetSelectedMember();
-        this.props.onCloseAllEvent([]);
+        if (this.props.index === null) {
+            this.props.onCloseAllEvent([]);
+        } else {
+            this.props.onCloseAllEvent(this.props.index, []);
+        }
     }
 
     render() {

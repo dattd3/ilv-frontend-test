@@ -30,6 +30,7 @@ export default function SelectTab(props) {
       )
     });
   }
+
   return (
     <div className="tabControl" onClick={onClickSelectTab}>
       <div className="tabContainer">
@@ -39,16 +40,16 @@ export default function SelectTab(props) {
       <div className="d-flex justify-content-between align-items-center">
         {selectedMembers.length > 0 
           && <>
-            <ReactTooltip id='total-items-selected' place="right" type='dark'>
-              <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-                <li className="user-item" style={{padding: '5px 0', borderBottom: '1px dashed #FFFFFF'}}>
-                  <p style={{margin: 0}}>Nguyễn Như Huy</p>
-                  <p style={{margin: 0, fontStyle: "italic"}}>(V.HUYNN12) Chuyên viên Phát triển sản phẩm)</p>
-                </li>
-                <li className="user-item" style={{padding: '5px 0'}}>
-                  <p style={{margin: 0}}>Nguyễn Tiến Lợi</p>
-                  <p style={{margin: 0, fontStyle: "italic"}}>(V.LOINT8) Chuyên gia Thiết kế)</p>
-                </li>
+            <ReactTooltip id='total-items-selected' place="right" type='light' backgroundColor="#FFFFFF" arrowColor="#CCCCCC" className="item-tooltip">
+              <ul>
+                {
+                  selectedMembers.map((item, i) => {
+                    return  <li key={i} className="user-item">
+                              <p className="full-name">{item.fullname || ""}</p>
+                              <p className="job-title">({item.company_email}) {item.job_name}</p>
+                            </li>
+                  })
+                }
               </ul>
             </ReactTooltip>
             <div className="total" data-tip data-for='total-items-selected'>{selectedMembers.length}</div></>}

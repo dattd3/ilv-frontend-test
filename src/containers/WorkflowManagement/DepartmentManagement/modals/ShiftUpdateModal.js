@@ -45,6 +45,7 @@ function ShiftUpdateModal(props) {
             endTime: null,
             totalTime: null,
             employees: [],
+            applicableObjects: [],
             reason: ""
         }
     ])
@@ -200,7 +201,7 @@ function ShiftUpdateModal(props) {
     }
 
     const handleSubmit = () => {
-        // TODO
+        props.updateParentData(shiftInfos)
     }
 
     const addNewItems = () => {
@@ -219,6 +220,7 @@ function ShiftUpdateModal(props) {
             endTime: null,
             totalTime: null,
             employees: [],
+            applicableObjects: [],
             reason: ""
         }
         
@@ -381,10 +383,10 @@ function ShiftUpdateModal(props) {
         }
     }
 
-    // Trả về dữ liệu sau sau khi chọn Người áp dụng về modal
-    const updateParent = data => {
-        console.log("=============")
-        console.log(data)
+    const updateParent = (index, data) => {
+        const newShiftInfos = [...shiftInfos]
+        newShiftInfos[index].applicableObjects = data
+        SetShiftInfos(newShiftInfos)
     }
 
     const DropdownIndicator = props => {
@@ -586,6 +588,7 @@ function ShiftUpdateModal(props) {
                                             </div>
                                             <div className="applicable-object">
                                                 <DropdownCustomize 
+                                                    index={index}
                                                     label="Đối tượng áp dụng"
                                                     employeeSelectedFilter={props.employeeSelectedFilter}
                                                     getSelecteMembers={updateParent} 
