@@ -161,6 +161,7 @@ class PersonalDetails extends Component {
     const { t } = this.props;
     return (
       <div className="timesheet-section">
+        <h1 className="h3 text-uppercase text-gray-800">{t("MenuIndividualManagement")}</h1>
         <ToastContainer />
         <FilterData clickSearch={this.search.bind(this)} type="singleChoice"/>
         <div className="detail">

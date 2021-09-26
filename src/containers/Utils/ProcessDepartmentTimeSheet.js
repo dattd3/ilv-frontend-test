@@ -463,7 +463,7 @@ export function processDepartmentTimeSheet(dataRaw, start, end) {
         const endReal = moment(dataSorted[0].date, 'DD-MM-YYYY').format('YYYYMMDD');
         end = endReal < end ? endReal : end;
     }
-    var group_to_values = groupArrayOfObjects(dataRaw, "perr");
+    var group_to_values = groupArrayOfObjects(dataRaw, "pernr");
     var groups = Object.keys(group_to_values).map(function (key) {
         return {
             per: key,
