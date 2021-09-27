@@ -14,11 +14,8 @@ class FilterData extends React.Component {
   constructor() {
     super();
     this.state = {
-      startDate: moment(
-        this.getClosingSalaryDatePreMonth(),
-        "DD/MM/YYYY"
-      ).toDate(),
-      endDate: new Date(),
+      startDate: moment('2021-09-24', 'YYYY-MM-DD').toDate(),
+      endDate: moment('2021-09-30', 'YYYY-MM-DD').toDate(),
       users: [],
       checkedMemberIds: [],
       selectedMembers: [],

@@ -659,15 +659,6 @@ class EmployeeTimesheets extends Component {
     const timeTables = [...this.state.timeTables]
     const dataChangedForObject = this.convertDataChangedToObj(dataChanged)
 
-    console.log(dataChangedForObject)
-
-    // console.log("----------TIMESHEET---------")
-    // console.log(dateChanged)
-    // console.log(dataChanged)
-    // console.log(uniqueApplicableObjectIds)
-    // console.log("---------------------")
-    // console.log(timeTables)
-
     let timeTablesClone = []
     for (let i = 0, lenParent = timeTables.length; i < lenParent; i++) {
       let item = timeTables[i]
@@ -675,18 +666,20 @@ class EmployeeTimesheets extends Component {
         item.isUpdating = true
       }
       for (let j = 0, lenChild = item.timesheets?.length; j < lenChild; j++) {
-        // console.log("BBBBBB")
-        // console.log(item.timesheets[j].day)
-        // console.log(dateChanged)
         if (item.timesheets[j].day === dateChanged && dataChangedForObject[item.per]) {
           item.timesheets[j].line1.from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.from_time
           item.timesheets[j].line1.to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.to_time
           item.timesheets[j].line1.shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected.shift_id || ""
-          item.timesheets[j].line1.count = 1
+          item.timesheets[j].line1.count = 0
+          item.timesheets[j].line1.type = EVENT_TYPE.EVENT_KEHOACH
         }
       }
       timeTablesClone = timeTablesClone.concat(item)
     }
+
+    // console.log("TING TING")
+    // console.log(timeTablesClone)
+
     this.setState({timeTables: timeTablesClone})
   }
 
