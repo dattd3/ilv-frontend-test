@@ -336,6 +336,9 @@ function Content(props) {
         props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjectIds)
     }
 
+    console.log("=========================")
+    console.log(memberTimeData)
+
     return (
         <>
             <ShiftUpdateModal 
