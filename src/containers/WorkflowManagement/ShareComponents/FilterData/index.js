@@ -145,10 +145,13 @@ class FilterData extends React.Component {
       hrProfileDisplay = this.state.users.map((profile) => {
         return {
           uid: profile.uid,
-          // label: profile.fullname,
           fullname: profile.fullname,
           job_name: profile.job_name,
-          companyCode: profile.companyCode,
+          part: profile.part || "",
+          division: profile.division || "",
+          department: profile.department || "",
+          unit: profile.unit || "",
+          companyCode: profile.organization_lv2,
           orgLv3Text: profile.orgLv3Text,
           username: profile.username,
           manager: profile.manager,

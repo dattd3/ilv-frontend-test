@@ -1,10 +1,9 @@
 import React, { useState } from "react"
-import Button from 'react-bootstrap/Button'
-import {OverlayTrigger,Tooltip, Popover} from 'react-bootstrap'
+import {OverlayTrigger, Popover} from 'react-bootstrap'
 import moment from 'moment'
 import _ from 'lodash'
 import { useTranslation } from "react-i18next"
-import { formatStringByMuleValue } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
 import ShiftUpdateModal from "../modals/ShiftUpdateModal"
@@ -304,6 +303,8 @@ function Content(props) {
     const [pageNumber, setPageNumber] = useState(1);
     const [isShowShiftUpdateModal, SetIsShowShiftUpdateModal] = useState(false)
     const [dateInfo, SetDateInfo] = useState({})
+    const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
+
 
     const onChangePage = index => {
         setPageNumber(index)
@@ -328,16 +329,14 @@ function Content(props) {
 
     const updateParentData = dataChanged => {
         onHideShiftUpdateModal()
-        const dateChanged = moment(dateInfo?.date, 'YYYYMMDD').format("DD/MM")
-        const uniqueApplicableObjectIds = dataChanged.reduce(function(arr, item) {
-            arr = _.uniq(arr.concat(item.applicableObjects))  
+        const dateChanged = dateInfo?.date
+        const uniqueApplicableObjects = dataChanged.reduce(function(arr, item) {
+            arr = _.unionWith(arr, item.applicableObjects, _.isEqual)
             return arr
         }, [])
-        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjectIds)
+        SetTotalEmployeesUpdating(uniqueApplicableObjects.length)
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
     }
-
-    console.log("=========================")
-    console.log(memberTimeData)
 
     return (
         <>
@@ -410,6 +409,14 @@ function Content(props) {
                 </div>
             </div>
             {
+                totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
+                <div className="report-employees-updating">
+                    <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
+                    <span className="detail" onClick={() => {SetIsShowShiftUpdateModal(true)}}>{"Xem chi tiết >>"}</span>
+                </div>
+                : null
+            }
+            {
                 memberTimeData.length > 0 
                 ?   <div className="row paging mt-2">
                         <div className="col-sm"></div>
@@ -429,8 +436,8 @@ function Content(props) {
 function TimeSheetMember(props) {
     if (!props.timesheets || props.timesheets.length == 0) return null
 
-    const updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjectIds) => {
-        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjectIds)
+    const updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjects) => {
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
     }
 
     return (

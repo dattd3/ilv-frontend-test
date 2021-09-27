@@ -82,7 +82,7 @@ class DropdownCustomize extends React.Component {
         if (this.props.index === null) {
             this.props.getSelecteMembers(ids);
         } else {
-            this.props.getSelecteMembers(this.props.index, ids);
+            this.props.getSelecteMembers(this.props.index, dataChecks);
         }
     }
 
@@ -131,7 +131,7 @@ class DropdownCustomize extends React.Component {
         if (this.props.index === null) {
             this.props.onCloseTabEvent(ids);
         } else {
-            this.props.onCloseTabEvent(this.props.index, ids);
+            this.props.onCloseTabEvent(this.props.index, dataChecks);
         }
     }
 
@@ -156,7 +156,11 @@ class DropdownCustomize extends React.Component {
                     // label: profile.fullname,
                     fullname: profile.fullname,
                     job_name: profile.job_name,
-                    companyCode: profile.companyCode,
+                    part: profile.part || "",
+                    division: profile.division || "",
+                    department: profile.department || "",
+                    unit: profile.unit || "",
+                    companyCode: profile.organization_lv2,
                     orgLv3Text: profile.orgLv3Text,
                     username: profile.username,
                     manager: profile.manager,
