@@ -155,7 +155,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079"].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
@@ -660,7 +660,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079"].includes(localStorage.getItem("companyCode"))) ?
+          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
