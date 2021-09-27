@@ -88,16 +88,18 @@ class Vaccination extends React.Component {
                                                     const e = v.vaccinEffects.filter(e => e.status == 1);
                                                     if(e.length){
                                                         return <div className={e.length > 2 ? "d-flex align-items-bottom" : ""}>
-                                                            {
+                                                            {/* {
                                                                 e.splice(0, e.length > 2 ? 1 : 2).map((a, index) => {
                                                                     return <div key={index}>{a.name}</div> 
                                                                 })
-                                                            }
-                                                            {e.length > 2 ? <div>
+                                                            } */}
+                                                            {/* {e.length > 2 ?  */}
+                                                            <div>
                                                                 <OverlayTrigger 
+                                                                    // trigger="focus"
                                                                     placement="bottom"
                                                                     overlay={
-                                                                        <Popover id="popover-basic">
+                                                                        <Popover id="popover-basic-gsh">
                                                                             <Popover.Content>
                                                                             {
                                                                                 e.map((v,i) => {
@@ -110,10 +112,14 @@ class Vaccination extends React.Component {
                                                                         </Popover>
                                                                     }>
                                                                     <div className="" style={{cursor:"pointer"}}>
-                                                                        ...
+                                                                        {e[0].name}
+                                                                        {
+                                                                            e.length >= 2 ? ',...' : null
+                                                                        }
                                                                     </div>
                                                                 </OverlayTrigger>
-                                                            </div> :  undefined}
+                                                            </div> 
+                                                            {/* :  undefined} */}
                                                         </div>
                                                     }
                                                 }())

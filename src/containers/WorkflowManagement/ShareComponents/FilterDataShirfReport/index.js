@@ -118,7 +118,19 @@ class FilterDataShirfReport extends React.Component {
           this.resetErrors();
           if (responses.status === 200) {
             const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
-            saveAs(blob, "Báo cáo thay đổi phân ca.xlsx")
+            let fileName = "";
+            switch (this.state.reportType) {
+              case 0:
+                  fileName = "ReportDetail" 
+                  break;
+              case 1:
+                  fileName = "ReportSummary" 
+                  break;
+              default:
+                  fileName = "Report" 
+                  break;
+          }
+          saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
           } else {
             console.log('error');
           }
