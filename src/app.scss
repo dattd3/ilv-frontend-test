@@ -2115,3 +2115,17 @@ span.badge-notification[data-badge]::after {
 .mtmr5 {
   margin: 5px 5px 0 0;
 }
+.option-ques-vaccin {
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
+}
+.label-option-yn-vaccin {
+  width: 50px;
+  height: 50px;
+  padding: 15px;
+  margin-bottom: 0 !important;
+}
+.pd-0 {
+  padding: 0 !important
+}
