@@ -465,17 +465,17 @@ class VaccinationDetail extends React.Component {
                                                     this.state.effectList && this.state.effectList.map((v,index) => {
                                                         return <tr key={index}>
                                                             <td>{(index + 1)+". "+v.name}</td>
-                                                            <td  className="text-center pd-0">
+                                                            <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
                                                                     <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
-                                                            <td className="text-center pd-0">
+                                                            <td className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
                                                                     <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
-                                                            <td  className="text-center pd-0">
+                                                            <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
                                                                     <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
                                                                 </label>
