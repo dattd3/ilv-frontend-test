@@ -17,8 +17,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 function ShiftUpdateModal(props) {
     const { t } = useTranslation()
-    const shiftSelectCode = 0
-    const enterShiftTimeCode = 1
     const shiftCodeOFF = 'OFF'
     const substitutionTypes = [
         { value: '01', label: t("Shiftchange") },
@@ -31,7 +29,7 @@ function ShiftUpdateModal(props) {
     const [shiftList, SetShiftList] = useState([])
     const [shiftInfos, SetShiftInfos] = useState([
         {
-            shiftUpdateType: shiftSelectCode,
+            shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
@@ -206,7 +204,7 @@ function ShiftUpdateModal(props) {
 
     const addNewItems = () => {
         const newItem = {
-            shiftUpdateType: shiftSelectCode,
+            shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
@@ -244,11 +242,6 @@ function ShiftUpdateModal(props) {
     }
 
     const getEmployeesByShift = shift => {
-        // console.log("fetch employees")
-        // console.log(shift)
-        // console.log(props.employeesForFilter)
-        // console.log(subordinateTimeOverviews)
-
         let employees = []
         _.forEach(subordinateTimeOverviews, function(itemParent) {
             _.forEach(props.employeesForFilter, function(itemChild) {
@@ -417,10 +410,10 @@ function ShiftUpdateModal(props) {
                                         <div className="main-content-item">
                                             <h6 className="text-uppercase font-14 font-weight-bold">Lựa chọn hình thức thay đổi phân ca</h6>
                                             <div className="btn-group btn-group-toggle shift-update-type-group" data-toggle="buttons">
-                                                <label onClick={() => handleShiftUpdateType(index, shiftSelectCode)} className={item.shiftUpdateType == shiftSelectCode ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_CODE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                     Lựa chọn ca
                                                 </label>
-                                                <label onClick={() => handleShiftUpdateType(index, enterShiftTimeCode)} className={item.shiftUpdateType == enterShiftTimeCode ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_UPDATE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                     Nhập giờ thay đổi phân ca
                                                 </label>
                                             </div>
@@ -436,7 +429,7 @@ function ShiftUpdateModal(props) {
                                                 {/* {this.error(index, 'substitutionType')} */}
                                             </div>
                                             {
-                                                item.shiftUpdateType == shiftSelectCode ?
+                                                item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ?
                                                 <div className="content-for-shift-select">
                                                     <div className="shift-table">
                                                         <table className="shift">

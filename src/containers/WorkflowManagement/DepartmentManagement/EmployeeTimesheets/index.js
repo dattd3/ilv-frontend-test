@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import FilterData from "../../ShareComponents/FilterData";
 import axios from "axios";
 import moment from "moment";
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Button } from 'react-bootstrap';
 import { withTranslation } from "react-i18next";
 import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
 import { formatStringByMuleValue } from "../../../../commons/Utils"
+import ResultDetailModal from '../../../../containers/Task/ResultDetailModal'
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -37,7 +38,9 @@ class EmployeeTimesheets extends Component {
       dayList: [],
       isLoading: false,
       employeesForFilter: [],
-      employeeSelectedFilter: []
+      employeeSelectedFilter: [],
+      dateChanged: "",
+      dataChanged: {}
     };
   }
 
@@ -655,9 +658,11 @@ class EmployeeTimesheets extends Component {
     this.setState({[stateName]: employeesForFilter})
   }
 
-  updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjectIds) => {
+  updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjects) => {
     const timeTables = [...this.state.timeTables]
     const dataChangedForObject = this.convertDataChangedToObj(dataChanged)
+    const dateChangedFormat = moment(dateChanged, 'YYYYMMDD').format("DD/MM")
+    const uniqueApplicableObjectIds = uniqueApplicableObjects.map(ui => ui.uid)
 
     let timeTablesClone = []
     for (let i = 0, lenParent = timeTables.length; i < lenParent; i++) {
@@ -666,9 +671,10 @@ class EmployeeTimesheets extends Component {
         item.isUpdating = true
       }
       for (let j = 0, lenChild = item.timesheets?.length; j < lenChild; j++) {
-        if (item.timesheets[j].day === dateChanged && dataChangedForObject[item.per]) {
+        if (item.timesheets[j].day === dateChangedFormat && dataChangedForObject[item.per]) {
           item.timesheets[j].line1.from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.from_time
           item.timesheets[j].line1.to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected.to_time
+          item.timesheets[j].line1.old_shift_id = item.timesheets[j].line1.shift_id || ""
           item.timesheets[j].line1.shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected.shift_id || ""
           item.timesheets[j].line1.count = 0
           item.timesheets[j].line1.type = EVENT_TYPE.EVENT_KEHOACH
@@ -676,11 +682,7 @@ class EmployeeTimesheets extends Component {
       }
       timeTablesClone = timeTablesClone.concat(item)
     }
-
-    // console.log("TING TING")
-    // console.log(timeTablesClone)
-
-    this.setState({timeTables: timeTablesClone})
+    this.setState({timeTables: timeTablesClone, dateChanged: dateChanged, dataChanged: dataChangedForObject})
   }
 
   convertDataChangedToObj = dataChanged => {
@@ -688,10 +690,102 @@ class EmployeeTimesheets extends Component {
     for (let i = 0, lenParent = dataChanged.length; i < lenParent; i++) {
       let parent = dataChanged[i]
       for (let j = 0, lenChild = parent.applicableObjects?.length; j < lenChild; j++) {
-        obj[parent.applicableObjects[j].toString()] = parent
+        obj[parent.applicableObjects[j].uid.toString()] = parent
       }
     }
     return obj
+  }
+
+  cancelShiftUpdating = () => {
+    window.location.reload()
+  }
+
+  prepareDataToSubmit = (timeSheetsUpdating, dateChanged, dataChanged) => {
+    const payload = (timeSheetsUpdating || []).map(item => {
+      let per = parseInt(item.per)
+      let shiftUpdateType = dataChanged[per].shiftUpdateType
+      let userInfos = dataChanged[per].applicableObjects.find(u => u.uid == per)
+      return {
+        shiftsUsers: [ // Required
+          {
+            employeeNo: per,
+            fullName: item.name,
+            email: `${userInfos.username?.toLowerCase()}@vingroup.net`,
+            jobTitle: userInfos.job_name,
+            department: item.departmentPartGroup,
+            companyCode: localStorage.getItem('companyCode'),
+            shift_Id_Old: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? item.timesheets.find(t => t.day == moment(dateChanged, 'YYYYMMDD').format("DD/MM"))?.line1.old_shift_id : "" // Ca trước khi thay đổi
+          }
+        ],
+        substitutionType: dataChanged[per].shiftType.value, // Loại phân ca - Required
+        startDate: dateChanged, // Required
+        endDate: dateChanged, // Required
+        shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
+        startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].startTime : "", // Giờ bắt đầu HHmmss
+        endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].endTime : "", // Giờ kết thúc HHmmss
+        shiftHours: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].totalTime : "", // Tổng thời gian
+        causes: dataChanged[per].reason || "" // Comment
+      }
+    })
+    return {leaderChangeShifts: payload}
+  }
+
+  acceptShiftUpdating = async () => {
+    try {
+      const {timeTables, dateChanged, dataChanged} = this.state
+      const timeSheetsUpdating = (timeTables || []).filter(item => item.isUpdating)
+      const payload = this.prepareDataToSubmit(timeSheetsUpdating, dateChanged, dataChanged)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      }
+
+      const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}leaderchanges/shifts`, payload, config)
+      if (response && response.data) {
+        const result = response.data.result
+        if (result.code == Constants.API_SUCCESS_CODE) {
+          const data = response.data.data
+            // fail: 0
+            // leaderChangeShifts: [
+            //   {
+            //     breakEnd: null,
+            //     breakStart: null,
+            //     causes: "Phân ca làm việc",
+            //     companyCode: "V096",
+            //     createdBy: "cuongnv56@vingroup.net",
+            //     createdDate: "2021-09-28T01:13:32.9303038Z",
+            //     dailyWSClass: "2",
+            //     department: "Phòng Triển khai Mulesoft",
+            //     employeeNo: 3592999,
+            //     endDate: "20210928",
+            //     endTime: "",
+            //     fullName: "Nguyễn Thành Nam",
+            //     id: 27,
+            //     isSuccessSyncFromSap: true,
+            //     message: "Insert success",
+            //     numberHoursPaid: null,
+            //     requestDataToSAP: "{\"MYVP_ID\":\"3592999.1\",\"PERNR\":3592999,\"BEGDA\":\"20210928\",\"ENDDA\":\"20210928\",\"VTART\":\"01\",\"TPROG\":\"7403\",\"BEGUZ\":\"\",\"ENDUZ\":\"\",\"PBEG1\":\"\",\"PEND1\":\"\",\"PBEZ1\":null,\"PUNB1\":null,\"TPKLA\":\"2\"}",
+            //     responseDataFromSAP: "{\"MYVP_ID\":\"3592999.1\",\"STATUS\":\"S\",\"MESSAGE\":\"Insert success\",\"DATA\":\"3592999|20210928|20210928|01|7403|000000|000000|000000|000000|||2\"}",
+            //     sapid: 1,
+            //     shift_Id: "7403",
+            //     shift_Id_Old: "7401",
+            //     startDate: "20210928",
+            //     startTime: "",
+            //     substitutionType: 1,
+            //     unpaidHours: null
+            //   }
+            // ]
+            // message: "Insert success"
+            // status: "S"
+            // success: 1
+            // total: 1
+        }
+      }
+      window.location.reload()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   render() {
@@ -699,6 +793,8 @@ class EmployeeTimesheets extends Component {
     const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter} = this.state
 
     return (
+      <>
+      <ResultDetailModal show={this.state.isShowStatusModal} title="Trạng thái cập nhật phân ca" message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} resultDetail={this.state.resultDetail}/>
       <div className="timesheet-section">
         <h1 className="h3 text-uppercase text-gray-800">{t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
@@ -761,11 +857,17 @@ class EmployeeTimesheets extends Component {
             </tbody>
           </table>
           {/* End Temp render table to export table to excel */}
-          <TimeSheetMember timesheets={timeTables} updateTimeSheetsParent={this.updateTimeSheetsParent} dayList={dayList} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} /></> :
+          <TimeSheetMember timesheets={timeTables} updateTimeSheetsParent={this.updateTimeSheetsParent} dayList={dayList} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} />
+          <div className="action-buttons-group">
+            <Button type="button" variant="secondary" className="btn-cancel" onClick={this.cancelShiftUpdating}>{t("CancelSearch")}</Button>
+            <Button type="button" variant="primary" className="btn-submit" onClick={this.acceptShiftUpdating} disabled={false}>{t("Save")}</Button>
+          </div>
+          </> :
           isSearch ? <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> :
           isLoading ? <div className="bg-light text-center p-5"><Spinner animation="border" variant="dark" size='lg' /></div>  : null
         }
       </div>
+      </>
     );
   }
 }
