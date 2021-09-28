@@ -37,10 +37,12 @@ function ShiftUpdateModal(props) {
                 startTimeFilter: null,
                 endTimeFilter: null,
                 shiftList: null,
-                shiftSelected: {}
+                shiftSelected: null
             },
             startTime: null,
             endTime: null,
+            breakStart: null,
+            breakEnd: null,
             totalTime: null,
             employees: [],
             applicableObjects: [],
@@ -48,6 +50,7 @@ function ShiftUpdateModal(props) {
         }
     ])
     const [isDisabledSubmitButton, setIsDisabledSubmitButton] = useState(false)
+    const [errors, SetErrors] = useState({})
 
     const sendQuery = (index, query, t) => {}
     // const delayedQuery = useRef(_.debounce((i, q) => sendQuery(i, q), 800)).current
@@ -198,7 +201,47 @@ function ShiftUpdateModal(props) {
         SetShiftInfos(newShiftInfos)
     }
 
+    const verifyInputs = () => {
+        let errors = {}
+        let requiredFields = ['shiftType', 'reason', 'applicableObjects']
+
+        shiftInfos.forEach((shiftInfo, index) => {
+            if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
+                requiredFields = requiredFields.concat(['shiftSelected'])
+            } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
+                requiredFields = requiredFields.concat(['startTime', 'endTime', 'breakStart', 'breakEnd'])
+            }
+
+            requiredFields.forEach(name => {
+                let errorName = name + '_' + index
+                errors[errorName] = null
+                if (name === 'shiftSelected') {
+                    if (!shiftInfo.shiftFilter[name]) {
+                        errors[errorName] = '(*) Thông tin bắt buộc.'
+                    }
+                } else {
+                    if (!shiftInfo[name] || shiftInfo[name]?.length === 0) {
+                        errors[errorName] = '(*) Thông tin bắt buộc.'
+                    }
+                }
+            })
+        })
+        SetErrors(errors)
+        return errors
+    }
+
+    const isValidData = () => {
+        const errors = verifyInputs()
+        const hasErrors = !Object.values(errors).every(item => item === null || item === undefined)
+        return hasErrors ? false : true
+    }
+
     const handleSubmit = () => {
+        const isValid = isValidData()
+        if (!isValid) {
+            return
+        }
+
         props.updateParentData(shiftInfos)
     }
 
@@ -212,7 +255,7 @@ function ShiftUpdateModal(props) {
                 startTimeFilter: null,
                 endTimeFilter: null,
                 shiftList: null,
-                shiftSelected: {}
+                shiftSelected: null
             },
             startTime: null,
             endTime: null,
@@ -382,6 +425,11 @@ function ShiftUpdateModal(props) {
         SetShiftInfos(newShiftInfos)
     }
 
+    const errorInfos = (index, name) => {
+        const errorName = name + '_' + index
+        return errors[errorName] ? <p className="text-danger errors">{errors[errorName]}</p> : null
+    }
+
     const DropdownIndicator = props => {
         return (
             <components.DropdownIndicator {...props}>
@@ -426,7 +474,7 @@ function ShiftUpdateModal(props) {
                                                         placeholder={t("Select")} 
                                                         options={substitutionTypes} />
                                                 </div>
-                                                {/* {this.error(index, 'substitutionType')} */}
+                                                { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
                                             </div>
                                             {
                                                 item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ?
@@ -506,6 +554,7 @@ function ShiftUpdateModal(props) {
                                                                 }
                                                             </tbody>
                                                         </table>
+                                                        { errors[`shiftSelected_${index}`] ? errorInfos(index, 'shiftSelected') : null }
                                                     </div>
                                                     {
                                                         item.employees && item.employees.length > 0 ?
@@ -549,6 +598,7 @@ function ShiftUpdateModal(props) {
                                                                         timeFormat="HH:mm:ss"
                                                                         placeholderText={t("Select")}
                                                                         className="form-control input" />
+                                                                    { errors[`startTime_${index}`] ? errorInfos(index, 'startTime') : null }
                                                                 </div>
                                                                 <div className="end-time">
                                                                     <label>Kết thúc 1 - Thay đổi</label>
@@ -564,9 +614,47 @@ function ShiftUpdateModal(props) {
                                                                         timeFormat="HH:mm:ss"
                                                                         placeholderText={t("Select")}
                                                                         className="form-control input" />
+                                                                    { errors[`endTime_${index}`] ? errorInfos(index, 'endTime') : null }
                                                                 </div>
                                                             </div>
                                                             {/* <p>Lỗi</p> */}
+                                                        </div>
+                                                        <div className="time-break">
+                                                            <div className="time-data">
+                                                                <div className="start-time-break">
+                                                                    <label>Thời gian bắt đầu nghỉ ca</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
+                                                                        onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                    { errors[`breakStart_${index}`] ? errorInfos(index, 'breakStart') : null }
+                                                                </div>
+                                                                <div className="end-time-break">
+                                                                    <label>Thời gian kết thúc nghỉ ca</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
+                                                                        onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                    { errors[`breakEnd_${index}`] ? errorInfos(index, 'breakEnd') : null }
+                                                                </div>
+                                                            </div>
+                                                            <p className="notice-for-break-time errors text-danger">(*) Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p>
                                                         </div>
                                                         <div className="time-total">
                                                             <label>Tổng thời gian</label>
@@ -578,6 +666,7 @@ function ShiftUpdateModal(props) {
                                             <div className="reason">
                                                 <label>Lý do</label>
                                                 <input type="text" placeholder="Nhập lý do" value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
+                                                { errors[`reason_${index}`] ? errorInfos(index, 'reason') : null }
                                             </div>
                                             <div className="applicable-object">
                                                 <DropdownCustomize 
@@ -588,6 +677,7 @@ function ShiftUpdateModal(props) {
                                                     resetSelectedMember={updateParent}
                                                     onCloseTabEvent={updateParent} 
                                                     onCloseAllEvent={updateParent} />
+                                                { errors[`applicableObjects_${index}`] ? errorInfos(index, 'applicableObjects') : null }
                                             </div>
                                         </div>
                                     </div>
