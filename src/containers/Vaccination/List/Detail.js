@@ -22,14 +22,14 @@ class VaccinationDetail extends React.Component {
         this.state = {
             formData: {
                 number: props.number + 1,
-                type: 1,
+                vaccinTypeId : '',
                 injectedAt: null,
-                department: null,
+                vaccinationUnitId: null,
                 city: null,
                 district: null,
                 ward: null,
                 address: null,
-                branch: null,
+                vaccinHospitalId: null,
                 vaccinEffects: []
             },
             effectList: [],
@@ -76,11 +76,11 @@ class VaccinationDetail extends React.Component {
                 stateData['district'] = infoData.district;
                 stateData['ward'] = infoData.ward;
                 stateData['vaccinEffects'] = infoData.vaccinEffects;
-                stateData['type'] = infoData.vaccin?.id;
-                stateData['department'] = infoData.department?.id;
-                stateData['branch'] = infoData.branch?.id;
+                stateData['vaccinTypeId'] = infoData.vaccin?.id;
+                stateData['vaccinationUnitId'] = infoData.department?.id;
+                stateData['vaccinHospitalId'] = infoData.branch?.id;
                 this.setState(stateData);
-                if(stateData['department'] == 2){
+                if(stateData['vaccinationUnitId'] == 2){
                     this.getListCity(() => {
                         const city = this.state.citys.filter(t => t.label == this.state.formData.city);
                         if(city.length){
@@ -255,18 +255,21 @@ class VaccinationDetail extends React.Component {
     onUpdateOrCreateData(){
         const {t} = this.props;
         const dataRequest = this.state.formData;
-        dataRequest['vaccinDatas'] = [];
-        if(dataRequest['type']) dataRequest['vaccinDatas'].push(dataRequest['type']);
-        if(dataRequest['department']) dataRequest['vaccinDatas'].push(dataRequest['department']);
-        if(dataRequest['branch']) dataRequest['vaccinDatas'].push(dataRequest['branch']);
-        delete dataRequest.type;
-        delete dataRequest.department;
-        delete dataRequest.branch;
+  
+        if (!dataRequest.vaccinHospitalId) {
+            dataRequest.vaccinHospitalId = 0
+        }
+
+        if (dataRequest.injectedAt) {
+            dataRequest.injectedAt = moment(dataRequest.injectedAt).format('YYYY-MM-DD[T]00:00:00')
+        }
+
         var message = t('successfulCreateVaccination');
         if(this.props.rowId !== null || this.props.rowId){
             dataRequest['id'] = this.props.rowId;
             message = t('successfulUpdateVaccination');
         }
+
         axios.post(`${process.env.REACT_APP_REQUEST_URL}vaccin/${this.props.rowId !== null || this.props.rowId ? 'update': 'create'}-vaccin/`, dataRequest, config)
         .then(res => {
             if(res.data){
@@ -326,8 +329,8 @@ class VaccinationDetail extends React.Component {
                                             isClearable={true}
                                             styles={customStyles}
                                             name="type"
-                                            onChange={type => this.handleSelectChange('type', type)}
-                                            value={this.state.vaccinType.filter(n => n.value == this.state.formData.type)}
+                                            onChange={type => this.handleSelectChange('vaccinTypeId', type)}
+                                            value={this.state.formData.vaccinTypeId ? this.state.vaccinType.filter(n => n.value == this.state.formData.vaccinTypeId) : null}
                                             placeholder={t('vaccination_type') + '...'}
                                             key="type"
                                             options={this.state.vaccinType}
@@ -338,10 +341,11 @@ class VaccinationDetail extends React.Component {
                                     <div className="">
                                         <label htmlFor="exampleInputEmail1">{t('vaccination_time')}<span className="text-danger"> (*)</span></label>
                                         <div className="content position-relative input-container">
+                                            <label>
                                             <DatePicker
                                                 name="injectedAt"
                                                 key="injectedAt"
-                                                selected={this.state.formData.injectedAt ? moment(this.state.formData.injectedAt, 'DD-MM-YYYY').toDate() : null}
+                                                selected={this.state.formData.injectedAt ? moment(this.state.formData.injectedAt).toDate() : null}
                                                 maxDate={new Date()}
                                                 onChange={event => this.handleDatePickerInputChange(event)}
                                                 dateFormat="dd-MM-yyyy"
@@ -352,6 +356,7 @@ class VaccinationDetail extends React.Component {
                                             <span className="input-group-addon input-img">
                                                 <i className="fas fa-calendar-alt"></i>
                                             </span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -362,8 +367,8 @@ class VaccinationDetail extends React.Component {
                                             isClearable={true}
                                             styles={customStyles}
                                             name="department"
-                                            onChange={department => this.handleSelectChange('department', department)}
-                                            value={this.state.departments.filter(n => n.value == this.state.formData.department)}
+                                            onChange={department => this.handleSelectChange('vaccinationUnitId', department)}
+                                            value={this.state.departments.filter(n => n.value == this.state.formData.vaccinationUnitId)}
                                             placeholder={t('vaccination_department') + '...'}
                                             key="department"
                                             options={this.state.departments}
@@ -371,7 +376,7 @@ class VaccinationDetail extends React.Component {
                                     </div>
                                 </div>
                                 {
-                                    this.state.formData.department == 2 ?
+                                    this.state.formData.vaccinationUnitId == 2 ?
                                         <div className="col-md-8 col-xs-12">
                                             <div className="row">
                                                 <div className="col-md-4 col-xs-12">
@@ -420,21 +425,21 @@ class VaccinationDetail extends React.Component {
                                                 </div>
                                             </div>
                                         </div>
-                                    : this.state.formData.department == 1 ? <div className="col-md-4 col-xs-12"> 
+                                    : this.state.formData.vaccinationUnitId == 1 ? <div className="col-md-4 col-xs-12"> 
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">{t('vaccination_branch')}<span className="text-danger"> (*)</span></label>
                                             <Select
                                                 isClearable={true}
                                                 styles={customStyles}
                                                 name="branch"
-                                                onChange={branch => this.handleSelectChange('branch',branch)}
-                                                value={this.state.branchs.filter(n => n.value == this.state.formData.branch)}
+                                                onChange={branch => this.handleSelectChange('vaccinHospitalId',branch)}
+                                                value={this.state.branchs.filter(n => n.value == this.state.formData.vaccinHospitalId)}
                                                 placeholder={t('vaccination_branch') + '...'}
                                                 key="branch"
                                                 options={this.state.branchs}
                                             />
                                         </div>
-                                    </div> : this.state.formData.department == 3 ?
+                                    </div> : this.state.formData.vaccinationUnitId == 3 ?
                                         <div className="col-md-8 col-xs-12">
                                             <div className="form-group">
                                                 <label htmlFor="address">{t('Address')}</label>
@@ -459,15 +464,21 @@ class VaccinationDetail extends React.Component {
                                                 {
                                                     this.state.effectList && this.state.effectList.map((v,index) => {
                                                         return <tr key={index}>
-                                                            <td>{(index + 1)+"."+v.name}</td>
-                                                            <td  className="text-center">
-                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
+                                                            <td>{(index + 1)+". "+v.name}</td>
+                                                            <td  className="text-center pd-0 wpz-120">
+                                                                <label className="label-option-yn-vaccin">
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                </label>
                                                             </td>
-                                                            <td className="text-center">
-                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
+                                                            <td className="text-center pd-0 wpz-120">
+                                                                <label className="label-option-yn-vaccin">
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                </label>
                                                             </td>
-                                                            <td  className="text-center">
-                                                                <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)}/>
+                                                            <td  className="text-center pd-0 wpz-120">
+                                                                <label className="label-option-yn-vaccin">
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                </label>
                                                                 <input className="d-none" type="radio" value="4" name={v.id} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                             </td>
                                                         </tr>
@@ -482,10 +493,10 @@ class VaccinationDetail extends React.Component {
                         <div className="clearfix edit-button text-right mt-3">
                             <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
-                                !(this.state.formData.type && this.state.formData.injectedAt && 
+                                !(this.state.formData.vaccinTypeId && this.state.formData.injectedAt && 
                                 (
-                                    this.state.formData.department == 2 ? (this.state.formData.city && this.state.formData.district && this.state.formData.ward) 
-                                    : this.state.formData.department == 1 ? this.state.formData.branch : this.state.formData.address
+                                    this.state.formData.vaccinationUnitId == 2 ? (this.state.formData.city && this.state.formData.district && this.state.formData.ward) 
+                                    : this.state.formData.vaccinationUnitId == 1 ? this.state.formData.vaccinHospitalId : this.state.formData.address
                                 ))
                                 } variant="primary" className="pr-4 pl-4" onClick={() => this.onUpdateOrCreateData()}>{t(this.props.rowId !== null && this.props.rowId ? "Update" : "Confirm")}</Button>
                         </div>

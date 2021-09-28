@@ -38,7 +38,12 @@ class DropdownCustomize extends React.Component {
         preMonth = preMonth === 0 ? 12 : preMonth;
         return `26/${preMonth}/${currentYear}`;
     };
+
     componentDidMount() {
+        const {employeeSelectedFilter} = this.props
+        if (employeeSelectedFilter && employeeSelectedFilter.length > 0) {
+            return
+        }
         this.getApproverInfo();
     }
 
@@ -75,7 +80,11 @@ class DropdownCustomize extends React.Component {
             });
         const dataChecks = data.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
-        this.props.getSelecteMembers(ids);
+        if (this.props.index === null) {
+            this.props.getSelecteMembers(ids);
+        } else {
+            this.props.getSelecteMembers(this.props.index, dataChecks);
+        }
     }
 
     onShowMembers() {
@@ -95,7 +104,11 @@ class DropdownCustomize extends React.Component {
                 selectedMembers: [],
                 checkedMemberIds: []
             });
-        this.props.resetSelectedMember([]);
+        if (this.props.index === null) {
+            this.props.resetSelectedMember([]);
+        } else {
+            this.props.resetSelectedMember(this.props.index, []);
+        }
     }
 
     addDays(date, days) {
@@ -107,6 +120,7 @@ class DropdownCustomize extends React.Component {
     onClickSelectTab() {
         this.setState({ showMemberOption: true });
     }
+
     onCloseTabEvent(uid) {
         const members = this.state.users;
         const closeMember = members.find(val => val.uid === uid);
@@ -114,24 +128,40 @@ class DropdownCustomize extends React.Component {
         this.getSelecteMembers(members);
         const dataChecks = members.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
-        this.props.onCloseTabEvent(ids);
+
+        if (this.props.index === null) {
+            this.props.onCloseTabEvent(ids);
+        } else {
+            this.props.onCloseTabEvent(this.props.index, dataChecks);
+        }
     }
+
     onCloseAllEvent() {
         this.resetSelectedMember();
-        this.props.onCloseAllEvent([]);
+        if (this.props.index === null) {
+            this.props.onCloseAllEvent([]);
+        } else {
+            this.props.onCloseAllEvent(this.props.index, []);
+        }
     }
 
     render() {
-        const { t } = this.props;
+        const { t, employeeSelectedFilter, label } = this.props;
+        const {users} = this.state
         let hrProfileDisplay = [];
-        if (this.state.users && this.state.users.length > 0) {
-            hrProfileDisplay = this.state.users.map((profile) => {
+
+        if (users && users.length > 0) {
+            hrProfileDisplay = users.map((profile) => {
                 return {
                     uid: profile.uid,
                     // label: profile.fullname,
                     fullname: profile.fullname,
                     job_name: profile.job_name,
-                    companyCode: profile.companyCode,
+                    part: profile.part || "",
+                    division: profile.division || "",
+                    department: profile.department || "",
+                    unit: profile.unit || "",
+                    companyCode: profile.organization_lv2,
                     orgLv3Text: profile.orgLv3Text,
                     username: profile.username,
                     manager: profile.manager,
@@ -144,12 +174,12 @@ class DropdownCustomize extends React.Component {
 
         return (
             <div className="timesheet-box">
-                <div className="title">{t("SelectEmployees")}</div>
+                <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
                 <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {this.state.showMemberOption ? (
                     //employeeGrTree
-                    <MemberOption loading={this.state.loading} data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                    <MemberOption loading={this.state.loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
                 ) : null}
             </div>
         );

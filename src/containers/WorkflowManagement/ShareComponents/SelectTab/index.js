@@ -1,4 +1,5 @@
 import React from "react";
+import ReactTooltip from 'react-tooltip'
 import './select-tab.scss'
 
 export default function SelectTab(props) {
@@ -29,6 +30,7 @@ export default function SelectTab(props) {
       )
     });
   }
+
   return (
     <div className="tabControl" onClick={onClickSelectTab}>
       <div className="tabContainer">
@@ -36,8 +38,21 @@ export default function SelectTab(props) {
 
       </div>
       <div className="d-flex justify-content-between align-items-center">
-        {selectedMembers.length > 0 && <div className="total">{selectedMembers.length}</div>
-        }
+        {selectedMembers.length > 0 
+          && <>
+            <ReactTooltip id='total-items-selected' place="right" type='light' backgroundColor="#FFFFFF" arrowColor="#CCCCCC" className="item-tooltip">
+              <ul>
+                {
+                  selectedMembers.map((item, i) => {
+                    return  <li key={i} className="user-item">
+                              <p className="full-name">{item.fullname || ""}</p>
+                              <p className="job-title">({item.company_email}) {item.job_name}</p>
+                            </li>
+                  })
+                }
+              </ul>
+            </ReactTooltip>
+            <div className="total" data-tip data-for='total-items-selected'>{selectedMembers.length}</div></>}
         {selectedMembers.length > 0 && <i className="fa fa-close p-1 closeIconAll" aria-hidden="true" onClick={(e) => onCloseAllEvent(e)}></i>}
         <i className="fa fa-angle-down downIcon"></i>
       </div>
