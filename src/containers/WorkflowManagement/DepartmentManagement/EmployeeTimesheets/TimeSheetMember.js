@@ -314,13 +314,21 @@ function Content(props) {
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
     const handleShowModalShiftChange = (date, day) => {
-        const backDateConfig = 1
-        const duration = moment().diff(date, 'days')
-        if (duration > backDateConfig) {
+        const isUpdatable = isShiftUpdatable(date)
+        if (!isUpdatable) {
             return
         }
         SetIsShowShiftUpdateModal(true)
         SetDateInfo({day: day, date: date})
+    }
+
+    const isShiftUpdatable = (date) => {
+        const backDateConfig = 1
+        const duration = moment().diff(date, 'days')
+        if (duration > backDateConfig) {
+            return false
+        }
+        return true
     }
 
     const onHideShiftUpdateModal = () => {
@@ -365,8 +373,10 @@ function Content(props) {
                                 <td className="text-uppercase fixed-col full-name"><span className="title">{t('FullName')}</span></td>
                                 <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
                                 {props.dayList.map((item, index) => {
+                                    let thisDate = moment(item).format("YYYYMMDD")
+                                    let isUpdatable = isShiftUpdatable(thisDate)
                                     return (
-                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYYMMDD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
+                                    <td className={`text-uppercase ${isUpdatable ? 'updatable' : ''}`} key={index} onClick={() => handleShowModalShiftChange(thisDate, moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
