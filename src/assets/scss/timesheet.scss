@@ -176,6 +176,22 @@
       padding-right: 3px;
       padding-left: 3px;
     }
+    .report-employees-updating {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      color: #000000;
+      .message {
+        margin: 0 auto;
+        .total-employees-updating {
+          font-weight: bold;
+        }
+      }
+      .detail {
+        color: #FF0000;
+        cursor: pointer;
+      }
+    }
   }
   .color-red {
     color: red !important;
@@ -258,6 +274,9 @@
             span {
               display: inline-block;
               width: 160px;
+              &.updating {
+                color: #00b3ff;
+              }
             }
           }
           &.room-part-group {
@@ -434,6 +453,21 @@
       border-right: 3.5px solid #FFFFFF;
       border-top: 3.5px solid #FFFFFF;
       border-bottom: 3.5px solid #FFFFFF;
+    }
+  }
+  .action-buttons-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 14px;
+    padding: 20px 0;
+    button {
+      font-size: inherit;
+      font-weight: normal;
+      width: 100px;
+      &.btn-submit {
+        margin-left: 20px;
+      }
     }
   }
 }

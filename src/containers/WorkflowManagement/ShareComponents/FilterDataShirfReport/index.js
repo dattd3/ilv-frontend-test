@@ -108,8 +108,8 @@ class FilterDataShirfReport extends React.Component {
     const data = {
       reportType: this.state.reportType,
       employeeCodes: ids,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate
+      startDate: moment(this.state.startDate ).format("YYYY-MM-DD[T]00:00:00.000"),
+      endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
 
@@ -119,7 +119,19 @@ class FilterDataShirfReport extends React.Component {
           this.resetErrors();
           if (responses.status === 200) {
             const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
-            saveAs(blob, "Báo cáo thay đổi phân ca.xlsx")
+            let fileName = "";
+            switch (this.state.reportType) {
+              case 0:
+                  fileName = "ReportDetail" 
+                  break;
+              case 1:
+                  fileName = "ReportSummary" 
+                  break;
+              default:
+                  fileName = "Report" 
+                  break;
+          }
+          saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
           } else {
             console.log('error');
           }
