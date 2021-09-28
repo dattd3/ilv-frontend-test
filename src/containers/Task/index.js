@@ -38,7 +38,7 @@ class Task extends React.Component {
                   : null
                 }
                 {
-                    this.state.isShowApprovalTab == true && Constants.APPROVER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) ?
+                    this.state.isShowApprovalTab == true && (Constants.APPROVER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) || ["minhvb1@vingroup.net"].includes(localStorage.getItem("email")))?
                     <Tab eventKey="approval" title={t("Approval")}>
                         <ApprovalComponent tasks={this.state.tasks} />
                     </Tab>
