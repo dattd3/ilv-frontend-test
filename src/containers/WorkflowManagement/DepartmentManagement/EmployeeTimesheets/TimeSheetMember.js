@@ -305,22 +305,30 @@ function Content(props) {
     const [dateInfo, SetDateInfo] = useState({})
     const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
 
-
     const onChangePage = index => {
         setPageNumber(index)
     }
+
     const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 50)
     const { t } = useTranslation();
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
     const handleShowModalShiftChange = (date, day) => {
-        const backDateConfig = 1
-        const duration = moment().diff(date, 'days')
-        if (duration > backDateConfig) {
+        const isUpdatable = isShiftUpdatable(date)
+        if (!isUpdatable) {
             return
         }
         SetIsShowShiftUpdateModal(true)
         SetDateInfo({day: day, date: date})
+    }
+
+    const isShiftUpdatable = (date) => {
+        const backDateConfig = 1
+        const duration = moment().diff(date, 'days')
+        if (duration > backDateConfig) {
+            return false
+        }
+        return true
     }
 
     const onHideShiftUpdateModal = () => {
@@ -338,13 +346,26 @@ function Content(props) {
         props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
     }
 
+    const handleViewDetail = () => {
+        SetIsShowShiftUpdateModal(true)
+    }
+
+    let employeeSelectedFilter = []
+    if (props.timeTables.length > 0) {
+        if (props.timeTables.some(item => item.isUpdating)) {
+            employeeSelectedFilter = props.employeeSelectedFilter
+        } else {
+            employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
+        }
+    }
+
     return (
         <>
             <ShiftUpdateModal 
                 show={isShowShiftUpdateModal} 
                 dateInfo={dateInfo} 
                 employeesForFilter={props.employeesForFilter} 
-                employeeSelectedFilter={props.employeeSelectedFilter} 
+                employeeSelectedFilter={employeeSelectedFilter} 
                 onHideShiftUpdateModal={onHideShiftUpdateModal}
                 updateParentData={updateParentData} />
             <div className="row pr-2 pl-2 pb-4">
@@ -365,8 +386,10 @@ function Content(props) {
                                 <td className="text-uppercase fixed-col full-name"><span className="title">{t('FullName')}</span></td>
                                 <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
                                 {props.dayList.map((item, index) => {
+                                    let thisDate = moment(item).format("YYYYMMDD")
+                                    let isUpdatable = isShiftUpdatable(thisDate)
                                     return (
-                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYYMMDD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
+                                    <td className={`text-uppercase ${isUpdatable ? 'updatable' : ''}`} key={index} onClick={() => handleShowModalShiftChange(thisDate, moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
@@ -412,11 +435,11 @@ function Content(props) {
                 totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
                 <div className="report-employees-updating">
                     <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
-                    <span className="detail" onClick={() => {SetIsShowShiftUpdateModal(true)}}>{"Xem chi tiết >>"}</span>
+                    <span className="detail" onClick={handleViewDetail}>{"Xem chi tiết >>"}</span>
                 </div>
                 : null
             }
-            {
+            {/* {
                 memberTimeData.length > 0 
                 ?   <div className="row paging mt-2">
                         <div className="col-sm"></div>
@@ -428,7 +451,7 @@ function Content(props) {
                         <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>
                     </div>
                 : null
-            }
+            } */}
         </>
     )
 }

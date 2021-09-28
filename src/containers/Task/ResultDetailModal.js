@@ -66,7 +66,7 @@ class ResultDetailModal extends React.Component {
                                     }   
                                 </tbody>
                             </table>
-                            <p><span className="text-success">{t("Successful")}:</span><strong>{sucessReqs}/{total}</strong></p>
+                            <p><span className="text-success">{t("Successful")}: </span><strong>{sucessReqs}/{total}</strong></p>
                         </>
                         : <div className="wrap-result">
                             <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>

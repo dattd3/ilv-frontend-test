@@ -235,7 +235,7 @@ const MemberOption = (props, onChange) => {
             {renderTreeMember(treeMembers)}
           </div>
         </div>
-        <div className="action bg-gray-100 d-flex justify-content-center p-2">
+        <div className="action d-flex justify-content-center p-2">
           <div>
             <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
             <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
