@@ -40,11 +40,19 @@ class DropdownCustomize extends React.Component {
     };
 
     componentDidMount() {
-        const {employeeSelectedFilter} = this.props
+        const { employeeSelectedFilter } = this.props
         if (employeeSelectedFilter && employeeSelectedFilter.length > 0) {
             return
         }
         this.getApproverInfo();
+        const data = employeeSelectedFilter;
+        this.setState(
+            {
+                users: data,
+                showMemberOption: false,
+                selectedMembers: (data.filter(a => a.checked)),
+                checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid))
+            });
     }
 
     getApproverInfo = () => {
@@ -65,9 +73,10 @@ class DropdownCustomize extends React.Component {
                 if (res && res.data && res.data.data) {
                     const users = res.data.data || [];
                     this.setState({ users: users, loading: false });
+
                 }
             })
-            .catch((error) => {this.setState({loading: false }); });
+            .catch((error) => { this.setState({ loading: false }); });
     };
 
     getSelecteMembers(data) {
@@ -147,7 +156,7 @@ class DropdownCustomize extends React.Component {
 
     render() {
         const { t, employeeSelectedFilter, label } = this.props;
-        const {users} = this.state
+        const { users } = this.state
         let hrProfileDisplay = [];
 
         if (users && users.length > 0) {

@@ -72,6 +72,7 @@ class FilterDataShirfReport extends React.Component {
         if (res && res.data && res.data.data) {
           const users = res.data.data || [];
           this.setState({ users: users, loading: false });
+          this.getSelecteMembers(users);
         }
       })
       .catch((error) => {this.setState({loading: false }); });
