@@ -5,6 +5,7 @@ import { withTranslation, useTranslation } from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
 import vi from "date-fns/locale/vi";
 import { InputGroup, FormControl } from 'react-bootstrap'
+import LoadingSpinner from "../../../../components/Forms/CustomForm/LoadingSpinner";
 registerLocale("vi", vi);
 
 const MemberOption = (props, onChange) => {
@@ -200,7 +201,7 @@ const MemberOption = (props, onChange) => {
 
   return (
     <>
-      <div ref={ref} className="member-list">
+      {!props.loading && <div ref={ref} className="member-list">
 
         <div className="mt-2 p-2 input-search">
           {/* <input type="text" className="fomr-control" onChange={onSearch}/> */}
@@ -234,11 +235,17 @@ const MemberOption = (props, onChange) => {
             {renderTreeMember(treeMembers)}
           </div>
         </div>
-        <div className="action bg-light d-flex justify-content-center p-2">
-          <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
-          <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
+        <div className="action bg-gray-100 d-flex justify-content-center p-2">
+          <div>
+            <button type="button" className="btn btn-secondary btn-sm mr-2" onClick={props.resetSelectedMember}>{t('CancelSearch')}</button>
+            <button type="button" className="btn btn-primary btn-sm" onClick={confirmSelectedMember}>{t('ApplySearch')}</button>
+          </div>
         </div>
       </div>
+      }
+      {props.loading &&
+        <LoadingSpinner />
+      }
     </>
   );
 }
