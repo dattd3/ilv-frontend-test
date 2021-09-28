@@ -79,6 +79,7 @@
       .action {
         padding: 10px 0 !important;
         justify-content: space-evenly !important;
+        background: #F2F2F2;
         button {
           width: 80px;
           font-size: 13px;
@@ -225,6 +226,10 @@
       font-size: 14px;
       min-width: 150px;
       padding: 0;
+      &.updatable:hover {
+        background: #2e59d9;
+        color: #FFFFFF;
+      }
     }
     thead {
       td {
