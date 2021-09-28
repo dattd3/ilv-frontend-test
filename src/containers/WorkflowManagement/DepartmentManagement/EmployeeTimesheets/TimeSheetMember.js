@@ -305,10 +305,10 @@ function Content(props) {
     const [dateInfo, SetDateInfo] = useState({})
     const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
 
-
     const onChangePage = index => {
         setPageNumber(index)
     }
+
     const memberTimeData = TableUtil.updateData(props.timeTables, pageNumber - 1, 50)
     const { t } = useTranslation();
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
@@ -346,13 +346,26 @@ function Content(props) {
         props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
     }
 
+    const handleViewDetail = () => {
+        SetIsShowShiftUpdateModal(true)
+    }
+
+    let employeeSelectedFilter = []
+    if (props.timeTables.length > 0) {
+        if (props.timeTables.some(item => item.isUpdating)) {
+            employeeSelectedFilter = props.employeeSelectedFilter
+        } else {
+            employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
+        }
+    }
+
     return (
         <>
             <ShiftUpdateModal 
                 show={isShowShiftUpdateModal} 
                 dateInfo={dateInfo} 
                 employeesForFilter={props.employeesForFilter} 
-                employeeSelectedFilter={props.employeeSelectedFilter} 
+                employeeSelectedFilter={employeeSelectedFilter} 
                 onHideShiftUpdateModal={onHideShiftUpdateModal}
                 updateParentData={updateParentData} />
             <div className="row pr-2 pl-2 pb-4">
@@ -422,11 +435,11 @@ function Content(props) {
                 totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
                 <div className="report-employees-updating">
                     <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
-                    <span className="detail" onClick={() => {SetIsShowShiftUpdateModal(true)}}>{"Xem chi tiết >>"}</span>
+                    <span className="detail" onClick={handleViewDetail}>{"Xem chi tiết >>"}</span>
                 </div>
                 : null
             }
-            {
+            {/* {
                 memberTimeData.length > 0 
                 ?   <div className="row paging mt-2">
                         <div className="col-sm"></div>
@@ -438,7 +451,7 @@ function Content(props) {
                         <div className="col-sm text-right">{t("Total")}: {props.timeTables.length}</div>
                     </div>
                 : null
-            }
+            } */}
         </>
     )
 }
