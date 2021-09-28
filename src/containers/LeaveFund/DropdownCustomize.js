@@ -42,17 +42,18 @@ class DropdownCustomize extends React.Component {
     componentDidMount() {
         const { employeeSelectedFilter } = this.props
         if (employeeSelectedFilter && employeeSelectedFilter.length > 0) {
+            this.setState(
+                {
+                    loading: false,
+                    users: employeeSelectedFilter,
+                    showMemberOption: false,
+                    selectedMembers: (employeeSelectedFilter.filter(a => a.checked)),
+                    checkedMemberIds: (employeeSelectedFilter.filter(a => a.checked).map(m => m.uid))
+                }
+            )
             return
         }
         this.getApproverInfo();
-        const data = employeeSelectedFilter;
-        this.setState(
-            {
-                users: data,
-                showMemberOption: false,
-                selectedMembers: (data.filter(a => a.checked)),
-                checkedMemberIds: (data.filter(a => a.checked).map(m => m.uid))
-            });
     }
 
     getApproverInfo = () => {
@@ -156,7 +157,7 @@ class DropdownCustomize extends React.Component {
 
     render() {
         const { t, employeeSelectedFilter, label } = this.props;
-        const { users } = this.state
+        const { users, loading } = this.state
         let hrProfileDisplay = [];
 
         if (users && users.length > 0) {
@@ -188,7 +189,7 @@ class DropdownCustomize extends React.Component {
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {this.state.showMemberOption ? (
                     //employeeGrTree
-                    <MemberOption loading={this.state.loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                    <MemberOption loading={loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
                 ) : null}
             </div>
         );
