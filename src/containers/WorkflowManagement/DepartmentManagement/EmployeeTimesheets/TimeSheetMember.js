@@ -1,11 +1,12 @@
 import React, { useState } from "react"
-import Button from 'react-bootstrap/Button'
-import {OverlayTrigger,Tooltip, Popover} from 'react-bootstrap'
+import {OverlayTrigger, Popover} from 'react-bootstrap'
 import moment from 'moment'
+import _ from 'lodash'
 import { useTranslation } from "react-i18next"
-import { formatStringByMuleValue } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
+import ShiftUpdateModal from "../modals/ShiftUpdateModal"
 
 const DATE_TYPE = {
     DATE_OFFSET: 0,
@@ -300,6 +301,11 @@ function RenderRow4(props) {
 
 function Content(props) {
     const [pageNumber, setPageNumber] = useState(1);
+    const [isShowShiftUpdateModal, SetIsShowShiftUpdateModal] = useState(false)
+    const [dateInfo, SetDateInfo] = useState({})
+    const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
+
+
     const onChangePage = index => {
         setPageNumber(index)
     }
@@ -307,8 +313,40 @@ function Content(props) {
     const { t } = useTranslation();
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
+    const handleShowModalShiftChange = (date, day) => {
+        const backDateConfig = 1
+        const duration = moment().diff(date, 'days')
+        if (duration > backDateConfig) {
+            return
+        }
+        SetIsShowShiftUpdateModal(true)
+        SetDateInfo({day: day, date: date})
+    }
+
+    const onHideShiftUpdateModal = () => {
+        SetIsShowShiftUpdateModal(false)
+    }
+
+    const updateParentData = dataChanged => {
+        onHideShiftUpdateModal()
+        const dateChanged = dateInfo?.date
+        const uniqueApplicableObjects = dataChanged.reduce(function(arr, item) {
+            arr = _.unionWith(arr, item.applicableObjects, _.isEqual)
+            return arr
+        }, [])
+        SetTotalEmployeesUpdating(uniqueApplicableObjects.length)
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
+    }
+
     return (
         <>
+            <ShiftUpdateModal 
+                show={isShowShiftUpdateModal} 
+                dateInfo={dateInfo} 
+                employeesForFilter={props.employeesForFilter} 
+                employeeSelectedFilter={props.employeeSelectedFilter} 
+                onHideShiftUpdateModal={onHideShiftUpdateModal}
+                updateParentData={updateParentData} />
             <div className="row pr-2 pl-2 pb-4">
                 <div className="col-md-12 col-xl-12 describer mb-2">
                     {
@@ -328,7 +366,7 @@ function Content(props) {
                                 <td className="text-uppercase fixed-col room-part-group"><span className="title">{t('RoomPartGroup')}</span></td>
                                 {props.dayList.map((item, index) => {
                                     return (
-                                    <td className="text-uppercase" key={index}>
+                                    <td className="text-uppercase" key={index} onClick={() => handleShowModalShiftChange(moment(item).format("YYYYMMDD"), moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
@@ -346,7 +384,7 @@ function Content(props) {
                         formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
                         return <React.Fragment key={index}>
                             <tr style={{borderTop: '1px solid #707070'}} className="line1">
-                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span>{timeSheet.name || ""}</span></td>
+                                <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span className={timeSheet.isUpdating === true ? 'updating' : ''}>{timeSheet.name || ""}</span></td>
                                 <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col room-part-group"><span>{timeSheet.departmentPartGroup || ""}</span></td>
                                 <RenderRow1 member = {timeSheet} />
                             </tr>
@@ -371,6 +409,14 @@ function Content(props) {
                 </div>
             </div>
             {
+                totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
+                <div className="report-employees-updating">
+                    <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
+                    <span className="detail" onClick={() => {SetIsShowShiftUpdateModal(true)}}>{"Xem chi tiết >>"}</span>
+                </div>
+                : null
+            }
+            {
                 memberTimeData.length > 0 
                 ?   <div className="row paging mt-2">
                         <div className="col-sm"></div>
@@ -388,18 +434,22 @@ function Content(props) {
 }
 
 function TimeSheetMember(props) {
-  if (!props.timesheets || props.timesheets.length == 0) return null
-    
-  return (
-    <div className="detail-timesheet">
-      <div className="card shadow">
-        {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
-        <div className="card-body">
-            <Content timeTables={props.timesheets} dayList={props.dayList}/>
+    if (!props.timesheets || props.timesheets.length == 0) return null
+
+    const updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjects) => {
+        props.updateTimeSheetsParent(dateChanged, dataChanged, uniqueApplicableObjects)
+    }
+
+    return (
+        <div className="detail-timesheet">
+            <div className="card shadow">
+                {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
+                <div className="card-body">
+                    <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} updateTimeSheetsParent={updateTimeSheetsParent} />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  )
+    )
 }
 
 export default TimeSheetMember
