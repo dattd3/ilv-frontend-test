@@ -8,6 +8,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             element.requestInfo.forEach(e => {
                 e.user = element.user
                 e.appraiser = element.appraiser
+                e.appraiserId = element.appraiserId
                 e.requestType = element.requestType
                 e.requestTypeId = element.requestTypeId
                 e.startDate = moment(e.startDate).format("DD/MM/YYYY")
@@ -30,12 +31,31 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 taskList.push(e);
             })
         }
+        if (element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT) {
+            // if (element.processStatusId == 8 || (element.processStatusId == 5 && tab == "approval")) {
+            //     element.canChecked = true
+            // }
+            element.id = element.id.toString()
+            taskList.push(element);
+        }
     });
+
     taskList = taskList.filter(function (e, index, b) {
         var k = b.map(z => z.id)
         if (k.includes(e.id, index + 1)) {
             var indexPosition = k.indexOf(e.id, index + 1);
             b[indexPosition].startDate = (e.startDate + ",\r" + b[indexPosition].startDate);
+        } else if (e.absenceType && e.absenceType.value == "PN02") {
+            const startDate = moment(e.startDate, "DD/MM/YYYY")
+            const endDate = moment(e.endDate, "YYYYMMDD")
+            let now = startDate, dates = []
+
+            while (now.isBefore(endDate) || now.isSame(endDate)) {
+                dates.push(now.format('DD/MM/YYYY'));
+                now.add(1, 'days')
+            }
+            e.startDate = dates.join(",\r")
+            return e;
         } else {
             e.startDate = e.startDate;
             return e;

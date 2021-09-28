@@ -4,6 +4,7 @@ import LeaveOfAbsenceDetailComponent from '../Registration/LeaveOfAbsence/LeaveO
 import BusinessTripDetailComponent from '../Registration/BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from '../Registration/InOutTimeUpdate/InOutUpdateDetailComponent'
 import SubstitutionDetailComponent from '../Registration/Substitution/SubstitutionDetailComponent'
+import ChangeDivisionShiftDetail from '../Registration/Substitution/ChangeDivisionShiftDetail'
 import PersonalDetailComponent from './ApprovalDetail'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
@@ -62,6 +63,7 @@ class TaskDetailModal extends React.Component {
                         {this.state.data && this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={this.props.action} substitution={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.UPDATE_PROFILE ? <PersonalDetailComponent id={this.props.taskId} data={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId === Constants.CHNAGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
                     </div>
                 </Modal.Body>
             </Modal>

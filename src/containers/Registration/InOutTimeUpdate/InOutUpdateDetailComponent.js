@@ -80,13 +80,19 @@ class InOutUpdateDetailComponent extends React.Component {
     return !this.isNullCustomize(value) && moment(this.formatData(value), "hhmmss").isValid() ? moment(this.formatData(value), "HHmmss").format("HH:mm:ss") : "" // pending by CuongNV56
   }
 
+  showStatus = (status, appraiser) => {
+    if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
+      return Constants.mappingStatusRequest[status].label;
+    } 
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+  }
   render() {
     const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
     const { t } = this.props
   
     return (
       <div className="leave-of-absence">
-        <h5>Thông tin CBNV đăng ký</h5>
+        <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -163,12 +169,12 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <h5>Thông tin CBQL thẩm định</h5>
+        <h5>{t("ConsenterInformation")}</h5>
         <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
         {
            this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
             <>
-              <h5>Thông tin phê duyệt</h5>
+              <h5>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.processStatusId} hrComment={this.props.inOutTimeUpdate.approverComment} />
             </> : null
             // <div className="block-status">
@@ -195,7 +201,7 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{(this.props.action == "consent" && this.props.inOutTimeUpdate.processStatusId == 5 && this.props.inOutTimeUpdate.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(this.props.inOutTimeUpdate.processStatusId, this.props.inOutTimeUpdate.appraiser))}</span>
         </div>
         { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? 
         <DetailButtonComponent
