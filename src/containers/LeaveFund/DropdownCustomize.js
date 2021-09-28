@@ -16,6 +16,7 @@ class DropdownCustomize extends React.Component {
         super();
         this.state = {
             users: [],
+            loading: true,
             checkedMemberIds: [],
             selectedMembers: [],
             showMemberOption: false,
@@ -58,10 +59,10 @@ class DropdownCustomize extends React.Component {
             .then((res) => {
                 if (res && res.data && res.data.data) {
                     const users = res.data.data || [];
-                    this.setState({ users: users });
+                    this.setState({ users: users, loading: false });
                 }
             })
-            .catch((error) => { });
+            .catch((error) => {this.setState({loading: false }); });
     };
 
     getSelecteMembers(data) {
@@ -148,7 +149,7 @@ class DropdownCustomize extends React.Component {
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {this.state.showMemberOption ? (
                     //employeeGrTree
-                    <MemberOption data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                    <MemberOption loading={this.state.loading} data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
                 ) : null}
             </div>
         );
