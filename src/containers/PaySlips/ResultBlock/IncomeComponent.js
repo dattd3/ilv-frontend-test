@@ -62,7 +62,7 @@ function IncomeComponent(props) {
                         <td className="same-width title color-black">{t("NonTaxable")}</td>
                     </tr>
                     {incomeTables.map((row, index) => {
-                        return <>
+                        return <React.Fragment key={index}>
                             <TrTable
                                 row={row}
                                 rowIndex={row.index + '.' + row.label}
@@ -75,7 +75,7 @@ function IncomeComponent(props) {
                                 const lv3Number = row2.isSkipLevel4 ? row2.level3.filter(rw3 => rw3.field && (payslipCalculate[rw3.field] || payslipCalculate[rw3.field + '_tax_included'] || payslipCalculate[rw3.field + '_without_tax'])).length : row2.level3.length
                                 const lv2Label = lv3Number > 0 && !row2.isSkipSumLabel ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
                                 let countIndex3 = 0
-                                return <>
+                                return <React.Fragment key={index2}>
                                     <TrTable
                                         row={row2}
                                         rowIndex={row.index + '.' + (index2 + 1) + '. ' + lv2Label}
@@ -107,7 +107,7 @@ function IncomeComponent(props) {
                                         }
                                         countIndex4 = 0;
 
-                                        return <>
+                                        return <React.Fragment key={index3}>
                                             {row3.field && (row3.level4 || payslipCalculate[row3.field] || payslipCalculate[row3.field + '_tax_included'] || payslipCalculate[row3.field + '_without_tax']) ? <TrTable
                                                 row={row3}
                                                 rowIndex={row.index + '.' + (index2 + 1) + '.' + countIndex3 + '. ' + lv3Label + lv3SplitLabel}
@@ -121,6 +121,7 @@ function IncomeComponent(props) {
                                                     countIndex4++
                                                 }
                                                 return row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax']) ? <TrTable
+                                                    key={index4}
                                                     row={row4}
                                                     rowIndex={row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4 + '. ' + row4.label}
                                                     tdclsName={'special'}
@@ -129,12 +130,12 @@ function IncomeComponent(props) {
                                                     payslipCalculate={payslipCalculate}
                                                 /> : null
                                             }) : null}
-                                        </>
+                                        </React.Fragment>
                                     })}
-                                </>
+                                </React.Fragment>
                             })}
 
-                        </>
+                        </React.Fragment>
                     })}
                 </tbody>
             </table>

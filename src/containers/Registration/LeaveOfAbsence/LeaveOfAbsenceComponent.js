@@ -6,6 +6,8 @@ import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
@@ -45,6 +47,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             isShowNoteModal: false,
             requestInfo: [
                 {
+                    isShowHintLeaveForMother: false,
                     groupItem: 1,
                     startDate: null,
                     startTime: null,
@@ -148,7 +151,23 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
     }
 
-    setStartDate(startDate, groupId, groupItem) {
+    getStartDate() {
+        let dd = (new Date()).getMonth();
+        let yyyy = (new Date()).getFullYear();
+        return `${yyyy}${dd + 1}6`;
+    }
+
+    isPass(startDate) {
+        let dateOfPreviousMonth = moment(new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, '26')).format(Constants.LEAVE_DATE_FORMAT);
+        let dateCurrentMonth = new Date((new Date()).getFullYear(), (new Date()).getMonth(), '25');
+        if (moment(startDate).format(Constants.LEAVE_DATE_FORMAT) >= dateOfPreviousMonth && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) <= dateCurrentMonth) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    setStartDate(startDate, groupId, groupItem, isShowHintLeaveForMother) {
         let { requestInfo } = this.state;
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem);
         const { endDate, startTime, endTime } = request
@@ -158,14 +177,20 @@ class LeaveOfAbsenceComponent extends React.Component {
         const end = endDate === undefined || (moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) > endDate)
             || !requestInfo[indexReq].isAllDay ? moment(startDate).isValid() && moment(startDate).format(Constants.LEAVE_DATE_FORMAT) : endDate
         requestInfo[indexReq].startDate = start
-        requestInfo[indexReq].endDate = end
+
+        if (isShowHintLeaveForMother === true) {
+            requestInfo[indexReq].endDate = endDate
+        } else {
+            requestInfo[indexReq].endDate = end
+        }
+
         requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
-    setEndDate(endDate, groupId, groupItem) {
+    setEndDate(endDate, groupId, groupItem, isShowHintLeaveForMother) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
         const { startDate, startTime, endTime } = request
@@ -174,7 +199,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         const start = !requestInfo[indexReq].isAllDay ? moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT) : startDate
         const end = moment(endDate).isValid() && moment(endDate).format(Constants.LEAVE_DATE_FORMAT)
 
-        requestInfo[indexReq].startDate = start
+        if (isShowHintLeaveForMother === true) {
+            requestInfo[indexReq].startDate = startDate
+        } else {
+            requestInfo[indexReq].startDate = start
+        }
+
         requestInfo[indexReq].endDate = end
         requestInfo[indexReq].errors.endDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
@@ -276,7 +306,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo.forEach(req => {
             const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
             const endTime = req.endTime ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
-            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox )) {
+            if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox)) {
                 times.push({
                     id: req.groupItem,
                     // subid:req.id,
@@ -397,21 +427,37 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+
         const { requestInfo } = this.state
         let newRequestInfo = []
         if (name === "absenceType") {
             newRequestInfo = requestInfo.map(req => {
+                let check = false;
+                if (value.value === "PN02") {
+                    check = true;
+                }
+                else {
+                    check = false;
+                }
+
                 const errors = {
                     ...req.errors,
                     absenceType: null
                 }
                 if (req.groupId === groupId) {
+
                     return {
                         ...req,
                         absenceType: value,
+                        isShowHintLeaveForMother: check,
+                        // isChecked: check ? false : req.isChecked,
+                        isAllDayCheckbox: req.isChecked,
+                        startDate: check ? null : req.startDate,
+                        endDate: check ? null : req.endDate,
                         errors
                     }
                 }
+
                 return { ...req }
             })
         } else if (name === "funeralWeddingInfo") {
@@ -611,13 +657,12 @@ class LeaveOfAbsenceComponent extends React.Component {
             bodyFormData.append('id', this.props.leaveOfAbsence.id)
         }
 
-        if(!isEdit)
-        {
+        if (!isEdit) {
             files.forEach(file => {
                 bodyFormData.append('Files', file)
             })
         }
-       
+
         axios({
             method: 'POST',
             url: isEdit ? `${process.env.REACT_APP_REQUEST_URL}Request/edit` : `${process.env.REACT_APP_REQUEST_URL}Request/absence/register`,
@@ -629,8 +674,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.showStatusModal(t("Successful"), t("RequestSent"), true)
                     this.setDisabledSubmitButton(false)
                 }
-                else
-                {
+                else {
                     this.showStatusModal(t("Notification"), response.data.result.message, false)
                     this.setDisabledSubmitButton(false)
                 }
@@ -650,7 +694,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger p-2">{errorMsg}</p> : null
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -708,11 +752,28 @@ class LeaveOfAbsenceComponent extends React.Component {
                 req.startTime = null
                 req.endTime = null
                 req.isAllDayCheckbox = e.target.checked
+                req.isChecked = e.target.checked
             }
         });
 
         this.setState({ requestInfo: requestInfo })
         this.validateTimeRequest(requestInfo)
+    }
+
+    getMinDate() {
+        let currentDay = new Date().getDate();
+        return moment(new Date((new Date()).getFullYear(), (new Date().getMonth()), currentDay), Constants.LEAVE_DATE_FORMAT).toDate();
+    }
+
+    getMaxDate() {
+        let currentDay = new Date().getDate();
+        return moment(new Date((new Date()).getFullYear(), (new Date().getMonth() + 1), currentDay), Constants.LEAVE_DATE_FORMAT).toDate();
+    }
+
+    addDays(date, days) {
+        const copy = new Date(moment(date, Constants.LEAVE_DATE_FORMAT).toDate())
+        copy.setDate(copy.getDate() + days)
+        return copy
     }
 
     render() {
@@ -812,16 +873,46 @@ class LeaveOfAbsenceComponent extends React.Component {
                         <div className="box shadow position-relative" key={index}>
                             <div className="form">
                                 <div className="row">
-                                    <div className="col-7">
-                                        <p className="text-uppercase"><b>{t('SelectLeaveDate')}</b></p>
-                                        <div className="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('FullDay')}
-                                            </label>
-                                            <label onClick={this.updateLeaveType.bind(this, false, req[0].groupId)} style={{ zIndex: "unset" }} className={!req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('ByHours')}
-                                            </label>
+                                    <div className="col-lg-8 col-xl-8">
+                                        <div className="row">
+                                            <div className="col-lg-6 col-xl-6">
+                                                <p className="">{t('SelectLeaveType')}</p>
+                                                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                                    <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                        {t('FullDay')}
+                                                    </label>
+                                                    <label onClick={this.updateLeaveType.bind(this, false, req[0].groupId)} style={{ zIndex: "unset" }} className={!req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                        {t('ByHours')}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-6 col-xl-6">
+                                                <div>
+                                                    <p className="title">{t('LeaveCategory')}</p>
+                                                    <div>
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                                    </div>
+                                                    {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
+
+                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
+                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
+                                                        <div>
+                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
+                                                        </div>
+                                                        :
+                                                        null}
+                                                    {req[0].errors.funeralWeddingInfo ? this.error('funeralWeddingInfo', req[0].groupId) : null}
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div className="col-lg-4 col-xl-4">
+                                        {
+                                            req[0].isShowHintLeaveForMother ?
+                                                <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p>
+                                                : ''
+                                        }
+
                                     </div>
                                 </div>
                                 <div className="row">
@@ -829,111 +920,221 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         {req.map((reqDetail, indexDetail) => (
                                             <div className="time-area" key={index + indexDetail}>
                                                 {
-                                                    !req[0].isAllDay ? 
-                                                    <div className="all-day-area">
-                                                        <input type="checkbox" value={reqDetail.groupId+"."+reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange}/>
-                                                        <label>Nghỉ cả ngày</label>                                              
-                                                    </div>                                                    
-                                                    : null
+                                                    !req[0].isAllDay ?
+                                                        <div className="all-day-area">
+                                                            <input  type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <label>{t('FullDay')}</label>
+                                                        </div>
+                                                        : null
                                                 }
-                                                <div className="row p-2">
-                                                    <div className="col-lg-12 col-xl-6">
-                                                        <p className="title">{t('StartDateTime')}</p>
-                                                        <div className="row">
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            name="startDate"
-                                                                            selectsStart
-                                                                            autoComplete="off"
-                                                                            selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            dateFormat="dd/MM/yyyy"
-                                                                            placeholderText={t('Select')}
-                                                                            locale={t("locale")}
-                                                                            className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                                                                    </label>
+                                                {
+                                                    req[0].isShowHintLeaveForMother ?
+                                                        (
+                                                            <div className="row p-4">
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('StartTime')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelect
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('Endtime')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        showTimeSelect
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        // minTime={reqDetail.startTime ? this.setMinTime(reqDetail.startTime) : null}
+                                                                                        // maxTime={ reqDetail.startTime ? this.setMaxTime(reqDetail.startTime)  : null}
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
-                                                            </div>
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
-                                                                            onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm"
-                                                                            timeFormat="HH:mm"
-                                                                            placeholderText={t('Select')}
-                                                                            className="form-control input"
-                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
-                                                                        />
-                                                                    </label>
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('StartDate')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="startDate"
+                                                                                        selectsStart
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={reqDetail.endDate ? this.addDays(reqDetail.endDate, -31) : ['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // maxDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(this.getMaxDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMaxDate())}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <p className="title">{t('EndDate')}</p>
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="endDate"
+                                                                                        selectsEnd
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : this.getMinDate())}
+                                                                                        maxDate={reqDetail.startDate ? this.addDays(reqDetail.startDate, 31) : null}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 col-xl-6">
-                                                        <p className="title">{t('EndDateTime')}</p>
-                                                        <div className="row">
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            name="endDate"
-                                                                            selectsEnd
-                                                                            autoComplete="off"
-                                                                            selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                                                                            // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            dateFormat="dd/MM/yyyy"
-                                                                            placeholderText={t('Select')}
-                                                                            locale={t("locale")}
-                                                                            className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
-                                                                    </label>
+                                                        )
+                                                        :
+                                                        (
+                                                            <div className="row p-4">
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <p className="title">{t('StartDateTime')}</p>
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="startDate"
+                                                                                        selectsStart
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelect
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
-                                                            </div>
-                                                            <div className="col-6">
-                                                                <div className="content input-container">
-                                                                    <label>
-                                                                        <DatePicker
-                                                                            selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
-                                                                            onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
-                                                                            showTimeSelect
-                                                                            autoComplete="off"
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm"
-                                                                            timeFormat="HH:mm"
-                                                                            placeholderText={t('Select')}
-                                                                            className="form-control input"
-                                                                            disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
-                                                                        />
-                                                                    </label>
+                                                                <div className="col-lg-12 col-xl-6">
+                                                                    <p className="title">{t('EndDateTime')}</p>
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        name="endDate"
+                                                                                        selectsEnd
+                                                                                        autoComplete="off"
+                                                                                        selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        dateFormat="dd/MM/yyyy"
+                                                                                        placeholderText={t('Select')}
+                                                                                        locale={t("locale")}
+                                                                                        className="form-control input" />
+                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                        <div className="col-6">
+                                                                            <div className="content input-container">
+                                                                                <label>
+                                                                                    <DatePicker
+                                                                                        selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
+                                                                                        onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        showTimeSelect
+                                                                                        autoComplete="off"
+                                                                                        showTimeSelectOnly
+                                                                                        timeIntervals={15}
+                                                                                        timeCaption={t("Hour")}
+                                                                                        dateFormat="HH:mm"
+                                                                                        timeFormat="HH:mm"
+                                                                                        placeholderText={t('Select')}
+                                                                                        className="form-control input"
+                                                                                        disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
+                                                                                    />
+                                                                                </label>
+                                                                            </div>
+                                                                            {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        )
+                                                }
 
                                                 {!indexDetail ?
                                                     !isEdit &&
@@ -967,24 +1168,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 </div>
 
                                 <div className="row">
-                                    <div className="col-5">
-                                        <p className="title">{t('LeaveCategory')}</p>
-                                        <div>
-                                            <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
-                                        </div>
-                                        {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
-
-                                        {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
-                                        {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
-                                            <div>
-                                                <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
-                                            </div>
-                                            :
-                                            null}
-                                        {req[0].errors.funeralWeddingInfo ? this.error('funeralWeddingInfo', req[0].groupId) : null}
-                                    </div>
-
-                                    <div className="col-7">
+                                    <div className="col-12">
                                         <p className="title">{t('ReasonRequestLeave')}</p>
                                         <div>
                                             <textarea className="form-control" value={req[0].comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>

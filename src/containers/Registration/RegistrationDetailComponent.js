@@ -3,6 +3,7 @@ import LeaveOfAbsenceDetailComponent from './LeaveOfAbsence/LeaveOfAbsenceDetail
 import BusinessTripDetailComponent from './BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from './InOutTimeUpdate/InOutUpdateDetailComponent'
 import SubstitutionDetailComponent from './Substitution/SubstitutionDetailComponent'
+import ChangeDivisionShiftDetail from '../Registration/Substitution/ChangeDivisionShiftDetail'
 import RegistrationConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
@@ -67,6 +68,7 @@ class RegistrationDetailComponent extends React.Component {
         {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
+        {this.state.data && this.state.data.requestTypeId === Constants.CHNAGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent/> : null}
         {/* {
           data.status == 0 && this.getTypeDetail() === "request" ?

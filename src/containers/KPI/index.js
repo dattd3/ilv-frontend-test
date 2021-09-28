@@ -1,81 +1,75 @@
-import React, { useState } from "react";
-import { useApi, useFetcher, useGuardStore } from "../../modules";
-import { useTranslation } from "react-i18next";
+import React from "react"
+import axios from 'axios'
+import { withTranslation } from "react-i18next"
 import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
 import ShowKPIDetail from "./ShowKPIDetail"
-
-const usePreload = () => {
-  const api = useApi();
-  const [data = [], err] = useFetcher({
-    api: api.fetchListKpiGeneralAll,
-    autoRun: true
-  });
-  return data;
-};
-
-
-function General(props) {
-  const { t } = useTranslation();  
-  document.title = t("KPI General"); 
-
-  const [period, setPeriod] = useState("2020"); 
-  const [showResult, setShowResult] = useState(false); 
-  const resultRef = React.createRef();
-
-  const guard = useGuardStore();
-  const user = guard.getCurentUser();
-  
-  var listAll = usePreload();
-    
-  function onlyUnique(value, index, self) { 
-      return self.indexOf(value) === index;
+import Constants from "../../commons/Constants"
+class General extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      period: new Date().getFullYear().toString(),
+      years: []
+    }
   }
 
-  function getPeriodYear(items) { 
-    var years = [];         
-    items.map(function(item) {          
-       var year =  item.Period.substring(3,7); //Convert: Q1/2020 => 2020 
-       years.push(year);       
-    });   
-
-    var unique = years.filter(onlyUnique);    
-    return unique    
+  componentDidMount() {
+    this.getAllKPI()
   }
 
-  function selectPeriodCompleted (value) {    
-    setPeriod(value);
-    resultRef.current.loadData(value);         
-    setShowResult(true);
+  getAllKPI = async () => {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      }
+    }
+    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`, config)
+    let years = this.collectYears(responses)
+    years = [...new Set(years)]
+    this.setState({years: years})
   }
 
-  if (listAll.data && listAll.data[0]) {      
-    const items = listAll.data;
-    const kpiInfo = items[0];    
-    var years = getPeriodYear(items); 
-    
+  collectYears = responses => {
+    if (responses && responses.data) {
+      const result = responses.data.result
+      if (result && result.code == Constants.API_SUCCESS_CODE) {
+        const data = responses.data.data
+        if (data && data.length > 0) {
+          const years = data.map(item => item.Period && item.Period.length >= 7 && item.Period.substring(3, 7))
+          return years
+        }
+        return []
+      }
+      return []
+    }
+    return []
+  }
+
+  selectPeriodCompleted = (value) => {
+    this.setState({period: value})
+  }
+
+  render() {
+    const { t } = this.props
+    const {period, years} = this.state
+
     return (
-        <div>        
-           {/* THÔNG TIN NHÂN VIÊN */}
-             <StaffInfo UserInfo={user} ManagerFullName={kpiInfo.ManagerFullName}/>
-
-           {/* LỰA CHỌN KỲ ĐÁNH GIÁ */}
-             <KPISearch years={years} selectPeriodCompleted={selectPeriodCompleted}/>
-             
-             <ShowKPIDetail Period={period} ref={resultRef}/>             
-        </div>
-      );
-
-  } else {
-    return (
-        <div>
-              <StaffInfo UserInfo={user} ManagerFullName=""/>                   
-              <div className="alert alert-warning text-center" role="alert">
-                    Không có dữ liệu về KPI
-              </div>       
-        </div>
-      );
+      <div>
+        <StaffInfo />
+        {
+          years.length > 0 ?
+            <>
+            <KPISearch years={years} period={period} selectPeriodCompleted={this.selectPeriodCompleted} />
+            <ShowKPIDetail Period={period} />
+            </>
+          : <div className="alert alert-warning text-center" role="alert">Không có dữ liệu về KPI</div>
+        }
+      </div>
+    )
   }
 }
 
-export default General;
+export default General

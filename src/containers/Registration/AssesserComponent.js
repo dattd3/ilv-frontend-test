@@ -82,13 +82,13 @@ class AssesserComponent extends React.Component {
         const { appraiser } = this.props
         if (appraiser) {
             this.setState({
-              appraiser: {
-                ...appraiser,
-                label: appraiser.fullName,
-                value: appraiser.account,
-              }
+                appraiser: {
+                    ...appraiser,
+                    label: appraiser.fullName,
+                    value: appraiser.account,
+                }
             })
-          }
+        }
     }
 
     handleSelectChange(name, value) {
@@ -107,8 +107,8 @@ class AssesserComponent extends React.Component {
     isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
         const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
         let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter },0);
+
+        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
 
         if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
             return false
@@ -184,8 +184,14 @@ class AssesserComponent extends React.Component {
         return <div className="appraiser">
             <div className="box shadow">
                 <div className="row">
+                    <div className="col-12 col-xl-12"> 
+                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b><i className="text-danger">
+                        ({t('AppraisalDuplicateApproval')})</i></div> 
+                    </div>
+                </div>
+                <div className="row">
                     <div className="col-12 col-xl-4">
-                        <p className="title">{t('Consenter')}</p>
+                        <p className="title">{t('FullName')}</p>
                         <div>
                             <Select
                                 isDisabled={isEdit}

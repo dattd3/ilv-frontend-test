@@ -7,6 +7,9 @@ const Constants = {
   TASK_PAGE_INDEX_DEFAULT: 1,
   TASK_PAGE_SIZE_DEFAULT: 10,
 
+  // success code
+  API_SUCCESS_CODE: "000000",
+
   //error_code
   API_ERROR_CODE: 1,
   API_ERROR_NOT_FOUND_CODE: "404",
@@ -28,6 +31,7 @@ const Constants = {
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
+  CHNAGE_DIVISON_SHIFT: 8,
 
   //Status request
   STATUS_PENDING: 0,
@@ -36,43 +40,56 @@ const Constants = {
   STATUS_EVICTION: 3, // thu hồi
   STATUS_REVOCATION: 4, // hủy
   STATUS_WAITING: 5, // chờ phê duyệt
-  STATUS_CONSENTED: 6,// thẩm định
+  STATUS_CONSENTED: 20,// thẩm định
+  STATUS_PARTIALLY_SUCCESSFUL: 6, //không thành công
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
 
-  STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,7,8],
-  STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,8],
+  STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
+  STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
   STATUS_USE_COMMENT: [0,1,3,4,7],
   mappingStatus: {
-    1: {label: 'Từ chối', className: 'fail'},//từ chối phê duyệt
+    1: {label: 'Rejected', className: 'fail'},//từ chối phê duyệt
     2: {label: 'Approved', className: 'success'},// đã phê duyệt
-    3: {label: 'Đã hủy', className: ''}, // đã thu hồi
-    4: {label: 'Đã hủy', className: ''}, // đã hủy
+    3: {label: 'Canceled', className: ''}, // đã thu hồi
+    4: {label: 'Canceled', className: ''}, // đã hủy
     5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    6: {label: 'Đã thẩm định', className: ''},
-    7: {label: 'Từ chối', className: ''},// từ chối thẩm định
-    8: {label: 'Waiting', className: ''} // đang chờ thẩm định
+    6: { label: "PartiallySuccessful", className: 'warning' },
+    7: {label: 'Rejected', className: ''},// từ chối thẩm định
+    8: {label: 'Waiting', className: ''}, // đang chờ thẩm định
+    20:{ label: "Consented", className: '' }
   },
 
+  mappingStatusRequest: {
+    1: { label: 'Rejected', className: 'fail' },
+    2: { label: 'Approved', className: 'success' },
+    3: { label: 'Canceled', className: '' },
+    4: { label: 'Canceled', className: '' },
+    5: { label: "PendingApproval", className: '' },
+    6: { label: "PartiallySuccessful", className: 'warning' },
+    7: { label: "Rejected", className: 'fail' },
+    8: { label: "PendingConsent", className: '' },
+    20:{ label: "Consented", className: '' }
+  },
   //
   mappingActionType : {
     'INS': {
-      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleLeave: 'LeaveRequestInformation',
       TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonLeaveRequest'
     },
     'MOD': {
       TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
       TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do chỉnh sửa đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonEditLeaveRequest'
     },
     'DEL': {
-      TitleLeave: 'Thông tin đăng ký nghỉ',
+      TitleLeave: 'LeaveRequestInformation',
       TitleTripAndTrainning: 'Thông tin đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do hủy đăng ký công tác/đào tạo',
-      ReasonRequestLeave: 'Lý do hủy đăng ký nghỉ'
+      ReasonRequestLeave: 'ReasonCancelLeaveRequest'
     }
   },
   //DateTime
@@ -97,8 +114,22 @@ const Constants = {
   // user level
   CONSENTER_LIST_LEVEL : ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
 
   //other
   QAAlreadyExist: "QAAlreadyExist",
+
+  // Ticket 
+
+  SOLVER_MANAGER: 1,
+  SOLVER_RESOURCE: 2,
+  SOLVER_TCKT: 3,
+
+  ROLE_ASSIGMENT_APPROVE: ["ZCPS_CBLD_CC", "ZCPS_QLNSTD", "ZCPS_QLCPNL", "CVNS"],
+  DATE_TYPE: {
+    DATE_OFFSET: 0,
+    DATE_NORMAL: 1,
+    DATE_OFF: 2
+  }
 };
 export default Constants

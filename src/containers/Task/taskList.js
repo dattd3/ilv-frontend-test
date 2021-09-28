@@ -153,9 +153,10 @@ class TaskList extends React.Component {
             3: { label: this.props.t('Canceled'), className: 'request-status' },
             4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Consented"), className: 'request-status' },
+            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' }
+            8: { label: this.props.t("Waiting"), className: 'request-status' },
+            20: { label: this.props.t("Consented"), className: 'request-status' }
         }
 
         const options = [
@@ -171,7 +172,7 @@ class TaskList extends React.Component {
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
         if(this.props.page === "consent" && statusOriginal == 5) {
-            statusOriginal = 6;
+            statusOriginal = 20;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
@@ -451,8 +452,8 @@ class TaskList extends React.Component {
                                 tasks.length > 0 ?
                                     tasks.map((child, index) => {
                                         let totalTime = null;
-                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
-                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
@@ -468,9 +469,9 @@ class TaskList extends React.Component {
                                                 <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
-                                                <td className="user-title">{child.user?.jobTitle??''}</td>
-                                                <td className="request-type">{child.requestType.name}</td>
-                                                <td className="day-off">{child.startDate}</td>
+                                                <td className="user-title">{child.user?.jobTitle || ''}</td>
+                                                <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
+                                                <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
                                                     this.props.page == "approval" ?

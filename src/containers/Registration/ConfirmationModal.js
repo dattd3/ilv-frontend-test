@@ -2,6 +2,7 @@ import React from "react"
 import axios from 'axios'
 import { Modal } from 'react-bootstrap'
 import ResultModal from './ResultModal'
+import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import Spinner from 'react-bootstrap/Spinner'
@@ -16,6 +17,7 @@ class ConfirmationModal extends React.Component {
             resultMessage: "",
             isShowStatusModal: false,
             disabledSubmitButton: false,
+            isShowStatusChangeShiftModal: false,
             errorMessage: null
         }
     }
@@ -179,12 +181,17 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == "000000") {
-                        if(res.data.data[0].sub[0].status == "E")
-                        {
-                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                        if (res.data.data[0].requestTypeId == Constants.CHNAGE_DIVISON_SHIFT) {
+                            this.showStatusChangeShiftModal(this.props.t("ApprovalResults"), res.data.data[0])
                         }
-                        else{
-                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulApprvalReq"), true)
+                        else {
+                            if(res.data.data[0].sub[0].status == "E")
+                            {
+                                this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
+                            }
+                            else{
+                                this.showStatusModal(this.props.t("Successful"), this.props.t("successfulApprvalReq"), true)
+                            }
                         }
                         // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -324,8 +331,18 @@ class ConfirmationModal extends React.Component {
         this.setState({ disabledSubmitButton: false });
     }
 
+    showStatusChangeShiftModal = (title, result) => {
+        this.setState({ isShowStatusChangeShiftModal: true, resultTitle: title, resultMessage: result })
+        this.setState({ disabledSubmitButton: false });
+    }
+
     hideStatusModal = () => {
         this.setState({ isShowStatusModal: false })
+        window.location.reload();
+    }
+
+    hideStatusChangeShiftModal= () => {
+        this.setState({ isShowStatusChangeShiftModal: false })
         window.location.reload();
     }
 
@@ -345,12 +362,14 @@ class ConfirmationModal extends React.Component {
         return (
             <>
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <ResultChangeShiftModal show={this.state.isShowStatusChangeShiftModal} title={this.state.resultTitle} result={this.state.resultMessage} onHide={this.hideStatusChangeShiftModal} />
+                
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
-                        <Modal.Title>{this.props.title}</Modal.Title>
+                        <Modal.Title>{t(this.props.title)}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>{this.props.message}</p>
+                        <p>{t(this.props.message)}</p>
                         {
                             Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
                                 <div className="message">
