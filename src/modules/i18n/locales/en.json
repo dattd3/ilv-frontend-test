@@ -124,7 +124,7 @@
   "BenefitRegime": "Benefit regime",
   "BenefitNumber": "No",
   "BenefitService": "Service",
-  "LoginError": "There was a problem connecting to Mulesoft, please check the network again or disconnect the VPN!",
+  "LoginError": "Login Error. Please contact IT Department for assistance",
   "NotConnectToSaba": "Invalid account. Please contact IT Department for assistance!",
   "Notification": "Notification",
   "ShowAll": "Show All",
