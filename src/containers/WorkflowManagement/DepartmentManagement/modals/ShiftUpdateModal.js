@@ -221,6 +221,7 @@ function ShiftUpdateModal(props) {
     const verifyInputs = () => {
         let errors = {}
         let requiredFields = ['shiftType', 'reason', 'applicableObjects']
+        const totalTimeBreakValid = 2
 
         shiftInfos.forEach((shiftInfo, index) => {
             if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
@@ -261,6 +262,8 @@ function ShiftUpdateModal(props) {
                         const endBreak = shiftInfo.breakEnd
                         if (startBreak >= endBreak) {
                             errors[errorName] = 'Thời gian bắt đầu nghỉ ca phải nhỏ hơn thời gian kết thúc nghỉ ca.'
+                        } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
+                            errors[errorName] = `Tổng thời gian nghỉ của ca gãy không được nhỏ hơn ${totalTimeBreakValid} giờ.`
                         } else if (startBreak <= start || end <= endBreak) {
                             errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc.'
                         }

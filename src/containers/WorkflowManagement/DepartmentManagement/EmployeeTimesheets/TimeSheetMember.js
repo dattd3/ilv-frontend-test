@@ -389,7 +389,7 @@ function Content(props) {
                                     let thisDate = moment(item).format("YYYYMMDD")
                                     let isUpdatable = isShiftUpdatable(thisDate)
                                     return (
-                                    <td className={`text-uppercase ${isUpdatable ? 'updatable' : ''}`} key={index} onClick={() => handleShowModalShiftChange(thisDate, moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
+                                    <td className={`text-uppercase ${isUpdatable ? 'updatable' : ''} ${props.dateChanged == moment(item).format("YYYYMMDD") ? 'updating' : ''}`} key={index} onClick={() => handleShowModalShiftChange(thisDate, moment(item).format("dddd"))} style={{cursor: 'pointer'}}>
                                         <span className="title">{moment(item).format("dddd")}</span>
                                         <br/>
                                         <span className="date">{moment(item).format("DD/MM")}</span>
@@ -468,7 +468,7 @@ function TimeSheetMember(props) {
             <div className="card shadow">
                 {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
                 <div className="card-body">
-                    <Content timeTables={props.timesheets} dayList={props.dayList} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} updateTimeSheetsParent={updateTimeSheetsParent} />
+                    <Content timeTables={props.timesheets} dayList={props.dayList} dateChanged={props.dateChanged} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} updateTimeSheetsParent={updateTimeSheetsParent} />
                 </div>
             </div>
         </div>
