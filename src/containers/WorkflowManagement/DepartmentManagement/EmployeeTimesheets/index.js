@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
 import { formatStringByMuleValue } from "../../../../commons/Utils"
-import ResultDetailModal from '../../../../containers/Task/ResultDetailModal'
+import ResultDetailModal from './ResultDetailModal'
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -667,10 +667,6 @@ class EmployeeTimesheets extends Component {
     const dateChangedFormat = moment(dateChanged, 'YYYYMMDD').format("DD-MM-YYYY")
     const uniqueApplicableObjectIds = uniqueApplicableObjects.map(ui => ui.uid)
 
-    console.log("********************")
-    console.log(dateChanged)
-    console.log(dataChanged)
-
     let start = ""
     let end = ""
     if (timeSheetOriginal && timeSheetOriginal.length > 0) {
@@ -780,8 +776,9 @@ class EmployeeTimesheets extends Component {
         if (result.code == Constants.API_SUCCESS_CODE) {
           const data = response.data.data
           let resultShiftUpdateDetail = (data.leaderChangeShifts || []).map(item => {
-            return {id: item.id, status: item.isSuccessSyncFromSap ? 'S' : 'E', message: item.message || ""}
+            return {id: item.id, fullName: item.fullName, ad: item.userInfos.email ? item.userInfos.email.replace("@vingroup.net", "") : item.userInfos.employeeNo, status: item.isSuccessSyncFromSap ? 'S' : 'E', message: item.message || ""}
           })
+
           resultShiftUpdateDetail = [
             {
               sub: [...resultShiftUpdateDetail]
