@@ -43,7 +43,8 @@ class EmployeeTimesheets extends Component {
       dateChanged: "",
       dataChanged: {},
       isShowStatusModal: false,
-      resultShiftUpdateDetail: []
+      resultShiftUpdateDetail: [],
+      timeSheetOriginal: []
     };
   }
 
@@ -134,13 +135,12 @@ class EmployeeTimesheets extends Component {
               };
             });
 
-            // const data = this.processDataForTable(groups,start, end, responses[0].data.data);
-            // process time sheets raw data
             const data = groups.map((q) => {
-              let aip =  {...q, timesheets: this.processDataForTable(q.timesheets,start, end, responses[0].data.data)}
+              let aip =  {...q, timesheets: this.processDataForTable(q.timesheets, start, end, responses[0].data.data)}
               return aip
             });
-            this.setState({ timeTables: data, isLoading: false, isSearch: true });
+
+            this.setState({ timeTables: data, isLoading: false, isSearch: true, timeSheetOriginal: groups });
           }
         }
       })
@@ -208,7 +208,7 @@ class EmployeeTimesheets extends Component {
 
   }
 
-  processDataForTable = (data1, fromDateString, toDateString, reasonData) => {
+  processDataForTable = (data1, fromDateString, toDateString, reasonData) => {   
     const data = [...data1];
     const today = moment(new Date()).format("YYYYMMDD");
     // debugger
@@ -662,30 +662,60 @@ class EmployeeTimesheets extends Component {
   }
 
   updateTimeSheetsParent = (dateChanged, dataChanged, uniqueApplicableObjects) => {
-    const timeTables = [...this.state.timeTables]
+    const timeSheetOriginal = [...this.state.timeSheetOriginal]
     const dataChangedForObject = this.convertDataChangedToObj(dataChanged)
-    const dateChangedFormat = moment(dateChanged, 'YYYYMMDD').format("DD/MM")
+    const dateChangedFormat = moment(dateChanged, 'YYYYMMDD').format("DD-MM-YYYY")
     const uniqueApplicableObjectIds = uniqueApplicableObjects.map(ui => ui.uid)
 
-    let timeTablesClone = []
-    for (let i = 0, lenParent = timeTables.length; i < lenParent; i++) {
-      let item = timeTables[i]
-      if (uniqueApplicableObjectIds.includes(parseInt(item.per))) {
+    console.log("********************")
+    console.log(dateChanged)
+    console.log(dataChanged)
+
+    let start = ""
+    let end = ""
+    if (timeSheetOriginal && timeSheetOriginal.length > 0) {
+      const firstItem = timeSheetOriginal[0]
+      const timeSheet = firstItem.timesheets
+      if (timeSheet && timeSheet.length > 0) {
+        start = moment(timeSheet[timeSheet.length - 1].date, 'DD-MM-YYYY').format("YYYYMMDD")
+        end = moment(timeSheet[0].date, 'DD-MM-YYYY').format("YYYYMMDD")
+      }
+    }
+
+    let timeSheetOriginalToSave = []
+    for (let i = 0, lenTimeSheetOriginal = timeSheetOriginal.length; i < lenTimeSheetOriginal; i++) {
+      let item = timeSheetOriginal[i]
+      let per = item.per
+      if (uniqueApplicableObjectIds.includes(parseInt(per))) {
         item.isUpdating = true
       }
-      for (let j = 0, lenChild = item.timesheets?.length; j < lenChild; j++) {
-        if (item.timesheets[j].day === dateChangedFormat && dataChangedForObject[item.per]) {
-          item.timesheets[j].line1.from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
-          item.timesheets[j].line1.to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
-          item.timesheets[j].line1.old_shift_id = item.timesheets[j].line1.shift_id || ""
-          item.timesheets[j].line1.shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected?.shift_id || ""
-          item.timesheets[j].line1.count = 0
-          item.timesheets[j].line1.type = EVENT_TYPE.EVENT_KEHOACH
+      for (let j = 0, lenTimesheets = item.timesheets?.length; j < lenTimesheets; j++) {
+        if (item.timesheets[j].date === dateChangedFormat && dataChangedForObject[per]) {
+          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
+          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
+          item.timesheets[j].old_shift_id = item.timesheets[j].shift_id || ""
+          item.timesheets[j].shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected?.shift_id || ""
         }
       }
-      timeTablesClone = timeTablesClone.concat(item)
+      timeSheetOriginalToSave = timeSheetOriginalToSave.concat(item)
     }
-    this.setState({timeTables: timeTablesClone, dateChanged: dateChanged, dataChanged: dataChangedForObject})
+
+    let timeSheetOriginalResult = []
+    // Reset count - Dat support
+    for (let i = 0; i < timeSheetOriginalToSave.length; i++) {
+      let parent = timeSheetOriginalToSave[i]
+      for (let j = 0; j < parent.timesheets.length; j++) {
+        parent.timesheets[j].count = null
+      }
+      timeSheetOriginalResult = timeSheetOriginalResult.concat(parent)
+    }
+
+    const timeTables = timeSheetOriginalResult.map((q) => {
+      let aip =  {...q, timesheets: this.processDataForTable(q.timesheets, start, end, [])}
+      return aip
+    })
+
+    this.setState({timeTables: timeTables, dateChanged: dateChanged, dataChanged: dataChangedForObject})
   }
 
   convertDataChangedToObj = dataChanged => {
@@ -772,7 +802,7 @@ class EmployeeTimesheets extends Component {
 
   render() {
     const { t } = this.props
-    const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter, dataChanged, isShowStatusModal, resultShiftUpdateDetail} = this.state
+    const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter, dataChanged, dateChanged, isShowStatusModal, resultShiftUpdateDetail} = this.state
 
     return (
       <>
@@ -839,7 +869,7 @@ class EmployeeTimesheets extends Component {
             </tbody>
           </table>
           {/* End Temp render table to export table to excel */}
-          <TimeSheetMember timesheets={timeTables} updateTimeSheetsParent={this.updateTimeSheetsParent} dayList={dayList} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} />
+          <TimeSheetMember timesheets={timeTables} updateTimeSheetsParent={this.updateTimeSheetsParent} dayList={dayList} dateChanged={dateChanged} employeesForFilter={employeesForFilter} employeeSelectedFilter={employeeSelectedFilter} />
           {
             _.size(dataChanged) > 0 ?
             <div className="action-buttons-group">
