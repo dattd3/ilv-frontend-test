@@ -24,12 +24,14 @@ function ShiftUpdateModal(props) {
         { value: brokenShiftCode, label: t("IntermittenShift") },
         { value: '03', label: t("CoastShoreShiftChange") }
     ]
+
     const [shiftStartTimeOptionsFilter, SetShiftStartTimeOptionsFilter] = useState([])
     const [shiftEndTimeOptionsFilter, SetShiftEndTimeOptionsFilter] = useState([])
     const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
     const [shiftList, SetShiftList] = useState([])
     const [shiftInfos, SetShiftInfos] = useState([
         {
+            dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
             shiftFilter: {
@@ -151,6 +153,38 @@ function ShiftUpdateModal(props) {
             }
         }
 
+        function resetOldShiftInfos() {
+            if (shiftInfos.length > 0) {
+                const firstItem = shiftInfos[0]
+                if (firstItem.dateChanged != props.dateInfo.date) {
+                    SetShiftInfos([
+                        {
+                            dateChanged: null,
+                            shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
+                            shiftType: null,
+                            shiftFilter: {
+                                isOpenInputShiftCodeFilter: false,
+                                shiftCodeFilter: "",
+                                startTimeFilter: null,
+                                endTimeFilter: null,
+                                shiftList: null,
+                                shiftSelected: null
+                            },
+                            startTime: null,
+                            endTime: null,
+                            breakStart: null,
+                            breakEnd: null,
+                            totalTime: null,
+                            employees: [],
+                            applicableObjects: [],
+                            reason: ""
+                        }
+                    ])
+                }
+            }
+        }
+
+        resetOldShiftInfos()
         getSubordinateTimeOverview()
     }, [props.dateInfo.date])
 
@@ -179,6 +213,7 @@ function ShiftUpdateModal(props) {
     const handleSelectChange = (index, option, key) => {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index][key] = option
+        newShiftInfos[index].dateChanged = props.dateInfo.date
         if (key === 'startTimeFilter' || key === 'endTimeFilter') {
             newShiftInfos[index].shiftFilter[key] = option
             const startTime = key === 'startTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.startTimeFilter?.originValue
@@ -194,6 +229,7 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         const val = e.target.value
         newShiftInfos[index][key] = val
+        newShiftInfos[index].dateChanged = props.dateInfo.date
         if (key === 'shiftCodeFilter') {
             newShiftInfos[index].shiftFilter[key] = val
             const shifts = filterShiftListByTimesAndShiftCode(newShiftInfos[index].shiftFilter.startTimeFilter?.originValue, newShiftInfos[index].shiftFilter.endTimeFilter?.originValue, val)
@@ -296,6 +332,7 @@ function ShiftUpdateModal(props) {
 
     const addNewItems = () => {
         const newItem = {
+            dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
             shiftFilter: {
@@ -327,6 +364,7 @@ function ShiftUpdateModal(props) {
 
     const handleShiftSelect = (indexItem, shiftIndex, shift) => {
         const newShiftInfos = [...shiftInfos]
+        newShiftInfos[indexItem].dateChanged = props.dateInfo.date
         newShiftInfos[indexItem].shiftFilter.shiftSelected = {...{index: shiftIndex}, ...shift}
         const employees = getEmployeesByShift(shift)
         newShiftInfos[indexItem].employees = employees
@@ -362,7 +400,7 @@ function ShiftUpdateModal(props) {
         } else if (stateName === "breakEnd" && time) {
             totalTime = getDuration(newShiftInfos[index].startTime, newShiftInfos[index].breakStart) + getDuration(time, newShiftInfos[index].endTime)
         }
-
+        newShiftInfos[index].dateChanged = props.dateInfo.date
         newShiftInfos[index].totalTime = totalTime.toFixed(2)
         newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('HHmmss') : null
         SetShiftInfos(newShiftInfos)
