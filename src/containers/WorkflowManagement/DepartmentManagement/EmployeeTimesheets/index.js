@@ -732,7 +732,7 @@ class EmployeeTimesheets extends Component {
   prepareDataToSubmit = (timeSheetsUpdating, dateChanged, dataChanged) => {
     const payload = (timeSheetsUpdating || []).map(item => {
       let per = parseInt(item.per)
-      let shiftUpdateType = dataChanged[per].shiftUpdateType
+      let shiftUpdateType = dataChanged[per]?.shiftUpdateType
       let userInfos = dataChanged[per].applicableObjects.find(u => u.uid == per)
       return {
         shiftsUsers: [ // Required
