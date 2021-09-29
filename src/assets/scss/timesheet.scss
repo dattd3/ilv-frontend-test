@@ -226,6 +226,10 @@
       font-size: 14px;
       min-width: 150px;
       padding: 0;
+      &.updating {
+        background: #2e59d9;
+        color: #FFFFFF;
+      }
       &.updatable:hover {
         background: #2e59d9;
         color: #FFFFFF;
