@@ -25,6 +25,9 @@ function ShiftUpdateModal(props) {
         { value: '03', label: t("CoastShoreShiftChange") }
     ]
 
+    console.log("Danh sách nhân viên filter")
+    console.log(props.employeeSelectedFilter)
+
     const [shiftStartTimeOptionsFilter, SetShiftStartTimeOptionsFilter] = useState([])
     const [shiftEndTimeOptionsFilter, SetShiftEndTimeOptionsFilter] = useState([])
     const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
@@ -49,7 +52,8 @@ function ShiftUpdateModal(props) {
             totalTime: null,
             employees: [],
             applicableObjects: [],
-            reason: ""
+            reason: "",
+            employeeSelectedFilter: []
         }
     ])
     const [isDisabledSubmitButton, setIsDisabledSubmitButton] = useState(false)
@@ -177,7 +181,8 @@ function ShiftUpdateModal(props) {
                             totalTime: null,
                             employees: [],
                             applicableObjects: [],
-                            reason: ""
+                            reason: "",
+                            employeeSelectedFilter: props.employeeSelectedFilter
                         }
                     ])
                 }
@@ -348,7 +353,8 @@ function ShiftUpdateModal(props) {
             totalTime: null,
             employees: [],
             applicableObjects: [],
-            reason: ""
+            reason: "",
+            employeeSelectedFilter: props.employeeSelectedFilter
         }
         
         let newShiftInfos = [...shiftInfos]
@@ -511,7 +517,10 @@ function ShiftUpdateModal(props) {
         }
     }
 
+    // Handle callback for Dropdown list customize
     const updateParent = (index, data) => {
+        console.log("=====================")
+        console.log(data)
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].applicableObjects = data
         SetShiftInfos(newShiftInfos)
