@@ -799,14 +799,12 @@
   "ResponseSentSuccessfully": "Gửi trả lời thành công!",
   "recall": "Bạn xác nhận muốn thu hồi nội dung này?",
   "ManagementEfficiencyBonus": "Thưởng hiệu quả quản lý",
-  
   "NETCovidCampaignBonus": "Thưởng chiến dịch Covid (NET)",
   "GROSSCovidCampaignBonus": "Thưởng chiến dịch Covid (GROSSUP từ khoản NET tương ứng)",
   "CovidMobilzationAllowance": "Thưởng điều động chống dịch Covid",
   "GROSSCovid19PandemicSubsidy": "Hỗ trợ mùa dịch Covid 19 (GROSS)",
   "NETF0EmployeesSubsidy": "Hỗ trợ CBNV F0 (NET)",
   "GROSSF0EmployeesSubsidy": "Hỗ trợ CBNV F0 (GROSSUP từ khoản NET tương ứng)",
-
   "VSC1OutOfSalaryBonus": "Thưởng các khoản ngoài lương VSC(1)",
   "VSC2OutOfSalaryBonus": "Thưởng các khoản ngoài lương VSC(2)",
   "StudentRecruitmentCommission": "Thưởng hoa hồng tuyển sinh chính khóa",
