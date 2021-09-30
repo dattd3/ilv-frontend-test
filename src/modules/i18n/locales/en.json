@@ -774,6 +774,14 @@
   "ResponseSentSuccessfully": "Response Sent Successfully",
   "recall": "Are you sure you want to recall?",
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
+  
+  "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
+  "GROSSCovidCampaignBonus": "GROSS Covid Campaign Bonus",
+  "CovidMobilzationAllowance": "Covid mobilzation allowance",
+  "GROSSCovid19PandemicSubsidy": "GROSS Covid 19 pandemic subsidy",
+  "NETF0EmployeesSubsidy": "NET F0 employees subsidy",
+  "GROSSF0EmployeesSubsidy": "GROSS F0 employees subsidy",
+
   "IfAny": "(If any)",
   "VSC1OutOfSalaryBonus": "VSC Out of Salary Bonus (1)",
   "VSC2OutOfSalaryBonus": "VSC Out of Salary Bonus (2)",
