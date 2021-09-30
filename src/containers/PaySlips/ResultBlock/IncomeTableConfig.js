@@ -638,6 +638,12 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("ManagementEfficiencyBonus"), field: 'effect_management' },
+
+                                    // New
+                                    { label: t("NETCovidCampaignBonus"), field: 'covid_net' },
+                                    { label: t("GROSSCovidCampaignBonus"), field: 'covid_gross' },
+                                    { label: t("CovidMobilzationAllowance"), field: 'covid_mobilzation' },
+
                                     { label: t("PerformanceBasedIncentiveForNurses"), field: 'nursing_bonus' },
                                     { label: t("DoctorCaseBonus"), field: 'doctor_effective_working_bonus' },
                                     { label: t("Medicine_sales_bonus"), field: 'medicine_sales_bonus' },
@@ -689,6 +695,11 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
                                     { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance', isSplit: true },
                                     { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
+
+                                    // New
+                                    { label: t("GROSSCovid19PandemicSubsidy"), field: 'covid_gross_subsidy' },
+                                    { label: t("NETF0EmployeesSubsidy"), field: 'covid_net_f0' },
+                                    { label: t("GROSSF0EmployeesSubsidy"), field: 'covid_gross_f0' },
 
                                     { label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true },
                                     { label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance' },
