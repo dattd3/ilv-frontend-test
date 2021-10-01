@@ -32,7 +32,30 @@ function Root() {
   return (
     <ContextProviders>
       <BrowserRouter>
-      <Maintenance/>
+      {
+        ["thuypx2@vingroup.net", "vuongvt2@vingroup.net", "cuongnv56 @vingroup.net", "minhtd6@vingroup.net", "gianglh21@vingroup.net"].includes(localStorage.getItem("email")) ? 
+        <Switch> 
+          {routes.map(
+            ({ component: Content, key, routeProps, contentProps }) => (
+              <Route
+                key={key}
+                {...routeProps}
+                render={props => (
+                  <GuardianRouter {...props} settings={RouteSettings}>
+                    {childProps => (
+                      <Suspense fallback={<LoadingModal show={true} />}>
+                        <Content {...contentProps} {...childProps} />
+                      </Suspense>
+                    )}
+                  </GuardianRouter>
+                )}
+              />
+            )
+          )}
+        </Switch>
+        : <Maintenance/>
+      }
+      {/* <Maintenance/> */}
         {/* <Switch> 
           {routes.map(
             ({ component: Content, key, routeProps, contentProps }) => (
