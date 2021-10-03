@@ -1,7 +1,6 @@
 import React from "react";
 import { registerLocale } from "react-datepicker";
 import { withTranslation } from "react-i18next";
-// import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import vi from "date-fns/locale/vi";
@@ -40,8 +39,8 @@ class DropdownCustomize extends React.Component {
     };
 
     componentDidMount() {
-        const { employeeSelectedFilter } = this.props
-        if (employeeSelectedFilter && employeeSelectedFilter.length > 0) {
+        const { employeeSelectedFilter, index } = this.props
+        if (index !== null && index !== undefined) {
             this.setState(
                 {
                     loading: false,
@@ -72,9 +71,9 @@ class DropdownCustomize extends React.Component {
             )
             .then((res) => {
                 if (res && res.data && res.data.data) {
-                    const users = res.data.data || [];
+                    let users = res.data.data || [];
+                    users = users.map(item => ({...item, checked: false}))
                     this.setState({ users: users, loading: false });
-
                 }
             })
             .catch((error) => { this.setState({ loading: false }); });
@@ -90,7 +89,7 @@ class DropdownCustomize extends React.Component {
             });
         const dataChecks = data.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
-        if (this.props.index === null) {
+        if (this.props.index === null || this.props.index === undefined) {
             this.props.getSelecteMembers(ids);
         } else {
             this.props.getSelecteMembers(this.props.index, dataChecks);
@@ -114,7 +113,7 @@ class DropdownCustomize extends React.Component {
                 selectedMembers: [],
                 checkedMemberIds: []
             });
-        if (this.props.index === null) {
+        if (this.props.index === null || this.props.index === undefined) {
             this.props.resetSelectedMember([]);
         } else {
             this.props.resetSelectedMember(this.props.index, []);
@@ -139,7 +138,7 @@ class DropdownCustomize extends React.Component {
         const dataChecks = members.filter(a => a.checked);
         const ids = dataChecks.map(itm => itm.uid);
 
-        if (this.props.index === null) {
+        if (this.props.index === null || this.props.index === undefined) {
             this.props.onCloseTabEvent(ids);
         } else {
             this.props.onCloseTabEvent(this.props.index, dataChecks);
@@ -148,7 +147,7 @@ class DropdownCustomize extends React.Component {
 
     onCloseAllEvent() {
         this.resetSelectedMember();
-        if (this.props.index === null) {
+        if (this.props.index === null || this.props.index === undefined) {
             this.props.onCloseAllEvent([]);
         } else {
             this.props.onCloseAllEvent(this.props.index, []);
@@ -156,40 +155,17 @@ class DropdownCustomize extends React.Component {
     }
 
     render() {
-        const { t, employeeSelectedFilter, label } = this.props;
-        const { users, loading } = this.state
-        let hrProfileDisplay = [];
-
-        if (users && users.length > 0) {
-            hrProfileDisplay = users.map((profile) => {
-                return {
-                    uid: profile.uid,
-                    // label: profile.fullname,
-                    fullname: profile.fullname,
-                    job_name: profile.job_name,
-                    part: profile.part || "",
-                    division: profile.division || "",
-                    department: profile.department || "",
-                    unit: profile.unit || "",
-                    companyCode: profile.organization_lv2,
-                    orgLv3Text: profile.orgLv3Text,
-                    username: profile.username,
-                    manager: profile.manager,
-                    company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
-                    checked: profile.checked || false,
-                    isExpand: profile.isExpand || false,
-                };
-            });
-        }
+        const { t, employeeSelectedFilter, label, type } = this.props;
+        const { users, loading, selectedMembers, showMemberOption } = this.state
 
         return (
             <div className="timesheet-box">
                 <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
-                <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
+                <SelectTab className="content input-container" selectedMembers={selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
-                {this.state.showMemberOption ? (
+                {showMemberOption ? (
                     //employeeGrTree
-                    <MemberOption loading={loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
+                    <MemberOption loading={loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={type} />
                 ) : null}
             </div>
         );
