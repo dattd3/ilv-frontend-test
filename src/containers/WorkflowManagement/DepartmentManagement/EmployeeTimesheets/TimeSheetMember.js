@@ -314,7 +314,6 @@ function Content(props) {
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#39B54A'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
     const handleShowModalShiftChange = (date, day) => {
-        return
         const isUpdatable = isShiftUpdatable(date)
         if (!isUpdatable) {
             return
@@ -337,6 +336,7 @@ function Content(props) {
     }
 
     const updateParentData = dataChanged => {
+        // TODO HERE
         onHideShiftUpdateModal()
         const dateChanged = dateInfo?.date
         const uniqueApplicableObjects = dataChanged.reduce(function(arr, item) {
@@ -352,12 +352,18 @@ function Content(props) {
     }
 
     let employeeSelectedFilter = []
+    let isUpdating = false
     if (props.timeTables.length > 0) {
+        employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
         if (props.timeTables.some(item => item.isUpdating)) {
-            employeeSelectedFilter = props.employeeSelectedFilter
-        } else {
-            employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
+            isUpdating = true
         }
+
+        // if (props.timeTables.some(item => item.isUpdating)) {
+        //     employeeSelectedFilter = props.employeeSelectedFilter
+        // } else {
+        //     employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
+        // }
     }
 
     return (
@@ -365,6 +371,7 @@ function Content(props) {
             <ShiftUpdateModal 
                 show={isShowShiftUpdateModal} 
                 dateInfo={dateInfo} 
+                isUpdating={isUpdating}
                 employeesForFilter={props.employeesForFilter} 
                 employeeSelectedFilter={employeeSelectedFilter} 
                 onHideShiftUpdateModal={onHideShiftUpdateModal}
