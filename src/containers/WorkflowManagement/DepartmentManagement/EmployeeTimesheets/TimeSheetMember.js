@@ -443,7 +443,7 @@ function Content(props) {
                 totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
                 <div className="report-employees-updating">
                     <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
-                    <span className="detail" onClick={handleViewDetail}>{"Xem chi tiết >>"}</span>
+                    <span className="detail" onClick={handleViewDetail}>{"Xem chi tiết"}<i className="fas fa-angle-double-right"></i></span>
                 </div>
                 : null
             }
