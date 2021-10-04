@@ -44,7 +44,8 @@ class EmployeeTimesheets extends Component {
       dataChanged: {},
       isShowStatusModal: false,
       resultShiftUpdateDetail: [],
-      timeSheetOriginal: []
+      timeSheetOriginal: [],
+      isDisabledSubmitButton: false
     };
   }
 
@@ -762,6 +763,7 @@ class EmployeeTimesheets extends Component {
 
   acceptShiftUpdating = async () => {
     try {
+      this.setState({isDisabledSubmitButton: true})
       const {timeTables, dateChanged, dataChanged} = this.state
       const timeSheetsUpdating = (timeTables || []).filter(item => item.isUpdating)
       const payload = this.prepareDataToSubmit(timeSheetsUpdating, dateChanged, dataChanged)
@@ -788,8 +790,10 @@ class EmployeeTimesheets extends Component {
           this.setState({isShowStatusModal: true, resultShiftUpdateDetail: resultShiftUpdateDetail})
         }
       }
+      this.setState({isDisabledSubmitButton: false})
     } catch (error) {
       console.error(error)
+      this.setState({isDisabledSubmitButton: false})
     }
   }
 
@@ -800,7 +804,7 @@ class EmployeeTimesheets extends Component {
 
   render() {
     const { t } = this.props
-    const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter, dataChanged, dateChanged, isShowStatusModal, resultShiftUpdateDetail} = this.state
+    const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter, dataChanged, dateChanged, isShowStatusModal, resultShiftUpdateDetail, isDisabledSubmitButton} = this.state
 
     return (
       <>
@@ -872,7 +876,19 @@ class EmployeeTimesheets extends Component {
             _.size(dataChanged) > 0 ?
             <div className="action-buttons-group">
               <Button type="button" variant="secondary" className="btn-cancel" onClick={this.cancelShiftUpdating}>{t("CancelSearch")}</Button>
-              <Button type="button" variant="primary" className="btn-submit" onClick={this.acceptShiftUpdating} disabled={false}>{t("Save")}</Button>
+              <Button type="button" variant="primary" className="btn-submit" onClick={this.acceptShiftUpdating} disabled={isDisabledSubmitButton}>
+              {
+                !isDisabledSubmitButton 
+                ? t("Save")
+                : <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+              }
+              </Button>
             </div>
             : null
           }
