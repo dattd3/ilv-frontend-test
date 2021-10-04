@@ -189,7 +189,7 @@ class VaccinationDetail extends React.Component {
     }
 
     getListCity(call){
-        axios.get(`${process.env.REACT_APP_HRDX_URL}api/MasterData/province?nationCode=VN`)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/province?nationCode=VN`)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -208,7 +208,7 @@ class VaccinationDetail extends React.Component {
     }
 
     getListDistrict(proviceCode, call){
-        axios.get(`${process.env.REACT_APP_HRDX_URL}api/MasterData/district?provinceCode=${proviceCode}`)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/district?provinceCode=${proviceCode}`)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -227,7 +227,7 @@ class VaccinationDetail extends React.Component {
     }
 
     getListWard(districtCode){
-        axios.get(`${process.env.REACT_APP_HRDX_URL}api/MasterData/ward?districtCode=${districtCode}`)
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/ward?districtCode=${districtCode}`)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
