@@ -51,7 +51,6 @@ function ShiftUpdateModal(props) {
             employeeSelectedFilter: []
         }
     ])
-    const [isDisabledSubmitButton, setIsDisabledSubmitButton] = useState(false)
     const [errors, SetErrors] = useState({})
 
     const sendQuery = (index, query, t) => {}
@@ -809,16 +808,7 @@ function ShiftUpdateModal(props) {
                 </div>
                 <div className="buttons-block">
                     <Button type="button" variant="secondary" className="btn-cancel" onClick={props.onHideShiftUpdateModal}>{t("CancelSearch")}</Button>
-                    <Button type="button" variant="primary" className="btn-submit" onClick={handleSubmit} disabled={false}>
-                        {!isDisabledSubmitButton ? t("Save") :
-                            <Spinner
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                            />}
-                    </Button>
+                    <Button type="button" variant="primary" className="btn-submit" onClick={handleSubmit}>{t("Save")}</Button>
                 </div>
             </Modal.Body>
         </Modal>
