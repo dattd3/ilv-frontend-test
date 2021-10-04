@@ -189,13 +189,14 @@ class VaccinationDetail extends React.Component {
     }
 
     getListCity(call){
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/province?nationCode=VN`)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=VN`, config)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
                     citys: res.data.data.map(v => {
-                        var e = v.name.split("-");
-                        return {value: e[0].trim(), label: e[1].trim()}
+                        // var e = v.name.split("-");
+                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        return {value: v.ID, label: labelLocale}
                     })
                 });
                 if(call){
@@ -208,13 +209,15 @@ class VaccinationDetail extends React.Component {
     }
 
     getListDistrict(proviceCode, call){
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/district?provinceCode=${proviceCode}`)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${proviceCode}`, config)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
                     districts: res.data.data.map(v => {
-                        var e = v.name.split("-");
-                        return {value: e[0].trim(), label: e[1].trim()}
+                        // var e = v.name.split("-");
+                        // return {value: e[0].trim(), label: e[1].trim()}
+                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        return {value: v.ID, label: labelLocale}
                     })
                 });
                 if(call){
@@ -227,13 +230,15 @@ class VaccinationDetail extends React.Component {
     }
 
     getListWard(districtCode){
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}masterdata/ward?districtCode=${districtCode}`)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${districtCode}`, config)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
                     wards: res.data.data.map(v => {
-                        var e = v.name.split("-");
-                        return {value: e[0].trim(), label: e[1].trim()}
+                        // var e = v.name.split("-");
+                        // return {value: e[0].trim(), label: e[1].trim()}
+                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        return {value: v.ID, label: labelLocale}
                     })
                 });
             }
