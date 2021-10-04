@@ -117,10 +117,6 @@ function ShiftUpdateModal(props) {
     }, [])
 
     useEffect(() => {
-        console.log("TRUE")
-        console.log(shiftInfos)
-        console.log(props.employeeSelectedFilter)
-
         function updateEmployeeSelectedFilter() {
             let newShiftInfos = []
             if (props.isUpdating) {
