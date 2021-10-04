@@ -14,8 +14,8 @@ class FilterData extends React.Component {
   constructor() {
     super();
     this.state = {
-      startDate: moment('2021-09-27', 'YYYY-MM-DD').toDate(),
-      endDate: moment('2021-10-01', 'YYYY-MM-DD').toDate(),
+      startDate: moment('2021-10-03', 'YYYY-MM-DD').toDate(),
+      endDate: moment('2021-10-08', 'YYYY-MM-DD').toDate(),
       users: [],
       loading: true,
       checkedMemberIds: [],
