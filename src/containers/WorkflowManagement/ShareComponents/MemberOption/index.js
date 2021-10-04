@@ -157,7 +157,7 @@ const MemberOption = (props, onChange) => {
     return members.map((item, index) => {
       const id = item.uid.toString();
       return (
-        <div key={item.uid} ref={innerRef} {...innerProps} className="option-item" style={{ position: "relative", left: "15px" }}>
+        <div key={item.uid} ref={innerRef} {...innerProps} className="option-item" style={{ paddingLeft: "15px" }}>
           <div className="d-flex border-bottom text-dark btn" >
             <label className="lable-custom">
               {
@@ -167,8 +167,8 @@ const MemberOption = (props, onChange) => {
                   <input type="radio" className="mtmr5" id={item.uid} value={item.uid} name="flexRadioDefault" checked={item.checked} onChange={handleChange} />
               }
               <div className="float-left text-left text-wrap w-100">
-                <div className="full-name">{item.fullname}</div>
-                <div className="text-xs account-job">
+                <div className="text-truncate full-name">{item.fullname}</div>
+                <div className="text-xs text-truncate account-job">
                   <span>({item.company_email}) {item.job_name}</span>
                 </div>
               </div>
@@ -181,7 +181,7 @@ const MemberOption = (props, onChange) => {
               aria-expanded={upAllChild === item.uid}>
               {
                 props.type !== 'singleChoice' ?
-                  <div className="d-flex border-bottom text-dark btn " style={{ position: "relative", left: "15px" }}>
+                  <div className="d-flex border-bottom text-dark btn " style={{ paddingLeft: "15px" }}>
                     <label className="lable-custom">
                       <input type="checkbox" className="mtmr5" value="checkedall" onChange={(e) => handleAllCheckedChildren(e, item.children)}
                         checked={item.children.filter(m => m.checked).length === item.children.length} />

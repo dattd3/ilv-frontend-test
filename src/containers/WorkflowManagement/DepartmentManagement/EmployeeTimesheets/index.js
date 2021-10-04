@@ -682,6 +682,7 @@ class EmployeeTimesheets extends Component {
     for (let i = 0, lenTimeSheetOriginal = timeSheetOriginal.length; i < lenTimeSheetOriginal; i++) {
       let item = timeSheetOriginal[i]
       let per = item.per
+      item.isUpdating = false
       if (uniqueApplicableObjectIds.includes(parseInt(per))) {
         item.isUpdating = true
       }
