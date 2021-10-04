@@ -105,6 +105,7 @@ class LeaveFund extends React.Component {
       },
     })
   }
+
   resetSelectedMember = data => {
     this.setState({
       filter: {

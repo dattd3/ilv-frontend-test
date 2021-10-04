@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { registerLocale } from "react-datepicker";
 import { withTranslation, useTranslation } from "react-i18next";
-// import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 import vi from "date-fns/locale/vi";
 import { InputGroup, FormControl } from 'react-bootstrap'
@@ -163,7 +162,7 @@ const MemberOption = (props, onChange) => {
             <label className="lable-custom">
               {
                 props.type !== 'singleChoice' ?
-                  <input type="checkbox" className="mtmr5" value={item.uid} name={item.uid} checked={item.checked}
+                  <input type="checkbox" className="mtmr5" value={item.uid || ""} name={item.uid} checked={item.checked || false}
                     onChange={handleChange} /> :
                   <input type="radio" className="mtmr5" id={item.uid} value={item.uid} name="flexRadioDefault" checked={item.checked} onChange={handleChange} />
               }
