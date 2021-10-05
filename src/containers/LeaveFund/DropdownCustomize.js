@@ -18,7 +18,7 @@ class DropdownCustomize extends React.Component {
             loading: true,
             checkedMemberIds: [],
             selectedMembers: [],
-            showMemberOption: false,
+            showMemberOption: false
         };
 
         this.onShowMembers = this.onShowMembers.bind(this);
@@ -155,18 +155,20 @@ class DropdownCustomize extends React.Component {
     }
 
     render() {
-        const { t, employeeSelectedFilter, label, type } = this.props;
+        const { t, employeeSelectedFilter, label, type, needReset } = this.props;
         const { users, loading, selectedMembers, showMemberOption } = this.state
+        const data = employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users
 
         return (
             <div className="timesheet-box">
                 <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
-                <SelectTab className="content input-container" selectedMembers={selectedMembers} onClick={this.onClickSelectTab}
+                <SelectTab className="content input-container" selectedMembers={needReset ? [] : selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
-                {showMemberOption ? (
-                    //employeeGrTree
-                    <MemberOption loading={loading} data={employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={type} />
-                ) : null}
+                {
+                    showMemberOption ? 
+                    <MemberOption loading={loading} data={data} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={type} />
+                    : null
+                }
             </div>
         );
     }
