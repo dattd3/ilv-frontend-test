@@ -6,7 +6,6 @@ import Select, { components } from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import { Modal, Dropdown, Button } from 'react-bootstrap'
-import Spinner from 'react-bootstrap/Spinner'
 import Constants from "../../../../commons/Constants"
 import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
 import DropdownCustomize from "../../../LeaveFund/DropdownCustomize"
@@ -27,6 +26,7 @@ function ShiftUpdateModal(props) {
     const [shiftEndTimeOptionsFilter, SetShiftEndTimeOptionsFilter] = useState([])
     const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
     const [shiftList, SetShiftList] = useState([])
+    const [needReset, SetNeedReset] = useState(false)
     const [shiftInfos, SetShiftInfos] = useState([
         {
             dateChanged: null,
@@ -176,8 +176,8 @@ function ShiftUpdateModal(props) {
         function resetOldShiftInfos() {
             if (shiftInfos.length > 0) {
                 const firstItem = shiftInfos[0]
-                if (firstItem.dateChanged != props.dateInfo.date) {
-                    SetShiftInfos([
+                if (firstItem.dateChanged && firstItem.dateChanged != props.dateInfo.date) {
+                    const firstItem = [
                         {
                             dateChanged: null,
                             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
@@ -198,9 +198,11 @@ function ShiftUpdateModal(props) {
                             employees: [],
                             applicableObjects: [],
                             reason: "",
-                            employeeSelectedFilter: []
+                            employeeSelectedFilter: (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
                         }
-                    ])
+                    ]
+                    SetNeedReset(true)
+                    SetShiftInfos(firstItem)
                 }
             }
         }
@@ -536,6 +538,7 @@ function ShiftUpdateModal(props) {
     }
 
     const updateParent = (index, data) => {
+        SetNeedReset(false)
         const ids = (props.employeeSelectedFilter).map(esf => esf.uid)
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].applicableObjects = data
@@ -795,6 +798,7 @@ function ShiftUpdateModal(props) {
                                                     index={index}
                                                     label="Đối tượng áp dụng"
                                                     employeeSelectedFilter={item.employeeSelectedFilter}
+                                                    needReset={needReset}
                                                     getSelecteMembers={updateParent} 
                                                     resetSelectedMember={updateParent}
                                                     onCloseTabEvent={updateParent} 
