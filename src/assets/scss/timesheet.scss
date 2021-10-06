@@ -147,6 +147,9 @@
         height: 15px;
       }
     }
+    .react-datepicker-popper {
+      z-index: 99;
+    }
   }
   .searchTitle {
     color: #2a377c;
