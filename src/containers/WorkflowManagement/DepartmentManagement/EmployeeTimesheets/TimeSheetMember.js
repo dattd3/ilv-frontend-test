@@ -39,7 +39,7 @@ function RenderTooltip(props) {
     return props.item || props.timeExpand || props.shift_id || props.is_holiday == 1 ?  
     <OverlayTrigger 
     key={"td"}
-    placement="right"
+    placement="top"
     overlay={
         <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white", fontSize: '12px', fontFamily: 'Helvetica, Arial, sans-serif'}} >
         <Popover.Content>
@@ -336,7 +336,6 @@ function Content(props) {
     }
 
     const updateParentData = dataChanged => {
-        // TODO HERE
         onHideShiftUpdateModal()
         const dateChanged = dateInfo?.date
         const uniqueApplicableObjects = dataChanged.reduce(function(arr, item) {
@@ -358,12 +357,6 @@ function Content(props) {
         if (props.timeTables.some(item => item.isUpdating)) {
             isUpdating = true
         }
-
-        // if (props.timeTables.some(item => item.isUpdating)) {
-        //     employeeSelectedFilter = props.employeeSelectedFilter
-        // } else {
-        //     employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
-        // }
     }
 
     return (

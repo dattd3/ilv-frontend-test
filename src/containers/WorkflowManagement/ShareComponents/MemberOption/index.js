@@ -102,7 +102,14 @@ const MemberOption = (props, onChange) => {
   }
 
   const handleChange = event => {
+    // console.log("===========================")
+    // console.log(props.type)
+    // console.log(event.target.checked)
+
     const newMembers = [...members];
+
+    // console.log(newMembers)
+
     newMembers.forEach(member => {
       if (props.type === 'singleChoice') {
         member.checked = false;
@@ -173,8 +180,8 @@ const MemberOption = (props, onChange) => {
                 </div>
               </div>
             </label>
-            {item.children.length > 0 && downAllChild[id] === true && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={() => downAllChildClick(item.uid)}></i>}
-            {item.children.length > 0 && upAllChild[id] === true && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={() => upAllChildClick(item.uid)}></i>}
+            {item.children.length > 0 && downAllChild[id] === true && <span className="btn-down" onClick={() => downAllChildClick(item.uid)}><i className="fas fa-caret-down" style={{ cursor: "pointer" }}></i></span>}
+            {item.children.length > 0 && upAllChild[id] === true && <span className="btn-up" onClick={() => upAllChildClick(item.uid)}><i className="fas fa-caret-up" style={{ cursor: "pointer" }}></i></span>}
           </div>
           {item.children.length > 0 &&
             <div className={`collapse-content ${upAllChild[id] === true ? 'collapsed' : 'expanded'}`}
@@ -242,8 +249,11 @@ const MemberOption = (props, onChange) => {
         </div>
       </div>
       }
-      {props.loading &&
-        <LoadingSpinner />
+      {
+        props.loading &&
+        <div className="loading-employees">
+          <LoadingSpinner />
+        </div>
       }
     </>
   );
