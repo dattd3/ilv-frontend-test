@@ -119,7 +119,6 @@ function ShiftUpdateModal(props) {
         function updateEmployeeSelectedFilter() {
             let newShiftInfos = []
             if (props.isUpdating) {
-                console.log("updating")
                 newShiftInfos = shiftInfos.map(item => {
                     let applicableObjectUIds = (item.applicableObjects || []).map(sub => sub.uid)
                     let employeeSelectedFilterTemp = (item.employeeSelectedFilter || []).map(esf => {
@@ -128,7 +127,6 @@ function ShiftUpdateModal(props) {
                     return {...item, employeeSelectedFilter: employeeSelectedFilterTemp}
                 })
             } else {
-                console.log("create")
                 newShiftInfos = shiftInfos.map(item => ({...item, employeeSelectedFilter: props.employeeSelectedFilter}))
             }
             SetShiftInfos(newShiftInfos)
@@ -177,32 +175,8 @@ function ShiftUpdateModal(props) {
             if (shiftInfos.length > 0) {
                 const firstItem = shiftInfos[0]
                 if (firstItem.dateChanged && firstItem.dateChanged != props.dateInfo.date) {
-                    const firstItem = [
-                        {
-                            dateChanged: null,
-                            shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
-                            shiftType: null,
-                            shiftFilter: {
-                                isOpenInputShiftCodeFilter: false,
-                                shiftCodeFilter: "",
-                                startTimeFilter: null,
-                                endTimeFilter: null,
-                                shiftList: null,
-                                shiftSelected: null
-                            },
-                            startTime: null,
-                            endTime: null,
-                            breakStart: null,
-                            breakEnd: null,
-                            totalTime: null,
-                            employees: [],
-                            applicableObjects: [],
-                            reason: "",
-                            employeeSelectedFilter: (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
-                        }
-                    ]
+                    resetShiftInfos()
                     SetNeedReset(true)
-                    SetShiftInfos(firstItem)
                 }
             }
         }
@@ -210,6 +184,34 @@ function ShiftUpdateModal(props) {
         resetOldShiftInfos()
         getSubordinateTimeOverview()
     }, [props.dateInfo.date])
+
+    const resetShiftInfos = () => {
+        const firstItem = [
+            {
+                dateChanged: null,
+                shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
+                shiftType: null,
+                shiftFilter: {
+                    isOpenInputShiftCodeFilter: false,
+                    shiftCodeFilter: "",
+                    startTimeFilter: null,
+                    endTimeFilter: null,
+                    shiftList: null,
+                    shiftSelected: null
+                },
+                startTime: null,
+                endTime: null,
+                breakStart: null,
+                breakEnd: null,
+                totalTime: null,
+                employees: [],
+                applicableObjects: [],
+                reason: "",
+                employeeSelectedFilter: (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
+            }
+        ]
+        SetShiftInfos(firstItem)
+    }
 
     const handleShiftUpdateType = (index, type) => {
         const newShiftInfos = [...shiftInfos]
@@ -298,43 +300,44 @@ function ShiftUpdateModal(props) {
                 errors[errorName] = null
                 if (name === 'shiftSelected') {
                     if (!shiftInfo.shiftFilter[name]) {
-                        errors[errorName] = '(*) Thông tin bắt buộc.'
+                        errors[errorName] = t("Required")
                     }
-                } else if (name === 'startTime' || name === 'endTime') {
+                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'startTime' || name === 'endTime')) {
                     errorName = 'rangeTime' + '_' + index
                     if (!shiftInfo[name]) {
-                        errors[errorName] = '(*) Giờ bắt đầu và kết thúc là bắt buộc.'
+                        errors[errorName] = t("StartAndEndTimesRequired")
                     } else {
                         const start = shiftInfo.startTime
                         const end = shiftInfo.endTime
                         if (start >= end) {
-                            errors[errorName] = 'Giờ bắt đầu phải nhỏ hơn kết thúc.'
+                            errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
                         }
                     }
-                } else if (name === 'breakStart' || name === 'breakEnd') {
+                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
                     errorName = 'rangeBreak' + '_' + index
                     if (!shiftInfo[name]) {
-                        errors[errorName] = '(*) Thời gian bắt đầu và kết thúc nghỉ ca là bắt buộc.'
+                        errors[errorName] = t("StartAndEndBreakTimesRequired")
                     } else {
                         const start = shiftInfo.startTime
                         const end = shiftInfo.endTime
                         const startBreak = shiftInfo.breakStart
                         const endBreak = shiftInfo.breakEnd
                         if (startBreak >= endBreak) {
-                            errors[errorName] = 'Thời gian bắt đầu nghỉ ca phải nhỏ hơn thời gian kết thúc nghỉ ca.'
+                            errors[errorName] = t("BreakStartTimeMustBeLessThanTheEndTime")
                         } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
-                            errors[errorName] = `Tổng thời gian nghỉ của ca gãy không được nhỏ hơn ${totalTimeBreakValid} giờ.`
+                            errors[errorName] = t("TotalTimesForShiftBreakShouldNotBeLessThan2Hours")
                         } else if (startBreak <= start || end <= endBreak) {
-                            errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc.'
+                            errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc'
                         }
                     }
                 } else {
-                    if (!shiftInfo[name] || shiftInfo[name]?.length === 0) {
-                        errors[errorName] = '(*) Thông tin bắt buộc.'
+                    if ((!shiftInfo[name] || shiftInfo[name]?.length === 0) && name !== 'startTime' && name !== 'endTime' && name !== 'breakStart' && name !== 'breakEnd') {
+                        errors[errorName] = t("Required")
                     }
                 }
             })
         })
+
         SetErrors(errors)
         return errors
     }
@@ -354,7 +357,21 @@ function ShiftUpdateModal(props) {
         props.updateParentData(shiftInfos)
     }
 
+    const handleCancelShiftUpdate = () => {
+        if (!props.isUpdating) {
+            resetShiftInfos()
+        }
+        props.onHideShiftUpdateModal()
+    }
+
     const addNewItems = () => {
+        // const employeeIdsNeedIgnore = shiftInfos.reduce((pre, next) => {
+        //     let nextTemp = (next?.applicableObjects || []).map(j => j.uid)
+        //     pre = _.union(pre, nextTemp)
+        //     return pre
+        // }, [])
+        // const employeeSelectedFilter = (props.employeeSelectedFilter || []).filter(item => !employeeIdsNeedIgnore.includes(item.uid)).map(item => ({...item, checked: false}))
+
         const employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => ({...item, checked: false}))
         const newItem = {
             dateChanged: null,
@@ -376,7 +393,6 @@ function ShiftUpdateModal(props) {
             reason: "",
             employeeSelectedFilter: employeeSelectedFilter
         }
-        
         let newShiftInfos = [...shiftInfos]
         newShiftInfos = newShiftInfos.concat(newItem)
         SetShiftInfos(newShiftInfos)
@@ -541,11 +557,33 @@ function ShiftUpdateModal(props) {
         SetNeedReset(false)
         const ids = (props.employeeSelectedFilter).map(esf => esf.uid)
         const newShiftInfos = [...shiftInfos]
+
+        // let allApplicableObjectsIgnoreThisItem = newShiftInfos.filter((item, i) => i !== index).map(item => item.applicableObjects)
+        // const newShiftInfosToSaveState = newShiftInfos.map((item, itemIndex, arrOriginal) => {
+        //     let itemTemp = {...item}
+        //     if (index == itemIndex) {
+        //         let allApplicableObjectsMergeThisItem = allApplicableObjectsIgnoreThisItem.concat(data)
+        //         let allUIDApplicableObjectsMergeThisItem = allApplicableObjectsMergeThisItem.map(item => item.uid)
+        //         let applicableObjects = item.applicableObjects.concat(data).map(item => item.uid)
+        //         itemTemp.applicableObjects = data
+        //         itemTemp.employeeSelectedFilter = (props.employeeSelectedFilter || [])
+        //         .filter(item => !allUIDApplicableObjectsMergeThisItem.includes(item.uid))
+        //         .map(item => {
+        //             let temp = (ids.includes(item.uid) && applicableObjects.includes(item.uid)) ? {...item, checked: true} : {...item, checked: false}
+        //             return temp
+        //         })
+        //     }
+        //     return itemTemp
+        // })
+        // SetShiftInfos(newShiftInfosToSaveState)
+
         newShiftInfos[index].applicableObjects = data
         newShiftInfos[index].employeeSelectedFilter = (props.employeeSelectedFilter || []).map(item => {
-            let temp = ids.includes(item.uid) ? {...item, checked: true} : {...item, checked: false}
+            let applicableObjects = newShiftInfos[index].applicableObjects.concat(data).map(item => item.uid)
+            let temp = (ids.includes(item.uid) && applicableObjects.includes(item.uid)) ? {...item, checked: true} : {...item, checked: false}
             return temp
         })
+
         SetShiftInfos(newShiftInfos)
     }
 
@@ -575,22 +613,22 @@ function ShiftUpdateModal(props) {
                                         <div className="add-item">
                                             {
                                                 index === 0 
-                                                ? <span className="bg-primary add-item-button" onClick={addNewItems}><i className="fas fa-plus"></i>Thêm phân ca</span>
-                                                : <span className="bg-danger add-item-button" onClick={() => removeItems(index)}><i className="fas fa-times"></i>Hủy phân ca</span>
+                                                ? <span className="bg-primary add-item-button" onClick={addNewItems}><i className="fas fa-plus"></i>{t("AddShift")}</span>
+                                                : <span className="bg-danger add-item-button" onClick={() => removeItems(index)}><i className="fas fa-times"></i>{t("CancelShift")}</span>
                                             }
                                         </div>
                                         <div className="main-content-item">
-                                            <h6 className="text-uppercase font-14 font-weight-bold">Lựa chọn hình thức thay đổi phân ca</h6>
+                                            <h6 className="text-uppercase font-14 font-weight-bold">{t("SelectShiftType")}</h6>
                                             <div className="btn-group btn-group-toggle shift-update-type-group" data-toggle="buttons">
                                                 <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_CODE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                    Lựa chọn ca
+                                                    {t("SelectShiftCode")}
                                                 </label>
                                                 <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_UPDATE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                    Nhập giờ thay đổi phân ca
+                                                    {t("EndNewTime")}
                                                 </label>
                                             </div>
                                             <div className="shift-type">
-                                                <label>Loại phân ca</label>
+                                                <label>{t("ShiftCategory")}</label>
                                                 <div className="wrap-shift-type-select">
                                                     <Select 
                                                         value={item.shiftType} 
@@ -607,7 +645,7 @@ function ShiftUpdateModal(props) {
                                                         <table className="shift">
                                                             <thead>
                                                                 <tr>
-                                                                    <th className="col-select-shift"><span className="select-shift title">Lựa chọn ca</span></th>
+                                                                    <th className="col-select-shift"><span className="select-shift title">{t("SelectShiftCode")}</span></th>
                                                                     <th className="col-start-time">
                                                                         <div className="start-time title">
                                                                             <Select 
@@ -634,12 +672,12 @@ function ShiftUpdateModal(props) {
                                                                                 isClearable={true} />
                                                                         </div>
                                                                     </th>
-                                                                    <th className="col-working-time"><span className="working-time title">Giờ làm việc</span></th>
+                                                                    <th className="col-working-time"><span className="working-time title">{t("WorkHours")}</span></th>
                                                                     <th className="col-shift-code">
                                                                         <div className="shift-code title">
                                                                             <Dropdown onToggle={() => toggleOpenInputShiftCodeFilter(index, item.shiftFilter.isOpenInputShiftCodeFilter)}>
                                                                                 <Dropdown.Toggle>
-                                                                                    <span className="shift-code">Mã ca</span>
+                                                                                    <span className="shift-code">{t("ShiftCode")}</span>
                                                                                 </Dropdown.Toggle>
                                                                                 <Dropdown.Menu className="shift-code-popup">
                                                                                     <div className="input-shift-code">
@@ -673,7 +711,7 @@ function ShiftUpdateModal(props) {
                                                                     })
                                                                     :
                                                                     <tr>
-                                                                        <td colSpan="5">Không tồn tại dữ liệu</td>
+                                                                        <td colSpan="5">{t("DataNotFound")}</td>
                                                                     </tr>
                                                                 }
                                                             </tbody>
@@ -709,7 +747,7 @@ function ShiftUpdateModal(props) {
                                                         <div className="time-planing">
                                                             <div className="time-data">
                                                                 <div className="start-time">
-                                                                    <label>Bắt đầu 1 - Thay đổi</label>
+                                                                    <label>{t("Start1Change")}</label>
                                                                     <DatePicker
                                                                         selected={item.startTime ? moment(item.startTime, 'HHmmss').toDate() : null}
                                                                         onChange={startTime => handleTimeInputChange(index, startTime, "startTime")}
@@ -724,7 +762,7 @@ function ShiftUpdateModal(props) {
                                                                         className="form-control input" />
                                                                 </div>
                                                                 <div className="end-time">
-                                                                    <label>Kết thúc 1 - Thay đổi</label>
+                                                                    <label>{t("End1Change")}</label>
                                                                     <DatePicker
                                                                         selected={item.endTime ? moment(item.endTime, 'HHmmss').toDate() : null}
                                                                         onChange={endTime => handleTimeInputChange(index, endTime, "endTime")}
@@ -746,7 +784,7 @@ function ShiftUpdateModal(props) {
                                                             <div className="time-break">
                                                                 <div className="time-data">
                                                                     <div className="start-time-break">
-                                                                        <label>Thời gian bắt đầu nghỉ ca</label>
+                                                                        <label>{t("BreakStartTime")}</label>
                                                                         <DatePicker
                                                                             selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
                                                                             onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
@@ -761,7 +799,7 @@ function ShiftUpdateModal(props) {
                                                                             className="form-control input" />
                                                                     </div>
                                                                     <div className="end-time-break">
-                                                                        <label>Thời gian kết thúc nghỉ ca</label>
+                                                                        <label>{t("BreakEndTime")}</label>
                                                                         <DatePicker
                                                                             selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
                                                                             onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
@@ -777,26 +815,26 @@ function ShiftUpdateModal(props) {
                                                                     </div>
                                                                 </div>
                                                                 { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
-                                                                <p className="notice-for-break-time errors text-danger">(*) Chỉ nhập khi làm ca gãy, giờ nghỉ giữa ca không hưởng lương</p>
+                                                                <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p>
                                                             </div>
                                                             : null
                                                         }
                                                         <div className="time-total">
-                                                            <label>Tổng thời gian</label>
+                                                            <label>{t("TotalTimes")}</label>
                                                             <p className="total">{item.totalTime || 0}</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
                                             <div className="reason">
-                                                <label>Lý do</label>
-                                                <input type="text" placeholder="Nhập lý do" value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
+                                                <label>{t("Reason")}</label>
+                                                <input type="text" placeholder={t("EnterReason")} value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
                                                 { errors[`reason_${index}`] ? errorInfos(index, 'reason') : null }
                                             </div>
                                             <div className="applicable-object">
                                                 <DropdownCustomize 
                                                     index={index}
-                                                    label="Đối tượng áp dụng"
+                                                    label={t("ApplyFor")}
                                                     employeeSelectedFilter={item.employeeSelectedFilter}
                                                     needReset={needReset}
                                                     getSelecteMembers={updateParent} 
@@ -811,7 +849,7 @@ function ShiftUpdateModal(props) {
                     }
                 </div>
                 <div className="buttons-block">
-                    <Button type="button" variant="secondary" className="btn-cancel" onClick={props.onHideShiftUpdateModal}>{t("CancelSearch")}</Button>
+                    <Button type="button" variant="secondary" className="btn-cancel" onClick={handleCancelShiftUpdate}>{t("CancelSearch")}</Button>
                     <Button type="button" variant="primary" className="btn-submit" onClick={handleSubmit}>{t("Save")}</Button>
                 </div>
             </Modal.Body>
