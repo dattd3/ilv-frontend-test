@@ -205,6 +205,8 @@ const MemberOption = (props, onChange) => {
     })
   }
 
+  const isCheckedAll = members.every(item => item.checked)
+
   return (
     <>
       {!props.loading && <div ref={ref} className="member-list">
@@ -227,7 +229,7 @@ const MemberOption = (props, onChange) => {
             props.type !== 'singleChoice' ?
               <div className="d-flex border-bottom text-dark btn ">
                 <label className="lable-custom">
-                  <input type="checkbox" className="mtmr5" value="checkedall" onChange={handleAllChecked} />
+                  <input type="checkbox" className="mtmr5" value="checkedall" checked={isCheckedAll} onChange={handleAllChecked} />
                   <div className="float-left text-left text-wrap w-75">
                     <div className="label-select-all">{t('All')}</div>
                   </div>
