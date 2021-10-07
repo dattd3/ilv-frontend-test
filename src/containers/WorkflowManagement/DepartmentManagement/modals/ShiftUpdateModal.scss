@@ -122,6 +122,9 @@
                     .timesheet-box {
                         .member-list {
                             width: 100%;
+                            position: relative;
+                            z-index: initial;
+                            top: initial;
                         }
                     }
                 }
