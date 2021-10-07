@@ -879,7 +879,7 @@ class EmployeeTimesheets extends Component {
               <Button type="button" variant="primary" className="btn-submit" onClick={this.acceptShiftUpdating} disabled={isDisabledSubmitButton}>
               {
                 !isDisabledSubmitButton 
-                ? t("Save")
+                ? t("Confirm")
                 : <Spinner
                     as="span"
                     animation="border"
