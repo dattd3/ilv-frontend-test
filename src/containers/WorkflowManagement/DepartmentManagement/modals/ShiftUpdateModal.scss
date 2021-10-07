@@ -78,6 +78,9 @@
                         }
                     }
                 }
+                .main-content-item {
+                    position: relative;
+                }
                 .shift-update-type-group {
                     label {
                         width: 220px;
@@ -122,9 +125,9 @@
                     .timesheet-box {
                         .member-list {
                             width: 100%;
-                            position: relative;
-                            z-index: initial;
-                            top: initial;
+                            position: absolute;
+                            z-index: 99;
+                            top: 0;
                         }
                     }
                 }
