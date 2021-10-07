@@ -31,6 +31,8 @@ const Constants = {
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
+  ONBOARDING: 6,
+  RESIGN_SELF: 7,
   CHNAGE_DIVISON_SHIFT: 8,
   DEPARTMENT_TIMESHEET: 9,
 
@@ -45,6 +47,11 @@ const Constants = {
   STATUS_PARTIALLY_SUCCESSFUL: 6, //không thành công
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
+  STATUS_OB_SELF_EVALUATION: 9,
+  STATUS_OB_APPRAISER_EVALUATION: 10,
+  STATUS_OB_SUPERVISOR_EVALUATION: 11,
+  STATUS_OB_HR_EVALUATION: 12,
+  STATUS_OB_APPROVER_EVALUATION: 13,
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
@@ -120,7 +127,7 @@ const Constants = {
   //other
   QAAlreadyExist: "QAAlreadyExist",
 
-  // Ticket 
+  // Ticket
 
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
@@ -135,6 +142,14 @@ const Constants = {
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
     SUMARY_REPORT: 1
-  }
+  },
+
+  PAGE_INDEX_DEFAULT: 1,
+  PAGE_SIZE_DEFAULT: 10,
+
+  // Register and Proposed contract termination
+  REGISTER_CONTRACT_TERMINATION_CODE: 1,
+  PROPOSED_CONTRACT_TERMINATION_CODE: 2,
+  GROUP_EMAIL_EXTENSION: "@vingroup.net"
 };
 export default Constants

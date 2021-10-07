@@ -129,6 +129,11 @@ function Header(props) {
                             let notificationLink = (type) => {
                                 switch (type) {
                                     case 0:
+                                    case 7:
+                                    case 8:
+                                    case 9:
+                                    case 10:
+                                    case 11:
                                         return `/notifications/${item.id}`
                                     case 1:
                                         if (item.title.indexOf("thẩm định") > 0)
@@ -141,6 +146,8 @@ function Header(props) {
                                         return `/tasks?tab=approval`
                                     case 5:
                                         return item.url
+                                    case 6:
+                                        return '/personal-info?tab=document'
                                     default:
                                         return `${item.url}`
                                 }

@@ -100,11 +100,17 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
-            // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING){
-                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
-                }
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
+            } else {
+                    taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                    // element.requestInfo.forEach(sub => {
+                    if(element.processStatusId == Constants.STATUS_WAITING){
+                        taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
+                    }
+            }
             // });
             dataToSap.push(taskObj)
           });
@@ -118,12 +124,19 @@ class ConfirmRequestModal extends React.Component {
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
-            // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING){
-                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
-                }
-            // });
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId":element.processStatusId, 'status': '0' ,"comment":this.state.message, 'status': '0'})
+            } else {
+                    taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                    // element.requestInfo.forEach(sub => {
+                        if(element.processStatusId == Constants.STATUS_WAITING){
+                            taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
+                        }
+                    // });
+            }
+
             dataToSap.push(taskObj)
           });
 
@@ -134,12 +147,18 @@ class ConfirmRequestModal extends React.Component {
     consent = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
-            // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
-                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
-                }
-            // });
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
+            } else {
+                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                // element.requestInfo.forEach(sub => {
+                    if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                        taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
+                    }
+                // });
+            }
             dataToSap.push(taskObj)
           });
           console.log(dataToSap);
@@ -149,12 +168,19 @@ class ConfirmRequestModal extends React.Component {
     reject = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
-            // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
-                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
-                }        
-            // });
+            let taskObj = {};
+            if(element.requestTypeId == Constants.ONBOARDING){
+                taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
+            } else {
+                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                // element.requestInfo.forEach(sub => {
+                    if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
+                        taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
+                    }
+                // });
+            }
+
             dataToSap.push(taskObj)
           });
         

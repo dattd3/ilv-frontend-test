@@ -42,7 +42,7 @@ function MainLayout(props) {
         <div id="content">
           <Header user={user} setShow={setShow} isApp={isApp} />
           <div className="container-fluid" id='main-content'>
-            <NestedRoute routes={props.routes} />
+            <NestedRoute routes={props.routes} show={show} />
           </div>
           <ScrollToTop />
         </div>

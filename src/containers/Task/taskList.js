@@ -156,7 +156,13 @@ class TaskList extends React.Component {
             6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' }
+            20: { label: this.props.t("Consented"), className: 'request-status' },
+            9: {className: 'request-status', label: 'Tự đánh giá'},
+            10: {className: 'request-status', label: 'Người đánh giá'},
+            11: {className: 'request-status', label: 'QLTT đánh giá'},
+            12: {className: 'request-status', label: 'HR thẩm định'},
+            13: {className: 'request-status', label: 'CBLD phê duyệt'},
+            //14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         const options = [
@@ -179,6 +185,10 @@ class TaskList extends React.Component {
 
     getLinkUserProfileHistory = (id) => {
         return this.props.page ? `/registration/${id}/1/${this.props.page}` : `/registration/${id}/1/request`
+    }
+
+    getLinkEvalution = (id) => {
+        return this.props.page === "approval" ? `/evaluation/${id}/approval` : `/evaluation/${id}/assess`
     }
 
     getLinkRegistration(id,childId) {
@@ -229,9 +239,9 @@ class TaskList extends React.Component {
 
     handleAllChecked = event => {
         // let tasks = this.props.tasks;
-        let tasks = this.props.tasks; 
+        let tasks = this.props.tasks;
         tasks.forEach((child) => {
-            if(child.processStatusId == 8 || (child.processStatusId == 5 && this.props.page == "approval")){
+            if(child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10 || ((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval")){
                 child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
                 if(child.isChecked)
                 {
@@ -339,7 +349,7 @@ class TaskList extends React.Component {
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.sender ? `sender=${dataForSearch.sender}&` : '';
         params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
-        this.setState({ 
+        this.setState({
             approveTasks: [],
             tasks: [],
             taskChecked: [],
@@ -350,7 +360,7 @@ class TaskList extends React.Component {
             needRefresh: needRefresh
         }})
         this.enableBtn([]);
-        this.props.requestRemoteData(params);  
+        this.props.requestRemoteData(params);
     }
 
     render() {
@@ -452,21 +462,24 @@ class TaskList extends React.Component {
                                 tasks.length > 0 ?
                                     tasks.map((child, index) => {
                                         let totalTime = null;
-                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
-                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
+                                        let reId = 0, childId = 0;
+                                        if(child.requestType.id != 6) {
+                                            reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                            childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
+                                        }
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
                                         return (
                                             <tr key={index}>
                                                 {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                    (( (child.processStatusId == 5|| child.processStatusId == 13) && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                     <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
                                                     : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                 }
-                                                <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                <td className="code sticky-col" onClick={() => {if(child.requestType.id != 6) this.showModalTaskDetail(reId, childId)}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                 {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                 <td className="user-title">{child.user?.jobTitle || ''}</td>

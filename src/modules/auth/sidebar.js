@@ -47,7 +47,7 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
-  
+
   //workflow management
   {
     id: 999,
@@ -104,6 +104,15 @@ export const Navigation = [
     to: map.ChangeShiftReport,
     label: 'MenuChangeShiftReport',
     role: 'U'
+  },
+  {
+    id: 104,
+    parentId: 0,
+    icon: 'c-resignation-requests-management',
+    label: "ResignationRequestsManagement",
+    to: map.ResignationRequestsManagement,
+    role: 'U',
+    role: ['V030']
   },
   {
     id: 4,
@@ -297,6 +306,22 @@ export const Navigation = [
     label2: "Registration",
     to: map.Registration,
     role: 'U'
+  },
+  {
+    id: 101,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    role: 'U'
+  },
+  {
+    id: 102,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "ProposedResignation",
+    to: map.ProposedResignation,
+    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
     id: 98,

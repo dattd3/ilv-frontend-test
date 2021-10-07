@@ -58,10 +58,12 @@ const Storage = {
     localStorage.setItem('department', currentAuthUser.department);
     localStorage.setItem('avatar', currentAuthUser.avatar);
     localStorage.setItem('benefitTitle', currentAuthUser.benefitTitle);
+    localStorage.setItem('organizationLv1', currentAuthUser.organizationLv1);
     localStorage.setItem('organizationLv2', currentAuthUser.organizationLv2);
     localStorage.setItem('organizationLv3', currentAuthUser.organizationLv3);
     localStorage.setItem('organizationLv4', currentAuthUser.organizationLv4);
     localStorage.setItem('organizationLv5', currentAuthUser.organizationLv5);
+    localStorage.setItem('organizationLv6', currentAuthUser.organizationLv6);
     localStorage.setItem('companyCode', currentAuthUser.companyCode);
     localStorage.setItem('companyLogoUrl', currentAuthUser.companyLogoUrl);
     localStorage.setItem('companyThemeColor', currentAuthUser.companyThemeColor);
@@ -97,10 +99,12 @@ const Storage = {
       avatar: localStorage.getItem('avatar'),
       employeeNo: localStorage.getItem('employeeNo'),
       benefitTitle: localStorage.getItem('benefitTitle'),
+      organizationLv1: localStorage.getItem('organizationLv1'),
       organizationLv2: localStorage.getItem('organizationLv2'),
       organizationLv3: localStorage.getItem('organizationLv3'),
       organizationLv4: localStorage.getItem('organizationLv4'),
       organizationLv5: localStorage.getItem('organizationLv5'),
+      organizationLv6: localStorage.getItem('organizationLv6'),
       companyCode: localStorage.getItem('companyCode'),
       companyLogoUrl: localStorage.getItem('companyLogoUrl'),
       companyThemeColor: localStorage.getItem('companyThemeColor'),
@@ -133,10 +137,12 @@ const Storage = {
     localStorage.removeItem('jobType');
     localStorage.removeItem('avatar');
     localStorage.removeItem('benefitTitle');
+    localStorage.removeItem('organizationLv1');
     localStorage.removeItem('organizationLv2');
     localStorage.removeItem('organizationLv3');
     localStorage.removeItem('organizationLv4');
     localStorage.removeItem('organizationLv5');
+    localStorage.removeItem('organizationLv6');
     localStorage.removeItem('companyCode');
     localStorage.removeItem('companyLogoUrl');
     localStorage.removeItem('companyThemeColor');
@@ -170,10 +176,12 @@ const deserialize = (currentAuthUser) => ({
   avatar: currentAuthUser.avatar,
   employeeNo: currentAuthUser.employeeNo,
   benefitTitle: currentAuthUser.benefitTitle,
+  organizationLv1: currentAuthUser.organizationLv1,
   organizationLv2: currentAuthUser.organizationLv2,
   organizationLv3: currentAuthUser.organizationLv3,
   organizationLv4: currentAuthUser.organizationLv4,
   organizationLv5: currentAuthUser.organizationLv5,
+  organizationLv6: currentAuthUser.organizationLv6,
   companyCode: currentAuthUser.companyCode,
   companyLogoUrl: currentAuthUser.companyLogoUrl,
   companyThemeColor: currentAuthUser.companyThemeColor,

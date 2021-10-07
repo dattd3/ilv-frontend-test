@@ -264,7 +264,6 @@ class RequestTaskList extends React.Component {
     }
     isShowEditButton = (status, appraiser, requestTypeId, startdate) => {
         let isShow = true;
-
         if (this.props.page == "approval") {
             isShow = false;
         } else {
@@ -468,7 +467,7 @@ class RequestTaskList extends React.Component {
             ...dataForSearch,
             needRefresh: needRefresh
         }})
-        this.props.requestRemoteData(params);  
+        this.props.requestRemoteData(params);
     }
 
 
@@ -557,6 +556,7 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                             tasks.map((child, index) => {
+                                console.log(child);
                                 let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
                                 let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
                                 let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
@@ -574,7 +574,7 @@ class RequestTaskList extends React.Component {
                                 }
                                 return (
                                     <tr key={index}>
-                                        <td scope="col" className="check-box"> 
+                                        <td scope="col" className="check-box">
                                             
                                         </td>
                                         {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
@@ -585,7 +585,7 @@ class RequestTaskList extends React.Component {
                                         <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                         <td className="tool">
                                             {
-                                                isShowEditButton && child.absenceType?.value != "PN02" ? 
+                                                isShowEditButton && child.absenceType?.value != "PN02" ?
                                                     <>
                                                         <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                     </>

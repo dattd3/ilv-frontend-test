@@ -55,12 +55,16 @@ class ConsentComponent extends React.Component {
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
+      { value: Constants.STATUS_OB_SELF_EVALUATION , label:'Tự đánh giá' },
+      { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label: "Người đánh giá" },
+      { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: "QLTT đánh giá" },
+      { value: Constants.STATUS_OB_APPROVER_EVALUATION , label: "CBLĐ phê duyệt" },
     ]
     return (
       this.state.dataResponse ?
       <>
         <div className="task-section">
-          <TaskList tasks={this.state.tasks} filterdata={statusFiler} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} page="consent" title={t("ConsentManagement")}/>       
+          <TaskList tasks={this.state.tasks} filterdata={statusFiler} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} page="consent" title={t("ConsentManagement")}/>
         </div>
       </> : 
       <LoadingSpinner />

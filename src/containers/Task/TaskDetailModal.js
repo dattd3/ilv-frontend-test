@@ -7,6 +7,8 @@ import SubstitutionDetailComponent from '../Registration/Substitution/Substituti
 import ChangeDivisionShiftDetail from '../Registration/Substitution/ChangeDivisionShiftDetail'
 import DepartmentTimeSheetDetail from '../Registration/DepartmentTimeSheetDetail'
 import PersonalDetailComponent from './ApprovalDetail'
+import ProposeTerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/PropsedResignationDetail';
+import TerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/RegistrationTerminationDetail';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
@@ -38,9 +40,8 @@ class TaskDetailModal extends React.Component {
             if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
               return window.location.href = map.NotFound;
             }
-            const response = data.data
+            const response = data.data ? data.data : {};
             this.setState({data: response })
-            console.log(this.state.data);
           }
         }).catch(error => {
           console.log(error)
@@ -49,6 +50,7 @@ class TaskDetailModal extends React.Component {
     }
     render() {
         const { t } = this.props
+        const data = this.state.data;
         return (
             <Modal backdrop="static" keyboard={false}
                 size="xl"
@@ -59,6 +61,9 @@ class TaskDetailModal extends React.Component {
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <div className="registration-section">
+
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.PROPOSED_CONTRACT_TERMINATION_CODE ? <ProposeTerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
+                        {data && data.requestTypeId == Constants.RESIGN_SELF && data?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE ? <TerminationDetailComponent action={this.props.action} resignInfo={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent action={this.props.action} leaveOfAbsence={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={this.props.action} businessTrip={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
