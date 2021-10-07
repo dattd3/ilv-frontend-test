@@ -60,8 +60,16 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
+  processTimeZero(time) {
+    let t = new Date(time);
+    if (t.getHours() == 0 && t.getMinutes() == 0 && t.getSeconds() == 0) {
+      t.setSeconds(t.getSeconds() + 1);
+    }
+    return t;
+  }
   setStartTime(index, name, startTime) {
-    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime).format('HHmmss')
+    // let t = this.processTimeZero(startTime)
+    this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime)
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -69,7 +77,8 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   setEndTime(index, name, endTime) {
-    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime).format('HHmmss')
+    // let t = this.processTimeZero(endTime)
+    this.state.timesheets[index][name] = moment(endTime).isValid() && moment(endTime)
     this.setState({
       timesheets: [...this.state.timesheets]
     }, () => { this.verifyInput() })
@@ -128,8 +137,8 @@ class InOutTimeUpdateComponent extends React.Component {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
           errors['end_time1_fact_update' + index] = this.props.t("Required")
         } else {
-          errors['start_time1_fact_update' + index] = null;
-          errors['end_time1_fact_update' + index] = null
+          errors['start_time1_fact_update' + index] = this.isNullCustomize(timesheet.start_time1_fact_update) ? this.props.t("Required") : null;
+          errors['end_time1_fact_update' + index] = this.isNullCustomize(timesheet.end_time1_fact_update) ? this.props.t("Required") : null
         }
         // Optional
         if (!this.isNullCustomize(timesheet.start_time2_fact_update) || !this.isNullCustomize(timesheet.end_time2_fact_update)) {
@@ -146,7 +155,7 @@ class InOutTimeUpdateComponent extends React.Component {
     if (_.isNull(this.state.approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073'].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
     this.setState({ errors: errors })
     return errors
   }
@@ -156,7 +165,8 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   isNullCustomize = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    //|| value == 0 
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
   submit() {
@@ -172,7 +182,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const timesheets = [...this.state.timesheets].filter(item => item.isEdited)
     const approver = { ...this.state.approver }
     const appraiser = this.state.appraiser ? this.state.appraiser  : null
-    
+     
     delete approver.avatar
     // delete appraiser.avatar
 
@@ -196,12 +206,16 @@ class InOutTimeUpdateComponent extends React.Component {
         employeeNo: localStorage.getItem('employeeNo')
     }
 
-    timesheets.map( item => {
-        Object.assign(item,
-          {
-            hours: item.hours ? parseFloat(item.hours) : null,
-            date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString()
-          });
+    timesheets.map( item => { 
+      Object.assign(item,
+        {
+          hours: item.hours ? parseFloat(item.hours) : null,
+          date: moment(item.date, "DD-MM-YYYY").format('YYYYMMDD').toString(),
+          end_time1_fact_update: item.end_time1_fact_update ? moment(this.processTimeZero(item.end_time1_fact_update)).format('HHmmss') : null,
+          end_time2_fact_update: item.end_time2_fact_update ? moment(this.processTimeZero(item.end_time2_fact_update)).format('HHmmss') : null,
+          start_time1_fact_update: item.start_time1_fact_update ? moment(this.processTimeZero(item.start_time1_fact_update)).format('HHmmss') : null,
+          start_time2_fact_update: item.start_time2_fact_update ? moment(this.processTimeZero(item.start_time2_fact_update)).format('HHmmss') : null,
+        });
     })
     
     const comments = timesheets
@@ -336,11 +350,13 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   isNullCustomize = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
+    //|| value == 0 |
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
   formatData = value => {
-    return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? "" : value
+    //|| value == 0 |
+    return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? "" : value
   }
 
   printTimeFormat = value => {
@@ -525,8 +541,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
@@ -548,8 +564,8 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
                                 className="form-control input" />
                             </label>
                           </div>
@@ -574,9 +590,10 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
-                                className="form-control input" />
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'start_time2_fact_update')}
@@ -597,9 +614,10 @@ class InOutTimeUpdateComponent extends React.Component {
                                 showTimeSelectOnly
                                 timeIntervals={15}
                                 timeCaption="Giờ"
-                                dateFormat="HH:mm"
-                                timeFormat="HH:mm"
-                                className="form-control input" />
+                                dateFormat="HH:mm:ss"
+                                timeFormat="HH:mm:ss"
+                                className="form-control input" 
+                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
                             </label>
                           </div>
                           {this.error(index, 'end_time2_fact_update')}
@@ -642,7 +660,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073"].includes(localStorage.getItem("companyCode"))) ?
+          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }

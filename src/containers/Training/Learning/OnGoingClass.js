@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useApi, useFetcher, useGuardStore } from "../../../modules";
 import { Table, Row, Col, Form } from 'react-bootstrap';
 import CustomPaging from '../../../components/Common/CustomPaging';
@@ -19,14 +19,15 @@ const usePreload = (params) => {
     return sabaEnrollments;
 };
 
-function OnGoingClass(props) {
+function OnGoingClass({_year}) {
     const { t } = useTranslation();
     document.title = `Learning`;
     const [pageIndex, SetPageIndex] = useState(1);
     const [pageSize, SetPageSize] = useState(5);
+    const [refresh, SetRefresh] = useState(false);
     const guard = useGuardStore();
     const user = guard.getCurentUser();
-    let sabaEnrollments = usePreload([pageIndex, pageSize]);
+    let sabaEnrollments = usePreload([pageIndex, pageSize, _year]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
@@ -40,6 +41,11 @@ function OnGoingClass(props) {
         SetPageSize(evt.target.value);
         SetPageIndex(1);
     }
+
+    useEffect(() => {
+        SetPageIndex(1);
+        SetRefresh(!refresh)
+    }, [_year])
 
     try {
         if (!isOnGoing && sabaEnrollments && sabaEnrollments.data.classes.length > 0) {
@@ -92,7 +98,7 @@ function OnGoingClass(props) {
                                     {t("Total")}: {sabaEnrollments.data.total} {t("Course")}
                                 </Col>
                                 <Col className='paging'>
-                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} />
+                                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={sabaEnrollments.data.total} needReset={refresh}/>
                                 </Col>
                                 <Col>
                                     {sabaEnrollments.data.total > 5 ?

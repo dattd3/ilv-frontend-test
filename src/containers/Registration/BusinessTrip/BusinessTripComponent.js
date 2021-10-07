@@ -245,7 +245,7 @@ class BusinessTripComponent extends React.Component {
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
                     to_date: moment(req.endDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     to_time: !req.isAllDay && !req.isAllDayCheckbox ? endTime : "",
-                    leave_type: null,
+                    leave_type: "CTDT",
                     group_id: req.groupId
                 })
             }
@@ -747,10 +747,10 @@ class BusinessTripComponent extends React.Component {
                                         <p className="text-uppercase"><b>{t('BizTrip_TrainingTime')}</b></p>
                                         <div className="btn-group btn-group-toggle" data-toggle="buttons">
                                             <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('FullDay')}
+                                                {t('FullDayBizTrip')}
                                             </label>
                                             <label onClick={this.updateLeaveType.bind(this, false, req[0].groupId)} className={!req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                {t('ByHours')}
+                                                {t('ByHoursBizTrip')}
                                             </label>
                                         </div>
                                     </div>

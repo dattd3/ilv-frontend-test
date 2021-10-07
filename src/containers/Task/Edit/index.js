@@ -158,7 +158,7 @@ class PersonalInfoEdit extends React.Component {
 
   disApproval = () => {
     this.setState({
-      modalTitle: "Xác nhận không duyệt",
+      modalTitle: t("RejectApproveRequest"),
       modalMessage: `${t("Note")} ${t("NonRequired")}`,
       typeRequest: 1
     });
@@ -167,8 +167,8 @@ class PersonalInfoEdit extends React.Component {
 
   approval = () => {
     this.setState({
-      modalTitle: "Xác nhận phê duyệt",
-      modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+      modalTitle: t("ApproveRequest"),
+      modalMessage: t("ConfirmApproveChangeRequest"),
       typeRequest: 2
     });
     this.onShowModalConfirm();

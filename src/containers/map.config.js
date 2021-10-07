@@ -77,5 +77,16 @@ export default {
 
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
-  QuestionAndAnswerDetails:"/question-and-answer-details/:id"
+  QuestionAndAnswerDetails:"/question-and-answer-details/:id",
+
+  //workflow management
+  EmployeeTimeSheets: "/workflow-management/employee-timesheets",
+  LeaveFund: "/workflow-management/leave-fund",
+  PersonalDetails: "/workflow-management/personal-details",
+
+  //Vaxcin
+  VaxcinList: "/vaccination/list",
+  VaxcinUpdate: "/vaccination/dtail/:id",
+  VaxcinCreate: "/vaccination/create",
+  ChangeShiftReport: "/workflow-management/change-shift-report"
 };

@@ -109,18 +109,19 @@ class RequestTaskList extends React.Component {
     }
 
     showModalConfirm = (status, requestId) => {
-        const requestUpdateProfile = 1
+        const {t} = this.props;
+         const requestUpdateProfile = 1
         if (requestId == requestUpdateProfile) {
             this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt thay đổi này ?",
+                modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveChangeRequest"),
                 isShowModalConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED
             });
         } else {
             this.setState({
-                modalTitle: status == Constants.STATUS_NOT_APPROVED ? "Xác nhận không phê duyệt" : "Xác nhận phê duyệt",
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? "Lý do không phê duyệt (Bắt buộc)" : "Bạn có đồng ý phê duyệt " + this.requestRegistraion[requestId].request + " này ?",
+                modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveRequestHolder", {name: t(this.requestRegistraion[requestId].request)}),
                 isShowModalRegistrationConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
                 requestUrl: this.requestRegistraion[requestId].requestUrl
@@ -129,6 +130,7 @@ class RequestTaskList extends React.Component {
     }
 
     evictionRequest = (requestTypeId, child) => {
+        const {t} = this.props;
         let prepareDataForRevoke =
             {
                 id: parseInt(child.id.split(".")[0]),
@@ -140,8 +142,8 @@ class RequestTaskList extends React.Component {
                 ]
             }
         this.setState({
-            modalTitle: "Xác nhận thu hồi",
-            modalMessage: "Lý do thu hồi yêu cầu (bắt buộc)",
+            modalTitle: t("ConfirmRequestRecall"),
+            modalMessage: t("SureApprovalRecall"),
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_EVICTION,
             dataToUpdate: prepareDataForRevoke
@@ -149,6 +151,7 @@ class RequestTaskList extends React.Component {
     }
 
     deleteRequest = (requestTypeId, child) => {
+        const {t} = this.props;
         let prepareDataForCancel =
             {
                 id: parseInt(child.id.split(".")[0]),
@@ -161,8 +164,8 @@ class RequestTaskList extends React.Component {
             }
         // console.log(prepareDataForCancel);
         this.setState({
-            modalTitle: "Xác nhận hủy yêu cầu",
-            modalMessage: "Bạn có đồng ý hủy yêu cầu này ?",
+            modalTitle: t("CancelRequest"),
+            modalMessage: t("ConfirmCancelRequest"),
             isShowModalConfirm: true,
             typeRequest: Constants.STATUS_REVOCATION,
             dataToUpdate: prepareDataForCancel
@@ -197,10 +200,11 @@ class RequestTaskList extends React.Component {
             2: { label: this.props.t('Approved'), className: 'request-status success' },
             3: { label: this.props.t('Canceled'), className: 'request-status' },
             4: { label: this.props.t('Canceled'), className: 'request-status' },
-            5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Consented"), className: 'request-status' },
+            5: { label: this.props.t("PendingApproval"), className: 'request-status' },
+            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' }
+            8: { label: this.props.t("PendingConsent"), className: 'request-status' },
+            20: { label: this.props.t("Consented"), className: 'request-status' }
         }
 
         const options = [
@@ -216,9 +220,9 @@ class RequestTaskList extends React.Component {
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData?.account != null && statusOriginal == 5) {
-            statusOriginal = 6;
-        }
+        // if(taskData != null && statusOriginal == 5) {
+        //     statusOriginal = 20;
+        // }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -244,12 +248,26 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEditButton = (status, appraiser, requestTypeId) => {
+    checkDateLessThanPayPeriod = (date) => {
+        let convertedDate = moment(date,'DD/MM/YYYY');
+        let minDate = null;
+        let today = new Date();
+        let currentDay = today.getDate();
+        if (currentDay < 29) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 29)
+        }
+        if (currentDay > 29) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() ), 29)
+        }
+
+        return convertedDate < minDate ? false : true
+    }
+    isShowEditButton = (status, appraiser, requestTypeId, startdate) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))) {
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -258,16 +276,17 @@ class RequestTaskList extends React.Component {
         return isShow;
     }
 
-    isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
-        return (requestTypeId != 1) && ((status == 5 && appraiser?.account == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5) ? true : false;
+    isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
+        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9)  ? true : false;
     }
     
-    isShowEvictionButton = (status, appraiser, requestTypeId) => {
+    isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5) && (status == 2 || (status == 5 && appraiser?.account))){
+            // || (status == 5 && appraiser)
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
                 isShow = true;
             } else {
                 isShow = false;
@@ -448,7 +467,7 @@ class RequestTaskList extends React.Component {
             ...dataForSearch,
             needRefresh: needRefresh
         }})
-        this.props.requestRemoteData(params);  
+        this.props.requestRemoteData(params);
     }
 
 
@@ -459,6 +478,8 @@ class RequestTaskList extends React.Component {
         // let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
         // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
+        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHNAGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -503,7 +524,7 @@ class RequestTaskList extends React.Component {
                         <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
-                        placeholder={t('Tìm kiếm mã yêu cầu')}
+                        placeholder={t('SearchRequester')}
                         aria-label="SearchRequester"
                         aria-describedby="basic-addon2"
                         onChange={this.handleInputChange}
@@ -535,21 +556,16 @@ class RequestTaskList extends React.Component {
                         <tbody>
                         {tasks.length > 0 ?
                             tasks.map((child, index) => {
-                                const requestTypeId = child.requestTypeId || null
-                                const isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiser, requestTypeId);
-                                const isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiser, requestTypeId);
-                                let actionType = child?.actionType || null
-                                // if (requestTypeId == Constants.RESIGN_SELF) {
-                                //     const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
-                                //     actionType = requestItem ? requestItem.actionType : null
-                                // }
-                                const isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiser, requestTypeId, actionType);
+                                console.log(child);
+                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
+                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
+                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
                                 let totalTime = null;
                                 let editLink = null
                                 if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                    totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                    totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                 }
-                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1)
+                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9)
                                 {
                                     editLink = null;
                                 }
@@ -561,21 +577,22 @@ class RequestTaskList extends React.Component {
                                         <td scope="col" className="check-box">
                                             
                                         </td>
-                                        <td className="code"><a href={child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                        {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
+                                        <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                         <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                        <td className="day-off">{child.startDate}</td>
+                                        <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                         <td className="break-time text-center">{totalTime}</td>
-                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                         <td className="tool">
                                             {
-                                                isShowEditButton ? 
+                                                isShowEditButton && child.absenceType?.value != "PN02" ?
                                                     <>
                                                         <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                     </>
                                                 : null
                                             }
                                             {
-                                                isShowEvictionButton ?
+                                                isShowEvictionButton && child.absenceType?.value != "PN02" ?
                                                     <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                     : null
                                             }

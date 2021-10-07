@@ -457,6 +457,48 @@ export default [
           },
           component: lazy(() => import("./QuestionAndAnswer/QuestionAndAnswerDetails"))
         },
+
+        {
+          key: "leave-fund",
+          routeProps: {
+            exact: true,
+            path: map.LeaveFund
+          },
+          component: lazy(() => import("./LeaveFund"))
+          // component: lazy(() => import("./WorkflowManagement/DepartmentManagement/LeaveFund"))
+        },
+        {
+          key: "personal-details",
+          routeProps: {
+            exact: true,
+            path: map.PersonalDetails
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/PersonalDetails"))
+        },
+        {
+          key: "change-shift-report",
+          routeProps: {
+            exact: true,
+            path: map.ChangeShiftReport
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ChangeShiftReport"))
+        },
+        {
+          key: "employee-timesheets",
+          routeProps: {
+            exact: true,
+            path: map.EmployeeTimeSheets
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
+        },
+        {
+          key: "vaccination",
+          routeProps: {
+            exact: true,
+            path: map.VaxcinList
+          },
+          component: lazy(() => import("./Vaccination/List"))
+        },
         {
           key: "registration-employment-termination",
           routeProps: {

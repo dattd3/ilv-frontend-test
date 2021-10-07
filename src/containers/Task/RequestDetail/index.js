@@ -9,6 +9,7 @@ import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import moment from 'moment'
+import { t } from 'i18next'
 
 class RequestDetail extends React.Component {
   constructor() {
@@ -29,7 +30,7 @@ class RequestDetail extends React.Component {
       modalMessage: "",
       typeRequest: 1,
       userInfo: {},
-      status: 0,
+      status: 5,
       taskId: 0
     }
   }
@@ -37,7 +38,7 @@ class RequestDetail extends React.Component {
   getUserProfileHistoryId = () => {
     const pathName = window.location.pathname;
     const pathNameArr = pathName.split('/');
-    return pathNameArr[pathNameArr.length - 1];
+    return pathNameArr[2];
   }
 
   processBlockStatuses = (response) => {
@@ -108,27 +109,31 @@ class RequestDetail extends React.Component {
   }
 
   disApproval = () => {
+    const {t} = this.props;
     this.setState({
-      modalTitle: "Xác nhận không phê duyệt",
-      modalMessage: "Lý do không phê duyệt (Bắt buộc)",
+      modalTitle: t("RejectApproveRequest"),
+      modalMessage: t("ReasonRejectingRequest"),
       typeRequest: 1
     });
     this.onShowModalConfirm();
   }
 
   approval = () => {
+    const {t} = this.props;
     this.setState({
-      modalTitle: "Xác nhận phê duyệt",
-      modalMessage: "Bạn có đồng ý phê duyệt thay đổi này ?",
+      modalTitle: t("ApproveRequest"),
+      modalMessage: t("ConfirmApproveChangeRequest"),
       typeRequest: 2
     });
     this.onShowModalConfirm();
   }
+  
 
   evictionRequest = id => {
+    const {t} = this.props;
     this.setState({
-        modalTitle: "Xác nhận thu hồi",
-        modalMessage: "Bạn có đồng ý thu hồi yêu cầu này ?",
+        modalTitle: t("ConfirmRequestRecall"),
+        modalMessage: t("SureRequestRecall"),
         isShowModalConfirm: true,
         typeRequest: 3,
         taskId: id
@@ -203,7 +208,7 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const status = {
-      0: {label: t("Waiting"), className: ''},
+      5: {label: t("Waiting"), className: ''},
       1: {label: 'Không phê duyệt', className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: ''}
@@ -213,7 +218,7 @@ class RequestDetail extends React.Component {
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
-      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBNV đăng ký</h4></div>
+      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">{t("EmployeeInfomation")}</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
           <div className="row item-info">

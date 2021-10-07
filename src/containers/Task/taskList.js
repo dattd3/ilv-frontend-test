@@ -153,9 +153,10 @@ class TaskList extends React.Component {
             3: { label: this.props.t('Canceled'), className: 'request-status' },
             4: { label: this.props.t('Canceled'), className: 'request-status' },
             5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("Consented"), className: 'request-status' },
+            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
+            20: { label: this.props.t("Consented"), className: 'request-status' },
             9: {className: 'request-status', label: 'Tự đánh giá'},
             10: {className: 'request-status', label: 'Người đánh giá'},
             11: {className: 'request-status', label: 'QLTT đánh giá'},
@@ -177,7 +178,7 @@ class TaskList extends React.Component {
             return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
         }
         if(this.props.page === "consent" && statusOriginal == 5) {
-            statusOriginal = 6;
+            statusOriginal = 20;
         }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
@@ -457,93 +458,33 @@ class TaskList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                        {//tasks.length > 0 ?
-                                // tasks.map((task) => {
-                                //     return (
-                                        // tasks.map((child, index) => {
-                                          //   let totalTime = null;
-                                        //     let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
-                                        //     let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
-                                        //     if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                        //     totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
-                                        // }
-                                        //     return (
-                                        //         <tr key={index}>
-
-
-
-                                        //             {
-                                        //                 this.props.page == "approval" ?
-                                        //                     <td className="appraiser text-center">{child.appraiser?.fullname}</td>
-                                        //                 :null
-                                        //             }
-                                        //             <td className="status">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
-                                        //             {
-                                        //                 this.props.page != "consent" ?
-                                        //                 <td className="tool">
-                                        //                 {child.comment ? <OverlayTrigger
-                                        //                     rootClose
-                                        //                     trigger="click"
-                                        //                     placement="left"
-                                        //                     overlay={<Popover id={'note-task-' + index}>
-                                        //                         <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                        //                         <Popover.Content>
-                                        //                             {child.comment}
-                                        //                         </Popover.Content>
-                                        //                     </Popover>}>
-                                        //                     <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                        //                 </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                        //                 {child.hrComment ? <OverlayTrigger
-                                        //                     rootClose
-                                        //                     trigger="click"
-                                        //                     placement="left"
-                                        //                     overlay={<Popover id={'comment-task-' + index}>
-                                        //                         <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
-                                        //                         <Popover.Content>
-                                        //                             {child.hrComment}
-                                        //                         </Popover.Content>
-                                        //                     </Popover>}>
-                                        //                     <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
-                                        //                 </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
-                            }
                             {
                                 tasks.length > 0 ?
                                     tasks.map((child, index) => {
                                         let totalTime = null;
-                                        // let reId = child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0]
-                                        // let childId = child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1]
+                                        let reId = 0, childId = 0;
+                                        if(child.requestType.id != 6) {
+                                            reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                            childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
+                                        }
                                         if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                             totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                         }
                                         return (
                                             <tr key={index}>
                                                 {
-                                                    (((child.processStatusId == 5 || child.processStatusId == 13) && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
+                                                    (( (child.processStatusId == 5|| child.processStatusId == 13) && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                     <td scope="col" className="check-box text-center sticky-col">
                                                         <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
                                                     : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                 }
-
-                                                <td className="code sticky-col" onClick={() => { if(child.requestType.id != 6) this.showModalTaskDetail(child.requestType.id == 4 || child.requestType.id == 5 ? child.id : child.id.split(".")[0], child.requestType.id == 4 || child.requestType.id == 5 ? 1 : child.id.split(".")[1])}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                <td className="code sticky-col" onClick={() => {if(child.requestType.id != 6) this.showModalTaskDetail(reId, childId)}}><a href={child.requestType.id != 6 ? '#' : this.getLinkEvalution(child.id)} title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                                 {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
-                                                {/* { <td className="code"><a href={child.requestType.id == 6 ?
-                                                        this.getLinkEvalution(child.id) :
-                                                         child.requestType.id == 4 || child.requestType.id == 5 ?
-                                                         this.getLinkUserProfileHistory(child.id) :
-                                                         this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])}
-                                                         title={child.id} className="task-title">
-                                                             {this.getTaskCode(child.id)}
-                                                        </a>
-                                                        </td>} */
-                                                }
-
-
-
-                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user.fullName}</td> : null}
-                                                <td className="user-title">{child.user.jobTitle}</td>
-                                                <td className="request-type">{child.requestType.name}</td>
-                                                <td className="day-off">{child.startDate}</td>
+                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
+                                                <td className="user-title">{child.user?.jobTitle || ''}</td>
+                                                <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
+                                                <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
                                                 <td className="break-time text-center">{totalTime}</td>
                                                 {
                                                     this.props.page == "approval" ?
@@ -566,14 +507,14 @@ class TaskList extends React.Component {
                                                         </Popover>}>
                                                         <img alt="Note task" src={notetButton} title={t("Reason")} />
                                                     </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                    {child.hrComment ? <OverlayTrigger
+                                                    {child.approverComment ? <OverlayTrigger
                                                         rootClose
                                                         trigger="click"
                                                         placement="left"
                                                         overlay={<Popover id={'comment-task-' + index}>
                                                             <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
                                                             <Popover.Content>
-                                                                {child.hrComment}
+                                                                {child.approverComment}
                                                             </Popover.Content>
                                                         </Popover>}>
                                                         <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />

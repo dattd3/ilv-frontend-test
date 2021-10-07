@@ -38,24 +38,31 @@ function Authorize(props) {
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
+                if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
                     updateUser(userProfile,jwtToken)
                 }
+                else {
+                    SetNotifyContent(t("NotFoundUserOnSap"));
+                    SetIsloading(false);
+                    SetIsLoadingUser(false);
+                    SetIsGetUser(true)
+                }
             })
             .catch(error => {
-                console.log("Call getUser error:", error);
+                // console.log("Call getUser error:", error);
                 SetNotifyContent(t("LoginError"));
                 SetIsloading(false);
                 SetIsLoadingUser(false);
+                SetIsGetUser(true)
             }
             );
     }
 
     const checkUser = (user, jwtToken, vgEmail) => {
         if (user == null || user.uid == null) {
-            SetNotifyContent(t("LoginError"));
+            SetNotifyContent(t("NotFoundUserOnSap"));
             SetIsloading(false);
         } else {
             SetNotifyContent(t("WaitNotice"));
@@ -87,7 +94,7 @@ function Authorize(props) {
                             tokenExpired: '',
                             email: vgEmail,
                             plEmail: user.company_email,
-                            avatar: '',
+                            avatar: user.avatar,
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
@@ -115,7 +122,8 @@ function Authorize(props) {
                             unitId: user.organization_lv5,
                             unit: user.unit,
                             partId: user.organization_lv6,
-                            part: user.part
+                            part: user.part,
+                            role_assigment: user.role_assigment
                         });
                     }
                 })
@@ -153,7 +161,8 @@ function Authorize(props) {
                         unitId: user.organization_lv5,
                         unit: user.unit,
                         partId: user.organization_lv6,
-                        part: user.part
+                        part: user.part,
+                        role_assigment: user.role_assigment
                     });
                 })
                 .finally(result => {
@@ -188,12 +197,19 @@ function Authorize(props) {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
+            avatar: userProfile.avatar,
             jobTitle: userProfile.job_name,
             benefitLevel: userProfile.employee_level,
             companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
-            culture: localStorage.getItem('locale').split("-")[0]
+            culture: localStorage.getItem('locale').split("-")[0],
+            orgLv2Id: userProfile.organization_lv2,
+            orgLv3Id: userProfile.organization_lv3,
+            orgLv4Id: userProfile.organization_lv4,
+            orgLv5Id: userProfile.organization_lv5,
+            divisionName: userProfile.division,
+            unitName: userProfile.unit
         }
 
         axios({

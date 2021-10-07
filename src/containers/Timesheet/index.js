@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next"
 import TimesheetSearch from './timesheetSearch'
 import TimesheetSummary from './TimesheetSummary'
 import TimesheetDetail from './TimesheetDetail'
+import TimeTableDetail from './TimeTableDetail'
 import moment from 'moment'
 
 class Timesheet extends React.Component {
@@ -11,62 +12,128 @@ class Timesheet extends React.Component {
     constructor() {
         super();
         this.state = {
-          timsheetSummary: {},
+          timsheetSummary: {
+          },
           timesheets: [],
-          isSearch: false
+          timeTableData: null,
+          isSearch: false,
+          isTableSearch: false
         }
     }
-    
-    searchTimesheetByDate (startDate, endDate) {
-        this.setState({ isSearch: false })
-        const config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-              'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+
+    search(startDate, endDate) {
+      this.setState({ isSearch: false, isTableSearch: false })
+      let start = moment(startDate).format('YYYYMMDD').toString()
+      let end = moment(endDate).format('YYYYMMDD').toString()
+      const headers = {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      };
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+      }
+
+        const timeoverviewParams = {
+          from_date: start,
+          to_date: end
+        };
+        const reasonParams = {
+          startdate: start,
+          endDate: end
+        }
+        const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`;
+        const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
+        const timekeepingEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`;
+        const requestTimOverview = axios.get(timOverviewEndpoint, {headers,params: timeoverviewParams });
+        const requestReson = axios.get(ReasonEndpoint, {headers, params: reasonParams});
+        const requestTimekeeping = axios.get(timekeepingEndpoint, config)
+
+
+        Promise.allSettled([requestReson, requestTimOverview, requestTimekeeping]).then(axios.spread((...responses) => {
+          const localState = {...this.state};
+          //process BCC
+          if(responses[1].status == "fulfilled") {
+              const res = responses[1].value;
+              if (res && res.data && res.data.data) {
+                let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
+                if(dataSorted && dataSorted.length > 0) {
+                  const startReal =   moment( dataSorted[dataSorted.length - 1].date, 'DD-MM-YYYY').format('YYYYMMDD');
+                  start = startReal > start ? startReal : start;
+                  const endReal = moment(dataSorted[0].date, 'DD-MM-YYYY').format('YYYYMMDD'); 
+                  end = endReal < end ? endReal : end;
+                } 
+                localState.isTableSearch = true;
+                localState.timeTableData = {
+                  dataSorted,
+                  start,
+                  end,
+                  reason: responses[0].status == 'fulfilled' ?  responses[0].value.data.data : []
+                }
+              }
+          } else {
+            localState.isTableSearch = true;
+            localState.timeTableData = {
+              dataSorted: [],
+              start,
+              end,
+              reason: []
             }
-        }
 
-        const start = moment(startDate).format('YYYYMMDD').toString()
-        const end = moment(endDate).format('YYYYMMDD').toString()
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const timsheetSummary = res.data.data[0]
-            this.setState({ timsheetSummary: timsheetSummary, isSearch: true })
           }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping/detail?from_time=${start}&to_time=${end}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const timesheets = res.data.data
-            this.setState({ timesheets: timesheets, isSearch: true })
+          //process timekeeping
+          if(responses[2].status == "fulfilled") {
+            let res = responses[2].value
+            if (res && res.data && res.data.data) {
+              const defaultData = {
+                actual_working: 0,
+                attendance: 0,
+                paid_leave: 0,
+                salary_wh: 0,
+                total_overtime: 0,
+                trainning: 0,
+                unpaid_leave: 0,
+                working_day_plan: 0,
+                working_deal: 0
+              }
+              const timsheetSummary = res.data.data[0] ? res.data.data[0] : defaultData;
+              this.setState({ timsheetSummary: timsheetSummary, isSearch: true })
+              localState.isSearch = true;
+              localState.timsheetSummary = timsheetSummary;
+            }
           }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
+
+          this.setState(localState)
+        }))
     }
+  
+
+
 
     render() {
       const { t } = this.props
       return (
       <div className="timesheet-section">
-        <TimesheetSearch clickSearch={this.searchTimesheetByDate.bind(this)}/>
-      { (this.state.isSearch && this.state.timsheetSummary && this.state.timesheets.length > 0) ?
-        <>
-          <TimesheetSummary timsheetSummary={this.state.timsheetSummary}/>
-          <TimesheetDetail timesheets={this.state.timesheets}/>
-        </>
-        : this.state.isSearch ? 
-          <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> 
-        : null
-      }
+        <TimesheetSearch clickSearch={this.search.bind(this)}/>
+        { (this.state.isSearch && this.state.timsheetSummary) ?
+          <>
+            <TimesheetSummary timsheetSummary={this.state.timsheetSummary}/>
+          </>
+          : this.state.isSearch ? 
+            <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> 
+          : null
+        }
+        {
+          (this.state.isTableSearch && this.state.timeTableData) ? 
+          <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {false} isOpen = {true}/> 
+          : null
+        }
+      
       </div>)
     }
   }

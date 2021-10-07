@@ -31,14 +31,14 @@ export const Navigation = [
     to: map.InternalRecruitment,
     role: ['V030']
   },
-  {
-    id: 12,
-    parentId: 0,
-    icon: 'c-task',
-    label: "Menu_Task",
-    to: map.Task,
-    role: 'U'
-  },
+  // {
+  //   id: 12,
+  //   parentId: 0,
+  //   icon: 'c-task',
+  //   label: "Menu_Task",
+  //   to: map.Task,
+  //   role: 'U'
+  // },
   {
     id: 3,
     parentId: 2,
@@ -47,13 +47,72 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+
+  //workflow management
+  {
+    id: 999,
+    parentId: 0,
+    icon: 'c-task',
+    to: "",
+    label: "MenuTaskManagement",
+    role: "U",
+  },
+  {
+    id:1000,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.Task,
+    label: 'MenuRequestManagement',
+    role: 'U'
+  },
+  {
+    id:1001,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: "",
+    label: 'MenuMyTeam',
+    role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+  },
+  {
+    id:1002,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.EmployeeTimeSheets,
+    label: 'SubMenuTimesheetManagement',
+    role: 'U'
+  },
+  {
+    id:1003,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.LeaveFund,
+    label: 'MenuLeaveTOILManagement',
+    role: 'U'
+  },
+  {
+    id:1004,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.PersonalDetails,
+    label: 'MenuIndividualManagement',
+    role: 'U'
+  },
+  {
+    id:1005,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.ChangeShiftReport,
+    label: 'MenuChangeShiftReport',
+    role: 'U'
+  },
   {
     id: 104,
     parentId: 0,
     icon: 'c-resignation-requests-management',
     label: "ResignationRequestsManagement",
     to: map.ResignationRequestsManagement,
-    role: 'U'
+    role: 'U',
+    role: ['V030']
   },
   {
     id: 4,
@@ -240,17 +299,8 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 99,
+    id: 97,
     parentId: 10,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "RequestRegistration",
-    label2: "RequestRegistration",
-    to: map.Registration,
-    role: 'U'
-  },
-  {
-    id: 100,
-    parentId: 99,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Registration",
     label2: "Registration",
@@ -259,7 +309,7 @@ export const Navigation = [
   },
   {
     id: 101,
-    parentId: 99,
+    parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
@@ -267,18 +317,26 @@ export const Navigation = [
   },
   {
     id: 102,
-    parentId: 99,
+    parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ProposedResignation",
     to: map.ProposedResignation,
     role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
-    id: 103,
+    id: 98,
     parentId: 0,
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: ['V030','V096','V060','V073']
+    role: ['V030','V096','V060','V070','V077','V073']
+  },
+  {
+    id: 99999,
+    parentId: 17,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "vaccination",
+    to: map.VaxcinList,
+    role: 'U'
   }
 ];

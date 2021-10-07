@@ -6,6 +6,25 @@
         .nav-item {
             border: 1px solid #ccc;
             border-radius: 0.5em;
+            padding: 0.5em 5em;
+            margin-right: 2em;
+            background-color: #fff;
+            color: #858796;
+        }
+        .active {
+            background-color: #347ef9;
+            color: #fff;
+        }
+    }
+}
+.task-tabs-vinschool {
+    &.nav-tabs {
+        border: none;
+        padding: 0 0 5px 0;
+        margin: 0 auto;
+        .nav-item {
+            border: 1px solid #ccc;
+            border-radius: 0.5em;
             padding: 0.5em 1em;
             margin-right: 2em;
             background-color: #fff;
@@ -161,6 +180,11 @@
                 &.fail {
                     border-color: #FF0000;
                     color: #FF0000;
+                    background: #FFFFFF;
+                }
+                &.warning {
+                    border-color: #FFA200;
+                    color: #FFA200;
                     background: #FFFFFF;
                 }
             }

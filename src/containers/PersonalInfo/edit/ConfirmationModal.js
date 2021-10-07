@@ -9,7 +9,7 @@ import Spinner from 'react-bootstrap/Spinner'
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             message: "",
             isShowResultConfirm: false,
@@ -29,16 +29,16 @@ class ConfirmationModal extends React.Component {
         if (res && res.data) {
             const result = res.data.result;
             const code = result.code;
-            if (code == "000000") {
+            if (code === "000000" && res.data?.data[0]?.sub[0]?.status === "S") {
                 this.setState({
                     resultTitle: t("Successful"),
-                    resultMessage: result.message,
+                    resultMessage: res.data?.data[0]?.sub[0]?.message,
                     isSuccess: true
                 });
             } else {
                 this.setState({
                     resultTitle: t("Notification"),
-                    resultMessage: result.message,
+                    resultMessage: res.data?.data[0]?.sub[0]?.message,
                     isSuccess: false
                 });
             }
@@ -81,20 +81,39 @@ class ConfirmationModal extends React.Component {
                     if (!_.isEmpty(errors)) {
                         return
                     }
-                    let formData = new FormData()
-                    formData.append('HRComment', message)
-                    formData.append('ManagerInfo', manager)
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/disapproval`, formData, {
+                    //let formData = new FormData()
+                    //formData.append('HRComment', message)
+                    //formData.append('ManagerInfo', manager)
+                    let data = [{
+                        id: this.props.data.id,
+                        requestTypeId:1,
+                        sub:[
+                            {
+                                id: this.props.data.id,
+                                processStatusId: 1
+                            }
+                        ]
+                    }]
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/approve`, data, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                         .finally(() => {
                             window.location.href = "/tasks?tab=approval";
                         })
                 } else if (this.props.type == Constants.STATUS_APPROVED) {
-                    let formData = new FormData()
-                    formData.append('ManagerInfo', JSON.stringify(this.state.manager))
-
-                    axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/approval`, formData, {
+                    // let formData = new FormData()
+                    // formData.append('ManagerInfo', JSON.stringify(this.state.manager))
+                    let data = [{
+                        id: this.props.data.id,
+                        requestTypeId:1,
+                        sub:[
+                            {
+                                id: this.props.data.id,
+                                processStatusId: 2
+                            }
+                        ]
+                    }]
+                    axios.post(`${process.env.REACT_APP_REQUEST_URL}request/approve`, data, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                         .then(response => {

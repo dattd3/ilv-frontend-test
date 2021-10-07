@@ -83,7 +83,7 @@ class MyComponent extends React.Component {
         // localStorage.clear();
         // window.location.href = map.Login;
       });
-    axios.get(`${process.env.REACT_APP_HRDX_REQUEST_URL}api/onboarding/staffdocument?EmployeeCode=${localStorage.getItem('employeeNo')}`, config)
+    axios.get(`${process.env.REACT_APP_HRDX_URL}api/onboarding/staffdocument?EmployeeCode=${localStorage.getItem('employeeNo')}`, config)
     .then(res => {
       if(res && res.data && res.data.data){
         this.prepareUserDocumentData(res.data.data);

@@ -19,10 +19,11 @@ class ShiftTable extends React.Component {
                     <thead className="bg-primary text-white text-center">
                         <tr>
                             <th scope="col">{t("SelectShiftCode")}</th>
-                            <th scope="col">{t("ShiftCode")}</th>
-                            <th scope="col">{t("WorkHours")}</th>
-                            <th scope="col">{t("StartTime")}</th>
+                            <th scope="col">{t("StartHour")}</th>
                             <th scope="col">{t("Endtime")}</th>
+                            <th scope="col">{t("WorkHours")}</th>
+                            <th scope="col">{t("ShiftCode")}</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -33,10 +34,10 @@ class ShiftTable extends React.Component {
                                         <input className="form-check-input position-static" checked={shift.shift_id == this.props.timesheet.shiftId} onChange={this.updateShift.bind(this, shift)} type="radio" name={'shift' + this.props.timesheet.index} value={shift.shift_id}/>
                                     </div>
                                 </th>
-                                <td>{shift.shift_id}</td>
-                                <td>{shift.hours}</td>
                                 <td>{shift.from_time.replace("#", "") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
                                 <td>{shift.to_time.replace("#", "") ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
+                                <td>{shift.hours}</td>
+                                <td>{shift.shift_id}</td>      
                             </tr>
                         })}
                     </tbody>

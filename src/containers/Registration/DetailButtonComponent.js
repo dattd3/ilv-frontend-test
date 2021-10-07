@@ -23,17 +23,15 @@ class DetailButtonComponent extends React.Component {
 
     approval = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận phê duyệt", modalMessage: "Bạn có đồng ý phê duyệt " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle:"ApproveRequest", modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
 
     disApproval = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận không phê duyệt", modalMessage: "Lý do không phê duyệt (Bắt buộc)", typeRequest: Constants.STATUS_NOT_APPROVED })
+        this.setState({ isConfirmShow: true, modalTitle: "RejectApproveRequest", modalMessage: "ReasonRejectingRequest", typeRequest: Constants.STATUS_NOT_APPROVED })
     }
 
     revocationApproval = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: t("ConfirmApprovalRecall"), modalMessage: t("SureApprovalRecall"), typeRequest: 0 })
+        this.setState({ isConfirmShow: true, modalTitle: "ConfirmApprovalRecall", modalMessage: "SureApprovalRecall", typeRequest: 0 })
     }
 
     evictionRequest = () => {
@@ -42,11 +40,10 @@ class DetailButtonComponent extends React.Component {
     }
     consent = () => {
         const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận thẩm định", modalMessage: "Bạn có đồng ý thẩm định " + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: Constants.STATUS_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
     }
     rejected = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: "Xác nhận từ chối thẩm định", modalMessage: "Lý do từ chối thẩm định (Bắt buộc)", typeRequest: Constants.STATUS_NO_CONSENTED })
+        this.setState({ isConfirmShow: true, modalTitle: "RejectConsenterRequest", modalMessage: "ReasonRejectRequest", typeRequest: Constants.STATUS_NO_CONSENTED })
     }
     onHideModalConfirm() {
         this.setState({ isConfirmShow: false })
@@ -92,7 +89,7 @@ class DetailButtonComponent extends React.Component {
                     <>
                     <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> Không duyệt</button>
+                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
                     </>
                     : null
                 }

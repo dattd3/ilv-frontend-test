@@ -1,0 +1,402 @@
+.shift-update-modal {
+    font-size: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #000000;
+    .font-14 {
+        font-size: 14px;
+    }
+    .shift-update-modal-body {
+        border-radius: 0;
+        padding: 1rem 1rem 0.5rem 1rem;
+        .header-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            i {
+                color: #808080;
+                font-weight: normal;
+                margin-right: 5px;
+                font-size: 13px;
+            }
+        }
+        .wrap-items {
+            max-height: 560px;
+            padding-right: 0.3rem;
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                background-color: #F5F5F5;
+                width: 8px;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #a4afb7;
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+                border-top: 1px solid white;
+                border-bottom: 1px solid white;
+                border-radius: 4px;
+            }
+            &::-webkit-scrollbar-track {
+                background-color: #d3d3d3;
+                border-left: 3.5px solid white;
+                border-right: 3.5px solid white;
+                border-top: 3.5px solid white;
+                border-bottom: 3.5px solid white;
+            }
+            .errors {
+                margin-top: 5px;
+                font-size: 12px;
+                font-style: italic;
+                &.notice-for-break-time {
+                    margin-bottom: 0;
+                }
+            }
+            .item {
+                border: 1px solid #d1d3e2;
+                margin-bottom: 10px;
+                border-radius: 6px;
+                padding: 0 0.5rem 10px 0.5rem;
+                .add-item {
+                    margin-right: -0.5rem;
+                    display: flex;
+                    justify-content: flex-end;
+                    // margin-bottom: 10px;
+                    .add-item-button {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 5px 10px;
+                        color: #FFFFFF;
+                        border-top-right-radius: 5px;
+                        border-bottom-left-radius: 5px;
+                        margin: -1px -1px 0 0;
+                        cursor: pointer;
+                        font-size: 13px;
+                        i {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+                .shift-update-type-group {
+                    label {
+                        width: 220px;
+                        font-size: inherit;
+                        padding: 0.3rem 0;
+                        &.active {
+                            background: #36b9cc;
+                        }
+                    }
+                }
+                .shift-type {
+                    margin: 10px 0;
+                    .wrap-shift-type-select {
+                        width: 35%;
+                    }
+                }
+                .reason {
+                    padding-bottom: 5px;
+                    label {
+                        display: block;
+                    }
+                    input {
+                        width: 100%;
+                        border-radius: 4px;
+                        border: 1px solid #d1d3e2;
+                        padding: 5px;
+                        &:active {
+                            outline: none;
+                            border: 1px solid #d1d3e2;
+                        }
+                        &:focus {
+                            outline: none;
+                            border: 1px solid #d1d3e2;
+                        }
+                    }
+                }
+                .applicable-object {
+                    padding-top: 5px;
+                    label {
+                        display: block;
+                    }
+                    .timesheet-box {
+                        .member-list {
+                            width: 100%;
+                        }
+                    }
+                }
+                .content-for-enter-shift-time {
+                    margin-bottom: 10px;
+                    .time-configuration {
+                        display: flex;
+                        align-items: flex-start;
+                        justify-content: space-between;
+                        .time-planing, .time-break {
+                            width: 35%;
+                            .time-data {
+                                display: flex;
+                                align-items: flex-start;
+                                justify-content: space-between;
+                                .start-time {
+                                    flex: 0 0 45%;
+                                }
+                                .end-time {
+                                    flex: 0 0 45%;
+                                }
+                                input {
+                                    font-size: inherit;
+                                    border-radius: 4px;
+                                    &:focus {
+                                        outline: none;
+                                        box-shadow: none;
+                                        border: 1px solid #CCCCCC;
+                                    }
+                                    &:active {
+                                        outline: none;
+                                        box-shadow: none;
+                                        border: 1px solid #CCCCCC;
+                                    }
+                                }
+                            }
+                        }
+                        .time-total {
+                            width: 150px;
+                            label {
+                                width: 100%;
+                            }
+                            .total {
+                                width: 100%;
+                                margin: 0;
+                                background: #F2F2F2;
+                                border-radius: 4px;
+                                height: calc(1.5em + 0.75rem + 2px);
+                                line-height: 1.5;
+                                padding: 0.375rem 0.75rem;
+                            }
+                        }
+                    }
+                }
+                .content-for-shift-select {
+                    padding: 0 0 15px 0;
+                    .shift-table {
+                        margin-bottom: 10px;
+                        .shift {
+                            border-collapse: separate;
+                            border-spacing: 0;
+                            // border: 1px solid #d1d3e2;
+                            thead {
+                                display: table;
+                                width: 100%;
+                                table-layout: fixed;
+                                background: #4e73df;
+                                color: #FFFFFF;
+                                th {
+                                    font-weight: normal;
+                                    text-align: center;
+                                    padding: 0;
+                                    &.col-shift-code {
+                                        button {
+                                            font-size: inherit;
+                                            background: transparent;
+                                            border-color: transparent;
+                                            outline: none;
+                                            box-shadow: none;
+                                            border: none;
+                                            &::after {
+                                                display: inline-block;
+                                                vertical-align: 0.2em;
+                                                color: #FFFFFF;
+                                                content: "";
+                                                border-top: 0.4em solid;
+                                                border-right: 0.4em solid transparent;
+                                                border-bottom: 0;
+                                                border-left: 0.4em solid transparent;
+                                            }
+                                            .shift-code {
+                                                margin-right: 5px;
+                                            }
+                                            &:active {
+                                                background: transparent;
+                                                border: none;
+                                                box-shadow: none;
+                                            }
+                                            &:focus {
+                                                background: transparent;
+                                                border: none;
+                                                box-shadow: none;
+                                            }
+                                        }
+                                        .shift-code-popup {
+                                            padding: 5px 10px;
+                                            .input-shift-code {
+                                                input {
+                                                    border: none;
+                                                    font-size: 12px;
+                                                    &:focus {
+                                                        border: none;
+                                                        outline: none;
+                                                    }
+                                                    &:active {
+                                                        border: none;
+                                                        outline: none;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .start-time, .end-time {
+                                        width: 100px;
+                                        display: inline-block;
+                                        .caret-down {
+                                            &::after {
+                                                display: inline-block;
+                                                vertical-align: 0.2em;
+                                                color: #FFFFFF;
+                                                content: "";
+                                                border-top: 0.4em solid;
+                                                border-right: 0.4em solid transparent;
+                                                border-bottom: 0;
+                                                border-left: 0.4em solid transparent;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tbody {
+                                display: block;
+                                max-height: 150px;
+                                overflow-y: auto;
+                                &::-webkit-scrollbar {
+                                    background-color: #F5F5F5;
+                                    width: 8px;
+                                }
+                                &::-webkit-scrollbar-thumb {
+                                    background-color: #a4afb7;
+                                    border-left: 1px solid white;
+                                    border-right: 1px solid white;
+                                    border-top: 1px solid white;
+                                    border-bottom: 1px solid white;
+                                    border-radius: 4px;
+                                }
+                                &::-webkit-scrollbar-track {
+                                    background-color: #d3d3d3;
+                                    border-left: 3.5px solid white;
+                                    border-right: 3.5px solid white;
+                                    border-top: 3.5px solid white;
+                                    border-bottom: 3.5px solid white;
+                                }
+                                tr {
+                                    display: table;
+                                    width: 100%;
+                                    table-layout: fixed;
+                                    td {
+                                        padding: 6px 10px;
+                                        text-align: center;
+                                        border-left: 1px solid #d1d3e2;
+                                        border-bottom: 1px solid #d1d3e2;
+                                        &.col-shift-code {
+                                            border-right: 1px solid #d1d3e2;
+                                        }
+                                        input {
+                                            cursor: pointer;
+                                        }
+                                    }
+                                    &:last-child {
+                                        td {
+                                            border-bottom: 1.5px solid #d1d3e2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .list-employees-block {
+                        padding: 0;
+                        border: 1px solid #d1d3e2;
+                        border-radius: 5px;
+                        .list-employees-header {
+                            background: #F2F2F2;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            padding: 6px 10px;
+                            border-top-left-radius: 5px;
+                            border-top-right-radius: 5px;
+                            h6 {
+                                margin: 0;
+                                font-weight: bold;
+                            }
+                        }
+                        .list-employees {
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+                            flex-wrap: wrap;
+                            padding: 5px;
+                            max-height: 190px;
+                            overflow: auto;
+                            &::-webkit-scrollbar {
+                                height: 8px;
+                                width: 8px;
+                                background-color: #f5f5f5;
+                            }
+                            &::-webkit-scrollbar-thumb {
+                                background-color: #a4afb7;
+                                border-left: 1px solid #FFFFFF;
+                                border-right: 1px solid #FFFFFF;
+                                border-top: 1px solid #FFFFFF;
+                                border-bottom: 1px solid #FFFFFF;
+                                border-radius: 4px;
+                            }
+                            &::-webkit-scrollbar-track {
+                                background-color: #d3d3d3;
+                                border-left: 3.5px solid #FFFFFF;
+                                border-right: 3.5px solid #FFFFFF;
+                                border-top: 3.5px solid #FFFFFF;
+                                border-bottom: 3.5px solid #FFFFFF;
+                            }
+
+                            .employee-item {
+                                display: flex;
+                                justify-content: center;
+                                flex-direction: column;
+                                font-size: 13px;
+                                width: 16.6666666667%;
+                                padding: 5px;
+                                .item {
+                                    border: 1px solid #d1d3e2;
+                                    border-radius: 5px;
+                                    padding: 5px;
+                                    margin: 0;
+                                    p {
+                                        margin: 0;
+                                        &.full-name {
+                                            text-align: center;
+                                            font-weight: bold;
+                                        }
+                                        &.position {
+                                            font-style: italic;
+                                            text-align: center;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .buttons-block {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+            button {
+                font-size: inherit;
+                width: 90px;
+            }
+            .btn-cancel {
+                margin-right: 15px;
+            }
+        }
+    }
+}
