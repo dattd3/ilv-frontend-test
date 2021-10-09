@@ -73,14 +73,57 @@
     }
     
     .main-result-section {
+        padding: 15px 0;
         .block-title {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
-            .title {
-                text-align: center;
-                font-size: 16px;
-                text-transform: uppercase;
-                &.special {
-                    color: #283280;
+            .block-label {
+                .title {
+                    text-align: center;
+                    font-size: 16px;
+                    text-transform: uppercase;
+                    &.special {
+                        color: #283280;
+                    }
+                }
+            }
+            .block-buttons {
+                position: absolute;
+                right: 0;
+                top: 0;
+                display: inline-flex;
+                align-items: center;
+                button {
+                    border-style: solid;
+                    border-radius: 4px;
+                    border-width: 1px;
+                    width: 100px;
+                    background: #FFFFFF;
+                    padding: 5px;
+                    font-size: 14px;
+                    text-decoration: none;
+                    &.download-excel {
+                        margin-left: 15px;
+                        border-color: #28a745;
+                        color: #28a745;
+                        background: url("../img/icon/Icon_download_green.svg") no-repeat 8px 9px/8px;
+                    }
+                    &.download-pdf {
+                        border-color: #e52c08;
+                        color: #e52c08;
+                        background: url("../img/icon/Icon_download_red.svg") no-repeat 8px 9px/8px;
+                    }
+                    &:active {
+                        outline: none;
+                        box-shadow: none;
+                    }
+                    &:focus {
+                        outline: none;
+                        box-shadow: none;
+                    }
                 }
             }
         }
