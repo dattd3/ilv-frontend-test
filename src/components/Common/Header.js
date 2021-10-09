@@ -5,6 +5,7 @@ import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from '
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import moment from 'moment';
+import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
@@ -128,19 +129,19 @@ function Header(props) {
                             const timePost = getTimePost(item.createdDate);
                             let notificationLink = (type) => {
                                 switch (type) {
-                                    case 0:
+                                    case Constants.notificationType.NOTIFICATION_DEFAULT:
                                         return `/notifications/${item.id}`
-                                    case 1:
+                                    case Constants.notificationType.NOTIFICATION_REGISTRATION:
                                         if (item.title.indexOf("thẩm định") > 0)
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
-                                    case 7:
+                                    case Constants.notificationType.NOTIFICATION_REJECT:
                                         return `/tasks`
-                                    case 8:
+                                    case Constants.notificationType.NOTIFICATION_AUTO_JOB:
                                         return `/tasks?tab=approval`
-                                    // case 5:
-                                    //     return item.url
+                                    case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
+                                        return `/timesheet`
                                     default:
                                         return `${item.url}`
                                 }
