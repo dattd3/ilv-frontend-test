@@ -46,6 +46,8 @@ const Constants = {
   IN_OUT_TIME_UPDATE: 5,
   CHNAGE_DIVISON_SHIFT: 8,
   DEPARTMENT_TIMESHEET: 9,
+  ONBOARDING: 6,
+  RESIGN_SELF: 7,
 
   //Status request
   STATUS_PENDING: 0,
@@ -133,7 +135,7 @@ const Constants = {
   //other
   QAAlreadyExist: "QAAlreadyExist",
 
-  // Ticket 
+  // Ticket
 
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
