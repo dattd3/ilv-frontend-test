@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import axios from 'axios'
 import _ from 'lodash'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import { useTranslation } from "react-i18next"
 import { Modal, Button, Form } from 'react-bootstrap'
-import { formatStringByMuleValue, formatNumberInteger } from "../../../commons/Utils"
+import { formatStringByMuleValue } from "../../../commons/Utils"
 import './ApprovalDelegationModal.scss'
-import 'react-datepicker/dist/react-datepicker.css'
 import defaultAvartar from '../../../components/Common/DefaultAvartar'
 import { actionApprovalDelegation } from "./Constant"
 import Constants from "../../../commons/Constants"
@@ -20,7 +19,7 @@ const MyOption = props => {
                     <img width="50" height="50" className="avatar" src={`data:image/png;base64,${data.avatar}`} onError={defaultAvartar} alt="avatar" />
                 </div>
                 <div className="float-left text-wrap w-75">
-                    <div className="title">{data.fullname}</div>
+                    <div className="title">{data.fullName}</div>
                     <div className="comment" style={{fontStyle: 'italic'}}>({data.userAccount}) {data.current_position}</div>
                 </div>
             </div>
@@ -31,15 +30,67 @@ const MyOption = props => {
 function ApprovalDelegationModal(props) {
     const { t } = useTranslation()
     const { isShow, onHideApprovalDelegationModal, action, title, userApprovalDelegation, updateStatus } = props
-    const { users, SetUsers } = useState([])
-    const { supporter, SetSupporter } = useState([])
+    const [users, SetUsers] = useState([])
+    const [newUserApprovalDelegation, SetNewUserApprovalDelegation] = useState(null)
+    const [textSearch, SetTextSearch] = useState("")
+    const [keyword, SetKeyword] = useState("")
+
+    useEffect(() => {
+        async function searchUsers() {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            }
+            const response = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: keyword, should_check_superviser: false }, config)
+            if (response && response.data) {
+                const result = response.data.result
+                if (result.code == Constants.API_SUCCESS_CODE) {
+                    const data = response.data.data
+                    const users = (data || []).map(res => {
+                        return {
+                            value: res.uid,
+                            label: res.fullName,
+                            fullName: res.fullName,
+                            avatar: res.avatar,
+                            employeeLevel: res.employee_level,
+                            pnl: res.pnl,
+                            userAccount: res.user_account,
+                            part: res.part,
+                            current_position: res.title,
+                            department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                        }
+                    })
+                    SetUsers(users)
+                }
+            }
+        }
+
+        if (keyword != "") {
+            searchUsers()
+        }
+    }, [keyword])
+
+    const sendQuery = query => {
+        SetKeyword(query)
+    }
+    
+    const delayedQuery = useRef(_.debounce(q => sendQuery(q), 1000)).current;
+
+    const onChangeTextSearch = val => {
+        SetTextSearch(val)
+        delayedQuery(val)
+    }
 
     const handleSubmit = async actionModal => {
+        let result
         if (actionModal === actionApprovalDelegation.cancel) {
-            const result = await cancelApprovalDelegation()
-            onHideApprovalDelegationModal()
-            updateStatus(result)
+            result = await cancelApprovalDelegation()
+        } else {
+            result = await createApprovalDelegation()
         }
+        onHideApprovalDelegationModal()
+        updateStatus(result)
     }
 
     const cancelApprovalDelegation = async () => {
@@ -79,8 +130,47 @@ function ApprovalDelegationModal(props) {
         }
     }
 
-    const onInputChange = () => {
+    const createApprovalDelegation = async () => {
+        try {
+            const config = {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            }
+            const data = {
+                delegationUserId: "",
+                title: "",
+                division: ""
+            }
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/delegation`, data, config)
 
+            if (response && response.data) {
+                const result = response.data.result
+                if (result.code == Constants.API_SUCCESS_CODE) {
+                    return {
+                        message: t("ApprovalDelegatedSuccessfully"),
+                        isSuccess: true
+                    }
+                }
+                return {
+                    message: result.message,
+                    isSuccess: false
+                }
+            }
+            return {
+                message: t("AnErrorOccurred"),
+                isSuccess: false
+            }
+        } catch (e) {
+            return {
+                message: t("AnErrorOccurred"),
+                isSuccess: false
+            }
+        }
+    }
+
+    const handleSelectChange = (value) => {
+        SetNewUserApprovalDelegation(value)
     }
 
     const customStyles = {
@@ -93,8 +183,6 @@ function ApprovalDelegationModal(props) {
           cursor: 'pointer',
         })
     }
-
-    console.log(userApprovalDelegation)
 
     return (
         <>
@@ -113,13 +201,13 @@ function ApprovalDelegationModal(props) {
                                 :
                                 <div className="content input-container ">
                                     <Select 
-                                        name="supporter"
+                                        components={{ Option: MyOption }}
                                         options={users}
-                                        value={supporter}
-                                        styles={customStyles} components={{ Option: MyOption }} 
-                                        onInputChange={onInputChange}  
-                                        onChange={item => this.handleSelectChange('supporter', item)} 
-                                        placeholder={t("SearchTextPlaceholder")} key="supporter" />
+                                        value={newUserApprovalDelegation}
+                                        styles={customStyles}  
+                                        onInputChange={onChangeTextSearch} 
+                                        onChange={item => handleSelectChange(item)} 
+                                        placeholder={t("SearchTextPlaceholder")} />
                                 </div>
                             }
                         </div>
@@ -128,7 +216,7 @@ function ApprovalDelegationModal(props) {
                             {
                                 action === actionApprovalDelegation.cancel 
                                 ? <Form.Control type="text" className="input-text" value={userApprovalDelegation.title || ''} readOnly />
-                                : <Form.Control type="text" className="input-text" placeholder={supporter ? supporter.current_position : ''} readOnly />
+                                : <Form.Control type="text" className="input-text" value={newUserApprovalDelegation ? newUserApprovalDelegation.current_position : ''} readOnly />
                             }
                         </Form.Group>
                         <Form.Group className="col-4">
@@ -136,7 +224,7 @@ function ApprovalDelegationModal(props) {
                             {
                                 action === actionApprovalDelegation.cancel 
                                 ? <Form.Control type="text" className="input-text" value={userApprovalDelegation.division || ''} readOnly />
-                                : <Form.Control type="text" className="input-text" placeholder={supporter ? supporter.department : ''} readOnly />
+                                : <Form.Control type="text" className="input-text" value={newUserApprovalDelegation ? newUserApprovalDelegation.department : ''} readOnly />
                             }
                         </Form.Group>
                     </div>
