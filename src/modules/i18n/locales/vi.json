@@ -983,5 +983,6 @@
   "DepartmentTimeSheetInformation": "Thông tin bảng chấm công bộ phận",
   "baseNameBCCFile": "Bảng chấm công Bộ phận",
   "NodataExport" : "Không có dữ liệu!",
-  "SelectReportType" : "Vui lòng chọn loại báo cáo!"
+  "SelectReportType" : "Vui lòng chọn loại báo cáo!",
+  "PleaseEnterInfo": "Vui lòng nhập đủ thông tin!"
 }
