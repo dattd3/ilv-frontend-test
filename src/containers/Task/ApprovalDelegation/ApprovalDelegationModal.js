@@ -34,6 +34,7 @@ function ApprovalDelegationModal(props) {
     const [newUserApprovalDelegation, SetNewUserApprovalDelegation] = useState(null)
     const [textSearch, SetTextSearch] = useState("")
     const [keyword, SetKeyword] = useState("")
+    const [error, SetError] = useState("")
 
     useEffect(() => {
         async function searchUsers() {
@@ -82,11 +83,29 @@ function ApprovalDelegationModal(props) {
         delayedQuery(val)
     }
 
+    const renderError = () => {
+        return error ? <div className="text-danger">{error}</div> : null
+    }
+
+    const isDataValid = () => {
+        if (!newUserApprovalDelegation) {
+            SetError(t("PleaseEnterInfo"))
+            return false
+        } else {
+            SetError(t(""))
+            return true
+        }
+    }
+
     const handleSubmit = async actionModal => {
         let result
         if (actionModal === actionApprovalDelegation.cancel) {
             result = await cancelApprovalDelegation()
         } else {
+            const isValid = isDataValid()
+            if (!isValid) {
+                return
+            }
             result = await createApprovalDelegation()
         }
         onHideApprovalDelegationModal()
@@ -229,6 +248,7 @@ function ApprovalDelegationModal(props) {
                             }
                         </Form.Group>
                     </div>
+                    {renderError()}
                 </div>
                 <div className="buttons-block">
                     <Button type="button" variant="secondary" className="btn-cancel" onClick={onHideApprovalDelegationModal}>{t("CancelSearch")}</Button>

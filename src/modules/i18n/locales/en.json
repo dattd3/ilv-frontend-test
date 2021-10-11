@@ -967,5 +967,6 @@
   "DepartmentTimeSheetInformation": "DepartmentTimeSheetInformation",
   "baseNameBCCFile": "Department Timesheet",
   "NodataExport" : "No data!",
-  "SelectReportType" : "Please select report type!"
+  "SelectReportType" : "Please select report type!",
+  "PleaseEnterInfo": "Please enter the enough information!"
 }
