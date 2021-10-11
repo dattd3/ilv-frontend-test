@@ -13,14 +13,14 @@ import Constants from "../../../commons/Constants"
 const MyOption = props => {
     const { innerProps, innerRef, data } = props
     return (
-        <div ref={innerRef} {...innerProps} className="supporter">
-            <div className="d-block clearfix">
-                <div className="float-left mr-2 w-20">
-                    <img width="50" height="50" className="avatar" src={`data:image/png;base64,${data.avatar}`} onError={defaultAvartar} alt="avatar" />
+        <div ref={innerRef} {...innerProps} className="user-options">
+            <div className="user-info">
+                <div className="avatar-block">
+                    <img className="avatar" src={`data:image/png;base64,${data.avatar}`} onError={defaultAvartar} alt="avatar" />
                 </div>
-                <div className="float-left text-wrap w-75">
-                    <div className="title">{data.fullName}</div>
-                    <div className="comment" style={{fontStyle: 'italic'}}>({data.userAccount}) {data.current_position}</div>
+                <div className="info">
+                    <div className="full-name">{data.fullName}</div>
+                    <div className="detail">({data.userAccount}) {data.current_position}</div>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@ function ApprovalDelegationModal(props) {
                     const data = response.data.data
                     const users = (data || []).map(res => {
                         return {
-                            value: res.uid,
+                            value: res.user_account,
                             label: res.fullName,
                             fullName: res.fullName,
                             avatar: res.avatar,
@@ -138,9 +138,9 @@ function ApprovalDelegationModal(props) {
                 }
             }
             const data = {
-                delegationUserId: "",
-                title: "",
-                division: ""
+                delegationUserId: newUserApprovalDelegation.userAccount,
+                title: newUserApprovalDelegation.current_position,
+                division: newUserApprovalDelegation.department
             }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/delegation`, data, config)
 

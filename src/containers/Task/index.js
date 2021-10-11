@@ -106,6 +106,8 @@ class Task extends React.Component {
         const { tasks, approvalDelegationModal, statusModal } = this.state
         const labelApprovalDelegationAction = approvalDelegationModal.userApprovalDelegation ? t("EndDelegation") : t("ApprovalDelegation")
         const approvalDelegationClass = approvalDelegationModal.userApprovalDelegation ? 'approval-delegation end-approval-delegation' : 'approval-delegation create-approval-delegation'
+        const companyCode = localStorage.getItem("companyCode")
+        const employeeLevel = localStorage.getItem("employeeLevel")
 
         return (
             <>
@@ -127,22 +129,26 @@ class Task extends React.Component {
                         <RequestComponent />
                     </Tab>
                     {
-                    Constants.CONSENTER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) || (localStorage.getItem("companyCode") == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(localStorage.getItem("employeeLevel"))) ? 
+                    Constants.CONSENTER_LIST_LEVEL.includes(employeeLevel) || (companyCode == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(employeeLevel)) ? 
                     <Tab eventKey={tabKey.consent} title={t("Consent")}>
                         <ConsentComponent />
                     </Tab>
                     : null
                     }
                     {
-                        this.state.isShowApprovalTab == true && (Constants.APPROVER_LIST_LEVEL.includes(localStorage.getItem("employeeLevel")) || ["minhvb1@vingroup.net"].includes(localStorage.getItem("email")) || Constants.ROLE_ASSIGMENT_APPROVE.some(word => localStorage.getItem("role_assigment").toLowerCase().includes(localStorage.getItem("role_assigment").toLowerCase())))?
+                        this.state.isShowApprovalTab == true && (Constants.APPROVER_LIST_LEVEL.includes(employeeLevel) || ["minhvb1@vingroup.net"].includes(localStorage.getItem("email")) || Constants.ROLE_ASSIGMENT_APPROVE.some(word => localStorage.getItem("role_assigment").toLowerCase().includes(localStorage.getItem("role_assigment").toLowerCase())))?
                         <Tab eventKey={tabKey.approval} title={t("Approval")}>
                             <ApprovalComponent tasks={tasks} />
                         </Tab>
                         : null
                     }
-                    <Tab eventKey={tabKey.approvalDelegation} title={labelApprovalDelegationAction} tabClassName={approvalDelegationClass}>
-                        <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
-                    </Tab>
+                    {
+                        Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) && companyCode == Constants.pnlVCode.Vin3S ?
+                        <Tab eventKey={tabKey.approvalDelegation} title={labelApprovalDelegationAction} tabClassName={approvalDelegationClass}>
+                            <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
+                        </Tab>
+                        : null
+                    }
                 </Tabs>
             </div>
             </>
