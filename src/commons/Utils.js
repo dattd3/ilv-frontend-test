@@ -58,9 +58,12 @@ const formatNumberInteger = value => {
 const exportToPDF = (elementViewById, fileName) => {
     html2canvas(elementViewById).then(canvas => {
         const image = canvas.toDataURL('image/jpeg', 1.0)
-        const doc = new jsPDF('p', 'px', 'a2')
-        const pageWidth = doc.internal.pageSize.getWidth()
-        const pageHeight = doc.internal.pageSize.getHeight()
+        const doc = new jsPDF('p', 'px', 'a4')
+
+        const pageWidth = doc.internal.pageSize.getWidth() - 20
+        const pageHeight = doc.internal.pageSize.getHeight() - 20
+        // const pageWidth = doc.internal.pageSize.getWidth()
+        // const pageHeight = doc.internal.pageSize.getHeight() 
 
         const widthRatio = pageWidth / canvas.width
         const heightRatio = pageHeight / canvas.height
@@ -69,9 +72,11 @@ const exportToPDF = (elementViewById, fileName) => {
         const canvasWidth = canvas.width * ratio
         const canvasHeight = canvas.height * ratio
 
-        const marginX = (pageWidth - canvasWidth) / 2
-        const marginY = (pageHeight - canvasHeight) / 2
-
+        const marginX = 10
+        const marginY = 10
+        // const marginX = (pageWidth - canvasWidth) / 2
+        // const marginY = (pageHeight - canvasHeight) / 2
+        
         doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
         doc.save(`${fileName}.pdf`)
 
