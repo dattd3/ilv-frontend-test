@@ -143,7 +143,7 @@ class Task extends React.Component {
                         : null
                     }
                     {
-                        Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) && companyCode == Constants.pnlVCode.Vin3S ?
+                        Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) ?
                         <Tab eventKey={tabKey.approvalDelegation} title={labelApprovalDelegationAction} tabClassName={approvalDelegationClass}>
                             <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
                         </Tab>
