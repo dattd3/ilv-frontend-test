@@ -116,6 +116,7 @@ const Constants = {
   CONSENTER_LIST_LEVEL : ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
   QAAlreadyExist: "QAAlreadyExist",
@@ -135,6 +136,14 @@ const Constants = {
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
     SUMARY_REPORT: 1
-  }
+  },
+  pnlVCode: {
+    VinHome: "V040",
+    VinBrain: "V095",
+    VinPearl: "V030",
+    VinMec: "V060",
+    VinSchool: "V061",
+    Vin3S: "V005"
+  },
 };
 export default Constants
