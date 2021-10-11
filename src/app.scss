@@ -2133,6 +2133,39 @@ span.badge-notification[data-badge]::after {
   width: 120px !important
 }
 
+.user-options {
+  padding: 5px 0;
+  cursor: pointer;
+  border-bottom: 1px dashed #D8D8D8;
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    .avatar-block {
+      margin-right: 5px;
+      .avatar {
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+        border-radius: 30px;
+      }
+    }
+    .info {
+      .full-name {
+        font-size: 13px;
+      }
+      .detail {
+        font-size: 11px;
+        font-style: italic;
+        color: #848484;
+      }
+    }
+  }
+  &:last-child {
+    border: none;
+  }
+}
+
 .task-page {
   .task-tabs {
     .approval-delegation {
