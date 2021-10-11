@@ -140,7 +140,8 @@ function ApprovalDelegationModal(props) {
             const data = {
                 delegationUserId: newUserApprovalDelegation.userAccount,
                 title: newUserApprovalDelegation.current_position,
-                division: newUserApprovalDelegation.department
+                division: newUserApprovalDelegation.department,
+                fullName: newUserApprovalDelegation.fullName
             }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/delegation`, data, config)
 
@@ -194,10 +195,10 @@ function ApprovalDelegationModal(props) {
                 <div className="user-infos">
                     <div className="row">
                         <div className="form-group col-4">
-                            <label className="form-label">{t("FullName")}</label>
+                            <label className="form-label">{t("DelegateTo")}</label>
                             {
                                 action === actionApprovalDelegation.cancel ?
-                                <input type="text" className="input-text form-control" value={userApprovalDelegation.delegateUserId || ""} readOnly />
+                                <input type="text" className="input-text form-control" value={userApprovalDelegation.fullName || ""} readOnly />
                                 :
                                 <div className="content input-container ">
                                     <Select 

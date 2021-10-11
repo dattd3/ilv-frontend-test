@@ -17,7 +17,7 @@ function ApprovalDelegationList(props) {
                     <div className="row user-info">
                         <div className="col-4">
                             <label>{t("DelegateTo")}</label>
-                            <p className="text-truncate value full-name">{userApprovalDelegation.delegateUserId}</p>
+                            <p className="text-truncate value full-name">{userApprovalDelegation.fullName}</p>
                         </div>
                         <div className="col-4">
                             <label>{t("Title")}</label>
