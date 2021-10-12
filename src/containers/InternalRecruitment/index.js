@@ -27,7 +27,7 @@ class MyComponent extends React.Component {
   render() {
     return (
       <div className="internal-recruitment">
-        <h1 className="h3 text-uppercase text-gray-800">internal-recruitment</h1>
+        <h1 className="content-page-header">internal-recruitment</h1>
       </div>
     )
   }

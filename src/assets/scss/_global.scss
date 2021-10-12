@@ -205,4 +205,15 @@ a {
       }
     }
   }
+  &.vaccine-create-info {
+    font-size: 14px;
+    input {
+      font-size: inherit !important;
+    }
+    .action-buttons {
+      button {
+        font-size: inherit;
+      }
+    }
+  }
 }

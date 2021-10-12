@@ -47,7 +47,7 @@ class TimesheetSearch extends React.Component {
   render() {
     const { t } = this.props;
     return <>
-    <h5 className="searchTitle">{t("SelectTimesheetPeriod")}</h5>
+    <h5 className="searchTitle text-uppercase">{t("SelectTimesheetPeriod")}</h5>
     <div className="timesheet-box shadow">
       <div className="row">
         <div className="col">

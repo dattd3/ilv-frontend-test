@@ -176,7 +176,7 @@ class MyComponent extends React.Component {
 
         return (
             <div className="personal-info">
-                <h1 className="h3 text-uppercase text-gray-800">{t("WorkingProcess")}</h1>
+                <h1 className="content-page-header">{t("WorkingProcess")}</h1>
                 <Tabs defaultActiveKey="LaborContract" id="uncontrolled-tab-example">
                     <Tab eventKey="LaborContract" title={t("LaborContract")}>
                         <Container fluid className="info-tab-content shadow">

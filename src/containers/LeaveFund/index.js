@@ -334,7 +334,7 @@ class LeaveFund extends React.Component {
 
     return (
       <div className="leave-fund-section">
-        <h1 className="h3 text-uppercase text-gray-800">{t("MenuLeaveTOILManagement")}</h1>
+        <h1 className="content-page-header">{t("MenuLeaveTOILManagement")}</h1>
         <div className="card border shadow container-fluid filter-block">
           <div className="row">
             <div className="col-md-3 column">
