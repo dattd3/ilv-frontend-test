@@ -87,6 +87,17 @@ class PaySlipsComponent extends React.Component {
         {
           isSearch && acessToken && payslip ?
           <>
+          <div className="block-buttons">
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <ReactHTMLTableToExcel
+                id="test-table-xls-button"
+                className="btn btn-link pull-right download-excel"
+                table="payslip-download"
+                filename="SalaryInformation"
+                sheet="SalaryInformation"
+                buttonText="Tải Excel"
+            />
+          </div>
           <div className="result-block" id="result-block">
             <div className="card mb-4">
               <div className="card-body">
