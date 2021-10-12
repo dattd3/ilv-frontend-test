@@ -306,7 +306,7 @@ class VaccinationDetail extends React.Component {
             <>
                 <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
                 <Modal backdrop="static" keyboard={false}
-                    className='info-modal-common position-apply-modal'
+                    className='info-modal-common position-apply-modal vaccine-create-info'
                     centered show={this.state.show}
                     onHide={this.props.onHide}
                     size="xl"
@@ -472,17 +472,17 @@ class VaccinationDetail extends React.Component {
                                                             <td>{(index + 1)+". "+v.name}</td>
                                                             <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
                                                             <td className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
                                                             <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                                 <input className="d-none" type="radio" value="4" name={v.id} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                             </td>
@@ -495,7 +495,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="clearfix edit-button text-right mt-3">
+                        <div className="clearfix action-buttons text-right mt-3">
                             <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
                                 !(this.state.formData.vaccinTypeId && this.state.formData.injectedAt && 
