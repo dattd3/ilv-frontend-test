@@ -56,12 +56,15 @@ const formatNumberInteger = value => {
 }
 
 const exportToPDF = (elementViewById, fileName) => {
-    html2canvas(elementViewById).then(canvas => {
-        const image = canvas.toDataURL('image/jpeg', 1.0)
-        const doc = new jsPDF('p', 'px', 'a4')
+    const quality = 1.0
+    const paperSize = 'a4'
+    const totalEdgeDistance = 20
 
-        const pageWidth = doc.internal.pageSize.getWidth() - 20
-        const pageHeight = doc.internal.pageSize.getHeight() - 20
+    html2canvas(elementViewById).then(canvas => {
+        const image = canvas.toDataURL('image/jpeg', quality)
+        const doc = new jsPDF('p', 'px', paperSize)
+        const pageWidth = doc.internal.pageSize.getWidth() - totalEdgeDistance
+        const pageHeight = doc.internal.pageSize.getHeight() - totalEdgeDistance
         // const pageWidth = doc.internal.pageSize.getWidth()
         // const pageHeight = doc.internal.pageSize.getHeight() 
 
@@ -72,23 +75,13 @@ const exportToPDF = (elementViewById, fileName) => {
         const canvasWidth = canvas.width * ratio
         const canvasHeight = canvas.height * ratio
 
-        const marginX = 10
-        const marginY = 10
+        const marginX = totalEdgeDistance / 2
+        const marginY = totalEdgeDistance / 2
         // const marginX = (pageWidth - canvasWidth) / 2
         // const marginY = (pageHeight - canvasHeight) / 2
         
         doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
         doc.save(`${fileName}.pdf`)
-
-        // const imgData = canvas.toDataURL("image/png")
-        // const pdfDoc = new jsPDF("portrait", "px", "a4")
-        // const pdfDocWidth = pdfDoc.internal.pageSize.getWidth()
-        // let pdfDocHeight = pdfDoc.internal.pageSize.getHeight()
-
-        // pdfDocHeight = ratio * pdfDocWidth
-        // pdfDoc.text()
-        // pdfDoc.addImage(imgData, 'PNG', 0, 0, pdfDocWidth - 20, pdfDocHeight - 10)
-        // pdfDoc.save(`${fileName}.pdf`)
     })
 }
 
