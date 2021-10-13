@@ -338,7 +338,12 @@ class TaskList extends React.Component {
 
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.sender ? `sender=${dataForSearch.sender}&` : '';
-        params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        // params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        if(dataForSearch.status == 0){
+            params += `status=${(this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING )}&`;
+        }else{
+            params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        }
         this.setState({ 
             approveTasks: [],
             tasks: [],
@@ -376,7 +381,7 @@ class TaskList extends React.Component {
                             <Select name="absenceType" 
                                     className="w-75" 
                                     // defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || ""}
+                                    value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
                                     isClearable={false}
                                     onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                     // selectedValue={{ label: t("All"), value: 0 }}
