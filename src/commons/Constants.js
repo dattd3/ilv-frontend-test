@@ -143,7 +143,12 @@ const Constants = {
     VinPearl: "V030",
     VinMec: "V060",
     VinSchool: "V061",
-    Vin3S: "V005"
+    Vin3S: "V005",
+    VincomRetail: "V053",
+    VinSmart: "V073",
+    VinSoftware: "V096",
+    VinFast: "V070",
+    VinFastTrading: "V077"
   },
 };
 export default Constants
