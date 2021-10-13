@@ -9,7 +9,7 @@ class TimesheetSummary extends React.Component {
       <div className="card shadow">
         <div className="card-header text-uppercase">{t("TimesheetSummary")}</div>
         <div className="card-body">
-          <div className="row">
+          <div className="row title">
             <div className="col">
               <div className="title text-center">{t("StandardWorkingDays")}</div>
             </div>

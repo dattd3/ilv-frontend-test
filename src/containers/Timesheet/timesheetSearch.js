@@ -47,7 +47,7 @@ class TimesheetSearch extends React.Component {
   render() {
     const { t } = this.props;
     return <>
-    <h5 className="searchTitle text-uppercase">{t("SelectTimesheetPeriod")}</h5>
+    <h5 className="content-page-header">{t("SelectTimesheetPeriod")}</h5>
     <div className="timesheet-box shadow">
       <div className="row">
         <div className="col">
@@ -90,7 +90,7 @@ class TimesheetSearch extends React.Component {
         <div className="col">
         <div className="title">&nbsp;</div>
           <div className="content">
-          <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>{t("Search")}</button>
+          <button type="button" className="btn btn-lg btn-warning btn-search" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>
