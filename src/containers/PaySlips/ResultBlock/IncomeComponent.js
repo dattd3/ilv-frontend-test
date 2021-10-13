@@ -1,6 +1,5 @@
 import React from "react"
 import { IncomeTablesConfig } from './IncomeTableConfig';
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import { useTranslation } from "react-i18next"
 
 function TrTable(props) {
@@ -139,15 +138,6 @@ function IncomeComponent(props) {
                     })}
                 </tbody>
             </table>
-            <span>
-                <ReactHTMLTableToExcel
-                    id="test-table-xls-button"
-                    className="btn btn-link pull-right mr-2"
-                    table="payslip-download"
-                    filename="SalaryInformation"
-                    sheet="SalaryInformation"
-                    buttonText="Tải xuống Excel"
-                /></span>
         </>
     );
 }

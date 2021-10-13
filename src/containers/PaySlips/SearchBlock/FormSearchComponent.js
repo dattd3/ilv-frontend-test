@@ -68,7 +68,6 @@ class FormSearchComponent extends React.Component {
                 </Col>
                 </Form.Group>
             </Form>
-            <hr />
             </div>
         )
     }
