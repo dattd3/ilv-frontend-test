@@ -292,15 +292,20 @@ class BusinessTripComponent extends React.Component {
                     this.setState({ newRequestInfo })
                 }
             }).catch(error => {
-                const newRequestInfo = requestInfo.map(req => {
-                    const errors = req.errors
-                    errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
-                    return {
-                        ...req,
-                        errors,
-                    }
-                })
-                this.setState({ newRequestInfo })
+                if (error.response.status == 401) {
+                    window.location.reload();
+                }
+                else { 
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
+                }
             })
     }
 

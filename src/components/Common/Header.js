@@ -250,10 +250,10 @@ function Header(props) {
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
-                            <Dropdown.Item onClick={openUploadAvatarPopup}>
+                            {/* <Dropdown.Item onClick={openUploadAvatarPopup}>
                                 <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
                                 {t("ChangeAvatar")}
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
                             <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
                                 <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
                                 {t("LangViet")}

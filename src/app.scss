@@ -2132,3 +2132,102 @@ span.badge-notification[data-badge]::after {
 .wpz-120 {
   width: 120px !important
 }
+
+.user-options {
+  padding: 5px 0;
+  cursor: pointer;
+  border-bottom: 1px dashed #D8D8D8;
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    .avatar-block {
+      margin-right: 5px;
+      .avatar {
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+        border-radius: 30px;
+      }
+    }
+    .info {
+      .full-name {
+        font-size: 13px;
+      }
+      .detail {
+        font-size: 11px;
+        font-style: italic;
+        color: #848484;
+      }
+    }
+  }
+  &:last-child {
+    border: none;
+  }
+}
+
+.task-page {
+  .task-tabs {
+    .approval-delegation {
+      padding: 0.5em 2.5em;
+      &.create-approval-delegation {
+        background: #FFFFFF url('./assets/img/icon/Icon_security_blue.svg') no-repeat 15px 11px/15px;
+        color: #347EF9;
+        border-color: #347EF9;
+      }
+      &.end-approval-delegation {
+        background: #FFFFFF url('./assets/img/icon/Icon_security_red.svg') no-repeat 15px 11px/15px;
+        color: #C11D2A;
+        border-color: #C11D2A;
+      }
+    }
+  }
+  .approval-delegation-list {
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    .data-not-found {
+      text-align: center;
+    }
+    h6 {
+      color: #347EF9;
+      font-weight: bold;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #d1d3e2;
+      margin: 0 0 15px 0;
+    }
+    .user-info {
+      font-size: 14px;
+      label {
+        margin: 0;
+      }
+      .value {
+        margin: 10px 0 0 0;
+        border-radius: 5px;
+        padding: 5px 10px;
+        border: 1px solid #d1d3e2;
+        &.other {
+          background: #eaecf4;
+        }
+      }
+    }
+  }
+  .end-delegation {
+    text-align: right;
+    .btn-end-delegation {
+      padding: 6px 15px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      color: #FFFFFF;
+      background: #C11D2A;
+      &:focus {
+        border: none;
+        outline: none;
+      }
+      &:active {
+        border: none;
+      }
+    }
+  }
+}

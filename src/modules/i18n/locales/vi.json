@@ -760,6 +760,11 @@
   "SortByStatus": "Lọc theo trạng thái",
   "Reject": "Không phê duyệt",
   "Consent" : "Thẩm định",
+  "ApprovalDelegation": "Ủy quyền phê duyệt",
+  "DelegateTo": "Người được ủy quyền",
+  "EndDelegation": "Kết thúc ủy quyền",
+  "ApprovalDelegatedSuccessfully": "Bạn đã ủy quyền thành công!",
+  "DelegationEndedSuccessfully": "Bạn đã kết thúc ủy quyền thành công!",
   "Reason/Feedback/Edit": "Lý do/Phản hồi/Chỉnh sửa",
   "VaccinantionInformation": "THÔNG TIN TIÊM VACCINE COVID-19",
   "locale": "vi",
@@ -990,5 +995,6 @@
   "StartAndEndBreakTimesRequired": "(*) Thời gian bắt đầu và kết thúc nghỉ ca là bắt buộc",
   "StartTimeMustBeLessThanTheEndTime": "Thời gian bắt đầu phải nhỏ hơn kết thúc",
   "BreakStartTimeMustBeLessThanTheEndTime": "Thời gian bắt đầu nghỉ ca phải nhỏ hơn thời gian kết thúc nghỉ ca",
-  "TotalTimesForShiftBreakShouldNotBeLessThan2Hours": "Tổng thời gian nghỉ của ca gãy không được nhỏ hơn 02 giờ"
+  "TotalTimesForShiftBreakShouldNotBeLessThan2Hours": "Tổng thời gian nghỉ của ca gãy không được nhỏ hơn 02 giờ",
+  "PleaseEnterInfo": "Vui lòng nhập đủ thông tin!"
 }
