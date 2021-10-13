@@ -20,24 +20,16 @@ function LeaveInformationComponent(props) {
                         <td className="same-width title">{t("TotalUsed")}</td>
                         <td className="same-width title">{t("TotalRemainingDaysAndHours")}</td>
                     </tr>
-                    <tr>
-                        <td className="same-width">{t("AnnualLeaveDays")}</td>
-                        <td className="same-width">{leaveInformation[0] ? leaveInformation[0].total_leave_entitlement : 0}</td>
-                        <td className="same-width">{leaveInformation[0] ? leaveInformation[0].used_leave : 0}</td>
-                        <td className="same-width">{leaveInformation[0] ? leaveInformation[0].unused_leave : 0}</td>
-                    </tr>
-                    <tr>
-                        <td className="same-width">{t('ConvertedOtHoursToToil')}</td>
-                        <td className="same-width">{leaveInformation[1] ? leaveInformation[1].total_leave_entitlement : 0}</td>
-                        <td className="same-width">{leaveInformation[1] ? leaveInformation[1].used_leave : 0}</td>
-                        <td className="same-width">{leaveInformation[1] ? leaveInformation[1].unused_leave : 0}</td>
-                    </tr>
-                    <tr>
-                        <td className="same-width">{t("PaidOtHours")}</td>
-                        <td className="same-width">{leaveInformation[2] ? leaveInformation[2].total_leave_entitlement : 0}</td>
-                        <td className="same-width">{leaveInformation[2] ? leaveInformation[2].used_leave : 0}</td>
-                        <td className="same-width">{leaveInformation[2] ? leaveInformation[2].unused_leave : 0}</td>
-                    </tr>
+                    {
+                        (leaveInformation || []).map((item, index) => {
+                            return <tr key={index}>
+                                        <td className="same-width">{t(item.leave_type || "")}</td>
+                                        <td className="same-width">{item.total_leave_entitlement || 0}</td>
+                                        <td className="same-width">{item.used_leave || 0}</td>
+                                        <td className="same-width">{item.unused_leave || 0}</td>
+                                    </tr>
+                        })
+                    }
                 </tbody>
             </table>
             <div className="clear"></div>

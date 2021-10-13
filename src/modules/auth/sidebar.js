@@ -97,14 +97,14 @@ export const Navigation = [
     label: 'MenuIndividualManagement',
     role: 'U'
   },
-  {
-    id:1005,
-    parentId: 1001,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    to: map.ChangeShiftReport,
-    label: 'MenuChangeShiftReport',
-    role: 'U'
-  },
+  // {
+  //   id:1005,
+  //   parentId: 1001,
+  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //   to: map.ChangeShiftReport,
+  //   label: 'MenuChangeShiftReport',
+  //   role: 'U'
+  // },
   {
     id: 4,
     parentId: 2,
