@@ -12,7 +12,9 @@ class ShiftTable extends React.Component {
     }
 
     render() {
-        const {t} = this.props;
+        const { t, shifts } = this.props
+        // const shiftsExcludeFlex = shifts.filter(item => !item.shift_id?.toUpperCase().startsWith("FLE", 0))
+
         return (
             <div className="shift-table mt-3">
                 <table className="table table-hover table-borderless table-striped">
@@ -23,11 +25,10 @@ class ShiftTable extends React.Component {
                             <th scope="col">{t("Endtime")}</th>
                             <th scope="col">{t("WorkHours")}</th>
                             <th scope="col">{t("ShiftCode")}</th>
-                            
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.shifts.map((shift, index) => { //.filter(s => s.shift_id !== 'OFF')
+                        {shifts.map((shift, index) => { //.filter(s => s.shift_id !== 'OFF')
                             return <tr className="text-center" key={index}>
                                 <th scope="row">
                                     <div className="d-flex justify-content-center">
