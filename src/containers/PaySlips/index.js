@@ -7,6 +7,8 @@ import MainResultComponent from './ResultBlock/MainResultComponent'
 import IncomeComponent from './ResultBlock/IncomeComponent'
 import WorkingInformationComponent from './ResultBlock/WorkingInformationComponent'
 import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
+import { exportToPDF } from "../../commons/Utils"
+import ReactHTMLTableToExcel from "react-html-table-to-excel"
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
@@ -20,14 +22,7 @@ class PaySlipsComponent extends React.Component {
     }
   }
 
-  
-
-  componentWillMount() {
-    
-  }
-
   componentDidMount() {
-
     const queryParams = new URLSearchParams(this.props.history.location.search)
     if (queryParams.has('accesstoken')) {
       queryParams.delete('accesstoken')
@@ -70,24 +65,65 @@ class PaySlipsComponent extends React.Component {
     this.setState({acessToken: acessToken})
   }
 
+  downloadPDF = () => {
+    const elementView = document.getElementById('result-block')
+    exportToPDF(elementView, "payslip")
+  }
+
   render() {            
     const { t } = this.props
+    const { acessToken, isSearch, payslip } = this.state
+
     return (
       <>
-      <ConfirmPasswordModal show={this.state.acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
+      <ConfirmPasswordModal show={acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
       <div className="payslips-section">
         <div className="card shadow mb-4">
           <div className="card-body">
             <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
-            {this.state.isSearch && this.state.acessToken && this.state.payslip ? <MainResultComponent personalInformation={this.state.payslip.personal_information} /> : null }
-            {this.state.isSearch && !this.state.payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
+            {isSearch && !payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
           </div>
         </div>
-        <div className="other-result-section">
-          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <WorkingInformationComponent payslip={this.state.payslip} /> : null }
-          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <LeaveInformationComponent payslip={this.state.payslip} /> : null }
-          {this.state.isSearch && this.state.acessToken &&  this.state.payslip ? <IncomeComponent payslip={this.state.payslip} /> : null }
-        </div>
+        {
+          isSearch && acessToken && payslip ?
+          <>
+          <div className="block-buttons">
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <ReactHTMLTableToExcel
+                id="test-table-xls-button"
+                className="btn btn-link pull-right download-excel"
+                table="payslip-download"
+                filename="SalaryInformation"
+                sheet="SalaryInformation"
+                buttonText="Tải Excel"
+            />
+          </div>
+          <div className="result-block" id="result-block">
+            <div className="card mb-4">
+              <div className="card-body">
+                <MainResultComponent personalInformation={payslip.personal_information} />
+              </div>
+            </div>
+            <div className="other-result-section">
+              <WorkingInformationComponent payslip={payslip} />
+              <LeaveInformationComponent payslip={payslip} />
+              <IncomeComponent payslip={payslip} />
+            </div>
+          </div>
+          <div className="block-buttons">
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <ReactHTMLTableToExcel
+                id="test-table-xls-button"
+                className="btn btn-link pull-right download-excel"
+                table="payslip-download"
+                filename="SalaryInformation"
+                sheet="SalaryInformation"
+                buttonText="Tải Excel"
+            />
+          </div>
+          </>
+          : null
+        }
       </div>
       </>
     )

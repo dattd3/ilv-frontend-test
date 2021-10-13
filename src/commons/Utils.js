@@ -1,3 +1,5 @@
+import { jsPDF } from "jspdf"
+import html2canvas from "html2canvas"
 import Constants from '../commons/Constants'
 
 const getRequestConfigurations = () => {
@@ -53,4 +55,34 @@ const formatNumberInteger = value => {
     return number.toString()
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger }
+const exportToPDF = (elementViewById, fileName) => {
+    const quality = 1.0
+    const paperSize = 'a4'
+    const totalEdgeDistance = 20
+
+    html2canvas(elementViewById).then(canvas => {
+        const image = canvas.toDataURL('image/jpeg', quality)
+        const doc = new jsPDF('p', 'px', paperSize)
+        const pageWidth = doc.internal.pageSize.getWidth() - totalEdgeDistance
+        const pageHeight = doc.internal.pageSize.getHeight() - totalEdgeDistance
+        // const pageWidth = doc.internal.pageSize.getWidth()
+        // const pageHeight = doc.internal.pageSize.getHeight() 
+
+        const widthRatio = pageWidth / canvas.width
+        const heightRatio = pageHeight / canvas.height
+        const ratio = widthRatio > heightRatio ? heightRatio : widthRatio
+
+        const canvasWidth = canvas.width * ratio
+        const canvasHeight = canvas.height * ratio
+
+        const marginX = totalEdgeDistance / 2
+        const marginY = totalEdgeDistance / 2
+        // const marginX = (pageWidth - canvasWidth) / 2
+        // const marginY = (pageHeight - canvasHeight) / 2
+        
+        doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
+        doc.save(`${fileName}.pdf`)
+    })
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF }
