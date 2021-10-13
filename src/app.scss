@@ -1313,7 +1313,7 @@ span.badge-notification[data-badge]::after {
     }
 
     .info-label {
-      font-size: 15px;
+      font-size: 14px;
       div {
         margin-bottom: 0.5em;
       }
@@ -1434,15 +1434,34 @@ span.badge-notification[data-badge]::after {
   }
 }
 
-.kpi-staff-info {
-  .title-group {
-    text-align: left;
-    font-family: regular 23px/27px Helvetica Neue;
-    letter-spacing: 0px;
-    color: #283280;
-    font-weight: bold;
+.kpi-page {
+  .kpi-staff-info {
+    font-size: 14px;
+    .main-info-table {
+      margin-bottom: 0;
+      td {
+        padding: 1rem 0.7rem;
+        div {
+          padding: 0;
+        }
+      }
+    }
+    .kpi-detail {
+      
+    }
   }
+  .kpi-staff-search {
+    .title-group {
+      text-align: left;
+      font-family: regular 23px/27px Helvetica Neue;
+      letter-spacing: 0px;
+      color: #283280;
+      font-weight: bold;
+    }
+  }
+}
 
+.kpi-staff-info {
   .content-border {
     text-align: left;
     font-family: Light 21px/25px Helvetica Neue;
@@ -2195,6 +2214,8 @@ span.badge-notification[data-badge]::after {
       }
       &:focus {
         box-shadow: none !important;
+        border-color: unset;
+        background: none;
       }
     }
   }

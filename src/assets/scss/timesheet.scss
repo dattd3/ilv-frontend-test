@@ -35,7 +35,7 @@
     background-color: #fff;
     width: 100%;
     padding: 30px 10px;
-    margin: 10px 0px;
+    margin: 20px 0px;
     border-radius: 10px;
     .title {
       display: block;
@@ -71,7 +71,7 @@
         font-size: 14px;
       }
     }
-    .btnSearch {
+    .btn-search {
       width: 100%;
       font-size: inherit;
     }
@@ -517,6 +517,24 @@
       width: 100px;
       &.btn-submit {
         margin-left: 20px;
+      }
+    }
+  }
+  &.personal-timesheet {
+    .summary {
+      margin: 15px 0;
+      .card {
+        padding: 15px;
+        .card-header {
+          padding: 0 0 15px 0;
+          font-weight: bold;
+        }
+        .card-body {
+          padding: 1.25rem 0 0 0;
+          .title {
+            font-size: 13px;
+          }
+        }
       }
     }
   }

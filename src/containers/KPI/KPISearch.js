@@ -24,7 +24,7 @@ function KPISearch(props) {
   }
 
   return (    
-    <div className="kpi-staff-info">
+    <div className="kpi-staff-search">
       <div className="text-uppercase title-group">{t("SelectPeriod")}</div>
       <div className="card border shadow mb-4 mt-2">
         <table className="table table-borderless">
