@@ -19,7 +19,7 @@ class ConsentComponent extends React.Component {
   }
 
   componentDidMount() {
-    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING_CONSENTED}&`;
     this.requestRemoteData(params);
   }
 
