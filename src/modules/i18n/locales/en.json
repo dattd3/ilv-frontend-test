@@ -738,6 +738,12 @@
   "SearchRequester": "Search requester",
   "SortByStatus":"Sort by status",
   "Reject": "Reject",
+  "Consent" : "Consent",
+  "ApprovalDelegation": "Approval Delegation",
+  "DelegateTo": "Delegate to",
+  "EndDelegation": "End Delegation",
+  "ApprovalDelegatedSuccessfully": "Approval Delegated successfully!",
+  "DelegationEndedSuccessfully": "Delegation ended successfully!",
   "Reason/Feedback/Edit":"Reason/Feedback/Edit",
   "locale": "en-US",
   "AddMore": "Add",
@@ -973,5 +979,6 @@
   "StartAndEndBreakTimesRequired": "(*) Start and End Break times are required",
   "StartTimeMustBeLessThanTheEndTime": "The Start time must be less than the End time",
   "BreakStartTimeMustBeLessThanTheEndTime": "The Break Start time must be less than the End time",
-  "TotalTimesForShiftBreakShouldNotBeLessThan2Hours": "Total times for shift break should not be less than 02 hours"
+  "TotalTimesForShiftBreakShouldNotBeLessThan2Hours": "Total times for shift break should not be less than 02 hours",
+  "PleaseEnterInfo": "Please enter the enough information!"
 }
