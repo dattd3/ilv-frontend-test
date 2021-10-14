@@ -102,7 +102,7 @@ class ShowKPIDetail extends React.Component {
 
     return (
       <div className="kpi-detail">
-        <div className="title-group mb-4">{t("DetailedResult")}</div>
+        <div className="title-group">{t("DetailedResult")}</div>
 
         <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={Period} Quarter="1" Color="#347EF9" />
 

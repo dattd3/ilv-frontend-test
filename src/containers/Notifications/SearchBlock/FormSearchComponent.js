@@ -35,12 +35,10 @@ function FormSearchComponent(props) {
     return (
         <div className="search-block">
             <div className="block-left">
-                <h4 className="h4 title-search-block">{t("AnnouncementInternal")}</h4>
+                <h1 className="content-page-header">{t("AnnouncementInternal")}</h1>
                 <input type="text" name="textSearch" className="text-search shadow" placeholder={t("SearchTextPlaceholder")} onChange={onChangeTextSearch} />
             </div>
-            <div className="block-right shadow">
-                {dataBlock}
-            </div>
+            <div className="block-right shadow">{dataBlock}</div>
         </div>
     );
 }

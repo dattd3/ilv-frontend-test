@@ -40,18 +40,13 @@ class Vaccination extends React.Component {
     render() {
         const { t } = this.props;
         return <>
-            <div className="row">
+            <div className="row vaccine-info-page">
                 <div className="w-100">
-                    <h1 className="h3 m-0 text-dark text-uppercase text-gray-800">{t("VaccinantionInformation")}</h1>
+                    <h1 className="content-page-header">{t("VaccinantionInformation")}</h1>
                 </div>
                 <div className="clearfix edit-button w-100 pt-3 pb-4">
-                    <div className="btn bg-white" style={
-                        {
-                            borderRadius: "10px",
-                            border: "1px solid #347EF9",
-                            color: "#347EF9"
-                        }
-                    } onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('AddMore')}</div>
+                    <div className="btn bg-white btn-create" 
+                    onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('AddMore')}</div>
                     {/* <Button disabled={!this.state.loadSuccess} variant="info" ></Button> */}
                     {/* <Button disabled={!this.state.loadSuccess} variant="primary" className="ml-3" onClick={() => this.exportExcel()}><i className="fas fa-file-excel"></i> Xuất báo cáo</Button> */}
                 </div>
