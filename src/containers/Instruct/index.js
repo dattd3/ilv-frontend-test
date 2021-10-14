@@ -68,7 +68,7 @@ class Instruct extends React.Component {
                                  <div className="btn" style={{
                                     border:"1px solid #51b1fb",
                                     color: "#51b1fb"
-                                 }} onClick={(e) => this.download(2, "web", e)}>
+                                 }}  onClick={(e) => this.download(2, "web", e)}>
                                     <i className="fa fa-download mr-2"></i>
                                     {t('instruct_en')}
                                  </div>
