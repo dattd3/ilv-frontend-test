@@ -742,6 +742,7 @@
   "EndDelegation": "End Delegation",
   "ApprovalDelegatedSuccessfully": "Approval Delegated successfully!",
   "DelegationEndedSuccessfully": "Delegation ended successfully!",
+  "ApprovalDeligationNotAllowedForYourSelf": "Approval deligation for yourself is not allowed!",
   "Reason/Feedback/Edit":"Reason/Feedback/Edit",
   "locale": "en-US",
   "AddMore": "Add",

@@ -150,5 +150,9 @@ const Constants = {
     VinFast: "V070",
     VinFastTrading: "V077"
   },
+  listFunctionsForPnLACL: {
+    editProfile: 'EDIT_PROFILE',
+    qnA: 'QnA'
+  }
 };
 export default Constants
