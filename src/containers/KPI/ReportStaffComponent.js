@@ -11,15 +11,9 @@ class ReportStaffComponent extends React.Component {
   render() {
       const { t } = this.props; 
      if(this.props.kpiInfo == null || this.props.kpiInfo.Score == null) {
-        return (              
-             <div className="nodata-kpi" style={{'border': '1px solid ' + this.props.Color}}>
-                <div style={{'marginTop':'10px'}}>
-                  {t("NoData")}
-                </div>                                  
-             </div>              
-           );
-      } else { 
-        return (      
+        return (<div className="nodata-kpi" style={{'border': '1px solid ' + this.props.Color}}>{t("NoData")}</div>)
+      } else {
+        return (
              <div className="kpi-detail container-fluid w-100 mb-4">
           <div className="row" style={{'marginLeft':'-23px', 'marginRight':'-23px'}}>
               {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
