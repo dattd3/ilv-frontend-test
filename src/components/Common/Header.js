@@ -141,6 +141,10 @@ function Header(props) {
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
+                                    case 5:
+                                        return item.url
+                                    case 6:
+                                        return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
                                         return `/tasks`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
