@@ -482,6 +482,14 @@ export default [
             path: map.VaxcinList
           },
           component: lazy(() => import("./Vaccination/List"))
+        },
+        {
+          key: "instruct",
+          routeProps: {
+            exact: true,
+            path: map.Instruct
+          },
+          component: lazy(() => import("./Instruct"))
         }
       ],
     },
