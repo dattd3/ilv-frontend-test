@@ -52,7 +52,7 @@ class Instruct extends React.Component {
                <div className="card">
                   <div className="content-body p-3">
                      <div className="border rounded p-2">
-                        <div class="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between">
                            <div className="d-flex  align-items-center">
                               <div className="mr-3" >
                                  <img src={iconPhone}/>
@@ -81,7 +81,7 @@ class Instruct extends React.Component {
                      </div>
 
                      <div className="border rounded p-2 mt-3">
-                        <div class="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between">
                            <div className="d-flex align-items-center">
                               <div className="mr-3" >
                                  <img src={iconGlobal}/>
