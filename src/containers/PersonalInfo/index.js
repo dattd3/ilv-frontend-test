@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import map from '../map.config';
 import Constants from "../../commons/Constants"
+import { isEnableFunctionByFunctionName } from "../../commons/Utils"
 
 class MyComponent extends React.Component {
 
@@ -87,6 +88,8 @@ class MyComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
+    const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     function SummaryAddress(obj) {
       let result = '';
@@ -109,15 +112,13 @@ class MyComponent extends React.Component {
       }
       return false;
     }
-    const companyCode = localStorage.getItem("companyCode")
 
-    const { t } = this.props;
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
           {
-            [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VincomRetail].includes(companyCode) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+            isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
           }
           <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> {t("History")}</a>
         </div>
