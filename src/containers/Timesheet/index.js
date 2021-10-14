@@ -118,7 +118,7 @@ class Timesheet extends React.Component {
     render() {
       const { t } = this.props
       return (
-      <div className="timesheet-section">
+      <div className="timesheet-section personal-timesheet">
         <TimesheetSearch clickSearch={this.search.bind(this)}/>
         { (this.state.isSearch && this.state.timsheetSummary) ?
           <>
