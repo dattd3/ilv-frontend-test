@@ -13,12 +13,9 @@ class StaffInfo extends React.Component {
 
     return (
       <div className="kpi-staff-info">
-        <div className="float-left w-100">
-          <span className="float-left text-uppercase title-group">{t("EmployeeInfo")}</span>
-        </div>
-        <br style={{'clear': 'both'}} />
-        <div className="card border shadow mb-4 mt-2">
-          <table className="table table-borderless" style={{'marginBottom':'4px'}}>
+        <div className="title-group">{t("EmployeeInfo")}</div>
+        <div className="card border shadow">
+          <table className="table table-borderless main-info-table">
             <tbody>
               <tr>
                 <td style={{'width': '200px'}}><div className="content-title">{t("FullName")}</div></td>

@@ -205,7 +205,7 @@ function Header(props) {
 
     return (
         isApp ? null :
-            <div>
+            <div className="page-header">
                 <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
                 <Navbar expand="lg" className="navigation-top-bar-custom">
                     <Button variant="outline-secondary" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
@@ -240,7 +240,7 @@ function Header(props) {
                     <Dropdown>
                         <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                <span className="text-gray-600">{fullName}</span>
+                                <span className="text-gray-600 full-name">{fullName}</span>
                                 {
                                     (avatar != null && avatar !== '' && avatar !== 'null') ?
                                         <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />

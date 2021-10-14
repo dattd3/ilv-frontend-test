@@ -4,6 +4,7 @@
 }
 .timesheet-section {
   margin-bottom: 30px;
+  font-size: 14px;
   .btn-block {
     font-size: 14px;
     margin-top: 1.5rem;
@@ -23,13 +24,18 @@
       border: .5px solid blue;
     }
   }
+  .summary {
+    .card-header {
+      color: #000000;
+      text-align: center;
+    }
+  }
   .timesheet-box {
-    font-size: 15px;
     display: block;
     background-color: #fff;
     width: 100%;
     padding: 30px 10px;
-    margin: 10px 0px;
+    margin: 20px 0px;
     border-radius: 10px;
     .title {
       display: block;
@@ -49,12 +55,13 @@
         margin: 0;
         padding-right: 20px;
         width: 300px;
-        font-size: 1rem;
+        font-size: inherit;
+        cursor: pointer;
       }
       .input-img {
         position: absolute;
-        top: 8px;
-        right: 2px;
+        top: 11px;
+        left: 270px;
       }
       i {
         font-size: 20px;
@@ -64,8 +71,9 @@
         font-size: 14px;
       }
     }
-    .btnSearch {
+    .btn-search {
       width: 100%;
+      font-size: inherit;
     }
     .box-input {
       i {
@@ -160,6 +168,8 @@
     .notice {
       margin-top: 12px;
       font-size: 13px;
+      font-style: italic;
+      text-align: center;
     }
   }
   .detail-timesheet {
@@ -392,10 +402,10 @@
     }
     .thuc_te {
       padding: 4px 0;
-      background-color: #39b54a;
-      color: #ffffff;
-      border-top: none;
-      border-bottom: none;
+      background-color: #FFFFFF;
+      color: #000000;
+      border-top: 1px solid #707070;
+      border-bottom: 1px solid #707070;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -507,6 +517,24 @@
       width: 100px;
       &.btn-submit {
         margin-left: 20px;
+      }
+    }
+  }
+  &.personal-timesheet {
+    .summary {
+      margin: 15px 0;
+      .card {
+        padding: 15px;
+        .card-header {
+          padding: 0 0 15px 0;
+          font-weight: bold;
+        }
+        .card-body {
+          padding: 1.25rem 0 0 0;
+          .title {
+            font-size: 13px;
+          }
+        }
       }
     }
   }

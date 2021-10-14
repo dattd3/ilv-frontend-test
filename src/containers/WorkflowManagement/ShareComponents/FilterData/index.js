@@ -235,7 +235,7 @@ class FilterData extends React.Component {
               <div className="content">
                 <button
                   type="button"
-                  className="btn btn-warning btnSearch"
+                  className="btn btn-warning btn-search"
                   onClick={this.search}
                 >
                   {t("Search")}
