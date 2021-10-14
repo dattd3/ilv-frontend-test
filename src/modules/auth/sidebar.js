@@ -313,5 +313,14 @@ export const Navigation = [
     label: "vaccination",
     to: map.VaxcinList,
     role: 'U'
+  },
+
+  {
+    id: 109999,
+    parentId: 0,
+    icon: 'c-instruct',
+    label: "instruct",
+    to: map.Instruct,
+    role: 'U'
   }
 ];

@@ -78,5 +78,6 @@ export default {
   VaxcinList: "/vaccination/list",
   VaxcinUpdate: "/vaccination/dtail/:id",
   VaxcinCreate: "/vaccination/create",
+  Instruct: "/instruct",
   // ChangeShiftReport: "/workflow-management/change-shift-report"
 };
