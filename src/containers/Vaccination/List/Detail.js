@@ -295,7 +295,9 @@ class VaccinationDetail extends React.Component {
             control: (styles) => ({
                 ...styles,
                 cursor: 'pointer',
-            })
+            }),
+            menuPortal: provided => ({ ...provided, zIndex: 99 }),
+            menu: provided => ({ ...provided, zIndex: 99 })
         }
         const reload = () => {
             if (this.state.isShowStatusModal) {
@@ -306,11 +308,10 @@ class VaccinationDetail extends React.Component {
             <>
                 <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
                 <Modal backdrop="static" keyboard={false}
-                    className='info-modal-common position-apply-modal'
+                    className='info-modal-common position-apply-modal vaccine-create-info'
                     centered show={this.state.show}
-                    onHide={this.props.onHide}
-                    size="xl"
-                    >
+                    onHide={this.props.onHide} 
+                    size="xl">
                     <Modal.Header className='apply-position-modal' >
                         <Modal.Title>{t(this.props.rowId ? "EditQuestion": "Add")}</Modal.Title>
                         <button type="button" className="close" onClick={() => this.props.onCancelClick()}>
@@ -318,18 +319,17 @@ class VaccinationDetail extends React.Component {
                         </button>
                     </Modal.Header>
                     <Modal.Body>
-                        
                         <div className="form-content">
                             <div className="row">
                                 <div className="col-md-4 col-xs-12">
                                     <div className="form-group">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_injections_mumber')}</label>
-                                        <input value={this.state.formData.number} onChange={(e) => this.onChangeInput('number',e)} type="email" className="form-control" id="exampleInputEmail1" placeholder={t('vaccination_injections_mumber')} readOnly/>
+                                        <label>{t('vaccination_injections_mumber')}</label>
+                                        <input value={this.state.formData.number} onChange={(e) => this.onChangeInput('number',e)} type="text" className="form-control input-text" placeholder={t('vaccination_injections_mumber')} readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="form-group">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_type')}<span className="text-danger"> (*)</span></label>
+                                        <label>{t('vaccination_type')}<span className="text-danger"> (*)</span></label>
                                         <Select
                                             isClearable={true}
                                             styles={customStyles}
@@ -344,7 +344,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_time')}<span className="text-danger"> (*)</span></label>
+                                        <label>{t('vaccination_time')}<span className="text-danger"> (*)</span></label>
                                         <div className="content position-relative input-container">
                                             <label>
                                             <DatePicker
@@ -357,17 +357,17 @@ class VaccinationDetail extends React.Component {
                                                 showMonthDropdown={true}
                                                 showYearDropdown={true}
                                                 locale="vi"
-                                                className="form-control input" />
-                                            <span className="input-group-addon input-img">
-                                                <i className="fas fa-calendar-alt"></i>
-                                            </span>
+                                                className="form-control input-text date-picker-input" />
+                                                <span className="input-group-addon input-img">
+                                                    <i className="fas fa-calendar-alt"></i>
+                                                </span>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-md-4 col-xs-12">
                                     <div className="form-group">
-                                        <label htmlFor="exampleInputEmail1">{t('vaccination_department')}<span className="text-danger"> (*)</span></label>
+                                        <label>{t('vaccination_department')}<span className="text-danger"> (*)</span></label>
                                         <Select
                                             isClearable={true}
                                             styles={customStyles}
@@ -386,7 +386,7 @@ class VaccinationDetail extends React.Component {
                                             <div className="row">
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('Province_City')}<span className="text-danger"> (*)</span></label>
+                                                        <label>{t('Province_City')}<span className="text-danger"> (*)</span></label>
                                                         <Select
                                                             styles={customStyles}
                                                             name="city"
@@ -400,7 +400,7 @@ class VaccinationDetail extends React.Component {
                                                 </div>
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('District')}<span className="text-danger"> (*)</span></label>
+                                                        <label>{t('District')}<span className="text-danger"> (*)</span></label>
                                                         <Select
                                                             isDisabled={!this.state.formData.city && !this.state.districts.length}
                                                             styles={customStyles}
@@ -415,7 +415,7 @@ class VaccinationDetail extends React.Component {
                                                 </div>
                                                 <div className="col-md-4 col-xs-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">{t('Ward')}<span className="text-danger"> (*)</span></label>
+                                                        <label>{t('Ward')}<span className="text-danger"> (*)</span></label>
                                                         <Select
                                                             isDisabled={!this.state.formData.district && !this.state.wards.length}
                                                             styles={customStyles}
@@ -432,7 +432,7 @@ class VaccinationDetail extends React.Component {
                                         </div>
                                     : this.state.formData.vaccinationUnitId == 1 ? <div className="col-md-4 col-xs-12"> 
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">{t('vaccination_branch')}<span className="text-danger"> (*)</span></label>
+                                            <label>{t('vaccination_branch')}<span className="text-danger"> (*)</span></label>
                                             <Select
                                                 isClearable={true}
                                                 styles={customStyles}
@@ -450,11 +450,11 @@ class VaccinationDetail extends React.Component {
                                                 <label htmlFor="address">{t('Address')}</label>
                                                 <input value={this.state.formData.address} onChange={(e) => this.onChangeInput('address',e)} type="text" className="form-control" id="address" placeholder={t('Address') + '...'}/>
                                             </div>
-                                        </div> 
+                                        </div>
                                     : undefined
                                 }
                                 <div className="col-md-12 col-xs-12">
-                                    <div className="py-2 btn bg-light" onClick={() => this.handleShowListEffect(!this.state.showListEffect)}> <b>{t('vaccination_reaction_after')} <i className={"fas fa-caret-" + (this.state.showListEffect ? "up":"down")}></i></b> </div>
+                                    <div className="py-2 btn bg-light effect-infos" onClick={() => this.handleShowListEffect(!this.state.showListEffect)}> <b>{t('vaccination_reaction_after')} <i className={"fas fa-caret-" + (this.state.showListEffect ? "up":"down")}></i></b> </div>
                                     {this.state.showListEffect && <div className="effect-table border rounded">
                                         <table className="table">
                                             <thead>
@@ -472,17 +472,17 @@ class VaccinationDetail extends React.Component {
                                                             <td>{(index + 1)+". "+v.name}</td>
                                                             <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
                                                             <td className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                             </td>
                                                             <td  className="text-center pd-0 wpz-120">
                                                                 <label className="label-option-yn-vaccin">
-                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} class="option-ques-vaccin"/>
+                                                                    <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                 </label>
                                                                 <input className="d-none" type="radio" value="4" name={v.id} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                             </td>
@@ -495,7 +495,7 @@ class VaccinationDetail extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="clearfix edit-button text-right mt-3">
+                        <div className="clearfix action-buttons text-right mt-3">
                             <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
                                 !(this.state.formData.vaccinTypeId && this.state.formData.injectedAt && 
