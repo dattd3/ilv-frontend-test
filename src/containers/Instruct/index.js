@@ -45,13 +45,11 @@ class Instruct extends React.Component {
     render() {
         const { t } = this.props;
         return <>
-            <div className="text-dark">
-               <div className="content-header">
-                  <h3>Hướng dẫn sử dụng</h3>
-               </div>
+            <div className="text-dark user-manual-page">
+               <h1 className="content-page-header">{t('instruct')}</h1>
                <div className="card">
                   <div className="content-body p-3">
-                     <div className="border rounded p-2">
+                     <div className="border rounded p-2 item">
                         <div className="d-flex align-items-center justify-content-between">
                            <div className="d-flex  align-items-center">
                               <div className="mr-3" >
@@ -80,7 +78,7 @@ class Instruct extends React.Component {
                         </div>
                      </div>
 
-                     <div className="border rounded p-2 mt-3">
+                     <div className="border rounded p-2 mt-3 item">
                         <div className="d-flex align-items-center justify-content-between">
                            <div className="d-flex align-items-center">
                               <div className="mr-3" >
