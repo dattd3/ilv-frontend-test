@@ -1,4 +1,5 @@
 import map from "../../containers/map.config";
+import Constants from "../../commons/Constants"
 
 export const Navigation = [
   {
@@ -304,7 +305,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: ['V030','V096','V060','V070','V077','V073']
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
   },
   {
     id: 99999,

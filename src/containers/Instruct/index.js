@@ -51,35 +51,6 @@ class Instruct extends React.Component {
                   <div className="content-body p-3">
                      <div className="border rounded p-2 item">
                         <div className="d-flex align-items-center justify-content-between">
-                           <div className="d-flex  align-items-center">
-                              <div className="mr-3" >
-                                 <img src={iconPhone}/>
-                              </div>
-                              <div className="text-dark">
-                                 <b>{t('instruct_mobile')}</b>
-                              </div>
-                           </div>
-
-                           <div className="d-flex align-items-center">
-                              <div>{t('instruct_download')}</div>
-                              <div className="px-4">
-                                 <div className="btn border-primary text-primary"  onClick={(e) => this.download(2, "mobi", e)}>
-                                    <i className="fa fa-download mr-2"></i>
-                                    {t('instruct_en')}
-                                 </div>
-                              </div>
-                              <div>
-                                 <div className="btn border-danger text-danger"  onClick={(e) => this.download(1, "mobi", e)}>
-                                    <i className="fa fa-download mr-2"></i>
-                                    {t('instruct_vi')}
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-
-                     <div className="border rounded p-2 mt-3 item">
-                        <div className="d-flex align-items-center justify-content-between">
                            <div className="d-flex align-items-center">
                               <div className="mr-3" >
                                  <img src={iconGlobal}/>
@@ -92,13 +63,48 @@ class Instruct extends React.Component {
                            <div className="d-flex align-items-center">
                               <div>{t('instruct_download')}</div>
                               <div className="px-4">
-                                 <div className="btn border-primary text-primary" onClick={(e) => this.download(2, "web", e)}>
+                                 <div className="btn" style={{
+                                    border:"1px solid #51b1fb",
+                                    color: "#51b1fb"
+                                 }}  onClick={(e) => this.download(2, "web", e)}>
                                     <i className="fa fa-download mr-2"></i>
                                     {t('instruct_en')}
                                  </div>
                               </div>
                               <div>
                                  <div className="btn border-danger text-danger"  onClick={(e) => this.download(1, "web", e)}>
+                                    <i className="fa fa-download mr-2"></i>
+                                    {t('instruct_vi')}
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="border rounded p-2 mt-3 item">
+                        <div className="d-flex align-items-center justify-content-between">
+                           <div className="d-flex  align-items-center">
+                              <div className="mr-3" >
+                                 <img src={iconPhone}/>
+                              </div>
+                              <div className="text-dark">
+                                 <b>{t('instruct_mobile')}</b>
+                              </div>
+                           </div>
+
+                           <div className="d-flex align-items-center">
+                              <div>{t('instruct_download')}</div>
+                              <div className="px-4">
+                                 <div className="btn" style={{
+                                    border:"1px solid #51b1fb",
+                                    color: "#51b1fb"
+                                 }}  onClick={(e) => this.download(2, "mobi", e)}>
+                                    <i className="fa fa-download mr-2"></i>
+                                    {t('instruct_en')}
+                                 </div>
+                              </div>
+                              <div>
+                                 <div className="btn border-danger text-danger"  onClick={(e) => this.download(1, "mobi", e)}>
                                     <i className="fa fa-download mr-2"></i>
                                     {t('instruct_vi')}
                                  </div>
