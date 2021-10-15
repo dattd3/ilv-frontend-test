@@ -356,7 +356,7 @@
 
 #content-wrapper {
   background-color: #f2f2f2 !important;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .text-color-vp {
   color: #293281 !important;
@@ -381,12 +381,89 @@
 .yellow {
   color: yellow;
 }
-
-.bg-login-image {
-  background: url("./assets/img/Theme.jpg");
-  background-position: center;
-  background-size: cover;
+.login-page {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  .bg-login-image {
+    background: url("./assets/img/Theme.jpg");
+    background-position: center;
+    background-size: cover;
+  }
+  .btn-login {
+    background-image: linear-gradient(to right, #92000c, #ec5662);
+    border: none;
+    padding: 15px 0;
+    font-family: inherit;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .logo-login {
+    max-width: 80%;
+    padding: 5vh 0;
+  }
+  .language-selector {
+    padding: 10px;
+    button {
+      cursor: pointer;
+      padding: 0 10px;
+      color: #c11d2a;
+      font-size: inherit;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      &:hover {
+        font-weight: 700;
+        color: #000000;
+      }
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+      &:active {
+        outline: none;
+        box-shadow: none;
+      }
+      &.lang-active {
+        font-weight: 700;
+        &::before {
+          margin-right: 5px;
+          content: "\e907";
+          font-family: "icomoon" !important;
+        }
+      }
+    }
+  }
+  .language-selector-main {
+    button {
+      cursor: pointer;
+      padding: 0 5px;
+      color: #2e3192;
+      &:hover {
+        text-decoration: none;
+        font-weight: 700;
+      }
+    }
+    .lang-active {
+      font-weight: 700;
+      &::after {
+        margin-left: 5px;
+        content: "\f0ac";
+        font-family: "Font Awesome 5 Free";
+      }
+    }
+  }
+  .login-guide {
+    margin-top: 1rem;
+    button {
+      font-weight: 700;
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
 }
+
 .bg-white-trasparent {
   background: rgba(255, 255, 255, 0.7);
 }
@@ -406,63 +483,6 @@
 }
 .opacity-1 {
   opacity: 1 !important;
-}
-.btn-login {
-  background-image: linear-gradient(to right, #92000c, #ec5662);
-  border: none;
-  padding: 15px 0;
-  text-transform: uppercase;
-  font-size: 16px;
-}
-.logo-login {
-  max-width: 80%;
-  padding: 5vh 0;
-}
-.language-selector {
-  padding: 10px;
-  button {
-    cursor: pointer;
-    padding: 0 5px;
-    color: #c11d2a;
-    &:hover {
-      text-decoration: none;
-      font-weight: 700;
-      color: #000000;
-    }
-  }
-  .lang-active {
-    font-weight: 700;
-    &::before {
-      margin-right: 5px;
-      content: "\e907";
-      font-family: "icomoon" !important;
-    }
-  }
-}
-.language-selector-main {
-  button {
-    cursor: pointer;
-    padding: 0 5px;
-    color: #2e3192;
-    &:hover {
-      text-decoration: none;
-      font-weight: 700;
-    }
-  }
-  .lang-active {
-    font-weight: 700;
-    &::after {
-      margin-left: 5px;
-      content: "\f0ac";
-      font-family: "Font Awesome 5 Free";
-    }
-  }
-}
-.login-guide {
-  margin-top: 1rem;
-  button {
-    font-weight: 700;
-  }
 }
 .modal-content {
   border: none !important;
@@ -1434,6 +1454,41 @@ span.badge-notification[data-badge]::after {
   }
 }
 
+.qna-page {
+  font-size: 14px;
+  .action-buttons {
+    button.btn {
+      font-size: inherit;
+    }
+  }
+  .form-qna-search {
+    input {
+      font-size: inherit;
+    }
+    .btn-search {
+      font-size: inherit;
+    }
+  }
+}
+.qna-detail-page {
+  font-size: 14px;
+  .action-buttons {
+    button.btn {
+      font-size: inherit;
+    }
+  }
+  .cover {
+    object-fit: cover;
+  }
+  .form-qna-search {
+    input {
+      font-size: inherit;
+    }
+    .btn-search {
+      font-size: inherit;
+    }
+  }
+}
 .kpi-page {
   font-size: 14px;
   .kpi-staff-info {
@@ -1490,6 +1545,9 @@ span.badge-notification[data-badge]::after {
       float: right;
       margin-top: 20px;
       margin-right: 20px;
+    }
+    .success-factor-guide-line {
+      margin-top: 15px;
     }
   }
   .kpi-staff-search {
@@ -2110,6 +2168,7 @@ span.badge-notification[data-badge]::after {
 }
 
 .login-instructions-modal {
+  font: normal 17px Arial, Helvetica, sans-serif;
   .modal-content {
     .modal-header {
       background: #FFFFFF;
@@ -2118,13 +2177,24 @@ span.badge-notification[data-badge]::after {
           outline: none;
         }
         span {
-          top: 15px;
+          top: 20px;
+          left: 10px;
+          font-size: 34px;
         }
       }
     }
     .modal-body {
       border-bottom-left-radius: 0.6rem;
       border-bottom-right-radius: 0.6rem;
+      h5 {
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+      ul li {
+        padding: 5px 0;
+        line-height: 1.3;
+      }
     }
   }
 }

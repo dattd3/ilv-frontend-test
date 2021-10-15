@@ -19,7 +19,7 @@ function LoginGuideModal(props) {
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>
-        <h4>{t("LoginGuide_Title")}:</h4>
+        <h5>{t("LoginGuide_Title")}</h5>
         <p>{t("LoginGuide_Description")}</p>
         <ul>
           <li><strong>{t("Username")}:</strong> {t("LoginGuide_UserName")}</li>
@@ -50,7 +50,7 @@ function Login() {
   }
 
   return (
-    <Container>
+    <Container className="login-page">
       <Row className="justify-content-center">
         <Col className="col-xl-10 col-lg-12 col-md-9">
           <div className="card o-hidden border-0 shadow-lg my-10">

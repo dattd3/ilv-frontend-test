@@ -238,19 +238,21 @@ class QuestionAndAnswerDetails extends React.Component {
 
   render() {
     const { t } = this.props
+    const { isShowStatusModal, question, isShowConfirmModal, isShowSelectSupporterModal, content, isSuccess, isEditQuestion, 
+            questionContent, isShowSubmitQuestionModal, isShowHistoryModal, isShowCommentEditor, comment } = this.state
+    const comments = question.ticketComments
+
     const reload = () => {
-      if (this.state.isShowStatusModal) {
+      if (isShowStatusModal) {
         window.location.reload();
       }
     }
-    const question = this.state.question
-    const comments = question.ticketComments
 
     return (
       question && question.content ?
         <>
           <ConfirmModal
-            show={this.state.isShowConfirmModal}
+            show={isShowConfirmModal}
             onHide={() => this.showConfirmModal(false)}
             onAcceptClick={() => this.submit(true)}
             onCancelClick={() => this.submit(false)}
@@ -258,31 +260,30 @@ class QuestionAndAnswerDetails extends React.Component {
             confirmContent={t("ConfirmEndedAnswers")}
           />
           <SelectSupporterModal
-            show={this.state.isShowSelectSupporterModal}
+            show={isShowSelectSupporterModal}
             onHide={() => this.showSelectSupporterModal(false)}
             onAcceptClick={this.submitSelectSupporterModal}
             onCancelClick={() => this.showSelectSupporterModal(false)}
             modalHeader={t("EscalateToManagerOrHr")}
           />
-          <div className="personal-info">
-            <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
-            <SubmitQuestionModal
-              isEdit={this.state.isEditQuestion}
-              editQuestion={this.state.questionContent}
-              show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
-            <HistoryModal show={this.state.isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
-              showStatusModal={this.showStatusModal.bind(this)}
-              showEditModal={this.showEditModal.bind(this)}
-            />
-            <div className="clearfix edit-button mb-2">
+          <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} onExited={reload} />
+          <SubmitQuestionModal
+            isEdit={isEditQuestion}
+            editQuestion={questionContent}
+            show={isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
+          <HistoryModal show={isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
+            showStatusModal={this.showStatusModal.bind(this)}
+            showEditModal={this.showEditModal.bind(this)}
+          />
+          <div className="personal-info qna-detail-page">
+            <div className="clearfix edit-button action-buttons mb-2">
               <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
               <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
-
             </div>
-            <div className="row mb-2 mt-1">
-              <h1 className="col-6 h3 text-uppercase text-gray-800">{t("QuestionAndAnswer")}</h1>
+            <div className="mb-2 mt-1">
+              <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
               {
-                this.state.question && this.state.isShowCommentEditor ?
+                question && isShowCommentEditor ?
                   <div className="col-6 pull-right text-right">
                     <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)} >{t("EscalateToManagerOrHr")}</Button>
                   </div>
@@ -302,7 +303,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.fullName}</h6>
@@ -318,7 +319,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.agentName}</h6>
@@ -334,7 +335,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.supporterName}</h6>
@@ -354,7 +355,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.fullName}</h6>
@@ -370,7 +371,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.agentAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.agentName}</h6>
@@ -386,7 +387,7 @@ class QuestionAndAnswerDetails extends React.Component {
                         <div className="col-4 content-center">
                           <div className="media">
                             <span className="align-self-center mr-25">
-                              <img className="align-self-center" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                              <img className="align-self-center cover" src={`data:image/png;base64,${question.supporterAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                             </span>
                             <div className="media-body text-left">
                               <h6 className="mt-1 avt-color font-weight-bold pt-1">{question.supporterName}</h6>
@@ -406,7 +407,7 @@ class QuestionAndAnswerDetails extends React.Component {
               <div className="content-center">
                 <div className="media">
                   <span className="align-self-center mr-25">
-                    <img className="align-self-center" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                    <img className="align-self-center cover" src={`data:image/png;base64,${question.ownerAvatar}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                   </span>
                   <div className="media-body text-left">
                     <h6 className="mt-1 avt-color font-weight-bold">{question.fullName}</h6>
@@ -429,7 +430,7 @@ class QuestionAndAnswerDetails extends React.Component {
                       <div className="content-center pl-5 pr-5">
                         <div className="media">
                           <span className="align-self-center mr-25">
-                            <img className="align-self-center" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                            <img className="align-self-center cover" src={`data:image/png;base64,${question.userImg}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                           </span>
                           <div className="media-body text-left multiline">
                             <h6 className="mt-1 avt-color font-weight-bold pt-1">{item.fullName}</h6>
@@ -444,12 +445,12 @@ class QuestionAndAnswerDetails extends React.Component {
                   }) : null
               }
               {
-                this.state.question && this.state.isShowCommentEditor ?
+                question && isShowCommentEditor ?
                   <div className="pl-5">
                     <div className="pl-5">
                       <div className="media">
                         <span className="align-self-center mr-25">
-                          <img className="align-self-center" src={`data:image/png;base64,${localStorage.getItem('avatar')}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
+                          <img className="align-self-center cover" src={`data:image/png;base64,${localStorage.getItem('avatar')}`} onError={defaultAvartar} alt="avatar" width={65} height={65} style={{ borderRadius: '50%' }} />
                         </span>
                         <div className="media-body text-left">
                           <FormControl placeholder={t("EnterAnswer")} as="textarea" name="comment" onChange={this.handleChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} />
@@ -458,13 +459,13 @@ class QuestionAndAnswerDetails extends React.Component {
                     </div>
                     <div className="mt-2 text-right">
                       <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("RejectQuestionButtonLabel")}</Button>{' '}
-                      <Button variant="primary pl-4 pr-4" disabled={(this.state.comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" disabled={(comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
                     </div>
                   </div>
                   : null
               }
             </Container>
-            {this.state.question && this.state.isShowCommentEditor ?
+            {question && isShowCommentEditor ?
               <div className="dannger-note">
                 <p>{t('NoteQnABottomPage')}</p>
               </div> : null
@@ -472,7 +473,7 @@ class QuestionAndAnswerDetails extends React.Component {
           </div>
         </> :
         <>
-        </>
+      </>
     )
   }
 }
