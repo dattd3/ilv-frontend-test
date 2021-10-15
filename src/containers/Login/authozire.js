@@ -99,7 +99,7 @@ function Authorize(props) {
                             jobTitle: user.job_name,
                             jobId: user.job_id,
                             benefitLevel: user.benefit_level || user.employee_level,
-                            employeeLevel: user.employee_level,
+                            employeeLevel: user.rank_title, // Cấp bậc chức danh để phân quyền.
                             benefitTitle: benefitTitle,
                             company: user.pnl,
                             sabaId: `saba-${user.uid}`,
@@ -137,7 +137,7 @@ function Authorize(props) {
                         jobTitle: user.job_name,
                         jobId: user.job_id,
                         benefitLevel: user.benefit_level || user.employee_level,
-                        employeeLevel: user.employee_level,
+                        employeeLevel: user.rank_title, // Cấp bậc chức danh để phân quyền.
                         benefitTitle: benefitTitle,
                         company: user.pnl,
                         sabaId: `saba-${user.uid}`,
