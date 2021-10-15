@@ -765,6 +765,7 @@
   "EndDelegation": "Kết thúc ủy quyền",
   "ApprovalDelegatedSuccessfully": "Bạn đã ủy quyền thành công!",
   "DelegationEndedSuccessfully": "Bạn đã kết thúc ủy quyền thành công!",
+  "ApprovalDeligationNotAllowedForYourSelf": "Không được phép ủy quyền phê duyệt cho chính bạn!",
   "Reason/Feedback/Edit": "Lý do/Phản hồi/Chỉnh sửa",
   "VaccinantionInformation": "THÔNG TIN TIÊM VACCINE COVID-19",
   "locale": "vi",

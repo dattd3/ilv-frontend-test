@@ -5,6 +5,8 @@ import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import map from '../map.config';
+import Constants from "../../commons/Constants"
+import { isEnableFunctionByFunctionName } from "../../commons/Utils"
 
 class MyComponent extends React.Component {
 
@@ -86,6 +88,8 @@ class MyComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
+    const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     function SummaryAddress(obj) {
       let result = '';
@@ -109,14 +113,13 @@ class MyComponent extends React.Component {
       return false;
     }
 
-    const { t } = this.props;
     return (
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
           <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
           {
-            ['V030','V060','V073','V096'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+            isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
           }
         </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
