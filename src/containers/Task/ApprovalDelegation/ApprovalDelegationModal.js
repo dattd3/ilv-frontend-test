@@ -52,6 +52,7 @@ function ApprovalDelegationModal(props) {
                         return {
                             value: res.user_account,
                             label: res.fullName,
+                            employeeNo: res.uid,
                             fullName: res.fullName,
                             avatar: res.avatar,
                             employeeLevel: res.employee_level,
@@ -88,8 +89,13 @@ function ApprovalDelegationModal(props) {
     }
 
     const isDataValid = () => {
+        const currentUserEmployeeNoLogged = localStorage.getItem("employeeNo")
+
         if (!newUserApprovalDelegation) {
             SetError(t("PleaseEnterInfo"))
+            return false
+        } else if (currentUserEmployeeNoLogged == newUserApprovalDelegation?.employeeNo) {
+            SetError(t("ApprovalDeligationNotAllowedForYourSelf"))
             return false
         } else {
             SetError(t(""))

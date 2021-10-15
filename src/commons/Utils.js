@@ -85,4 +85,21 @@ const exportToPDF = (elementViewById, fileName) => {
     })
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF }
+const isEnableFunctionByFunctionName = name => {
+    const companyCode = localStorage.getItem("companyCode")
+    let listPnLAccepted = []
+    
+    switch (name) {
+        case Constants.listFunctionsForPnLACL.qnA:
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
+            break
+        case Constants.listFunctionsForPnLACL.editProfile:
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VincomRetail]
+            break
+    
+    }
+
+    return listPnLAccepted.includes(companyCode)
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName }
