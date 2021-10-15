@@ -1,12 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
+import { isEnableFunctionByFunctionName } from "../../../commons/Utils"
 
 class NotificationDetailComponent extends React.Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       notificationInfo: [],
       isShowSubmitQuestionModal: false,
@@ -91,6 +93,9 @@ class NotificationDetailComponent extends React.Component {
   }
 
   render() {
+    const { t } = this.props
+    const isEnableQnA = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.qnA)
+
     return (
       <>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -105,8 +110,8 @@ class NotificationDetailComponent extends React.Component {
             </div>
             <div className="col-md-4">
               {
-                ['V030','V096','V060','V070','V077','V073'].includes(localStorage.getItem("companyCode")) ? 
-                <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}> Đặt câu hỏi </button>
+                isEnableQnA ? 
+                <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
                 : null
               }
             </div>
@@ -143,4 +148,4 @@ class NotificationDetailComponent extends React.Component {
   }
 }
 
-export default NotificationDetailComponent
+export default withTranslation()(NotificationDetailComponent)
