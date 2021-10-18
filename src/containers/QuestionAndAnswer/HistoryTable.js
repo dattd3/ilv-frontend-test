@@ -56,11 +56,11 @@ class HistoryTable extends React.Component {
                   </span>
                   <div className="media-body row">
                     <div className="col-sm-12 col-lg-8">
-                      <h5 className="mt-1">
+                      <h6 className="mt-1">
                         <a href={`/question-and-answer-details/` + question.id}>
                           {question.content}
                         </a>
-                      </h5>
+                      </h6>
                       <span>
                         <i className="icon-hr mr-1"></i> {question.fullName}
                         <i className="fa fa-clock-o mr-1 ml-3"></i>

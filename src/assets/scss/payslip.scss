@@ -1,41 +1,48 @@
 .confirm-password-modal {
+    font: normal 15px Arial, Helvetica, sans-serif;
     .modal-content {
-      .modal-header {
-        background: #FFFFFF;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        .modal-title {
-          font-size: 16px;
-          text-transform: uppercase;
-          color: #FFFFFF;
-        }
-        .close {
-          top: 25px;
-          right: 20px;
-          color: #707070;
-          width: 25px;
-          height: 25px;
-          font-size: 26px;
-          outline: none;
-          span {
-            top: 10px;
-            left: 0;
-          }
-        }
-      }
-      .modal-body {
-        padding: 1rem 2rem 1rem 2rem;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        .label {
-            font-weight: bold;
-        }
-        form {
-            .btn-submit {
-                width: 100%;
+        .modal-header {
+            background: #FFFFFF;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            .modal-title {
+                font-size: 16px;
+            }
+            .close {
+                top: 25px;
+                right: 20px;
+                color: #707070;
+                width: 25px;
+                height: 25px;
+                font-size: 26px;
+                outline: none;
+                cursor: pointer;
+                span {
+                    top: 10px;
+                    left: 0;
+                }
             }
         }
-      }
+        .modal-body {
+            padding: 1rem 2rem 1rem 2rem;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            .label {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            form {
+                .btn-submit {
+                    width: 100%;
+                }
+                input {
+                    font-size: inherit;
+                    &:focus {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
     }
 }
 

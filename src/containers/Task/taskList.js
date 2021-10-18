@@ -359,7 +359,7 @@ class TaskList extends React.Component {
     }
 
     render() {
-        const { t, tasks, total} = this.props
+        const { t, tasks, total, page} = this.props
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
             2: t("LineManagerSResponse"),
@@ -367,11 +367,12 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
+
         return (
             <>
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="d-flex justify-content-between w-100 mt-2 mb-3">
+                <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
                         <div className="col-xl-4">
                             <InputGroup className="d-flex">
@@ -387,6 +388,9 @@ class TaskList extends React.Component {
                                     // selectedValue={{ label: t("All"), value: 0 }}
                                     placeholder={t('SortByStatus')} 
                                     key="absenceType" options={this.props.filterdata} 
+                                    styles={{
+                                        menu: provided => ({ ...provided, zIndex: 2 })
+                                    }}
                                     theme={theme => ({
                                     ...theme,
                                     colors: {
@@ -403,10 +407,11 @@ class TaskList extends React.Component {
                             <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl
-                            placeholder={t('SearchRequester')}
-                            aria-label="SearchRequester"
-                            aria-describedby="basic-addon2"
-                            onChange={this.handleInputChange}
+                                placeholder={t('SearchRequester')}
+                                aria-label="SearchRequester"
+                                aria-describedby="basic-addon2"
+                                className="request-user"
+                                onChange={this.handleInputChange}
                             />
                         </InputGroup>
                         </div>
@@ -417,12 +422,12 @@ class TaskList extends React.Component {
                    
                 </div> 
                 <div className="block-title d-flex">
-                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <h4 className="content-page-header">{this.props.title}</h4>
                     <div className="export-btn">
                        <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
                    </div>
                 </div>
-                <div className="task-list">
+                <div className={`task-list shadow ${page}`}>
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
                             <tr>
