@@ -75,9 +75,7 @@ class KPIDetail extends React.Component {
     const {t} = this.props;
     return (
       <div className="kpi-detail">
-        <div className="title-group mb-4">
-          {t("SelectEvaluationPeriod")}
-          </div>
+        <div className="title-group mb-4">{t("SelectEvaluationPeriod")}</div>
 
         <KPIDetailGroupItem IsLeader={this.state.KpiIsLeader1} kpiInfo={this.state.KpiQuarter1} Period={this.state.Period} Quarter="1" Color="#347EF9" />
 
