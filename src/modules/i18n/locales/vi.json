@@ -1003,5 +1003,27 @@
   "instruct_vi": "Tiếng Việt",
   "instruct_en": "English",
   "instruct_mobile": "Hướng dẫn sử dụng bản Mobile",
-  "instruct_website": "Hướng dẫn sử dụng bản Web"
+  "instruct_website": "Hướng dẫn sử dụng bản Web",
+  "vaccination_reason": "Lý do từ chối/trì hoãn",
+  "vaccination_reason_detail": "Lý do chi tiết",
+  "vaccination_reason_field": "Phân loại lý do",
+  "refual": "Từ chối/trì hoãn",
+  "have_vaccinated": "Đã tiêm",
+  "vaccination_status": "Trạng thái",
+
+
+  "vaccination_status_item_1": "Đã tiêm",
+  "vaccination_status_item_2": "Từ chối/Trì hoãn",
+  "vaccination_reason_reject_item_1": "Lý do Sức khỏe",
+  "vaccination_reason_reject_item_2": "Lý do Thai sản",
+  "vaccination_reason_reject_item_3": "Khác",
+  "vaccination_reason_type_item_1": "Bệnh lý nền",
+  "vaccination_reason_type_item_2": "Tiền sử Phản vệ",
+  "vaccination_reason_type_item_3": "Đã mắc Covid trong vòng 6 tháng",
+  "vaccination_reason_type_item_4": "Đang mang thai",
+  "vaccination_reason_type_item_5": "Đang nuôi con nhỏ",
+  "vaccination_reason_detail_item_1": "Nếu bạn đang mang thai, vui lòng nhập thông tin tuần thai sản (Ví dụ: Tuần 5).",
+  "vaccination_reason_detail_item_2": "Nếu bạn đang nuôi con nhỏ, vui lòng nhập thông tin tháng tuổi (Ví dụ: 5 Tháng).",
+  "detail": "Chi tiết",
+  "vaccination_btn_declare": "Khai báo tình trạng tiêm chủng"
 }
