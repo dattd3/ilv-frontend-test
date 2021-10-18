@@ -282,7 +282,7 @@ class SubmitQuestionModal extends React.Component {
         }
         
         return (
-            <Modal backdrop="static" keyboard={false} className='info-modal-common position-apply-modal' centered show={this.props.show}
+            <Modal backdrop="static" keyboard={false} className='info-modal-common position-apply-modal qna-create-modal' centered show={this.props.show}
                 onHide={this.props.onHide}
                 onShow={() => this.updateEditDate(this.props.editQuestion, this.props.isEdit)}>
                 <Modal.Header className='apply-position-modal' closeButton>
@@ -314,7 +314,7 @@ class SubmitQuestionModal extends React.Component {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
-                            <div className="w-100 border mb-3"></div>
+                            <hr className="w-100 line-partition mb-3" />
 
                             <div className="form-group">
                                 <div className="target input-container d-flex align-items-center justify-content-center">
@@ -403,7 +403,7 @@ class SubmitQuestionModal extends React.Component {
                                 </div>
                             }
                         </div>
-                        <div className="clearfix edit-button text-right">
+                        <div className="clearfix edit-button action-buttons text-right">
                             <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onHide}>{t("Cancel")}</Button>{' '}
                             <Button type="Submit" variant="primary" className="pr-4 pl-4">Gửi</Button>
                         </div>

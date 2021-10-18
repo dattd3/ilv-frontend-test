@@ -205,6 +205,56 @@ a {
       }
     }
   }
+  &.qna-history-modal {
+    font-size: 14px;
+    .question-status {
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .modal-content {
+      .modal-header {
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        .close span {
+          top: 6px;
+        }
+      }
+      .modal-body {
+        padding: 1rem 2rem;
+      }
+    }
+  }
+  &.qna-create-modal {
+    font-size: 14px;
+    .question-status {
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .modal-content {
+      .modal-header {
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        .close span {
+          top: 6px;
+        }
+      }
+      .modal-body {
+        padding: 1rem 2rem;
+        .form-group {
+          input {
+            font-size: inherit;
+          }
+        }
+        .action-buttons button {
+          font-size: inherit;
+        }
+      }
+      .line-partition {
+        border: none;
+        border-bottom: 1px solid #e3e6f0;
+      }
+    }
+  }
   &.vaccine-create-info {
     font-size: 14px;
     .modal-content {
