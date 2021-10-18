@@ -2,14 +2,11 @@ import React from 'react'
 import editButton from '../../assets/img/Icon-edit.png'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
-import notetButton from '../../assets/img/icon-note.png'
-import commentButton from '../../assets/img/Icon-comment.png'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
-import Moment from 'react-moment'
 import moment from 'moment'
 import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
@@ -496,7 +493,7 @@ class RequestTaskList extends React.Component {
                     />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
-                <div className="row w-100 mt-2 mb-3">
+                <div className="row w-100 mt-2 mb-3 search-block">
                     <div className="col-xl-4">
                         <InputGroup className="d-flex">
                         <InputGroup.Prepend className="">
@@ -509,6 +506,9 @@ class RequestTaskList extends React.Component {
                                 isClearable={false}
                                 onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                 placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                styles={{
+                                    menu: provided => ({ ...provided, zIndex: 2 })
+                                }}
                                 theme={theme => ({
                                 ...theme,
                                 colors: {
@@ -520,15 +520,16 @@ class RequestTaskList extends React.Component {
                         </InputGroup>
                     </div>
                     <div className="col-xl-4">
-                    <InputGroup className="">
+                    <InputGroup>
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
-                        placeholder={t('SearchRequester')}
-                        aria-label="SearchRequester"
-                        aria-describedby="basic-addon2"
-                        onChange={this.handleInputChange}
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
                         />
                     </InputGroup>
                     </div>
@@ -537,15 +538,12 @@ class RequestTaskList extends React.Component {
                     </div>
                 </div>
                 <div className="block-title">
-                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <h4 className="content-page-header">{this.props.title}</h4>
                 </div>
-                <div className="task-list shadow">
+                <div className="task-list request-list shadow">
                     <table className="table table-borderless table-hover table-striped">
                         <thead>
                             <tr>
-                                <th scope="col" className="check-box">
-                                    
-                                </th>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                 <th scope="col" className="day-off">{t("DayOff")}</th>
@@ -574,9 +572,6 @@ class RequestTaskList extends React.Component {
                                 }
                                 return (
                                     <tr key={index}>
-                                        <td scope="col" className="check-box"> 
-                                            
-                                        </td>
                                         {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
                                         <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                         <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>

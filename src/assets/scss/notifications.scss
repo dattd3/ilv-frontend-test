@@ -259,10 +259,14 @@
 }
 
 .notifications-detail-section {
+    font-size: 14px;
     .title-block {
         color: #283280;
         font-weight: bold;
         margin-bottom: 15px;
+    }
+    .create-qna {
+        font-size: inherit;
     }
     .detail-notifications-block {
         .content {
