@@ -12,6 +12,7 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next";
+import { getValueParamByQueryString } from "../../../commons/Utils"
 
 registerLocale("vi", vi)
 
@@ -20,8 +21,9 @@ const DURING_THE_DAY = 2
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-
 const TRAINING_OPTION_VALUE = "DT01"
+
+const queryString = window.location.search
 
 class BusinessTripComponent extends React.Component {
     constructor(props) {
@@ -36,12 +38,13 @@ class BusinessTripComponent extends React.Component {
             messageModal: "",
             isShowAddressAndVehicle: true,
             disabledSubmitButton: false,
+            dateRequest: getValueParamByQueryString(queryString, 'date'),
             requestInfo: [
                 {
                     groupItem: 1,
-                    startDate: null,
+                    startDate: getValueParamByQueryString(queryString, 'date'),
                     startTime: 0,
-                    endDate: null,
+                    endDate: getValueParamByQueryString(queryString, 'date'),
                     endTime: 0,
                     comment: null,
                     totalTimes: 0,

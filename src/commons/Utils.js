@@ -102,4 +102,11 @@ const isEnableFunctionByFunctionName = name => {
     return listPnLAccepted.includes(companyCode)
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName }
+const getValueParamByQueryString = (queryString, key) => {
+    // const queryString = window.location.search
+    const params = new URLSearchParams(queryString)
+    const date = params.get(key)
+    return date
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString }

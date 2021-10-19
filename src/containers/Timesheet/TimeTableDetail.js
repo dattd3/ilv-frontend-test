@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from "react"
-import Button from 'react-bootstrap/Button'
-import {OverlayTrigger,Tooltip, Popover, Collapse} from 'react-bootstrap'
-import Fade from 'react-bootstrap/Fade'
+import React, { useEffect, useState, useRef, Fragment } from "react"
+import {OverlayTrigger, Tooltip, Popover, Collapse} from 'react-bootstrap'
+import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
+import Constants from "../../commons/Constants"
+
 const DATE_TYPE = {
     DATE_OFFSET: 0,
     DATE_NORMAL: 1,
@@ -49,13 +50,32 @@ function WorkingDay(props) {
 const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.length - 1].push(e) : acc.push([e]), acc), []);
 
 function RenderRow0(props) {
-    return <>
-        {
-             props.timesheets.map((item, index) => {
-                return  <td key = {index}><div className="date">{item.day}</div></td>
-             })
-        }
-    </>
+  const { t } = useTranslation()
+
+  return (props.timesheets || []).map((item, index) => {
+    let dayFormatToBindElement = moment(item.day, "DD/MM/YYYY").format("DDMMYYYY")
+    return <Fragment key={index}>
+      <td data-tip data-for={`total-items-selected-${dayFormatToBindElement}`} className="wrap-item-tooltip">
+        <ReactTooltip id={`total-items-selected-${dayFormatToBindElement}`} event="click" isCapture globalEventOff="click" clickable place="bottom" type='light' backgroundColor="#FFFFFF" arrowColor="#FFFFFF" className="item-tooltip">
+          <ul>
+            <li className="action-item">
+              <a href={`/registration?tab=LeaveOfAbsenceRegistration&date=${item.day}`} target="_blank" title={t('LeaveRequest')}>{t('LeaveRequest')}</a>
+            </li>
+            <li className="action-item">
+              <a href={`/registration?tab=BusinessTripRegistration&date=${item.day}`} target="_blank" title={t('BizTrip_TrainingRequest')}>{t('BizTrip_TrainingRequest')}</a>
+            </li>
+            <li className="action-item">
+              <a href={`/registration?tab=SubstitutionRegistration&date=${item.day}`} target="_blank" title={t('ShiftChange')}>{t('ShiftChange')}</a>
+            </li>
+            <li className="action-item">
+              <a href={`/registration?tab=InOutTimeUpdate&date=${item.day}`} target="_blank" title={t('InOutChangeRequest')}>{t('InOutChangeRequest')}</a>
+            </li>
+          </ul>
+        </ReactTooltip>
+        <div className="date">{moment(item.day, "DD/MM/YYYY").format("DD/MM")}</div>
+      </td>
+    </Fragment>
+  })
 }
 
 function RenderRow1(props) {
@@ -482,7 +502,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
     const toDate_day = toDate.getDay() == 0 ? 7 : toDate.getDay();
     const firstArray = Array.from({length:fromDate_day - 1}).map((x, index) => {
       return {
-        day: moment( getDayOffset(fromDate, -1 *(fromDate_day - index - 1))).format('DD/MM'),
+        day: moment( getDayOffset(fromDate, -1 *(fromDate_day - index - 1))).format('DD/MM/YYYY'),
         date_type : DATE_TYPE.DATE_OFFSET, //ngay trắng,
         date: index + 1  // thu 2
       }
@@ -491,7 +511,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       return {
           date_type : DATE_TYPE.DATE_OFFSET, //ngay trắng,
           date: toDate_day + index + 1,  // thu 2
-          day: moment( getDayOffset(toDate, index + 1)).format('DD/MM')
+          day: moment( getDayOffset(toDate, index + 1)).format('DD/MM/YYYY')
         }
     })
     const today = moment(new Date()).format("YYYYMMDD")
@@ -708,7 +728,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       line3 =  getComment(moment(item.date, 'DD-MM-YYYY').format('YYYYMMDD'), line1, line3, reasonData);
 
       data[index] = {
-          day: moment(item.date, 'DD-MM-YYYY').format('DD/MM'),
+          day: moment(item.date, 'DD-MM-YYYY').format('DD/MM/YYYY'),
           date_type :  isHoliday(item) ? DATE_TYPE.DATE_OFF : DATE_TYPE.DATE_NORMAL, // ngày bt
           is_holiday: item.is_holiday,
         //date: 1,  // thu 3
@@ -747,9 +767,9 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
     <div className="detail mb-2">
       <div className="card shadow">
         <div
-          className={"card-header clearfix text-white " + "bg-success"}
+          className="card-header clearfix card-header-text"
           onClick={() => setOpen(!open)}>
-          <div className="float-left text-uppercase">{t("WorkingDaysDetail")}</div>
+          <div className="text-uppercase text-center">{t("WorkingDaysDetail")}</div>
           {
             props.showCavet ? 
             <div className="float-right">
@@ -757,7 +777,6 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
             </div>
             : null
           }
-          
         </div>
 
         <Collapse in={open || !props.showCavet}>
