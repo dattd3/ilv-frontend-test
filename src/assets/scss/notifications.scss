@@ -110,7 +110,7 @@
 }
 
 .list-notifications-section {
-    // font-size: 14px;
+    font-size: 14px;
     .search-block {
         display: flex;
         justify-items: center;
@@ -199,7 +199,7 @@
             display: flex;
             justify-content: flex-start;
             align-items: flex-start;
-            border-bottom: 1px solid #cccaca;
+            border-bottom: 1px solid #dddddd;
             padding-bottom: 15px;
             margin-bottom: 15px;
             .content {
@@ -250,9 +250,11 @@
                 border-radius: 21px;
                 background: #4298FF;
                 color: #FFFFFF;
-                // font-size: 22px;
                 font-weight: normal;
                 margin-right: 15px;
+                img {
+                    height: 18px;
+                }
             }
         }
     }

@@ -442,7 +442,7 @@ class TaskList extends React.Component {
                                 }
                                 <th scope="col" className="user-title">{t("Title")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="day-off">{t("DayOff")}</th>
+                                <th scope="col" className="day-off">{t("Times")}</th>
                                 <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 {
                                     this.props.page == "approval" ?

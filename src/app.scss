@@ -1659,23 +1659,29 @@ span.badge-notification[data-badge]::after {
   td, th {
     border: 1px solid #707070;
     text-align: left;
-    padding: 2px 0px;
     height: 30px;
     max-width: 50px;    
     text-align: center;
+    &.wrap-item-tooltip {
+      &:hover {
+        background: #2e59d9;
+        .date {
+          color: #FFFFFF;
+        }
+      }
+    }
   }
   thead {
     td, th {
       text-align: left;
-      padding: 10px 0px;
       height: 30px;
-      max-width: 50px;    
+      max-width: 50px;
       text-align: center;
       border: none;
-      color: #C11D2A;
-      background-color: #FFA2001A;
+      color: #000000;
+      background-color: #F2F2F2;
+      text-transform: uppercase;
       font-weight: bold;
-
     }
   }
   .divide{
@@ -1683,8 +1689,8 @@ span.badge-notification[data-badge]::after {
     height: 10px;
   }
   .date{
-    color: #C11D2A;
-
+    color: #383838;
+    cursor: pointer;
   }
   .ke_hoach{
     background-color: #00B3FF;
@@ -2230,6 +2236,16 @@ span.badge-notification[data-badge]::after {
 
 .vaccine-info-page {
   font-size: 14px;
+  .table {
+    table {
+      th {
+        color: #383838;
+      }
+      td {
+        border-top: 1px solid #dddddd;
+      }
+    }
+  }
   .btn-create {
     font-size: inherit;
     border-radius: 8px;
@@ -2282,8 +2298,4 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
     }
   }
-}
-
-.list-notifications-section {
-  font-size: 14px;
 }
