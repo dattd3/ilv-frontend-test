@@ -25,7 +25,7 @@ class VaccinationDetail extends React.Component {
             formData: {
                 number: props.number + 1,
                 vaccinTypeId : '',
-                injectedAt: moment().format("dd-MM-yyyy"),
+                injectedAt: null,
                 vaccinationUnitId: null,
                 city: null,
                 district: null,
@@ -373,13 +373,16 @@ class VaccinationDetail extends React.Component {
                     onHide={this.props.onHide} 
                     size="xl">
                     <Modal.Header className='apply-position-modal' >
-                        <Modal.Title>{t('vaccination_btn_declare')}</Modal.Title>
+                        <Modal.Title>{t(this.props.rowId ? 'EditQuestion' : 'vaccination_btn_declare')}</Modal.Title>
                         <button type="button" className="close" onClick={() => this.props.onCancelClick()}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
-                    <Modal.Body>
-                        <div className="form-content">
+                    <Modal.Body className="pt-0">
+                        {
+                            this.props.editLastRow && <div className="py-2 border-bottom"><span className="text-danger">* {t('confirm_form_vaccination')}</span></div>
+                        }
+                        <div className="form-content pt-3">
                             <div className="row">
                                 <div className="col-md-3 col-xs-12">
                                     <div className="form-group">
@@ -391,12 +394,12 @@ class VaccinationDetail extends React.Component {
                                     <div className="form-group">
                                         <label>{t('vaccination_status')} <span className="text-danger"> (*)</span></label>
                                         <Select
-                                            isClearable={true}
+                                            isClearable={false}
                                             styles={customStyles}
                                             name="statusId"
                                             onChange={type => this.handleSelectChange('statusId', type)}
                                             value={this.state.formData.statusId ? this.state.status_data.filter(n => n.value == this.state.formData.statusId) : null}
-                                            placeholder={t('vaccination_status') + '...'}
+                                            placeholder={t('vaccination_status')}
                                             key="statusId"
                                             options={this.state.status_data}
                                         />
@@ -413,7 +416,7 @@ class VaccinationDetail extends React.Component {
                                                     name="type"
                                                     onChange={type => this.handleSelectChange('vaccinTypeId', type)}
                                                     value={this.state.formData.vaccinTypeId ? this.state.vaccinType.filter(n => n.value == this.state.formData.vaccinTypeId) : null}
-                                                    placeholder={t('vaccination_type') + '...'}
+                                                    placeholder={t('vaccination_type')}
                                                     key="type"
                                                     options={this.state.vaccinType}
                                                 />
@@ -428,7 +431,7 @@ class VaccinationDetail extends React.Component {
                                                 name="reasonRejectId"
                                                 onChange={type => this.handleSelectChange('reasonRejectId', type)}
                                                 value={this.state.reason_reject_data.filter(n => n.value == this.state.formData.reasonRejectId) || null}
-                                                placeholder={t('vaccination_reason') + '...'}
+                                                placeholder={t('vaccination_reason')}
                                                 key="reasonRejectId"
                                                 options={this.state.reason_reject_data}
                                             />
@@ -446,6 +449,7 @@ class VaccinationDetail extends React.Component {
                                                     name="injectedAt"
                                                     key="injectedAt"
                                                     selected={this.state.formData.injectedAt ? moment(this.state.formData.injectedAt).toDate() : null}
+                                                    // minDate={new Date(this.props.lastTime)}
                                                     maxDate={new Date()}
                                                     onChange={event => this.handleDatePickerInputChange(event)}
                                                     dateFormat="dd-MM-yyyy"
@@ -469,7 +473,7 @@ class VaccinationDetail extends React.Component {
                                                     name="reasonTypeId"
                                                     onChange={type => this.handleSelectChange('reasonTypeId', type)}
                                                     value={this.state.reason_type_data[this.state.formData.reasonRejectId - 1].filter(n => n.value == this.state.formData.reasonTypeId) || null}
-                                                    placeholder={t('vaccination_reason_field') + '...'}
+                                                    placeholder={t('vaccination_reason_field')}
                                                     key="reasonTypeId"
                                                     options={this.state.reason_type_data[this.state.formData.reasonRejectId - 1]}
                                                 />

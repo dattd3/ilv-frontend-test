@@ -898,8 +898,8 @@
   "BirthCity": "Thành phố sinh",
   "Recalled": "Đã thu hồi",
   "successfulRecallReq": "Gửi yêu cầu thu hồi thành công !",
-  "successfulCreateVaccination": "Tạo mới thông tin tiêm vaccine thành công !",
-  "successfulUpdateVaccination": "Cập nhật thông tin tiêm vaccine thành công!",
+  "successfulCreateVaccination": "Báo cáo thông tin tiêm vaccine thành công !",
+  "successfulUpdateVaccination": "Cập nhật thông tin tiêm vaccine thành công !",
   "successfulCancelReq": "Hủy yêu cầu thành công !",
   "successfulApprvalReq": "Phê duyệt yêu cầu thành công !",
   "successfulDisApprovalReq": "Từ chối phê duyệt yêu cầu thành công !",
@@ -1025,5 +1025,6 @@
   "vaccination_reason_detail_item_1": "Nếu bạn đang mang thai, vui lòng nhập thông tin tuần thai sản (Ví dụ: Tuần 5).",
   "vaccination_reason_detail_item_2": "Nếu bạn đang nuôi con nhỏ, vui lòng nhập thông tin tháng tuổi (Ví dụ: 5 Tháng).",
   "detail": "Chi tiết",
-  "vaccination_btn_declare": "Khai báo tình trạng tiêm chủng"
+  "vaccination_btn_declare": "Khai báo tình trạng tiêm chủng",
+  "confirm_form_vaccination": "Vui lòng điều chỉnh thông tin trạng thái Từ chối/Trì hoãn tiêm chủng gần nhất."
 }

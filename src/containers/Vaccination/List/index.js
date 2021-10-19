@@ -15,7 +15,8 @@ class Vaccination extends React.Component {
             listData: [],
             showModelDetail: false,
             rowId: null,
-            loadSuccess: false
+            loadSuccess: false,
+            editLastRow: false
         };
     }
 
@@ -30,6 +31,13 @@ class Vaccination extends React.Component {
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({listData: res.data.data});
+                const lastItem = this.state.listData[this.state.listData.length - 1];
+                if(lastItem?.statusId == 2){
+                    this.setState({
+                        rowId: lastItem?.id,
+                        editLastRow: true
+                    });
+                }
             }
             this.setState({loadSuccess: true});
         }).catch(error => {
@@ -39,6 +47,7 @@ class Vaccination extends React.Component {
     
     render() {
         const { t } = this.props;
+        const lastItem = this.state.listData[this.state.listData.length - 1];
         return <>
             <div className="row vaccine-info-page">
                 <div className="w-100">
@@ -130,7 +139,7 @@ class Vaccination extends React.Component {
                                         </td>
                                         <td className="align-middle">
                                             <div className="" onClick={() => {
-                                                this.setState({showModelDetail: true, rowId: v.id});
+                                                this.setState({showModelDetail: true, rowId: v.id, editLastRow: false});
                                             }}>
                                                 <OverlayTrigger 
                                                     placement="left" 
@@ -153,7 +162,15 @@ class Vaccination extends React.Component {
                         </table>
                     </div>
                 </div>
-                {this.state.loadSuccess && this.state.showModelDetail && <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} number={this.state.listData[this.state.listData.length - 1]?.number} onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} />}
+                {this.state.loadSuccess && this.state.showModelDetail && 
+                <VaccinationDetail show={this.state.showModelDetail} 
+                    rowId={this.state.rowId} 
+                    t={t} 
+                    number={lastItem?.number} 
+                    onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} 
+                    editLastRow={this.state.editLastRow}
+                    lastTime={lastItem?.injectedAt}
+                />}
             </div>
         </>
     }
