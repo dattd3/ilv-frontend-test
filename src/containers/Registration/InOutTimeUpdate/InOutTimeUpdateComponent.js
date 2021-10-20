@@ -10,16 +10,20 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
+import { getValueParamByQueryString } from "../../../commons/Utils"
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
+const queryString = window.location.search
 
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
-      endDate: new Date(),
+      // startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
+      // endDate: getValueParamByQueryString(queryString, 'date') || new Date(),
+      startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY"),
+      endDate: getValueParamByQueryString(queryString, 'date') || moment().format("DD/MM/YYYY"),
       timesheets: [],
       approver: null,
       appraiser:null,
@@ -281,8 +285,9 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   search() {
-    const start = moment(this.state.startDate).format('YYYYMMDD').toString()
-    const end = moment(this.state.endDate).format('YYYYMMDD').toString()
+    const { startDate, endDate } = this.state
+    const start = moment(startDate, "DD/MM/YYYY").format('YYYYMMDD')
+    const end = moment(endDate, "DD/MM/YYYY").format('YYYYMMDD')
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -372,8 +377,10 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
+    const { startDate, endDate } = this.state
     const { t } = this.props;
     const lang = localStorage.getItem("locale")
+
     return (
       <div className="in-out-time-update">
         <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -387,8 +394,9 @@ class InOutTimeUpdateComponent extends React.Component {
                     name="startDate"
                     selectsStart
                     autoComplete="off"
-                    selected={this.state.startDate}
-                    maxDate={this.state.endDate}
+                    selected={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
+                    maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
+                    // maxDate={this.state.endDate}
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
@@ -410,9 +418,11 @@ class InOutTimeUpdateComponent extends React.Component {
                     name="endDate"
                     selectsEnd
                     autoComplete="off"
-                    selected={this.state.endDate}
-                    minDate={this.state.startDate}
-                    maxDate={new Date()}
+                    selected={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
+                    // minDate={this.state.startDate}
+                    // maxDate={new Date()}
+                    minDate={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
+                    maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"

@@ -886,7 +886,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="row">
                                             <div className="col-lg-6 col-xl-6">
                                                 <p className="">{t('SelectLeaveType')}</p>
-                                                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                                <div className="btn-group btn-group-toggle leave-type" data-toggle="buttons">
                                                     <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                         {t('FullDay')}
                                                     </label>
