@@ -12,6 +12,7 @@ import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next";
+import { getValueParamByQueryString } from "../../../commons/Utils"
 
 registerLocale("vi", vi)
 
@@ -20,8 +21,9 @@ const DURING_THE_DAY = 2
 const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-
 const TRAINING_OPTION_VALUE = "DT01"
+const totalDaysForSameDay = 1
+const queryString = window.location.search
 
 class BusinessTripComponent extends React.Component {
     constructor(props) {
@@ -36,16 +38,17 @@ class BusinessTripComponent extends React.Component {
             messageModal: "",
             isShowAddressAndVehicle: true,
             disabledSubmitButton: false,
+            dateRequest: getValueParamByQueryString(queryString, 'date'),
             requestInfo: [
                 {
                     groupItem: 1,
-                    startDate: null,
+                    startDate: getValueParamByQueryString(queryString, 'date'),
                     startTime: 0,
-                    endDate: null,
+                    endDate: getValueParamByQueryString(queryString, 'date'),
                     endTime: 0,
                     comment: null,
                     totalTimes: 0,
-                    totalDays: 0,
+                    totalDays: getValueParamByQueryString(queryString, 'date') ? totalDaysForSameDay : 0,
                     isAllDay: true,
                     attendanceQuotaType: null,
                     place: null,
@@ -581,17 +584,17 @@ class BusinessTripComponent extends React.Component {
     }
 
     updateLeaveType(isAllDay, groupId) {
-        const { requestInfo } = this.state
+        const { requestInfo, dateRequest } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
         newRequestInfo.push({
             groupItem: 1,
-            startDate: null,
+            startDate: dateRequest,
             startTime: 0,
-            endDate: null,
+            endDate: dateRequest,
             endTime: 0,
             comment: null,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             isAllDay: isAllDay,
             attendanceQuotaType: null,
             place: null,
@@ -611,18 +614,18 @@ class BusinessTripComponent extends React.Component {
     }
 
     addMultiDateTime(groupId, requestItem, isAllDay,req) {
-        const { requestInfo } = this.state;
+        const { requestInfo, dateRequest } = this.state;
         const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
         requestInfo.push({
             groupItem: maxIndex + 1,
             groupId: groupId,
-            startDate: null,
+            startDate: dateRequest,
             startTime: 0,
-            endDate: null,
+            endDate: dateRequest,
             endTime: 0,
             comment: req.comment,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             isAllDay: isAllDay,
             attendanceQuotaType: req.attendanceQuotaType,
             place: req.place,
@@ -646,17 +649,17 @@ class BusinessTripComponent extends React.Component {
     }
 
     onAddBizTrip() {
-        const { requestInfo } = this.state;
+        const { requestInfo, dateRequest } = this.state;
         const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
         requestInfo.push({
             groupItem: 1,
-            startDate: null,
+            startDate: dateRequest,
             startTime: 0,
-            endDate: null,
+            endDate: dateRequest,
             endTime: 0,
             comment: null,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             isAllDay: true,
             attendanceQuotaType: null,
             place: null,
@@ -750,7 +753,7 @@ class BusinessTripComponent extends React.Component {
                                 <div className="row">
                                     <div className="col-7">
                                         <p className="text-uppercase"><b>{t('BizTrip_TrainingTime')}</b></p>
-                                        <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <div className="btn-group btn-group-toggle leave-type" data-toggle="buttons">
                                             <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                 {t('FullDayBizTrip')}
                                             </label>

@@ -1,4 +1,5 @@
 .leave-time-page {
+    font: normal 14px Arial, Helvetica, sans-serif;
     .searchTitle {
         font-weight: bold;
         color: #2a377c;
@@ -29,27 +30,26 @@
 
         .relative {
             position: relative;
-          }
-          
-          .absolute-center {
+        }
+        .absolute-center {
             position:absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-
-            div {
-                font-size: 14px;
-            }
-          }
-          
-          .text-center{
+        }
+        .text-center{
             text-align: center;
-          }
+        }
           
-          p {
-            font-size: 11px;
+        p {
+            font-size: inherit;
             width: 45px;
-          }
+        }
+        .description {
+            i {
+                margin-right: 2px;
+            }
+        }
     }
 
     .search-box {
@@ -59,47 +59,39 @@
         padding: 30px 10px;
         margin: 10px 0px;
         border-radius: 10px;
-    
         .title {
             display: block;
             margin-bottom: 10px;
         }
-    
         .content {
             display: block;
         }
-
         .input-container {
             position:relative;
-
             .input {
                 margin:0;
                 padding-right: 50px;
                 width: 300px;
+                font-size: inherit;
             }
             .input-img {
                 position: absolute;
-                bottom: 22px;
-                left: 270px;
-                width: 24px;
-                height: 24px;
+                top: 11px;
+                left: 272px;
             }
             i {
-                font-size: 24px;
-                font-weight: 100;
+                font-size: 18px;
             }
         }
-    
         .btn-search {
             width: 100%;
+            font-size: inherit;
         }
-
         .note {
             display: block;
             margin-left: 5px;
         }
     }
-
     .leave-time-detail {
         .card {
             margin: 20px 0;

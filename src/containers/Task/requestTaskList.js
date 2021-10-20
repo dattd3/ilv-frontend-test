@@ -546,7 +546,7 @@ class RequestTaskList extends React.Component {
                             <tr>
                                 <th scope="col" className="code">{t("RequestNo")}</th>
                                 <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="day-off">{t("DayOff")}</th>
+                                <th scope="col" className="day-off">{t("Times")}</th>
                                 <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
                                 <th scope="col" className="status text-center">{t("Status")}</th>
                                 <th scope="col" className="tool text-center"></th>
