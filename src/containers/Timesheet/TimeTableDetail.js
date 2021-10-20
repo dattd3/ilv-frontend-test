@@ -56,7 +56,7 @@ function RenderRow0(props) {
     let dayFormatToBindElement = moment(item.day, "DD/MM/YYYY").format("DDMMYYYY")
     return <Fragment key={index}>
       <td data-tip data-for={`total-items-selected-${dayFormatToBindElement}`} className="wrap-item-tooltip">
-        <ReactTooltip id={`total-items-selected-${dayFormatToBindElement}`} event="click" isCapture globalEventOff="click" clickable place="bottom" type='light' backgroundColor="#FFFFFF" arrowColor="#FFFFFF" className="item-tooltip">
+        <ReactTooltip id={`total-items-selected-${dayFormatToBindElement}`} event="click" scrollHide isCapture globalEventOff="click" clickable place="bottom" type='light' backgroundColor="#FFFFFF" arrowColor="#FFFFFF" className="item-tooltip">
           <ul>
             <li className="action-item">
               <a href={`/registration?tab=LeaveOfAbsenceRegistration&date=${item.day}`} target="_blank" title={t('LeaveRequest')}>{t('LeaveRequest')}</a>

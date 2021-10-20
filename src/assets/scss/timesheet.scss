@@ -60,8 +60,8 @@
       }
       .input-img {
         position: absolute;
-        top: 11px;
-        left: 270px;
+        top: 10px;
+        left: 272px;
       }
       i {
         font-size: 20px;
@@ -565,6 +565,10 @@
             border-bottom: 1px solid #CCCCCC;
             a {
               color: #383838;
+              text-decoration: none;
+              &:hover {
+                color: #000000;
+              }
             }
             &:last-child {
               border: none;
