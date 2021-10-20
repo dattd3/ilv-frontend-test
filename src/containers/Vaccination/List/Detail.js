@@ -38,6 +38,7 @@ class VaccinationDetail extends React.Component {
                 reasonTypeId: null,
                 reasonDetail: ''
             },
+            notDelay: false,
             effectList: [],
             vaccinType: [],
             departments: [],
@@ -98,6 +99,9 @@ class VaccinationDetail extends React.Component {
             if (res && res.data && res.data.data) {
                 const stateData = this.state.formData;
                 const infoData = res.data.data;
+                this.setState({
+                    notDelay: infoData.statusId - 1
+                });
                 stateData['number'] = infoData.number;
                 stateData['injectedAt'] = infoData.injectedAt;
                 stateData['address'] = infoData.address;
@@ -112,7 +116,6 @@ class VaccinationDetail extends React.Component {
                 stateData['reasonRejectId'] = infoData.reasonRejectId;
                 stateData['reasonTypeId'] = infoData.reasonTypeId;
                 stateData['reasonDetail'] = infoData.reasonDetail;
-
                 this.setState(stateData);
                 if(stateData['vaccinationUnitId'] == 2){
                     this.getListCity(() => {
@@ -127,6 +130,7 @@ class VaccinationDetail extends React.Component {
                         }
                     });
                 }
+                console.log(this.state);
             }
         }).catch(error => {
         }); 
@@ -394,6 +398,7 @@ class VaccinationDetail extends React.Component {
                                     <div className="form-group">
                                         <label>{t('vaccination_status')} <span className="text-danger"> (*)</span></label>
                                         <Select
+                                            isDisabled={!this.state.notDelay}
                                             isClearable={false}
                                             styles={customStyles}
                                             name="statusId"
