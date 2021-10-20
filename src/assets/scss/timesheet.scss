@@ -60,8 +60,8 @@
       }
       .input-img {
         position: absolute;
-        top: 11px;
-        left: 270px;
+        top: 10px;
+        left: 272px;
       }
       i {
         font-size: 20px;
@@ -528,11 +528,51 @@
         .card-header {
           padding: 0 0 15px 0;
           font-weight: bold;
+          color: #383838;
         }
         .card-body {
           padding: 1.25rem 0 0 0;
           .title {
             font-size: 13px;
+          }
+        }
+        .card-header {
+          border-bottom-color: #dddddd;
+        }
+      }
+    }
+    .detail {
+      .card {
+        .card-header {
+          &.card-header-text {
+            color: #383838;
+            font-weight: bold;
+          }
+        }
+      }
+      .item-tooltip {
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        background: #FFFFFF;
+        padding: 0 15px;
+        & > ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          .action-item {
+            cursor: pointer;
+            text-align: left;
+            padding: 5px 0;
+            border-bottom: 1px solid #CCCCCC;
+            a {
+              color: #383838;
+              text-decoration: none;
+              &:hover {
+                color: #000000;
+              }
+            }
+            &:last-child {
+              border: none;
+            }
           }
         }
       }
