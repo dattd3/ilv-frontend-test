@@ -48,6 +48,15 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+
+  {
+    id: 48,
+    parentId: 0,
+    icon: 'c-task',
+    label: "Menu_Clinic_Learning",
+    to: map.ClinicVinmec,
+    role: ['V060']
+  },
   
   //workflow management
   {
