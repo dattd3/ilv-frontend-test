@@ -377,8 +377,8 @@ class RequestComponent extends React.Component {
                                 <td className="col-unit text-center">{item.unit}</td>
                                 <td className="col-unit text-center">{item.department}</td>
                                 <td className="col-unit text-center">{item.rank}</td>
-                                <td className="col-deadline text-center">{moment(item.startWork).format("DD/MM/YYYY")}</td>
-                                <td className="col-deadline text-center">{moment(item.timeExpire).format("DD/MM/YYYY")}</td>
+                                <td className="col-deadline text-center">{item.startWork ? moment(item.startWork).format("DD/MM/YYYY") : ''}</td>
+                                <td className="col-deadline text-center">{item.timeExpire ? moment(item.timeExpire).format("DD/MM/YYYY"): ''}</td>
                                 {this.renderActionView(this.state.isShowDevices, item.employeeNo, item.devices, 'devices')}
                                 {this.renderActionView(this.state.isShowAccount, item.employeeNo, item.account, 'account')}
                                 {this.renderActionView(this.state.isShowVoucher, item.employeeNo, item.voucher, 'voucher')}
