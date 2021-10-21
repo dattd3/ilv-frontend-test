@@ -3,13 +3,22 @@ import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
 import Media from 'react-bootstrap/Media'
+import {Redirect} from 'react-router-dom'
 
 function Vingroup(props) {
     const { t } = useTranslation();
 
     useEffect(() => {
-        document.title = t("Menu_VinpearlIntroduction");
+        if(props.location.pathname == '/clinic-vinmec'){
+        } else {
+            document.title = t("Menu_VinmecIntroduction");
+        }
+        
     });
+    if(props.location.pathname == '/clinic-vinmec'){
+        window.open(`${process.env.REACT_APP_VINMECT_URL}auth?type=SSO`, "_blank") 
+        return <Redirect to='/'/>;
+    }
     if (true) {
 
         return (
