@@ -490,6 +490,14 @@ export default [
             path: map.Instruct
           },
           component: lazy(() => import("./Instruct"))
+        },
+        {
+          key: "clinic-vinmec",
+          routeProps: {
+            exact: true,
+            path: map.ClinicVinmec,
+          },
+          component: lazy(() => import("./Corporation/Vinmec")),
         }
       ],
     },
