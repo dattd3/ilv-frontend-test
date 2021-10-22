@@ -123,6 +123,9 @@ class DepartmentTimeSheetDetail extends React.Component {
   render() {
     const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
+    const companyVCodeUserLogged = localStorage.getItem('companyCode')
+    const isDisableTimeSheetFunction = companyVCodeUserLogged === Constants.pnlVCode.VinPearl
+
     return (
       <div className="leave-of-absence">
         <h5>{t("AdminInformation")}</h5>
@@ -148,15 +151,18 @@ class DepartmentTimeSheetDetail extends React.Component {
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>{t('DepartmentTimeSheetInformation')}</h5>
-        <div className="timesheet-section">
-          <TimeSheetMember timesheets={this.state.timeSheets} dayList={this.state.dayList}/>
-        </div>
+        {
+          !isDisableTimeSheetFunction && 
+          <div className="timesheet-section">
+            <TimeSheetMember timesheets={this.state.timeSheets} dayList={this.state.dayList} />
+          </div>
+        }
         <div className="card shadow mb-4">
           <div className="card-body">
             <div className="row group">
               <div className="col-xl-12 auto-height">
                 Lý do
-                <input type="text" className="form-control mt-2" name="comment" value={this.props.substitution.comment} readOnly />
+                <input type="text" className="form-control mt-2" name="comment" value={this.props.substitution.comment || ""} readOnly />
               </div>
             </div>
           </div>
@@ -192,6 +198,7 @@ class DepartmentTimeSheetDetail extends React.Component {
           <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
           {
             // this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ?
+              !isDisableTimeSheetFunction &&
               <div className="d-flex justify-content-center align-items-center">
                 <div className="mr-2">
                   <button className="btn-export-err p-2 text-dark" onClick={this.exportTimeSheetsFile}><img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> {`${t('baseNameBCCFile')} ${this.props.substitution.createField.replace('/','_')}.xlsx`}</button>
