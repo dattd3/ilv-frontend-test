@@ -158,8 +158,8 @@ function ShiftUpdateModal(props) {
                     }
                 }
                 const data = {
-                    from_date: moment(props.dateInfo.date, 'YYYY-MM-DD').format("YYYYMMDD"),
-                    to_date: moment(props.dateInfo.date, 'YYYY-MM-DD').format("YYYYMMDD"),
+                    from_date: moment(props.dateInfo.date).format("YYYYMMDD"),
+                    to_date: moment(props.dateInfo.date).format("YYYYMMDD"),
                     personal_no_list: [],
                     page_no: 1,
                     page_size: 10000

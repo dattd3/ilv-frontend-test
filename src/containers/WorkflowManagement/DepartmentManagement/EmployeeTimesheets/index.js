@@ -79,20 +79,20 @@ class EmployeeTimesheets extends Component {
   }
 
   search(startDate, endDate, memberIds) {
-    let start = moment(startDate).format("YYYYMMDD").toString();
-    let end = moment(endDate).format("YYYYMMDD").toString();
+    let start = moment(startDate).format("YYYYMMDD");
+    let end = moment(endDate).format("YYYYMMDD");
     const headers = {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`
     };
 
     const timeoverviewParams = {
-      from_date: parseInt(start),
-      to_date: parseInt(end),
+      from_date: start,
+      to_date: end,
       personal_no_list: memberIds || [],
     };
     const reasonParams = {
-      startdate: parseInt(start),
-      endDate: parseInt(end),
+      startdate: start,
+      endDate: end,
     };
     this.setState({isLoading: true});
     const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
