@@ -1180,7 +1180,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-12">
                                         <p className="title">{t('ReasonRequestLeave')}</p>
                                         <div>
-                                            <textarea className="form-control" value={req[0].comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
+                                            <textarea className="form-control" value={req[0].comment || ""} placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
                                         </div>
                                         {req[0].errors.comment ? this.error('comment', req[0].groupId) : null}
                                     </div>
