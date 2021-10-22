@@ -1026,5 +1026,6 @@
   "vaccination_reason_detail_item_2": "Nếu bạn đang nuôi con nhỏ, vui lòng nhập thông tin tháng tuổi (Ví dụ: 5 Tháng).",
   "detail": "Chi tiết",
   "vaccination_btn_declare": "Khai báo tình trạng tiêm chủng",
-  "confirm_form_vaccination": "Vui lòng điều chỉnh thông tin trạng thái Từ chối/Trì hoãn tiêm chủng gần nhất."
+  "confirm_form_vaccination": "Vui lòng điều chỉnh thông tin trạng thái Từ chối/Trì hoãn tiêm chủng gần nhất.",
+  "vaccination_exits": "Đã có thông tin mũi tiêm trong ngày này!"
 }
