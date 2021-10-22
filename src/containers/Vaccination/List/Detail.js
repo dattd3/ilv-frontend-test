@@ -18,16 +18,11 @@ let config = {
 }
 registerLocale("vi", vi)
 class VaccinationDetail extends React.Component {
-    promise1;
-    promise2;
-    promise3;
-    promise4;
     constructor(props){
         super(props);
-        console.log(props);
         this.state = {
             formData: {
-                number: props.number + 1,
+                number: props.number + (props.rowId ? 0: 1),
                 vaccinTypeId : '',
                 injectedAt: null,
                 vaccinationUnitId: null,
@@ -37,7 +32,7 @@ class VaccinationDetail extends React.Component {
                 address: null,
                 vaccinHospitalId: null,
                 vaccinEffects: [],
-                statusId: 1,
+                statusId: props.rowId ? null : 1,
                 reasonRejectId: null,
                 reasonTypeId: null,
                 reasonDetail: ''
@@ -58,7 +53,7 @@ class VaccinationDetail extends React.Component {
             show: props.show,
             status_data: [],
             reason_reject_data: [],
-            reason_type_data: [],
+            reason_type_data: []
         };
     }
 
@@ -101,7 +96,6 @@ class VaccinationDetail extends React.Component {
                 stateData['reasonRejectId'] = infoData.reasonRejectId;
                 stateData['reasonTypeId'] = infoData.reasonTypeId;
                 stateData['reasonDetail'] = infoData.reasonDetail;
-                // console.log(state);
                 this.setState(state);
                 if(stateData['vaccinationUnitId'] == 2){
                     this.getListCity(() => {
@@ -200,7 +194,6 @@ class VaccinationDetail extends React.Component {
                 });
             }
         }
-        console.log(this.state);
         const e = this.state.formData;
         e['injectedAt'] = value;
         this.setState(e);
@@ -330,6 +323,12 @@ class VaccinationDetail extends React.Component {
         }
 
         dataRequest.injectedAt = moment(dataRequest.injectedAt || new Date().getTime()).format('YYYY-MM-DD[T]00:00:00');
+        if(this.props.listData.filter(t => t.injectedAt === dataRequest.injectedAt).length){
+            this.setState({
+                exc: true
+            });
+            return false;
+        }
 
         var message = t('successfulCreateVaccination');
         if(this.props.rowId !== null || this.props.rowId){
@@ -518,7 +517,7 @@ class VaccinationDetail extends React.Component {
                                 }
                                 
                                 {
-                                     this.state.formData.vaccinationUnitId == 2 ?
+                                    this.state.formData.vaccinationUnitId == 2 ?
                                         <div className="col-md-8 col-xs-12">
                                             <div className="row">
                                                 <div className="col-md-4 col-xs-12">
