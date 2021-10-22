@@ -323,7 +323,7 @@ class VaccinationDetail extends React.Component {
         }
 
         dataRequest.injectedAt = moment(dataRequest.injectedAt || new Date().getTime()).format('YYYY-MM-DD[T]00:00:00');
-        if(this.props.listData.filter(t => t.injectedAt === dataRequest.injectedAt).length){
+        if(this.props.listData.filter(t => t.injectedAt === dataRequest.injectedAt).length && dataRequest.statusId == 1){
             this.setState({
                 exc: true
             });
