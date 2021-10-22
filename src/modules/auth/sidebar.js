@@ -1,6 +1,8 @@
 import map from "../../containers/map.config";
 import Constants from "../../commons/Constants"
 
+const companyVCodeUserLogged = localStorage.getItem('companyCode')
+
 export const Navigation = [
   {
     id: 1,
@@ -88,7 +90,7 @@ export const Navigation = [
     parentId: 1001,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EmployeeTimeSheets,
-    label: 'SubMenuTimesheetManagement',
+    label: companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
     role: 'U'
   },
   {
@@ -279,7 +281,7 @@ export const Navigation = [
     id: 22,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_Timesheet",
+    label: companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? "Menu_TimesheetDivision" : "Menu_Timesheet",
     to: map.Timesheet,
     role: "U"
   },

@@ -805,12 +805,13 @@ class EmployeeTimesheets extends Component {
   render() {
     const { t } = this.props
     const {isSearch, timeTables, dayList, isLoading, employeesForFilter, employeeSelectedFilter, dataChanged, dateChanged, isShowStatusModal, resultShiftUpdateDetail, isDisabledSubmitButton} = this.state
+    const companyVCodeUserLogged = localStorage.getItem('companyCode')
 
     return (
       <>
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section">
-        <h1 className="content-page-header">{t("Timesheet")}</h1>
+        <h1 className="content-page-header">{companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? t("TimesheetDivision") : t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
