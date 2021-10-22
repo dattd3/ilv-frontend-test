@@ -1008,5 +1008,6 @@
   "vaccination_reason_detail_item_2": "If you are breastfeeding, please enter the age information (Example: 5 Months).",
   "detail": "Detail",
   "vaccination_btn_declare": "Declare vaccination status",
-  "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information."
+  "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information.",
+  "vaccination_exits": "Vaccination date is existing!"
 }

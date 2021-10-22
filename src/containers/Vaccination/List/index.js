@@ -170,6 +170,7 @@ class Vaccination extends React.Component {
                     onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} 
                     editLastRow={this.state.editLastRow}
                     lastTime={lastItem?.injectedAt}
+                    listData={this.state.listData}
                 />}
             </div>
         </>
