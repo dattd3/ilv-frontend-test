@@ -4,32 +4,34 @@ import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
+import { formatStringByMuleValue } from "../../commons/Utils"
 
 const DATE_TYPE = {
-    DATE_OFFSET: 0,
-    DATE_NORMAL: 1,
-    DATE_OFF: 2
-  };
-  const EVENT_TYPE = {
-    NO_EVENT: 0,
-    EVENT_KEHOACH: 1,
-    EVENT_KE_HOACH_CONTINUE: 2,
-    EVENT_GIOTHUCTE : 3,
-    EVENT_LOICONG: 4,
-    EVENT_GIONGHI: 5,
-    EVENT_CONGTAC: 6,
-    EVENT_OT: 7
-  };
-  const EVENT_STYLE = {
-    NO_EVENT: "no-event",
-    EVENT_KEHOACH: "ke_hoach",
-    EVENT_KE_HOACH_CONTINUE: 'ke_hoach_dai',
-    EVENT_GIOTHUCTE : "thuc_te",
-    EVENT_LOICONG: 'loi_cong',
-    EVENT_GIONGHI: 'gio_nghi',
-    EVENT_CONGTAC: 'cong_tac',
-    EVENT_OT: 'ot'
-  }
+  DATE_OFFSET: 0,
+  DATE_NORMAL: 1,
+  DATE_OFF: 2
+};
+const EVENT_TYPE = {
+  NO_EVENT: 0,
+  EVENT_KEHOACH: 1,
+  EVENT_KE_HOACH_CONTINUE: 2,
+  EVENT_GIOTHUCTE : 3,
+  EVENT_LOICONG: 4,
+  EVENT_GIONGHI: 5,
+  EVENT_CONGTAC: 6,
+  EVENT_OT: 7
+};
+const EVENT_STYLE = {
+  NO_EVENT: "no-event",
+  EVENT_KEHOACH: "ke_hoach",
+  EVENT_KE_HOACH_CONTINUE: 'ke_hoach_dai',
+  EVENT_GIOTHUCTE : "thuc_te",
+  EVENT_LOICONG: 'loi_cong',
+  EVENT_GIONGHI: 'gio_nghi',
+  EVENT_CONGTAC: 'cong_tac',
+  EVENT_OT: 'ot'
+}
+const totalTimeSheetLines = 4
 
 function WorkingDay(props) {
   const { t } = useTranslation();
@@ -79,78 +81,73 @@ function RenderRow0(props) {
 }
 
 function RenderRow1(props) {
-    return <>
-        {
-             props.timesheets.map((item, index) => {
-                 if(item.date_type == DATE_TYPE.DATE_OFF) {
-                    return <td key = {index}>
-                        <RenderTooltip is_holiday = {item.is_holiday}>
-                            <div style = {{fontWeight: 'bold', color: '#000000'}}>OFF</div>
-                        </RenderTooltip>
-                        </td>
-                 } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
-                    return <td key = {index} rowSpan={4} style={{backgroundColor: '#FFA2001A'}}></td>
-                 }
-                 if(item.line1.type == EVENT_TYPE.NO_EVENT) {
-                    return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-                 } else if( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
-                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
-                 } 
-                 return null;
-             })
+  return <>
+    {
+      props.timesheets.map((item, index) => {
+        if (item.date_type == DATE_TYPE.DATE_OFF) {
+          return <td key = {index}>
+                    <RenderTooltip is_holiday = {item.is_holiday}>
+                      <div className="day-off">OFF</div>
+                    </RenderTooltip>
+                  </td>
+        } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
+          return <td key = {index} rowSpan={props.rowSpan}></td>
         }
-        <td style={{border:'none'}}></td>
-    </>
+        if (item.line1.type == EVENT_TYPE.NO_EVENT) {
+          return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
+        } else if ( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
+          return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
+        } 
+        return null;
+      })
+    }
+    {/* <td style={{border:'none'}}></td> */}
+  </>
 }
 
 function RenderTooltip(props) {
-    const { t } = useTranslation();
-    return props.item || props.timeExpand || props.shift_id || props.is_holiday == 1 ?  
-    <OverlayTrigger 
+  const { t } = useTranslation();
+  return props.item || props.timeExpand || props.shift_id || props.is_holiday == 1 ?  
+  <OverlayTrigger 
     key={"td"}
-    placement="right"
+    placement="top"
     overlay={
-        <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white" }} >
-        <Popover.Content>
-            {
-                props.is_holiday == 1 ? 
-                <div style={{color: '#FFFFFF'}}><strong>{t('Holiday')}</strong></div>
-                : null
-            }
-            {
-                props.timeExpand ? 
-                <div style={{color: '#FFFFFF'}}><strong>{props.timeExpand}</strong></div>
-                : null
-            }
-            {
-                props.item ? 
-                    <>
-                    <div style={{color: '#FFFFFF'}}><strong>{props.item.baseTypeModel.label}</strong>:</div>
-                    <span style={{color: '#FFFFFF'}}>{props.item.user_Comment}</span>
-                    </>
-                : null
-            }
-            {
-                props.shift_id ? 
-                <>
-                <div style={{color: '#FFFFFF'}}><strong>{t('ShiftCode')}:</strong></div>
-                <span style={{color: '#FFFFFF'}}>{props.shift_id}</span>
-                </>
-                : null
-
-            }
-            
-          
-        </Popover.Content>
-      </Popover>
-    }>
-        {props.children}
-    </OverlayTrigger>
-    : props.children;
-        
-    
-    
+      <Popover id="popover-basic"  style={{ backgroundColor: '#6CB5F9', color: "white" }} >
+      <Popover.Content>
+        {
+          props.is_holiday == 1 ? 
+          <div style={{color: '#FFFFFF'}}><strong>{t('Holiday')}</strong></div>
+          : null
+        }
+        {
+          props.timeExpand ? 
+          <div style={{color: '#FFFFFF'}}><strong>{props.timeExpand}</strong></div>
+          : null
+        }
+        {
+          props.item ? 
+              <>
+              <div style={{color: '#FFFFFF'}}><strong>{props.item.baseTypeModel.label}</strong>:</div>
+              <span style={{color: '#FFFFFF'}}>{props.item.user_Comment}</span>
+              </>
+          : null
+        }
+        {
+          props.shift_id ? 
+          <>
+          <div style={{color: '#FFFFFF'}}><strong>{t('ShiftCode')}:</strong></div>
+          <span style={{color: '#FFFFFF'}}>{props.shift_id}</span>
+          </>
+          : null
+        }
+      </Popover.Content>
+    </Popover>
+  }>
+    {props.children}
+  </OverlayTrigger>
+  : props.children;
 }
+
 function RenderItem(props) {
     const {item, type} = props;
     
@@ -287,25 +284,29 @@ function RenderItem(props) {
     return null;
 }
 function RenderRow2(props) {
-    return <>
-        {
-            props.timesheets.map((item, index) => {
-                if(item.date_type == DATE_TYPE.DATE_OFFSET) {
-                    return null;
-                 }
-                 if(item.line2.type == EVENT_TYPE.NO_EVENT) {
-                    return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-                    //return <td style={{borderTop: 'none', borderBottom: 'none'}}  key = {index}><div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${item.line2.start_time1_fact} - ${item.line2.end_time1_fact}` }</div></td>
-                 } else if( item.line2.type == EVENT_TYPE.EVENT_GIOTHUCTE) {
-                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item = {item} type = {item.line2.type}/></td>
-                 } else if (item.line2.type == EVENT_TYPE.EVENT_LOICONG) {
-                    return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item = {item} type = {item.line2.type}/></td>
-                 }
-                 return null;
-            })
+  return <>
+    {
+      props.timesheets.map((item, index) => {
+        if (item.date_type == DATE_TYPE.DATE_OFFSET) {
+          return null;
         }
-        <td style={{border:'none'}}></td>
-    </>
+        if (item.line2.type == EVENT_TYPE.NO_EVENT) { // Ngày OFF
+          return <td style={{borderTop: 'none', borderRight: '1px solid #707070'}} key = {index}><div>&nbsp;</div></td>
+          // return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
+          //return <td style={{borderTop: 'none', borderBottom: 'none'}}  key = {index}><div className={EVENT_STYLE.EVENT_GIOTHUCTE}>{`${item.line2.start_time1_fact} - ${item.line2.end_time1_fact}` }</div></td>
+        } else if ( item.line2.type == EVENT_TYPE.EVENT_GIOTHUCTE) {
+          if (props.rowSpan == 2) {
+            return <td style={{borderTop: 'none'}} key = {index}><RenderItem item = {item} type = {item.line2.type}/></td>
+          }
+          return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item = {item} type = {item.line2.type}/></td>
+        } else if (item.line2.type == EVENT_TYPE.EVENT_LOICONG) {
+          return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item = {item} type = {item.line2.type}/></td>
+        }
+        return null;
+      })
+    }
+    {/* <td style={{border:'none'}}></td> */}
+  </>
 }
 
 function RenderRow3(props) {
@@ -323,7 +324,7 @@ function RenderRow3(props) {
             return null;
         })
     }
-    <td style={{border:'none'}}></td>
+    {/* <td style={{border:'none'}}></td> */}
     </>
 }
 
@@ -342,72 +343,95 @@ function RenderRow4(props) {
             return null;
         })
     }
-    <td style={{border:'none'}}></td>
+    {/* <td style={{border:'none'}}></td> */}
     </>
 }
 
 function Content(props) {
-    const { t } = useTranslation();
-    let filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#FFFFFF'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
+  const { t } = useTranslation();
+  const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#FFFFFF'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
   return (
-    <>
-        <div >
-          <div className="row pr-2 pl-2 pb-4">
-              <div className="col-md-12 col-xl-12 describer">
-                    {
-                        filterType.map( (item, index) => {
-                            return <div className="item" key = {index}>
-                                    <div className="box-op1" style={{backgroundColor: item.color}}></div>
-                                    <div className="title">{item.title}</div>
-                                </div>
-                        })
-                    }
-              </div>
-              <div className="col-md-12 col-xl-12" style = {{marginBottom: '10px', marginTop: '10px', height: '1px', backgroundColor : '#707070'}}></div>
-              <table className="col-md-12 col-xl-12 timesheet-table" >
-                  <thead>
-                      <tr>
-                          <td>{t('Mon')}</td>
-                          <td>{t('Tue')}</td>
-                          <td>{t('Wed')}</td>
-                          <td>{ t('Thu')}</td>
-                          <td>{t('Fri')}</td>
-                          <td>{t('Sat')}</td>
-                          <td>{t("Sun")}</td>
-                      </tr>
-                      <tr className="divide"></tr>
-                  </thead>
-                  <tbody>
-                    {
-                        chunk(props.timesheets, 7).map( (timesheet, index) => {
-                           
-                            return <React.Fragment key = {index}>
-                                 <tr>
-                                    <RenderRow0 timesheets = {timesheet}/>
-                                </tr>
-                                <tr>
-                                <RenderRow1 timesheets = {timesheet}/>
-                                </tr>
-                                <tr>
-                                    <RenderRow2 timesheets = {timesheet}/>
-                                </tr>
-                                <tr>
-                                    <RenderRow3 timesheets={timesheet}/>
-                                </tr>
-                                <tr>
-                                    <RenderRow4 timesheets={timesheet}/>
-                                </tr>
-                                <tr className="divide"></tr>
-                            </React.Fragment>
-                        })
-                    }
-                 
-                  </tbody>
-              </table>
-             
-          </div>
+    <div>
+      <div className="row pr-2 pl-2 pb-4">
+        <div className="col-md-12 col-xl-12 describer">
+          {
+            filterType.map( (item, index) => {
+              return <div className="item" key = {index}>
+                        <div className="box-op1" style={{backgroundColor: item.color}}></div>
+                        <div className="title">{item.title}</div>
+                      </div>
+            })
+          }
         </div>
-    </>
+        <div className="col-md-12 col-xl-12" style = {{marginBottom: '10px', marginTop: '10px', height: '1px', backgroundColor : '#707070'}}></div>
+        <table className="col-md-12 col-xl-12 timesheet-table" >
+          <thead>
+            <tr>
+              <td>{t('Mon')}</td>
+              <td>{t('Tue')}</td>
+              <td>{t('Wed')}</td>
+              <td>{ t('Thu')}</td>
+              <td>{t('Fri')}</td>
+              <td>{t('Sat')}</td>
+              <td>{t("Sun")}</td>
+            </tr>
+            <tr className="divide"></tr>
+          </thead>
+          <tbody>
+            {
+              chunk(props.timesheets, 7).map((timeSheet, index) => {
+                let isShowLineOT = (timeSheet || [])
+                .every(item => formatStringByMuleValue(item.line4?.ot_end_time1) && formatStringByMuleValue(item.line4?.ot_end_time2) 
+                && formatStringByMuleValue(item.line4?.ot_end_time3) && formatStringByMuleValue(item.line4?.ot_start_time1) && 
+                formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
+
+                let isShowLineTrip = (timeSheet || [])
+                .every(item => formatStringByMuleValue(item.line3?.leave_end_time1) && formatStringByMuleValue(item.line3?.leave_end_time2) 
+                && formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_start_time2) && 
+                formatStringByMuleValue(item.line3?.trip_end_time1) && formatStringByMuleValue(item.line3?.trip_end_time2) &&
+                formatStringByMuleValue(item.line3?.trip_start_time1) && formatStringByMuleValue(item.line3?.trip_start_time2))
+
+                let rowSpan = totalTimeSheetLines
+                if ((isShowLineTrip && !isShowLineOT) || (!isShowLineTrip && isShowLineOT)) {
+                  rowSpan = 3
+                } else if (!isShowLineTrip && !isShowLineOT) {
+                  rowSpan = 2
+                }
+
+                return <React.Fragment key = {index}>
+                        <tr className="divide"></tr>
+                        <tr>
+                          <RenderRow0 timesheets = {timeSheet}/>
+                        </tr>
+                        <tr className="divide sub"></tr>
+                        <tr style={{borderTop: '1px solid #707070'}} className="line1">
+                          <RenderRow1 timesheets = {timeSheet} rowSpan={rowSpan} />
+                        </tr>
+                        <tr className="no-border-left" className="line2">
+                          <RenderRow2 timesheets = {timeSheet} rowSpan={rowSpan} />
+                        </tr>
+                        {
+                          isShowLineTrip ?
+                          <tr className="no-border-left" className="line3">
+                            <RenderRow3 timesheets={timeSheet}/>
+                          </tr>
+                          : null
+                        }
+                        {
+                          isShowLineOT ? 
+                          <tr>
+                            <RenderRow4 timesheets={timeSheet}/>
+                          </tr>
+                          : null
+                        }
+                        <tr className="divide"></tr>
+                </React.Fragment>
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
   )
 }
 

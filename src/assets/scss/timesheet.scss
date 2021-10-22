@@ -481,7 +481,6 @@
     }
   }
   .table-responsive {
-    // font-size: 15px;
     max-height: 500px;
     overflow: auto;
     &::-webkit-scrollbar {
@@ -521,6 +520,7 @@
     }
   }
   &.personal-timesheet {
+    // Bảng chấm công cá nhân
     .summary {
       margin: 15px 0;
       .card {
@@ -563,11 +563,12 @@
             text-align: left;
             padding: 5px 0;
             border-bottom: 1px solid #CCCCCC;
+            font-weight: normal;
             a {
               color: #383838;
               text-decoration: none;
               &:hover {
-                color: #000000;
+                color: #C11D2A;
               }
             }
             &:last-child {
@@ -575,6 +576,179 @@
             }
           }
         }
+      }
+    }
+    .timesheet-table {
+      border-spacing: 0;
+      border-collapse: separate;
+      table-layout: fixed;
+      padding: 0;
+      .arrow::after, .bs-popover-bottom .arrow::after {
+        border-left-color: #6CB5F9 !important;
+        border-right-color: #6CB5F9 !important;
+      }
+      thead {
+        td, th {
+          text-align: left;
+          height: 30px;
+          max-width: 50px;
+          text-align: center;
+          border: none;
+          color: #000000;
+          background-color: #F2F2F2;
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-weight: bold;
+            color: #FFFFFF;
+            border: 0.5px solid #707070;
+            border-right: none;
+            min-width: 150px;
+            text-align: center;
+            font-size: 12px;
+            padding: 0;
+            &.wrap-item-tooltip {
+              padding: 4px 0;
+              font-weight: normal;
+              &:hover {
+                background: #2e59d9;
+                .date {
+                  color: #FFFFFF;
+                }
+              }
+              &:last-child {
+                border-right: 0.5px solid #707070;
+              }
+            }
+          }
+          &.line1 {
+            td {
+              &:last-child {
+                border-right: 0.5px solid #707070;
+              }
+            }
+          }
+          &.line2 {
+            td {
+              padding: 5px 0;
+            }
+          }
+        }
+      }
+      .divide{
+        border: none;
+        height: 10px;
+        &.sub {
+          height: 5px;
+        }
+      }
+      .date{
+        color: #383838;
+        cursor: pointer;
+      }
+      .ke_hoach{
+        background-color: #00B3FF;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .ke_hoach_dai{
+        background-color: #00B3FF;
+        border-bottom: none;
+        text-align: center;
+        padding: 4px 0;
+      }
+      .thuc_te{
+        background-color: #FFFFFF;
+        color: #000000;
+        border-top: 1px solid #707070;
+        border-bottom: 1px solid #707070;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .loi_cong{
+        background-color: #E44235;
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .no-event{
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .gio_nghi{
+        background-color: #F7931E;
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .cong_tac{
+        background-color: #93278F;
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .ot {
+        background-color: #808000;
+        border-top: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .day-off {
+        font-weight: bold;
+        color: #000000;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  &.department-timesheet {
+    .timesheet-box {
+      .input-container .input-img {
+        width: unset;
+        height: unset;
+        right: 10px;
+        top: 7px;
+        left: unset;
       }
     }
   }

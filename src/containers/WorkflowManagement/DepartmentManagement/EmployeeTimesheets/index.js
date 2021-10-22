@@ -809,7 +809,7 @@ class EmployeeTimesheets extends Component {
     return (
       <>
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
-      <div className="timesheet-section">
+      <div className="timesheet-section department-timesheet">
         <h1 className="content-page-header">{t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
