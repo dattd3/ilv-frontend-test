@@ -17,11 +17,13 @@
   "Menu": "Home",
   "Menu_Training": "Training",
   "Menu_Learning": "Learning",
+  "Menu_Clinic_Learning": "Clinic Training",
   "Menu_Intruction": "Teaching",
   "Menu_TrainingRoadmap": "Training Curriculum",
   "Menu_ExeTest": "Skill Tests",
   "Menu_TrainingKPI": "Training Target",
   "Menu_Timesheet": "Timesheet",
+  "Menu_TimesheetDivision": "Timesheet/Division",
   "Menu_LeaveTime": "Leave/TOIL",
   "Menu_HumanResource": "HR",
   "Menu_TermPolicy": "Policy",
@@ -584,6 +586,7 @@
   "TemporaryAddress": "Temporary Address ",
   "ThirdPayment": "Third Payment",
   "Timesheet": "Timesheet",
+  "TimesheetDivision": "Timesheet/Division",
   "TimesheetDetailsOfDay": "Working Days Detail",
   "TimesheetNotice": "* The timesheet summary is only updated after HR Department finalizes on SAP. Should you have any questions, kindly contact HR Department.",
   "Holiday": "Holiday",
@@ -898,6 +901,7 @@
   "MenuRequestManagement": "Request Management",
   "MenuMyTeam": "My Team",
   "SubMenuTimesheetManagement": "Timesheet Management",
+  "SubMenuTimesheetManagementDivision": "Timesheet Management/Division",
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
   "MenuChangeShiftReport": "Change Shift Report",
@@ -1009,5 +1013,6 @@
   "vaccination_reason_detail_item_2": "If you are breastfeeding, please enter the age information (Example: 5 Months).",
   "detail": "Detail",
   "vaccination_btn_declare": "Declare vaccination status",
-  "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information."
+  "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information.",
+  "vaccination_exits": "Vaccination date is existing!"
 }

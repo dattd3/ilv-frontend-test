@@ -18,9 +18,13 @@ let config = {
 }
 registerLocale("vi", vi)
 class VaccinationDetail extends React.Component {
+    promise1;
+    promise2;
+    promise3;
+    promise4;
     constructor(props){
         super(props);
-
+        console.log(props);
         this.state = {
             formData: {
                 number: props.number + 1,
@@ -33,12 +37,13 @@ class VaccinationDetail extends React.Component {
                 address: null,
                 vaccinHospitalId: null,
                 vaccinEffects: [],
-                statusId: null,
+                statusId: 1,
                 reasonRejectId: null,
                 reasonTypeId: null,
                 reasonDetail: ''
             },
-            notDelay: false,
+            exc: false,
+            notDelay: true,
             effectList: [],
             vaccinType: [],
             departments: [],
@@ -52,28 +57,8 @@ class VaccinationDetail extends React.Component {
             isSuccess: false,
             show: props.show,
             status_data: [],
-            // [
-            //     {label: props.t('vaccination_status_item_1'), value: 1},
-            //     {label: props.t('vaccination_status_item_2'), value: 2}
-            // ],
             reason_reject_data: [],
-            // [
-            //     {label: props.t('vaccination_reason_reject_item_1'), value: 0},
-            //     {label: props.t('vaccination_reason_reject_item_2'), value: 1},
-            //     {label: props.t('vaccination_reason_reject_item_3'), value: 2}
-            // ],
             reason_type_data: [],
-            // [
-            //     [
-            //         {label: props.t('vaccination_reason_type_item_1'), value: 0},
-            //         {label: props.t('vaccination_reason_type_item_2'), value: 1},
-            //         {label: props.t('vaccination_reason_type_item_3'), value: 2} 
-            //     ],
-            //     [
-            //         {label: props.t('vaccination_reason_type_item_4'), value: 0},
-            //         {label: props.t('vaccination_reason_type_item_5'), value: 1}
-            //     ]
-            // ]
         };
     }
 
@@ -84,12 +69,13 @@ class VaccinationDetail extends React.Component {
     }
 
     componentDidMount() {
-        this.getEffect();
-        this.getMasterData();
         this.getListCity();
-        if(this.props.rowId !== null && this.props.rowId && this.props.show == true){
-            this.getInfo(this.props.rowId);
-        }
+        this.getEffect();
+        this.getMasterData(() => {
+            if(this.props.rowId !== null && this.props.rowId && this.props.show == true){
+                this.getInfo(this.props.rowId);
+            }
+        });        
     }
 
     getInfo(id){
@@ -97,11 +83,10 @@ class VaccinationDetail extends React.Component {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
-                const stateData = this.state.formData;
+                const state = this.state;
+                const stateData = state.formData;
                 const infoData = res.data.data;
-                this.setState({
-                    notDelay: infoData.statusId - 1
-                });
+                state['notDelay'] = infoData.statusId - 1;
                 stateData['number'] = infoData.number;
                 stateData['injectedAt'] = infoData.injectedAt;
                 stateData['address'] = infoData.address;
@@ -116,7 +101,8 @@ class VaccinationDetail extends React.Component {
                 stateData['reasonRejectId'] = infoData.reasonRejectId;
                 stateData['reasonTypeId'] = infoData.reasonTypeId;
                 stateData['reasonDetail'] = infoData.reasonDetail;
-                this.setState(stateData);
+                // console.log(state);
+                this.setState(state);
                 if(stateData['vaccinationUnitId'] == 2){
                     this.getListCity(() => {
                         const city = this.state.citys.filter(t => t.label == this.state.formData.city);
@@ -130,10 +116,9 @@ class VaccinationDetail extends React.Component {
                         }
                     });
                 }
-                console.log(this.state);
             }
         }).catch(error => {
-        }); 
+        });
     }
 
     getEffect() {
@@ -150,7 +135,7 @@ class VaccinationDetail extends React.Component {
         });
     }
 
-    getMasterData() {
+    getMasterData(call) {
         const { t } = this.props;
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas?culture=${t('langCode')}`, config)
         .then(res => {
@@ -166,6 +151,7 @@ class VaccinationDetail extends React.Component {
                         this.dataConvert(res.data.data.reasonTypes)
                     ]
                 });
+                if(call)  call();
             }
         }).catch(error => {
 
@@ -175,7 +161,7 @@ class VaccinationDetail extends React.Component {
     handleSelectChange(name, event){
         if(name == "statusId"){
             const e = {
-                number: this.props.number + 1,
+                number: this.state.formData.number,
                 vaccinTypeId : event.value == 1 ? this.state.formData.vaccinTypeId : '',
                 injectedAt: event.value == 1 ? this.state.formData.injectedAt : null,
                 vaccinationUnitId: event.value == 1 ? this.state.formData.vaccinationUnitId : null,
@@ -201,6 +187,20 @@ class VaccinationDetail extends React.Component {
     }
 
     handleDatePickerInputChange(value){
+        if(value){
+            const time = moment(value).format('YYYY-MM-DD[T]00:00:00');
+            const exc = this.props.listData.filter(t => t.injectedAt == time);
+            if(exc.length) {
+                this.setState({
+                    exc: true
+                });
+            }else{
+                this.setState({
+                    exc: false
+                });
+            }
+        }
+        console.log(this.state);
         const e = this.state.formData;
         e['injectedAt'] = value;
         this.setState(e);
@@ -265,9 +265,7 @@ class VaccinationDetail extends React.Component {
                         return {value: v.ID, label: labelLocale}
                     })
                 });
-                if(call){
-                    call();
-                }
+                if(call) call();
             }
         }).catch(error => {
 
@@ -386,6 +384,9 @@ class VaccinationDetail extends React.Component {
                         {
                             this.props.editLastRow && <div className="py-2 border-bottom"><span className="text-danger">* {t('confirm_form_vaccination')}</span></div>
                         }
+                        {
+                            this.state.exc && <div className="text-danger pt-3">{t('vaccination_exits')}</div>
+                        }
                         <div className="form-content pt-3">
                             <div className="row">
                                 <div className="col-md-3 col-xs-12">
@@ -468,7 +469,7 @@ class VaccinationDetail extends React.Component {
                                                 </label>
                                             </div>
                                         </div>
-                                    </div> : this.state.formData.reasonRejectId < 3 && this.state.formData.reasonRejectId && this.state.formData.statusId == 2 ? 
+                                    </div> : this.state.formData.reasonRejectId < 3 && this.state.formData.reasonRejectId !== null && this.state.formData.statusId == 2 ? 
                                         <div className="col-md-3 col-xs-12">
                                             <div className="form-group">
                                                 <label>{t('vaccination_reason_field')}<span className="text-danger"> (*)</span></label>
@@ -639,11 +640,10 @@ class VaccinationDetail extends React.Component {
                             <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
                                 (this.state.formData.statusId == 1 ? !
-                                    (this.state.formData.vaccinTypeId && this.state.formData.injectedAt &&(
+                                    (!this.state.exc && this.state.formData.vaccinTypeId && this.state.formData.injectedAt &&(
                                     this.state.formData.vaccinationUnitId == 2 ? (this.state.formData.city && this.state.formData.district && this.state.formData.ward) 
                                     : this.state.formData.vaccinationUnitId == 1 ? this.state.formData.vaccinHospitalId : this.state.formData.address
                                 )) : this.state.formData.statusId == 2 ? !( (this.state.formData.reasonRejectId < 3 && this.state.formData.reasonTypeId || this.state.formData.reasonRejectId == 3) && this.state.formData.reasonDetail) : true)
-                                
                                 } variant="primary" className="pr-4 pl-4" onClick={() => this.onUpdateOrCreateData()}>{t(this.props.rowId !== null && this.props.rowId ? "Update" : "Confirm")}</Button>
                         </div>
                     </Modal.Body>
