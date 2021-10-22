@@ -80,4 +80,6 @@ export default {
   VaxcinCreate: "/vaccination/create",
   Instruct: "/instruct",
   // ChangeShiftReport: "/workflow-management/change-shift-report"
+
+  ClinicVinmec: "/clinic-vinmec",
 };

@@ -125,6 +125,7 @@
             display: block;
             overflow: auto;
             background: #FFFFFF;
+            border-radius: 6px;
             &::-webkit-scrollbar {
                 width: 8px;
                 height: 8px;
@@ -163,10 +164,10 @@
             .table {
                 table-layout: fixed;
                 margin-bottom: 0;
-                color: #858796;
                 border-collapse: collapse;
                 thead {
-                    color: #347EF9;
+                    // color: #347EF9;
+                    color: #383838;
                     th {
                         vertical-align: middle;
                         position: sticky; 
@@ -174,7 +175,8 @@
                         white-space: nowrap;
                         text-overflow: ellipsis;
                         top: 0;
-                        background-color: #e0e3f3;
+                        // background-color: #e0e3f3;
+                        background-color: #FFFFFF;
                         z-index: 0;
                     }
                 }
@@ -185,16 +187,16 @@
                     white-space: nowrap;
                     text-overflow: ellipsis;
                     background: #FFFFFF;
-                    border-bottom: 1px solid #EADBF8;
+                    border-top: 1px solid #DDDDDD;
                 }
                 tbody {
-                    tr {
-                        &:last-child {
-                            td {
-                                border: none;
-                            }
-                        }
-                    }
+                    // tr {
+                    //     &:last-child {
+                    //         td {
+                    //             border: none;
+                    //         }
+                    //     }
+                    // }
                 }
                 .sticky-col {
                     position: sticky;
