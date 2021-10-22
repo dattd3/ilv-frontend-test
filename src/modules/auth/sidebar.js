@@ -272,7 +272,7 @@ export const Navigation = [
     id: 22,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? "Menu_TimesheetDivision" : "Menu_Timesheet",
+    label: "Menu_Timesheet",
     to: map.Timesheet,
     role: "U"
   },
