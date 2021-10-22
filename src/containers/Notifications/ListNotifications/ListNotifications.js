@@ -4,6 +4,7 @@ import moment from 'moment';
 import Constants from '../../../commons/Constants';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import FormSearchComponent from '../SearchBlock/FormSearchComponent';
+import NotificationIcon from '../../../assets/img/icon/Icon_NotificationList.svg'
 import { useTranslation } from "react-i18next";
 
 const usePreload = (params) => {
@@ -88,7 +89,7 @@ function ListNotifications(props) {
                 notifications.map((item, i) => {
                     const timePost = getTimePost(item.createdDate);
                     return <div key={i} className="item">
-                        <span className="ic-notification"><i className="far fa-bell"></i></span>
+                        <span className="ic-notification"><img alt="Icon notification" src={NotificationIcon} /></span>
                         <div className="content">
                         <a href={`/notifications/${item.id}`} title={item.title} className={!item.isRead ? 'title' : 'title readed'}>{item.title}</a>
                         <p className="description">{item.description != null ? item.description : ''}</p>
