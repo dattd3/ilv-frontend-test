@@ -167,7 +167,13 @@ class Vaccination extends React.Component {
                     rowId={this.state.rowId} 
                     t={t} 
                     number={lastItem?.number} 
-                    onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} 
+                    onCancelClick={() => {
+                        const j = {showModelDetail: false};
+                        if(!this.state.editLastRow){
+                            j['rowId'] = null
+                        }
+                        this.setState(j);
+                    }} 
                     editLastRow={this.state.editLastRow}
                     lastTime={lastItem?.injectedAt}
                     listData={this.state.listData}
