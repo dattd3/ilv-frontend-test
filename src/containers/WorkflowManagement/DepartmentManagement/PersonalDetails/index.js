@@ -30,8 +30,8 @@ class PersonalDetails extends Component {
     }
 
     this.setState({ isSearch: false, isTableSearch: false });
-    let start = moment(startDate).format("YYYYMMDD").toString();
-    let end = moment(endDate).format("YYYYMMDD").toString();
+    let start = moment(startDate).format("YYYYMMDD");
+    let end = moment(endDate).format("YYYYMMDD");
     const headers = {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
