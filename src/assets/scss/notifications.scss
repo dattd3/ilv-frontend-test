@@ -288,9 +288,12 @@
                 align-items: center;
                 justify-content: flex-start;
                 flex-wrap: wrap;
+                color: #4e73df;
+                margin-right: 3px;
+                
                 .file-name {
                     text-decoration: none;
-                    color: #858796;
+                    //color: #858796;
                 }
                 .ic-file {
                     font-size: 18px;
