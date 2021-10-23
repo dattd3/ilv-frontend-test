@@ -752,4 +752,17 @@
       }
     }
   }
+  &.change-shift-report {
+    .timesheet-box {
+      .content {
+        button {
+          width: 100%;
+          font-size: inherit;
+          i {
+            font-size: 12px;
+          }
+        }
+      } 
+    }
+  }
 }
