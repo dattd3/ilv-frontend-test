@@ -180,23 +180,24 @@ class VaccinationDetail extends React.Component {
         }
     }
 
-    handleDatePickerInputChange(value){
-        if(value){
-            const time = moment(value).format('YYYY-MM-DD[T]00:00:00');
-            const exc = this.props.listData.filter(t => t.injectedAt == time);
-            if(exc.length) {
-                this.setState({
-                    exc: true
-                });
-            }else{
-                this.setState({
-                    exc: false
-                });
-            }
+    handleDatePickerInputChange(value) {
+        const dataRequest = {...this.state.formData}
+        const { listData, rowId } = this.props
+        const time = moment(value).isValid() ? moment(value).format('YYYY-MM-DD') : null
+        const injectedInfoByDate = listData.find(t => t.injectedAt && moment(t.injectedAt, "YYYY-MM-DD").format("YYYY-MM-DD") == time)
+
+        if (((!rowId && injectedInfoByDate) || (rowId && injectedInfoByDate && injectedInfoByDate?.id != rowId)) && dataRequest.statusId == 1) {
+            this.setState({
+                exc: true
+            });
+        } else {
+            this.setState({
+                exc: false
+            });
         }
-        const e = this.state.formData;
-        e['injectedAt'] = value;
-        this.setState(e);
+
+        dataRequest['injectedAt'] = time
+        this.setState({formData: dataRequest})
     }
 
     handleShowListEffect(e) {
@@ -315,30 +316,33 @@ class VaccinationDetail extends React.Component {
     }
 
     onUpdateOrCreateData(){
-        const {t} = this.props;
+        const { t, rowId, listData } = this.props;
         const dataRequest = this.state.formData;
   
         if (!dataRequest.vaccinHospitalId) {
             dataRequest.vaccinHospitalId = 0
         }
 
-        dataRequest.injectedAt = moment(dataRequest.injectedAt || new Date().getTime()).format('YYYY-MM-DD[T]00:00:00');
-        if(this.props.listData.filter(t => t.injectedAt === dataRequest.injectedAt).length && dataRequest.statusId == 1){
+        const injectedAtUpdate = dataRequest.injectedAt
+        dataRequest.injectedAt = moment(injectedAtUpdate || new Date().getTime()).format('YYYY-MM-DD');
+        const injectedInfoByDate = listData.find(t => t.injectedAt && moment(t.injectedAt, "YYYY-MM-DD") === injectedAtUpdate)
+
+        if (((!rowId && injectedInfoByDate) || (rowId && injectedInfoByDate?.id == rowId)) && dataRequest.statusId == 1) {
             this.setState({
                 exc: true
             });
             return false;
         }
 
-        var message = t('successfulCreateVaccination');
-        if(this.props.rowId !== null || this.props.rowId){
-            dataRequest['id'] = this.props.rowId;
+        let message = t('successfulCreateVaccination');
+        if (rowId !== null || rowId) {
+            dataRequest['id'] = rowId;
             message = t('successfulUpdateVaccination');
         }
 
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}vaccin/${this.props.rowId !== null || this.props.rowId ? 'update': 'create'}-vaccin/`, dataRequest, config)
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}vaccin/${rowId !== null || rowId ? 'update': 'create'}-vaccin/`, dataRequest, config)
         .then(res => {
-            if(res.data){
+            if (res.data) {
                 this.showStatusModal(message, true)
             }
         }).catch(error => {
@@ -347,7 +351,9 @@ class VaccinationDetail extends React.Component {
     }
 
     render(){
-        const { t } = this.props;
+        const { t, rowId, editLastRow } = this.props;
+        const {isShowStatusModal, content, isSuccess, show, exc, formData, notDelay, status_data, vaccinType, reason_reject_data, departments, reason_type_data, 
+            citys, districts, wards, branchs, showListEffect, effectList} = this.state
         const customStyles = {
             option: (styles, state) => ({
                 ...styles,
@@ -360,58 +366,60 @@ class VaccinationDetail extends React.Component {
             menuPortal: provided => ({ ...provided, zIndex: 99 }),
             menu: provided => ({ ...provided, zIndex: 99 })
         }
+
         const reload = () => {
-            if (this.state.isShowStatusModal) {
+            if (isShowStatusModal) {
               window.location.reload();
             }
         }
+
         return (
             <>
-                <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
+                <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} onExited={reload} />
                 <Modal backdrop="static" keyboard={false}
                     className='info-modal-common position-apply-modal vaccine-create-info'
-                    centered show={this.state.show}
+                    centered show={show}
                     onHide={this.props.onHide} 
                     size="xl">
                     <Modal.Header className='apply-position-modal' >
-                        <Modal.Title>{t(this.props.rowId ? 'EditQuestion' : 'vaccination_btn_declare')}</Modal.Title>
+                        <Modal.Title>{t(rowId ? 'EditQuestion' : 'vaccination_btn_declare')}</Modal.Title>
                         <button type="button" className="close" onClick={() => this.props.onCancelClick()}>
                             <span aria-hidden="true">×</span>
                         </button>
                     </Modal.Header>
                     <Modal.Body className="pt-0">
                         {
-                            this.props.editLastRow && <div className="py-2 border-bottom"><span className="text-danger">* {t('confirm_form_vaccination')}</span></div>
+                            editLastRow && <div className="py-2 border-bottom"><span className="text-danger">* {t('confirm_form_vaccination')}</span></div>
                         }
                         {
-                            this.state.exc && <div className="text-danger pt-3">{t('vaccination_exits')}</div>
+                            exc && <div className="text-danger pt-3">{t('vaccination_exits')}</div>
                         }
                         <div className="form-content pt-3">
                             <div className="row">
                                 <div className="col-md-3 col-xs-12">
                                     <div className="form-group">
                                         <label>{t('vaccination_injections_mumber')}</label>
-                                        <input value={this.state.formData.number} onChange={(e) => this.onChangeInput('number',e)} type="text" className="form-control input-text" placeholder={t('vaccination_injections_mumber')} readOnly/>
+                                        <input value={formData.number} onChange={(e) => this.onChangeInput('number',e)} type="text" className="form-control input-text" placeholder={t('vaccination_injections_mumber')} readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-md-3 col-xs-12">
                                     <div className="form-group">
                                         <label>{t('vaccination_status')} <span className="text-danger"> (*)</span></label>
                                         <Select
-                                            isDisabled={!this.state.notDelay}
+                                            isDisabled={!notDelay}
                                             isClearable={false}
                                             styles={customStyles}
                                             name="statusId"
                                             onChange={type => this.handleSelectChange('statusId', type)}
-                                            value={this.state.formData.statusId ? this.state.status_data.filter(n => n.value == this.state.formData.statusId) : null}
+                                            value={formData.statusId ? status_data.filter(n => n.value == formData.statusId) : null}
                                             placeholder={t('vaccination_status')}
                                             key="statusId"
-                                            options={this.state.status_data}
+                                            options={status_data}
                                         />
                                     </div>
                                 </div>
                                 {
-                                    this.state.formData.statusId == 1 ?
+                                    formData.statusId == 1 ?
                                         <div className="col-md-3 col-xs-12">
                                             <div className="form-group">
                                                 <label>{t('vaccination_type')}<span className="text-danger"> (*)</span></label>
@@ -420,14 +428,14 @@ class VaccinationDetail extends React.Component {
                                                     styles={customStyles}
                                                     name="type"
                                                     onChange={type => this.handleSelectChange('vaccinTypeId', type)}
-                                                    value={this.state.formData.vaccinTypeId ? this.state.vaccinType.filter(n => n.value == this.state.formData.vaccinTypeId) : null}
+                                                    value={formData.vaccinTypeId ? vaccinType.filter(n => n.value == formData.vaccinTypeId) : null}
                                                     placeholder={t('vaccination_type')}
                                                     key="type"
-                                                    options={this.state.vaccinType}
+                                                    options={vaccinType}
                                                 />
                                             </div>
                                         </div>
-                                    : this.state.formData.statusId == 2 ? <div className="col-md-3 col-xs-12">
+                                    : formData.statusId == 2 ? <div className="col-md-3 col-xs-12">
                                         <div className="form-group">
                                             <label>{t('vaccination_reason')}<span className="text-danger"> (*)</span></label>
                                             <Select
@@ -435,16 +443,16 @@ class VaccinationDetail extends React.Component {
                                                 styles={customStyles}
                                                 name="reasonRejectId"
                                                 onChange={type => this.handleSelectChange('reasonRejectId', type)}
-                                                value={this.state.reason_reject_data.filter(n => n.value == this.state.formData.reasonRejectId) || null}
+                                                value={reason_reject_data.filter(n => n.value == formData.reasonRejectId) || null}
                                                 placeholder={t('vaccination_reason')}
                                                 key="reasonRejectId"
-                                                options={this.state.reason_reject_data}
+                                                options={reason_reject_data}
                                             />
                                         </div>
                                     </div> : undefined
                                 }
                                 {
-                                    this.state.formData.statusId == 1 ?
+                                    formData.statusId == 1 ?
                                     <div className="col-md-3 col-xs-12">
                                         <div className="">
                                             <label>{t('vaccination_time')}<span className="text-danger"> (*)</span></label>
@@ -453,10 +461,9 @@ class VaccinationDetail extends React.Component {
                                                 <DatePicker
                                                     name="injectedAt"
                                                     key="injectedAt"
-                                                    selected={this.state.formData.injectedAt ? moment(this.state.formData.injectedAt).toDate() : null}
-                                                    // minDate={new Date(this.props.lastTime)}
+                                                    selected={formData && formData.injectedAt ? moment(formData.injectedAt, 'YYYY-MM-DD').toDate() : null}
                                                     maxDate={new Date()}
-                                                    onChange={event => this.handleDatePickerInputChange(event)}
+                                                    onChange={date => this.handleDatePickerInputChange(date)}
                                                     dateFormat="dd-MM-yyyy"
                                                     showMonthDropdown={true}
                                                     showYearDropdown={true}
@@ -468,7 +475,7 @@ class VaccinationDetail extends React.Component {
                                                 </label>
                                             </div>
                                         </div>
-                                    </div> : this.state.formData.reasonRejectId < 3 && this.state.formData.reasonRejectId !== null && this.state.formData.statusId == 2 ? 
+                                    </div> : formData.reasonRejectId < 3 && formData.reasonRejectId !== null && formData.statusId == 2 ? 
                                         <div className="col-md-3 col-xs-12">
                                             <div className="form-group">
                                                 <label>{t('vaccination_reason_field')}<span className="text-danger"> (*)</span></label>
@@ -477,17 +484,17 @@ class VaccinationDetail extends React.Component {
                                                     styles={customStyles}
                                                     name="reasonTypeId"
                                                     onChange={type => this.handleSelectChange('reasonTypeId', type)}
-                                                    value={this.state.reason_type_data[this.state.formData.reasonRejectId - 1].filter(n => n.value == this.state.formData.reasonTypeId) || null}
+                                                    value={reason_type_data[formData.reasonRejectId - 1].filter(n => n.value == formData.reasonTypeId) || null}
                                                     placeholder={t('vaccination_reason_field')}
                                                     key="reasonTypeId"
-                                                    options={this.state.reason_type_data[this.state.formData.reasonRejectId - 1]}
+                                                    options={reason_type_data[formData.reasonRejectId - 1]}
                                                 />
                                             </div>
                                         </div>
                                     : undefined
                                 }
                                 {
-                                    this.state.formData.statusId == 1 ?
+                                    formData.statusId == 1 ?
                                     <div className="col-md-4 col-xs-12">
                                         <div className="form-group">
                                             <label>{t('vaccination_department')}<span className="text-danger"> (*)</span></label>
@@ -496,20 +503,20 @@ class VaccinationDetail extends React.Component {
                                                 styles={customStyles}
                                                 name="department"
                                                 onChange={department => this.handleSelectChange('vaccinationUnitId', department)}
-                                                value={this.state.departments.filter(n => n.value == this.state.formData.vaccinationUnitId)}
+                                                value={departments.filter(n => n.value == formData.vaccinationUnitId)}
                                                 placeholder={t('vaccination_department') + '...'}
                                                 key="department"
-                                                options={this.state.departments}
+                                                options={departments}
                                             />
                                         </div>
                                     </div>
-                                    : this.state.formData.statusId == 2 ? <div className="col-md-12 col-xs-12">
+                                    : formData.statusId == 2 ? <div className="col-md-12 col-xs-12">
                                         <div className="form-group">
                                             <label>{t('vaccination_reason_detail')} <span className="text-danger"> (*)</span></label>
-                                            <input value={this.state.formData.reasonDetail} onChange={(e) => this.onChangeInput('reasonDetail',e)} type="text" className="form-control input-text" placeholder={t('vaccination_reason_detail')}/>
+                                            <input value={formData.reasonDetail} onChange={(e) => this.onChangeInput('reasonDetail',e)} type="text" className="form-control input-text" placeholder={t('vaccination_reason_detail')}/>
                                         </div>
                                         {
-                                            this.state.formData.reasonRejectId == 2 ? <div className="">
+                                            formData.reasonRejectId == 2 ? <div className="">
                                                 <span className="text-danger d-block w-100">* {t('vaccination_reason_detail_item_1')}</span>
                                                 <span className="text-danger mt-1 w-100">* {t('vaccination_reason_detail_item_2')}</span>
                                         </div> : undefined}
@@ -517,7 +524,7 @@ class VaccinationDetail extends React.Component {
                                 }
                                 
                                 {
-                                    this.state.formData.vaccinationUnitId == 2 ?
+                                    formData.vaccinationUnitId == 2 ?
                                         <div className="col-md-8 col-xs-12">
                                             <div className="row">
                                                 <div className="col-md-4 col-xs-12">
@@ -527,10 +534,10 @@ class VaccinationDetail extends React.Component {
                                                             styles={customStyles}
                                                             name="city"
                                                             onChange={city => this.handleChangeCity(city)}
-                                                            value={this.state.citys.filter(n => n.label == this.state.formData.city)}
+                                                            value={citys.filter(n => n.label == formData.city)}
                                                             placeholder={t('Province_City') + '...'}
                                                             key="city"
-                                                            options={this.state.citys}
+                                                            options={citys}
                                                         />
                                                     </div>
                                                 </div>
@@ -538,14 +545,14 @@ class VaccinationDetail extends React.Component {
                                                     <div className="form-group">
                                                         <label>{t('District')}<span className="text-danger"> (*)</span></label>
                                                         <Select
-                                                            isDisabled={!this.state.formData.city && !this.state.districts.length}
+                                                            isDisabled={!formData.city && !districts.length}
                                                             styles={customStyles}
                                                             name="district"
                                                             onChange={district => this.handleChangeDistrict(district)}
-                                                            value={this.state.districts.filter(n => n.label == this.state.formData.district)}
+                                                            value={districts.filter(n => n.label == formData.district)}
                                                             placeholder={t('District') + '...'}
                                                             key="district"
-                                                            options={this.state.districts}
+                                                            options={districts}
                                                         />
                                                     </div>
                                                 </div>
@@ -553,20 +560,20 @@ class VaccinationDetail extends React.Component {
                                                     <div className="form-group">
                                                         <label>{t('Ward')}<span className="text-danger"> (*)</span></label>
                                                         <Select
-                                                            isDisabled={!this.state.formData.district && !this.state.wards.length}
+                                                            isDisabled={!formData.district && !wards.length}
                                                             styles={customStyles}
                                                             name="ward"
                                                             onChange={ward => this.handleChangeWard(ward)}
-                                                            value={this.state.wards.filter(n => n.label == this.state.formData.ward)}
+                                                            value={wards.filter(n => n.label == formData.ward)}
                                                             placeholder={t('Ward') + '...'}
                                                             key="ward"
-                                                            options={this.state.wards}
+                                                            options={wards}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    :    this.state.formData.vaccinationUnitId == 1 ? <div className="col-md-4 col-xs-12"> 
+                                    :    formData.vaccinationUnitId == 1 ? <div className="col-md-4 col-xs-12">
                                         <div className="form-group">
                                             <label>{t('vaccination_branch')}<span className="text-danger"> (*)</span></label>
                                             <Select
@@ -574,26 +581,26 @@ class VaccinationDetail extends React.Component {
                                                 styles={customStyles}
                                                 name="branch"
                                                 onChange={branch => this.handleSelectChange('vaccinHospitalId',branch)}
-                                                value={this.state.branchs.filter(n => n.value == this.state.formData.vaccinHospitalId)}
+                                                value={branchs.filter(n => n.value == formData.vaccinHospitalId)}
                                                 placeholder={t('vaccination_branch') + '...'}
                                                 key="branch"
-                                                options={this.state.branchs}
+                                                options={branchs}
                                             />
                                         </div>
-                                    </div> : this.state.formData.vaccinationUnitId == 3 ?
+                                    </div> : formData.vaccinationUnitId == 3 ?
                                         <div className="col-md-8 col-xs-12">
                                             <div className="form-group">
                                                 <label htmlFor="address">{t('Address')}</label>
-                                                <input value={this.state.formData.address} onChange={(e) => this.onChangeInput('address',e)} type="text" className="form-control" id="address" placeholder={t('Address') + '...'}/>
+                                                <input value={formData.address} onChange={(e) => this.onChangeInput('address',e)} type="text" className="form-control" id="address" placeholder={t('Address') + '...'}/>
                                             </div>
                                         </div>
                                     : undefined
                                 }
                                 {
-                                    this.state.formData.statusId == 1 ?
+                                    formData.statusId == 1 ?
                                     <div className="col-md-12 col-xs-12">
-                                        <div className="py-2 btn bg-light effect-infos" onClick={() => this.handleShowListEffect(!this.state.showListEffect)}> <b>{t('vaccination_reaction_after')} <i className={"fas fa-caret-" + (this.state.showListEffect ? "up":"down")}></i></b> </div>
-                                        {this.state.showListEffect && <div className="effect-table border rounded">
+                                        <div className="py-2 btn bg-light effect-infos" onClick={() => this.handleShowListEffect(!showListEffect)}> <b>{t('vaccination_reaction_after')} <i className={"fas fa-caret-" + (showListEffect ? "up":"down")}></i></b> </div>
+                                        {showListEffect && <div className="effect-table border rounded">
                                             <table className="table">
                                                 <thead>
                                                     <tr>
@@ -605,22 +612,22 @@ class VaccinationDetail extends React.Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        this.state.effectList && this.state.effectList.map((v,index) => {
+                                                        effectList && effectList.map((v,index) => {
                                                             return <tr key={index}>
                                                                 <td>{(index + 1)+". "+v.name}</td>
                                                                 <td  className="text-center pd-0 wpz-120">
                                                                     <label className="label-option-yn-vaccin">
-                                                                        <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
+                                                                        <input checked={formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 1).length ? true: false} type="radio" value={1} name={v.id +"_1"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                     </label>
                                                                 </td>
                                                                 <td className="text-center pd-0 wpz-120">
                                                                     <label className="label-option-yn-vaccin">
-                                                                        <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
+                                                                        <input checked={formData.vaccinEffects.filter(n => n['id'] == v.id && n['status'] == 2).length ? true: false} type="radio" value={2} name={v.id +"_2"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                     </label>
                                                                 </td>
                                                                 <td  className="text-center pd-0 wpz-120">
                                                                     <label className="label-option-yn-vaccin">
-                                                                        <input checked={this.state.formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
+                                                                        <input checked={formData.vaccinEffects.filter(n => n['id'] == v.id  && n['status'] == 3).length ? true: false} type="radio" value={3} name={v.id +"_3"+ index} onChange={e => this.handleChangeEffect(v.id, e)} className="option-ques-vaccin"/>
                                                                     </label>
                                                                     <input className="d-none" type="radio" value="4" name={v.id} onChange={e => this.handleChangeEffect(v.id, e)}/>
                                                                 </td>
@@ -638,17 +645,18 @@ class VaccinationDetail extends React.Component {
                         <div className="clearfix action-buttons text-right mt-3">
                             <Button variant="secondary" className="pr-4 pl-4 mr-2" onClick={() => this.props.onCancelClick()}>{t("Cancel")}</Button>
                             <Button disabled={
-                                (this.state.formData.statusId == 1 ? !
-                                    (!this.state.exc && this.state.formData.vaccinTypeId && this.state.formData.injectedAt &&(
-                                    this.state.formData.vaccinationUnitId == 2 ? (this.state.formData.city && this.state.formData.district && this.state.formData.ward) 
-                                    : this.state.formData.vaccinationUnitId == 1 ? this.state.formData.vaccinHospitalId : this.state.formData.address
-                                )) : this.state.formData.statusId == 2 ? !( (this.state.formData.reasonRejectId < 3 && this.state.formData.reasonTypeId || this.state.formData.reasonRejectId == 3) && this.state.formData.reasonDetail) : true)
-                                } variant="primary" className="pr-4 pl-4" onClick={() => this.onUpdateOrCreateData()}>{t(this.props.rowId !== null && this.props.rowId ? "Update" : "Confirm")}</Button>
+                                (formData.statusId == 1 ? !
+                                    (!exc && formData.vaccinTypeId && formData.injectedAt && (
+                                    formData.vaccinationUnitId == 2 ? (formData.city && formData.district && formData.ward) 
+                                    : formData.vaccinationUnitId == 1 ? formData.vaccinHospitalId : formData.address
+                                )) : formData.statusId == 2 ? !((formData.reasonRejectId < 3 && formData.reasonTypeId || formData.reasonRejectId == 3) && formData.reasonDetail) : true)
+                                } variant="primary" className="pr-4 pl-4" onClick={() => this.onUpdateOrCreateData()}>{t(rowId !== null && rowId ? "Update" : "Confirm")}</Button>
                         </div>
                     </Modal.Body>
-                </Modal> 
+                </Modal>
             </>
         );
     }
 }
+
 export default VaccinationDetail;
