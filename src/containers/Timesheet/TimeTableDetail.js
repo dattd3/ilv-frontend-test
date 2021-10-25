@@ -350,6 +350,7 @@ function RenderRow4(props) {
 function Content(props) {
   const { t } = useTranslation();
   const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#FFFFFF'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
+
   return (
     <div>
       <div className="row pr-2 pl-2 pb-4">
@@ -380,21 +381,23 @@ function Content(props) {
           <tbody>
             {
               chunk(props.timesheets, 7).map((timeSheet, index) => {
-                let isShowLineOT = (timeSheet || [])
-                .every(item => formatStringByMuleValue(item.line4?.ot_end_time1) && formatStringByMuleValue(item.line4?.ot_end_time2) 
-                && formatStringByMuleValue(item.line4?.ot_end_time3) && formatStringByMuleValue(item.line4?.ot_start_time1) && 
-                formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
-
-                let isShowLineTrip = (timeSheet || [])
-                .every(item => formatStringByMuleValue(item.line3?.leave_end_time1) && formatStringByMuleValue(item.line3?.leave_end_time2) 
-                && formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_start_time2) && 
-                formatStringByMuleValue(item.line3?.trip_end_time1) && formatStringByMuleValue(item.line3?.trip_end_time2) &&
+                let timeSheetFiltered = (timeSheet || []).filter(item => item.date_type === DATE_TYPE.DATE_NORMAL)
+                let isShowLineOT = timeSheetFiltered
+                .some(item => (formatStringByMuleValue(item.line4?.ot_start_time1) && formatStringByMuleValue(item.line4?.ot_end_time1)) 
+                || (formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_end_time2)) 
+                || (formatStringByMuleValue(item.line4?.ot_start_time3) && formatStringByMuleValue(item.line4?.ot_end_time3)))
+                let hasTrip = timeSheetFiltered
+                .some(item => formatStringByMuleValue(item.line3?.trip_end_time1) && formatStringByMuleValue(item.line3?.trip_end_time2) &&
                 formatStringByMuleValue(item.line3?.trip_start_time1) && formatStringByMuleValue(item.line3?.trip_start_time2))
-
+                let hasLeave = timeSheetFiltered
+                .some(item => formatStringByMuleValue(item.line3?.leave_end_time1) && formatStringByMuleValue(item.line3?.leave_end_time2) 
+                && formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_start_time2))
+                let isShowLine3 = (!hasTrip && !hasLeave) ? false: true
                 let rowSpan = totalTimeSheetLines
-                if ((isShowLineTrip && !isShowLineOT) || (!isShowLineTrip && isShowLineOT)) {
+
+                if ((isShowLine3 && !isShowLineOT) || (!isShowLine3 && isShowLineOT)) {
                   rowSpan = 3
-                } else if (!isShowLineTrip && !isShowLineOT) {
+                } else if (!isShowLine3 && !isShowLineOT) {
                   rowSpan = 2
                 }
 
@@ -404,14 +407,14 @@ function Content(props) {
                           <RenderRow0 timesheets = {timeSheet}/>
                         </tr>
                         <tr className="divide sub"></tr>
-                        <tr style={{borderTop: '1px solid #707070'}} className="line1">
+                        <tr style={{borderTop: '1px solid #707070', background: '#F2F2F2'}} className="line1">
                           <RenderRow1 timesheets = {timeSheet} rowSpan={rowSpan} />
                         </tr>
                         <tr className="no-border-left" className="line2">
                           <RenderRow2 timesheets = {timeSheet} rowSpan={rowSpan} />
                         </tr>
                         {
-                          isShowLineTrip ?
+                          isShowLine3 ?
                           <tr className="no-border-left" className="line3">
                             <RenderRow3 timesheets={timeSheet}/>
                           </tr>

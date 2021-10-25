@@ -71,9 +71,9 @@ class ConfirmPasswordModal extends React.Component {
         return (
             <Modal className='confirm-password-modal' backdrop="static" centered show={show}>
                 <Modal.Header>
-                    <span className="close" data-dismiss="alert" aria-label="Close">
+                    <a href="/" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </span>
+                    </a>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>

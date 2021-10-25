@@ -565,6 +565,7 @@
             border-bottom: 1px solid #CCCCCC;
             font-weight: normal;
             a {
+              display: block;
               color: #383838;
               text-decoration: none;
               &:hover {
@@ -634,7 +635,8 @@
           }
           &.line2 {
             td {
-              padding: 5px 0;
+              // padding: 5px 0;
+              padding: 0;
             }
           }
         }
@@ -658,13 +660,13 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .ke_hoach_dai{
         background-color: #00B3FF;
         border-bottom: none;
         text-align: center;
-        padding: 4px 0;
+        padding: 4px;
       }
       .thuc_te{
         background-color: #FFFFFF;
@@ -676,7 +678,7 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .loi_cong{
         background-color: #E44235;
@@ -687,7 +689,7 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .no-event{
         border-top: none;
@@ -697,7 +699,7 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .gio_nghi{
         background-color: #F7931E;
@@ -708,7 +710,7 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .cong_tac{
         background-color: #93278F;
@@ -719,7 +721,7 @@
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 4px 0;
+        padding: 4px;
       }
       .ot {
         background-color: #808000;

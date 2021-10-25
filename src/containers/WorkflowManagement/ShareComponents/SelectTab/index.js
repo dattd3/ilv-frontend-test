@@ -40,7 +40,7 @@ export default function SelectTab(props) {
       <div className="d-flex justify-content-between align-items-center">
         {selectedMembers.length > 0 
           && <>
-            <ReactTooltip id='total-items-selected' event="click" scrollHide isCapture clickable place="right" globalEventOff="click" type='light' backgroundColor="#FFFFFF" arrowColor="#CCCCCC" className="item-tooltip">
+            <ReactTooltip id='total-items-selected' scrollHide isCapture clickable place="right" globalEventOff="click" type='light' backgroundColor="#FFFFFF" arrowColor="#CCCCCC" className="item-tooltip">
               <ul>
                 {
                   selectedMembers.map((item, i) => {
