@@ -175,7 +175,7 @@ class VaccinationDetail extends React.Component {
             });
         }else{
             const e = this.state.formData;
-            e[name] = event.value;
+            e[name] = event?.value;
             this.setState(e);
         }
     }
@@ -591,7 +591,7 @@ class VaccinationDetail extends React.Component {
                                         <div className="col-md-8 col-xs-12">
                                             <div className="form-group">
                                                 <label htmlFor="address">{t('Address')}</label>
-                                                <input value={formData.address} onChange={(e) => this.onChangeInput('address',e)} type="text" className="form-control" id="address" placeholder={t('Address') + '...'}/>
+                                                <input value={formData.address || ""} onChange={(e) => this.onChangeInput('address',e)} type="text" className="form-control" id="address" placeholder={t('Address') + '...'}/>
                                             </div>
                                         </div>
                                     : undefined
