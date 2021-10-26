@@ -36,7 +36,6 @@ class ConfirmRequestModal extends React.Component {
         let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                console.log(this.props.dataToSap);
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
@@ -110,7 +109,6 @@ class ConfirmRequestModal extends React.Component {
           });
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái phê duyệt"))
         
     }
@@ -126,8 +124,6 @@ class ConfirmRequestModal extends React.Component {
             // });
             dataToSap.push(taskObj)
           });
-
-        console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
     }
 
@@ -142,7 +138,6 @@ class ConfirmRequestModal extends React.Component {
             // });
             dataToSap.push(taskObj)
           });
-          console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
