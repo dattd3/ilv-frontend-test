@@ -590,8 +590,8 @@
       }
       thead {
         td, th {
+          padding: 0;
           text-align: left;
-          height: 30px;
           max-width: 50px;
           text-align: center;
           border: none;
@@ -622,37 +622,74 @@
                 }
               }
               &:last-child {
-                border-right: 0.5px solid #707070;
+                border-right: 1px solid #707070;
+              }
+              .item-tooltip {
+                opacity: 1 !important;
+              }
+              &.block-actions {
+                &:hover {
+                  background: inherit;
+                  .date {
+                    color: #000000;
+                  }
+                }
               }
             }
           }
           &.line1 {
             td {
               &:last-child {
-                border-right: 0.5px solid #707070;
+                border-right: 1px solid #707070;
               }
             }
           }
-          &.line2 {
+          &.line2, &.line3, &.line4 {
             td {
-              // padding: 5px 0;
               padding: 0;
+              &:last-child {
+                border-right: 1px solid #707070;
+              }
             }
           }
         }
       }
-      .divide{
+      .border-top {
+        border-top: 1px solid #707070 !important;
+      }
+      .border-bottom {
+        border-bottom: 1px solid #707070 !important;
+      }
+      .border-left {
+        border-left: 1px solid #707070 !important;
+      }
+      .border-right {
+        border-right: 1px solid #707070 !important;
+      }
+      .none-border-top {
+        border-top: none !important;
+      }
+      .none-border-bottom {
+        border-bottom: none !important;
+      }
+      .none-border-left {
+        border-left: none !important;
+      }
+      .none-border-right {
+        border-right: none !important;
+      }
+      .divide {
         border: none;
         height: 10px;
         &.sub {
           height: 5px;
         }
       }
-      .date{
+      .date {
         color: #383838;
         cursor: pointer;
       }
-      .ke_hoach{
+      .ke_hoach {
         background-color: #00B3FF;
         border-bottom: none;
         white-space: nowrap;
@@ -662,28 +699,27 @@
         overflow: hidden;
         padding: 4px;
       }
-      .ke_hoach_dai{
+      .ke_hoach_dai {
         background-color: #00B3FF;
         border-bottom: none;
         text-align: center;
         padding: 4px;
       }
-      .thuc_te{
+      .thuc_te {
         background-color: #FFFFFF;
         color: #000000;
-        border-top: 1px solid #707070;
-        border-bottom: 1px solid #707070;
         white-space: nowrap;
         text-align: center;
         flex: 1;
         text-overflow: ellipsis;
         overflow: hidden;
         padding: 4px;
+        border-bottom: 1px solid #707070;
       }
-      .loi_cong{
+      .loi_cong {
         background-color: #E44235;
         border-top: none;
-        border-bottom: none;
+        border-bottom: none !important;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -691,7 +727,7 @@
         overflow: hidden;
         padding: 4px;
       }
-      .no-event{
+      .no-event {
         border-top: none;
         border-bottom: none;
         white-space: nowrap;
@@ -701,7 +737,7 @@
         overflow: hidden;
         padding: 4px;
       }
-      .gio_nghi{
+      .gio_nghi {
         background-color: #F7931E;
         border-top: none;
         border-bottom: none;
@@ -712,7 +748,7 @@
         overflow: hidden;
         padding: 4px;
       }
-      .cong_tac{
+      .cong_tac {
         background-color: #93278F;
         border-top: none;
         border-bottom: none;
@@ -765,6 +801,14 @@
           }
         }
       } 
+    }
+  }
+  &.employee-detail {
+    .timesheet-box .input-container {
+      .input-img {
+        top: 8px;
+        left: 242px;
+      }
     }
   }
 }
