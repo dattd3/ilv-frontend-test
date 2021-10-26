@@ -248,7 +248,6 @@ class TaskList extends React.Component {
             }
         })
         this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
-        console.log(this.state.taskChecked);
         this.enableBtn(this.state.taskChecked);
     };
     

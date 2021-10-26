@@ -40,7 +40,6 @@ class TaskDetailModal extends React.Component {
             }
             const response = data.data
             this.setState({data: response })
-            console.log(this.state.data);
           }
         }).catch(error => {
           console.log(error)
