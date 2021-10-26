@@ -36,7 +36,6 @@ class ConfirmationModal extends React.Component {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 this.props.dataToSap[0].sub[0].comment = this.state.message;
-                console.log(this.props.dataToSap);
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
@@ -45,7 +44,6 @@ class ConfirmationModal extends React.Component {
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
-                // console.log(this.props.dataToSap);
                 this.consent(this.props.dataToSap);
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
@@ -74,7 +72,6 @@ class ConfirmationModal extends React.Component {
     }
 
     cancel = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
@@ -104,7 +101,6 @@ class ConfirmationModal extends React.Component {
     }
 
     revocation = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
@@ -134,7 +130,6 @@ class ConfirmationModal extends React.Component {
     }
 
     revocationApproval = (dataToSap) => {
-        console.log(dataToSap[0]);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/approved/cancel`,
@@ -245,7 +240,6 @@ class ConfirmationModal extends React.Component {
     }
 
     consent = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
@@ -281,7 +275,6 @@ class ConfirmationModal extends React.Component {
     }
 
     reject = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
