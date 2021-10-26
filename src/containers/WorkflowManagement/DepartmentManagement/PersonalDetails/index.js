@@ -160,7 +160,7 @@ class PersonalDetails extends Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="timesheet-section">
+      <div className="timesheet-section employee-detail">
         <h1 className="content-page-header">{t("MenuIndividualManagement")}</h1>
         <ToastContainer />
         <FilterData clickSearch={this.search.bind(this)} type="singleChoice"/>

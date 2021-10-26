@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf"
 import html2canvas from "html2canvas"
+import moment from 'moment'
 import Constants from '../commons/Constants'
 
 const getRequestConfigurations = () => {
@@ -109,4 +110,29 @@ const getValueParamByQueryString = (queryString, key) => {
     return date
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString }
+const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {
+    try {
+        const PnLVCodeDayMapping = {
+            [Constants.pnlVCode.VinPearl]: 1
+        }
+        if (!PnLVCodeDayMapping[pnlVCode]) {
+            return null
+        }
+        const date = moment().subtract(PnLVCodeDayMapping[pnlVCode], 'days').format(formatType)
+
+        return date
+    } catch (e) {
+        return null
+    }
+}
+
+const isEnableShiftChangeFunctionByPnLVCode = PnLVCode => {
+    return ![Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSchool].includes(PnLVCode) ? true : false
+}
+
+const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
+    return ![Constants.pnlVCode.VinSchool].includes(PnLVCode) ? true : false
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode }
