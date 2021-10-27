@@ -92,11 +92,11 @@ const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
 const exportToPDF = (elementViewById, fileName) => {
     // const elementView = document.getElementById('frame-for-export')
     // const ratio = elementViewById.clientHeight / elementViewById.clientWidth
-    const totalEdgeDistance = 10
+    const totalEdgeDistance = 14
 
     html2canvas(elementViewById, {
         allowTaint: true,
-        width: elementViewById.clientWidth,
+        width: elementViewById.clientWidth + 18,
         height: elementViewById.clientHeight,
         windowWidth: window.innerWidth,//elementViewById.clientWidth, 
         windowHeight: window.innerHeight,//elementViewById.clientHeight,
