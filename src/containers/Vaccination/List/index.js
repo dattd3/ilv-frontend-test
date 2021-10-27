@@ -69,6 +69,7 @@ class Vaccination extends React.Component {
                             <thead>
                                 <tr>
                                     <th className="border-0 no">{t('vaccination_injections_mumber')}</th>
+                                    <th className="border-0 injected-status">{t('VaccinationStatus')}</th>
                                     <th className="border-0 vaccination-type">{t('vaccination_type')}</th>
                                     <th className="border-0 text-center injected-at">{t('vaccination_time')}</th>
                                     <th className="border-0 injected-unit">{t('vaccination_department')}</th>
@@ -82,6 +83,7 @@ class Vaccination extends React.Component {
                                 {this.state.listData.map(v => {
                                     return (<tr className="px-2" key={v.id}>
                                         <td className="align-middle no">{v.number}</td>
+                                        <td className="align-middle injected-status">{v.vaccinStatus?.name}</td>
                                         <td className="align-middle vaccination-type">{v.vaccin?.name }</td>
                                         <td className="align-middle text-center injected-at">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
                                         <td className="align-middle injected-unit">{
@@ -133,10 +135,26 @@ class Vaccination extends React.Component {
                                             }
                                         </td>
                                         <td className="reason">
-                                            {v.vaccinReasonReject ? v.vaccinReasonReject.name : undefined}
+                                            <OverlayTrigger 
+                                                placement="bottom"
+                                                overlay={
+                                                    <Popover id={`popover-basic-gsh-${v.id}-reason`}>
+                                                        <Popover.Content>{v.vaccinReasonReject?.name || ""}</Popover.Content>
+                                                    </Popover>
+                                                }>
+                                                <div className="content-reason">{v.vaccinReasonReject?.name || ""}</div>
+                                            </OverlayTrigger>
                                         </td>
                                         <td className="detail">
-                                            {v.reasonDetail}
+                                            <OverlayTrigger 
+                                                placement="bottom"
+                                                overlay={
+                                                    <Popover id={`popover-basic-gsh-${v.id}-detail`}>
+                                                        <Popover.Content>{v.reasonDetail || ""}</Popover.Content>
+                                                    </Popover>
+                                                }>
+                                                <div className="content-detail">{v.reasonDetail || ""}</div>
+                                            </OverlayTrigger>
                                         </td>
                                         <td className="align-middle action">
                                             <div onClick={() => {

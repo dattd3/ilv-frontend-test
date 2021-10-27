@@ -468,8 +468,6 @@ class RequestTaskList extends React.Component {
         this.props.requestRemoteData(params);  
     }
 
-
-
     render() {
         const recordPerPage = 10
         const { t, total, tasks } = this.props
@@ -477,7 +475,8 @@ class RequestTaskList extends React.Component {
         // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
-        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHNAGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -541,69 +540,70 @@ class RequestTaskList extends React.Component {
                     <h4 className="content-page-header">{this.props.title}</h4>
                 </div>
                 <div className="task-list request-list shadow">
-                    <table className="table table-borderless table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col" className="code">{t("RequestNo")}</th>
-                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="day-off">{t("Times")}</th>
-                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
-                                <th scope="col" className="status text-center">{t("Status")}</th>
-                                <th scope="col" className="tool text-center">{t("action")}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {tasks.length > 0 ?
-                            tasks.map((child, index) => {
-                                let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
-                                let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
-                                let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
-                                let totalTime = null;
-                                let editLink = null
-                                if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                    totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
-                                }
-                                if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9)
-                                {
-                                    editLink = null;
-                                }
-                                else{
-                                    editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
-                                }
-                                return (
-                                    <tr key={index}>
-                                        {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
-                                        <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                        <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                        <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
-                                        <td className="break-time text-center">{totalTime}</td>
-                                        <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
-                                        <td className="tool">
-                                            {
-                                                isShowEditButton && child.absenceType?.value != "PN02" ? 
-                                                    <>
-                                                        <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
-                                                    </>
-                                                : null
-                                            }
-                                            {
-                                                isShowEvictionButton && child.absenceType?.value != "PN02" ?
-                                                    <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
+                    {
+                        tasks.length > 0 ?
+                        <table className="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th scope="col" className="code">{t("RequestNo")}</th>
+                                    <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                    <th scope="col" className="day-off">{t("Times")}</th>
+                                    <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                    <th scope="col" className="status text-center">{t("Status")}</th>
+                                    <th scope="col" className="tool text-center">{t("action")}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                tasks.map((child, index) => {
+                                    let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
+                                    let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
+                                    let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
+                                    let totalTime = null;
+                                    let editLink = null
+                                    if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                        totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                    }
+                                    if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9)
+                                    {
+                                        editLink = null;
+                                    }
+                                    else{
+                                        editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+                                    }
+                                    return (
+                                        <tr key={index}>
+                                            {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
+                                            <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                            <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
+                                            <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                            <td className="break-time text-center">{totalTime}</td>
+                                            <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
+                                            <td className="tool">
+                                                {
+                                                    isShowEditButton && child.absenceType?.value != "PN02" 
+                                                    ? <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
                                                     : null
-                                            }
-                                            {
-                                                isShowDeleteButton ?
-                                                    <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                }
+                                                {
+                                                    isShowEvictionButton && child.absenceType?.value != "PN02" 
+                                                    ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                     : null
-                                            }
-                                        </td>
-                                    </tr>
-                                )
-                            })           
-                            : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
-                        }
-                        </tbody>
-                    </table>
+                                                }
+                                                {
+                                                    isShowDeleteButton 
+                                                    ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                    : null
+                                                }
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            </tbody>
+                        </table>
+                        : <div className="data-not-found">{t("NoDataFound")}</div>
+                    }
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-4">
                     <div className="col-sm"></div>
@@ -614,7 +614,8 @@ class RequestTaskList extends React.Component {
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {total}</div>
                 </div> : null}
-            </>)
+            </>
+        )
     }
 }
 

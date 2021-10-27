@@ -1,11 +1,12 @@
 import React from 'react'
 import moment from 'moment'
+import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { withTranslation } from "react-i18next"
+import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -42,10 +43,12 @@ class BusinessTripDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
   }
   render() {
-    const businessTrip = this.props.businessTrip
-    const requestInfo = this.props.businessTrip.requestInfo[0]
-    const requestTypeId = this.props.businessTrip.requestTypeId
-    const { t } = this.props
+    const { t, businessTrip, action } = this.props
+    const requestInfo = businessTrip.requestInfo[0]
+    const requestTypeId = businessTrip.requestTypeId
+    const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
+
     return (
       <div className="business-trip">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -126,26 +129,32 @@ class BusinessTripDetailComponent extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
         </div>
-        {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ? 
-        <DetailButtonComponent 
-          dataToSap={[{
-            "id": businessTrip.id,
-            "requestTypeId": Constants.BUSINESS_TRIP,
-            "sub": [
-              {
-                "id": requestInfo.id,
-              }
-            ]
-          }]}
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
-          isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
-          isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && businessTrip.appraiser}
-          id={businessTrip.id}
-          urlName={'requestattendance'}
-          requestTypeId={requestTypeId}
-          action={this.props.action}
-        /> : null}
+        {
+          requestInfo
+          && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 
+              || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))) 
+          ? 
+          <DetailButtonComponent 
+            dataToSap={[{
+              "id": businessTrip.id,
+              "requestTypeId": Constants.BUSINESS_TRIP,
+              "sub": [
+                {
+                  "id": requestInfo.id,
+                }
+              ]
+            }]}
+            isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+            isShowApproval={isShowApproval}
+            isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+            isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && businessTrip.appraiser}
+            id={businessTrip.id}
+            urlName={'requestattendance'}
+            requestTypeId={requestTypeId}
+            action={action}
+          /> 
+          : null
+        }
       </div>
     )
   }

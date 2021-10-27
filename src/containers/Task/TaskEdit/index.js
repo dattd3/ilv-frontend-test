@@ -33,7 +33,7 @@ class TaskEditComponent extends React.Component {
              const response = res.data.data
              const result = res.data.result
              const code = result.code
-              if (code == "000000") {
+              if (code == Constants.API_SUCCESS_CODE) {
                 this.setState({data: response })
               } else if (code == Constants.API_ERROR_NOT_FOUND_CODE || code == Constants.API_ERROR_CODE) {
                 return window.location.href = map.NotFound
