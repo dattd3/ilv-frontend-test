@@ -56,32 +56,89 @@ const formatNumberInteger = value => {
     return number.toString()
 }
 
-const exportToPDF = (elementViewById, fileName) => {
-    const quality = 1.0
-    const paperSize = 'a4'
-    const totalEdgeDistance = 20
+const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
+    var image1 = new Image();
+    var context = canvas.getContext('2d');
+    context.drawImage(image1, 0, 0);
+    const heightCutting = canvas.width / canvasWidth
+    const heightCount = heightCutting * 20;
+    const startHeight = Math.ceil(-1 * (heightLeft - canvasHeight + heightCount) * heightCutting);
+    var imageData = context.getImageData(0, startHeight, canvas.width, Math.floor(heightCutting * heightCount));
 
-    html2canvas(elementViewById).then(canvas => {
-        const image = canvas.toDataURL('image/jpeg', quality)
-        const doc = new jsPDF('p', 'px', paperSize)
+    let result = heightCount + 1;
+    for (let line = heightCount; line > 0; line--) {
+        let count = 0;
+        if (result != heightCount + 1)
+            continue;
+        for (let y = Math.floor(line * heightCutting); y > Math.floor((line - 1) * heightCutting); y--) {
+            for (let x = 0; x < imageData.width; x++) {
+                let index = (y * imageData.width + x) * 4;
+
+                count += imageData.data[index] == 0 ? 1 : 0
+                count += imageData.data[index + 1] == 0 ? 1 : 0
+                count += imageData.data[index + 2] == 0 ? 1 : 0
+
+            }
+        }
+        if (count < 10) {
+            result = line;
+        }
+    }
+    return heightCount - result;
+    //return 0;
+
+}
+
+const exportToPDF = (elementViewById, fileName) => {
+    // const elementView = document.getElementById('frame-for-export')
+    // const ratio = elementViewById.clientHeight / elementViewById.clientWidth
+    const totalEdgeDistance = 10
+
+    html2canvas(elementViewById, {
+        allowTaint: true,
+        width: elementViewById.clientWidth,
+        height: elementViewById.clientHeight,
+        windowWidth: window.innerWidth,//elementViewById.clientWidth, 
+        windowHeight: window.innerHeight,//elementViewById.clientHeight,
+
+        scale: 3
+    }).then(canvas => {
+        var position = 0;
+        const image = canvas.toDataURL('image/jpeg')
+
+        // const doc = new jsPDF('p', 'px', 'a2')
+        const doc = new jsPDF('p', 'px', 'a4')
+
         const pageWidth = doc.internal.pageSize.getWidth() - totalEdgeDistance
-        const pageHeight = doc.internal.pageSize.getHeight() - totalEdgeDistance
-        // const pageWidth = doc.internal.pageSize.getWidth()
-        // const pageHeight = doc.internal.pageSize.getHeight() 
+        const pageHeight = doc.internal.pageSize.getHeight()
 
         const widthRatio = pageWidth / canvas.width
         const heightRatio = pageHeight / canvas.height
         const ratio = widthRatio > heightRatio ? heightRatio : widthRatio
 
-        const canvasWidth = canvas.width * ratio
-        const canvasHeight = canvas.height * ratio
+        const canvasWidth = pageWidth
+        const canvasHeight = canvas.height * canvasWidth / canvas.width;
+        var heightLeft = canvasHeight;
 
         const marginX = totalEdgeDistance / 2
-        const marginY = totalEdgeDistance / 2
-        // const marginX = (pageWidth - canvasWidth) / 2
-        // const marginY = (pageHeight - canvasHeight) / 2
-        
-        doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
+        const marginY = (pageHeight - canvasHeight) / 2
+        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+        doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
+        heightLeft -= pageHeight;
+        heightLeft += offset;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - canvasHeight + 1;
+            doc.addPage();
+            if (heightLeft < pageHeight) {
+                offset = 0;
+            } else {
+                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+            }
+            doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
+            heightLeft -= pageHeight;
+            heightLeft += offset;
+        }
         doc.save(`${fileName}.pdf`)
     })
 }
@@ -89,7 +146,7 @@ const exportToPDF = (elementViewById, fileName) => {
 const isEnableFunctionByFunctionName = name => {
     const companyCode = localStorage.getItem("companyCode")
     let listPnLAccepted = []
-    
+
     switch (name) {
         case Constants.listFunctionsForPnLACL.qnA:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
@@ -97,7 +154,7 @@ const isEnableFunctionByFunctionName = name => {
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VincomRetail]
             break
-    
+
     }
 
     return listPnLAccepted.includes(companyCode)

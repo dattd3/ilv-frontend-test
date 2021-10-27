@@ -178,7 +178,6 @@ class FilterData extends React.Component {
                   <div className="col-lg-3">
                     <div className="title">{t("From")}</div>
                     <div className="content input-container">
-                      <label>
                         <DatePicker
                           name="startDate"
                           selectsStart
@@ -190,16 +189,14 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="input-group-addon input-img">
+                        <span style={{ position: "absolute", top: "5px", right: "15px" }}>
                           <i className="fas fa-calendar-alt"></i>
                         </span>
-                      </label>
                     </div>
                   </div>
                   <div className="col-lg-3">
                     <div className="title">{t("To")}</div>
                     <div className="content input-container">
-                      <label>
                         <DatePicker
                           name="endDate"
                           selectsEnd
@@ -213,10 +210,9 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="input-group-addon input-img">
+                        <span style={{ position: "absolute", top: "5px", right: "15px" }}>
                           <i className="fas fa-calendar-alt"></i>
                         </span>
-                      </label>
                     </div>
                   </div>
                 </>
