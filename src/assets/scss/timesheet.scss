@@ -802,14 +802,26 @@
             font-size: 12px;
           }
         }
-      } 
+      }
+      .ic-calendar {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+      }
     }
   }
   &.employee-detail {
-    .timesheet-box .input-container {
-      .input-img {
+    .timesheet-box {
+      .input-container {
+        .input-img {
+          top: 8px;
+          left: 242px;
+        }
+      }
+      .ic-calendar {
+        position: absolute;
         top: 8px;
-        left: 242px;
+        right: 10px;
       }
     }
   }

@@ -189,7 +189,7 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span style={{ position: "absolute", top: "5px", right: "15px" }}>
+                        <span className="ic-calendar">
                           <i className="fas fa-calendar-alt"></i>
                         </span>
                     </div>
@@ -210,7 +210,7 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span style={{ position: "absolute", top: "5px", right: "15px" }}>
+                        <span className="ic-calendar">
                           <i className="fas fa-calendar-alt"></i>
                         </span>
                     </div>

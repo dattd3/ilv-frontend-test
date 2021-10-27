@@ -37,7 +37,7 @@ class FilterDataShirfReport extends React.Component {
     this.onHideMembers = this.onHideMembers.bind(this);
     this.getSelecteMembers = this.getSelecteMembers.bind(this);
     this.resetSelectedMember = this.resetSelectedMember.bind(this);
-    this.dowload = this.dowload.bind(this);
+    this.download = this.download.bind(this);
     this.onClickSelectTab = this.onClickSelectTab.bind(this);
     this.onCloseTabEvent = this.onCloseTabEvent.bind(this);
     this.onCloseAllEvent = this.onCloseAllEvent.bind(this);
@@ -90,7 +90,7 @@ class FilterDataShirfReport extends React.Component {
     });
   }
 
-  dowload() {
+  download() {
     const isValidData = this.isValidDataToCreate()
     if (!isValidData) {
       return;
@@ -305,7 +305,7 @@ class FilterDataShirfReport extends React.Component {
                         locale="vi"
                         className="form-control"
                       />
-                      <span style={{ position: "absolute", top: "5px", right: "15px" }}>
+                      <span className="ic-calendar">
                         <i className="fas fa-calendar-alt"></i>
                       </span>
                     </div>
@@ -326,7 +326,7 @@ class FilterDataShirfReport extends React.Component {
                         locale="vi"
                         className="form-control"
                       />
-                      <span style={{ position: "absolute", top: "5px", right: "15px" }}>
+                      <span className="ic-calendar">
                         <i className="fas fa-calendar-alt"></i>
                       </span>
                     </div>
@@ -340,7 +340,7 @@ class FilterDataShirfReport extends React.Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.dowload}
+                  onClick={this.download}
                 >
                   <i className="fas fa-download mr-1"></i>
                   {t("LabelDownloadReport")}
