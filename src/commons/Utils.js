@@ -134,5 +134,9 @@ const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
     return ![Constants.pnlVCode.VinSchool].includes(PnLVCode) ? true : false
 }
 
+const getRequestTypeIdsAllowedToReApproval = () => {
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+}
+
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode }
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval }

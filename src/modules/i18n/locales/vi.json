@@ -155,6 +155,7 @@
   "MyJob": "Công việc của tôi",
   "vaccination": "Thông tin tiêm Vaccine COVID-19",
   "vaccination_injections_mumber": "Mũi số",
+  "VaccinationStatus": "Tình trạng tiêm",
   "vaccination_type": "Loại Vaccine",
   "vaccination_department": "Đơn vị tiêm chủng",
   "vaccination_branch": "Chi nhánh",
