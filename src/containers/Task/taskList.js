@@ -17,6 +17,7 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
+import { getRequestTypeIdsAllowedToReApproval } from "../../commons/Utils"
 
 class TaskList extends React.Component {
     constructor() {
@@ -228,21 +229,20 @@ class TaskList extends React.Component {
     }
 
     handleAllChecked = event => {
-        // let tasks = this.props.tasks;
+        const { page } = this.props
         let tasks = this.props.tasks; 
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
         tasks.forEach((child) => {
-            if(child.processStatusId == 8 || (child.processStatusId == 5 && this.props.page == "approval")){
-                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                if(child.isChecked)
-                {
+            if (child.processStatusId == 8 || (page == "approval" && (child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+                child.isChecked = event.target.checked;
+                if (child.isChecked) {
                     // child.canChecked = true
                     // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
-                    if(this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
+                    if (this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
                         this.state.taskChecked.push(child);
                     }
-                }
-                else
-                {
+                } else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
                 }
             }
@@ -251,24 +251,21 @@ class TaskList extends React.Component {
         this.enableBtn(this.state.taskChecked);
     };
     
-    handleCheckChieldElement = event => {
+    handleCheckChildElement = event => {
         let tasks = this.props.tasks;
         tasks.forEach((child) => {
             let id = child.id;
             if (id == event.target.value)
             {
                 child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                if(child.isChecked)
-                {
+                if (child.isChecked) {
                     this.state.taskChecked.push(child);
                 }
-                else
-                {
+                else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
-                    
                 }
             }
-        })    
+        })
 
         let taskCheckedList = tasks.filter(t => t.isChecked);
         this.setState({checkedAll: taskCheckedList.length == tasks.length ? true : false})
@@ -277,12 +274,9 @@ class TaskList extends React.Component {
     };
 
     enableBtn = (taskChecked) => {
-        if(taskChecked.length)
-        {
+        if (taskChecked.length) {
             this.setState({ disabled:"", dataToSap:taskChecked})
-        }
-        else
-        {
+        } else {
             this.setState({ disabled:"disabled", dataToSap:[]})
         }
     }
@@ -366,6 +360,7 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         return (
             <>
@@ -469,9 +464,10 @@ class TaskList extends React.Component {
                                         return (
                                             <tr key={index}>
                                                 {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                    (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))) 
+                                                    && this.props.page == "approval") || child.processStatusId == 8) ?
                                                     <td scope="col" className="check-box text-center sticky-col">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
+                                                        <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                     </td>
                                                     : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                 }
@@ -521,7 +517,7 @@ class TaskList extends React.Component {
                                             </tr>
                                         )
                                     })  
-                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
+                                : <tr className="text-center"><th colSpan={10}>{t("NoDataFound")}</th></tr>
                             }
                         </tbody>
                     </table>

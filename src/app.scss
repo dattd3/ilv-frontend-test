@@ -2151,16 +2151,22 @@ span.badge-notification[data-badge]::after {
           left: 5px;
           background: #FFFFFF;
         }
+        .injected-status {
+          width: 150px;
+          position: sticky;
+          left: 65px;
+          background: #FFFFFF;
+        }
         .vaccination-type {
           width: 120px;
           position: sticky;
-          left: 65px;
+          left: 215px;
           background: #FFFFFF;
         }
         .injected-at {
           width: 160px;
           position: sticky;
-          left: 185px;
+          left: 335px;
           background: #FFFFFF;
         }
         .injected-unit {
@@ -2171,9 +2177,23 @@ span.badge-notification[data-badge]::after {
         }
         .reason {
           width: 200px;
+          .content-reason {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            max-height: 42px;
+            overflow: hidden;
+          }
         }
         .detail {
           width: 200px;
+          .content-detail {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            max-height: 42px;
+            overflow: hidden;
+          }
         }
         .action {
           width: 80px;
