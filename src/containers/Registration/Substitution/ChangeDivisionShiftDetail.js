@@ -255,7 +255,7 @@ class ChangeDivisionShiftDetail extends React.Component {
             [
               {
                 "id": this.props.substitution.id,
-                "requestTypeId": Constants.CHNAGE_DIVISON_SHIFT,
+                "requestTypeId": Constants.CHANGE_DIVISON_SHIFT,
                 "sub": [
                   {
                     "id": this.props.substitution.id,
