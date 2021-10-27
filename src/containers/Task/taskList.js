@@ -17,6 +17,7 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
+import { getRequestTypeIdsAllowedToReApproval } from "../../commons/Utils"
 
 class TaskList extends React.Component {
     constructor() {
@@ -228,21 +229,20 @@ class TaskList extends React.Component {
     }
 
     handleAllChecked = event => {
-        // let tasks = this.props.tasks;
+        const { page } = this.props
         let tasks = this.props.tasks; 
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
         tasks.forEach((child) => {
-            if(child.processStatusId == 8 || (child.processStatusId == 5 && this.props.page == "approval")){
-                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                if(child.isChecked)
-                {
+            if (child.processStatusId == 8 || (page == "approval" && (child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+                child.isChecked = event.target.checked;
+                if (child.isChecked) {
                     // child.canChecked = true
                     // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
-                    if(this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
+                    if (this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
                         this.state.taskChecked.push(child);
                     }
-                }
-                else
-                {
+                } else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
                 }
             }
@@ -251,24 +251,21 @@ class TaskList extends React.Component {
         this.enableBtn(this.state.taskChecked);
     };
     
-    handleCheckChieldElement = event => {
+    handleCheckChildElement = event => {
         let tasks = this.props.tasks;
         tasks.forEach((child) => {
             let id = child.id;
             if (id == event.target.value)
             {
                 child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                if(child.isChecked)
-                {
+                if (child.isChecked) {
                     this.state.taskChecked.push(child);
                 }
-                else
-                {
+                else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
-                    
                 }
             }
-        })    
+        })
 
         let taskCheckedList = tasks.filter(t => t.isChecked);
         this.setState({checkedAll: taskCheckedList.length == tasks.length ? true : false})
@@ -277,12 +274,9 @@ class TaskList extends React.Component {
     };
 
     enableBtn = (taskChecked) => {
-        if(taskChecked.length)
-        {
+        if (taskChecked.length) {
             this.setState({ disabled:"", dataToSap:taskChecked})
-        }
-        else
-        {
+        } else {
             this.setState({ disabled:"disabled", dataToSap:[]})
         }
     }
@@ -366,6 +360,7 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         return (
             <>
@@ -427,104 +422,109 @@ class TaskList extends React.Component {
                    </div>
                 </div>
                 <div className={`task-list shadow ${page}`}>
-                    <table className="table table-borderless table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col" className="check-box text-center sticky-col">
-                                    <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
-                                </th>
-                                <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
-                                {
-                                    !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
-                                        : null
-                                }
-                                <th scope="col" className="user-title">{t("Title")}</th>
-                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="day-off">{t("Times")}</th>
-                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
-                                {
-                                    this.props.page == "approval" ?
-                                        <th scope="col" className="appraiser">{t("Consenter")}</th>
-                                    : null
-                                }
-                                <th scope="col" className="status text-center">{t("Status")}</th>
-                                {
-                                    this.props.page != "consent" ?
-                                        <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
-                                    : null
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                tasks.length > 0 ?
-                                    tasks.map((child, index) => {
-                                        let totalTime = null;
-                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
-                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
-                                        if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                            totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                    {
+                        tasks.length > 0 ?
+                        <div className="wrap-table-request">
+                            <table className="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className="check-box text-left sticky-col">
+                                            <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
+                                        </th>
+                                        <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
+                                        {
+                                            !['V073'].includes(localStorage.getItem("companyCode"))
+                                                ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
+                                                : null
                                         }
-                                        return (
-                                            <tr key={index}>
-                                                {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
-                                                    <td scope="col" className="check-box text-center sticky-col">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
-                                                    </td>
-                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
-                                                }
-                                                <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
-                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
-                                                <td className="user-title">{child.user?.jobTitle || ''}</td>
-                                                <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                                <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
-                                                <td className="break-time text-center">{totalTime}</td>
-                                                {
-                                                    this.props.page == "approval" ?
-                                                        <td className="appraiser text-center">{child.appraiser?.fullName}</td>
-                                                    :null
-                                                }
-                                                <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
-                                                {
-                                                    this.props.page != "consent" ?
-                                                    <td className="tool">
-                                                    {child.comment ? <OverlayTrigger
-                                                        rootClose
-                                                        trigger="click"
-                                                        placement="left"
-                                                        overlay={<Popover id={'note-task-' + index}>
-                                                            <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                                            <Popover.Content>
-                                                                {child.comment}
-                                                            </Popover.Content>
-                                                        </Popover>}>
-                                                        <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                    {child.approverComment ? <OverlayTrigger
-                                                        rootClose
-                                                        trigger="click"
-                                                        placement="left"
-                                                        overlay={<Popover id={'comment-task-' + index}>
-                                                            <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
-                                                            <Popover.Content>
-                                                                {child.approverComment}
-                                                            </Popover.Content>
-                                                        </Popover>}>
-                                                        <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
-                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
-                                                </td>
-                                                    :null
-                                                }
-                                            </tr>
-                                        )
-                                    })  
-                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
-                            }
-                        </tbody>
-                    </table>
+                                        <th scope="col" className="user-title">{t("Title")}</th>
+                                        <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                        <th scope="col" className="day-off">{t("Times")}</th>
+                                        <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                        {
+                                            this.props.page == "approval" ?
+                                                <th scope="col" className="appraiser">{t("Consenter")}</th>
+                                            : null
+                                        }
+                                        <th scope="col" className="status text-center">{t("Status")}</th>
+                                        {
+                                            this.props.page != "consent" ?
+                                                <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                            : null
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        tasks.map((child, index) => {
+                                            let totalTime = null;
+                                            let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                            let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                            }
+                                            return (
+                                                <tr key={index}>
+                                                    {
+                                                        (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))) 
+                                                        && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                        <td scope="col" className="check-box text-left sticky-col">
+                                                            <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
+                                                        </td>
+                                                        : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
+                                                    }
+                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
+                                                    <td className="user-title">{child.user?.jobTitle || ''}</td>
+                                                    <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
+                                                    <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    {
+                                                        this.props.page == "approval" 
+                                                        ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
+                                                        : null
+                                                    }
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                    {
+                                                        this.props.page != "consent" ?
+                                                            <td className="tool">
+                                                                {child.comment ? <OverlayTrigger
+                                                                    rootClose
+                                                                    trigger="click"
+                                                                    placement="left"
+                                                                    overlay={<Popover id={'note-task-' + index}>
+                                                                        <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                                                        <Popover.Content>
+                                                                            {child.comment}
+                                                                        </Popover.Content>
+                                                                    </Popover>}>
+                                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                                {child.approverComment ? <OverlayTrigger
+                                                                    rootClose
+                                                                    trigger="click"
+                                                                    placement="left"
+                                                                    overlay={<Popover id={'comment-task-' + index}>
+                                                                        <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
+                                                                        <Popover.Content>
+                                                                            {child.approverComment}
+                                                                        </Popover.Content>
+                                                                    </Popover>}>
+                                                                    <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                                                            </td>
+                                                        :null
+                                                    }
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        : <div className="data-not-found">{t("NoDataFound")}</div>
+                    }
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>
