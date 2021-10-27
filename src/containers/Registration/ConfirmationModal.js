@@ -82,7 +82,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulCancelReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -111,7 +111,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRecallReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -140,7 +140,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRevocationApproval"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -175,8 +175,8 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
-                        if (res.data.data[0].requestTypeId == Constants.CHNAGE_DIVISON_SHIFT) {
+                    if (code == Constants.API_SUCCESS_CODE) {
+                        if (res.data.data[0].requestTypeId == Constants.CHANGE_DIVISON_SHIFT) {
                             this.showStatusChangeShiftModal(this.props.t("ApprovalResults"), res.data.data[0])
                         }
                         else {
@@ -250,7 +250,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         if(res.data.data[0].sub[0].status == "E")
                         {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
@@ -285,7 +285,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         if(res.data.data[0].sub[0].status == "E")
                         {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)

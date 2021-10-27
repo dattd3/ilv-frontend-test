@@ -31,7 +31,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 taskList.push(e);
             })
         }
-        if (element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
+        if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
             // if (element.processStatusId == 8 || (element.processStatusId == 5 && tab == "approval")) {
             //     element.canChecked = true
             // }

@@ -66,8 +66,8 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const action = this.props.action ? this.props.action : this.getAction()
-        const {t} = this.props
+        const {t, action} = this.props
+        const actionProcessing = action ? action : this.getAction()
 
         return <div className="bottom">
             <ConfirmationModal
@@ -83,8 +83,8 @@ class DetailButtonComponent extends React.Component {
                 updateTask = {this.updateTaskStatus}
             />
             {
-            action === "approval" ?
-            <div className="clearfix mt-5 mb-5">
+            actionProcessing === "approval" ?
+            <div className="clearfix mt-2 mb-2">
                 {
                     this.props.isShowApproval ?
                     <>
@@ -103,8 +103,8 @@ class DetailButtonComponent extends React.Component {
             : null
             }
             {
-            action === "consent" ?
-            <div className="clearfix mt-5 mb-5">
+            actionProcessing === "consent" ?
+            <div className="clearfix mt-2 mb-2">
                 {
                     this.props.isShowConsent ? 
                     <>
@@ -123,7 +123,7 @@ class DetailButtonComponent extends React.Component {
             : null
             }
             {/* {
-                action === "request" && this.props.isShowEvictionRequest ?
+                actionProcessing === "request" && this.props.isShowEvictionRequest ?
                 <div className="clearfix mt-5 mb-5">
                     <button type="button" className="btn btn-danger float-right shadow" onClick={this.evictionRequest.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi yêu cầu</button>
                 </div>
