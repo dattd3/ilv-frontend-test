@@ -6,6 +6,7 @@ import ConsentComponent from '../Task/Consent/'
 import ApprovalComponent from '../Task/Approval/'
 import ApprovalDelegationModal from "./ApprovalDelegation/ApprovalDelegationModal"
 import ApprovalDelegationList from "./ApprovalDelegation/index"
+import PrepareComponent from '../Task/Prepare';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import processingDataReq from "../Utils/Common"
@@ -24,6 +25,8 @@ class Task extends React.Component {
         super();
         this.state = {
             isShowApprovalTab: true,
+            isShowPrepareTab: localStorage.getItem('companyCode') == 'V030' ? true : false,
+            isShowJobEvalutionTab: true,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: [],
             approvalDelegationModal: {
@@ -62,7 +65,7 @@ class Task extends React.Component {
                 }
             }
         } catch(e) {
-            
+
         }
     }
 
@@ -111,25 +114,25 @@ class Task extends React.Component {
 
         return (
             <>
-            <ApprovalDelegationModal 
-                isShow={approvalDelegationModal.isShowApprovalDelegationModal} 
+            <ApprovalDelegationModal
+                isShow={approvalDelegationModal.isShowApprovalDelegationModal}
                 title={approvalDelegationModal.titleModal}
-                action={approvalDelegationModal.actionModal} 
+                action={approvalDelegationModal.actionModal}
                 userApprovalDelegation={approvalDelegationModal.userApprovalDelegation}
                 updateStatus={this.updateStatus}
                 onHideApprovalDelegationModal={() => this.onHideModal('approvalDelegationModal', 'isShowApprovalDelegationModal')} />
-            <StatusModal 
-                show={statusModal.isShowStatusModal} 
-                content={statusModal.message} 
-                isSuccess={statusModal.isSuccess} 
+            <StatusModal
+                show={statusModal.isShowStatusModal}
+                content={statusModal.message}
+                isSuccess={statusModal.isSuccess}
                 onHide={() => this.onHideModal('statusModal', 'isShowStatusModal')} />
             <div className="task-page">
-                <Tabs defaultActiveKey={this.state.tabActive} className="task-tabs" onSelect={(key) => this.updateTabLink(key)}>
+                <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs`} onSelect={(key) => this.updateTabLink(key)}>
                     <Tab eventKey={tabKey.request} title={t("Request")}>
                         <RequestComponent />
                     </Tab>
                     {
-                    Constants.CONSENTER_LIST_LEVEL.includes(employeeLevel) || (companyCode == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(employeeLevel)) ? 
+                    Constants.CONSENTER_LIST_LEVEL.includes(employeeLevel) || (companyCode == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(employeeLevel)) ?
                     <Tab eventKey={tabKey.consent} title={t("Consent")}>
                         <ConsentComponent />
                     </Tab>
@@ -148,6 +151,20 @@ class Task extends React.Component {
                             <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
                         </Tab>
                         : null
+                    }
+                    {
+                        this.state.isShowPrepareTab == true ?
+                        <Tab eventKey="prepare" title="Hỗ trợ chuẩn bị nhận việc">
+                            <PrepareComponent />
+                        </Tab>
+                        : null
+                    }
+                    {
+                        /*this.state.isShowJobEvalutionTab == true ?
+                        <Tab eventKey="evalution" title="Đánh giá công việc">
+                            <EvalutionComponent />
+                        </Tab>
+                        : null*/
                     }
                 </Tabs>
             </div>
