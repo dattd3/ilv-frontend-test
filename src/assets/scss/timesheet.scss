@@ -785,12 +785,15 @@
   }
   &.department-timesheet {
     .timesheet-box {
-      .input-container .input-img {
-        width: unset;
-        height: unset;
-        right: 10px;
-        top: 7px;
-        left: unset;
+      .input-container {
+        .ic-calendar {
+          position: absolute;
+          width: unset;
+          height: unset;
+          right: 10px;
+          top: 7px;
+          left: unset;
+        }
       }
     }
   }
