@@ -650,7 +650,9 @@
             td {
               padding: 0;
               &:last-child {
-                border-right: 1px solid #707070;
+                &:nth-child(7) {
+                  border-right: 1px solid #707070;
+                }
               }
             }
           }
@@ -783,12 +785,15 @@
   }
   &.department-timesheet {
     .timesheet-box {
-      .input-container .input-img {
-        width: unset;
-        height: unset;
-        right: 10px;
-        top: 7px;
-        left: unset;
+      .input-container {
+        .ic-calendar {
+          position: absolute;
+          width: unset;
+          height: unset;
+          right: 10px;
+          top: 7px;
+          left: unset;
+        }
       }
     }
   }
