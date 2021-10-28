@@ -650,7 +650,9 @@
             td {
               padding: 0;
               &:last-child {
-                border-right: 1px solid #707070;
+                &:nth-child(7) {
+                  border-right: 1px solid #707070;
+                }
               }
             }
           }
