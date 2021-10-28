@@ -150,6 +150,16 @@ const Constants = {
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
     SUMARY_REPORT: 1
+  },
+  PnLCODE: {
+    Vinhome: "V040",
+    Vinbrain: "V095",
+    Vinpearl: "V030",
+    Vinmec: "V060",
+    VinSchool: "V061",
+    VinFast: "V077",
+    VinFastTrading: "V078",
+    VinFastPB: "V070"
   }
 };
 export default Constants

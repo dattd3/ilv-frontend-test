@@ -1,10 +1,10 @@
-import React from 'react';
 import axios from 'axios';
+import React from 'react';
+import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import moment from 'moment';
-import { Redirect, withRouter } from 'react-router-dom';
-import map from '../map.config';
+import { withRouter } from 'react-router-dom';
+import { checkIsExactPnL } from '../../commons/commonFunctions';
+import Constants from '../../commons/Constants';
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -84,36 +84,36 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
     axios.get(`${process.env.REACT_APP_HRDX_URL}api/onboarding/staffdocument?EmployeeCode=${localStorage.getItem('employeeNo')}`, config)
-    .then(res => {
-      if(res && res.data && res.data.data){
-        this.prepareUserDocumentData(res.data.data);
-      }
-    })
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          this.prepareUserDocumentData(res.data.data);
+        }
+      })
   }
   prepareUserDocumentData = (data) => {
-    const result = {status: data.status, documents: []};
+    const result = { status: data.status, documents: [] };
     let count = 0;
     const mapping = {};
-    if(!data.staffDocumentTypeList)
+    if (!data.staffDocumentTypeList)
       return;
     data.staffDocumentTypeList.forEach((item, index) => {
-      let timeExpire = item.note; 
-      if(mapping[timeExpire] == undefined){
+      let timeExpire = item.note;
+      if (mapping[timeExpire] == undefined) {
         mapping[timeExpire] = count;
         count++;
-        result.documents.push({timExpire: item.note, documentList : [] });
+        result.documents.push({ timExpire: item.note, documentList: [] });
       }
       const subItem = result.documents[mapping[timeExpire]];
       subItem.documentList.push({
-                index: index + 1,
-                 name: item.description,
-                 number: '0' + item.quantity,
-                 timExpire: item.note,
-                 status: item.haveProfile
+        index: index + 1,
+        name: item.description,
+        number: '0' + item.quantity,
+        timExpire: item.note,
+        status: item.haveProfile
       });
       result.documents[mapping[timeExpire]] = subItem;
     });
-    this.setState({userDocument: result});
+    this.setState({ userDocument: result });
   }
 
   render() {
@@ -143,12 +143,15 @@ class MyComponent extends React.Component {
     }
 
     const { t } = this.props;
+    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast,
+      Constants.PnLCODE.VinFastPB,
+      Constants.PnLCODE.VinFastTrading);
     return (
       <div className="personal-info">
         <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
           {
-            ['V030','V060','V073','V096'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+            ['V030', 'V060', 'V073', 'V096'].includes(localStorage.getItem("companyCode")) ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
           }
           <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> {t("History")}</a>
         </div>
@@ -527,65 +530,65 @@ class MyComponent extends React.Component {
             </Container>
           </Tab>
           {
-            ['V030'].includes(localStorage.getItem("companyCode")) ? 
-            <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
-            <Row >
-                {documents &&  documents.length > 0 ? <>
-                <Col xs={12} md={12} lg={12}>
-                  <p className="status">Tình trạng: {this.state.userDocument.status ? <span className="color-success">Đủ</span> : <span className="color-fail">Thiếu</span>}</p>
-                  <div className="document-content shadow">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th style={{width: '2%'}}>STT</th>
-                          <th style={{width: '66%'}}>Danh mục hồ sơ CBNV</th>
-                          <th style={{width: '2%'}}>SL</th>
-                          <th style={{width: '11%'}}>Thời hạn nộp</th>
-                          <th style={{width: '8%'}}>Tình trạng</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        
-                        {
-                          (documents || []).map((obj) => {
-                            if(!obj || !obj.documentList || obj.documentList.length === 0)
-                              return null;
-  
-                            return obj.documentList.map((item, index) => {
-                              if(index === 0){
-                                return <tr key={index}>
-                                  <td >{item.index}</td>
-                                  <td className="name">{item.name}</td>
-                                  <td >{item.number}</td>
-                                  <td rowSpan={obj.documentList.length}>{item.timExpire}</td>
-                                  <td> <input type="checkbox" checked={item.status} readOnly/> </td>
-                                </tr>
-                              }else{
-                                return <tr key={index}>
-                                  <td >{item.index}</td>
-                                  <td className="name">{item.name}</td>
-                                  <td >{item.number}</td>
-                                  
-                                  <td> <input type="checkbox" checked={item.status} readOnly/> </td>
-                                </tr>
-                              }
-                            })
-                          })
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                </Col>
-                </> : 
-                <Container fluid className="info-tab-content shadow">
-                 {t("NoDataFound")}
-              </Container>
-                }
-              </Row>
-            </Tab>
-             : null
+            ['V030'].includes(localStorage.getItem("companyCode")) ?
+              <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
+                <Row >
+                  {documents && documents.length > 0 ? <>
+                    <Col xs={12} md={12} lg={12}>
+                      <p className="status">Tình trạng: {this.state.userDocument.status ? <span className="color-success">Đủ</span> : <span className="color-fail">Thiếu</span>}</p>
+                      <div className="document-content shadow">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th style={{ width: '2%' }}>STT</th>
+                              <th style={{ width: '66%' }}>Danh mục hồ sơ CBNV</th>
+                              <th style={{ width: '2%' }}>SL</th>
+                              {!checkVinfast && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
+                              <th style={{ width: '8%' }}>Tình trạng</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            {
+                              (documents || []).map((obj) => {
+                                if (!obj || !obj.documentList || obj.documentList.length === 0)
+                                  return null;
+
+                                return obj.documentList.map((item, index) => {
+                                  if (index === 0) {
+                                    return <tr key={index}>
+                                      <td >{item.index}</td>
+                                      <td className="name">{item.name}</td>
+                                      <td >{item.number}</td>
+                                      {!checkVinfast && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
+                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                    </tr>
+                                  } else {
+                                    return <tr key={index}>
+                                      <td >{item.index}</td>
+                                      <td className="name">{item.name}</td>
+                                      <td >{item.number}</td>
+
+                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                    </tr>
+                                  }
+                                })
+                              })
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </Col>
+                  </> :
+                    <Container fluid className="info-tab-content shadow">
+                      {t("NoDataFound")}
+                    </Container>
+                  }
+                </Row>
+              </Tab>
+              : null
           }
-          
+
         </Tabs>
       </div >
     )

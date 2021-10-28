@@ -20,4 +20,9 @@ const getRequestConfigs = () => {
     }
 }
 
-export { getRequestConfigs }
+const checkIsExactPnL = (...companyCodes) => {
+    const companyCode = localStorage.getItem('companyCode');
+    return companyCodes.indexOf(companyCode) != -1;
+}
+
+export { getRequestConfigs, checkIsExactPnL }
