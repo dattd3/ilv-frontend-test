@@ -159,6 +159,14 @@
       z-index: 99;
     }
   }
+  .bulkhead {
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 1px solid #707070;
+  }
   .searchTitle {
     color: #2a377c;
     font-weight: bold;
@@ -549,6 +557,7 @@
           &.card-header-text {
             color: #383838;
             font-weight: bold;
+            text-align: center;
           }
         }
       }
@@ -586,13 +595,14 @@
       border-collapse: separate;
       table-layout: fixed;
       padding: 0;
+      width: 100%;
       .arrow::after, .bs-popover-bottom .arrow::after {
         border-left-color: #6CB5F9 !important;
         border-right-color: #6CB5F9 !important;
       }
       thead {
         td, th {
-          padding: 0;
+          padding: 5px 0;
           text-align: left;
           max-width: 50px;
           text-align: center;
@@ -649,6 +659,13 @@
           &.line2, &.line3, &.line4 {
             td {
               padding: 0;
+              &:first-child {
+                &:nth-child(1) {
+                  .thuc_te  {
+                    border-left: 1px solid #707070;
+                  }
+                }
+              }
               &:last-child {
                 &:nth-child(7) {
                   border-right: 1px solid #707070;
@@ -815,6 +832,7 @@
       }
     }
   }
+  // Bảng chấm công khi CBLĐ vào xem chi tiết nhân viên
   &.employee-detail {
     .timesheet-box {
       .input-container {
@@ -827,6 +845,262 @@
         position: absolute;
         top: 8px;
         right: 10px;
+      }
+    }
+    .detail {
+      .card {
+        .card-header {
+          background: #FFFFFF;
+          &.card-header-text {
+            color: #383838;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+      }
+      .item-tooltip {
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        background: #FFFFFF;
+        padding: 0 15px;
+        & > ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          .action-item {
+            cursor: pointer;
+            text-align: left;
+            padding: 5px 0;
+            border-bottom: 1px solid #CCCCCC;
+            font-weight: normal;
+            a {
+              display: block;
+              color: #383838;
+              text-decoration: none;
+              &:hover {
+                color: #C11D2A;
+              }
+            }
+            &:last-child {
+              border: none;
+            }
+          }
+        }
+      }
+      .annual-leave-information {
+        .header {
+          font-size: inherit;
+        }
+      }
+    }
+    .timesheet-table {
+      border-spacing: 0;
+      border-collapse: separate;
+      table-layout: fixed;
+      padding: 0;
+      width: 100%;
+      .arrow::after, .bs-popover-bottom .arrow::after {
+        border-left-color: #6CB5F9 !important;
+        border-right-color: #6CB5F9 !important;
+      }
+      thead {
+        td, th {
+          padding: 5px 0;
+          text-align: left;
+          max-width: 50px;
+          text-align: center;
+          border: none;
+          color: #000000;
+          background-color: #F2F2F2;
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-weight: bold;
+            color: #FFFFFF;
+            border: 0.5px solid #707070;
+            border-right: none;
+            min-width: 150px;
+            text-align: center;
+            font-size: 12px;
+            padding: 0;
+            &.wrap-item-tooltip {
+              padding: 4px 0;
+              font-weight: normal;
+              &:hover {
+                background: #2e59d9;
+                .date {
+                  color: #FFFFFF;
+                }
+              }
+              &:last-child {
+                border-right: 1px solid #707070;
+              }
+              .item-tooltip {
+                opacity: 1 !important;
+              }
+              &.block-actions {
+                &:hover {
+                  background: inherit;
+                  .date {
+                    color: #000000;
+                  }
+                }
+              }
+            }
+          }
+          &.line1 {
+            td {
+              &:last-child {
+                border-right: 1px solid #707070;
+              }
+            }
+          }
+          &.line2, &.line3, &.line4 {
+            td {
+              padding: 0;
+              &:first-child {
+                &:nth-child(1) {
+                  .thuc_te  {
+                    border-left: 1px solid #707070;
+                  }
+                }
+              }
+              &:last-child {
+                &:nth-child(7) {
+                  border-right: 1px solid #707070;
+                }
+              }
+            }
+          }
+        }
+      }
+      .border-top {
+        border-top: 1px solid #707070 !important;
+      }
+      .border-bottom {
+        border-bottom: 1px solid #707070 !important;
+      }
+      .border-left {
+        border-left: 1px solid #707070 !important;
+      }
+      .border-right {
+        border-right: 1px solid #707070 !important;
+      }
+      .none-border-top {
+        border-top: none !important;
+      }
+      .none-border-bottom {
+        border-bottom: none !important;
+      }
+      .none-border-left {
+        border-left: none !important;
+      }
+      .none-border-right {
+        border-right: none !important;
+      }
+      .divide {
+        border: none;
+        height: 10px;
+        &.sub {
+          height: 5px;
+        }
+      }
+      .date {
+        color: #383838;
+        cursor: pointer;
+      }
+      .ke_hoach {
+        background-color: #00B3FF;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+      }
+      .ke_hoach_dai {
+        background-color: #00B3FF;
+        border-bottom: none;
+        text-align: center;
+        padding: 4px;
+      }
+      .thuc_te {
+        background-color: #FFFFFF;
+        color: #000000;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+        border-bottom: 1px solid #707070;
+      }
+      .loi_cong {
+        background-color: #E44235;
+        border-top: none;
+        border-bottom: none !important;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+      }
+      .no-event {
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+      }
+      .gio_nghi {
+        background-color: #F7931E;
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+      }
+      .cong_tac {
+        background-color: #93278F;
+        border-top: none;
+        border-bottom: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px;
+      }
+      .ot {
+        background-color: #808000;
+        border-top: none;
+        white-space: nowrap;
+        text-align: center;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 4px 0;
+      }
+      .day-off {
+        font-weight: bold;
+        color: #000000;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
