@@ -89,10 +89,15 @@ class FilterData extends React.Component {
   }
 
   search() {
-    const {selectedMembers} = this.state
-    const checkedMemberUsernames = (selectedMembers || []).map(item => item.username);
-    this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds, checkedMemberUsernames);
-    this.props.updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    const {selectedMembers, startDate, endDate, checkedMemberIds} = this.state
+    const { type, clickSearch, updateEmployees } = this.props
+    const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
+
+    if (clickSearch) {
+      return clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
+    }
+    
+    return updateEmployees(selectedMembers, 'employeeSelectedFilter')
   }
 
   getSelecteMembers(data) {
