@@ -154,7 +154,9 @@ const isEnableFunctionByFunctionName = name => {
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VincomRetail]
             break
-
+        case Constants.listFunctionsForPnLACL.changeStaffShift:
+            listPnLAccepted = [Constants.pnlVCode.VinPearl]
+            break
     }
 
     return listPnLAccepted.includes(companyCode)
