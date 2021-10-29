@@ -3,7 +3,8 @@ import {OverlayTrigger, Popover} from 'react-bootstrap'
 import moment from 'moment'
 import _ from 'lodash'
 import { useTranslation } from "react-i18next"
-import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
+import Constants from "../../../../commons/Constants"
+import { formatStringByMuleValue, formatNumberInteger, isEnableFunctionByFunctionName } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
 import ShiftUpdateModal from "../modals/ShiftUpdateModal"
@@ -314,6 +315,11 @@ function Content(props) {
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#FFFFFF'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
     const handleShowModalShiftChange = (date, day) => {
+        const isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
+        if (!isEnableChangeStaffShift) {
+            return
+        }
+
         const isUpdatable = isShiftUpdatable(date)
         if (!isUpdatable) {
             return
