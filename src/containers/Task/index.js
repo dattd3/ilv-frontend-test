@@ -25,7 +25,7 @@ class Task extends React.Component {
         super();
         this.state = {
             isShowApprovalTab: true,
-            isShowPrepareTab: localStorage.getItem('companyCode') == 'V030' ? true : false,
+            isShowPrepareTab: false,
             isShowJobEvalutionTab: true,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: [],
@@ -45,7 +45,31 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
+        if(localStorage.getItem('companyCode') == 'V030') {
+            this.checkPermissonShowPrepareTab();
+        }
     }
+
+    checkPermissonShowPrepareTab = async () => {
+        try {
+            const config = {
+                headers: {
+                  'Authorization': `${localStorage.getItem('accessToken')}`
+                }
+            }
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint`, config)
+            console.log(response.data.data.isSupporter);
+
+            if (response && response.data) {
+                this.setState({
+                    ...this.state,
+                    isShowPrepareTab: response.data.data?.isSupporter == true ? true : false
+                })
+            }
+        } catch(e) {
+
+        }
+    } 
 
     fetchUserApprovalDelegations = async () => {
         try {

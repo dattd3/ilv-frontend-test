@@ -8,6 +8,7 @@ import Constants from '../../../commons/Constants'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
+import {checkIsExactPnL} from '../../../commons/commonFunctions';
 
 class RequestComponent extends React.Component {
   CONFIRM_STATUS = [
@@ -192,7 +193,40 @@ class RequestComponent extends React.Component {
                 status: item.managerDormitoryStatus,
                 note: item.managerDormitoryDesc || '',
                 isEditable: item.managerDormitoryIndicator
-            }
+            },
+            //work for vinbrain
+            logistic: { //  Chuẩn bị Logistic: chỗ ngồi, máy móc, voucher, VPP ...
+              status: item.managerToolStatus, 
+              note: item.managerToolDesc
+            },
+            setup: { // Tạo account, cài đặt máy tính
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            employee: { // Tạo mã nhân viên và HĐLĐ/HĐTV, cam kết
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            welcomeLetter: { // Gửi thư chào mừng nhân viên mới: Nội quy/SĐTC/Hệ thống nội bộ/ contact hữu dụng
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            training: { // Tổ chức khóa Đào tạo định hướng
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            document: { // Hoàn thiện hồ sơ theo quy định Tập đoàn
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            email: { // Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
+            contract: { // Ký HĐLĐ
+                status: item.managerToolStatus,
+                note: item.managerToolDesc
+            },
         }
     });
 
@@ -344,45 +378,79 @@ class RequestComponent extends React.Component {
             </div>
         </div>
         <div className="candidate-list shadow">
-                    <table className="table table-borderless table-hover table-striped">
+                    <table className="table table-borderless">
                         <thead>
                             <tr>
-                                <th scope="col" className="col-code text-center">Mã nhân viên</th>
-                                <th scope="col" className="col-name text-center">Họ và tên</th>
+                                <th scope="col" className="col-code sticky-col text-center">Mã nhân viên</th>
+                                <th scope="col" className="col-name sticky-col text-center">Họ và tên</th>
                                 <th scope="col" className="col-region text-center">Vùng</th>
                                 <th scope="col" className="col-unit text-center">Cơ sở </th>
                                 <th scope="col" className="col-unit text-center">Bộ phận</th>
                                 <th scope="col" className="col-unit text-center">Chức danh</th>
                                 <th scope="col" className="col-deadline text-center">Ngày bắt đầu đi làm</th>
                                 <th scope="col" className="col-deadline text-center">Hạn hoàn thành</th>
-                                {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">Chuẩn bị công cụ dụng cụ <br/> (Phòng làm việc, Bàn/ghế/tủ, máy tính, đồng phục)</th> : null}
-                                {this.state.isShowAccount ? <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, máy in</th> : null}
-                                {this.state.isShowVoucher? <th scope="col" className="col-devices text-center">Lấy dấu vân tay, phiếu ăn, vé gửi xe</th> : null}
-                                {this.state.isShowDonitory? <th scope="col" className="col-devices text-center">Ký túc xá (Áp dụng với Phú Quốc,Nha Trang, Đà Nẵng)</th> : null}                                
+                                {
+                                  checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
+                                  <>
+                                    <th scope="col" className="col-devices text-center">Chuẩn bị Logistic: chỗ ngồi, máy móc, voucher, VPP ...</th>
+                                    <th scope="col" className="col-devices text-center">Tạo account, cài đặt máy tính</th>
+                                    <th scope="col" className="col-devices text-center">Tạo mã nhân viên và HĐLĐ/HĐTV, cam kết</th>
+                                    <th scope="col" className="col-devices text-center">Gửi thư chào mừng nhân viên mới: Nội quy/SĐTC/Hệ thống nội bộ/ contact hữu dụng</th>
+                                    <th scope="col" className="col-devices text-center">Tổ chức khóa Đào tạo định hướng</th>
+                                    <th scope="col" className="col-devices text-center">Hoàn thiện hồ sơ theo quy định Tập đoàn</th>
+                                    <th scope="col" className="col-devices text-center">Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams</th>
+                                    <th scope="col" className="col-devices text-center">Ký HĐLĐ</th>
+                                  </>
+                                  :
+                                  <>
+                                    {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">Chuẩn bị công cụ dụng cụ <br/> (Phòng làm việc, Bàn/ghế/tủ, máy tính, đồng phục)</th> : null}
+                                    {this.state.isShowAccount ? <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, máy in</th> : null}
+                                    {this.state.isShowVoucher? <th scope="col" className="col-devices text-center">Lấy dấu vân tay, phiếu ăn, vé gửi xe</th> : null}
+                                    {this.state.isShowDonitory? <th scope="col" className="col-devices text-center">Ký túc xá (Áp dụng với Phú Quốc,Nha Trang, Đà Nẵng)</th> : null}                                
+                                  </>
+                                }
+                                
                             </tr>
                         </thead>
                         <tbody>
                         {
                             (listCandidate && listCandidate.data || []).map( (item, index) => {
                                 return <tr key={index}>
-                                <td className="col-code text-center">
+                                <td className="col-code sticky-col text-center">
                                   {
                                     item.requestCode ? 
                                     <a href={`/evaluation/${item.requestCode}/edit`}>{item.employeeNo}</a> :
                                     item.employeeNo 
                                   }
                                 </td>
-                                <td className="col-name text-center">{item.name}</td>
+                                <td className="col-name sticky-col text-center">{item.name}</td>
                                 <td className="col-region text-center">{item.region}</td>
                                 <td className="col-unit text-center">{item.unit}</td>
                                 <td className="col-unit text-center">{item.department}</td>
                                 <td className="col-unit text-center">{item.rank}</td>
                                 <td className="col-deadline text-center">{item.startWork ? moment(item.startWork).format("DD/MM/YYYY") : ''}</td>
                                 <td className="col-deadline text-center">{item.timeExpire ? moment(item.timeExpire).format("DD/MM/YYYY"): ''}</td>
-                                {this.renderActionView(this.state.isShowDevices, item.employeeNo, item.devices, 'devices')}
-                                {this.renderActionView(this.state.isShowAccount, item.employeeNo, item.account, 'account')}
-                                {this.renderActionView(this.state.isShowVoucher, item.employeeNo, item.voucher, 'voucher')}
-                                {this.renderActionView(this.state.isShowDonitory, item.employeeNo, item.dormitory, 'dormitory')}
+                                {
+                                  checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
+                                  <>
+                                    {this.renderActionView(true, item.employeeNo, item.logistic, 'logistic')}
+                                    {this.renderActionView(true, item.employeeNo, item.setup, 'setup')}
+                                    {this.renderActionView(true, item.employeeNo, item.employee, 'employee')}
+                                    {this.renderActionView(true, item.employeeNo, item.welcomeLetter, 'welcomeLetter')}
+                                    {this.renderActionView(true, item.employeeNo, item.training, 'training')}
+                                    {this.renderActionView(true, item.employeeNo, item.document, 'document')}
+                                    {this.renderActionView(true, item.employeeNo, item.email, 'email')}
+                                    {this.renderActionView(true, item.employeeNo, item.contract, 'contract')}
+                                  </>
+                                  :
+                                  <>
+                                    {this.renderActionView(this.state.isShowDevices, item.employeeNo, item.devices, 'devices')}
+                                    {this.renderActionView(this.state.isShowAccount, item.employeeNo, item.account, 'account')}
+                                    {this.renderActionView(this.state.isShowVoucher, item.employeeNo, item.voucher, 'voucher')}
+                                    {this.renderActionView(this.state.isShowDonitory, item.employeeNo, item.dormitory, 'dormitory')}
+                                  </>
+                                }
+                                
                             </tr>
                             })
                         }
