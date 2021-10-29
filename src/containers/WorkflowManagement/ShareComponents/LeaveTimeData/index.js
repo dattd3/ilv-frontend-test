@@ -25,7 +25,7 @@ export default function LeaveTimeCard(props) {
           </div>
         </div>
         <Collapse in={open}>
-          <div id="example-collapse-text">
+          <div id="example-collapse-text" className="annual-leave-information">
             <div className="content">
               <div className="card-body">
                 <div className="row header text-primary">
