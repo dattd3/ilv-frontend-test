@@ -45,7 +45,7 @@ function SideBar(props) {
         }
         return rootNav;
     }
-    const contents = getNavigation(user.benefitLevel).map(c => {
+    const contents = getNavigation(user.employeeLevel).map(c => {
         const contentsChild = c.content.map(contentChild => {
             const contentGrandChildren = contentChild && contentChild.content && contentChild.content.map(cg => ({
                 ...cg,

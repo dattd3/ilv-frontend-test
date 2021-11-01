@@ -167,7 +167,8 @@ const Constants = {
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
-    qnA: 'QnA'
+    qnA: 'QnA',
+    changeStaffShift: 'CHANGE_STAFF_SHIFT'
   },
   PnLCODE: {
     Vinhome: "V040",
