@@ -2,6 +2,19 @@ const Constants = {
   //Notification
   NOTIFICATION_PAGE_INDEX_DEFAULT: 1,
   NOTIFICATION_PAGE_SIZE_DEFAULT: 8,
+  notificationType: {
+    NOTIFICATION_DEFAULT: 0,
+    NOTIFICATION_REGISTRATION: 1,
+    NOTIFICATION_NEWS: 2,
+    NOTIFICATION_HAPPY_BIRTHDAY: 3,
+    NOTIFICATION_TRAINING_INFORMATION: 4,
+    NOTIFICATION_OTHER: 5,
+    NOTIFICATION_MISSING_DOC: 6,
+    NOTIFICATION_REJECT: 7,
+    NOTIFICATION_AUTO_JOB: 8,
+    NOTIFICATION_UNUSUAL_TIMESHEET: 9,
+    NOTIFICATION_SHIFT_CHANGE: 10
+  },
 
   //Tasks
   TASK_PAGE_INDEX_DEFAULT: 1,
@@ -31,7 +44,7 @@ const Constants = {
   BUSINESS_TRIP: 3,
   SUBSTITUTION: 4,
   IN_OUT_TIME_UPDATE: 5,
-  CHNAGE_DIVISON_SHIFT: 8,
+  CHANGE_DIVISON_SHIFT: 8,
   DEPARTMENT_TIMESHEET: 9,
 
   //Status request
@@ -152,7 +165,8 @@ const Constants = {
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
-    qnA: 'QnA'
+    qnA: 'QnA',
+    changeStaffShift: 'CHANGE_STAFF_SHIFT'
   }
 };
 export default Constants

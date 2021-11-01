@@ -810,8 +810,8 @@ class EmployeeTimesheets extends Component {
     return (
       <>
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
-      <div className="timesheet-section">
-        <h1 className="h3 text-uppercase text-gray-800">{companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? t("TimesheetDivision") : t("Timesheet")}</h1>
+      <div className="timesheet-section department-timesheet">
+        <h1 className="content-page-header">{companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? t("TimesheetDivision") : t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
@@ -880,7 +880,7 @@ class EmployeeTimesheets extends Component {
               <Button type="button" variant="primary" className="btn-submit" onClick={this.acceptShiftUpdating} disabled={isDisabledSubmitButton}>
               {
                 !isDisabledSubmitButton 
-                ? t("Save")
+                ? t("Confirm")
                 : <Spinner
                     as="span"
                     animation="border"

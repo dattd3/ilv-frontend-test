@@ -96,7 +96,6 @@ class AssesserComponent extends React.Component {
             const currentUserLevel = localStorage.getItem('employeeLevel')
             this.setState({ [name]: value })
             const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-            console.log(value);
             this.props.updateAppraiser(value, isAppraiser)
         } else {
             this.setState({ [name]: value, users: [] })

@@ -36,7 +36,6 @@ class ConfirmRequestModal extends React.Component {
         let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                console.log(this.props.dataToSap);
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
@@ -76,7 +75,7 @@ class ConfirmRequestModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(titleModalRes, result.message, res.data.data, true)
                         // this.props.updateTask(id,2)
                         // setTimeout(() => { this.hideStatusModal() }, 1000);
@@ -98,27 +97,29 @@ class ConfirmRequestModal extends React.Component {
     }
     
     approve = (id) => {
-        const dataToSap = [];
-        this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+        const dataPrepareToSap = [];
+        const { t, dataToSap } = this.props
+        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+
+        dataToSap.forEach(element => {
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING){
-                    taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_APPROVED})
+                if (element.processStatusId == Constants.STATUS_WAITING || (element.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && (requestTypeIdsAllowedToReApproval.includes(element.requestTypeId)))) {
+                    taskObj.sub.push({"id": element.id, "processStatusId": Constants.STATUS_APPROVED})
                 }
             // });
-            dataToSap.push(taskObj)
-          });
+            dataPrepareToSap.push(taskObj)
+        });
+
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        console.log(dataToSap);
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái phê duyệt"))
-        
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("Trạng thái phê duyệt"))
     }
 
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
@@ -126,15 +127,13 @@ class ConfirmRequestModal extends React.Component {
             // });
             dataToSap.push(taskObj)
           });
-
-        console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
     }
 
     consent = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_WAITING})
@@ -142,14 +141,13 @@ class ConfirmRequestModal extends React.Component {
             // });
             dataToSap.push(taskObj)
           });
-          console.log(dataToSap);
         this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
-            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHNAGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+            let taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
             // element.requestInfo.forEach(sub => {
                 if(element.processStatusId == Constants.STATUS_WAITING_CONSENTED){
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})

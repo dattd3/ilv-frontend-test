@@ -29,7 +29,7 @@ class ConfirmationModal extends React.Component {
         if (res && res.data) {
             const result = res.data.result;
             const code = result.code;
-            if (code === "000000" && res.data?.data[0]?.sub[0]?.status === "S") {
+            if (code === Constants.API_SUCCESS_CODE && res.data?.data[0]?.sub[0]?.status === "S") {
                 this.setState({
                     resultTitle: t("Successful"),
                     resultMessage: res.data?.data[0]?.sub[0]?.message,

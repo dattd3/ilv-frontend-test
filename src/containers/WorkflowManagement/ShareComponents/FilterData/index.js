@@ -89,10 +89,15 @@ class FilterData extends React.Component {
   }
 
   search() {
-    const {selectedMembers} = this.state
-    const checkedMemberUsernames = (selectedMembers || []).map(item => item.username);
-    this.props.clickSearch(this.state.startDate, this.state.endDate, this.state.checkedMemberIds, checkedMemberUsernames);
-    this.props.updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    const {selectedMembers, startDate, endDate, checkedMemberIds} = this.state
+    const { type, clickSearch, updateEmployees } = this.props
+    const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
+
+    if (clickSearch) {
+      return clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
+    }
+    
+    return updateEmployees(selectedMembers, 'employeeSelectedFilter')
   }
 
   getSelecteMembers(data) {
@@ -178,7 +183,6 @@ class FilterData extends React.Component {
                   <div className="col-lg-3">
                     <div className="title">{t("From")}</div>
                     <div className="content input-container">
-                      <label>
                         <DatePicker
                           name="startDate"
                           selectsStart
@@ -190,16 +194,14 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="input-group-addon input-img">
+                        <span className="ic-calendar">
                           <i className="fas fa-calendar-alt"></i>
                         </span>
-                      </label>
                     </div>
                   </div>
                   <div className="col-lg-3">
                     <div className="title">{t("To")}</div>
                     <div className="content input-container">
-                      <label>
                         <DatePicker
                           name="endDate"
                           selectsEnd
@@ -213,10 +215,9 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="input-group-addon input-img">
+                        <span className="ic-calendar">
                           <i className="fas fa-calendar-alt"></i>
                         </span>
-                      </label>
                     </div>
                   </div>
                 </>
@@ -235,7 +236,7 @@ class FilterData extends React.Component {
               <div className="content">
                 <button
                   type="button"
-                  className="btn btn-warning btnSearch"
+                  className="btn btn-warning btn-search"
                   onClick={this.search}
                 >
                   {t("Search")}

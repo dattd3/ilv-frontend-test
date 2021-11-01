@@ -105,7 +105,7 @@ class PositionRecruitingSearch extends React.Component {
         <div className="col block-button">
           <div className="title">&nbsp;</div>
           <div className="content">
-            <button type="button" className="btn btn-lg btn-warning btnSearch" onClick={this.search}>{t("Search")}</button>
+            <button type="button" className="btn btn-lg btn-warning btn-search" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
+import { getRequestTypeIdsAllowedToReApproval } from "../../commons/Utils"
 
 class TaskList extends React.Component {
     constructor() {
@@ -228,48 +229,43 @@ class TaskList extends React.Component {
     }
 
     handleAllChecked = event => {
-        // let tasks = this.props.tasks;
+        const { page } = this.props
         let tasks = this.props.tasks; 
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
         tasks.forEach((child) => {
-            if(child.processStatusId == 8 || (child.processStatusId == 5 && this.props.page == "approval")){
-                child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                if(child.isChecked)
-                {
+            if (child.processStatusId == 8 || (page == "approval" && (child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+                child.isChecked = event.target.checked;
+                if (child.isChecked) {
                     // child.canChecked = true
                     // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
-                    if(this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
+                    if (this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
                         this.state.taskChecked.push(child);
                     }
-                }
-                else
-                {
+                } else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
                 }
             }
         })
         this.setState({ approveTasks: tasks, checkedAll: event.target.checked });
-        console.log(this.state.taskChecked);
         this.enableBtn(this.state.taskChecked);
     };
     
-    handleCheckChieldElement = event => {
+    handleCheckChildElement = event => {
         let tasks = this.props.tasks;
         tasks.forEach((child) => {
             let id = child.id;
             if (id == event.target.value)
             {
                 child.isChecked = event.target.checked;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                if(child.isChecked)
-                {
+                if (child.isChecked) {
                     this.state.taskChecked.push(child);
                 }
-                else
-                {
+                else {
                     this.state.taskChecked.splice(this.state.taskChecked.findIndex(x => x.id == child.id),1);
-                    
                 }
             }
-        })    
+        })
 
         let taskCheckedList = tasks.filter(t => t.isChecked);
         this.setState({checkedAll: taskCheckedList.length == tasks.length ? true : false})
@@ -278,12 +274,9 @@ class TaskList extends React.Component {
     };
 
     enableBtn = (taskChecked) => {
-        if(taskChecked.length)
-        {
+        if (taskChecked.length) {
             this.setState({ disabled:"", dataToSap:taskChecked})
-        }
-        else
-        {
+        } else {
             this.setState({ disabled:"disabled", dataToSap:[]})
         }
     }
@@ -338,7 +331,12 @@ class TaskList extends React.Component {
 
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.sender ? `sender=${dataForSearch.sender}&` : '';
-        params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        // params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        if(dataForSearch.status == 0){
+            params += `status=${(this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING )}&`;
+        }else{
+            params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        }
         this.setState({ 
             approveTasks: [],
             tasks: [],
@@ -354,7 +352,7 @@ class TaskList extends React.Component {
     }
 
     render() {
-        const { t, tasks, total} = this.props
+        const { t, tasks, total, page} = this.props
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
             2: t("LineManagerSResponse"),
@@ -362,11 +360,13 @@ class TaskList extends React.Component {
             4: t("LineManagerSResponse"),
             5: t("LineManagerSResponse")
         }
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
         return (
             <>
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="d-flex justify-content-between w-100 mt-2 mb-3">
+                <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
                         <div className="col-xl-4">
                             <InputGroup className="d-flex">
@@ -376,12 +376,15 @@ class TaskList extends React.Component {
                             <Select name="absenceType" 
                                     className="w-75" 
                                     // defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || ""}
+                                    value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
                                     isClearable={false}
                                     onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
                                     // selectedValue={{ label: t("All"), value: 0 }}
                                     placeholder={t('SortByStatus')} 
                                     key="absenceType" options={this.props.filterdata} 
+                                    styles={{
+                                        menu: provided => ({ ...provided, zIndex: 2 })
+                                    }}
                                     theme={theme => ({
                                     ...theme,
                                     colors: {
@@ -398,10 +401,11 @@ class TaskList extends React.Component {
                             <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl
-                            placeholder={t('SearchRequester')}
-                            aria-label="SearchRequester"
-                            aria-describedby="basic-addon2"
-                            onChange={this.handleInputChange}
+                                placeholder={t('SearchRequester')}
+                                aria-label="SearchRequester"
+                                aria-describedby="basic-addon2"
+                                className="request-user"
+                                onChange={this.handleInputChange}
                             />
                         </InputGroup>
                         </div>
@@ -412,110 +416,115 @@ class TaskList extends React.Component {
                    
                 </div> 
                 <div className="block-title d-flex">
-                    <h4 className="title text-uppercase">{this.props.title}</h4>
+                    <h4 className="content-page-header">{this.props.title}</h4>
                     <div className="export-btn">
                        <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
                    </div>
                 </div>
-                <div className="task-list">
-                    <table className="table table-borderless table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col" className="check-box text-center sticky-col">
-                                    <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
-                                </th>
-                                <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
-                                {
-                                    !['V073'].includes(localStorage.getItem("companyCode"))
-                                        ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
-                                        : null
-                                }
-                                <th scope="col" className="user-title">{t("Title")}</th>
-                                <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                <th scope="col" className="day-off">{t("DayOff")}</th>
-                                <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
-                                {
-                                    this.props.page == "approval" ?
-                                        <th scope="col" className="appraiser">{t("Consenter")}</th>
-                                    : null
-                                }
-                                <th scope="col" className="status text-center">{t("Status")}</th>
-                                {
-                                    this.props.page != "consent" ?
-                                        <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
-                                    : null
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                tasks.length > 0 ?
-                                    tasks.map((child, index) => {
-                                        let totalTime = null;
-                                        let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
-                                        let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
-                                        if (child.requestTypeId == 2 || child.requestTypeId == 3) {
-                                            totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                <div className={`task-list shadow ${page}`}>
+                    {
+                        tasks.length > 0 ?
+                        <div className="wrap-table-request">
+                            <table className="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className="check-box text-left sticky-col">
+                                            <input type="checkbox" onChange={this.handleAllChecked} checked={!!this.state.checkedAll}  value={"checkedall"}/>{" "}
+                                        </th>
+                                        <th scope="col" className="code sticky-col">{t("RequestNo")}</th>
+                                        {
+                                            !['V073'].includes(localStorage.getItem("companyCode"))
+                                                ? <th scope="col" className="sticky-col user-request">{t("Requestor")}</th>
+                                                : null
                                         }
-                                        return (
-                                            <tr key={index}>
-                                                {
-                                                    ((child.processStatusId == 5 && this.props.page == "approval") || child.processStatusId == 8) ?
-                                                    <td scope="col" className="check-box text-center sticky-col">
-                                                        <input type="checkbox"  onChange={this.handleCheckChieldElement} checked={!!child.isChecked} value={child.id || ''}/>
-                                                    </td>
-                                                    : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
-                                                }
-                                                <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
-                                                {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
-                                                <td className="user-title">{child.user?.jobTitle || ''}</td>
-                                                <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                                <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
-                                                <td className="break-time text-center">{totalTime}</td>
-                                                {
-                                                    this.props.page == "approval" ?
-                                                        <td className="appraiser text-center">{child.appraiser?.fullName}</td>
-                                                    :null
-                                                }
-                                                <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
-                                                {
-                                                    this.props.page != "consent" ?
-                                                    <td className="tool">
-                                                    {child.comment ? <OverlayTrigger
-                                                        rootClose
-                                                        trigger="click"
-                                                        placement="left"
-                                                        overlay={<Popover id={'note-task-' + index}>
-                                                            <Popover.Title as="h3">{t("Reason")}</Popover.Title>
-                                                            <Popover.Content>
-                                                                {child.comment}
-                                                            </Popover.Content>
-                                                        </Popover>}>
-                                                        <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
-                                                    {child.approverComment ? <OverlayTrigger
-                                                        rootClose
-                                                        trigger="click"
-                                                        placement="left"
-                                                        overlay={<Popover id={'comment-task-' + index}>
-                                                            <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
-                                                            <Popover.Content>
-                                                                {child.approverComment}
-                                                            </Popover.Content>
-                                                        </Popover>}>
-                                                        <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
-                                                    </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
-                                                </td>
-                                                    :null
-                                                }
-                                            </tr>
-                                        )
-                                    })  
-                                : <tr className="text-center"><th colSpan={9}>{t("NoDataFound")}</th></tr>
-                            }
-                        </tbody>
-                    </table>
+                                        <th scope="col" className="user-title">{t("Title")}</th>
+                                        <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                        <th scope="col" className="day-off">{t("Times")}</th>
+                                        <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                        {
+                                            this.props.page == "approval" ?
+                                                <th scope="col" className="appraiser">{t("Consenter")}</th>
+                                            : null
+                                        }
+                                        <th scope="col" className="status text-center">{t("Status")}</th>
+                                        {
+                                            this.props.page != "consent" ?
+                                                <th scope="col" className="tool text-center">{t("Reason/Feedback/Edit")}</th>
+                                            : null
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        tasks.map((child, index) => {
+                                            let totalTime = null;
+                                            let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
+                                            let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
+                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                            }
+                                            return (
+                                                <tr key={index}>
+                                                    {
+                                                        (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))) 
+                                                        && this.props.page == "approval") || child.processStatusId == 8) ?
+                                                        <td scope="col" className="check-box text-left sticky-col">
+                                                            <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
+                                                        </td>
+                                                        : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
+                                                    }
+                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
+                                                    {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
+                                                    <td className="user-title">{child.user?.jobTitle || ''}</td>
+                                                    <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
+                                                    <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    {
+                                                        this.props.page == "approval" 
+                                                        ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
+                                                        : null
+                                                    }
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                    {
+                                                        this.props.page != "consent" ?
+                                                            <td className="tool">
+                                                                {child.comment ? <OverlayTrigger
+                                                                    rootClose
+                                                                    trigger="click"
+                                                                    placement="left"
+                                                                    overlay={<Popover id={'note-task-' + index}>
+                                                                        <Popover.Title as="h3">{t("Reason")}</Popover.Title>
+                                                                        <Popover.Content>
+                                                                            {child.comment}
+                                                                        </Popover.Content>
+                                                                    </Popover>}>
+                                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
+                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                                {child.approverComment ? <OverlayTrigger
+                                                                    rootClose
+                                                                    trigger="click"
+                                                                    placement="left"
+                                                                    overlay={<Popover id={'comment-task-' + index}>
+                                                                        <Popover.Title as="h3">{typeFeedbackMapping[child.requestType.id]}</Popover.Title>
+                                                                        <Popover.Content>
+                                                                            {child.approverComment}
+                                                                        </Popover.Content>
+                                                                    </Popover>}>
+                                                                    <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
+                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                                                            </td>
+                                                        :null
+                                                    }
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        : <div className="data-not-found">{t("NoDataFound")}</div>
+                    }
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-2">
                     <div className="col-sm"></div>

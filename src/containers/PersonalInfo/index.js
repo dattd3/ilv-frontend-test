@@ -115,12 +115,12 @@ class MyComponent extends React.Component {
 
     return (
       <div className="personal-info">
-        <h1 className="h3 text-uppercase text-gray-800">{t("PersonalInformation")}</h1>
+        <h1 className="content-page-header">{t("PersonalInformation")}</h1>
         <div className="clearfix edit-button">
+          <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
           {
             isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
           }
-          <a href="/tasks" className="btn btn-info float-right shadow"><i className="far fa-address-card"></i> {t("History")}</a>
         </div>
         <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>

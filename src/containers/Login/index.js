@@ -7,18 +7,19 @@ import logo from '../../assets/img/LogoVingroup.svg';
 import { useLocalizeStore } from '../../modules';
 
 function LoginGuideModal(props) {
-  const { t } = props;
+  const { t } = useTranslation();
   return (
     <Modal
       {...props}
       size="lg"
+      className="login-instructions-modal"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>
-        <h4>{t("LoginGuide_Title")}:</h4>
+        <h5>{t("LoginGuide_Title")}</h5>
         <p>{t("LoginGuide_Description")}</p>
         <ul>
           <li><strong>{t("Username")}:</strong> {t("LoginGuide_UserName")}</li>
@@ -49,7 +50,7 @@ function Login() {
   }
 
   return (
-    <Container>
+    <Container className="login-page">
       <Row className="justify-content-center">
         <Col className="col-xl-10 col-lg-12 col-md-9">
           <div className="card o-hidden border-0 shadow-lg my-10">
@@ -79,7 +80,7 @@ function Login() {
           </div>
         </Col>
       </Row>
-      <LoginGuideModal show={modalShow} t={t} onHide={() => setModalShow(false)}
+      <LoginGuideModal show={modalShow} onHide={() => setModalShow(false)}
       />
     </Container>
   );

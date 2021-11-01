@@ -35,7 +35,7 @@ class ApproverComponent extends React.Component {
       typingTimeout: 0,
       approverTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 600);
+    this.onInputChange = debounce(this.getApproverInfo, 800);
   }
 
   componentDidMount() {

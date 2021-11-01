@@ -50,8 +50,8 @@ class ChangeShiftReport extends Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="timesheet-section">
-        <h1 className="h3 text-uppercase text-gray-800">{t("MenuChangeShiftReport")}</h1>
+      <div className="timesheet-section change-shift-report">
+        <h1 className="content-page-header">{t("MenuChangeShiftReport")}</h1>
         <ToastContainer />
         <FilterDataShirfReport />
       </div>

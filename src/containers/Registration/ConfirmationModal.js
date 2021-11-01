@@ -36,7 +36,6 @@ class ConfirmationModal extends React.Component {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 this.props.dataToSap[0].sub[0].comment = this.state.message;
-                console.log(this.props.dataToSap);
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
@@ -45,7 +44,6 @@ class ConfirmationModal extends React.Component {
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
-                // console.log(this.props.dataToSap);
                 this.consent(this.props.dataToSap);
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
@@ -74,7 +72,6 @@ class ConfirmationModal extends React.Component {
     }
 
     cancel = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
@@ -85,7 +82,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulCancelReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -104,7 +101,6 @@ class ConfirmationModal extends React.Component {
     }
 
     revocation = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
@@ -115,7 +111,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRecallReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -134,7 +130,6 @@ class ConfirmationModal extends React.Component {
     }
 
     revocationApproval = (dataToSap) => {
-        console.log(dataToSap[0]);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/approved/cancel`,
@@ -145,7 +140,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRevocationApproval"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -180,8 +175,8 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
-                        if (res.data.data[0].requestTypeId == Constants.CHNAGE_DIVISON_SHIFT) {
+                    if (code == Constants.API_SUCCESS_CODE) {
+                        if (res.data.data[0].requestTypeId == Constants.CHANGE_DIVISON_SHIFT) {
                             this.showStatusChangeShiftModal(this.props.t("ApprovalResults"), res.data.data[0])
                         }
                         else {
@@ -245,7 +240,6 @@ class ConfirmationModal extends React.Component {
     }
 
     consent = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
@@ -256,7 +250,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         if(res.data.data[0].sub[0].status == "E")
                         {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
@@ -281,7 +275,6 @@ class ConfirmationModal extends React.Component {
     }
 
     reject = (dataToSap) => {
-        console.log(dataToSap);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
@@ -292,7 +285,7 @@ class ConfirmationModal extends React.Component {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
-                    if (code == "000000") {
+                    if (code == Constants.API_SUCCESS_CODE) {
                         if(res.data.data[0].sub[0].status == "E")
                         {
                             this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
