@@ -32,8 +32,9 @@ function Root() {
   return (
     <ContextProviders>
       <BrowserRouter>
-      {/* <Maintenance/> */}
-        <Switch> 
+      <Maintenance/>
+
+        {/* <Switch> 
           {routes.map(
             ({ component: Content, key, routeProps, contentProps }) => (
               <Route
@@ -51,7 +52,7 @@ function Root() {
               />
             )
           )}
-        </Switch>
+        </Switch> */}
       </BrowserRouter>
     </ContextProviders>
   );
