@@ -4,11 +4,14 @@ import { useTranslation } from "react-i18next"
 
 function MainResultComponent(props) {
     const { t } = useTranslation();
+
     return (
-        <div className="main-result-section">
+        <div className="main-result-section" id="wage-type">
             <div className="block-title">
-                <h4 className="title bold special">{t("PaySlipMonth")}</h4>
-                <h4 className="title">{`${t("PeriodMonth")} ${props.personalInformation.month}/${props.personalInformation.year}`}</h4>
+                <div className="block-label">
+                    <h4 className="title bold special">{t("PaySlipMonth")}</h4>
+                    <h4 className="title">{`${t("PeriodMonth")} ${props.personalInformation.month}/${props.personalInformation.year}`}</h4>
+                </div>
             </div>
             <Row>
                 <Col sm={5} className="column">

@@ -57,7 +57,7 @@ class General extends React.Component {
     const {period, years} = this.state
 
     return (
-      <div>
+      <div className="kpi-page">
         <StaffInfo />
         {
           years.length > 0 ?

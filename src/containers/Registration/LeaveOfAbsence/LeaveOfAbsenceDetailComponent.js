@@ -1,12 +1,13 @@
 import React from 'react'
 import moment from 'moment'
+import { withTranslation } from "react-i18next"
+import axios from 'axios'
+import _ from 'lodash'
+import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { withTranslation } from "react-i18next"
-import axios from 'axios'
-import _ from 'lodash'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -64,13 +65,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     } 
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
   }
+
   render() {
+    const { t, action } = this.props
     const userProfileInfo = this.props.leaveOfAbsence.user
     const requestTypeId = this.props.leaveOfAbsence.requestTypeId
     const requestInfo = this.props.leaveOfAbsence.requestInfo[0]
     const appraiser = this.props.leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
-    const { t } = this.props
+
+    const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -190,29 +196,34 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
         </div>
-        {requestInfo && (requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 ) ? 
-        <DetailButtonComponent dataToSap={
-          [
-            {
-              "id": this.props.leaveOfAbsence.id,
-              "requestTypeId":2,
-              "sub": [
-                {
-                  "id": requestInfo.id,
-                }
-              ]
-            }
-          ]
+        {
+          requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
+          (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))) 
+          ? 
+          <DetailButtonComponent dataToSap={
+            [
+              {
+                "id": this.props.leaveOfAbsence.id,
+                "requestTypeId":2,
+                "sub": [
+                  {
+                    "id": requestInfo.id,
+                  }
+                ]
+              }
+            ]
+          }
+            isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
+            isShowApproval={isShowApproval}
+            isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+            isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
+            id={this.props.leaveOfAbsence.id}
+            urlName={'requestabsence'}
+            requestTypeId={requestTypeId}
+            action={action}
+          />
+          : null
         }
-          isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
-          isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
-          isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
-          id={this.props.leaveOfAbsence.id}
-          urlName={'requestabsence'}
-          requestTypeId={requestTypeId}
-          action={this.props.action}
-        /> : null}
       </div>
     )
   }

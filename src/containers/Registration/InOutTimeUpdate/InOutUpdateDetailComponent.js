@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import Constants from '../.../../../../commons/Constants'
+import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -87,8 +88,9 @@ class InOutUpdateDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
   }
   render() {
-    const requestTypeId = this.props.inOutTimeUpdate.requestTypeId
-    const { t } = this.props
+    const { t, action, inOutTimeUpdate } = this.props
+    const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+    const isShowApproval = (inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId))
   
     return (
       <div className="leave-of-absence">
@@ -97,24 +99,24 @@ class InOutUpdateDetailComponent extends React.Component {
           <div className="row group">
             <div className="col-xl-3">
              {t("FullName")}
-              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.fullName}</div>
+              <div className="detail auto-height">{inOutTimeUpdate.user.fullName}</div>
             </div>
             <div className="col-xl-3">
               {t("EmployeeNo")}
-              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.employeeNo}</div>
+              <div className="detail auto-height">{inOutTimeUpdate.user.employeeNo}</div>
             </div>
             <div className="col-xl-3">
               {t("Title")}
-              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.jobTitle}</div>
+              <div className="detail auto-height">{inOutTimeUpdate.user.jobTitle}</div>
             </div>
             <div className="col-xl-3">
               {t("DepartmentManage")}
-              <div className="detail auto-height">{this.props.inOutTimeUpdate.user.department}</div>
+              <div className="detail auto-height">{inOutTimeUpdate.user.department}</div>
             </div>
           </div>
         </div>
         <h5>{t("InOutChangeRequestInfo")}</h5>
-        {this.props.inOutTimeUpdate.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
+        {inOutTimeUpdate.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
@@ -170,12 +172,12 @@ class InOutUpdateDetailComponent extends React.Component {
           </div>
         })}
         <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={this.props.inOutTimeUpdate.appraiser} status={this.props.inOutTimeUpdate.requestInfo ? this.props.inOutTimeUpdate.processStatusId : ""} hrComment={this.props.inOutTimeUpdate.appraiserComment} />
+        <ApproverDetailComponent title={t("Consenter")} approver={inOutTimeUpdate.appraiser} status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""} hrComment={inOutTimeUpdate.appraiserComment} />
         {
-           this.props.inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.inOutTimeUpdate.processStatusId )) ?
+          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) ?
             <>
               <h5>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={this.props.inOutTimeUpdate.approver} status={this.props.inOutTimeUpdate.processStatusId} hrComment={this.props.inOutTimeUpdate.approverComment} />
+              <ApproverDetailComponent title={t("Approver")} approver={inOutTimeUpdate.approver} status={inOutTimeUpdate.processStatusId} hrComment={inOutTimeUpdate.approverComment} />
             </> : null
             // <div className="block-status">
             //   <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
@@ -187,11 +189,11 @@ class InOutUpdateDetailComponent extends React.Component {
         }
 
         {
-          this.props.inOutTimeUpdate.requestDocuments.length > 0 ?
+          inOutTimeUpdate.requestDocuments.length > 0 ?
             <>
               <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
-                {this.props.inOutTimeUpdate.requestDocuments.map((file, index) => {
+                {inOutTimeUpdate.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
                     <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
                   </li>
@@ -201,32 +203,38 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(this.props.inOutTimeUpdate.processStatusId, this.props.inOutTimeUpdate.appraiser))}</span>
+          <span className={`status ${Constants.mappingStatus[inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(inOutTimeUpdate.processStatusId, inOutTimeUpdate.appraiser))}</span>
         </div>
-        { this.props.inOutTimeUpdate && (this.props.inOutTimeUpdate.processStatusId === 8 || (this.props.action != "consent" && this.props.inOutTimeUpdate.processStatusId === 5) || this.props.inOutTimeUpdate.processStatusId === 2 )  ? 
-        <DetailButtonComponent
-          dataToSap={
-            [
-              {
-                "id": this.props.inOutTimeUpdate.id,
-                "requestTypeId": Constants.IN_OUT_TIME_UPDATE,
-                "sub": [
-                  {
-                    "id": this.props.inOutTimeUpdate.id,
-                  }
-                ]
-              }
-            ]
-          } //this.dataToSap()
-          id={this.props.inOutTimeUpdate.id}
-          isShowApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING}
-          isShowRevocationOfApproval={this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_APPROVED}
-          isShowConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {this.props.inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING && this.props.inOutTimeUpdate.appraiser}
-          urlName={'requesttimekeeping'}
-          requestTypeId={requestTypeId}
-          action={this.props.action}
-        /> : null}
+        {
+          inOutTimeUpdate 
+          && (inOutTimeUpdate.processStatusId === 8 || (action != "consent" && inOutTimeUpdate.processStatusId === 5) || inOutTimeUpdate.processStatusId === 2 
+              || (action === "approval" && inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId))) 
+          ? 
+          <DetailButtonComponent
+            dataToSap={
+              [
+                {
+                  "id": inOutTimeUpdate.id,
+                  "requestTypeId": Constants.IN_OUT_TIME_UPDATE,
+                  "sub": [
+                    {
+                      "id": inOutTimeUpdate.id,
+                    }
+                  ]
+                }
+              ]
+            } //this.dataToSap()
+            id={inOutTimeUpdate.id}
+            isShowApproval={isShowApproval}
+            isShowRevocationOfApproval={inOutTimeUpdate.processStatusId === Constants.STATUS_APPROVED}
+            isShowConsent = {inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+            isShowRevocationOfConsent = {inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING && inOutTimeUpdate.appraiser}
+            urlName={'requesttimekeeping'}
+            requestTypeId={inOutTimeUpdate.requestTypeId}
+            action={action}
+          />
+          : null
+        }
       </div>
     )
   }

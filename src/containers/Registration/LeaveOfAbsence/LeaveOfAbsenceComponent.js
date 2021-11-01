@@ -14,6 +14,7 @@ import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
+import { getValueParamByQueryString } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 
 const FULL_DAY = 1
@@ -30,6 +31,9 @@ const COMPENSATORY_LEAVE_KEY = "PQ02"
 const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 const MATERNITY_LEAVE_KEY = "IN02"
+const totalDaysForSameDay = 1
+
+const queryString = window.location.search
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -45,17 +49,18 @@ class LeaveOfAbsenceComponent extends React.Component {
             messageModal: "",
             disabledSubmitButton: false,
             isShowNoteModal: false,
+            dateRequest: getValueParamByQueryString(queryString, 'date'),
             requestInfo: [
                 {
                     isShowHintLeaveForMother: false,
                     groupItem: 1,
-                    startDate: null,
+                    startDate: getValueParamByQueryString(queryString, 'date'),
                     startTime: null,
-                    endDate: null,
+                    endDate: getValueParamByQueryString(queryString, 'date'),
                     endTime: null,
                     comment: null,
                     totalTimes: 0,
-                    totalDays: 0,
+                    totalDays: getValueParamByQueryString(queryString, 'date') ? totalDaysForSameDay : 0,
                     absenceType: null,
                     isAllDay: true,
                     funeralWeddingInfo: null,
@@ -536,17 +541,17 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     addMultiDateTime(groupId, requestItem, isAllDay, absenceType, comment, funeralWeddingInfo) {
-        const { requestInfo } = this.state;
+        const { requestInfo, dateRequest } = this.state;
         const maxIndex = _.maxBy(requestItem, 'groupItem') ? _.maxBy(requestItem, 'groupItem').groupItem : 1;
         requestInfo.push({
             groupItem: maxIndex + 1,
-            startDate: null,
+            startDate: dateRequest,
             startTime: null,
-            endDate: null,
+            endDate: dateRequest,
             endTime: null,
             comment: comment,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             absenceType: absenceType,
             isAllDay: isAllDay,
             funeralWeddingInfo: funeralWeddingInfo,
@@ -557,17 +562,17 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     onAddLeave() {
-        const { requestInfo } = this.state;
+        const { requestInfo, dateRequest } = this.state;
         const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
         const maxGroupItem = _.maxBy(requestInfo, 'groupItem').groupItem;
         requestInfo.push({
-            startDate: null,
+            startDate: dateRequest,
             startTime: null,
-            endDate: null,
+            endDate: dateRequest,
             endTime: null,
             comment: null,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             absenceType: null,
             isAllDay: true,
             funeralWeddingInfo: null,
@@ -716,17 +721,17 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     updateLeaveType(isAllDay, groupId) {
-        const { requestInfo } = this.state
+        const { requestInfo, dateRequest } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
         newRequestInfo.push({
             groupItem: 1,
-            startDate: null,
+            startDate: dateRequest,
             startTime: null,
-            endDate: null,
+            endDate: dateRequest,
             endTime: null,
             comment: null,
             totalTimes: 0,
-            totalDays: 0,
+            totalDays: dateRequest ? totalDaysForSameDay : 0,
             absenceType: null,
             isAllDay: isAllDay,
             funeralWeddingInfo: null,
@@ -881,7 +886,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         <div className="row">
                                             <div className="col-lg-6 col-xl-6">
                                                 <p className="">{t('SelectLeaveType')}</p>
-                                                <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                                <div className="btn-group btn-group-toggle leave-type" data-toggle="buttons">
                                                     <label onClick={this.updateLeaveType.bind(this, true, req[0].groupId)} style={{ zIndex: "unset" }} className={req[0].isAllDay ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                         {t('FullDay')}
                                                     </label>
@@ -1175,7 +1180,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-12">
                                         <p className="title">{t('ReasonRequestLeave')}</p>
                                         <div>
-                                            <textarea className="form-control" value={req[0].comment || ""} name="commnent" placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
+                                            <textarea className="form-control" value={req[0].comment || ""} placeholder={t('EnterReason')} rows="5" onChange={e => this.handleInputChange(e, req[0].groupId)}></textarea>
                                         </div>
                                         {req[0].errors.comment ? this.error('comment', req[0].groupId) : null}
                                     </div>

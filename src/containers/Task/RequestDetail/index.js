@@ -208,17 +208,18 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const status = {
-      5: {label: t("Waiting"), className: ''},
-      1: {label: 'Không phê duyệt', className: 'fail'},
+      5: {label: t("Waiting"), className: 'waiting'},
+      1: {label: t("Reject"), className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
-      3: {label: t("Recalled"), className: ''}
+      3: {label: t("Recalled"), className: 'fail'},
+      6: {label: t("Unsuccessful"), className: 'warning'}
     }
 
     return (
       <>
       <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} />
-      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">{t("EmployeeInfomation")}</h4></div>
+      <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("EmployeeInfomation")}</h4></div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
           <div className="row item-info">
@@ -240,14 +241,14 @@ class RequestDetail extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin đăng ký chỉnh sửa</h4></div> : null}
+        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
         {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
         {
           (this.state.userInfo.manager && (this.state.status == 2 || this.state.status == 1)) ?
           <>
-          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBLĐ phê duyệt</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
@@ -282,7 +283,7 @@ class RequestDetail extends React.Component {
         </div>
         { this.state.isShowDocumentComponent ? 
           <>
-          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin file đính kèm</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin file đính kèm</h4></div>
           <DocumentComponent documents={this.state.documents} />
           </>
           : null

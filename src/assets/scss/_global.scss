@@ -205,4 +205,148 @@ a {
       }
     }
   }
+  &.qna-history-modal {
+    font-size: 14px;
+    .question-status {
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .modal-content {
+      .modal-header {
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        .close span {
+          top: 6px;
+        }
+      }
+      .modal-body {
+        padding: 1rem 2rem;
+      }
+    }
+  }
+  &.qna-create-modal {
+    font-size: 14px;
+    .question-status {
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .modal-content {
+      .modal-header {
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        .close span {
+          top: 6px;
+        }
+      }
+      .modal-body {
+        padding: 1rem 2rem;
+        .form-group {
+          input {
+            font-size: inherit;
+          }
+        }
+        .action-buttons button {
+          font-size: inherit;
+        }
+      }
+      .line-partition {
+        border: none;
+        border-bottom: 1px solid #e3e6f0;
+      }
+    }
+  }
+  &.vaccine-create-info {
+    font-size: 14px;
+    .modal-content {
+      .modal-header {
+        padding: 0.7rem 1rem;
+        .close {
+          top: 30px;
+        }
+      }
+      .modal-body {
+        padding-bottom: 1rem;
+        .form-content {
+          input {
+            font-size: inherit !important;
+            &.input-text {
+              height: 38px;
+            }
+            &[type=radio] {
+              width: 10px;
+              cursor: pointer;
+            }
+          }
+          .effect-infos {
+            padding-left: 0;
+            b {
+              font-size: 14px;
+            }
+          }
+          .effect-table {
+            max-height: 300px;
+            overflow-y: auto;
+            border-right: none !important;
+            &::-webkit-scrollbar {
+              width: 8px;
+              background-color: #f5f5f5;
+            }
+            &::-webkit-scrollbar-thumb {
+              background-color: #a4afb7;
+              border-left: 1px solid white;
+              border-right: 1px solid white;
+              border-radius: 4px;
+            }
+            &::-webkit-scrollbar-track {
+              background-color: #d3d3d3;
+              border-left: 3.5px solid white;
+              border-right: 3.5px solid white;
+            }
+            table {
+              margin-bottom: 0;
+              border-collapse: separate;
+              thead {
+                th {
+                  position: sticky;
+                  top: 0;
+                  background: #FFFFFF;
+                  z-index: 1;
+                  border-bottom: 1px solid #e3e6f0;
+                  border-top: none;
+                }
+              }
+              tbody {
+                td {
+                  padding: 0.6rem;
+                  vertical-align: middle;
+                  .label-option-yn-vaccin {
+                    height: unset;
+                    padding: 0 15px;
+                  }
+                }
+                tr {
+                  &:first-child {
+                    td {
+                      border-top: none;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .form-group {
+            margin-bottom: 0.8rem;
+          }
+          .react-datepicker-popper {
+            z-index: 99;
+          }
+        }
+        .action-buttons {
+          button {
+            font-size: inherit;
+          }
+        }
+      }
+    }
+  }
 }

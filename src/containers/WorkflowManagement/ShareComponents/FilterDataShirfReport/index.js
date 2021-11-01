@@ -37,7 +37,7 @@ class FilterDataShirfReport extends React.Component {
     this.onHideMembers = this.onHideMembers.bind(this);
     this.getSelecteMembers = this.getSelecteMembers.bind(this);
     this.resetSelectedMember = this.resetSelectedMember.bind(this);
-    this.dowload = this.dowload.bind(this);
+    this.download = this.download.bind(this);
     this.onClickSelectTab = this.onClickSelectTab.bind(this);
     this.onCloseTabEvent = this.onCloseTabEvent.bind(this);
     this.onCloseAllEvent = this.onCloseAllEvent.bind(this);
@@ -75,7 +75,7 @@ class FilterDataShirfReport extends React.Component {
           this.getSelecteMembers(users);
         }
       })
-      .catch((error) => {this.setState({loading: false }); });
+      .catch((error) => { this.setState({ loading: false }); });
   };
   setStartDate(startDate) {
     this.setState({
@@ -90,7 +90,7 @@ class FilterDataShirfReport extends React.Component {
     });
   }
 
-  dowload() {
+  download() {
     const isValidData = this.isValidDataToCreate()
     if (!isValidData) {
       return;
@@ -109,7 +109,7 @@ class FilterDataShirfReport extends React.Component {
     const data = {
       reportType: this.state.reportType,
       employeeCodes: ids,
-      startDate: moment(this.state.startDate ).format("YYYY-MM-DD[T]00:00:00.000"),
+      startDate: moment(this.state.startDate).format("YYYY-MM-DD[T]00:00:00.000"),
       endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
@@ -123,16 +123,16 @@ class FilterDataShirfReport extends React.Component {
             let fileName = "";
             switch (this.state.reportType) {
               case 0:
-                  fileName = "ReportDetail" 
-                  break;
+                fileName = "ReportDetail"
+                break;
               case 1:
-                  fileName = "ReportSummary" 
-                  break;
+                fileName = "ReportSummary"
+                break;
               default:
-                  fileName = "Report" 
-                  break;
-          }
-          saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
+                fileName = "Report"
+                break;
+            }
+            saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
           } else {
             console.log('error');
           }
@@ -265,7 +265,7 @@ class FilterDataShirfReport extends React.Component {
       <>
         <div className="timesheet-box shadow">
           <div className="row">
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="title">{t("LabelTypeReport")}</div>
               <Select name="reportType"
                 styles={customStyles}
@@ -276,10 +276,10 @@ class FilterDataShirfReport extends React.Component {
               {renderErrors("type")}
             </div>
             {this.state.reportType === Constants.TYPE_REPORT.DETAIL_REPORT &&
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <div className="title">{t("staff_selection_label")}</div>
                 <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
-                onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
+                  onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {this.state.showMemberOption ? (
                   //employeeGrTree
                   <MemberOption loading={this.state.loading} data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
@@ -291,48 +291,44 @@ class FilterDataShirfReport extends React.Component {
 
               this.props.useDateFilter === false ? null :
                 <>
-                  <div className="col-lg-2">
+                  <div className="col-lg-3">
                     <div className="title">{t("From")}</div>
                     <div className="content input-container">
-                      <label>
-                        <DatePicker
-                          name="startDate"
-                          selectsStart
-                          selected={this.state.startDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
-                          onChange={this.setStartDate}
-                          dateFormat="dd/MM/yyyy"
-                          locale="vi"
-                          className="form-control"
-                        />
-                        <span className="input-group-addon input-img">
-                          <i className="fas fa-calendar-alt"></i>
-                        </span>
-                      </label>
+                      <DatePicker
+                        name="startDate"
+                        selectsStart
+                        selected={this.state.startDate}
+                        startDate={this.state.startDate}
+                        endDate={this.state.endDate}
+                        onChange={this.setStartDate}
+                        dateFormat="dd/MM/yyyy"
+                        locale="vi"
+                        className="form-control"
+                      />
+                      <span className="ic-calendar">
+                        <i className="fas fa-calendar-alt"></i>
+                      </span>
                     </div>
                   </div>
-                  <div className="col-lg-2">
+                  <div className="col-lg-3">
                     <div className="title">{t("To")}</div>
                     <div className="content input-container">
-                      <label>
-                        <DatePicker
-                          name="endDate"
-                          selectsEnd
-                          selected={this.state.endDate}
-                          minDate={this.state.startDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
-                          maxDate={this.addDays(this.state.startDate, 31)}
-                          onChange={this.setEndDate}
-                          dateFormat="dd/MM/yyyy"
-                          locale="vi"
-                          className="form-control"
-                        />
-                        <span className="input-group-addon input-img">
-                          <i className="fas fa-calendar-alt"></i>
-                        </span>
-                      </label>
+                      <DatePicker
+                        name="endDate"
+                        selectsEnd
+                        selected={this.state.endDate}
+                        minDate={this.state.startDate}
+                        startDate={this.state.startDate}
+                        endDate={this.state.endDate}
+                        maxDate={this.addDays(this.state.startDate, 31)}
+                        onChange={this.setEndDate}
+                        dateFormat="dd/MM/yyyy"
+                        locale="vi"
+                        className="form-control"
+                      />
+                      <span className="ic-calendar">
+                        <i className="fas fa-calendar-alt"></i>
+                      </span>
                     </div>
                   </div>
                 </>
@@ -343,9 +339,8 @@ class FilterDataShirfReport extends React.Component {
               <div className="content">
                 <button
                   type="button"
-                  style={{ height: "35px" }}
                   className="btn btn-primary"
-                  onClick={this.dowload}
+                  onClick={this.download}
                 >
                   <i className="fas fa-download mr-1"></i>
                   {t("LabelDownloadReport")}

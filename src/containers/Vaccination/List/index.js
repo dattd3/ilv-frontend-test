@@ -15,7 +15,8 @@ class Vaccination extends React.Component {
             listData: [],
             showModelDetail: false,
             rowId: null,
-            loadSuccess: false
+            loadSuccess: false,
+            editLastRow: false
         };
     }
 
@@ -30,6 +31,13 @@ class Vaccination extends React.Component {
         .then(res => {
             if (res && res.data && res.data.data) {
                 this.setState({listData: res.data.data});
+                const lastItem = this.state.listData[this.state.listData.length - 1];
+                if(lastItem?.statusId == 2){
+                    this.setState({
+                        rowId: lastItem?.id,
+                        editLastRow: true
+                    });
+                }
             }
             this.setState({loadSuccess: true});
         }).catch(error => {
@@ -39,50 +47,51 @@ class Vaccination extends React.Component {
     
     render() {
         const { t } = this.props;
+        const lastItem = this.state.listData[this.state.listData.length - 1];
+
         return <>
-            <div className="row">
+            <div className="row vaccine-info-page">
                 <div className="w-100">
-                    <h1 className="h3 m-0 text-dark text-uppercase text-gray-800">{t("VaccinantionInformation")}</h1>
+                    <h1 className="content-page-header">{t("VaccinantionInformation")}</h1>
                 </div>
                 <div className="clearfix edit-button w-100 pt-3 pb-4">
-                    <div className="btn bg-white" style={
-                        {
-                            borderRadius: "10px",
-                            border: "1px solid #347EF9",
-                            color: "#347EF9"
-                        }
-                    } onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('AddMore')}</div>
+                    <div className="btn bg-white btn-create" 
+                    onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('vaccination_btn_declare')}</div>
                     {/* <Button disabled={!this.state.loadSuccess} variant="info" ></Button> */}
                     {/* <Button disabled={!this.state.loadSuccess} variant="primary" className="ml-3" onClick={() => this.exportExcel()}><i className="fas fa-file-excel"></i> Xuất báo cáo</Button> */}
                 </div>
-                <div className="table">
-                    <div className="card mb-4 px-3" style={{
-                        borderRadius: "10px",
-                        border: "none"
-                    }}>
+                <div className="card mb-4 px-3" style={{
+                    borderRadius: "10px",
+                    border: "none"
+                }}>
+                    <div className="table">
                         <table className="table m-0 text-dark">
                             <thead>
                                 <tr>
-                                    <th className="border-0">{t('vaccination_injections_mumber')}</th>
-                                    <th className="border-0">{t('vaccination_type')}</th>
-                                    <th className="border-0">{t('vaccination_time')}</th>
-                                    <th className="border-0">{t('vaccination_department')}</th>
-                                    <th className="border-0">{t('vaccination_reaction_after')}</th>
-                                    <th className="border-0">{t('action')}</th>
+                                    <th className="border-0 no">{t('vaccination_injections_mumber')}</th>
+                                    <th className="border-0 injected-status">{t('VaccinationStatus')}</th>
+                                    <th className="border-0 vaccination-type">{t('vaccination_type')}</th>
+                                    <th className="border-0 text-center injected-at">{t('vaccination_time')}</th>
+                                    <th className="border-0 injected-unit">{t('vaccination_department')}</th>
+                                    <th className="border-0 vaccination-reaction-after">{t('vaccination_reaction_after')}</th>
+                                    <th className="border-0 reason">{t('vaccination_reason')}</th>
+                                    <th className="border-0 detail">{t('detail')}</th>
+                                    <th className="border-0 action">{t('action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {this.state.listData.map(v => {
                                     return (<tr className="px-2" key={v.id}>
-                                        <td className="align-middle">{v.number}</td>
-                                        <td className="align-middle">{v.vaccin?.name }</td>
-                                        <td className="align-middle">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
-                                        <td className="align-middle">{
+                                        <td className="align-middle no">{v.number}</td>
+                                        <td className="align-middle injected-status">{v.vaccinStatus?.name}</td>
+                                        <td className="align-middle vaccination-type">{v.vaccin?.name }</td>
+                                        <td className="align-middle text-center injected-at">{moment(v.injectedAt).format('DD/MM/YYYY')}</td>
+                                        <td className="align-middle injected-unit">{
                                             (v.department !== null ? (
-                                                v.department['id'] == 1 ? v.branch.name : v.department['id'] == 2 ? (v.ward + " - " + v.district + " - " + v.city ) : v.address
+                                                v.department['id'] == 1 ? v.branch?.name : v.department['id'] == 2 ? (v.ward + " - " + v.district + " - " + v.city ) : v.address
                                             ) : undefined)
                                         }</td>
-                                        <td className="align-middle">
+                                        <td className="align-middle vaccination-reaction-after">
                                             {
                                                 (function(){
                                                     const e = v.vaccinEffects.filter(e => e.status == 1);
@@ -125,9 +134,31 @@ class Vaccination extends React.Component {
                                                 }())
                                             }
                                         </td>
-                                        <td className="align-middle">
-                                            <div className="" onClick={() => {
-                                                this.setState({showModelDetail: true, rowId: v.id});
+                                        <td className="reason">
+                                            <OverlayTrigger 
+                                                placement="bottom"
+                                                overlay={
+                                                    <Popover id={`popover-basic-gsh-${v.id}-reason`}>
+                                                        <Popover.Content>{v.vaccinReasonReject?.name || ""}</Popover.Content>
+                                                    </Popover>
+                                                }>
+                                                <div className="content-reason">{v.vaccinReasonReject?.name || ""}</div>
+                                            </OverlayTrigger>
+                                        </td>
+                                        <td className="detail">
+                                            <OverlayTrigger 
+                                                placement="bottom"
+                                                overlay={
+                                                    <Popover id={`popover-basic-gsh-${v.id}-detail`}>
+                                                        <Popover.Content>{v.reasonDetail || ""}</Popover.Content>
+                                                    </Popover>
+                                                }>
+                                                <div className="content-detail">{v.reasonDetail || ""}</div>
+                                            </OverlayTrigger>
+                                        </td>
+                                        <td className="align-middle action">
+                                            <div onClick={() => {
+                                                this.setState({showModelDetail: true, rowId: v.id, editLastRow: false});
                                             }}>
                                                 <OverlayTrigger 
                                                     placement="left" 
@@ -139,12 +170,6 @@ class Vaccination extends React.Component {
                                                             }
                                                             </Popover.Content>
                                                         </Popover>
-                                                        // <Tooltip 
-                                                        //     className="recruiting-detail-tooltip" 
-                                                        //     style={{ fontFamily: "Arial, Helvetica, sans-serif", 
-                                                        //     fontSize: 11, whiteSpace: "normal" }}>
-                                                        //     {t('EditQuestion')}
-                                                        // </Tooltip>
                                                     }>
                                                     <i className="fas fa-edit text-warning" style={{cursor:"pointer"}} aria-hidden="true"></i>
                                                 </OverlayTrigger>
@@ -156,7 +181,22 @@ class Vaccination extends React.Component {
                         </table>
                     </div>
                 </div>
-                {this.state.loadSuccess && this.state.showModelDetail && <VaccinationDetail show={this.state.showModelDetail} rowId={this.state.rowId} t={t} number={this.state.listData.length} onCancelClick={() => this.setState({showModelDetail: false, rowId: null})} />}
+                {this.state.loadSuccess && this.state.showModelDetail && 
+                <VaccinationDetail show={this.state.showModelDetail} 
+                    rowId={this.state.rowId} 
+                    t={t} 
+                    number={lastItem?.number} 
+                    onCancelClick={() => {
+                        const j = {showModelDetail: false};
+                        if(!this.state.editLastRow){
+                            j['rowId'] = null
+                        }
+                        this.setState(j);
+                    }} 
+                    editLastRow={this.state.editLastRow}
+                    lastTime={lastItem?.injectedAt}
+                    listData={this.state.listData}
+                />}
             </div>
         </>
     }

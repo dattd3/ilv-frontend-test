@@ -6,6 +6,7 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -69,8 +70,10 @@ class SubstitutionDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
   }
   render() {
-    const { t } = this.props
-    const requestTypeId = this.props.substitution.requestTypeId
+    const { t, substitution, action } = this.props
+    const requestTypeId = substitution.requestTypeId
+    const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+    const isShowApproval = (substitution.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && substitution.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(substitution.requestTypeId))
 
     return (
       <div className="leave-of-absence">
@@ -79,25 +82,25 @@ class SubstitutionDetailComponent extends React.Component {
           <div className="row group">
             <div className="col-xl-3">
              {t("FullName")}
-              <div className="detail auto-height">{this.props.substitution.user.fullName}</div>
+              <div className="detail auto-height">{substitution.user.fullName}</div>
             </div>
             <div className="col-xl-3">
               {t("EmployeeNo")}
-              <div className="detail auto-height">{this.props.substitution.user.employeeNo}</div>
+              <div className="detail auto-height">{substitution.user.employeeNo}</div>
             </div>
             <div className="col-xl-3 auto-height">
               {t("Title")}
-              <div className="detail auto-height">{this.props.substitution.user.jobTitle}</div>
+              <div className="detail auto-height">{substitution.user.jobTitle}</div>
             </div>
             <div className="col-xl-3">
               {t("DepartmentManage")}
-              <div className="detail auto-height">{this.props.substitution.user.department}</div>
+              <div className="detail auto-height">{substitution.user.department}</div>
             </div>
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>Thông tin đăng ký thay đổi phân ca</h5>
-        {this.props.substitution.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
+        {substitution.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow cbnv" key={index}>
             <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
@@ -164,21 +167,21 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         })}
         <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
+        <ApproverDetailComponent title={t("Consenter")} approver={substitution.appraiser} status={substitution.requestInfo ? substitution.processStatusId : ""} hrComment={substitution.appraiserComment} />
         {
-          this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) ?
+          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) ?
           <>
             <h5>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
+            <ApproverDetailComponent title={t("Approver")} approver={substitution.approver} status={substitution.processStatusId} hrComment={substitution.approverComment} />
           </> : null
         }
 
         {
-          this.props.substitution.requestDocuments.length > 0 ?
+          substitution.requestDocuments.length > 0 ?
           <>
           <h5>{t("Evidence")}</h5>
           <ul className="list-inline">
-            {this.props.substitution.requestDocuments.map((file, index) => {
+            {substitution.requestDocuments.map((file, index) => {
               return <li className="list-inline-item" key={index}>
                 <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
               </li>
@@ -188,32 +191,40 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
+          <span className={`status ${Constants.mappingStatus[substitution.processStatusId].className}`}>{t(this.showStatus(substitution.processStatusId, substitution.appraiser))}</span>
         </div>
-        { this.props.substitution && (this.props.substitution.processStatusId === 8 || (this.props.action != "consent" && this.props.substitution.processStatusId === 5) || this.props.substitution.processStatusId === 2 ) ? <DetailButtonComponent 
-          dataToSap={
-            [
-              {
-                "id": this.props.substitution.id,
-                "requestTypeId": Constants.SUBSTITUTION,
-                "sub": [
-                  {
-                    "id": this.props.substitution.id,
-                  }
-                ]
-              }
-            ]
-          } //this.getData()
-          id={this.props.substitution.id}
-          isShowApproval={this.props.substitution.processStatusId === Constants.STATUS_WAITING}
-          isShowRevocationOfApproval={this.props.substitution.processStatusId === Constants.STATUS_APPROVED}
-          isShowConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-          isShowRevocationOfConsent = {this.props.substitution.processStatusId === Constants.STATUS_WAITING && this.props.substitution.appraiser}
-          urlName={'requestsubstitution'}
-          requestTypeId={requestTypeId}
-          hiddenRevocationOfApprovalButton={1}
-          action={this.props.action}
-        /> : null}
+        {
+          substitution 
+          && (substitution.processStatusId === 8 || (action != "consent" && substitution.processStatusId === 5) 
+              || substitution.processStatusId === 2 
+              || (action === "approval" && substitution.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(substitution.requestTypeId))) 
+          ? 
+          <DetailButtonComponent 
+            dataToSap={
+              [
+                {
+                  "id": substitution.id,
+                  "requestTypeId": Constants.SUBSTITUTION,
+                  "sub": [
+                    {
+                      "id": substitution.id,
+                    }
+                  ]
+                }
+              ]
+            } //this.getData()
+            id={substitution.id}
+            isShowApproval={isShowApproval}
+            isShowRevocationOfApproval={substitution.processStatusId === Constants.STATUS_APPROVED}
+            isShowConsent = {substitution.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+            isShowRevocationOfConsent = {substitution.processStatusId === Constants.STATUS_WAITING && substitution.appraiser}
+            urlName={'requestsubstitution'}
+            requestTypeId={requestTypeId}
+            hiddenRevocationOfApprovalButton={1}
+            action={action}
+          />
+          : null
+        }
       </div>
     )
   }

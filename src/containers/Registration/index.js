@@ -1,10 +1,12 @@
 import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
+import { withTranslation  } from "react-i18next"
 import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
-import { withTranslation  } from "react-i18next";
+import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode } from "../../commons/Utils"
+
 class RegistrationComponent extends React.Component {
   constructor(props) {
     super();
@@ -19,7 +21,11 @@ class RegistrationComponent extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t } = this.props
+    const PnLVCode = localStorage.getItem("companyCode")
+    const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
+    const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
+
     return (
       <div className="registration-section personal-info justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
@@ -30,16 +36,16 @@ class RegistrationComponent extends React.Component {
             <BusinessTrip />
           </Tab>
           { 
-            !['V096','V073','V061'].includes(localStorage.getItem("companyCode")) ?
-           <Tab eventKey="SubstitutionRegistration" title={t('ShiftChange')}>
-            <SubstitutionComponent />
-          </Tab> : null
+            isEnableShiftChangeFunction && 
+            <Tab eventKey="SubstitutionRegistration" title={t('ShiftChange')}>
+              <SubstitutionComponent />
+            </Tab>
           }
           {
-            !['V061'].includes(localStorage.getItem("companyCode")) ?
+            isEnableInOutTimeUpdateFunction && 
             <Tab eventKey="InOutTimeUpdate" title={t('InOutChangeRequest')}>
               <InOutTimeUpdate />
-            </Tab> : null
+            </Tab>
           }
         </Tabs>
       </div>

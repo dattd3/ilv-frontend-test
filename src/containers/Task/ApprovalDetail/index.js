@@ -3,7 +3,6 @@ import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
-import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import { withTranslation } from "react-i18next"
@@ -227,17 +226,20 @@ class ApprovalDetail extends React.Component {
     const { t } = this.props
 
     const determineStatus = {
-      5: {label: t("Waiting"), className: ''},
-      1: {label: 'Không phê duyệt', className: 'fail'},
+      5: {label: t("Waiting"), className: 'waiting'},
+      1: {label: t("Reject"), className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
-      3: {label: t("Recalled"), className: ''}
+      3: {label: t("Recalled"), className: 'fail'},
+      6: {label: t("Unsuccessful"), className: 'warning'}
     }
     
     return (
       <>
       <ConfirmationModal data={this.props.data} show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
       taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
-      <div className="edit-personal user-info-request"><h4 className="title text-uppercase">{t("EmployeeInfomation")}</h4></div>
+      <div className="edit-personal user-info-request">
+        <h4 className="content-page-header">{t("EmployeeInfomation")}</h4>
+      </div>
       <div className="edit-personal detail-page">
         <div className="box shadow">
           <div className="row item-info">
@@ -259,14 +261,14 @@ class ApprovalDetail extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin đăng ký chỉnh sửa</h4></div> : null}
+        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
         {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
         {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
         {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
         {
           (this.state.userInfo.manager && (this.state.processStatusId == 2 || this.state.processStatusId == 1)) ?
           <>
-          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin CBLĐ phê duyệt</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
@@ -296,12 +298,12 @@ class ApprovalDetail extends React.Component {
           </>
           : null
         }
-        <div className="block-processStatusId">
-          <span className={`status ${determineStatus[this.state.processStatusId].className}`}>{determineStatus[this.state.processStatusId].label}</span>
+        <div className="block-status">
+          <span className={`status ${determineStatus[this.state.processStatusId]?.className}`}>{determineStatus[this.state.processStatusId]?.label}</span>
         </div>
         { this.state.isShowDocumentComponent ? 
           <>
-          <div className="edit-personal user-info-request"><h4 className="title text-uppercase">Thông tin file đính kèm</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin file đính kèm</h4></div>
           <DocumentComponent documents={this.state.documents} />
           </>
           : null

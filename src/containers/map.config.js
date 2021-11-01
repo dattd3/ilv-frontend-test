@@ -78,5 +78,7 @@ export default {
   VaxcinList: "/vaccination/list",
   VaxcinUpdate: "/vaccination/dtail/:id",
   VaxcinCreate: "/vaccination/create",
+  Instruct: "/instruct",
+  ClinicVinmec: "/clinic-vinmec",
   ChangeShiftReport: "/workflow-management/change-shift-report"
 };

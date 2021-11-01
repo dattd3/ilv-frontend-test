@@ -50,6 +50,15 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+
+  {
+    id: 48,
+    parentId: 0,
+    icon: 'c-task',
+    label: "Menu_Clinic_Learning",
+    to: map.ClinicVinmec,
+    role: ['V060']
+  },
   
   //workflow management
   {
@@ -315,6 +324,15 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "vaccination",
     to: map.VaxcinList,
+    role: 'U'
+  },
+
+  {
+    id: 109999,
+    parentId: 0,
+    icon: 'c-instruct',
+    label: "instruct",
+    to: map.Instruct,
     role: 'U'
   }
 ];

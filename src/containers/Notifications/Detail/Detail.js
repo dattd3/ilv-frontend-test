@@ -106,12 +106,12 @@ class NotificationDetailComponent extends React.Component {
         <div className="notifications-detail-section mt-5">
           <div className="row">
             <div className="col-md-8 display-inline">
-              <h4 className="h4 title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h4>
+              <h5 className="title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h5>
             </div>
             <div className="col-md-4">
               {
                 isEnableQnA ? 
-                <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
+                <button type="button" className="btn btn-primary float-right shadow pl-4 pr-4 mb-3 create-qna" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
                 : null
               }
             </div>

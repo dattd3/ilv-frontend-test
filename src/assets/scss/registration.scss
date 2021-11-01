@@ -8,13 +8,14 @@
 }
 
 .registration-section {
+    font: normal 14px Arial, Helvetica, sans-serif;
     .block-time-item-edit {
         .box-time, input {
-            font-size: 15px;
+            font-size: inherit;
         }
     }
     .block-note-item-edit, textarea {
-        font-size: 15px;
+        font-size: inherit;
     }
     .registration-detail {
         .btn-eviction-task {
@@ -35,10 +36,10 @@
     .block-filter-shift {
         border: 1px solid #d1d3e2;
         margin: 15px 0;
-        font-size: 15px;
+        font-size: inherit;
         padding-bottom: 15px;
         input, button {
-            font-size: 14px;
+            font-size: inherit;
         }
         legend {
             font-size: 15px;
@@ -200,7 +201,6 @@
         width: 100%;
         min-height: 40px;
     }
-
     .leave-of-absence {
         .summary {
             .item {
@@ -213,16 +213,35 @@
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             }
         }
+        .leave-type {
+            label {
+                font-size: inherit;
+            }
+        }
+        .form {
+            input {
+                font-size: inherit;
+            }
+        }
     }
-
+    .business-trip {
+        .leave-type {
+            label {
+                font-size: inherit;
+            }
+        }
+        .form {
+            input {
+                font-size: inherit;
+            }
+        }
+    }
     .in-out-time-update, .shift-work {
         .edit {
             cursor: pointer;
             font-weight: 600;
         }
-        
     }
-
     .approver {
         .avatar {
             height: 50px;
@@ -253,11 +272,15 @@
         background-color: #44A257;
         border: none;
         position: absolute;
-        top: 0;
+        top: -1px;
         right: 40px;
         border-radius: 0 0.35rem;
-        font-size: 0.8125rem;
+        font-size: 13px;
         color: white;
+        i {
+            font-size: 11px;
+            margin-right: 2px;
+        }
     }
     .btn-top-right-corner{
         position: absolute;
@@ -270,11 +293,15 @@
         background-color: #347EF9;
         border: none;
         position: absolute;
-        top: 0;
+        top: -1px;
         right: 0;
         border-radius: 0 0.35rem;
-        font-size: 0.8125rem;
+        font-size: 13px;
         color: white;
+        i {
+            font-size: 11px;
+            margin-right: 2px;
+        }
     }
     .time-area {
         position: relative;
@@ -339,5 +366,10 @@
     .message-danger{
         margin-top: 38px !important; 
         margin-bottom: 0px !important;
+    }
+    .bottom {
+        button {
+            font-size: 14px;
+        }
     }
 }

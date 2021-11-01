@@ -40,7 +40,6 @@ class TaskDetailModal extends React.Component {
             }
             const response = data.data
             this.setState({data: response })
-            console.log(this.state.data);
           }
         }).catch(error => {
           console.log(error)
@@ -64,7 +63,7 @@ class TaskDetailModal extends React.Component {
                         {this.state.data && this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={this.props.action} inOutTimeUpdate={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={this.props.action} substitution={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.UPDATE_PROFILE ? <PersonalDetailComponent id={this.props.taskId} data={this.state.data}/> : null}
-                        {this.state.data && this.state.data.requestTypeId === Constants.CHNAGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={this.props.action} substitution={this.state.data}/> : null}
                     </div>
                 </Modal.Body>

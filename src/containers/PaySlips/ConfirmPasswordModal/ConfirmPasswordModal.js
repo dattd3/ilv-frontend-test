@@ -67,9 +67,9 @@ class ConfirmPasswordModal extends React.Component {
     }
 
     render() {
-        const { t } = this.props
+        const { t, show } = this.props
         return (
-            <Modal className='confirm-password-modal' backdrop="static" centered show={this.props.show}>
+            <Modal className='confirm-password-modal' backdrop="static" centered show={show}>
                 <Modal.Header>
                     <a href="/" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

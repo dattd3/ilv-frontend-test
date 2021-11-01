@@ -14,6 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
+import { getValueParamByQueryString } from "../../../commons/Utils"
 import { t } from 'i18next'
 registerLocale("vi", vi)
 
@@ -21,13 +22,14 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const BROKEN_SHIFT_OPTION_VALUE = "02"
+const queryString = window.location.search
 
 class SubstitutionComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      startDate: null,
-      endDate: null,
+      startDate: getValueParamByQueryString(queryString, 'date'),
+      endDate: getValueParamByQueryString(queryString, 'date'),
       timesheets: [],
       shifts: [],
       approver: null,
@@ -399,8 +401,9 @@ class SubstitutionComponent extends React.Component {
   }
 
   search() {
-    const start = moment(this.state.startDate, DATE_FORMAT).format('YYYYMMDD').toString()
-    const end = moment(this.state.endDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    const { startDate, endDate } = this.state
+    const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,

@@ -32,7 +32,7 @@
       font-size: 14px;
     }
   }
-  .btnSearch {
+  .btn-search {
     width: 100%;
   }
   .box-input {
@@ -41,9 +41,12 @@
     }
   }
   .member-list {
-    margin-top: 5px;
+    position: absolute;
+    z-index: 999999;
+    top: 70px;
     width: 360px;
     height: auto;
+    background: #FFFFFF;
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
     .action {
       padding: 10px 0 !important;
@@ -102,5 +105,17 @@
         font-size: 14px;
       }
     }
+  }
+  .loading-employees {
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #d1d3e2;
+    .spinner-border {
+      width: 15px;
+      height: 15px;
+    }
+  }
+  .react-datepicker-popper {
+    z-index: 99;
   }
 }

@@ -482,6 +482,22 @@ export default [
             path: map.VaxcinList
           },
           component: lazy(() => import("./Vaccination/List"))
+        },
+        {
+          key: "instruct",
+          routeProps: {
+            exact: true,
+            path: map.Instruct
+          },
+          component: lazy(() => import("./Instruct"))
+        },
+        {
+          key: "clinic-vinmec",
+          routeProps: {
+            exact: true,
+            path: map.ClinicVinmec,
+          },
+          component: lazy(() => import("./Corporation/Vinmec")),
         }
       ],
     },

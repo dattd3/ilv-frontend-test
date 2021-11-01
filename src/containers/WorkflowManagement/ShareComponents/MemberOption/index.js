@@ -173,8 +173,8 @@ const MemberOption = (props, onChange) => {
                 </div>
               </div>
             </label>
-            {item.children.length > 0 && downAllChild[id] === true && <i className="fas fa-caret-down" style={{ cursor: "pointer" }} onClick={() => downAllChildClick(item.uid)}></i>}
-            {item.children.length > 0 && upAllChild[id] === true && <i className="fas fa-caret-up" style={{ cursor: "pointer" }} onClick={() => upAllChildClick(item.uid)}></i>}
+            {item.children.length > 0 && downAllChild[id] === true && <span className="btn-down" onClick={() => downAllChildClick(item.uid)}><i className="fas fa-caret-down" style={{ cursor: "pointer" }}></i></span>}
+            {item.children.length > 0 && upAllChild[id] === true && <span className="btn-up" onClick={() => upAllChildClick(item.uid)}><i className="fas fa-caret-up" style={{ cursor: "pointer" }}></i></span>}
           </div>
           {item.children.length > 0 &&
             <div className={`collapse-content ${upAllChild[id] === true ? 'collapsed' : 'expanded'}`}
@@ -198,6 +198,8 @@ const MemberOption = (props, onChange) => {
     })
   }
 
+  const isCheckedAll = members.every(item => item.checked)
+
   return (
     <>
       {!props.loading && <div ref={ref} className="member-list">
@@ -220,7 +222,7 @@ const MemberOption = (props, onChange) => {
             props.type !== 'singleChoice' ?
               <div className="d-flex border-bottom text-dark btn ">
                 <label className="lable-custom">
-                  <input type="checkbox" className="mtmr5" value="checkedall" onChange={handleAllChecked} />
+                  <input type="checkbox" className="mtmr5" value="checkedall" checked={isCheckedAll} onChange={handleAllChecked} />
                   <div className="float-left text-left text-wrap w-75">
                     <div className="label-select-all">{t('All')}</div>
                   </div>
@@ -242,8 +244,11 @@ const MemberOption = (props, onChange) => {
         </div>
       </div>
       }
-      {props.loading &&
-        <LoadingSpinner />
+      {
+        props.loading &&
+        <div className="loading-employees">
+          <LoadingSpinner />
+        </div>
       }
     </>
   );

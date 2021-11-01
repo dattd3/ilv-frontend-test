@@ -160,12 +160,12 @@ class PersonalDetails extends Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="timesheet-section">
-        <h1 className="h3 text-uppercase text-gray-800">{t("MenuIndividualManagement")}</h1>
+      <div className="timesheet-section employee-detail">
+        <h1 className="content-page-header">{t("MenuIndividualManagement")}</h1>
         <ToastContainer />
-        <FilterData clickSearch={this.search.bind(this)} type="singleChoice"/>
+        <FilterData clickSearch={this.search.bind(this)} type="singleChoice" />
         <div className="detail">
-        <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {true} isOpen = {false} /> 
+          <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {true} isOpen = {false} /> 
           <LeaveTimeCard
             bg="primary"
             headerTitle={t("LeavesYear")}

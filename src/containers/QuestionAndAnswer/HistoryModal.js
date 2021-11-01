@@ -92,7 +92,7 @@ class HistoryModal extends React.Component {
                 confirmHeader = "XÁC NHẬN THU HỒI"
                 confirmContent = {t("recall")}
                 />
-                <Modal size="xl" className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                <Modal size="xl" className='info-modal-common position-apply-modal qna-history-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className='apply-position-modal' closeButton>
                         <Modal.Title>{t("HistoryAnswer")}</Modal.Title>
                     </Modal.Header>
