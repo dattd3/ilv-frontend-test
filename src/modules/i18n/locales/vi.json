@@ -1004,6 +1004,7 @@
   "BreakStartTimeMustBeLessThanTheEndTime": "Thời gian bắt đầu nghỉ ca phải nhỏ hơn thời gian kết thúc nghỉ ca",
   "TotalTimesForShiftBreakShouldNotBeLessThan2Hours": "Tổng thời gian nghỉ của ca gãy không được nhỏ hơn 02 giờ",
   "PleaseEnterInfo": "Vui lòng nhập đủ thông tin!",
+  "dtls": "Đào tạo lâm sàng",
   "instruct": "Hướng dẫn sử dụng",
   "instruct_download": "Tải về",
   "instruct_vi": "Tiếng Việt",

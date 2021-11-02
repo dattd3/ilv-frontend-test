@@ -79,6 +79,7 @@ export default {
   VaxcinUpdate: "/vaccination/dtail/:id",
   VaxcinCreate: "/vaccination/create",
   Instruct: "/instruct",
+  VinmecDTLS: "/VinmecDTLS",
   ClinicVinmec: "/clinic-vinmec",
   ChangeShiftReport: "/workflow-management/change-shift-report"
 };
