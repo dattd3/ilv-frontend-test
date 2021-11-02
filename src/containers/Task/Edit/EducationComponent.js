@@ -9,6 +9,7 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import { connect } from 'react-redux'
 import * as actions from '../../../actions'
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 
 class EducationComponent extends React.Component {
   constructor() {
@@ -19,13 +20,7 @@ class EducationComponent extends React.Component {
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    let config = getMuleSoftHeaderConfigurations()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/schools`, config)
       .then(res => {

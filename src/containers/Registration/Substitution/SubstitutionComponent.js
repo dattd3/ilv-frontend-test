@@ -14,7 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import { t } from 'i18next'
 registerLocale("vi", vi)
 
@@ -46,13 +46,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getMuleSoftHeaderConfigurations()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
       .then(res => {
@@ -407,8 +401,8 @@ class SubstitutionComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
       },
       params: {
         from_date: start,

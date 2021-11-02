@@ -10,6 +10,8 @@ import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import { t } from 'i18next'
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
 const title = localStorage.getItem('jobTitle') || "";
@@ -78,13 +80,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    let config = getMuleSoftHeaderConfigurations()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
       .then(res => {
