@@ -102,14 +102,7 @@ const MemberOption = (props, onChange) => {
   }
 
   const handleChange = event => {
-    // console.log("===========================")
-    // console.log(props.type)
-    // console.log(event.target.checked)
-
     const newMembers = [...members];
-
-    // console.log(newMembers)
-
     newMembers.forEach(member => {
       if (props.type === 'singleChoice') {
         member.checked = false;

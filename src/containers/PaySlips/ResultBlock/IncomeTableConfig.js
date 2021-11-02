@@ -653,7 +653,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("JciTracerBonus"), field: 'jci_tracer_enrollment_bonus' },
                                     { label: t("OutOfRangeBonus"), field: 'over_frame_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
-                                    { label: t("TrainingBonus"), field: 'trainning_bonus' },
+                                    { label: t("TrainingBonusForVinmec"), field: 'trainning_bonus' },
                                     { label: t("EfficiencyBonus"), field: 'performance_bonus' },
                                     { label: t("EbitdaBonus"), field: 'ebitda_bonus' },
                                     { label: t("PerformanceBonus"), field: 'effective_working_bonus' },

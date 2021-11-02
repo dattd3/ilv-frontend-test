@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
+import map from '../../containers/map.config'
 import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode } from "../../commons/Utils"
 
 const DATE_TYPE = {
@@ -59,10 +60,17 @@ function RenderRow0(props) {
   const backDate = calculateBackDateByPnLVCodeAndFormatType(PnLVCode, 'YYYYMMDD')
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
+  const pathName = window.location.pathname
 
   return (props.timesheets || []).map((item, index) => {
     let dayFormatToBindElement = moment(item.day, "DD/MM/YYYY").format("DDMMYYYY")
-    let isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "YYYYMMDD"))
+    let isBlockActions = false
+
+    if (pathName === map.PersonalDetails) {
+      isBlockActions = true
+    } else {
+      isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "YYYYMMDD"))
+    }
 
     return <Fragment key={index}>
       <td data-tip data-for={`total-items-selected-${dayFormatToBindElement}`} className={`wrap-item-tooltip ${isBlockActions ? 'block-actions' : ''}`}>
@@ -363,92 +371,90 @@ function Content(props) {
   {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
   return (
-    <div>
-      <div className="row pr-2 pl-2 pb-4">
-        <div className="col-md-12 col-xl-12 describer">
+    <div className="row pr-2 pl-2 pb-4">
+      <div className="col-md-12 col-xl-12 describer">
+        {
+          filterType.map( (item, index) => {
+            return <div className="item" key={index}>
+                      <div className="box-op1" style={{backgroundColor: item.color}}></div>
+                      <div className="title">{item.title}</div>
+                    </div>
+          })
+        }
+      </div>
+      <hr className="bulkhead" />
+      <table className="col-md-12 col-xl-12 timesheet-table employee-time-sheets">
+        <thead>
+          <tr>
+            <td>{t('Mon')}</td>
+            <td>{t('Tue')}</td>
+            <td>{t('Wed')}</td>
+            <td>{t('Thu')}</td>
+            <td>{t('Fri')}</td>
+            <td>{t('Sat')}</td>
+            <td>{t("Sun")}</td>
+          </tr>
+          <tr className="divide"></tr>
+        </thead>
+        <tbody>
           {
-            filterType.map( (item, index) => {
-              return <div className="item" key={index}>
-                        <div className="box-op1" style={{backgroundColor: item.color}}></div>
-                        <div className="title">{item.title}</div>
-                      </div>
+            chunk(props.timesheets, 7).map((timeSheet, index) => {
+              let timeSheetFiltered = (timeSheet || []).filter(item => item.date_type === DATE_TYPE.DATE_NORMAL)
+
+              let isShowLineOT = timeSheetFiltered
+              .some(item => (formatStringByMuleValue(item.line4?.ot_start_time1) && formatStringByMuleValue(item.line4?.ot_end_time1)) 
+              || (formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_end_time2)) 
+              || (formatStringByMuleValue(item.line4?.ot_start_time3) && formatStringByMuleValue(item.line4?.ot_end_time3)))
+
+              let hasTrip = timeSheetFiltered
+              .some(item => (formatStringByMuleValue(item.line3?.trip_start_time1) && formatStringByMuleValue(item.line3?.trip_end_time1))
+              || (formatStringByMuleValue(item.line3?.trip_start_time2) && formatStringByMuleValue(item.line3?.trip_end_time2)))
+
+              let hasLeave = timeSheetFiltered
+              .some(item => (formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_end_time1)) 
+              || (formatStringByMuleValue(item.line3?.leave_start_time2) && formatStringByMuleValue(item.line3?.leave_end_time2)))
+
+              let isShowLine3 = (!hasTrip && !hasLeave) ? false: true
+              let rowSpan = totalTimeSheetLines
+
+              if ((isShowLine3 && !isShowLineOT) || (!isShowLine3 && isShowLineOT)) {
+                rowSpan = timeSheetLinesIgnoreOnceLine
+              } else if (!isShowLine3 && !isShowLineOT) {
+                rowSpan = timeSheetLinesAlwayShow
+              }
+
+              return <React.Fragment key={index}>
+                      <tr className="divide"></tr>
+                      <tr>
+                        <RenderRow0 timesheets={timeSheet} />
+                      </tr>
+                      <tr className="divide sub"></tr>
+                      <tr style={{background: '#F2F2F2'}} className="line1 border-top">
+                        <RenderRow1 timesheets={timeSheet} rowSpan={rowSpan} />
+                      </tr>
+                      <tr className="none-border-left" className="line2">
+                        <RenderRow2 timesheets={timeSheet} rowSpan={rowSpan} />
+                      </tr>
+                      {
+                        isShowLine3 ?
+                        <tr className="none-border-left" className="line3">
+                          <RenderRow3 timesheets={timeSheet} rowSpan={rowSpan} />
+                        </tr>
+                        : null
+                      }
+                      {
+                        isShowLineOT ? 
+                        <tr>
+                          <RenderRow4 timesheets={timeSheet} />
+                        </tr>
+                        : null
+                      }
+                      <tr className="divide"></tr>
+              </React.Fragment>
             })
           }
-        </div>
-        <div className="col-md-12 col-xl-12" style = {{marginBottom: '10px', marginTop: '10px', height: '1px', backgroundColor : '#707070'}}></div>
-        <table className="col-md-12 col-xl-12 timesheet-table">
-          <thead>
-            <tr>
-              <td>{t('Mon')}</td>
-              <td>{t('Tue')}</td>
-              <td>{t('Wed')}</td>
-              <td>{ t('Thu')}</td>
-              <td>{t('Fri')}</td>
-              <td>{t('Sat')}</td>
-              <td>{t("Sun")}</td>
-            </tr>
-            <tr className="divide"></tr>
-          </thead>
-          <tbody>
-            {
-              chunk(props.timesheets, 7).map((timeSheet, index) => {
-                let timeSheetFiltered = (timeSheet || []).filter(item => item.date_type === DATE_TYPE.DATE_NORMAL)
-
-                let isShowLineOT = timeSheetFiltered
-                .some(item => (formatStringByMuleValue(item.line4?.ot_start_time1) && formatStringByMuleValue(item.line4?.ot_end_time1)) 
-                || (formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_end_time2)) 
-                || (formatStringByMuleValue(item.line4?.ot_start_time3) && formatStringByMuleValue(item.line4?.ot_end_time3)))
-
-                let hasTrip = timeSheetFiltered
-                .some(item => (formatStringByMuleValue(item.line3?.trip_start_time1) && formatStringByMuleValue(item.line3?.trip_end_time1))
-                || (formatStringByMuleValue(item.line3?.trip_start_time2) && formatStringByMuleValue(item.line3?.trip_end_time2)))
-
-                let hasLeave = timeSheetFiltered
-                .some(item => (formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_end_time1)) 
-                || (formatStringByMuleValue(item.line3?.leave_start_time2) && formatStringByMuleValue(item.line3?.leave_end_time2)))
-
-                let isShowLine3 = (!hasTrip && !hasLeave) ? false: true
-                let rowSpan = totalTimeSheetLines
-
-                if ((isShowLine3 && !isShowLineOT) || (!isShowLine3 && isShowLineOT)) {
-                  rowSpan = timeSheetLinesIgnoreOnceLine
-                } else if (!isShowLine3 && !isShowLineOT) {
-                  rowSpan = timeSheetLinesAlwayShow
-                }
-
-                return <React.Fragment key={index}>
-                        <tr className="divide"></tr>
-                        <tr>
-                          <RenderRow0 timesheets={timeSheet} />
-                        </tr>
-                        <tr className="divide sub"></tr>
-                        <tr style={{background: '#F2F2F2'}} className="line1 border-top">
-                          <RenderRow1 timesheets={timeSheet} rowSpan={rowSpan} />
-                        </tr>
-                        <tr className="none-border-left" className="line2">
-                          <RenderRow2 timesheets={timeSheet} rowSpan={rowSpan} />
-                        </tr>
-                        {
-                          isShowLine3 ?
-                          <tr className="none-border-left" className="line3">
-                            <RenderRow3 timesheets={timeSheet} rowSpan={rowSpan} />
-                          </tr>
-                          : null
-                        }
-                        {
-                          isShowLineOT ? 
-                          <tr>
-                            <RenderRow4 timesheets={timeSheet} />
-                          </tr>
-                          : null
-                        }
-                        <tr className="divide"></tr>
-                </React.Fragment>
-              })
-            }
-          </tbody>
-        </table>
-      </div>
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -805,8 +811,8 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
   return (
     <div className="detail mb-2">
       <div className="card shadow">
-        <div className="card-header clearfix card-header-text" onClick={() => setOpen(!open)}>
-          <div className="text-uppercase text-center">{t("WorkingDaysDetail")}</div>
+        <div className="card-header card-header-text" onClick={() => setOpen(!open)}>
+          <div className="text-uppercase">{t("WorkingDaysDetail")}</div>
           {
             props.showCavet ? 
             <div className="float-right">
