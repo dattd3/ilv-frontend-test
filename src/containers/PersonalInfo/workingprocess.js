@@ -4,7 +4,7 @@ import { withTranslation, useTranslation } from 'react-i18next'
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
 import moment from 'moment'
 import map from '../map.config'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import WorkingProcessSearch from './workingProcessSearch'
 import Constants from '../../commons/Constants'
 
@@ -83,15 +83,9 @@ class MyComponent extends React.Component {
     }
 
     componentWillMount() {
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`, muleSoftConfig)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let userContract = res.data.data;
@@ -102,7 +96,7 @@ class MyComponent extends React.Component {
                 window.location.href = map.Login;
             });
 
-        config = {
+        const config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
@@ -133,7 +127,8 @@ class MyComponent extends React.Component {
     }
 
     fetchUserChangeWorkingAppointment = async () => {
-        const changeWorkingAppointmentResponses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/workprocess`, getRequestConfigurations())
+        const config = getMuleSoftHeaderConfigurations()
+        const changeWorkingAppointmentResponses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/workprocess`, config)
 
         if (changeWorkingAppointmentResponses && changeWorkingAppointmentResponses.data ) {
             const result = changeWorkingAppointmentResponses.data.result

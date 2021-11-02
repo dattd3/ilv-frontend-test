@@ -5,6 +5,8 @@ import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
 import ShowKPIDetail from "./ShowKPIDetail"
 import Constants from "../../commons/Constants"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+
 class General extends React.Component {
   constructor(props) {
     super(props)
@@ -19,13 +21,7 @@ class General extends React.Component {
   }
 
   getAllKPI = async () => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getMuleSoftHeaderConfigurations()
     const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`, config)
     let years = this.collectYears(responses)
     years = [...new Set(years)]

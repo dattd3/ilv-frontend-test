@@ -4,7 +4,7 @@ import _ from 'lodash'
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
 import { Modal, Button, Form } from 'react-bootstrap'
-import { formatStringByMuleValue } from "../../../commons/Utils"
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import './ApprovalDelegationModal.scss'
 import defaultAvartar from '../../../components/Common/DefaultAvartar'
 import { actionApprovalDelegation } from "./Constant"
@@ -38,11 +38,7 @@ function ApprovalDelegationModal(props) {
 
     useEffect(() => {
         async function searchUsers() {
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
+            const config = getMuleSoftHeaderConfigurations()
             const response = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: keyword, should_check_superviser: false }, config)
             if (response && response.data) {
                 const result = response.data.result

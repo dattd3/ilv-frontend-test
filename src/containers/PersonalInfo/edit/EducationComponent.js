@@ -5,6 +5,7 @@ import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 registerLocale("vi", vi)
@@ -28,13 +29,7 @@ class EducationComponent extends React.Component {
   }
 
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getMuleSoftHeaderConfigurations()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/schools`, config)
       .then(res => {

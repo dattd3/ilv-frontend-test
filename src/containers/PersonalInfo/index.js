@@ -6,10 +6,9 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import map from '../map.config';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class MyComponent extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -23,13 +22,7 @@ class MyComponent extends React.Component {
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    let config = getMuleSoftHeaderConfigurations()
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
       .then(res => {

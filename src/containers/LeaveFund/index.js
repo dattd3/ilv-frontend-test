@@ -5,7 +5,7 @@ import moment from 'moment'
 import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import DropdownCustomize from "./DropdownCustomize"
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from '../../commons/Constants'
 import { withTranslation } from "react-i18next"
 import 'react-datepicker/dist/react-datepicker.css'
@@ -32,10 +32,11 @@ class LeaveFund extends React.Component {
   }
 
   initialData = () => {
+    const config = getMuleSoftHeaderConfigurations()
     const subordinatesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`
     const subordinateLeaveOfAbsencesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence?current_year=${this.currentYear}`
-    const requestSubordinates = axios.get(subordinatesEndpoint, getRequestConfigurations())
-    const requestSubordinateLeaveOfAbsences = axios.get(subordinateLeaveOfAbsencesEndpoint, getRequestConfigurations())
+    const requestSubordinates = axios.get(subordinatesEndpoint, config)
+    const requestSubordinateLeaveOfAbsences = axios.get(subordinateLeaveOfAbsencesEndpoint, config)
 
     Promise.allSettled([requestSubordinates, requestSubordinateLeaveOfAbsences]).then(responses => {
       this.processListSubordinates(responses[0])
@@ -79,7 +80,8 @@ class LeaveFund extends React.Component {
   }
 
   fetchListSubordinates = async () => {
-    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigurations())
+    const config = getMuleSoftHeaderConfigurations()
+    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, config)
     const subordinates = this.prepareSubordinates(responses)
 
     this.setState({

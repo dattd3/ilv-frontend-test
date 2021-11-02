@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import Constants from "../../commons/Constants"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -51,11 +52,8 @@ class AssesserComponent extends React.Component {
             current_position: "",
             department: ""
         }
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+        let config = getMuleSoftHeaderConfigurations()
+
         // const companiesUsing = ['V070', 'V077', 'V060']
         // if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
         //     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
@@ -129,13 +127,7 @@ class AssesserComponent extends React.Component {
     getAppraiser = (value) => {
         const { approver } = this.props
         if (value !== "") {
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                    'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                    'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-                }
-            }
+            const config = getMuleSoftHeaderConfigurations()
 
             axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
                 .then(res => {
