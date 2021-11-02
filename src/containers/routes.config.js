@@ -492,6 +492,14 @@ export default [
           component: lazy(() => import("./Instruct"))
         },
         {
+          key: "dtls",
+          routeProps: {
+            exact: true,
+            path: map.VinmecDTLS
+          },
+          component: lazy(() => import("./VinmecDTLS"))
+        },
+        {
           key: "clinic-vinmec",
           routeProps: {
             exact: true,
