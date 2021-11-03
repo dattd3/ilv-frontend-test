@@ -84,6 +84,7 @@ class RequestComponent extends React.Component {
     const params = {
       pageIndex: searchingDataToFilter.pageIndex || Constants.PAGE_INDEX_DEFAULT,
       pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
+      CompanyCode: localStorage.getItem('companyCode')
     }
     this.fetchCandidateData(params);
   }
@@ -113,35 +114,81 @@ class RequestComponent extends React.Component {
     axios.all([requestSupport, requestStaffContract]).then(axios.spread((...responses) => {
       if (this._isMounted) {
         this.prepareListDocumentRequest(responses[0], true);
-        this.prepareListDocumentRequest(responses[1], false);
+        //this.prepareListDocumentRequest(responses[1], false);
       }
     }))
 }
 
   prepareDatatoSubmit = (data) => {
-    return data.map(item => ( {
-      id: item.id,
-      employeeCode: item.employeeNo,
-      fullName: item.name,
-      regionName: item.region,
-      unitName: item.unit,
-      divisionName: item.department,
-      positionName: item.rank,
-      recruitingDate: item.startWork,
-      expireDate: item.timeExpire,
-      managerToolStatus: item.devices.status,
-      managerToolDesc: item.devices.note,
-      managerToolIndicator: item.devices.isEditable,
-      managerAccountStatus: item.account.status,
-      managerAccountDesc: item.account.note,
-      managerAccountIndicator: item.account.isEditable,
-      managerFingerStatus: item.voucher.status,
-      managerFingerDesc: item.voucher.note,
-      managerFingerIndicator: item.voucher.isEditable,
-      managerDormitoryStatus: item.dormitory.status,
-      managerDormitoryDesc: item.dormitory.note,
-      managerDormitoryIndicator: item.dormitory.isEditable
-    }))
+    const isVinbrain = checkIsExactPnL(Constants.PnLCODE.Vinbrain);
+    return data.map(item => {
+      let itemStatus
+      if(isVinbrain) {
+        itemStatus = {
+          onboardingStatus1: item.logistic.status,
+          supporterDes1: item.logistic.note,
+
+          onboardingStatus2: item.setup.status,
+          supporterDes2: item.setup.note,
+
+          onboardingStatus3: item.employee.status,
+          supporterDes3: item.employee.note,
+
+          onboardingStatus4: item.welcomeLetter.status,
+          supporterDes4: item.welcomeLetter.note,
+
+          onboardingStatus5: item.training.status,
+          supporterDes5: item.training.note,
+
+          onboardingStatus6: item.document.status,
+          supporterDes6: item.document.note,
+
+          onboardingStatus7: item.email.status,
+          supporterDes7: item.email.note,
+
+          onboardingStatus8: item.contract.status,
+          supporterDes8: item.contract.note,
+        }
+      } else {
+        itemStatus = {
+          onboardingStatus1: item.devices.status,
+          supporterDes1: item.devices.note,
+
+          onboardingStatus2: item.account.status,
+          supporterDes2: item.account.note,
+
+          onboardingStatus3: item.voucher.status,
+          supporterDes3: item.voucher.note,
+
+          onboardingStatus4: item.dormitory.status,
+          supporterDes4: item.dormitory.note,
+        }
+      }
+      return  {
+        id: item.id,
+        employeeCode: item.employeeNo,
+        fullName: item.name,
+        regionName: item.region,
+        unitName: item.unit,
+        divisionName: item.department,
+        positionName: item.rank,
+        recruitingDate: item.startWork,
+        expireDate: item.timeExpire,
+        // managerToolStatus: item.devices.status,
+        // managerToolDesc: item.devices.note,
+        // managerToolIndicator: item.devices.isEditable,
+        // managerAccountStatus: item.account.status,
+        // managerAccountDesc: item.account.note,
+        // managerAccountIndicator: item.account.isEditable,
+        // managerFingerStatus: item.voucher.status,
+        // managerFingerDesc: item.voucher.note,
+        // managerFingerIndicator: item.voucher.isEditable,
+        // managerDormitoryStatus: item.dormitory.status,
+        // managerDormitoryDesc: item.dormitory.note,
+        // managerDormitoryIndicator: item.dormitory.isEditable,
+        ...itemStatus
+      }
+    })
   }
   prepareListDocumentRequest = (res, isReset) => {
     
@@ -175,57 +222,65 @@ class RequestComponent extends React.Component {
             timeExpire: item.expireDate || '',
             requestCode: item.requestCode,
             devices: {
-                status: item.managerToolStatus ,
-                note: item.managerToolDesc || '',
-                isEditable: item.managerToolIndicator
+                status: item.supportOnboardInfo?.onboardingStatus1 || false,
+                note: item.supportOnboardInfo?.supporterDes1 || '',
+                isEditable: item.onboardingIndicator1
             },
             account: {
-                status: item.managerAccountStatus,
-                note: item.managerAccountDesc || '',
-                isEditable: item.managerAccountIndicator
+                status: item.supportOnboardInfo?.onboardingStatus2 || false ,
+                note: item.supportOnboardInfo?.supporterDes2 || '',
+                isEditable: item.onboardingIndicator2
             },
             voucher: {
-                status: item.managerFingerStatus,
-                note: item.managerFingerDesc || '',
-                isEditable: item.managerFingerIndicator
+                status: item.supportOnboardInfo?.onboardingStatus3 || false ,
+                note: item.supportOnboardInfo?.supporterDes3 || '',
+                isEditable: item.onboardingIndicator3
             },
             dormitory: {
-                status: item.managerDormitoryStatus,
-                note: item.managerDormitoryDesc || '',
-                isEditable: item.managerDormitoryIndicator
+                status: item.supportOnboardInfo?.onboardingStatus4 || false ,
+                note: item.supportOnboardInfo?.supporterDes4 || '',
+                isEditable: item.onboardingIndicator4
             },
             //work for vinbrain
             logistic: { //  Chuẩn bị Logistic: chỗ ngồi, máy móc, voucher, VPP ...
-              status: item.managerToolStatus, 
-              note: item.managerToolDesc
+                status: item.supportOnboardInfo?.onboardingStatus1 || false ,
+                note: item.supportOnboardInfo?.supporterDes1 || '',
+                isEditable: item.onboardingIndicator1
             },
             setup: { // Tạo account, cài đặt máy tính
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus2 || false ,
+              note: item.supportOnboardInfo?.supporterDes2 || '',
+              isEditable: item.onboardingIndicator2
             },
             employee: { // Tạo mã nhân viên và HĐLĐ/HĐTV, cam kết
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus3 || false ,
+              note: item.supportOnboardInfo?.supporterDes3 || '',
+              isEditable: item.onboardingIndicator3
             },
             welcomeLetter: { // Gửi thư chào mừng nhân viên mới: Nội quy/SĐTC/Hệ thống nội bộ/ contact hữu dụng
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus4 || false ,
+              note: item.supportOnboardInfo?.supporterDes4 || '',
+              isEditable: item.onboardingIndicator4
             },
             training: { // Tổ chức khóa Đào tạo định hướng
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus5 || false ,
+              note: item.supportOnboardInfo?.supporterDes5 || '',
+              isEditable: item.onboardingIndicator5
             },
             document: { // Hoàn thiện hồ sơ theo quy định Tập đoàn
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus6 || false ,
+              note: item.supportOnboardInfo?.supporterDes6 || '',
+              isEditable: item.onboardingIndicator6
             },
             email: { // Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus7 || false ,
+              note: item.supportOnboardInfo?.supporterDes7 || '',
+              isEditable: item.onboardingIndicator7
             },
             contract: { // Ký HĐLĐ
-                status: item.managerToolStatus,
-                note: item.managerToolDesc
+              status: item.supportOnboardInfo?.onboardingStatus8 || false ,
+              note: item.supportOnboardInfo?.supporterDes8 || '',
+              isEditable: item.onboardingIndicator8
             },
         }
     });
@@ -252,6 +307,7 @@ class RequestComponent extends React.Component {
     const params = {
         pageIndex: page || Constants.PAGE_INDEX_DEFAULT,
         pageSize: searchingDataToFilter.pageSize || Constants.PAGE_SIZE_DEFAULT,
+        CompanyCode: localStorage.getItem('companyCode')
     }
 
     this.fetchCandidateData(params)
@@ -316,7 +372,6 @@ class RequestComponent extends React.Component {
     if(!result || result.length == 0)
         return;
     result = this.prepareDatatoSubmit(result);
-
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
