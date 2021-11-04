@@ -46,6 +46,8 @@ const Constants = {
   IN_OUT_TIME_UPDATE: 5,
   CHANGE_DIVISON_SHIFT: 8,
   DEPARTMENT_TIMESHEET: 9,
+  ONBOARDING: 6,
+  RESIGN_SELF: 7,
 
   //Status request
   STATUS_PENDING: 0,
@@ -134,7 +136,7 @@ const Constants = {
   //other
   QAAlreadyExist: "QAAlreadyExist",
 
-  // Ticket 
+  // Ticket
 
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
@@ -167,6 +169,16 @@ const Constants = {
     editProfile: 'EDIT_PROFILE',
     qnA: 'QnA',
     changeStaffShift: 'CHANGE_STAFF_SHIFT'
+  },
+  PnLCODE: {
+    Vinhome: "V040",
+    Vinbrain: "V095",
+    Vinpearl: "V030",
+    Vinmec: "V060",
+    VinSchool: "V061",
+    VinFast: "V077",
+    VinFastTrading: "V078",
+    VinFastPB: "V070"
   }
 };
 export default Constants
