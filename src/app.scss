@@ -1502,31 +1502,6 @@ span.badge-notification[data-badge]::after {
   }
 }
 
-.nav-tabs {
-  &.tab-page {
-    border: none;
-    padding: 1em 0;
-    margin: 0 auto;
-    .nav-link {
-      border: none;
-    }
-    .nav-item {
-      border: 1px solid #ccc;
-      border-radius: 0.5em;
-      margin-right: 2em;
-      background-color: #fff;
-      color: #293281;
-    }
-    .active {
-      background-color: #347ef9;
-      color: #fff;
-    }
-    a {
-      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    }
-  }
-}
-
 .registration-employment-termination {
   color: #000000;
   .page-title {
