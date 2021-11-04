@@ -27,38 +27,6 @@ class RequestComponent extends React.Component {
       isShowDonitory: false,
       listCandidate: {
 				data: [
-					// {
-          //     id: 1,
-					// 		employeeNo: '31222',
-					// 		name: 'Nguyeen Van Tuan',
-					// 		region: 'Head Office',
-					// 		unit: 'Cơ sở',
-					// 		department: 'Hành chính',
-					// 		rank: 'Chuyên viên nhân sự',
-					// 		startWork: '2021-03-18',
-					// 		timeExpire: '2021-05-24',
-					// 		devices: {
-					// 				status: false,
-					// 				note: 'Nhân viên hiện đang nghỉ việc',
-          //         isEditable: true
-					// 		},
-					// 		account: {
-					// 				status: true,
-					// 				note: 'Đã cấp tài khoản cho nhân viên',
-          //         isEditable: true
-					// 		},
-					// 		voucher: {
-					// 				status: true,
-					// 				note: '',
-          //         isEditable: true
-					// 		},
-					// 		dormitory: {
-					// 				status: true,
-					// 				note: '',
-          //         isEditable: true
-					// 		},
-
-					// }
 				],
 				total: 0
 			},
@@ -174,18 +142,6 @@ class RequestComponent extends React.Component {
         positionName: item.rank,
         recruitingDate: item.startWork,
         expireDate: item.timeExpire,
-        // managerToolStatus: item.devices.status,
-        // managerToolDesc: item.devices.note,
-        // managerToolIndicator: item.devices.isEditable,
-        // managerAccountStatus: item.account.status,
-        // managerAccountDesc: item.account.note,
-        // managerAccountIndicator: item.account.isEditable,
-        // managerFingerStatus: item.voucher.status,
-        // managerFingerDesc: item.voucher.note,
-        // managerFingerIndicator: item.voucher.isEditable,
-        // managerDormitoryStatus: item.dormitory.status,
-        // managerDormitoryDesc: item.dormitory.note,
-        // managerDormitoryIndicator: item.dormitory.isEditable,
         ...itemStatus
       }
     })
