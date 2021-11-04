@@ -58,7 +58,6 @@ class Task extends React.Component {
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint`, config)
-            console.log(response.data.data.isSupporter);
 
             if (response && response.data) {
                 this.setState({
