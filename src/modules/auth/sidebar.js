@@ -51,14 +51,14 @@ export const Navigation = [
     role: "U",
   },
 
-  {
-    id: 48,
-    parentId: 0,
-    icon: 'c-task',
-    label: "Menu_Clinic_Learning",
-    to: map.ClinicVinmec,
-    role: ['V060']
-  },
+  // {
+  //   id: 48,
+  //   parentId: 0,
+  //   icon: 'c-task',
+  //   label: "Menu_Clinic_Learning",
+  //   to: map.ClinicVinmec,
+  //   role: ['V060']
+  // },
   
   //workflow management
   {
@@ -68,6 +68,14 @@ export const Navigation = [
     to: "",
     label: "MenuTaskManagement",
     role: "U",
+  },
+  {
+    id: 1099999,
+    parentId: 0,
+    icon: 'c-examination',
+    label: "dtls",
+    to: map.VinmecDTLS,
+    role: ['V060']
   },
   {
     id:1000,
@@ -335,4 +343,5 @@ export const Navigation = [
     to: map.Instruct,
     role: 'U'
   }
+
 ];

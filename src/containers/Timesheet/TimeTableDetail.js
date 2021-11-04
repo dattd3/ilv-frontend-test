@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
+import map from '../../containers/map.config'
 import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode } from "../../commons/Utils"
 
 const DATE_TYPE = {
@@ -59,10 +60,17 @@ function RenderRow0(props) {
   const backDate = calculateBackDateByPnLVCodeAndFormatType(PnLVCode, 'YYYYMMDD')
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
+  const pathName = window.location.pathname
 
   return (props.timesheets || []).map((item, index) => {
     let dayFormatToBindElement = moment(item.day, "DD/MM/YYYY").format("DDMMYYYY")
-    let isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "YYYYMMDD"))
+    let isBlockActions = false
+
+    if (pathName === map.PersonalDetails) {
+      isBlockActions = true
+    } else {
+      isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "YYYYMMDD"))
+    }
 
     return <Fragment key={index}>
       <td data-tip data-for={`total-items-selected-${dayFormatToBindElement}`} className={`wrap-item-tooltip ${isBlockActions ? 'block-actions' : ''}`}>

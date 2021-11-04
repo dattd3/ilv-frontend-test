@@ -33,6 +33,7 @@ function Root() {
     <ContextProviders>
       <BrowserRouter>
       {/* <Maintenance/> */}
+
         <Switch> 
           {routes.map(
             ({ component: Content, key, routeProps, contentProps }) => (
