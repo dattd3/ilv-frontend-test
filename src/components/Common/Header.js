@@ -130,18 +130,27 @@ function Header(props) {
                             let notificationLink = (type) => {
                                 switch (type) {
                                     case Constants.notificationType.NOTIFICATION_DEFAULT:
+                                    case 12:
+                                    case 13:
+                                    case 14:
+                                    case 15:
+                                    case 11:
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION:
                                         if (item.title.indexOf("thẩm định") > 0)
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
+                                    case 6:
+                                        return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
                                         return `/tasks`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
                                         return `/tasks?tab=approval`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         return `/timesheet`
+                                    case 20:
+                                         return '/personal-info?tab=document'
                                     default:
                                         return `${item.url}`
                                 }
