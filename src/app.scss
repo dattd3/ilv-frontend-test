@@ -2974,7 +2974,7 @@ span.badge-notification[data-badge]::after {
     .link-image-detail {
       display: inline-block;
       overflow: hidden;
-      width: 30%;
+      flex: 0 0 30%;
       height: 80px;
       margin-right: 10px;
       .thumbnail {
@@ -2982,6 +2982,9 @@ span.badge-notification[data-badge]::after {
         max-height: 100%;
         object-fit: cover;
         border-radius: 6px;
+        &.error {
+          object-fit: contain;
+        }
       }
     }
     .title-source-time-info {
