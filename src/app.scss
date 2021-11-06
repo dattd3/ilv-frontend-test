@@ -705,9 +705,11 @@
 
 .page-link {
   color: #515151;
+  z-index: inherit !important;
 }
 .page-item.active {
   .page-link {
+    z-index: inherit !important;
     background-color: #f8c20b !important;
     border-color: #f8c20b !important;
   }
@@ -1349,6 +1351,52 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .status{
+    font-size: 16px;
+    color: #000000;
+    .color-success{
+      color: #009A6C;
+    }
+    .color-fail{
+      color: #FF0000
+    }
+  }
+  .document-content{
+    background-color: #fff;
+    border-radius: 0.5em;
+
+    table {
+      width: 100%;
+      border: 1px solid #707070;
+      font-size: 16px;
+      thead{
+        background-color: #347EF9;
+      }
+      tr {
+        border: 1px solid #707070;
+        td {
+          border: 1px solid #707070;
+          padding: 7px 14px;
+          text-align: center;
+          color: #000000;
+
+        }
+        .name{
+          text-align: left !important;
+        }
+        th{
+          border: 1px solid #707070;
+          padding: 14px;
+          text-align: center;
+          color: #FFFFFF;
+        }
+      }
+      p {
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
 
   .nav-tabs {
     border: none;
@@ -1447,6 +1495,573 @@ span.badge-notification[data-badge]::after {
         tr {
           td {
             border-top: 1px solid #DDDDDD;
+          }
+        }
+      }
+    }
+  }
+}
+
+.registration-employment-termination {
+  color: #000000;
+  .page-title {
+    text-align: center;
+    color: #ff0000;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .block {
+    .block-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #283280;
+    }
+    input {
+      &:focus {
+        box-shadow: none;
+        border-color: #d1d3e2;
+      }
+    }
+    .react-datepicker-wrapper {
+      cursor: pointer;
+      [class$="-container"] {
+        margin-top: 0;
+      }
+    }
+    .has-border-bottom {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+  }
+}
+
+.proposed-registration-employment-termination {
+  color: #000000;
+  .page-title {
+    text-align: center;
+    color: #ff0000;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .block {
+    .block-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #283280;
+    }
+    input {
+      &:focus {
+        box-shadow: none;
+        border-color: #d1d3e2;
+      }
+    }
+    .react-datepicker-wrapper {
+      cursor: pointer;
+      [class$="-container"] {
+        margin-top: 0;
+      }
+    }
+    .has-border-bottom {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+  }
+  .staff-information-proposed-resignation-block {
+    .search-action-block {
+      .btn-action-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .btn-action {
+          width: 45%;
+          padding: 6px;
+          border: none;
+          color: #FFFFFF;
+          border-radius: .35rem;
+          &.add {
+            background: #347ef9;
+          }
+          &.delete {
+            background: #ff0000;
+          }
+        }
+      }
+    }
+    .list-staff {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: separate;
+      border: 1px solid #CCCCCC;
+      border-radius: .35rem;
+      thead {
+        background: #eaecf4;
+        tr {
+          height: 40px;
+          th {
+            font-weight: normal;
+            text-align: center;
+            &:first-child {
+              border-top-left-radius: .35rem;
+            }
+            &:last-child {
+              border-top-right-radius: .35rem;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            border-bottom: 1px solid #CCCCCC;
+            .data {
+              height: 60px;
+              display: flex;
+              align-items: flex-start;
+              padding: 10px;
+              overflow: hidden;
+              &.full-name {
+                display: flex;
+                align-items: flex-start;
+                input {
+                  margin-right: 8px;
+                  margin-top: 6px;
+                }
+              }
+              &.employee-code {
+                justify-content: center;
+              }
+              &.job-title {
+                justify-content: center;
+              }
+              &.block-department-part {
+                justify-content: center;
+              }
+              &.contract-type {
+                justify-content: center;
+              }
+              &.day-working {
+                justify-content: center;
+              }
+            }
+            &.full-name {
+              width: 20%;
+            }
+            &.employee-code {
+              width: 12%;
+            }
+            &.job-title {
+              width: 16%;
+            }
+            &.block-department-part {
+              width: 20%;
+            }
+            &.contract-type {
+              width: 18%;
+            }
+            &.day-working {
+              width: 14%;
+            }
+          }
+          &:last-child {
+            td {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.resignation-requests-management-page {
+  color: #000000;
+  margin-bottom: 30px;
+  font-size: 14px;
+  .resignation-requests-management-action-button {
+    .filter-action-block {
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      .action-group {
+        align-items: center;
+        .attachment {
+          text-align: center;
+          cursor: pointer;
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          background: #FFFFFF;
+          padding: 6px;
+          margin-bottom: 0;
+          &:focus {
+            outline: none;
+          }
+          i {
+            margin-right: 6px;
+            font-size: 14px;
+          }
+        }
+        .save {
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          background: #FFFFFF;
+          padding: 6px;
+          &:focus {
+            outline: none;
+          }
+          i {
+            margin-right: 5px;
+            font-size: 14px;
+          }
+        }
+      }
+      .input-filter {
+        input {
+          width: 100%;
+          border: 1px solid #CCCCCC;
+          border-radius: .35rem;
+          padding: 6px 10px;
+          &:focus-visible {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
+  .staff-information-proposed-resignation-block {
+    .search-action-block {
+      .btn-action-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .btn-action {
+          width: 45%;
+          padding: 6px;
+          border: none;
+          color: #FFFFFF;
+          border-radius: .35rem;
+          &.add {
+            background: #347ef9;
+          }
+          &.delete {
+            background: #ff0000;
+          }
+        }
+      }
+    }
+    .list-staff-block {
+      display: block;
+      overflow-x: scroll;
+      overflow-y: auto;
+      border: 1px solid #CCCCCC;
+      border-top-left-radius: .35rem;
+      border-top-right-radius: .35rem;
+      &::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+          background-color: #F5F5F5;
+      }
+      &::-webkit-scrollbar-thumb {
+          background-color: #C1C1C1;
+      }
+      &::-webkit-scrollbar-track {
+          box-shadow: inset 0 0 6px #F1F1F1;
+          -webkit-box-shadow: inset 0 0 6px #F1F1F1;
+          background-color: #F1F1F1;
+      }
+      .table {
+        color: inherit;
+        table-layout: auto;
+        width: 100%;
+        border-radius: .35rem;
+        background: #FFFFFF;
+        border-spacing: 0;
+        border-collapse: separate;
+        margin-bottom: 0;
+        thead {
+          color: #347EF9;
+          background-color: #eaecf4;
+          th {
+            text-align: center;
+            vertical-align: middle;
+            border-collapse: collapse;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            top: 0;
+            background-color: #eaecf4;
+            z-index: 10;
+            border-bottom: none;
+            &.sticky-col {
+              position: sticky;
+              position: -webkit-sticky;
+              background: #eaecf4;
+              z-index: 1;
+            }
+          }
+          th:first-child {
+            border-top-left-radius: .35px;
+          }
+          th:last-child {
+            text-align: center;
+            border-top-right-radius: .35px;
+          }
+        }
+        tbody {
+          td {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            border-bottom: 1px solid #CCCCCC;
+            vertical-align: middle;
+            [class$="-container"] {
+              margin: 0;
+            }
+            &.full-name-col {
+              .full-name {
+                input {
+                  margin-right: 8px;
+                }
+              }
+            }
+            .data {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            .full-name {
+              width: 200px;
+            }
+            .employee-code {
+              width: 120px;
+              text-align: center;
+            }
+            .job-title {
+              width: 180px;
+            }
+            .block-department-part {
+              width: 200px;
+            }
+            .rank {
+              width: 150px;
+            }
+            .day-working {
+              width: 140px;
+              text-align: center;
+            }
+            .detailed-reason {
+              width: 200px;
+            }
+            &.created-by {
+              width: 180px;
+            }
+            .attachment {
+              width: 300px;
+            }
+            .attachment, &.attachment-col,
+            &.handover-job-col, .handover-job, &.asset-transfer-col, .asset-transfer,
+            &.handover-insurance-col, .handover-insurance, &.handover-uniforms-col,
+            .handover-uniforms, &.handover-fingerprints-email-col, .handover-fingerprints-email,
+            &.handover-liabilities-col, .handover-liabilities, &.handover-software-col,
+            .handover-software {
+              overflow: initial;
+            }
+          }
+        }
+        .full-name-col {
+          left: 0;
+        }
+        .sticky-col {
+          position: sticky;
+          background: #FFFFFF;
+          z-index: 1;
+        }
+        .employee-code-col {
+          left: 224px;
+        }
+      }
+    }
+  }
+}
+
+.export-button-block {
+  margin: 20px 0;
+  text-align: right;
+  button {
+    padding: 10px 30px;
+    border: 1px solid #CCCCCC;
+    border-radius: .35rem;
+    background: #FFFFFF;
+    i {
+      margin-right: 10px;
+    }
+  }
+}
+
+.contract-termination-interview {
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #000000;
+  padding: 30px 1.5rem;
+  .logo-block {
+    text-align: center;
+    margin-bottom: 30px;
+    .logo {
+      height: 80px;
+    }
+  }
+  .page-title {
+    text-align: center;
+    color: #ff0000;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .box {
+    color: inherit;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    margin: 15px 0;
+    p {
+      margin: 10px 0;
+      &.question {
+        margin: 0 0 15px 0;
+        font-weight: bold;
+      }
+    }
+    .divider {
+      margin-top: 10px;
+      border-top: none;
+      border-bottom: 1px solid #CCCCCC;
+    }
+    .answer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      label {
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+      span {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 80px;
+        input {
+          cursor: pointer;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  .block {
+    .block-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #283280;
+    }
+    input {
+      &:focus {
+        box-shadow: none;
+        border-color: #d1d3e2;
+      }
+    }
+    .react-datepicker-wrapper {
+      cursor: pointer;
+      [class$="-container"] {
+        margin-top: 0;
+      }
+    }
+    .has-border-bottom {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+  }
+  .interview-content-block {
+    .list-staff {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: separate;
+      border: 1px solid #CCCCCC;
+      border-radius: 10px;
+      thead {
+        background: #eaecf4;
+        tr {
+          height: 40px;
+          th {
+            font-weight: bold;
+            text-align: center;
+            &.col-first {
+              border-top-left-radius: 10px;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+            }
+            &.col-second {
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+            }
+            &.col-third {
+              border-top-right-radius: 10px;
+              border-bottom: 1px solid #CCCCCC;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            border-bottom: 1px solid #CCCCCC;
+            vertical-align: middle;
+            .data {
+              height: 40px;
+              display: flex;
+              align-items: center;
+              padding: 0 10px;
+            }
+            .item {
+              padding: 0 10px;
+              .sub {
+                padding: 5px 0;
+                input {
+                  margin-right: 8px;
+                }
+              }
+              &.comment {
+                display: flex;
+                align-items: center;
+              }
+            }
+            &.categories {
+              width: 15%;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+              .item {
+                font-weight: bold;
+              }
+            }
+            &.selection {
+              width: 35%;
+              border-bottom: 1px solid #CCCCCC;
+              border-right: 1px solid #CCCCCC;
+            }
+            &.explain {
+              width: 50%;
+            }
+            textarea {
+              padding: 5px 10px;
+              border: 1px solid #CCCCCC;
+              width: 100%;
+              height: 100%;
+              &:focus-visible {
+                outline: none;
+              }
+            }
+          }
+          &:last-child {
+            td {
+              border-bottom: none;
+            }
           }
         }
       }
@@ -2257,3 +2872,10 @@ span.badge-notification[data-badge]::after {
     }
   }
 }
+
+
+:root {
+  --ck-image-style-spacing: 1.5rem;
+}
+
+
