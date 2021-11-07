@@ -1,86 +1,186 @@
-import React from "react";
-import { Card, ListGroup } from 'react-bootstrap';
-import { useApi, useFetcher } from "../../modules";
-import { useTranslation } from "react-i18next";
-import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
-import moment from 'moment';
+import React, { useState } from "react"
+import { Image } from 'react-bootstrap'
+import { useTranslation } from "react-i18next"
+import moment from 'moment'
+import { useApi, useFetcher } from "../../modules"
+
+// import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
+import CustomPaging from '../../components/Common/CustomPaging'
+import IconDiamond from '../../assets/img/icon/Icon-Diamond.svg'
+import IconViewDetail from '../../assets/img/icon/Icon-Arrow-Right.svg'
+import IconUser from '../../assets/img/icon/Icon-User.svg'
+import IconTime from '../../assets/img/icon/Icon-Time.svg'
 
 const usePreload = (params) => {
     const api = useApi();
-    const [listArticles = undefined, err] = useFetcher({
-        api: api.fetchNewsOnHome,
+    const [data = [], err] = useFetcher({
+        api: api.fetchArticleList,
         autoRun: true,
         params: params
     });
-    return listArticles;
+    return data;
 };
 
-function convertToSlug(input) {
-    var slug = input.toLowerCase();
-
-    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a')
-        .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e')
-        .replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i')
-        .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o')
-        .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u')
-        .replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y')
-        .replace(/đ/gi, 'd')
-        .replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '')
-        .replace(/ /gi, " - ")
-        .replace(/\-\-\-\-\-/gi, '-')
-        .replace(/\-\-\-\-/gi, '-')
-        .replace(/\-\-\-/gi, '-')
-        .replace(/\-\-/gi, '-')
-        .replace(/[^\w\-]+/g, '')
-        .replace(/\-\-+/g, '-')
-        .replace(/\@\-|\-\@|\@/gi, '');
-    return slug;
-}
-
-function SubStringDescription(input) {
-    if (input.length > 150) {
-        return input.substr(0, 149);
-    } else {
-        return input;
-    }
-}
-
 function NewsOnHome(props) {
+    const { t } = useTranslation()
+    const [pageIndex, SetPageIndex] = useState(1)
+    const [pageSize, SetPageSize] = useState(9)
+    const totalTopArticles = 5
 
-    const { t } = useTranslation();
-    const listArticles = usePreload();
+    const listArticles = usePreload([pageIndex, pageSize])
+    const articles = listArticles?.data || []
+    const totalArticles = articles.totalRecord
+    const totalArticlesPerPage = articles.listArticles?.length
+
+    const onChangePage = page => {
+        SetPageIndex(page)
+    }
+
+    const convertToSlug = input => {
+        let slug = input?.toLowerCase()
+        slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a')
+            .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e')
+            .replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i')
+            .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o')
+            .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u')
+            .replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y')
+            .replace(/đ/gi, 'd')
+            .replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '')
+            .replace(/ /gi, " - ")
+            .replace(/\-\-\-\-\-/gi, '-')
+            .replace(/\-\-\-\-/gi, '-')
+            .replace(/\-\-\-/gi, '-')
+            .replace(/\-\-/gi, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/\@\-|\-\@|\@/gi, '');
+        return slug
+    }
+    
+    const subStringDescription = input => {
+        return input && input?.length > 150 ? input.substr(0, 149) : input
+    }
+    
+    const getTimeByRawTime = rawTime => {
+        const time = moment(rawTime).isValid() ? moment(rawTime) : null
+        return {
+            time: time?.format("HH:mm") || "",
+            date: time?.format("DD/MM/YYYY") || ""
+        }
+    }
+
+    const topOne = totalArticlesPerPage > 0 ? articles.listArticles[0] : null
+    const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
+    const topFour = totalArticlesPerPage > 1 ? articles.listArticles?.slice(1, totalTopArticles) : []
+    const others = totalArticlesPerPage > totalTopArticles ? articles.listArticles?.slice(totalTopArticles) : []
+
     return (
-        <Card className="mb-4 news-home shadow">
-            <Card.Body className="card-body pd-0">
-                <ListGroup variant="flush">
-                    <ListGroup.Item>
-                        <span className="db-card-header color-pink"><i className="fas icon-groupnotice"></i> {t("Menu_GroupInformation")}</span>
-                    </ListGroup.Item>
-                    {
-                        listArticles && listArticles.data ?
-                            listArticles.data.map(function (obj, i) {
-                                return (
-
-                                    <ListGroup.Item key={i} className="news-home-item">
-                                        <a href={`/news/${convertToSlug(obj.title)}/${obj.id}`}>
-                                            <div className="nhome-thumbnail" style={{ backgroundImage: `url(${obj.thumbnail})` }}></div>
-                                        </a>
-                                        <div className="nhome-infor">
-                                            <a href={`/news/${convertToSlug(obj.title)}/${obj.id}`}>
-                                                <Card.Title>{obj.title}</Card.Title>
+        totalArticles > 0 ?
+        <>
+        <h1 className="page-title"><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h1>
+        <div className="top-news">
+            <div className="row">
+                <div className="col-md-6 special">
+                    <div className="top-one">
+                        <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} title={topOne?.title} className="link-detail">
+                            <Image src={topOne?.thumbnail} alt="News" className="thumbnail" 
+                                onError={(e) => {
+                                    e.target.src = "/vingroup-logo.svg"
+                                }}
+                            />
+                            <p className="title">{topOne?.title || ""}</p>
+                        </a>
+                        <div className="other-info">
+                            <div className="source-time-info">
+                                <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
+                                <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.time} | {timePublishedTopOne?.date}</span></span>
+                            </div>
+                            <p className="description">{subStringDescription(topOne?.description)}...</p>
+                            <div className="btn-detail">
+                                <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} title={topOne?.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 other">
+                    <div className="top-four">
+                        {
+                            topFour.length > 0 ? 
+                            topFour.map((item, index) => {
+                                let timePublished = getTimeByRawTime(item?.publishedDate)
+                                return <div className="item" key={item.id}>
+                                            <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                                <Image src={item.thumbnail} className="thumbnail"
+                                                    onError={(e) => {
+                                                        e.target.src = "/vingroup-logo.svg"
+                                                        e.target.className = `thumbnail error`
+                                                    }} 
+                                                />
                                             </a>
-                                            <Card.Text className="small text-gray-600">{SubStringDescription(obj.description)}...</Card.Text>
-                                            <span className="small"><i className="far fa-clock"></i> {moment(obj.publishedDate).format('DD/MM/YYYY')} - {obj.sourceSite}</span>
+                                            <div className="title-source-time-info">
+                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                <div className="source-time-info">
+                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.time} | {timePublished.date}</span></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </ListGroup.Item>
-
-                                );
                             })
-                            : <ListGroup.Item><LoadingSpinner /></ListGroup.Item>
+                            
+                            : t("DataNotFound")
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="other-news">
+            <div className="row">
+                <div className="col-md-12">
+                    {
+                        others.length > 0 ?
+                        others.map((item, index) => {
+                            let timePublished = getTimeByRawTime(item?.publishedDate)
+                            return <div className="item" key={item.id}>
+`                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                            <Image src={item.thumbnail} alt="News" className="thumbnail"
+                                                onError={(e) => {
+                                                    e.target.src = "/vingroup-logo.svg"
+                                                    e.target.className = `thumbnail error`
+                                                }} 
+                                            />
+                                        </a>
+                                        <div className="title-source-time-info">
+                                            <div className="main-info">
+                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                <p className="description">{subStringDescription(item.description)}...</p>
+                                                <div className="source-time-info">
+                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.time} | {timePublished.date}</span></span>
+                                                </div>
+                                            </div>
+                                            <div className="btn-detail">
+                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={topOne.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                        })
+                        : t("DataNotFound")
                     }
-                </ListGroup>
-            </Card.Body>
-        </Card>
+                </div>
+            </div>
+        </div>
+
+        <div className="row">
+            <div className="col-sm"></div>
+            <div className="col-sm">
+                <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={totalArticles} />
+            </div>
+            <div className="col-sm text-right">
+                {t("Total")}: {totalArticles}
+            </div>
+        </div>
+        </>
+        : t("DataNotFound")
     );
 }
 
