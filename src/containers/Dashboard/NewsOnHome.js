@@ -69,10 +69,6 @@ function NewsOnHome(props) {
         }
     }
 
-    const handleLoadImageError = e => {
-        
-    }
-
     const topOne = totalArticlesPerPage > 0 ? articles.listArticles[0] : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
     const topFour = totalArticlesPerPage > 1 ? articles.listArticles?.slice(1, totalTopArticles) : []
@@ -112,12 +108,12 @@ function NewsOnHome(props) {
                             topFour.length > 0 ? 
                             topFour.map((item, index) => {
                                 let timePublished = getTimeByRawTime(item?.publishedDate)
-                                return <div className="item" key={index}>
+                                return <div className="item" key={item.id}>
                                             <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
                                                 <Image src={item.thumbnail} className="thumbnail"
                                                     onError={(e) => {
                                                         e.target.src = "/vingroup-logo.svg"
-                                                        e.target.id = `error${index}`
+                                                        e.target.className = `thumbnail error`
                                                     }} 
                                                 />
                                             </a>
@@ -144,12 +140,12 @@ function NewsOnHome(props) {
                         others.length > 0 ?
                         others.map((item, index) => {
                             let timePublished = getTimeByRawTime(item?.publishedDate)
-                            return <div className="item" key={index}>
+                            return <div className="item" key={item.id}>
 `                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
                                             <Image src={item.thumbnail} alt="News" className="thumbnail"
                                                 onError={(e) => {
                                                     e.target.src = "/vingroup-logo.svg"
-                                                    e.target.className = `error`
+                                                    e.target.className = `thumbnail error`
                                                 }} 
                                             />
                                         </a>
