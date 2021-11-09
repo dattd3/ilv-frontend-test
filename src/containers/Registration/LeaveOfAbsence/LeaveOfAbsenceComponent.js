@@ -14,7 +14,7 @@ import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 
 const FULL_DAY = 1
@@ -84,41 +84,13 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     componentDidMount() {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            },
-            params: {
-                date: moment().format('YYYYMMDD')
-            }
+        const config = getMuleSoftHeaderConfigurations()
+        config['params'] = {
+            date: moment().format('YYYYMMDD')
         }
 
         const { leaveOfAbsence, t } = this.props
-        if (t("locale") === "vi") {
-            registerLocale("vi", vi)
-        } else {
-            registerLocale("en-US", enUS)
-        }
-
-
-        const currentAbsenceEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`
-        const subordinateLeaveOfAbsencesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence?current_year=${this.currentYear}`
-        // const requestCurrentAbsences = axios.get(currentAbsenceEndpoint, getRequestConfigurations())
-        // const requestSubordinateLeaveOfAbsences = axios.get(subordinateLeaveOfAbsencesEndpoint, getRequestConfigurations())
-    
-        // Promise.allSettled([requestSubordinates, requestSubordinateLeaveOfAbsences]).then(responses => {
-        //   this.processListSubordinates(responses[0])
-        //   this.processSubordinateLeaveOfAbsences(responses[1])
-        //   // this.setState({
-        //   //     modal: {
-        //   //         ...this.state.modal,
-        //   //         isShowLoadingModal: false
-        //   //     }
-        //   // })
-        // })
-
+        registerLocale("vi", t("locale") === "vi" ? vi : enUS)
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
             .then(res => {
@@ -128,6 +100,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             }).catch(error => {
             })
+
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
@@ -535,18 +508,16 @@ class LeaveOfAbsenceComponent extends React.Component {
             requestInfo,
             errors: {
                 approver: !approver ? this.props.t('Required') : errors.approver,
-                appraiser: errors.appraiser
                 // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
             }
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver || errors.appraiser) { //|| (errors.appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
             return false
         }
         return true
     }
-
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }

@@ -39,55 +39,39 @@ class AssesserComponent extends React.Component {
         this.onInputChange = debounce(this.getAppraiser, 600);
     }
 
-    componentDidMount() {
-        let appraiserModel = {
-            label: "",
-            value: "",
-            fullName: "",
-            avatar: "",
-            employeeLevel: "",
-            pnl: "",
-            orglv2Id: "",
-            account: "",
-            current_position: "",
-            department: ""
-        }
-        let config = getMuleSoftHeaderConfigurations()
-
-        // const companiesUsing = ['V070', 'V077', 'V060']
-        // if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-        //     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-        //         .then(res => {
-        //             if (res && res.data && res.data.data && res.data.data.length > 0) {
-        //                 let manager = res.data.data[0]
-        //                 let managerApproval = {
-        //                     ...appraiserModel,
-        //                     label: manager.fullName,
-        //                     value: manager.userid.toLowerCase(),
-        //                     fullName: manager.fullName,
-        //                     account: manager.userid.toLowerCase(),
-        //                     current_position: manager.title,
-        //                     department: manager.department
-        //                 }
-        //                 this.setState({ appraiser: managerApproval })
-        //                 this.props.updateAppraiser(managerApproval, true)
-        //             }
-        //         }).catch(error => {
-
-        //         });
-        // }
-
-        const { appraiser } = this.props
-        if (appraiser) {
-            this.setState({
-                appraiser: {
-                    ...appraiser,
-                    label: appraiser.fullName,
-                    value: appraiser.account,
-                }
-            })
-        }
+    async componentDidMount() {
+        const recentlyAppraiser = await this.loadRecentlyApprovers()
+        this.setState({ users: recentlyAppraiser })
     }
+
+    loadRecentlyApprovers = async () => {
+        try {
+          const config = getMuleSoftHeaderConfigurations()     
+          const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
+          if (response && response.data) {
+            const result = response.data.result
+            if (result && result.code == Constants.API_SUCCESS_CODE) {
+              const data = response.data?.data
+              return [{
+                value: data?.account?.toLowerCase() || "",
+                label: data?.fullName || "",
+                fullName: data?.fullName || "",
+                avatar: data?.avatar || "",
+                employeeLevel: data?.employeeLevel || "",
+                pnl: data?.pnl || "",
+                orglv2Id: data?.orglv2Id || "",
+                account: data?.account?.toLowerCase() || "",
+                current_position: data?.current_position || "",
+                department: data?.department || ""
+              }]
+            }
+            return []
+          }
+          return []
+        } catch (e) {
+          return []
+        }
+      }
 
     handleSelectChange(name, value) {
         if (value) {
