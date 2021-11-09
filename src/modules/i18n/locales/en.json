@@ -72,6 +72,7 @@
   "ChangeWorkingAppointment": "Transfer/Appointment",
   "Certificate": "Certificates",
   "PersonalRelations": "Personal Relations",
+  "PersonalDocuments": "Require Documents",
   "CommendationViolation": "Commendation & Violation",
   "CurrentAddress": "Current address",
   "Nation": "Nation",
@@ -1016,5 +1017,7 @@
   "detail": "Detail",
   "vaccination_btn_declare": "Declare vaccination status",
   "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information.",
-  "vaccination_exits": "Vaccination date is existing!"
+  "vaccination_exits": "Vaccination date is existing!",
+  "ComeBack": "Back",
+  "Source": "Source"
 }
