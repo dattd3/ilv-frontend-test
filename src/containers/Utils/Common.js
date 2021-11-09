@@ -28,6 +28,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 if (e.processStatusId == 8 || (e.processStatusId == 5 && tab == "approval")) {
                     e.canChecked = true
                 }
+                e.isEdit = element.isEdit
                 taskList.push(e);
             })
         }

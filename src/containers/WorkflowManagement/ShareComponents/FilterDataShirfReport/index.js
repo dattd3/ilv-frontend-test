@@ -11,6 +11,7 @@ import SelectTab from "../SelectTab"
 import MemberOption from "../MemberOption"
 import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
+import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -55,13 +56,7 @@ class FilterDataShirfReport extends React.Component {
   }
 
   getApproverInfo = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-      },
-    };
+    const config = getMuleSoftHeaderConfigurations()
 
     axios
       .get(

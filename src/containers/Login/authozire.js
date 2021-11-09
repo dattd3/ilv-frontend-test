@@ -6,6 +6,7 @@ import LoadingModal from '../../components/Common/LoadingModal'
 import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 
 function Authorize(props) {
@@ -28,13 +29,7 @@ function Authorize(props) {
             return;
         }
 
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        let config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
             .then(res => {
