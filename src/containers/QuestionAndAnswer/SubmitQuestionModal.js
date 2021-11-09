@@ -7,6 +7,7 @@ import Select from 'react-select'
 import axios from 'axios';
 // import _ from 'lodash'
 import { withTranslation } from 'react-i18next';
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -63,15 +64,9 @@ class SubmitQuestionModal extends React.Component {
                 //window.location.href = map.Login;
             });
 
-        config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, muleSoftConfig)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     // console.log("Debug check immediatesupervise", res.data.data);

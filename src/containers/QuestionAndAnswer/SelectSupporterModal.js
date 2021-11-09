@@ -6,6 +6,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import { withTranslation } from "react-i18next"
 import defaultAvartar from '../../components/Common/DefaultAvartar'
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -46,13 +47,7 @@ class SelectSupporterModal extends React.Component {
 
   getSupporterInfo = (value) => {
     if (value !== "") {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
-      }
+      const config = getMuleSoftHeaderConfigurations()
 
       axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
         .then(res => {

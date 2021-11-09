@@ -259,13 +259,20 @@ class RequestTaskList extends React.Component {
 
         return convertedDate < minDate ? false : true
     }
-    isShowEditButton = (status, appraiser, requestTypeId, startdate) => {
+
+    isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
+        const { page } = this.props
         let isShow = true;
 
-        if (this.props.page == "approval") {
+        if (page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if (
+                (requestTypeId != Constants.SUBSTITUTION && requestTypeId != Constants.IN_OUT_TIME_UPDATE && requestTypeId != Constants.UPDATE_PROFILE && requestTypeId != Constants.CHANGE_DIVISON_SHIFT && requestTypeId != Constants.DEPARTMENT_TIMESHEET) 
+                && (status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser)) 
+                && this.checkDateLessThanPayPeriod(startDate) 
+                && isEditOnceTime
+            ) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -556,11 +563,12 @@ class RequestTaskList extends React.Component {
                             <tbody>
                             {
                                 tasks.map((child, index) => {
-                                    let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
+                                    let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate, child.isEdit);
                                     let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
                                     let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
-                                    let totalTime = null;
+                                    let totalTime = null
                                     let editLink = null
+
                                     if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }

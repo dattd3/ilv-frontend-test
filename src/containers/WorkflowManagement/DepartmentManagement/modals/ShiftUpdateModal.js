@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import { Modal, Dropdown, Button, Form } from 'react-bootstrap'
 import Constants from "../../../../commons/Constants"
-import { formatStringByMuleValue, formatNumberInteger } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger, getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import DropdownCustomize from "../../../LeaveFund/DropdownCustomize"
 import './ShiftUpdateModal.scss'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -98,11 +98,7 @@ function ShiftUpdateModal(props) {
 
         async function getShiftList() {
             try {
-                const config = {
-                    headers: {
-                      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                }
+                const config = getMuleSoftHeaderConfigurations()
                 const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
                 const shifts = prepareShifts(responses)
                 SetShiftList(shifts)
@@ -150,11 +146,7 @@ function ShiftUpdateModal(props) {
 
         async function getSubordinateTimeOverview() {
             try {
-                const config = {
-                    headers: {
-                      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                }
+                const config = getMuleSoftHeaderConfigurations()
                 const data = {
                     from_date: moment(props.dateInfo.date).format("YYYYMMDD"),
                     to_date: moment(props.dateInfo.date).format("YYYYMMDD"),

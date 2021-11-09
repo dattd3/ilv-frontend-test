@@ -2,6 +2,7 @@ import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import axios from 'axios'
 import { withTranslation } from "react-i18next"
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 
 class FamilyComponent extends React.Component {
     constructor() {
@@ -13,13 +14,7 @@ class FamilyComponent extends React.Component {
     }
 
     componentDidMount() {
-        let config = {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-          }
-        }
+        let config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
           .then(res => {
