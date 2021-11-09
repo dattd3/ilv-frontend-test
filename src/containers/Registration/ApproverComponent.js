@@ -94,10 +94,8 @@ class ApproverComponent extends React.Component {
 
   loadApproverRecently = async () => {
     try {
-      const config = getMuleSoftHeaderConfigurations()
-      const suggestApproverType = 1
-  
-      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests?type=${suggestApproverType}`, config)
+      const config = getMuleSoftHeaderConfigurations() 
+      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {

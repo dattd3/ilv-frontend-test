@@ -9,7 +9,7 @@ import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
-import { formatStringByMuleValue } from "../../../../commons/Utils"
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
 
 const DATE_TYPE = {
@@ -81,10 +81,6 @@ class EmployeeTimesheets extends Component {
   search(startDate, endDate, memberIds) {
     let start = moment(startDate).format("YYYYMMDD");
     let end = moment(endDate).format("YYYYMMDD");
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    };
-
     const timeoverviewParams = {
       from_date: start,
       to_date: end,
@@ -94,25 +90,23 @@ class EmployeeTimesheets extends Component {
       startdate: start,
       endDate: end,
     };
+
+    const config = getRequestConfigurations()
+    config['params'] = reasonParams
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
+
     this.setState({isLoading: true});
     const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
-    const requestTimOverview = axios.post(
-      timOverviewEndpoint,
-      timeoverviewParams,
-      {headers}
-    );
-    const requestReson = axios.get(ReasonEndpoint, {
-      headers,
-      params: reasonParams,
-    });
+    const requestTimOverview = axios.post(timOverviewEndpoint, timeoverviewParams, muleSoftConfig);
+    const requestReason = axios.get(ReasonEndpoint, config);
 
     const getDepartmentPartGroupByListData = listData => {
       const result = listData.find(item => item && item !== '#')
       return result
     }
 
-    axios.all([requestReson, requestTimOverview]).then(
+    axios.all([requestReason, requestTimOverview]).then(
       axios.spread((...responses) => {
         if (responses[1]) {
           const res = responses[1];

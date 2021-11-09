@@ -3,14 +3,6 @@ import html2canvas from "html2canvas"
 import moment from 'moment'
 import Constants from '../commons/Constants'
 
-const getRequestConfigurations = () => {
-    return {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-    }
-}
-
 const removeAccents = value => {
     if (value === "" || value == null || value == undefined) {
         return ""
@@ -197,15 +189,20 @@ const getRequestTypeIdsAllowedToReApproval = () => {
     return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
 }
 
-const getMuleSoftHeaderConfigurations = () => {
-    const token = localStorage.getItem('accessToken')
+const getRequestConfigurations = () => {
     return {
         headers: {
-            'Authorization': `Bearer ${token}`,
-            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         }
     }
+}
+
+const getMuleSoftHeaderConfigurations = () => {
+    const requestConfigurations = getRequestConfigurations()
+    requestConfigurations.headers['client_id'] = process.env.REACT_APP_MULE_CLIENT_ID
+    requestConfigurations.headers['client_secret'] = process.env.REACT_APP_MULE_CLIENT_SECRET
+    
+    return requestConfigurations
 }
 
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
