@@ -102,10 +102,23 @@ class LeaveOfAbsenceComponent extends React.Component {
             registerLocale("en-US", enUS)
         }
 
-        // {
-        //     perno: localStorage.getItem('employeeNo'),
-        //     date: moment().format('YYYYMMDD')
-        // }
+
+        const currentAbsenceEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`
+        const subordinateLeaveOfAbsencesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence?current_year=${this.currentYear}`
+        // const requestCurrentAbsences = axios.get(currentAbsenceEndpoint, getRequestConfigurations())
+        // const requestSubordinateLeaveOfAbsences = axios.get(subordinateLeaveOfAbsencesEndpoint, getRequestConfigurations())
+    
+        // Promise.allSettled([requestSubordinates, requestSubordinateLeaveOfAbsences]).then(responses => {
+        //   this.processListSubordinates(responses[0])
+        //   this.processSubordinateLeaveOfAbsences(responses[1])
+        //   // this.setState({
+        //   //     modal: {
+        //   //         ...this.state.modal,
+        //   //         isShowLoadingModal: false
+        //   //     }
+        //   // })
+        // })
+
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
             .then(res => {
