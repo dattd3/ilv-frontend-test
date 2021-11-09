@@ -29,7 +29,8 @@ function Authorize(props) {
             return;
         }
 
-        let config = getMuleSoftHeaderConfigurations()
+        const config = getMuleSoftHeaderConfigurations()
+        config.headers['Authorization'] = `Bearer ${jwtToken}`
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
             .then(res => {
