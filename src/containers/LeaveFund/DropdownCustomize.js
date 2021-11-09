@@ -7,6 +7,7 @@ import vi from "date-fns/locale/vi";
 import axios from "axios";
 import MemberOption from "../WorkflowManagement/ShareComponents/MemberOption"
 import SelectTab from "../WorkflowManagement/ShareComponents/SelectTab"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import "./dropdown-customize.scss"
 registerLocale("vi", vi);
 
@@ -56,13 +57,7 @@ class DropdownCustomize extends React.Component {
     }
 
     getApproverInfo = () => {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-                client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-            },
-        };
+        const config = getMuleSoftHeaderConfigurations()
 
         axios
             .get(

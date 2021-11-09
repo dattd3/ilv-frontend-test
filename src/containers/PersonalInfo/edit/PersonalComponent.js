@@ -8,6 +8,7 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import { debounce } from 'lodash';
 registerLocale("vi", vi)
 
@@ -78,13 +79,7 @@ class PersonalComponent extends React.Component {
     }
 
     async componentDidMount() {
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        let config = getMuleSoftHeaderConfigurations()
         const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
         const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
         const requestProfile = axios.get(profileEndpoint, config);
@@ -217,13 +212,7 @@ class PersonalComponent extends React.Component {
     }
 
     getBirthProvinces = (country_id) => {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {

@@ -197,5 +197,16 @@ const getRequestTypeIdsAllowedToReApproval = () => {
     return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
 }
 
+const getMuleSoftHeaderConfigurations = () => {
+    const token = localStorage.getItem('accessToken')
+    return {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+    }
+}
+
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval }
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations }
