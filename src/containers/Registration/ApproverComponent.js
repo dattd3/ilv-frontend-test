@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import Constants from "../../commons/Constants"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -64,11 +65,7 @@ class ApproverComponent extends React.Component {
 
   loadApproverForPnL = async () => {
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
+      const config = getMuleSoftHeaderConfigurations()
       const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
       if (response && response.data) {
         const result = response.data.result
@@ -97,11 +94,7 @@ class ApproverComponent extends React.Component {
 
   loadApproverRecently = async () => {
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
+      const config = getMuleSoftHeaderConfigurations()
       const suggestApproverType = 1
   
       const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests?type=${suggestApproverType}`, config)
@@ -168,13 +161,7 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
-      }
+      const config = getMuleSoftHeaderConfigurations()
 
       axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
         .then(res => {

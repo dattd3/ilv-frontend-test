@@ -87,8 +87,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         const config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
             },
             params: {
                 date: moment().format('YYYYMMDD')
@@ -535,16 +535,18 @@ class LeaveOfAbsenceComponent extends React.Component {
             requestInfo,
             errors: {
                 approver: !approver ? this.props.t('Required') : errors.approver,
+                appraiser: errors.appraiser
                 // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
             }
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors.approver || errors.appraiser) { //|| (errors.appraiser && employeeLevel === "N0")
             return false
         }
         return true
     }
+
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
