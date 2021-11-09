@@ -1,7 +1,9 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useApi, useFetcher } from "../../../modules";
-import NewsItemGrid from "./NewsItemGrid";
+import React from "react"
+import { Image } from 'react-bootstrap'
+import { useTranslation } from "react-i18next"
+import { useApi, useFetcher } from "../../../modules"
+import NewsItemGrid from "./NewsItemGrid"
+import IconDiamond from '../../../assets/img/icon/Icon-Diamond.svg'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -20,15 +22,14 @@ export default function NewsRelation(props) {
 
     if (result && result.data) {
         const objDataRes = result.data;
+
         return (
             <div className="news-others">
-                <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 className="h3 mb-0 text-gray-800">{t("OtherNews")}</h1>
-                </div>
+                <h4 className="page-title"><Image src={IconDiamond} alt="News" />{t("OtherNews")}</h4>
                 <div className="row list-news">
                     {
                         objDataRes.map((item, i) => {
-                            return <NewsItemGrid article={item} key={i} col="3" />;
+                            return <NewsItemGrid article={item} key={item.id} id={item.id} />
                         })
                     }
                 </div>

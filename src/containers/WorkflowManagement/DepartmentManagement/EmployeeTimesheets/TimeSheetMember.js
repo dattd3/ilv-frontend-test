@@ -315,7 +315,16 @@ function Content(props) {
     const filterType = [{title: t('TimePlan'), color: '#00B3FF'}, {title: t('TimeActual'), color: '#FFFFFF'}, {title: t('Miss'), color: '#E44235'} , {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
     const handleShowModalShiftChange = (date, day) => {
-        const isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
+        let isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
+        const currentUserPnL = localStorage.getItem("companyCode")
+        if (currentUserPnL === Constants.pnlVCode.VinPearl) {
+            const currentUserRankTitle = localStorage.getItem("employeeLevel").toUpperCase() // Cấp bậc chức danh của user logged
+            const levelAccessFunction = ["P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+            if (!levelAccessFunction.includes(currentUserRankTitle)) {
+                isEnableChangeStaffShift = false
+            }
+        }
+        
         if (!isEnableChangeStaffShift) {
             return
         }
