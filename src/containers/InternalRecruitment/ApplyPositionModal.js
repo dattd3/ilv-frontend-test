@@ -33,7 +33,7 @@ class ApplyPositionModal extends React.Component {
     }
 
     componentWillMount () {
-        let config = getMuleSoftHeaderConfigurations()
+        const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
             .then(res => {

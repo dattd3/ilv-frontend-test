@@ -10,7 +10,7 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -288,22 +288,13 @@ class InOutTimeUpdateComponent extends React.Component {
     const { startDate, endDate } = this.state
     const start = moment(startDate, "DD/MM/YYYY").format('YYYYMMDD')
     const end = moment(endDate, "DD/MM/YYYY").format('YYYYMMDD')
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      },
-      params: {
-        from_date: start,
-        to_date: end
-      }
+
+    const config = getMuleSoftHeaderConfigurations()
+    config['params'] = {
+      from_date: start,
+      to_date: end
     }
-    // {
-    //   perno: localStorage.getItem('employeeNo'),
-    //   from_date: start,
-    //   to_date: end
-    // },
+
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, config)
       .then(res => {
         if (res && res.data && res.data.data) {

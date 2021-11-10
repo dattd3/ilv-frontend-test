@@ -84,6 +84,7 @@ class MyComponent extends React.Component {
 
     componentWillMount() {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        const config = getRequestConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`, muleSoftConfig)
             .then(res => {
@@ -95,12 +96,6 @@ class MyComponent extends React.Component {
                 localStorage.clear();
                 window.location.href = map.Login;
             });
-
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
 
         axios.get(`${process.env.REACT_APP_REQUEST_URL}user/bonuses?perno=${localStorage.getItem('employeeNo')}`, config)
             .then(res => {
