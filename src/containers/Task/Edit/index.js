@@ -12,6 +12,7 @@ import st from '../../../store'
 import { Provider } from 'react-redux'
 import { updatePersonalDataAction } from '../../../actions'
 import { convertObjectkeyToCamelCase } from '../../Utils/ObjectHelpers'
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
@@ -963,20 +964,15 @@ class PersonalInfoEdit extends React.Component {
   //#endregion private function ============
 
   async componentDidMount() {
-
-    let configWithinSecretKey = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
     const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
     const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
     const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`;
-    const requestProfile = axios.get(profileEndpoint, configWithinSecretKey);
-    const requestPersonalInfo = axios.get(personalInfoEndpoint, configWithinSecretKey);
-    const requestEducation = axios.get(personalEducationEnpoint, configWithinSecretKey);
+
+    const requestProfile = axios.get(profileEndpoint, muleSoftConfig);
+    const requestPersonalInfo = axios.get(personalInfoEndpoint, muleSoftConfig);
+    const requestEducation = axios.get(personalEducationEnpoint, muleSoftConfig);
     await axios.all([requestProfile, requestPersonalInfo, requestEducation]).then(axios.spread((...responses) => {
       this.processProfile(responses[0]);
       this.processPersonalInfo(responses[1]);
@@ -985,14 +981,7 @@ class PersonalInfoEdit extends React.Component {
 
     })
 
-    let config = {
-      headers: {
-        'Authorization': localStorage.getItem('accessToken'),
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -1003,7 +992,7 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data

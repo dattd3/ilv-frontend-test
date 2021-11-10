@@ -7,7 +7,7 @@ import Select from 'react-select'
 import axios from 'axios';
 // import _ from 'lodash'
 import { withTranslation } from 'react-i18next';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -48,11 +48,9 @@ class SubmitQuestionModal extends React.Component {
     }
 
     componentWillMount() {
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+        const config = getRequestConfigurations()
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+
         axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
             .then(res => {
                 if (res && res.data && res.data.data) {
@@ -63,8 +61,6 @@ class SubmitQuestionModal extends React.Component {
                 //localStorage.clear();
                 //window.location.href = map.Login;
             });
-
-        const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, muleSoftConfig)
             .then(res => {
@@ -78,7 +74,6 @@ class SubmitQuestionModal extends React.Component {
             }).catch(error => {
 
         });
-     
     }
 
     alertSuccess = () => {
