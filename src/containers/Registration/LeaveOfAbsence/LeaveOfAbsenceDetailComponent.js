@@ -3,7 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
-import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -24,15 +24,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      },
-      params: {
-        date: moment().format('YYYYMMDD')
-      }
+    const config = getMuleSoftHeaderConfigurations()
+    config['params'] = {
+      date: moment().format('YYYYMMDD')
     }
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)

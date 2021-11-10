@@ -761,11 +761,7 @@ class EmployeeTimesheets extends Component {
       const {timeTables, dateChanged, dataChanged} = this.state
       const timeSheetsUpdating = (timeTables || []).filter(item => item.isUpdating)
       const payload = this.prepareDataToSubmit(timeSheetsUpdating, dateChanged, dataChanged)
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
+      const config = getRequestConfigurations()
 
       const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}leaderchanges/shifts`, payload, config)
       if (response && response.data) {

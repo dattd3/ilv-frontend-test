@@ -6,6 +6,7 @@ import DocumentComponent from './DocumentComponent'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
+import { getRequestConfigurations } from "../../../commons/Utils"
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import moment from 'moment'
@@ -183,12 +184,7 @@ class RequestDetail extends React.Component {
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': localStorage.getItem('accessToken')
-      }
-    }
-  
+    let config = getRequestConfigurations()
     axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.getUserProfileHistoryId()}`, config)
     .then(res => {
       if (res && res.data) {
