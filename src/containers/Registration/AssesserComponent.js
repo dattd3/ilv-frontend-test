@@ -40,38 +40,42 @@ class AssesserComponent extends React.Component {
     }
 
     async componentDidMount() {
-        const recentlyAppraiser = await this.loadRecentlyApprovers()
+        const recentlyAppraiser = await this.loadRecentlyAppraiser()
         this.setState({ users: recentlyAppraiser })
     }
 
-    loadRecentlyApprovers = async () => {
+    loadRecentlyAppraiser = async () => {
         try {
-          const config = getMuleSoftHeaderConfigurations()     
-          const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-          if (response && response.data) {
-            const result = response.data.result
-            if (result && result.code == Constants.API_SUCCESS_CODE) {
-              const data = response.data?.data
-              return [{
-                value: data?.account?.toLowerCase() || "",
-                label: data?.fullName || "",
-                fullName: data?.fullName || "",
-                avatar: data?.avatar || "",
-                employeeLevel: data?.employeeLevel || "",
-                pnl: data?.pnl || "",
-                orglv2Id: data?.orglv2Id || "",
-                account: data?.account?.toLowerCase() || "",
-                current_position: data?.current_position || "",
-                department: data?.department || ""
-              }]
+            const config = getMuleSoftHeaderConfigurations()     
+            const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
+            if (response && response.data) {
+                const result = response.data.result
+                if (result && result.code == Constants.API_SUCCESS_CODE) {
+                    const data = response.data?.data
+                    const appraiserInfo = data?.appraiserInfo
+                    if (appraiserInfo) {
+                        return [{
+                            value: appraiserInfo?.account?.toLowerCase() || "",
+                            label: appraiserInfo?.fullName || "",
+                            fullName: appraiserInfo?.fullName || "",
+                            avatar: appraiserInfo?.avatar || "",
+                            employeeLevel: appraiserInfo?.employeeLevel || "",
+                            pnl: appraiserInfo?.pnl || "",
+                            orglv2Id: appraiserInfo?.orglv2Id || "",
+                            account: appraiserInfo?.account?.toLowerCase() || "",
+                            current_position: appraiserInfo?.current_position || "",
+                            department: appraiserInfo?.department || ""
+                        }]
+                    }
+                    return []
+                }
+                return []
             }
             return []
-          }
-          return []
         } catch (e) {
-          return []
+            return []
         }
-      }
+    }
 
     handleSelectChange(name, value) {
         if (value) {
