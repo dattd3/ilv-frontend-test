@@ -1,21 +1,24 @@
 import React from 'react'
-import axios from 'axios'
-import ButtonComponent from '../ButtonComponent'
+
 import Select from 'react-select'
+import { Image } from 'react-bootstrap'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import { withTranslation } from "react-i18next"
+import axios from 'axios'
+import moment from 'moment'
+import _ from 'lodash'
+import { t } from 'i18next'
+import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
-import moment from 'moment'
 import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
-import DatePicker, { registerLocale } from 'react-datepicker'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import _ from 'lodash'
-import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
-import { t } from 'i18next'
 registerLocale("vi", vi)
 
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -579,7 +582,7 @@ class SubstitutionComponent extends React.Component {
 
             <div className="col-4">
               <p className="title">&nbsp;</p>
-              <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
+              <button type="button" className="btn btn-warning btn-search w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
             </div>
           </div>
         </div>
@@ -595,7 +598,7 @@ class SubstitutionComponent extends React.Component {
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdited
-                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
+                  ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><Image src={EditIcon} alt="Edit" className="ic-edit" /> {t("Modify")}</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>

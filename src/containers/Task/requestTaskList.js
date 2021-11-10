@@ -1,5 +1,5 @@
 import React from 'react'
-import editButton from '../../assets/img/Icon-edit.png'
+import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
