@@ -7,7 +7,7 @@ import moment from "moment";
 import { withTranslation } from "react-i18next";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 
 class PersonalDetails extends Component {
   constructor() {
@@ -33,7 +33,8 @@ class PersonalDetails extends Component {
     this.setState({ isSearch: false, isTableSearch: false });
     let start = moment(startDate).format("YYYYMMDD");
     let end = moment(endDate).format("YYYYMMDD");
-    const config = getMuleSoftHeaderConfigurations()
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
     const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
     const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence/detail`;
@@ -42,12 +43,12 @@ class PersonalDetails extends Component {
       personal_no_list: members,
       from_date: start,
       to_date: end
-    }, config)
+    }, muleSoftConfig)
     const requestleaveAbsenceDetail = axios.post(leaveAbsenceDetailEndpoint, {
       personal_no_list: members,
       from_time: start,
       to_time: end
-    }, config)
+    }, muleSoftConfig)
 
     const requestReason = axios.post(ReasonEndpoint, {
       usernames: usernames,

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import FilterData from "../../ShareComponents/FilterData";
 import axios from "axios";
 import moment from "moment";
+import FilterData from "../../ShareComponents/FilterData";
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 
 class LeaveFund extends Component {
   constructor() {
@@ -18,22 +19,12 @@ class LeaveFund extends Component {
     this.setState({ isSearch: false });
     this.search(startDate, endDate);
     //this.requestReasonAndComment(startDate, endDate);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-      },
-    };
+    const config = getMuleSoftHeaderConfigurations()
 
     const start = moment(startDate).format("YYYYMMDD").toString();
     const end = moment(endDate).format("YYYYMMDD").toString();
 
-    axios
-      .get(
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`,
-        config
-      )
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
           const defaultData = {
@@ -62,12 +53,6 @@ class LeaveFund extends Component {
   search(startDate, endDate) {
     let start = moment(startDate).format("YYYYMMDD").toString();
     let end = moment(endDate).format("YYYYMMDD").toString();
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-      // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-    };
-
     const timeoverviewParams = {
       from_date: start,
       to_date: end,
@@ -76,16 +61,17 @@ class LeaveFund extends Component {
       startdate: start,
       endDate: end,
     };
+
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
+    config['params'] = reasonParams
+    muleSoftConfig['params'] = timeoverviewParams
+
     const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
-    const requestTimOverview = axios.get(timOverviewEndpoint, {
-      headers,
-      params: timeoverviewParams,
-    });
-    const requestReson = axios.get(ReasonEndpoint, {
-      headers,
-      params: reasonParams,
-    });
+    const requestTimOverview = axios.get(timOverviewEndpoint, muleSoftConfig);
+    const requestReson = axios.get(ReasonEndpoint, config);
+
     axios.all([requestReson, requestTimOverview]).then(
       axios.spread((...responses) => {
         if (responses[1]) {

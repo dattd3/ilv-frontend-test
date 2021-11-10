@@ -295,12 +295,12 @@ export default class Api {
   };
 
   getPeriodKpiGeneral = async () => {
-    let config = getMuleSoftHeaderConfigurations()
+    const config = getMuleSoftHeaderConfigurations()
     return await this.request.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/period/general`, config);
   };
   
   fetchListKpiGeneralAll = async () => {
-    let config = getMuleSoftHeaderConfigurations()
+    const config = getMuleSoftHeaderConfigurations()
     return await this.request.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`, config);
   };
 
