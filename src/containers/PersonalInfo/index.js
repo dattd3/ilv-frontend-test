@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Redirect, withRouter } from 'react-router-dom';
 import map from '../map.config';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
 
 class MyComponent extends React.Component {
@@ -24,9 +24,10 @@ class MyComponent extends React.Component {
   }
 
   componentDidMount() {
-    let config = getMuleSoftHeaderConfigurations()
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
@@ -37,7 +38,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
@@ -48,7 +49,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userEducation = res.data.data;
@@ -59,7 +60,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userFamily = res.data.data;
@@ -70,7 +71,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userHealth = res.data.data[0];
@@ -80,6 +81,7 @@ class MyComponent extends React.Component {
         // localStorage.clear();
         // window.location.href = map.Login;
       });
+
     axios.get(`${process.env.REACT_APP_HRDX_URL}api/onboarding/staffdocument?EmployeeCode=${localStorage.getItem('employeeNo')}`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
@@ -87,6 +89,7 @@ class MyComponent extends React.Component {
         }
       })
   }
+
   prepareUserDocumentData = (data) => {
     const result = { status: data.status, documents: [] };
     let count = 0;

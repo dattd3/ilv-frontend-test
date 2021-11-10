@@ -59,11 +59,7 @@ class DropdownCustomize extends React.Component {
     getApproverInfo = () => {
         const config = getMuleSoftHeaderConfigurations()
 
-        axios
-            .get(
-                `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`,
-                config
-            )
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`, config)
             .then((res) => {
                 if (res && res.data && res.data.data) {
                     let users = res.data.data || [];

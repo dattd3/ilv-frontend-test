@@ -189,14 +189,14 @@ export const Navigation = [
     to: map.Vinmec,
     role: ['V060']
   },
-  {
-    id: 16,
-    parentId: 13,
-    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "Menu_News",
-    to: map.News,
-    role: "U",
-  },
+  // {
+  //   id: 16,
+  //   parentId: 13,
+  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+  //   label: "Menu_News",
+  //   to: map.News,
+  //   role: "U",
+  // },
   {
     id: 17,
     parentId: 10,

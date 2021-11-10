@@ -14,7 +14,7 @@ class FamilyComponent extends React.Component {
     }
 
     componentDidMount() {
-        let config = getMuleSoftHeaderConfigurations()
+        const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
           .then(res => {
