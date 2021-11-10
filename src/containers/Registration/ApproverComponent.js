@@ -58,8 +58,8 @@ class ApproverComponent extends React.Component {
       })
       this.props.updateApprover(managerApproval, true)
     } else {
-      const approverRecently = await this.loadApproverRecently()
-      this.setState({ users: approverRecently })
+      const recentlyApprover = await this.loadRecentlyApprover()
+      this.setState({ users: recentlyApprover })
     }
   }
 
@@ -92,7 +92,7 @@ class ApproverComponent extends React.Component {
     }
   }
 
-  loadApproverRecently = async () => {
+  loadRecentlyApprover = async () => {
     try {
       const config = getMuleSoftHeaderConfigurations() 
       const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
@@ -100,18 +100,22 @@ class ApproverComponent extends React.Component {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
           const data = response.data?.data
-          return [{
-            value: data?.account?.toLowerCase() || "",
-            label: data?.fullName || "",
-            fullName: data?.fullName || "",
-            avatar: data?.avatar || "",
-            employeeLevel: data?.employeeLevel || "",
-            pnl: data?.pnl || "",
-            orglv2Id: data?.orglv2Id || "",
-            account: data?.account?.toLowerCase() || "",
-            current_position: data?.current_position || "",
-            department: data?.department || ""
-          }]
+          const approverInfo = data.approverInfo
+          if (approverInfo) {
+            return [{
+              value: approverInfo?.account?.toLowerCase() || "",
+              label: approverInfo?.fullName || "",
+              fullName: approverInfo?.fullName || "",
+              avatar: approverInfo?.avatar || "",
+              employeeLevel: approverInfo?.employeeLevel || "",
+              pnl: approverInfo?.pnl || "",
+              orglv2Id: approverInfo?.orglv2Id || "",
+              account: approverInfo?.account?.toLowerCase() || "",
+              current_position: approverInfo?.current_position || "",
+              department: approverInfo?.department || ""
+            }]
+          }
+          return []
         }
         return []
       }
