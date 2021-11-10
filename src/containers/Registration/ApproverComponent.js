@@ -3,7 +3,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
-import APPROVER_LIST_LEVEL from "../../commons/Constants"
+import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
@@ -39,52 +39,89 @@ class ApproverComponent extends React.Component {
     this.onInputChange = debounce(this.getApproverInfo, 800);
   }
 
-  componentDidMount() {
-    let approverModel = {
-      label: "",
-      value: "",
-      fullName: "",
-      avatar: "",
-      employeeLevel: "",
-      pnl: "",
-      orglv2Id: "",
-      account: "",
-      current_position: "",
-      department: ""
-    }
-    let config = getMuleSoftHeaderConfigurations()
+  async componentDidMount() {
     const { approver } = this.props
-    const companiesUsing = ['V070','V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-        .then(res => {
-          if (res && res.data && res.data.data && res.data.data.length > 0) {
-            let manager = res.data.data[0]
-            let managerApproval = {
-              ...approverModel,
-              label: manager.fullname,
-              value: manager.userid.toLowerCase(),
-              fullName: manager.fullname,
-              account: manager.userid.toLowerCase(),
-              current_position: manager.title,
-              department: manager.department
+    const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
+    const currentUserPnLVCode = localStorage.getItem("companyCode")
+    if (companiesUsing.includes(currentUserPnLVCode)) {
+      const managerApproval = await this.loadApproverForPnL()
+      this.setState({approver: managerApproval} , () => {
+        if (approver) {
+          this.setState({
+            approver: {
+              ...approver,
+              label: approver.fullName,
+              value: approver.account
             }
-            this.setState({ approver: managerApproval })
-            this.props.updateApprover(managerApproval, true)
-          }
-        }).catch(error => {
-
-        });
-    }
-
-    if (approver) {
-      this.setState({
-        approver: {
-          ...approver,
-          label: approver.fullName,
-          value: approver.account,
+          })
         }
       })
+      this.props.updateApprover(managerApproval, true)
+    } else {
+      const recentlyApprover = await this.loadRecentlyApprover()
+      this.setState({ users: recentlyApprover })
+    }
+  }
+
+  loadApproverForPnL = async () => {
+    try {
+      const config = getMuleSoftHeaderConfigurations()
+      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      if (response && response.data) {
+        const result = response.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          const data = response.data?.data[0]
+          return {
+            value: data?.userid?.toLowerCase() || "",
+            label: data?.fullname || "",
+            fullName: data?.fullname || "",
+            avatar: data?.avatar || "",
+            employeeLevel: "",
+            pnl: "",
+            orglv2Id: "",
+            account: data?.userid?.toLowerCase() || "",
+            current_position: data?.title || "",
+            department: data?.department || ""
+          }
+        }
+        return null
+      }
+      return null
+    } catch (e) {
+      return null
+    }
+  }
+
+  loadRecentlyApprover = async () => {
+    try {
+      const config = getMuleSoftHeaderConfigurations() 
+      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
+      if (response && response.data) {
+        const result = response.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          const data = response.data?.data
+          const approverInfo = data.approverInfo
+          if (approverInfo) {
+            return [{
+              value: approverInfo?.account?.toLowerCase() || "",
+              label: approverInfo?.fullName || "",
+              fullName: approverInfo?.fullName || "",
+              avatar: approverInfo?.avatar || "",
+              employeeLevel: approverInfo?.employeeLevel || "",
+              pnl: approverInfo?.pnl || "",
+              orglv2Id: approverInfo?.orglv2Id || "",
+              account: approverInfo?.account?.toLowerCase() || "",
+              current_position: approverInfo?.current_position || "",
+              department: approverInfo?.department || ""
+            }]
+          }
+          return []
+        }
+        return []
+      }
+      return []
+    } catch (e) {
+      return []
     }
   }
 
@@ -173,10 +210,10 @@ class ApproverComponent extends React.Component {
     return <div className="approver">
       <div className="box shadow">
       <div className="row">
-                    <div className="col-12 col-xl-12"> 
-                        <div className="box-bottom-mg"><b className="text-uppercase black-color">{t('APPROVER')} </b></div> 
-                    </div>
-                </div>
+        <div className="col-12 col-xl-12"> 
+          <div className="box-bottom-mg"><b className="text-uppercase black-color">{t('APPROVER')} </b></div> 
+        </div>
+      </div>
         <div className="row">
           <div className="col-4">
             <p className="title2">{t('FullName')}</p>
@@ -211,7 +248,7 @@ class ApproverComponent extends React.Component {
           </div>
         </div>
         {
-          localStorage.getItem("companyCode") === "V060" ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
+          localStorage.getItem("companyCode") === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
         }
       </div>
     </div>

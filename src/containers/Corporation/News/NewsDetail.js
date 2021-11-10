@@ -44,6 +44,8 @@ function NewsDetailElement({ match, location }) {
         const timePublished = getTimeByRawTime(detail.publishedDate)
 
         return (
+            <>
+            <a className="back-block" href="/" title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a>
             <div className="news-detail-page">
                 {/* {
                     isApp ? null : <nav aria-label="breadcrumb">
@@ -53,8 +55,6 @@ function NewsDetailElement({ match, location }) {
                         </ol>
                     </nav>
                 } */}
-
-                <a className="back-block" href="/" title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a>
                 <div className="news-content">
                     <h1 className="news-title">{detail.title}</h1>
                     <div className="source-time-info">
@@ -69,6 +69,7 @@ function NewsDetailElement({ match, location }) {
                 <hr />
                 <NewsRelation id={Id} />
             </div>
+            </>
         );
     } else {
         return <LoadingSpinner />;
