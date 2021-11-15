@@ -1,6 +1,5 @@
 .registration-popover {
     max-width: 300px;
-    
     p {
         padding: 5px;
         margin: 0;
@@ -9,6 +8,11 @@
 
 .registration-section {
     font: normal 14px Arial, Helvetica, sans-serif;
+    .validation-message {
+        font-size: 13px;
+        margin: 6px 0;
+        font-style: italic;
+    }
     .task{
         input{
             min-height: 40px;
@@ -36,9 +40,6 @@
                     line-height: 20px;
                 }
             }
-        }
-        .btn-search {
-            margin-top: 10px;
         }
     }
     .block-filter-shift {
@@ -68,7 +69,6 @@
                 top: 6px;
             }
         }
-
     }
     .business-type {
         display: flex;
@@ -78,7 +78,6 @@
         margin: 10px 0 5px 0;
         span {
             display: inline-block;
-            
             padding: 2px 0;
             &.smaller {
                 width: 46%;
@@ -89,7 +88,6 @@
         overflow-x: auto;
         overflow-y: auto;
         max-height: 350px;
-
         thead th {
             position: sticky;
             top: 0;
@@ -100,8 +98,13 @@
         .total-time {
             margin-top: 40px;
         }
-        .btn-search {
-            margin-top: 10px;
+        .guide-message {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #d1d3e2;
+            margin-bottom: 10px;
+        }
+        .shift-change-type-field {
+            padding: 10px 0;
         }
     }
     
@@ -125,17 +128,17 @@
             border: 1px solid #ddd;
             background-color: #eee;
         }
-
     }
     .mv-10{
         margin-top: 10px;
     }
-    [class$="-container"] {
-        margin: 10px 0;
-    }
+    // [class$="-container"] {
+    //     margin: 10px 0;
+    // }
     .react-datepicker-wrapper{
         [class$="-container"] {
-            margin: 10px 0 0 0 ;
+            // margin: 10px 0 0 0 ;
+            margin: 0;
         }
     }
     .document{
@@ -361,11 +364,9 @@
 
     .input-container {
         position:relative;
-
         label, .react-datepicker-wrapper {
             width: 100%;
         }
-
         .input {
             margin:0;
             padding-right: 10px;
@@ -373,12 +374,11 @@
         }
         .input-img {
             position: absolute;
-            bottom: 5px;
-            right: 0;
+            top: 8px;
+            right: 2px;
             width: 24px;
             height: 24px;
         }
-
         .input-clock {
             position: absolute;
             bottom: 15px;
@@ -386,7 +386,6 @@
             width: 24px;
             height: 24px;
         }
-
         label {
             margin-bottom: 0;
         }
@@ -476,9 +475,37 @@
         }
     }
     .in-out-time-update, .shift-work {
+        input, button {
+            font-size: inherit;
+        }
+        .shift-change-type {
+            font-size: inherit;
+        }
         .edit {
             cursor: pointer;
             font-weight: 600;
+            color: #ff7f00;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            img {
+                height: 15px;
+                width: 15px;
+                object-fit: cover;
+                margin-right: 5px;
+            }
+            i {
+                font-size: 15px;
+                margin-right: 5px;
+            }
+        }
+        span {
+            margin-left: 5px;
+        }
+        .shift-change-type-field {
+            .required {
+                margin-left: 5px;
+            }
         }
     }
     .approver {
