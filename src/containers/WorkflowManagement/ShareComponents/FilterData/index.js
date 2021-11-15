@@ -94,10 +94,10 @@ class FilterData extends React.Component {
     const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
 
     if (clickSearch) {
-      return clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
+      clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
     }
     
-    return updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    updateEmployees(selectedMembers, 'employeeSelectedFilter')
   }
 
   getSelecteMembers(data) {
