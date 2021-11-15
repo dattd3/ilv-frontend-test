@@ -447,6 +447,15 @@ class SubstitutionComponent extends React.Component {
       }).catch(error => { })
   }
 
+    // filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
+    //     const shifts = shiftList.filter(item => {
+    //         return (startTime ? item.from_time?.trim() === startTime?.toString().trim() : true) 
+    //         && (endTime ? item.to_time?.trim() === endTime?.toString().trim() : true) 
+    //         && (shiftCode ? item.shift_id?.trim().toUpperCase() === shiftCode?.trim().toUpperCase() : true)
+    //     })
+    //     return shifts
+    // }
+
   filterShiftInfo = (index) => {
     const timesheets = [...this.state.timesheets].map((item, i) =>
       (i == index && (item.shiftCodeFilter || item.startTimeFilter || item.endTimeFilter)) ? { ...item, shifts: this.filterShiftsByConditions(item.shiftCodeFilter, item.startTimeFilter, item.endTimeFilter) } : item
@@ -682,7 +691,7 @@ class SubstitutionComponent extends React.Component {
                     {this.error(index, 'substitutionType')}
                   </div>
                 </div>
-                {/* {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
+                {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
                   <div>
                     <fieldset className="col-12 block-filter-shift">
                       <legend>{t("SearchShiftCode")}</legend>
@@ -741,14 +750,14 @@ class SubstitutionComponent extends React.Component {
                       </div>
                     </fieldset>
                   </div>
-                  : null} */}
+                  : null}
               </div> 
               : null
             }
 
             {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <>
-                <ShiftTable shifts={timesheet.shifts} shiftItems={shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} filterShiftInfo={this.filterShiftInfo} updateShift={this.updateShift.bind(this)} />
+                <ShiftTable shifts={timesheet.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} filterShiftInfo={this.filterShiftInfo} updateShift={this.updateShift.bind(this)} />
                 {this.error(index, 'shiftId')}
               </>
               : null
