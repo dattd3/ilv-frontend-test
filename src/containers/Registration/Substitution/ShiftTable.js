@@ -15,7 +15,13 @@ class ShiftTable extends React.Component {
         super(props)
         this.state = {
             shiftStartTimeOptionsFilter: [],
-            shiftEndTimeOptionsFilter: []
+            shiftEndTimeOptionsFilter: [],
+            shiftFilter: {
+                isOpenInputShiftCodeFilter: false,
+                shiftCodeFilter: "",
+                startTimeFilter: null,
+                endTimeFilter: null
+            },
         }
     }
 
@@ -29,8 +35,8 @@ class ShiftTable extends React.Component {
     }
     
     setShiftTimeFilter = () => {
-        const { shiftItems } = this.props
-        const shiftsExcludeOff = shiftItems.filter(item => item.shift_id !== shiftCodeOFF)
+        const { shifts } = this.props
+        const shiftsExcludeOff = shifts.filter(item => item.shift_id !== shiftCodeOFF)
         let startTimes = []
         let endTimes = []
 
@@ -55,31 +61,43 @@ class ShiftTable extends React.Component {
         })
     }
 
-    handleSelectChange = (index, option, key) => {
+    handleSelectChange = (option, key) => {
         const { timesheet, filterShiftInfo } = this.props
-        // const newShiftInfos = [...shiftInfos]
-        // newShiftInfos[index][key] = option
-        // newShiftInfos[index].dateChanged = props.dateInfo.date
+        const shiftFilter = {...this.state.shiftFilter}
         // if (key === 'startTimeFilter' || key === 'endTimeFilter') {
         //     newShiftInfos[index].shiftFilter[key] = option
         //     const startTime = key === 'startTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.startTimeFilter?.originValue
         //     const endTime = key === 'endTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.endTimeFilter?.originValue
         //     const shiftCode = newShiftInfos[index].shiftFilter.shiftCodeFilter
         //     const shifts = filterShiftListByTimesAndShiftCode(startTime, endTime, shiftCode)
-        //     newShiftInfos[index].shiftFilter.shiftList = shifts
         // }
-        // SetShiftInfos(newShiftInfos)
 
-        filterShiftInfo(timesheet.index)
+        const startTime = key === 'startTimeFilter' ? option?.originValue : shiftFilter.startTimeFilter?.originValue
+        const endTime = key === 'endTimeFilter' ? option?.originValue : shiftFilter.endTimeFilter?.originValue
+        const shiftCode = shiftFilter.shiftCodeFilter
+
+        filterShiftInfo(timesheet.index, startTime, endTime, shiftCode)
+    }
+
+    toggleOpenInputShiftCodeFilter = status => {
+        const shiftFilter = {...this.state.shiftFilter}
+        shiftFilter.isOpenInputShiftCodeFilter = !status
+        this.setState({shiftFilter: shiftFilter})
+    }
+
+    handleInputTextChange = e => {
+        const shiftFilter = {...this.state.shiftFilter}
+        const val = e.target.value
+        shiftFilter.shiftCodeFilter = val
+        this.setState({shiftFilter: shiftFilter})
+        filterShiftInfo(timesheet.index, shiftFilter.startTimeFilter, shiftFilter.endTimeFilter, val)
     }
 
     render() {
-        const { t, shifts, shiftItems, timesheet } = this.props
-        const { shiftStartTimeOptionsFilter, shiftEndTimeOptionsFilter } = this.state
+        const { t, shifts, timesheet } = this.props
+        const { shiftStartTimeOptionsFilter, shiftEndTimeOptionsFilter, shiftFilter } = this.state
+        const index = timesheet.index
         // const shiftsExcludeFlex = shifts.filter(item => !item.shift_id?.toUpperCase().startsWith("FLE", 0))
-
-        console.log("RRRRRRRRRRRRRRR")
-        console.log(shiftItems)
 
         const DropdownIndicator = props => {
             return (
@@ -195,13 +213,13 @@ class ShiftTable extends React.Component {
                             <th scope="col">{t("WorkHours")}</th>
                             <th scope="col">{t("ShiftCode")}</th> */}
 
-                            {/* <th className="col-select-shift"><span className="select-shift title">{t("SelectShiftCode")}</span></th>
+                            <th className="col-select-shift"><span className="select-shift title">{t("SelectShiftCode")}</span></th>
                             <th className="col-start-time">
                                 <div className="start-time title">
                                     <Select 
                                         components={{ DropdownIndicator }}
-                                        value={item?.shiftFilter?.startTimeFilter} 
-                                        onChange={startTime => this.handleSelectChange(index, startTime, 'startTimeFilter')} 
+                                        value={shiftFilter?.startTimeFilter} 
+                                        onChange={startTime => this.handleSelectChange(startTime, 'startTimeFilter')} 
                                         placeholder={t("StartHour")} 
                                         options={shiftStartTimeOptionsFilter}
                                         styles={customizeSelectStyles}
@@ -213,8 +231,8 @@ class ShiftTable extends React.Component {
                                 <div className="end-time title">
                                     <Select 
                                         components={{ DropdownIndicator }}
-                                        value={item.shiftFilter.endTimeFilter} 
-                                        onChange={endTime => this.handleSelectChange(index, endTime, 'endTimeFilter')} 
+                                        value={shiftFilter?.endTimeFilter} 
+                                        onChange={endTime => this.handleSelectChange(endTime, 'endTimeFilter')} 
                                         placeholder={t("Endtime")} 
                                         options={shiftEndTimeOptionsFilter}
                                         styles={customizeSelectStyles}
@@ -225,18 +243,18 @@ class ShiftTable extends React.Component {
                             <th className="col-working-time"><span className="working-time title">{t("WorkHours")}</span></th>
                             <th className="col-shift-code">
                                 <div className="shift-code title">
-                                    <Dropdown onToggle={() => toggleOpenInputShiftCodeFilter(index, item.shiftFilter.isOpenInputShiftCodeFilter)}>
+                                    <Dropdown onToggle={() => this.toggleOpenInputShiftCodeFilter(shiftFilter.isOpenInputShiftCodeFilter)}>
                                         <Dropdown.Toggle>
                                             <span className="shift-code">{t("ShiftCode")}</span>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu className="shift-code-popup">
                                             <div className="input-shift-code">
-                                                <input type="text" placeholder="Nhập mã ca" value={item.shiftFilter.shiftCodeFilter || ""} onChange={e => handleInputTextChange(index, e, "shiftCodeFilter")} />
+                                                <input type="text" placeholder="Nhập mã ca" value={shiftFilter.shiftCodeFilter || ""} onChange={e => this.handleInputTextChange(e)} />
                                             </div>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </div>
-                            </th> */}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
