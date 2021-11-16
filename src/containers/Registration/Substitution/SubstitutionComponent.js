@@ -336,9 +336,6 @@ class SubstitutionComponent extends React.Component {
       timesheets[index].shiftHours = null
       timesheets[index].note = null
       timesheets[index].substitutionType = null
-      timesheets[index].shiftCodeFilter = ""
-      timesheets[index].startTimeFilter = null
-      timesheets[index].endTimeFilter = null
       timesheets[index].applyFrom = null
       timesheets[index].applyTo = null
 
@@ -434,9 +431,6 @@ class SubstitutionComponent extends React.Component {
               shiftId: null,
               shiftHours: null,
               substitutionType: null,
-              shiftCodeFilter: "",
-              startTimeFilter: null,
-              endTimeFilter: null,
               shifts: this.state.shifts,
               applyFrom: null,
               applyTo: null
@@ -447,28 +441,19 @@ class SubstitutionComponent extends React.Component {
       }).catch(error => { })
   }
 
-    // filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
-    //     const shifts = shiftList.filter(item => {
-    //         return (startTime ? item.from_time?.trim() === startTime?.toString().trim() : true) 
-    //         && (endTime ? item.to_time?.trim() === endTime?.toString().trim() : true) 
-    //         && (shiftCode ? item.shift_id?.trim().toUpperCase() === shiftCode?.trim().toUpperCase() : true)
-    //     })
-    //     return shifts
-    // }
-
-  filterShiftInfo = (index) => {
-    const timesheets = [...this.state.timesheets].map((item, i) =>
-      (i == index && (item.shiftCodeFilter || item.startTimeFilter || item.endTimeFilter)) ? { ...item, shifts: this.filterShiftsByConditions(item.shiftCodeFilter, item.startTimeFilter, item.endTimeFilter) } : item
-    );
-    this.setState({ timesheets: timesheets })
-  }
-
-  filterShiftsByConditions = (shiftCode, startTime, endTime) => {
+  filterShiftListByTimesAndShiftCode = (index, startTime, endTime, shiftCode) => {
     const shifts = [...this.state.shifts]
-    const shiftFilters = shifts.filter(item => {
-      return (shiftCode ? item.shift_id.toUpperCase().includes(shiftCode.toUpperCase()) : true) && (startTime ? item.from_time == moment(startTime, "HH:mm:ss").format("HHmmss") : true) && (endTime ? item.to_time == moment(endTime, "HH:mm:ss").format("HHmmss") : true)
+    const timesheets = [...this.state.timesheets]
+    const timesheetsToUpdate = (timesheets || []).map((item, i) => {
+      let shiftsToUpdate = shifts.filter(item => {
+        return (startTime ? item.from_time?.trim() === startTime?.toString().trim() : true) 
+          && (endTime ? item.to_time?.trim() === endTime?.toString().trim() : true) 
+          && (shiftCode ? item.shift_id?.trim().toUpperCase() === shiftCode?.trim().toUpperCase() : true)
+      })
+      return (i == index && (shiftCode || startTime || endTime)) ? {...item, shifts: shiftsToUpdate} : item
     })
-    return shiftFilters
+
+    this.setState({ timesheets: timesheetsToUpdate })
   }
 
   resetFilterShiftInfo = (index, e) => {
@@ -691,7 +676,7 @@ class SubstitutionComponent extends React.Component {
                     {this.error(index, 'substitutionType')}
                   </div>
                 </div>
-                {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
+                {/* {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
                   <div>
                     <fieldset className="col-12 block-filter-shift">
                       <legend>{t("SearchShiftCode")}</legend>
@@ -750,14 +735,14 @@ class SubstitutionComponent extends React.Component {
                       </div>
                     </fieldset>
                   </div>
-                  : null}
+                  : null} */}
               </div> 
               : null
             }
 
             {timesheet.isEdited && timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ?
               <>
-                <ShiftTable shifts={timesheet.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} filterShiftInfo={this.filterShiftInfo} updateShift={this.updateShift.bind(this)} />
+                <ShiftTable shifts={timesheet.shifts} timesheet={{ index: index, shiftId: timesheet.shiftId }} filterShiftListByTimesAndShiftCode={this.filterShiftListByTimesAndShiftCode} updateShift={this.updateShift.bind(this)} />
                 {this.error(index, 'shiftId')}
               </>
               : null
