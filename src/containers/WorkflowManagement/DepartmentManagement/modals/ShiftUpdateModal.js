@@ -608,6 +608,10 @@ function ShiftUpdateModal(props) {
                 <div className="wrap-items">
                     {
                         shiftInfos.map((item, index) => {
+                            console.log("employeeSelectedFilter ============>>")
+                            console.log(item.employeeSelectedFilter)
+                            console.log(item.shiftFilter)
+                            console.log(shiftList)
                             let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">
