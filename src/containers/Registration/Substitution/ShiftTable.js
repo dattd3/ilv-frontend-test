@@ -62,21 +62,13 @@ class ShiftTable extends React.Component {
     }
 
     handleSelectChange = (option, key) => {
-        const { timesheet, filterShiftInfo } = this.props
+        const { timesheet, filterShiftListByTimesAndShiftCode } = this.props
         const shiftFilter = {...this.state.shiftFilter}
-        // if (key === 'startTimeFilter' || key === 'endTimeFilter') {
-        //     newShiftInfos[index].shiftFilter[key] = option
-        //     const startTime = key === 'startTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.startTimeFilter?.originValue
-        //     const endTime = key === 'endTimeFilter' ? option?.originValue : newShiftInfos[index].shiftFilter.endTimeFilter?.originValue
-        //     const shiftCode = newShiftInfos[index].shiftFilter.shiftCodeFilter
-        //     const shifts = filterShiftListByTimesAndShiftCode(startTime, endTime, shiftCode)
-        // }
-
         const startTime = key === 'startTimeFilter' ? option?.originValue : shiftFilter.startTimeFilter?.originValue
         const endTime = key === 'endTimeFilter' ? option?.originValue : shiftFilter.endTimeFilter?.originValue
         const shiftCode = shiftFilter.shiftCodeFilter
 
-        filterShiftInfo(timesheet.index, startTime, endTime, shiftCode)
+        filterShiftListByTimesAndShiftCode(timesheet.index, startTime, endTime, shiftCode)
     }
 
     toggleOpenInputShiftCodeFilter = status => {
@@ -86,11 +78,12 @@ class ShiftTable extends React.Component {
     }
 
     handleInputTextChange = e => {
+        const { timesheet, filterShiftListByTimesAndShiftCode } = this.props
         const shiftFilter = {...this.state.shiftFilter}
         const val = e.target.value
         shiftFilter.shiftCodeFilter = val
         this.setState({shiftFilter: shiftFilter})
-        filterShiftInfo(timesheet.index, shiftFilter.startTimeFilter, shiftFilter.endTimeFilter, val)
+        filterShiftListByTimesAndShiftCode(timesheet.index, shiftFilter.startTimeFilter, shiftFilter.endTimeFilter, val)
     }
 
     render() {
@@ -204,7 +197,7 @@ class ShiftTable extends React.Component {
 
         return (
             <div className="shift-table mt-3">
-                <table className="table table-hover table-borderless table-striped">
+                <table className="table shift">
                     <thead className="bg-primary text-white text-center">
                         <tr>
                             {/* <th scope="col">{t("SelectShiftCode")}</th>

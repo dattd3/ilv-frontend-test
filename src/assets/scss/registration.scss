@@ -106,6 +106,135 @@
         .shift-change-type-field {
             padding: 10px 0;
         }
+        .shift {
+            border-collapse: separate;
+            border-spacing: 0;
+            // border: 1px solid #d1d3e2;
+            thead {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                background: #4e73df;
+                color: #FFFFFF;
+                th {
+                    font-weight: normal;
+                    text-align: center;
+                    padding: 0;
+                    &.col-shift-code {
+                        button {
+                            font-size: inherit;
+                            background: transparent;
+                            border-color: transparent;
+                            outline: none;
+                            box-shadow: none;
+                            border: none;
+                            &::after {
+                                display: inline-block;
+                                vertical-align: 0.2em;
+                                color: #FFFFFF;
+                                content: "";
+                                border-top: 0.4em solid;
+                                border-right: 0.4em solid transparent;
+                                border-bottom: 0;
+                                border-left: 0.4em solid transparent;
+                            }
+                            .shift-code {
+                                margin-right: 5px;
+                            }
+                            &:active {
+                                background: transparent;
+                                border: none;
+                                box-shadow: none;
+                            }
+                            &:focus {
+                                background: transparent;
+                                border: none;
+                                box-shadow: none;
+                            }
+                        }
+                        .shift-code-popup {
+                            padding: 5px 10px;
+                            .input-shift-code {
+                                input {
+                                    border: none;
+                                    font-size: 12px;
+                                    &:focus {
+                                        border: none;
+                                        outline: none;
+                                    }
+                                    &:active {
+                                        border: none;
+                                        outline: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .start-time, .end-time {
+                        width: 100px;
+                        display: inline-block;
+                        .caret-down {
+                            &::after {
+                                display: inline-block;
+                                vertical-align: 0.2em;
+                                color: #FFFFFF;
+                                content: "";
+                                border-top: 0.4em solid;
+                                border-right: 0.4em solid transparent;
+                                border-bottom: 0;
+                                border-left: 0.4em solid transparent;
+                            }
+                        }
+                    }
+                }
+            }
+            tbody {
+                display: block;
+                max-height: 150px;
+                overflow-y: auto;
+                &::-webkit-scrollbar {
+                    background-color: #F5F5F5;
+                    width: 8px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: #a4afb7;
+                    border-left: 1px solid white;
+                    border-right: 1px solid white;
+                    border-top: 1px solid white;
+                    border-bottom: 1px solid white;
+                    border-radius: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                    background-color: #d3d3d3;
+                    border-left: 3.5px solid white;
+                    border-right: 3.5px solid white;
+                    border-top: 3.5px solid white;
+                    border-bottom: 3.5px solid white;
+                }
+                tr {
+                    display: table;
+                    width: 100%;
+                    table-layout: fixed;
+                    td {
+                        padding: 6px 10px;
+                        text-align: center;
+                        border-left: 1px solid #d1d3e2;
+                        border-bottom: 1px solid #d1d3e2;
+                        &.col-shift-code {
+                            border-right: 1px solid #d1d3e2;
+                        }
+                        input {
+                            cursor: pointer;
+                        }
+                    }
+                    &:last-child {
+                        td {
+                            border-bottom: 1.5px solid #d1d3e2;
+                        }
+                    }
+                }
+            }
+        }
     }
     
     h5 {
