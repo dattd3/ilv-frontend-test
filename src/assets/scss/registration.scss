@@ -169,10 +169,9 @@
                         }
                     }
                     .start-time, .end-time {
-                        width: 100px;
+                        width: 110px;
                         display: inline-block;
                         .caret-down {
-                            margin-left: 5px;
                             &::after {
                                 display: inline-block;
                                 vertical-align: 0.2em;
