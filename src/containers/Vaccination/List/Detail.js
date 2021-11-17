@@ -14,12 +14,14 @@ import vi from 'date-fns/locale/vi'
 import { t } from "i18next"
 registerLocale("vi", vi)
 
+const numberInitial = 1
+
 class VaccinationDetail extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             formData: {
-                number: props.number + (props.rowId ? 0: 1),
+                number: props?.number + (props?.rowId ? 0 : 1),
                 vaccinTypeId : '',
                 injectedAt: null,
                 vaccinationUnitId: null,
@@ -328,6 +330,7 @@ class VaccinationDetail extends React.Component {
 
         const injectedAtUpdate = dataRequest.injectedAt
         dataRequest.injectedAt = moment(injectedAtUpdate || new Date().getTime()).format('YYYY-MM-DD');
+        dataRequest.number = dataRequest?.number || numberInitial
         const injectedInfoByDate = listData.find(t => t.injectedAt && moment(t.injectedAt, "YYYY-MM-DD") === injectedAtUpdate)
 
         if (((!rowId && injectedInfoByDate) || (rowId && injectedInfoByDate?.id == rowId)) && dataRequest.statusId == 1) {
@@ -402,7 +405,7 @@ class VaccinationDetail extends React.Component {
                                 <div className="col-md-3 col-xs-12">
                                     <div className="form-group">
                                         <label>{t('vaccination_injections_mumber')}</label>
-                                        <input value={formData.number} onChange={(e) => this.onChangeInput('number',e)} type="text" className="form-control input-text" placeholder={t('vaccination_injections_mumber')} readOnly/>
+                                        <input value={formData?.number || numberInitial} onChange={(e) => this.onChangeInput('number',e)} type="text" className="form-control input-text" placeholder={t('vaccination_injections_mumber')} readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-md-3 col-xs-12">
