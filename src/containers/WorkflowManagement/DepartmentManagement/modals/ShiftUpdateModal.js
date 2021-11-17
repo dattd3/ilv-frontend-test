@@ -32,7 +32,8 @@ function ShiftUpdateModal(props) {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
-
+            applyFrom: null,
+            applyTo: null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -183,6 +184,8 @@ function ShiftUpdateModal(props) {
                 dateChanged: null,
                 shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftType: null,
+                applyFrom: null,
+                applyTo: null,
                 shiftFilter: {
                     isOpenInputShiftCodeFilter: false,
                     shiftCodeFilter: "",
@@ -209,6 +212,8 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftUpdateType = type
         newShiftInfos[index].shiftType = null
+        newShiftInfos[index].applyFrom = null
+        newShiftInfos[index].applyTo = null
         newShiftInfos[index].shiftFilter.isOpenInputShiftCodeFilter = false
         newShiftInfos[index].shiftFilter.shiftCodeFilter = ""
         newShiftInfos[index].shiftFilter.startTimeFilter = null
@@ -257,8 +262,11 @@ function ShiftUpdateModal(props) {
         SetShiftInfos(newShiftInfos)
     }
 
-    const handleDatePickerInputChange = date => {
-
+    const handleDatePickerInputChange = (index, date, stateName) => {
+        const newShiftInfos = [...shiftInfos]
+        const dateToSave = moment(date).isValid() ? moment(date).format("YYYYMMDD") : null
+        newShiftInfos[index][stateName] = dateToSave
+        SetShiftInfos(newShiftInfos)
     }
 
     const filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
@@ -278,7 +286,7 @@ function ShiftUpdateModal(props) {
 
     const verifyInputs = () => {
         let errors = {}
-        let requiredFields = ['shiftType', 'reason', 'applicableObjects']
+        let requiredFields = ['shiftType', 'reason', 'applicableObjects', 'applyFrom', 'applyTo']
         const totalTimeBreakValid = 2
 
         shiftInfos.forEach((shiftInfo, index) => {
@@ -294,7 +302,12 @@ function ShiftUpdateModal(props) {
             requiredFields.forEach(name => {
                 let errorName = name + '_' + index
                 errors[errorName] = null
-                if (name === 'shiftSelected') {
+                if (name === 'applyFrom' || name === 'applyTo') {
+                    errorName = 'applyDate' + '_' + index
+                    if (!shiftInfo[name]) {
+                        errors[errorName] = t("Required")
+                    }
+                } else if (name === 'shiftSelected') {
                     if (!shiftInfo.shiftFilter[name]) {
                         errors[errorName] = t("Required")
                     }
@@ -429,15 +442,23 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         let totalTime = 0
 
-        if (stateName === "startTime" && time) {
-            totalTime = getDuration(time, newShiftInfos[index].endTime)
-        } else if (stateName === "endTime" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, time)
-        } else if (stateName === "breakStart" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, time) + getDuration(newShiftInfos[index].breakEnd, newShiftInfos[index].endTime)
-        } else if (stateName === "breakEnd" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, newShiftInfos[index].breakStart) + getDuration(time, newShiftInfos[index].endTime)
+        if (time) {
+            switch (stateName) {
+                case "startTime":
+                    totalTime = getDuration(time, newShiftInfos[index].endTime)
+                    break
+                case "endTime":
+                    totalTime = getDuration(newShiftInfos[index].startTime, time)
+                    break
+                case "breakStart":
+                    totalTime = getDuration(newShiftInfos[index].startTime, time) + getDuration(newShiftInfos[index].breakEnd, newShiftInfos[index].endTime)
+                    break
+                case "breakEnd":
+                    totalTime = getDuration(newShiftInfos[index].startTime, newShiftInfos[index].breakStart) + getDuration(time, newShiftInfos[index].endTime)
+                    break
+            }
         }
+
         newShiftInfos[index].dateChanged = props.dateInfo.date
         newShiftInfos[index].totalTime = totalTime.toFixed(2)
         newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('HHmmss') : null
@@ -549,6 +570,14 @@ function ShiftUpdateModal(props) {
         }
     }
 
+    const customizeSelectShiftTypeStyles = {
+        control: (base, state) => ({
+            ...base,
+            height: 35,
+            minHeight: 35
+        })
+    }
+
     const updateParent = (index, data) => {
         SetNeedReset(false)
         const ids = (props.employeeSelectedFilter).map(esf => esf.uid)
@@ -627,10 +656,10 @@ function ShiftUpdateModal(props) {
                                                     {t("EndNewTime")}
                                                 </label>
                                             </div>
-                                            <div className="row apply-time">
-                                                <div className="col-4">
-                                                    <div className="row">
-                                                        <div className="col-6">
+                                            <div className="apply-time-shift-type">
+                                                <div className="col-first">
+                                                    <div className="apply-time">
+                                                        <div className="info">
                                                             <label>{t("ShiftChangeFrom")}<span className="text-danger required">(*)</span></label>
                                                             <div>
                                                                 <DatePicker
@@ -641,11 +670,11 @@ function ShiftUpdateModal(props) {
                                                                     showMonthDropdown={true}
                                                                     showYearDropdown={true}
                                                                     autoComplete='off'
-                                                                    popperPlacement="bottom-end"
+                                                                    popperPlacement="bottom-start"
                                                                     className="form-control input" />
                                                             </div>
                                                         </div>
-                                                        <div className="col-6">
+                                                        <div className="info">
                                                             <label>{t("ShiftChangeTo")}<span className="text-danger required">(*)</span></label>
                                                             <div>
                                                                 <DatePicker
@@ -656,21 +685,22 @@ function ShiftUpdateModal(props) {
                                                                     showMonthDropdown={true}
                                                                     showYearDropdown={true}
                                                                     autoComplete='off'
-                                                                    popperPlacement="bottom-end"
+                                                                    popperPlacement="bottom-start"
                                                                     className="form-control input" />
                                                             </div>
                                                         </div>
-                                                        {/* {this.error(index, 'applyFrom')} */}
                                                     </div>
+                                                    { errors[`applyDate_${index}`] ? errorInfos(index, 'applyDate') : null }
                                                 </div>
-                                                <div className="col-4 shift-type">
+                                                <div className="col-second shift-type">
                                                     <label>{t("ShiftCategory")}</label>
                                                     <div className="wrap-shift-type-select">
                                                         <Select 
                                                             value={item.shiftType} 
                                                             onChange={shiftType => handleSelectChange(index, shiftType, 'shiftType')} 
                                                             placeholder={t("Select")} 
-                                                            options={substitutionTypes} />
+                                                            options={substitutionTypes} 
+                                                            styles={customizeSelectShiftTypeStyles} />
                                                     </div>
                                                     { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
                                                 </div>

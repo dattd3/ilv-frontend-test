@@ -80,6 +80,39 @@
                 }
                 .main-content-item {
                     position: relative;
+                    .apply-time-shift-type {
+                        margin: 20px 0;
+                        display: flex;
+                        align-items: flex-start;
+                        .col-first {
+                            width: 350px;
+                            .apply-time {
+                                display: flex;
+                                align-items: center;
+                                .info {
+                                    &:last-child {
+                                        margin-left: 1.5rem;
+                                    }
+                                    input {
+                                        font-size: inherit;
+                                        height: 35px;
+                                        &:active {
+                                            outline: none;
+                                            box-shadow: none;
+                                        }
+                                        &:focus {
+                                            outline: none;
+                                            box-shadow: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .col-second {
+                            margin-left: 1.5rem;
+                            width: 350px;
+                        }
+                    }
                 }
                 .shift-update-type-group {
                     label {
