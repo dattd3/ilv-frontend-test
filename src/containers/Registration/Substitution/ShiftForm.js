@@ -74,6 +74,10 @@ class ShiftForm extends React.Component {
                 totalTime = this.getRangeTimeForDuration(startTime, startBreakTimeAdditional, endBreakTime, endTime)
             } else if (moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") >= moment(startTime, "DD/MM/YYYY HH:mm:ss")) {
                 totalTime = this.getRangeTimeForDuration(startTime, startBreakTime, endBreakTime, endTimeAdditional)
+            } else if (moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") < moment(startTime, "DD/MM/YYYY HH:mm:ss") && moment(startBreakTime, "DD/MM/YYYY HH:mm:ss") > moment(endTime, "DD/MM/YYYY HH:mm:ss")) {
+                totalTime = ""
+            } else if (moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") > moment(endTime, "DD/MM/YYYY HH:mm:ss") && moment(endBreakTime, "DD/MM/YYYY HH:mm:ss") < moment(startTime, "DD/MM/YYYY HH:mm:ss")) {
+                totalTime = ""
             }
         }
         return totalTime
