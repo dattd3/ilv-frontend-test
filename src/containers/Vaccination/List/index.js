@@ -47,7 +47,8 @@ class Vaccination extends React.Component {
     
     render() {
         const { t } = this.props;
-        const lastItem = this.state.listData[this.state.listData.length - 1];
+        const { listData } = this.state
+        const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {}
 
         return <>
             <div className="row vaccine-info-page">
