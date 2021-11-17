@@ -32,6 +32,7 @@ function ShiftUpdateModal(props) {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
+
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -254,6 +255,10 @@ function ShiftUpdateModal(props) {
             // delayedQuery(index, val)
         }
         SetShiftInfos(newShiftInfos)
+    }
+
+    const handleDatePickerInputChange = date => {
+
     }
 
     const filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
@@ -599,6 +604,8 @@ function ShiftUpdateModal(props) {
                 <div className="wrap-items">
                     {
                         shiftInfos.map((item, index) => {
+                            console.log(item.employeeSelectedFilter)
+                            console.log(item.employeeSelectedFilter)
                             let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">
@@ -618,16 +625,53 @@ function ShiftUpdateModal(props) {
                                                     {t("EndNewTime")}
                                                 </label>
                                             </div>
-                                            <div className="shift-type">
-                                                <label>{t("ShiftCategory")}</label>
-                                                <div className="wrap-shift-type-select">
-                                                    <Select 
-                                                        value={item.shiftType} 
-                                                        onChange={shiftType => handleSelectChange(index, shiftType, 'shiftType')} 
-                                                        placeholder={t("Select")} 
-                                                        options={substitutionTypes} />
+                                            <div className="row apply-time">
+                                                <div className="col-4">
+                                                    <div className="row">
+                                                        <div className="col-6">
+                                                            <label>{t("ShiftChangeFrom")}<span className="text-danger required">(*)</span></label>
+                                                            <div>
+                                                                <DatePicker
+                                                                    selected={item && item.applyFrom ? moment(item.applyFrom, 'YYYYMMDD').toDate() : null}
+                                                                    onChange={applyFrom => handleDatePickerInputChange(index, applyFrom, "applyFrom")}
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    locale="vi"
+                                                                    showMonthDropdown={true}
+                                                                    showYearDropdown={true}
+                                                                    autoComplete='off'
+                                                                    popperPlacement="bottom-end"
+                                                                    className="form-control input" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-6">
+                                                            <label>{t("ShiftChangeTo")}<span className="text-danger required">(*)</span></label>
+                                                            <div>
+                                                                <DatePicker
+                                                                    selected={item && item.applyTo ? moment(item.applyTo, 'YYYYMMDD').toDate() : null}
+                                                                    onChange={applyTo => handleDatePickerInputChange(index, applyTo, "applyTo")}
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    locale="vi"
+                                                                    showMonthDropdown={true}
+                                                                    showYearDropdown={true}
+                                                                    autoComplete='off'
+                                                                    popperPlacement="bottom-end"
+                                                                    className="form-control input" />
+                                                            </div>
+                                                        </div>
+                                                        {/* {this.error(index, 'applyFrom')} */}
+                                                    </div>
                                                 </div>
-                                                { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
+                                                <div className="col-4 shift-type">
+                                                    <label>{t("ShiftCategory")}</label>
+                                                    <div className="wrap-shift-type-select">
+                                                        <Select 
+                                                            value={item.shiftType} 
+                                                            onChange={shiftType => handleSelectChange(index, shiftType, 'shiftType')} 
+                                                            placeholder={t("Select")} 
+                                                            options={substitutionTypes} />
+                                                    </div>
+                                                    { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
+                                                </div>
                                             </div>
                                             {
                                                 item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ?

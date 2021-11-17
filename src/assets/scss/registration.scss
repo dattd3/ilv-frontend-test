@@ -85,9 +85,6 @@
         }
     }
     .shift-table {
-        overflow-x: auto;
-        overflow-y: auto;
-        max-height: 350px;
         thead th {
             position: sticky;
             top: 0;
@@ -109,7 +106,6 @@
         .shift {
             border-collapse: separate;
             border-spacing: 0;
-            // border: 1px solid #d1d3e2;
             thead {
                 display: table;
                 width: 100%;
@@ -119,7 +115,9 @@
                 th {
                     font-weight: normal;
                     text-align: center;
+                    vertical-align: middle;
                     padding: 0;
+                    border-bottom: none;
                     &.col-shift-code {
                         button {
                             font-size: inherit;
@@ -174,6 +172,7 @@
                         width: 100px;
                         display: inline-block;
                         .caret-down {
+                            margin-left: 5px;
                             &::after {
                                 display: inline-block;
                                 vertical-align: 0.2em;

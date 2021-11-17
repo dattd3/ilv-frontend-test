@@ -186,7 +186,7 @@ class ShiftTable extends React.Component {
                     backgroundColor: isSelected ? "#D8D8D8" : "#FFFFFF",
                     color: "#000000",
                     cursor: "pointer",
-                    padding: "5px",
+                    padding: "6px",
                     textAlign: "left",
                     "&:hover": {
                         background: isFocused ? "#D8D8D8" : "#000000"
@@ -197,15 +197,9 @@ class ShiftTable extends React.Component {
 
         return (
             <div className="shift-table mt-3">
-                <table className="table shift">
-                    <thead className="bg-primary text-white text-center">
+                <table className="shift">
+                    <thead>
                         <tr>
-                            {/* <th scope="col">{t("SelectShiftCode")}</th>
-                            <th scope="col">{t("StartHour")}</th>
-                            <th scope="col">{t("Endtime")}</th>
-                            <th scope="col">{t("WorkHours")}</th>
-                            <th scope="col">{t("ShiftCode")}</th> */}
-
                             <th className="col-select-shift"><span className="select-shift title">{t("SelectShiftCode")}</span></th>
                             <th className="col-start-time">
                                 <div className="start-time title">
@@ -252,17 +246,15 @@ class ShiftTable extends React.Component {
                     </thead>
                     <tbody>
                         {shifts.map((shift, index) => {
-                            return <tr className="text-center" key={index}>
-                                <th scope="row">
-                                    <div className="d-flex justify-content-center">
-                                        <input className="form-check-input position-static" checked={shift.shift_id == timesheet.shiftId} onChange={this.updateShift.bind(this, shift)} type="radio" name={'shift' + timesheet.index} value={shift.shift_id} />
-                                    </div>
-                                </th>
-                                <td>{shift.from_time.replace("#", "") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
-                                <td>{shift.to_time.replace("#", "") ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
-                                <td>{shift.hours}</td>
-                                <td>{shift.shift_id}</td>      
-                            </tr>
+                            return <tr key={index}>
+                                        <td>
+                                            <input className="form-check-input position-static" checked={shift.shift_id == timesheet.shiftId} onChange={this.updateShift.bind(this, shift)} type="radio" name={'shift' + timesheet.index} value={shift.shift_id} />
+                                        </td>
+                                        <td>{shift.from_time.replace("#", "") ? moment(shift.from_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
+                                        <td>{shift.to_time.replace("#", "") ? moment(shift.to_time, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ""}</td>
+                                        <td>{shift.hours}</td>
+                                        <td>{shift.shift_id}</td>
+                                    </tr>
                         })}
                     </tbody>
                 </table>
