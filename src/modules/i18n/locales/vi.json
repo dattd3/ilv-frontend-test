@@ -1038,5 +1038,7 @@
   "confirm_form_vaccination": "Vui lòng điều chỉnh thông tin trạng thái Từ chối/Trì hoãn tiêm chủng gần nhất.",
   "vaccination_exits": "Đã có thông tin mũi tiêm trong ngày này!",
   "ComeBack": "Quay lại",
-  "Source": "Nguồn"
+  "Source": "Nguồn",
+  "AssesserRecently" : "CBQL Thẩm định đã lựa chọn gần nhất",
+  "ApproverRecently" : "CBLĐ Phê duyệt đã lựa chọn gần nhất"
 }

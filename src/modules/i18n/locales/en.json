@@ -1019,5 +1019,7 @@
   "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information.",
   "vaccination_exits": "Vaccination date is existing!",
   "ComeBack": "Back",
-  "Source": "Source"
+  "Source": "Source",
+  "AssesserRecently" : "Assesser was selected recently",
+  "ApproverRecently" : "Approver was selected recently"
 }
