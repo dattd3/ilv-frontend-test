@@ -860,7 +860,7 @@
   "Shiftchange": "Shift Change",
   "IntermittenShift": "Intermitten Shift",
   "CoastShoreShiftChange": "Coast-Shore Shift Change",
-  "WarningBreakEndTime": "Break End Time must be between Start Time 1 and End Time 1",
+  "WarningBreakTime": "Break time must be between Start time 1 and End time 1",
   "WarningBreakStartTimeEndTime": "Break Start Time must not later than Break End Time",
   "WarningStartTimeEndTime1": "Start Time 1 must not later than End Time 1",
   "WarningTotalRegisTime": "Total Hours must not exceed 10 hours",

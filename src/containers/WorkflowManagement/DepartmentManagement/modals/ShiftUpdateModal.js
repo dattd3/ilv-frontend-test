@@ -27,6 +27,10 @@ function ShiftUpdateModal(props) {
     const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
     const [shiftList, SetShiftList] = useState([])
     const [needReset, SetNeedReset] = useState(false)
+
+    console.log(2131313131)
+    console.log(props?.dateInfo?.date)
+
     const [shiftInfos, SetShiftInfos] = useState([
         {
             dateChanged: null,
@@ -96,6 +100,9 @@ function ShiftUpdateModal(props) {
             }
             return []
         }
+        function bindApplyTime() {
+
+        }
 
         async function getShiftList() {
             try {
@@ -110,6 +117,7 @@ function ShiftUpdateModal(props) {
         }
 
         getShiftList()
+        bindApplyTime()
     }, [])
 
     useEffect(() => {
@@ -184,8 +192,8 @@ function ShiftUpdateModal(props) {
                 dateChanged: null,
                 shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftType: null,
-                applyFrom: null,
-                applyTo: null,
+                applyFrom: props?.dateInfo?.date,
+                applyTo: props?.dateInfo?.date,
                 shiftFilter: {
                     isOpenInputShiftCodeFilter: false,
                     shiftCodeFilter: "",
@@ -212,8 +220,8 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftUpdateType = type
         newShiftInfos[index].shiftType = null
-        newShiftInfos[index].applyFrom = null
-        newShiftInfos[index].applyTo = null
+        newShiftInfos[index].applyFrom = props?.dateInfo?.date
+        newShiftInfos[index].applyTo = props?.dateInfo?.date
         newShiftInfos[index].shiftFilter.isOpenInputShiftCodeFilter = false
         newShiftInfos[index].shiftFilter.shiftCodeFilter = ""
         newShiftInfos[index].shiftFilter.startTimeFilter = null
@@ -386,6 +394,8 @@ function ShiftUpdateModal(props) {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
+            applyFrom: props?.dateInfo?.date,
+            applyTo: props?.dateInfo?.date,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -633,10 +643,6 @@ function ShiftUpdateModal(props) {
                 <div className="wrap-items">
                     {
                         shiftInfos.map((item, index) => {
-                            console.log("employeeSelectedFilter ============>>")
-                            console.log(item.employeeSelectedFilter)
-                            console.log(item.shiftFilter)
-                            console.log(shiftList)
                             let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">

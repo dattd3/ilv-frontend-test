@@ -634,6 +634,9 @@
                 margin-left: 5px;
             }
         }
+        .react-datepicker-popper {
+            z-index: 2;
+        }
     }
     .approver {
         .avatar {
