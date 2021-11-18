@@ -21,10 +21,11 @@ class ShiftForm extends React.Component {
 
     updateTime(name, value) {
         const { timesheet, updateTime, resetValidation } = this.props
-        this.setState({[name]: value}, () => {
+        const time = value && moment(value).isValid() ? value : null
+        this.setState({[name]: time}, () => {
             this.calculateTotalTime()
         })
-        updateTime(timesheet.index, name, moment(value).format(TIME_FORMAT))
+        updateTime(timesheet.index, name, moment(time).isValid() ? moment(time).format(TIME_FORMAT) : null)
         resetValidation(timesheet.index)
     }
 
@@ -210,8 +211,8 @@ class ShiftForm extends React.Component {
                             </div>
                         </div>
                         <div className="text-danger">
-                            <div className="validation-message">{t("OnlyShiftBreakTime")}</div>
                             {this.error(timesheet.index, 'breakTime')}
+                            <div className="text-info validation-message">{t("OnlyShiftBreakTime")}</div>
                         </div>
                     </div>
                 </div>

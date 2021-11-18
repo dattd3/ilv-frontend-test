@@ -84,35 +84,28 @@ class SubstitutionComponent extends React.Component {
 
   verifyInput() {
     const { t } = this.props
-    let errors = {}
     const { timesheets } = this.state
+    let errors = {}
 
     timesheets.forEach((timesheet, index) => {
-      if (!timesheet.isEdited) return;
+      if (!timesheet.isEdited) return
+
+      const startTime = moment(timesheet.startTime, "HH:mm:ss").isValid() ? moment(timesheet.startTime, "HH:mm:ss").format("HHmmss") : null
+      const endTime = moment(timesheet.endTime, "HH:mm:ss").isValid() ? moment(timesheet.endTime, "HH:mm:ss").format("HHmmss") : null
+      const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.startBreakTime, "HH:mm:ss").format("HHmmss") : null
+      const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.endBreakTime, "HH:mm:ss").format("HHmmss") : null
+
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE) {
         errors['shiftId' + index] = _.isNull(timesheet['shiftId']) ? t('Required') : null
       }
+
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
         const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? t('Required') : null
         })
-
-        // Validation for broken shift
-        const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss")
-        const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss")
-        const duration = moment.duration(endBreakTime.diff(startBreakTime))
-        const totalHoursBreak = duration.asHours()
-        const totalTimeBreakValid = 2
-
-        if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && totalHoursBreak < totalTimeBreakValid) {
-          errors['totalHours' + index] = t("WarningTotalBreakTime")
-        } else if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && moment.duration(this.state.totalHours).asHours() > 10) {
-          errors['totalHours' + index] = t("WarningTotalRegisTime")
-        } else {
-          errors['totalHours' + index] = null
-        }
       }
+
       errors['applyFrom' + index] = (_.isNull(timesheet['applyFrom']) || !timesheet['applyFrom']) ? t('Required') : null
       errors['applyTo' + index] = (_.isNull(timesheet['applyTo']) || !timesheet['applyTo']) ? t('Required') : null
 
@@ -124,8 +117,55 @@ class SubstitutionComponent extends React.Component {
         }
       }
       errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? t('Required') : null
-      errors['breakTime' + index] = (timesheet['substitutionType'] === BROKEN_SHIFT_OPTION_VALUE && ((_.isNull(timesheet['startBreakTime'])
-        && !_.isNull(timesheet['endBreakTime'])) || (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])))) ? t("WarningRequiredBreakTime") : null
+
+      if (_.isNull(timesheet['startBreakTime']) && !_.isNull(timesheet['endBreakTime'])) {
+        errors['startBreakTime' + index] = t('Required')
+      } else if (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])) {
+        errors['endBreakTime' + index] = t('Required')
+      }
+
+      if (startTime && endTime) {
+        if (startTime < endTime) {
+          if (startBreakTime && endBreakTime) {
+            if (startBreakTime > endBreakTime) {
+              errors['startBreakTime' + index] = t('WarningBreakStartTimeEndTime')
+            } else if (startBreakTime < startTime || endBreakTime > endTime) {
+              errors['breakTime' + index] = t('WarningBreakTime')
+            }
+          }
+        } else {
+          if (startBreakTime && endBreakTime) {
+            if (startBreakTime > startTime && endBreakTime > startTime) {
+              if (startBreakTime > endBreakTime) {
+                errors['startBreakTime' + index] = t('WarningBreakStartTimeEndTime')
+              }
+            } else if (startBreakTime < endTime && endBreakTime < endTime) {
+              if (startBreakTime > endBreakTime) {
+                errors['startBreakTime' + index] = t('WarningBreakStartTimeEndTime')
+              }
+            } else if ((startBreakTime < startTime && startBreakTime > endTime) || (startBreakTime >= endTime && startBreakTime < startTime) 
+              || (startBreakTime > startTime && endBreakTime > endTime) || (startBreakTime < endTime && endBreakTime > endTime)) {
+              errors['breakTime' + index] = t('WarningBreakTime')
+            }
+          }
+        }
+
+        if (startBreakTime && endBreakTime) {
+          if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
+            const duration = moment.duration(moment(endBreakTime, "HHmmss").diff(moment(startBreakTime, "HHmmss")))
+            const totalHoursBreak = duration.asHours()
+            const totalTimeBreakValid = 2
+            const totalTimeWorkingValid = 10
+            if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && totalHoursBreak < totalTimeBreakValid) {
+              errors['totalHours' + index] = t("WarningTotalBreakTime")
+            } else if (timesheet['substitutionType'] && timesheet['substitutionType'].value == BROKEN_SHIFT_OPTION_VALUE && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
+              errors['totalHours' + index] = t("WarningTotalRegisTime")
+            } else {
+              errors['totalHours' + index] = null
+            }
+          }
+        }
+      }
       errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? t('Required') : null
     })
     if (_.isNull(this.state.approver)) {
@@ -313,7 +353,9 @@ class SubstitutionComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    let timesheets = this.state.timesheets
+    const timesheets = this.state.timesheets
+    timesheets[index].applyFrom = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
+    timesheets[index].applyTo = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
     timesheets[index].isEdited = !this.state.timesheets[index].isEdited
     this.setState({
       timesheets: [...timesheets]
@@ -332,8 +374,8 @@ class SubstitutionComponent extends React.Component {
       timesheets[index].shiftHours = null
       timesheets[index].note = null
       timesheets[index].substitutionType = null
-      timesheets[index].applyFrom = null
-      timesheets[index].applyTo = null
+      timesheets[index].applyFrom = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
+      timesheets[index].applyTo = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
 
       this.setState({
         timesheets: [...timesheets],
@@ -628,10 +670,11 @@ class SubstitutionComponent extends React.Component {
                         onChange={applyFrom => this.handleDatePickerInputChange(index, applyFrom, "applyFrom")}
                         dateFormat="dd/MM/yyyy"
                         locale="vi"
+                        minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                         showMonthDropdown={true}
                         showYearDropdown={true}
                         autoComplete='off'
-                        popperPlacement="bottom-end"
+                        popperPlacement="bottom-start"
                         className="form-control input" />
                     </div>
                     {this.error(index, 'applyFrom')}
@@ -644,6 +687,7 @@ class SubstitutionComponent extends React.Component {
                           onChange={applyTo => this.handleDatePickerInputChange(index, applyTo, "applyTo")}
                           dateFormat="dd/MM/yyyy"
                           locale="vi"
+                          minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                           showMonthDropdown={true}
                           showYearDropdown={true}
                           autoComplete='off'

@@ -882,7 +882,7 @@
   "Shiftchange": "Phân ca làm việc",
   "IntermittenShift": "Phân ca gãy",
   "CoastShoreShiftChange": "Phân ca bờ đảo full ngày",
-  "WarningBreakEndTime": "(Thời gian kết thúc nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)",
+  "WarningBreakTime": "(Thời gian nghỉ ca phải nằm trong Bắt đầu 1 và Kết thúc 1)",
   "WarningBreakStartTimeEndTime": "(Thời gian bắt đầu nghỉ ca không được lớn hơn Thời gian kết thúc nghỉ ca)",
   "WarningStartTimeEndTime1": "(Thời gian Bắt đầu 1 không được lớn hơn Kết thúc 1)",
   "WarningTotalRegisTime": "(Tổng số thời gian đăng ký không được vượt quá 10h)",
