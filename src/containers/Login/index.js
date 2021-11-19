@@ -5,27 +5,27 @@ import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/LogoVingroup.svg';
 import { useLocalizeStore } from '../../modules';
+import Constants from "../../commons/Constants";
 
 function LoginGuideModal(props) {
   const { t } = useTranslation();
+  
+
   return (
     <Modal
       {...props}
-      size="lg"
       className="login-instructions-modal"
       aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
+      centered >
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>
         <h5>{t("LoginGuide_Title")}</h5>
         <p>{t("LoginGuide_Description")}</p>
-        <ul>
-          <li><strong>{t("Username")}:</strong> {t("LoginGuide_UserName")}</li>
-          <li><strong>{t("Password")}:</strong> {t("LoginGuide_Password")}</li>
-        </ul>
-        <p>{t("LoginGuide_Note")} </p>
+        <p className="guide-account">+ <strong>{t("Username")}:</strong> {t("LoginGuide_UserName")}</p>
+        <p className="guide-password">+ <strong>{t("Password")}:</strong> {t("LoginGuide_Password")}</p>
+        <p>- {t("LoginGuide_Note")} </p>
+        <p>- {t("LoginGuideNoteSecond")} <a href={Constants.LOGIN_INSTRUCTION_PATH} title="File" target="_blank" className="here">{t("Here")}</a></p>
       </Modal.Body>
     </Modal>
   );
