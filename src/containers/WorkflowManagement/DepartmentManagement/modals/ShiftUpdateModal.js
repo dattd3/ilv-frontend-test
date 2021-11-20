@@ -36,8 +36,6 @@ function ShiftUpdateModal(props) {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
-            applyFrom: null,
-            applyTo: null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -100,9 +98,6 @@ function ShiftUpdateModal(props) {
             }
             return []
         }
-        function bindApplyTime() {
-
-        }
 
         async function getShiftList() {
             try {
@@ -117,7 +112,6 @@ function ShiftUpdateModal(props) {
         }
 
         getShiftList()
-        bindApplyTime()
     }, [])
 
     useEffect(() => {
@@ -192,8 +186,6 @@ function ShiftUpdateModal(props) {
                 dateChanged: null,
                 shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftType: null,
-                applyFrom: props?.dateInfo?.date,
-                applyTo: props?.dateInfo?.date,
                 shiftFilter: {
                     isOpenInputShiftCodeFilter: false,
                     shiftCodeFilter: "",
@@ -220,8 +212,6 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftUpdateType = type
         newShiftInfos[index].shiftType = null
-        newShiftInfos[index].applyFrom = props?.dateInfo?.date
-        newShiftInfos[index].applyTo = props?.dateInfo?.date
         newShiftInfos[index].shiftFilter.isOpenInputShiftCodeFilter = false
         newShiftInfos[index].shiftFilter.shiftCodeFilter = ""
         newShiftInfos[index].shiftFilter.startTimeFilter = null
@@ -270,13 +260,6 @@ function ShiftUpdateModal(props) {
         SetShiftInfos(newShiftInfos)
     }
 
-    const handleDatePickerInputChange = (index, date, stateName) => {
-        const newShiftInfos = [...shiftInfos]
-        const dateToSave = moment(date).isValid() ? moment(date).format("YYYYMMDD") : null
-        newShiftInfos[index][stateName] = dateToSave
-        SetShiftInfos(newShiftInfos)
-    }
-
     const filterShiftListByTimesAndShiftCode = (startTime, endTime, shiftCode) => {
         const shifts = shiftList.filter(item => {
             return (startTime ? item.from_time?.trim() === startTime?.toString().trim() : true) 
@@ -294,7 +277,7 @@ function ShiftUpdateModal(props) {
 
     const verifyInputs = () => {
         let errors = {}
-        let requiredFields = ['shiftType', 'reason', 'applicableObjects', 'applyFrom', 'applyTo']
+        let requiredFields = ['shiftType', 'reason', 'applicableObjects']
         const totalTimeBreakValid = 2
 
         shiftInfos.forEach((shiftInfo, index) => {
@@ -310,12 +293,7 @@ function ShiftUpdateModal(props) {
             requiredFields.forEach(name => {
                 let errorName = name + '_' + index
                 errors[errorName] = null
-                if (name === 'applyFrom' || name === 'applyTo') {
-                    errorName = 'applyDate' + '_' + index
-                    if (!shiftInfo[name]) {
-                        errors[errorName] = t("Required")
-                    }
-                } else if (name === 'shiftSelected') {
+                if (name === 'shiftSelected') {
                     if (!shiftInfo.shiftFilter[name]) {
                         errors[errorName] = t("Required")
                     }
@@ -394,8 +372,6 @@ function ShiftUpdateModal(props) {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
-            applyFrom: props?.dateInfo?.date,
-            applyTo: props?.dateInfo?.date,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -663,41 +639,6 @@ function ShiftUpdateModal(props) {
                                                 </label>
                                             </div>
                                             <div className="apply-time-shift-type">
-                                                <div className="col-first">
-                                                    <div className="apply-time">
-                                                        <div className="info">
-                                                            <label>{t("ShiftChangeFrom")}<span className="text-danger required">(*)</span></label>
-                                                            <div>
-                                                                <DatePicker
-                                                                    selected={item && item.applyFrom ? moment(item.applyFrom, 'YYYYMMDD').toDate() : null}
-                                                                    onChange={applyFrom => handleDatePickerInputChange(index, applyFrom, "applyFrom")}
-                                                                    dateFormat="dd/MM/yyyy"
-                                                                    locale="vi"
-                                                                    showMonthDropdown={true}
-                                                                    showYearDropdown={true}
-                                                                    autoComplete='off'
-                                                                    popperPlacement="bottom-start"
-                                                                    className="form-control input" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="info">
-                                                            <label>{t("ShiftChangeTo")}<span className="text-danger required">(*)</span></label>
-                                                            <div>
-                                                                <DatePicker
-                                                                    selected={item && item.applyTo ? moment(item.applyTo, 'YYYYMMDD').toDate() : null}
-                                                                    onChange={applyTo => handleDatePickerInputChange(index, applyTo, "applyTo")}
-                                                                    dateFormat="dd/MM/yyyy"
-                                                                    locale="vi"
-                                                                    showMonthDropdown={true}
-                                                                    showYearDropdown={true}
-                                                                    autoComplete='off'
-                                                                    popperPlacement="bottom-start"
-                                                                    className="form-control input" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    { errors[`applyDate_${index}`] ? errorInfos(index, 'applyDate') : null }
-                                                </div>
                                                 <div className="col-second shift-type">
                                                     <label>{t("ShiftCategory")}</label>
                                                     <div className="wrap-shift-type-select">
@@ -852,46 +793,42 @@ function ShiftUpdateModal(props) {
                                                             </div>
                                                             { errors[`rangeTime_${index}`] ? errorInfos(index, 'rangeTime') : null }
                                                         </div>
-                                                        {
-                                                            item.shiftType?.value == brokenShiftCode ?
-                                                            <div className="time-break">
-                                                                <div className="time-data">
-                                                                    <div className="start-time-break">
-                                                                        <label>{t("BreakStartTime")}</label>
-                                                                        <DatePicker
-                                                                            selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
-                                                                            onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm:ss"
-                                                                            timeFormat="HH:mm:ss"
-                                                                            placeholderText={t("Select")}
-                                                                            className="form-control input" />
-                                                                    </div>
-                                                                    <div className="end-time-break">
-                                                                        <label>{t("BreakEndTime")}</label>
-                                                                        <DatePicker
-                                                                            selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
-                                                                            onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm:ss"
-                                                                            timeFormat="HH:mm:ss"
-                                                                            placeholderText={t("Select")}
-                                                                            className="form-control input" />
-                                                                    </div>
+                                                        <div className="time-break">
+                                                            <div className="time-data">
+                                                                <div className="start-time-break">
+                                                                    <label>{t("BreakStartTime")}</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
+                                                                        onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
                                                                 </div>
-                                                                { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
-                                                                <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p>
+                                                                <div className="end-time-break">
+                                                                    <label>{t("BreakEndTime")}</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
+                                                                        onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                </div>
                                                             </div>
-                                                            : null
-                                                        }
+                                                            { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
+                                                            <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p>
+                                                        </div>
                                                         <div className="time-total">
                                                             <label>{t("TotalTimes")}</label>
                                                             <p className="total">{item.totalTime || 0}</p>
