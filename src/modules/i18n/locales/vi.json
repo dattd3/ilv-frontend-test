@@ -11,10 +11,12 @@
   "Username": "Tên đăng nhập",
   "Password": "Mật khẩu",
   "LoginGuide_Title": "Hướng dẫn đăng nhập",
-  "LoginGuide_Description": "Bạn vui lòng chọn \"Tiếp theo\" sau đó nhập thông tin tên đăng nhập và mật khẩu để truy cập website.",
-  "LoginGuide_UserName": "Sử dụng account AD (là account cá nhân đăng nhập hệ thống Saba), ví dụ: chiennd4@vingroup.net",
+  "LoginGuide_Description": "Bạn vui lòng chọn \"Đăng nhập\" sau đó nhập thông tin tên đăng nhập và mật khẩu để truy cập Website.",
+  "LoginGuide_UserName": "sử dụng account AD",
   "LoginGuide_Password": "sử dụng mật khẩu account AD",
-  "LoginGuide_Note": "Trường hợp không rõ Account AD của mình hoặc không đăng nhập được, vui lòng liên hệ bộ phận IT của đơn vị để kiểm tra.",
+  "LoginGuide_Note": "Trường hợp không rõ Account AD của mình, vui lòng liên hệ bộ phận HR và IT của đơn vị để kiểm tra.",
+  "LoginGuideNoteSecond": "Trường hợp lỗi không đăng nhập được, bạn vui lòng xem chi tiết hướng dẫn khắc phục ",
+  "Here": "tại đây",
   "LoginSuccessful": "Đăng nhập thành công...",
   "SearchTextPlaceholder": "Tìm kiếm",
   "Menu": "Trang chủ",
@@ -1040,5 +1042,11 @@
   "ComeBack": "Quay lại",
   "Source": "Nguồn",
   "ShiftChangeFrom": "Áp dụng từ",
-  "ShiftChangeTo": "Đến"
+  "ShiftChangeTo": "Đến",
+  "LoginErrorByNetworkTitle": "Lỗi kết nối tới hệ thống!",
+  "LoginErrorByNetworkDescription": "Vui lòng kiểm tra đường truyền hoặc ngắt kết nối VPN và thử lại!",
+  "LoginErrorByUserIssuesTitle": "Lỗi người dùng không tồn tại trên hệ thống!",
+  "LoginErrorByUserIssuesDescription": "Vui lòng kiểm tra lại mã AD đang sử dụng hoặc liên hệ HR để được trợ giúp!",
+  "TryAgain": "Thử lại",
+  "TroubleshootingGuide": "Bạn vui lòng xem chi tiết hướng dẫn khắc phục lỗi"
 }
