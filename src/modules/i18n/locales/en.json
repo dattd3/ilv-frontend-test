@@ -1021,5 +1021,11 @@
   "confirm_form_vaccination": "Please adjust the latest Vaccination Refuse/Delayed status information.",
   "vaccination_exits": "Vaccination date is existing!",
   "ComeBack": "Back",
-  "Source": "Source"
+  "Source": "Source",
+  "LoginErrorByNetworkTitle": "Connection Error!",
+  "LoginErrorByNetworkDescription": "Please check the connection and try again!",
+  "LoginErrorByUserIssuesTitle": "User information does not exist on the system!",
+  "LoginErrorByUserIssuesDescription": "Please check your AD or contact HR for help!",
+  "TryAgain": "Try again",
+  "TroubleshootingGuide": "Please see detailed troubleshooting instructions"
 }
