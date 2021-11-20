@@ -3,11 +3,15 @@ import { Auth, Hub } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
-import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import Constants from "../../commons/Constants"
 
+const ERROR_TYPE = {
+    NETWORK: 1,
+    USER_NOT_EXIST: 2
+}
 
 function Authorize(props) {
     const { t } = useTranslation();
@@ -18,17 +22,19 @@ function Authorize(props) {
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
     const [isGetUser, SetIsGetUser] = useState(false);
     const [isLoadingUser, SetIsLoadingUser] = useState(false);
+    const [isError, SetIsError] = useState(false);
+    const [errorType, SetErrorType] = useState(null);
+    const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
 
     const getUser = (token, jwtToken, vgEmail) => {
-
         if (jwtToken == null || jwtToken == "") {
             return;
         }
-
         if (isGetUser == true) {
             return;
         }
 
+        SetIsShowLoadingModal(true)
         const config = getMuleSoftHeaderConfigurations()
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
@@ -38,27 +44,31 @@ function Authorize(props) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
                     updateUser(userProfile,jwtToken)
+                    SetIsShowLoadingModal(false)
                 }
                 else {
-                    SetNotifyContent(t("NotFoundUserOnSap"));
+                    SetIsError(true)
+                    SetErrorType(ERROR_TYPE.USER_NOT_EXIST)
                     SetIsloading(false);
                     SetIsLoadingUser(false);
                     SetIsGetUser(true)
+                    SetIsShowLoadingModal(false)
                 }
             })
             .catch(error => {
-                // console.log("Call getUser error:", error);
-                SetNotifyContent(t("LoginError"));
                 SetIsloading(false);
-                SetIsLoadingUser(false);
+                // SetIsLoadingUser(false);
                 SetIsGetUser(true)
-            }
-            );
+                SetIsError(true)
+                SetErrorType(ERROR_TYPE.NETWORK)
+                SetIsShowLoadingModal(false)
+            });
     }
 
     const checkUser = (user, jwtToken, vgEmail) => {
         if (user == null || user.uid == null) {
-            SetNotifyContent(t("NotFoundUserOnSap"));
+            SetIsError(true)
+            SetErrorType(ERROR_TYPE.USER_NOT_EXIST)
             SetIsloading(false);
         } else {
             SetNotifyContent(t("WaitNotice"));
@@ -166,17 +176,14 @@ function Authorize(props) {
     function getUserData() {
         Auth.currentAuthenticatedUser().then(currentAuthUser => {
             if (currentAuthUser.signInUserSession.isValid()) {
-
                 if (isLoadingUser == false) {
                     SetIsLoadingUser(true);
-
                     SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
                     let email = currentAuthUser.attributes.family_name;
                     let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
                     let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                     getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);
                 }
-
             }
             else {
                 SetNotifyContent(t("WaitNotice"));
@@ -231,10 +238,30 @@ function Authorize(props) {
         });
     });
 
+    const tryAgain = () => {
+        window.location.reload()
+    }
+
     return (
-        <div className='blank-page-cover'>
-            <LoadingModal show={true} content={notifyContent} isloading={isloading} />
+        <>
+        <LoadingModal show={isShowLoadingModal} content={notifyContent} isloading={isloading} />
+        <div className='waiting-login'>
+            {
+                isError ?
+                <div className="login-result">
+                    <div className="top">
+                        <h1 className="hight-light title">{errorType === ERROR_TYPE.NETWORK ? t('LoginErrorByNetworkTitle') : t('LoginErrorByUserIssuesTitle')}</h1>
+                        <p className="description">{errorType === ERROR_TYPE.NETWORK ? t('LoginErrorByNetworkDescription') : t('LoginErrorByUserIssuesDescription')}</p>
+                    </div>
+                    <div className="bottom">
+                        <p className="guide-line">{t('TroubleshootingGuide')} <a href={Constants.LOGIN_INSTRUCTION_PATH} title="Guide line" target="_blank" className="hight-light guide-line-path">{t('Here')}</a></p>
+                        <button type="button" className="hight-light try-again" onClick={tryAgain}>{t('TryAgain')}</button>
+                    </div>
+                </div>
+                : null
+            }
         </div>
+        </>
     );
 }
 
