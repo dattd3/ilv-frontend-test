@@ -24,6 +24,7 @@ function Authorize(props) {
     const [isLoadingUser, SetIsLoadingUser] = useState(false);
     const [isError, SetIsError] = useState(false);
     const [errorType, SetErrorType] = useState(null);
+    const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
 
     const getUser = (token, jwtToken, vgEmail) => {
         if (jwtToken == null || jwtToken == "") {
@@ -33,6 +34,7 @@ function Authorize(props) {
             return;
         }
 
+        SetIsShowLoadingModal(true)
         const config = getMuleSoftHeaderConfigurations()
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
@@ -42,6 +44,7 @@ function Authorize(props) {
                     let userProfile = res.data.data[0];
                     checkUser(userProfile, jwtToken, vgEmail);
                     updateUser(userProfile,jwtToken)
+                    SetIsShowLoadingModal(false)
                 }
                 else {
                     SetIsError(true)
@@ -49,6 +52,7 @@ function Authorize(props) {
                     SetIsloading(false);
                     SetIsLoadingUser(false);
                     SetIsGetUser(true)
+                    SetIsShowLoadingModal(false)
                 }
             })
             .catch(error => {
@@ -57,6 +61,7 @@ function Authorize(props) {
                 SetIsGetUser(true)
                 SetIsError(true)
                 SetErrorType(ERROR_TYPE.NETWORK)
+                SetIsShowLoadingModal(false)
             });
     }
 
@@ -239,7 +244,7 @@ function Authorize(props) {
 
     return (
         <>
-        <LoadingModal show={true} content={notifyContent} isloading={isloading} />
+        <LoadingModal show={isShowLoadingModal} content={notifyContent} isloading={isloading} />
         <div className='waiting-login'>
             {
                 isError ?

@@ -7,7 +7,7 @@ function LoadingModal(props) {
     return (
         <Modal centered show={show} onHide={() => { return; }}>
             <Modal.Body className='text-center no-bg'>
-                {isloading ? <Spinner animation="border" variant="light" size='lg' /> : <span className="error-badge"><i className="fas fa-exclamation-triangle"></i></span>}
+                {isloading ? <Spinner animation="border" variant="light" size='lg' /> : null}
                 {content ? <p className='loading-note'>{content}</p> : ''}
             </Modal.Body>
         </Modal>
