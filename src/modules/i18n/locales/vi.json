@@ -1044,7 +1044,7 @@
   "ShiftChangeFrom": "Áp dụng từ",
   "ShiftChangeTo": "Đến",
   "LoginErrorByNetworkTitle": "Lỗi kết nối tới hệ thống!",
-  "LoginErrorByNetworkDescription": "Vui lòng kiểm tra đường truyền hoặc ngắt kết nối VPN và thử lại!",
+  "LoginErrorByNetworkDescription": "Vui lòng kiểm tra đường truyền và thử lại!",
   "LoginErrorByUserIssuesTitle": "Lỗi người dùng không tồn tại trên hệ thống!",
   "LoginErrorByUserIssuesDescription": "Vui lòng kiểm tra lại mã AD đang sử dụng hoặc liên hệ HR để được trợ giúp!",
   "TryAgain": "Thử lại",
