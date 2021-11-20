@@ -12,6 +12,8 @@
   "LoginGuide_UserName": "AD account (as personal account to login Saba system), ex: chiend4@vingroup.net",
   "LoginGuide_Password": "AD password",
   "LoginGuide_Note": "Forget your password? Contact IT HelpDesk for assistance.",
+  "LoginGuideNoteSecond": "If you have trouble logging into your account, review tips and common issues ",
+  "Here": "here",
   "LoginSuccessful": "Login successful...",
   "SearchTextPlaceholder": "Search",
   "Menu": "Home",
