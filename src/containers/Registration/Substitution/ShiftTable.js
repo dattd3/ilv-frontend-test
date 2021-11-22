@@ -7,7 +7,6 @@ import { formatStringByMuleValue } from "../../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-const brokenShiftCode = "02"
 const shiftCodeOFF = 'OFF'
 
 class ShiftTable extends React.Component {
