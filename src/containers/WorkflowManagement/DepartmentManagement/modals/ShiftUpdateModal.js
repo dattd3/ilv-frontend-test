@@ -27,10 +27,6 @@ function ShiftUpdateModal(props) {
     const [subordinateTimeOverviews, SetSubordinateTimeOverviews] = useState([])
     const [shiftList, SetShiftList] = useState([])
     const [needReset, SetNeedReset] = useState(false)
-
-    console.log(2131313131)
-    console.log(props?.dateInfo?.date)
-
     const [shiftInfos, SetShiftInfos] = useState([
         {
             dateChanged: null,
@@ -428,37 +424,82 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         let totalTime = 0
 
-        if (time) {
-            switch (stateName) {
-                case "startTime":
-                    totalTime = getDuration(time, newShiftInfos[index].endTime)
-                    break
-                case "endTime":
-                    totalTime = getDuration(newShiftInfos[index].startTime, time)
-                    break
-                case "breakStart":
-                    totalTime = getDuration(newShiftInfos[index].startTime, time) + getDuration(newShiftInfos[index].breakEnd, newShiftInfos[index].endTime)
-                    break
-                case "breakEnd":
-                    totalTime = getDuration(newShiftInfos[index].startTime, newShiftInfos[index].breakStart) + getDuration(time, newShiftInfos[index].endTime)
-                    break
-            }
-        }
-
         newShiftInfos[index].dateChanged = props.dateInfo.date
         newShiftInfos[index].totalTime = totalTime.toFixed(2)
-        newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('HHmmss') : null
-        SetShiftInfos(newShiftInfos)
+        newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('YYYYMMDD HHmmss') : null
+
+        Promise.resolve()
+        .then(() => { SetShiftInfos(newShiftInfos) })
+        .then(() => calculateTotalTime(index))
     }
 
-    const getDuration = (start, end) => {
-        if (start && end) {
-            const startTime = moment(start, "HH:mm:ss")
-            const endTime = moment(end, "HH:mm:ss")
-            const duration = moment.duration(endTime.diff(startTime))
-            return duration.asHours()
+    const calculateTotalTime = (index) => {
+        const newShiftInfos = [...shiftInfos]
+        let totalTime = ""
+        if (newShiftInfos[index]) {
+            const startTimePrepare = newShiftInfos[index]['startTime'] || ""
+            const endTimePrepare = newShiftInfos[index]['endTime'] || ""
+            const startBreakTimePrepare = newShiftInfos[index]['breakStart'] || ""
+            const endBreakTimePrepare = newShiftInfos[index]['breakEnd'] || ""
+
+            if (startTimePrepare && endTimePrepare && moment(startTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss")) {
+                if (!startBreakTimePrepare && !endBreakTimePrepare) {
+                    totalTime = getDuration(endTimePrepare, startTimePrepare)
+                } else if (startBreakTimePrepare && !endBreakTimePrepare) {
+                    totalTime = ""
+                } else if (!startBreakTimePrepare && endBreakTimePrepare) {
+                    totalTime = ""
+                } else {
+                    if (moment(startBreakTimePrepare, "YYYYMMDD HHmmss") >= moment(startTimePrepare, "YYYYMMDD HHmmss") && moment(startBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss") 
+                        && moment(endBreakTimePrepare, "YYYYMMDD HHmmss") >= moment(startTimePrepare, "YYYYMMDD HHmmss") && moment(endBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss") 
+                        && moment(startBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endBreakTimePrepare, "YYYYMMDD HHmmss")) {
+                        totalTime = getRangeTimeForDuration(startTimePrepare, startBreakTimePrepare, endBreakTimePrepare, endTimePrepare)
+                    } else {
+                        totalTime = ""
+                    }
+                }
+            } else {
+                totalTime = calculateTotalTimeForThroughDay(startTimePrepare, endTimePrepare, startBreakTimePrepare, endBreakTimePrepare)
+            }
+
+            newShiftInfos[index]['totalTime'] = totalTime
+            SetShiftInfos(newShiftInfos)
         }
-        return 0
+    }
+
+    const calculateTotalTimeForThroughDay = (startTime, endTime, startBreakTime, endBreakTime) => {
+        let totalTime = ""
+        if (startTime && endTime && moment(startTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss")) {
+            const endTimeAdditional = moment(endTime, "YYYYMMDD HHmmss").add(1, 'days').format("YYYYMMDD HHmmss")
+            totalTime = getDuration(endTimeAdditional, startTime)
+            if (moment(startBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss")) {
+                totalTime = getRangeTimeForDuration(startTime, startBreakTime, endBreakTime, endTime)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss")) {
+                const startBreakTimeAdditional = moment(startBreakTime, "YYYYMMDD HHmmss").add(1, 'days').format("YYYYMMDD HHmmss")
+                totalTime = getRangeTimeForDuration(startTime, startBreakTimeAdditional, endBreakTime, endTime)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss")) {
+                totalTime = getRangeTimeForDuration(startTime, startBreakTime, endBreakTime, endTimeAdditional)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") < moment(startTime, "YYYYMMDD HHmmss") && moment(startBreakTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss")) {
+                totalTime = ""
+            } else if (moment(endBreakTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") < moment(startTime, "YYYYMMDD HHmmss")) {
+                totalTime = ""
+            }
+        }
+        return totalTime
+    }
+
+    const getRangeTimeForDuration = (start1, start2, end2, end1) => {
+        const rangeFirst = getDuration(start2, start1)
+        const rangeSecond = getDuration(end1, end2)
+        const duration = moment.duration(rangeFirst).add(moment.duration(rangeSecond))
+        const totalTime = moment.utc(duration.as('milliseconds')).format("HH:mm")
+        return totalTime
+    }
+
+    const getDuration = (end, start) => {
+        const range = moment(end, "YYYYMMDD HHmmss").diff(moment(start, "YYYYMMDD HHmmss"))
+        const duration = moment.duration(range);
+        return Math.floor(duration.asHours()) + moment.utc(range).format(":mm");
     }
 
     const customizeSelectStyles = {
@@ -763,7 +804,7 @@ function ShiftUpdateModal(props) {
                                                                 <div className="start-time">
                                                                     <label>{t("Start1Change")}</label>
                                                                     <DatePicker
-                                                                        selected={item.startTime ? moment(item.startTime, 'HHmmss').toDate() : null}
+                                                                        selected={item.startTime ? moment(item.startTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={startTime => handleTimeInputChange(index, startTime, "startTime")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
@@ -778,7 +819,7 @@ function ShiftUpdateModal(props) {
                                                                 <div className="end-time">
                                                                     <label>{t("End1Change")}</label>
                                                                     <DatePicker
-                                                                        selected={item.endTime ? moment(item.endTime, 'HHmmss').toDate() : null}
+                                                                        selected={item.endTime ? moment(item.endTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={endTime => handleTimeInputChange(index, endTime, "endTime")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
@@ -798,7 +839,7 @@ function ShiftUpdateModal(props) {
                                                                 <div className="start-time-break">
                                                                     <label>{t("BreakStartTime")}</label>
                                                                     <DatePicker
-                                                                        selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
+                                                                        selected={item.breakStart ? moment(item.breakStart, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
@@ -813,7 +854,7 @@ function ShiftUpdateModal(props) {
                                                                 <div className="end-time-break">
                                                                     <label>{t("BreakEndTime")}</label>
                                                                     <DatePicker
-                                                                        selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
+                                                                        selected={item.breakEnd ? moment(item.breakEnd, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
