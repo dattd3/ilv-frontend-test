@@ -1021,8 +1021,6 @@
   "refual": "Từ chối/trì hoãn",
   "have_vaccinated": "Đã tiêm",
   "vaccination_status": "Trạng thái",
-
-
   "vaccination_status_item_1": "Đã tiêm",
   "vaccination_status_item_2": "Từ chối/Trì hoãn",
   "vaccination_reason_reject_item_1": "Lý do Sức khỏe",
@@ -1043,6 +1041,8 @@
   "Source": "Nguồn",
   "ShiftChangeFrom": "Áp dụng từ",
   "ShiftChangeTo": "Đến",
+  "AssesserRecently" : "CBQL Thẩm định đã lựa chọn gần nhất",
+  "ApproverRecently" : "CBLĐ Phê duyệt đã lựa chọn gần nhất",
   "LoginErrorByNetworkTitle": "Lỗi kết nối tới hệ thống!",
   "LoginErrorByNetworkDescription": "Vui lòng kiểm tra đường truyền và thử lại!",
   "LoginErrorByUserIssuesTitle": "Lỗi người dùng không tồn tại trên hệ thống!",
