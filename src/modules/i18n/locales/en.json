@@ -1022,6 +1022,8 @@
   "vaccination_exits": "Vaccination date is existing!",
   "ComeBack": "Back",
   "Source": "Source",
+  "AssesserRecently" : "Assesser was selected recently",
+  "ApproverRecently" : "Approver was selected recently",
   "LoginErrorByNetworkTitle": "Connection Error!",
   "LoginErrorByNetworkDescription": "Please check the connection and try again!",
   "LoginErrorByUserIssuesTitle": "User information does not exist on the system!",
