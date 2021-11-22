@@ -1330,6 +1330,7 @@ span.badge-notification[data-badge]::after {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    margin-bottom: 14px;
     a {
       font-size: inherit;
       &.btn {
@@ -1338,6 +1339,9 @@ span.badge-notification[data-badge]::after {
           margin-left: 20px;
         }
       }
+    }
+    .btn {
+      margin: 5px;
     }
   }
   .info-tab-content {
@@ -1405,11 +1409,10 @@ span.badge-notification[data-badge]::after {
   .document-content{
     background-color: #fff;
     border-radius: 0.5em;
-
+    font-size: inherit;
     table {
       width: 100%;
       border: 1px solid #707070;
-      font-size: 16px;
       thead{
         background-color: #347EF9;
       }

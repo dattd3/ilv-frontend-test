@@ -12,7 +12,6 @@ import { checkIsExactPnL } from '../../commons/commonFunctions';
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       userProfile: {},
       userDetail: {},
@@ -118,14 +117,14 @@ class MyComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    const { userFamily } = this.state
     const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast,
-          Constants.PnLCODE.VinFastPB,
-          Constants.PnLCODE.VinFastTrading);
+    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastPB, Constants.PnLCODE.VinFastTrading);
+
     function SummaryAddress(obj) {
       let result = '';
       if (typeof (obj) == 'object' && obj.length > 0) {
@@ -151,14 +150,14 @@ class MyComponent extends React.Component {
     return (
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
-        <div className="clearfix edit-button">
-          <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
-          {
-            isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
-          }
-        </div>
         <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
+            <div className="clearfix edit-button">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+              }
+            </div>
             <Row >
               <Col xs={12} md={12} lg={6}>
                 <h4>{t("PersonalInformation")}</h4>
@@ -421,6 +420,12 @@ class MyComponent extends React.Component {
             </Row>
           </Tab>
           <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")}>
+            <div className="clearfix edit-button">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+              }
+            </div>
             <Container fluid className="info-tab-content shadow">
               {
                 (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
@@ -482,35 +487,38 @@ class MyComponent extends React.Component {
             </Container>
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("Family")}>
-            <Container fluid className="info-tab-content shadow">
-              {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
-                this.state.userFamily.map((item, i) => {
-                  return <div key={i}>
-                    <Row className="info-label">
-                      <Col xs={12} md={6} lg={3}>
-                        {t("FullName")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("Relationship")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("DateOfBirth")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("AllowancesTaxNo")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("FamilyAllowances")}
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        {t("AllowancesDate")}
-                      </Col>
-                    </Row>
+            <div className="clearfix edit-button">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+              }
+            </div>
+            <Container fluid className="info-tab-content shadow relationship">
+              {(userFamily !== undefined && userFamily.length > 0) ?
+                (userFamily || []).map((item, i) => {
+                  return <div key={i} className="relationship-item">
+                    <div className="info-label">
+                      <div className="full-name">{t("FullName")}</div>
+                      <div className="full-name">{t("Relationship")}</div>
+                      <div className="full-name">{t("DateOfBirth")}</div>
+                      <div className="full-name">{t("AllowancesTaxNo")}</div>
+                      <div className="full-name">{t("FamilyAllowances")}</div>
+                      <div className="full-name">{t("AllowancesDate")}</div>
+                    </div>
+                    <div className="info-value">
+                      <div className="full-name"><input type="text" value={item.full_name || ""} disabled={true} /></div>
+                      <div className="full-name"><input type="text" value={item.relation || ""} disabled={true} /></div>
+                      <div className="full-name"><input type="text" value={item.dob || ""} disabled={true} /></div>
+                      <div className="full-name"><input type="text" value={item.tax_number || ""} disabled={true} /></div>
+                      <div className="full-name">{t("FamilyAllowances")}</div>
+                      <div className="full-name">{t("AllowancesDate")}</div>
+                    </div>
+
                     <Row className="info-value">
-                      <Col xs={12} md={6} lg={3}>
+                      <Col xs={12} md={6} lg={2}>
                         <p>&nbsp;{item.full_name}</p>
                       </Col>
-                      <Col xs={12} md={6} lg={1}>
+                      <Col xs={12} md={6} lg={2}>
                         <p>&nbsp;{item.relation}</p>
                       </Col>
                       <Col xs={12} md={6} lg={2}>
