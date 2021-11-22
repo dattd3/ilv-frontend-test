@@ -1023,5 +1023,11 @@
   "ComeBack": "Back",
   "Source": "Source",
   "AssesserRecently" : "Assesser was selected recently",
-  "ApproverRecently" : "Approver was selected recently"
+  "ApproverRecently" : "Approver was selected recently",
+  "LoginErrorByNetworkTitle": "Connection Error!",
+  "LoginErrorByNetworkDescription": "Please check the connection and try again!",
+  "LoginErrorByUserIssuesTitle": "User information does not exist on the system!",
+  "LoginErrorByUserIssuesDescription": "Please check your AD or contact HR for help!",
+  "TryAgain": "Try again",
+  "TroubleshootingGuide": "Please see detailed troubleshooting instructions"
 }
