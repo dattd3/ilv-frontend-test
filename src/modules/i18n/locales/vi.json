@@ -1041,6 +1041,8 @@
   "vaccination_exits": "Đã có thông tin mũi tiêm trong ngày này!",
   "ComeBack": "Quay lại",
   "Source": "Nguồn",
+  "AssesserRecently" : "CBQL Thẩm định đã lựa chọn gần nhất",
+  "ApproverRecently" : "CBLĐ Phê duyệt đã lựa chọn gần nhất",
   "LoginErrorByNetworkTitle": "Lỗi kết nối tới hệ thống!",
   "LoginErrorByNetworkDescription": "Vui lòng kiểm tra đường truyền và thử lại!",
   "LoginErrorByUserIssuesTitle": "Lỗi người dùng không tồn tại trên hệ thống!",
