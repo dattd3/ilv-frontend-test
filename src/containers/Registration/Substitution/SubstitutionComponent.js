@@ -199,16 +199,18 @@ class SubstitutionComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
-    const currentUserNo = localStorage.getItem('employeeNo')
 
-    let timesheets = [...this.state.timesheets].map(item => {
+    const currentUserNo = localStorage.getItem('employeeNo')
+    const { timesheets, startDate, endDate, approver, appraiser, isEdited, id } = this.state
+
+    let timeSheetsToSubmit = (timesheets || []).map(item => {
       return {
         pernr: currentUserNo,
         isEdited: item.isEdited,
-        date: moment(item.date, "DD/MM/YYYY").format('YYYYMMDD').toString(),
+        date: moment(item.date, "DD/MM/YYYY").format('YYYYMMDD'),
         endBreakTimeEdited: item.endBreakTime ? this.formatTime(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT): null,
         toTimeEdited: item.endTime ? this.formatTime(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, // sửa giờ kết thúc
-        fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, // giờ bắt đầu theo kế hoạch
+        fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
         shiftHours: item.shiftHours,
         shiftId: item.shiftId,
@@ -217,15 +219,15 @@ class SubstitutionComponent extends React.Component {
         startBreakTimeEdited: item.startBreakTime ? this.formatTime(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT) : null,
         fromTimeEdited: item.startTime ? this.formatTime(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, //sửa giờ bắt đầu
         substitutionType: item.substitutionType,
-        toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00').toString() : null, //giờ kết thúc theo kế hoạch
-        startDateSearching: moment(this.state.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
-        endDateSearching: moment(this.state.endDate, "DD/MM/YYYY").format('YYYYMMDD').toString()
+        toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, //giờ kết thúc theo kế hoạch
+        startDateSearching: moment(startDate, "DD/MM/YYYY").format('YYYYMMDD'),
+        endDateSearching: moment(endDate, "DD/MM/YYYY").format('YYYYMMDD'),
+        applyFrom: item.applyFrom,
+        applyTo: item.applyTo
       }
     })
 
-    timesheets = timesheets.filter(item => item.isEdited)
-    const approver = { ...this.state.approver }
-    const appraiser = this.state.appraiser ? this.state.appraiser : null
+    timeSheetsToSubmit = timeSheetsToSubmit.filter(item => item.isEdited)
     delete approver.avatar
     const user = {
       fullname: localStorage.getItem('fullName'),
@@ -233,15 +235,15 @@ class SubstitutionComponent extends React.Component {
       department: localStorage.getItem('department'),
       employeeNo: currentUserNo
     }
-    const comments = timesheets
+    const comments = timeSheetsToSubmit
       .filter(item => (item.note))
       .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Thay đổi phân ca')
-    bodyFormData.append('RequestTypeId', '4')
+    bodyFormData.append('RequestTypeId', Constants.SUBSTITUTION)
     bodyFormData.append('Comment', comments)
-    bodyFormData.append('requestInfo', JSON.stringify(timesheets))
+    bodyFormData.append('requestInfo', JSON.stringify(timeSheetsToSubmit))
     bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
     bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
     bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
@@ -260,7 +262,7 @@ class SubstitutionComponent extends React.Component {
 
     axios({
       method: 'POST',
-      url: this.state.isEdited && this.state.id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
+      url: isEdited && id ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${id}/registration-update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/register`,
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
