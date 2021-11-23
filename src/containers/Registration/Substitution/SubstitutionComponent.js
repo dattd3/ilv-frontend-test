@@ -11,6 +11,7 @@ import { t } from 'i18next'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
+import StatusModal from "../../../components/Common/StatusModal"
 import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
@@ -44,7 +45,12 @@ class SubstitutionComponent extends React.Component {
       messageModal: "",
       isShowStartBreakTimeAndEndBreakTime: false,
       totalHours: "",
-      disabledSubmitButton: false
+      disabledSubmitButton: false,
+      statusModal: {
+        isShow: false,
+        isSuccess: true,
+        content: ""
+      }
     }
   }
 
@@ -268,12 +274,12 @@ class SubstitutionComponent extends React.Component {
     })
       .then(response => {
         if (response && response.data && response.data.result) {
-          this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
+          this.showResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
           this.setDisabledSubmitButton(false)
         }
       })
       .catch(response => {
-        this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
+        this.showResultModal(this.props.t("Notification"), this.props.t("Error"), false)
         this.setDisabledSubmitButton(false)
       })
   }
@@ -355,14 +361,71 @@ class SubstitutionComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    const timesheets = this.state.timesheets
-    timesheets[index].applyFrom = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
-    timesheets[index].applyTo = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
+    const timesheets = [...this.state.timesheets]
+    const dateEdit = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
+    const isInValid = this.isInValidApplyTimeByDate(dateEdit)
+
+    if (isInValid) {
+      const statusModal = {...this.state.statusModal}
+      statusModal.isShow = true
+      statusModal.isSuccess = false
+      statusModal.content = this.props.t("ShiftChangeInformationAlreadyExists")
+      this.setState({statusModal: statusModal})
+      return
+    }
+
+    timesheets[index].applyFrom = dateEdit
+    timesheets[index].applyTo = dateEdit
     timesheets[index].isEdited = !this.state.timesheets[index].isEdited
     this.setState({
       timesheets: [...timesheets]
-    }, () => { this.verifyInput() })
+    }, () => {
+      this.verifyInput()
+    })
   }
+
+  isInValidApplyTimeByDate = (date) => {
+    const timesheets = [...this.state.timesheets]
+    const isInValid = timesheets.filter(item => item.isEdited).some(item => date >= item.applyFrom && date <= item.applyTo)
+    return isInValid
+  }
+
+  // isValidApplyTimeByDate = date => {
+  //   const timesheets = [...this.state.timesheets]
+  //   let timeSheetsEdited = timesheets.filter(item => item.isEdited)
+  //   // const dateToCompare = date && moment(date, 'YYYYMMDD').isValid() ? moment(date, 'YYYYMMDD') : null
+  //   timeSheetsEdited = timeSheetsEdited.sort((pre, next)=> (pre.applyFrom > next.applyFrom ? 1 : -1))
+
+  //   console.log("*********************************")
+  //   console.log(timeSheetsEdited)
+
+  //   for (let i = 0; i < timeSheetsEdited.length; i++) {
+  //     debugger
+  //     let elementParent = timeSheetsEdited[i]
+  //     for (let j = 0; j < timeSheetsEdited.length; j++) {
+  //       let elementChild = timeSheetsEdited[j]
+  //       if (i === j) {
+  //         continue
+  //       }
+
+  //       if ((elementParent.applyFrom >= elementChild.applyFrom && elementParent.applyFrom <= elementChild.applyTo) 
+  //         || (elementParent.applyTo >= elementChild.applyFrom && elementParent.applyTo <= elementChild.applyTo)) {
+  //         return false
+  //       }
+        
+  //     }
+  //   }
+
+  //   return true
+
+  //   // const isValid = timeSheetsEdited.every((item, index, timeSheetsEdited) => {
+  //   //   // let applyFromToCompare = item.applyFrom && moment(item.applyFrom, 'YYYYMMDD').isValid() ? moment(item.applyFrom, 'YYYYMMDD') : null
+  //   //   // let applyToToCompare = item.applyTo && moment(item.applyTo, 'YYYYMMDD').isValid() ? moment(item.applyTo, 'YYYYMMDD') : null
+  //   //   return !moment(date).isBetween(item.applyFrom, item.applyTo, undefined, '[]')
+  //   // })
+
+  //   // return isValid
+  // }
 
   updateShiftType(shiftType, index) {
     if (shiftType !== this.state.timesheets[index].shiftType) {
@@ -405,13 +468,19 @@ class SubstitutionComponent extends React.Component {
     this.setState({ totalHours: totalHours, timesheets: timesheets }, () => { this.verifyInput() })
   }
 
-  showStatusModal = (title, message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+  showResultModal = (title, message, isSuccess = false) => {
+    this.setState({ isShowResultModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+  }
+
+  hideResultModal = () => {
+    this.setState({ isShowResultModal: false });
+    window.location.reload();
   }
 
   hideStatusModal = () => {
-    this.setState({ isShowStatusModal: false });
-    window.location.reload();
+    const statusModal = {...this.state.statusModal}
+    statusModal.isShow = false
+    this.setState({statusModal: statusModal})
   }
 
   removeFile(index) {
@@ -550,7 +619,8 @@ class SubstitutionComponent extends React.Component {
 
   render() {
     const { t, substitution } = this.props;
-    const {startDate, endDate, isShowStatusModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, files, disabledSubmitButton, shifts} = this.state
+    const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
+      files, disabledSubmitButton, shifts, statusModal} = this.state
     const substitutionTypes = [
       { value: '01', label: t("Shiftchange") },
       { value: '02', label: t("IntermittenShift") },
@@ -566,9 +636,18 @@ class SubstitutionComponent extends React.Component {
       })
     };
 
+    const maxDateForApplyTo = (applyFrom) => {
+      if (!applyFrom) {
+        return null
+      }
+      const maxDayForApplyTo = 30
+      return moment(applyFrom, "YYYYMMDD").isValid() ? moment(applyFrom, "YYYYMMDD").add(maxDayForApplyTo, 'days').toDate() : null
+    }
+
     return (
       <div className="shift-work">
-        <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideResultModal} />
+        <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col">
@@ -677,7 +756,8 @@ class SubstitutionComponent extends React.Component {
                         showYearDropdown={true}
                         autoComplete='off'
                         popperPlacement="bottom-start"
-                        className="form-control input" />
+                        className="form-control input"
+                        disabled />
                     </div>
                     {this.error(index, 'applyFrom')}
                   </div>
@@ -689,7 +769,8 @@ class SubstitutionComponent extends React.Component {
                           onChange={applyTo => this.handleDatePickerInputChange(index, applyTo, "applyTo")}
                           dateFormat="dd/MM/yyyy"
                           locale="vi"
-                          minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                          minDate={timesheet && timesheet.applyFrom ? moment(timesheet.applyFrom, 'YYYYMMDD').toDate() : null}
+                          maxDate={maxDateForApplyTo(timesheet.applyFrom)}
                           showMonthDropdown={true}
                           showYearDropdown={true}
                           autoComplete='off'

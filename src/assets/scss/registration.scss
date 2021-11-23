@@ -588,6 +588,12 @@
                 font-size: inherit;
             }
         }
+        &.shift-change-section {
+            .date-info-edit {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
     }
     .business-trip {
         .leave-type {
