@@ -72,11 +72,12 @@ class SubstitutionDetailComponent extends React.Component {
   render() {
     const { t, substitution, action } = this.props
     const requestTypeId = substitution.requestTypeId
+    const { isShowStatusModal, content, isSuccess } = this.state
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (substitution.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && substitution.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(substitution.requestTypeId))
 
     return (
-      <div className="leave-of-absence">
+      <div className="leave-of-absence shift-change-section">
         <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
@@ -98,11 +99,16 @@ class SubstitutionDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>Thông tin đăng ký thay đổi phân ca</h5>
+        <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+        <h5>{t("ShiftChangeRequestInformation")}</h5>
         {substitution.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
+          let dateInfoElementEdited = <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b>
+          if (timesheet.applyFrom !== timesheet.applyTo) {
+            dateInfoElementEdited = <b>{t("From")} {moment(timesheet.applyFrom, 'YYYYMMDD').format("DD/MM/YYYY")} - {t("To")} {moment(timesheet.applyTo, 'YYYYMMDD').format("DD/MM/YYYY")}</b>
+          }
+
           return <div className="box shadow cbnv" key={index}>
-            <div className="col text-uppercase"><p><i className="fa fa-clock-o"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
+            <div className="col text-uppercase date-info-edit"><p><i className="fa fa-clock-o"></i> {dateInfoElementEdited}</p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
@@ -135,11 +141,11 @@ class SubstitutionDetailComponent extends React.Component {
             {timesheet.startBreakTimeEdited ? <div className="row">
               <div className="col">
                 <p>{t("BreakStartTime")}</p>
-                <div className="detail">{timesheet.startBreakTimeEdited}</div>
+                <div className="detail">{timesheet?.startBreakTimeEdited ? moment(timesheet?.startBreakTimeEdited, 'HHmmss').format("HH:mm") : ""}</div>
               </div>
               <div className="col">
                 <p>{t("BreakEndTime")}</p>
-                <div className="detail">{timesheet.endBreakTimeEdited}</div>
+                <div className="detail">{timesheet?.endBreakTimeEdited ? moment(timesheet?.endBreakTimeEdited, 'HHmmss').format("HH:mm") : ""}</div>
               </div>
               <div className="col">
                 <p>{t("ShiftBreak")}</p>

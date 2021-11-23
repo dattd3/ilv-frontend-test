@@ -860,6 +860,8 @@
   "NotApplicable": "Not applicable to Staff in HO and Working at Office Hour",
   "ShiftChangeApplied": "Shift Change must be applied 1 day in advance",
   "Shiftchange": "Shift Change",
+  "ShiftChangeRequestInformation": "Shift change request information",
+  "ShiftChangeInformationAlreadyExists": "Shift change information for this day already exists",
   "IntermittenShift": "Intermitten Shift",
   "CoastShoreShiftChange": "Coast-Shore Shift Change",
   "WarningBreakTime": "Break time must be between Start time 1 and End time 1",
