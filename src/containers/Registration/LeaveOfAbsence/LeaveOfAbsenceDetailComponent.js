@@ -70,7 +70,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))
-
+    
+    let messageSAP = null;
+    if (this.props.leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (this.props.leaveOfAbsence.responseDataFromSAP && Array.isArray(this.props.leaveOfAbsence.responseDataFromSAP)) {
+        const data = this.props.leaveOfAbsence.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -189,6 +202,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times mr-1 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index} className="mt-1">{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         {
           requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
