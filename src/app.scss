@@ -1351,6 +1351,76 @@ span.badge-notification[data-badge]::after {
         padding: 0.6rem !important;
       }
     }
+    &.relationship {
+      .relationship-item {
+        padding: 10px 0;
+        .col-item {
+          padding: 0 15px;
+          input {
+            width: 100%;
+          }
+        }
+        .full-name {
+          flex: 0 0 20%;
+        }
+        .relationship {
+          flex: 0 0 17%;
+        }
+        .birthday {
+          flex: 0 0 13%;
+        }
+        .tax-no {
+          flex: 0 0 16%;
+        }
+        .allowances {
+          flex: 0 0 10%;
+        }
+        .allowances-date {
+          flex: 0 0 24%;
+        }
+        .info-label {
+          display: flex;
+          align-items: center;
+          margin-bottom: 5px;
+          div {
+            margin-bottom: 0;
+          }
+          .col-item {
+            &:first-child {
+              padding-left: 0;
+            }
+            &.birthday, &.allowances {
+              text-align: center;
+            }
+          }
+        }
+        .info-value {
+          display: flex;
+          align-items: center;
+          padding-bottom: 0;
+          .col-item {
+            &:first-child {
+              padding-left: 0;
+            }
+            &:last-child {
+              padding-right: 0;
+            }
+          }
+          .text-box {
+            border-radius: 0.3rem;
+            background: #ececec;
+            border: 1px solid transparent;
+            height: 38px;
+            padding-left: 10px;
+          }
+          .birthday {
+            .text-box {
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
   }
   h4 {
     color: #222;

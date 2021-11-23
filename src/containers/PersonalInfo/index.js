@@ -497,44 +497,23 @@ class MyComponent extends React.Component {
               {(userFamily !== undefined && userFamily.length > 0) ?
                 (userFamily || []).map((item, i) => {
                   return <div key={i} className="relationship-item">
-                    <div className="info-label">
-                      <div className="full-name">{t("FullName")}</div>
-                      <div className="full-name">{t("Relationship")}</div>
-                      <div className="full-name">{t("DateOfBirth")}</div>
-                      <div className="full-name">{t("AllowancesTaxNo")}</div>
-                      <div className="full-name">{t("FamilyAllowances")}</div>
-                      <div className="full-name">{t("AllowancesDate")}</div>
-                    </div>
-                    <div className="info-value">
-                      <div className="full-name"><input type="text" value={item.full_name || ""} disabled={true} /></div>
-                      <div className="full-name"><input type="text" value={item.relation || ""} disabled={true} /></div>
-                      <div className="full-name"><input type="text" value={item.dob || ""} disabled={true} /></div>
-                      <div className="full-name"><input type="text" value={item.tax_number || ""} disabled={true} /></div>
-                      <div className="full-name">{t("FamilyAllowances")}</div>
-                      <div className="full-name">{t("AllowancesDate")}</div>
-                    </div>
-
-                    <Row className="info-value">
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.full_name}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.relation}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.dob}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{isNotNull(item.tax_number) ? item.tax_number : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        <p style={{ background: "none" }}>&nbsp;{isNotNull(item.is_reduced) ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</p>
-                      </Col>
-                    </Row>
-                  </div>;
+                            <div className="info-label">
+                              <div className="col-item full-name">{t("FullName")}</div>
+                              <div className="col-item relationship">{t("Relationship")}</div>
+                              <div className="col-item birthday">{t("DateOfBirth")}</div>
+                              <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
+                              <div className="col-item allowances">{t("FamilyAllowances")}</div>
+                              <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+                            </div>
+                            <div className="info-value">
+                              <div className="col-item full-name"><input type="text" className="text-box" value={item.full_name || ""} disabled={true} /></div>
+                              <div className="col-item relationship"><input type="text" className="text-box" value={item.relation || ""} disabled={true} /></div>
+                              <div className="col-item birthday"><input type="text" className="text-box" value={item.dob || ""} disabled={true} /></div>
+                              <div className="col-item tax-no"><input type="text" className="text-box" value={item.tax_number || ""} disabled={true} /></div>
+                              <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
+                              <div className="col-item allowances-date"><input type="text" className="text-box" value={isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""} disabled={true} /></div>
+                            </div>
+                          </div>
                 }) : t("NoDataFound")
               }
             </Container>
