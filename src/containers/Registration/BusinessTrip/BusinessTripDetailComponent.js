@@ -49,6 +49,19 @@ class BusinessTripDetailComponent extends React.Component {
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
 
+    let messageSAP = null;
+    if (businessTrip.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (businessTrip.responseDataFromSAP && Array.isArray(businessTrip.responseDataFromSAP)) {
+        const data = businessTrip.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
     return (
       <div className="business-trip">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -128,6 +141,15 @@ class BusinessTripDetailComponent extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times mr-1 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index} className="mt-1">{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         {
           requestInfo
