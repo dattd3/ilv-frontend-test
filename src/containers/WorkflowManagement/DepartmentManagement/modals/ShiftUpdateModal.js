@@ -274,17 +274,18 @@ function ShiftUpdateModal(props) {
     const verifyInputs = () => {
         let errors = {}
         let requiredFields = ['shiftType', 'reason', 'applicableObjects']
-        const totalTimeBreakValid = 2
 
         shiftInfos.forEach((shiftInfo, index) => {
             if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
                 requiredFields = requiredFields.concat(['shiftSelected'])
             } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
                 requiredFields = requiredFields.concat(['startTime', 'endTime'])
-                if (shiftInfo.shiftType?.value == brokenShiftCode) {
-                    requiredFields = requiredFields.concat(['breakStart', 'breakEnd'])
-                }
             }
+
+            let startTime = shiftInfo.startTime
+            let endTime = shiftInfo.endTime
+            let startBreak = shiftInfo.breakStart
+            let endBreak = shiftInfo.breakEnd
 
             requiredFields.forEach(name => {
                 let errorName = name + '_' + index
@@ -298,35 +299,88 @@ function ShiftUpdateModal(props) {
                     if (!shiftInfo[name]) {
                         errors[errorName] = t("StartAndEndTimesRequired")
                     } else {
-                        const start = shiftInfo.startTime
-                        const end = shiftInfo.endTime
-                        if (start >= end) {
+                        // const start = shiftInfo.startTime
+                        // const end = shiftInfo.endTime
+                        if (startTime >= endTime) {
                             errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
                         }
                     }
                 } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
-                    errorName = 'rangeBreak' + '_' + index
-                    if (!shiftInfo[name]) {
-                        errors[errorName] = t("StartAndEndBreakTimesRequired")
-                    } else {
-                        const start = shiftInfo.startTime
-                        const end = shiftInfo.endTime
-                        const startBreak = shiftInfo.breakStart
-                        const endBreak = shiftInfo.breakEnd
-                        if (startBreak >= endBreak) {
-                            errors[errorName] = t("BreakStartTimeMustBeLessThanTheEndTime")
-                        } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
-                            errors[errorName] = t("TotalTimesForShiftBreakShouldNotBeLessThan2Hours")
-                        } else if (startBreak <= start || end <= endBreak) {
-                            errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc'
-                        }
-                    }
+                    // errorName = 'rangeBreak' + '_' + index
+                    // if (!shiftInfo[name]) {
+                    //     errors[errorName] = t("StartAndEndBreakTimesRequired")
+                    // } else {
+                    //     // const start = shiftInfo.startTime
+                    //     // const end = shiftInfo.endTime
+                    //     // const startBreak = shiftInfo.breakStart
+                    //     // const endBreak = shiftInfo.breakEnd
+                    //     if (startBreak >= endBreak) {
+                    //         errors[errorName] = t("BreakStartTimeMustBeLessThanTheEndTime")
+                    //     } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
+                    //         errors[errorName] = t("TotalTimesForShiftBreakShouldNotBeLessThan2Hours")
+                    //     } else if (startBreak <= startTime || endTime <= endBreak) {
+                    //         errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc'
+                    //     }
+                    // }
                 } else {
-                    if ((!shiftInfo[name] || shiftInfo[name]?.length === 0) && name !== 'startTime' && name !== 'endTime' && name !== 'breakStart' && name !== 'breakEnd') {
+                    if ((!shiftInfo[name] || shiftInfo[name]?.length === 0) && name !== 'startTime' && name !== 'endTime') {
                         errors[errorName] = t("Required")
                     }
                 }
             })
+
+            if (_.isNull(shiftInfo.breakStart) && !_.isNull(shiftInfo.breakEnd)) {
+                errors['breakStart' + '_' + index] = t('Required')
+            } else if (!_.isNull(shiftInfo.breakStart) && _.isNull(shiftInfo.breakEnd)) {
+                errors['breakEnd' + index] = t('Required')
+            }
+
+            // const startTime = moment(shiftInfo.startTime, "HH:mm:ss").isValid() ? moment(shiftInfo.startTime, "HH:mm:ss").format("HHmmss") : null
+            // const endTime = moment(timesheet.endTime, "HH:mm:ss").isValid() ? moment(timesheet.endTime, "HH:mm:ss").format("HHmmss") : null
+            // const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.startBreakTime, "HH:mm:ss").format("HHmmss") : null
+            // const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.endBreakTime, "HH:mm:ss").format("HHmmss") : null
+        
+            if (startTime && endTime) {
+                if (startTime < endTime) {
+                    if (startBreak && endBreak) {
+                        if (startBreak > endBreak) {
+                            errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                        } else if (startBreak < startTime || endBreak > endTime) {
+                            errors['rangeBreak' + '_' + index] = t('WarningBreakTime')
+                        }
+                    }
+                } else {
+                    if (startBreak && endBreak) {
+                        if (startBreak > startTime && endBreak > startTime) {
+                            if (startBreak > endBreak) {
+                                errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                            }
+                        } else if (startBreak < endTime && endBreak < endTime) {
+                            if (startBreak > endBreak) {
+                                errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                            }
+                        } else if ((startBreak < startTime && startBreak > endTime) || (startBreak >= endTime && startBreak < startTime) 
+                            || (startBreak > startTime && endBreak > endTime) || (startBreak < endTime && endBreak > endTime)) {
+                            errors['rangeBreak' + '_' + index] = t('WarningBreakTime')
+                        }
+                    }
+                }
+                if (startBreak && endBreak) {
+                    if (shiftInfo.shiftUpdateType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
+                        const duration = moment.duration(moment(endBreak, "HHmmss").diff(moment(startBreak, "HHmmss")))
+                        const totalHoursBreak = duration.asHours()
+                        const totalTimeBreakValid = 2
+                        const totalTimeWorkingValid = 10
+                        if (shiftInfo.shiftType && shiftInfo.shiftType.value == brokenShiftCode && totalHoursBreak < totalTimeBreakValid) {
+                            errors['totalTime' + '_' + index] = t("WarningTotalBreakTime")
+                        } else if (shiftInfo.shiftType && shiftInfo.shiftType.value == brokenShiftCode && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
+                            errors['totalTime' + '_' + index] = t("WarningTotalRegisTime")
+                        } else {
+                            errors['totalTime' + '_' + index] = null
+                        }
+                    }
+                }
+            }
         })
 
         SetErrors(errors)
@@ -681,7 +735,7 @@ function ShiftUpdateModal(props) {
                                             </div>
                                             <div className="apply-time-shift-type">
                                                 <div className="col-second shift-type">
-                                                    <label>{t("ShiftCategory")}</label>
+                                                    <label>{t("ShiftCategory")}<span className="text-danger required">(*)</span></label>
                                                     <div className="wrap-shift-type-select">
                                                         <Select 
                                                             value={item.shiftType} 
@@ -802,7 +856,7 @@ function ShiftUpdateModal(props) {
                                                         <div className="time-planing">
                                                             <div className="time-data">
                                                                 <div className="start-time">
-                                                                    <label>{t("Start1Change")}</label>
+                                                                    <label>{t("Start1Change")}<span className="text-danger required">(*)</span></label>
                                                                     <DatePicker
                                                                         selected={item.startTime ? moment(item.startTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={startTime => handleTimeInputChange(index, startTime, "startTime")}
@@ -817,7 +871,7 @@ function ShiftUpdateModal(props) {
                                                                         className="form-control input" />
                                                                 </div>
                                                                 <div className="end-time">
-                                                                    <label>{t("End1Change")}</label>
+                                                                    <label>{t("End1Change")}<span className="text-danger required">(*)</span></label>
                                                                     <DatePicker
                                                                         selected={item.endTime ? moment(item.endTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={endTime => handleTimeInputChange(index, endTime, "endTime")}
@@ -873,12 +927,13 @@ function ShiftUpdateModal(props) {
                                                         <div className="time-total">
                                                             <label>{t("TotalTimes")}</label>
                                                             <p className="total">{item.totalTime || 0}</p>
+                                                            { errors[`totalTime_${index}`] ? errorInfos(index, 'totalTime') : null }
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
                                             <div className="reason">
-                                                <label>{t("Reason")}</label>
+                                                <label>{t("Reason")}<span className="text-danger required">(*)</span></label>
                                                 <input type="text" placeholder={t("EnterReason")} value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
                                                 { errors[`reason_${index}`] ? errorInfos(index, 'reason') : null }
                                             </div>
@@ -886,6 +941,7 @@ function ShiftUpdateModal(props) {
                                                 <DropdownCustomize 
                                                     index={index}
                                                     label={t("ApplyFor")}
+                                                    isRequired={true}
                                                     employeeSelectedFilter={item.employeeSelectedFilter}
                                                     needReset={needReset}
                                                     getSelecteMembers={updateParent} 
