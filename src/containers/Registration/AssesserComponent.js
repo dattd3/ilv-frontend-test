@@ -158,6 +158,8 @@ class AssesserComponent extends React.Component {
             control: (styles) => ({
                 ...styles,
                 cursor: 'pointer',
+                height: 35,
+                minHeight: 35
             })
         }
         const { t, isEdit } = this.props;
@@ -185,8 +187,7 @@ class AssesserComponent extends React.Component {
                                 value={this.state.appraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
-                                options={this.state.users}
-                            />
+                                options={this.state.users} />
                         </div>
                         {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
                     </div>

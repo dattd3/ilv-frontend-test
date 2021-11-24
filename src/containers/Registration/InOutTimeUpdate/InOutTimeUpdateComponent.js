@@ -429,7 +429,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
+                <button type="button" className="btn btn-warning btn-search w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
               </div>
             </div>
           </div>
