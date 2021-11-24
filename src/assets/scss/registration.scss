@@ -34,7 +34,85 @@
         }
     }
     .in-out-time-update {
+        color: #000000;
+        .validation {
+            font-size: 12px;
+            margin-top: 4px;
+            font-style: italic;
+        }
         .block-time-item-edit {
+            margin-bottom: 10px;
+            .wrap-item {
+                border: 1px solid #d1d3e2;
+                border-radius: 10px;
+                .title {
+                    display: flex;
+                    align-items: flex-start;
+                    background: #F2F2F2;
+                    height: 35px;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                    div {
+                        flex: 1 1;
+                        height: 100%;
+                        border-right: 1px solid #d1d3e2;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        &.editable {
+                            border-right: none;
+                            flex: 0 0 40%;
+                        }
+                        &.plan, &.actual {
+                            flex: 0 0 30%;
+                        }
+                    }
+                }
+                .data {
+                    .row-item {
+                        display: flex;
+                        .item {
+                            display: flex;
+                            padding: 10px;
+                            border-right: 1px solid #d1d3e2;
+                            div {
+                                flex: 1 1;
+                                display: flex;
+                            }
+                            span {
+                                margin: 0;
+                                &.value {
+                                    margin-left: 5px;
+                                }
+                            }
+                            &:last-child {
+                                border-right: none;
+                            }
+                            .first, .second {
+                                display: flex;
+                                align-items: center;
+                            }
+                            &.plan, &.actual {
+                                flex: 0 0 30%;
+                            }
+                            &.editable {
+                                flex: 0 0 40%;
+                                span {
+                                    &.value {
+                                        margin-left: 15px;
+                                        input {
+                                            width: 110px;
+                                            height: 30px;
+                                            color: #000000;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             .react-datepicker__time-list {
                 .react-datepicker__time-list-item {
                     line-height: 20px;
