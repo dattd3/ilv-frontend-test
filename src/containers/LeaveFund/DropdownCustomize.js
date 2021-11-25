@@ -146,13 +146,13 @@ class DropdownCustomize extends React.Component {
     }
 
     render() {
-        const { t, employeeSelectedFilter, label, type, needReset } = this.props;
+        const { t, employeeSelectedFilter, label, type, needReset, isRequired } = this.props;
         const { users, loading, selectedMembers, showMemberOption } = this.state
         const data = employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users
 
         return (
             <div className="timesheet-box">
-                <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
+                <div className="title">{label ? isRequired ? <><span>{t(label)}</span><span className="text-danger required">(*)</span></> : t(label) : isRequired ? <><span>{t("SelectEmployees")}</span><span className="text-danger required">(*)</span></> : t("SelectEmployees")}</div>
                 <SelectTab className="content input-container" selectedMembers={needReset ? [] : selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {

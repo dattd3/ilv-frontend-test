@@ -213,6 +213,8 @@ class ApproverComponent extends React.Component {
       control: (styles) => ({
         ...styles,
         cursor: 'pointer',
+        height: 35,
+        minHeight: 35
       })
     }
     const { t, isEdit } = this.props;
@@ -241,7 +243,7 @@ class ApproverComponent extends React.Component {
                 options={this.state.users}
                />
             </div>
-            {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
+            {this.props.errors && this.props.errors['approver'] ? <div className="text-danger validation-message">{this.props.errors['approver']}</div> : null}
           </div>
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
