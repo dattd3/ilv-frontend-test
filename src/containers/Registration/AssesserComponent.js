@@ -20,7 +20,7 @@ const MyOption = props => {
                     <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
                 </div>
                 <div className="float-left text-wrap w-75">
-                    <div className="title">{t('AssesserRecently')}</div>
+                    {props.isSearch === false && <div className="title font-weight-bold text-dark">{t('AssesserRecently')}</div>}
                     <div className="title">{props.data.fullName}</div>
                     <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
                 </div>
@@ -36,7 +36,8 @@ class AssesserComponent extends React.Component {
             appraiser: null,
             users: [],
             typingTimeout: 0,
-            appraiserTyping: ""
+            appraiserTyping: "",
+            isSearch: false
         }
         this.onInputChange = debounce(this.getAppraiser, 600);
     }
@@ -115,6 +116,7 @@ class AssesserComponent extends React.Component {
     }
 
     getAppraiser = (value) => {
+        this.setState({isSearch: false})
         const { approver } = this.props
         if (value !== "") {
             const config = getMuleSoftHeaderConfigurations()
@@ -137,9 +139,14 @@ class AssesserComponent extends React.Component {
                                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
                             }
                         })
-                        this.setState({ users: approver ? users.filter(user => user.account !== approver.account) : users })
+                        const lst = approver ? users.filter(user => user.account !== approver.account) : users;
+                        this.setState({ users: lst})
+                        if (Array.isArray(lst) && lst.length > 1) this.setState({isSearch: true})
                     }
                 }).catch(error => { })
+        }
+        else {
+            if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
         }
     }
 
@@ -158,6 +165,8 @@ class AssesserComponent extends React.Component {
             control: (styles) => ({
                 ...styles,
                 cursor: 'pointer',
+                height: 35,
+                minHeight: 35
             })
         }
         const { t, isEdit } = this.props;
@@ -178,15 +187,14 @@ class AssesserComponent extends React.Component {
                                 isDisabled={isEdit}
                                 isClearable={true}
                                 styles={customStyles}
-                                components={{ Option: MyOption }}
+                                components={{ Option: e => MyOption({...e, isSearch: this.state.isSearch})}}
                                 onInputChange={this.onInputChange.bind(this)}
                                 name="appraiser"
                                 onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
                                 value={this.state.appraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
-                                options={this.state.users}
-                            />
+                                options={this.state.users} />
                         </div>
                         {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
                     </div>

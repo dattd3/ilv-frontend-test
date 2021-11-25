@@ -1,5 +1,5 @@
 import React from 'react'
-import editButton from '../../assets/img/Icon-edit.png'
+import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
@@ -484,6 +484,23 @@ class RequestTaskList extends React.Component {
         // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
         const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
 
+        const showDayOff = (startDate, requestTypeId, applyFrom, applyTo) => {
+            if (requestTypeId != Constants.UPDATE_PROFILE) {
+                if (applyFrom && applyTo) {
+                    let start = applyFrom ? moment(applyFrom, 'YYYYMMDD') : null
+                    let end = applyTo ? moment(applyTo, 'YYYYMMDD') : null
+                    let now = start.clone(), dates = []
+                    while (now.isSameOrBefore(end)) {
+                        dates.push(now.format('DD/MM/YYYY'))
+                        now.add(1, 'days')
+                    }
+                    return dates.join(', ')
+                }
+                return startDate
+            }
+            return null
+        }
+
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -584,7 +601,7 @@ class RequestTaskList extends React.Component {
                                             {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
                                             <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                            <td className="day-off">{showDayOff(child.startDate, child.requestTypeId, child?.applyFrom, child?.applyTo)}</td>
                                             <td className="break-time text-center">{totalTime}</td>
                                             <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                             <td className="tool">
