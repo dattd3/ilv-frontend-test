@@ -294,18 +294,22 @@ function ShiftUpdateModal(props) {
                     if (!shiftInfo.shiftFilter[name]) {
                         errors[errorName] = t("Required")
                     }
-                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'startTime' || name === 'endTime')) {
-                    errorName = 'rangeTime' + '_' + index
-                    if (!shiftInfo[name]) {
-                        errors[errorName] = t("StartAndEndTimesRequired")
-                    } else {
-                        // const start = shiftInfo.startTime
-                        // const end = shiftInfo.endTime
-                        if (startTime >= endTime) {
-                            errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
+                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
+                    if (name === 'startTime' || name === 'endTime') {
+                        errorName = 'rangeTime' + '_' + index
+                        if (!shiftInfo[name]) {
+                            errors[errorName] = t("StartAndEndTimesRequired")
+                        } else {
+                            if (startTime >= endTime) {
+                                errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
+                            }
                         }
                     }
-                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
+                    if (shiftInfo.shiftType?.value == brokenShiftCode && (_.isNull(shiftInfo.breakStart) || _.isNull(shiftInfo.breakEnd))) {
+                        errors['rangeBreak' + '_' + index] = t('StartAndEndBreakTimesRequired')
+                    }
+                // } 
+                // else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
                     // errorName = 'rangeBreak' + '_' + index
                     // if (!shiftInfo[name]) {
                     //     errors[errorName] = t("StartAndEndBreakTimesRequired")
@@ -329,16 +333,9 @@ function ShiftUpdateModal(props) {
                 }
             })
 
-            if (_.isNull(shiftInfo.breakStart) && !_.isNull(shiftInfo.breakEnd)) {
-                errors['breakStart' + '_' + index] = t('Required')
-            } else if (!_.isNull(shiftInfo.breakStart) && _.isNull(shiftInfo.breakEnd)) {
-                errors['breakEnd' + index] = t('Required')
+            if ((_.isNull(shiftInfo.breakStart) && !_.isNull(shiftInfo.breakEnd)) || (!_.isNull(shiftInfo.breakStart) && _.isNull(shiftInfo.breakEnd))) {
+                errors['rangeBreak' + '_' + index] = t('StartAndEndBreakTimesRequired')
             }
-
-            // const startTime = moment(shiftInfo.startTime, "HH:mm:ss").isValid() ? moment(shiftInfo.startTime, "HH:mm:ss").format("HHmmss") : null
-            // const endTime = moment(timesheet.endTime, "HH:mm:ss").isValid() ? moment(timesheet.endTime, "HH:mm:ss").format("HHmmss") : null
-            // const startBreakTime = moment(timesheet.startBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.startBreakTime, "HH:mm:ss").format("HHmmss") : null
-            // const endBreakTime = moment(timesheet.endBreakTime, "HH:mm:ss").isValid() ? moment(timesheet.endBreakTime, "HH:mm:ss").format("HHmmss") : null
         
             if (startTime && endTime) {
                 if (startTime < endTime) {
@@ -371,9 +368,9 @@ function ShiftUpdateModal(props) {
                         const totalHoursBreak = duration.asHours()
                         const totalTimeBreakValid = 2
                         const totalTimeWorkingValid = 10
-                        if (shiftInfo.shiftType && shiftInfo.shiftType.value == brokenShiftCode && totalHoursBreak < totalTimeBreakValid) {
+                        if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && totalHoursBreak < totalTimeBreakValid) {
                             errors['totalTime' + '_' + index] = t("WarningTotalBreakTime")
-                        } else if (shiftInfo.shiftType && shiftInfo.shiftType.value == brokenShiftCode && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
+                        } else if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
                             errors['totalTime' + '_' + index] = t("WarningTotalRegisTime")
                         } else {
                             errors['totalTime' + '_' + index] = null
@@ -922,7 +919,7 @@ function ShiftUpdateModal(props) {
                                                                 </div>
                                                             </div>
                                                             { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
-                                                            <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p>
+                                                            { item.shiftType?.value == brokenShiftCode && <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p> }
                                                         </div>
                                                         <div className="time-total">
                                                             <label>{t("TotalTimes")}</label>

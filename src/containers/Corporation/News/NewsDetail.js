@@ -59,7 +59,7 @@ function NewsDetailElement({ match, location }) {
                     <h1 className="news-title">{detail.title}</h1>
                     <div className="source-time-info">
                         <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{detail?.sourceSite || ""}</span></span>
-                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.time} | {timePublished?.date}</span></span>
+                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
                     </div>
                     <h2 className="news-description">{detail.description}</h2>
                     <div className="news-detail" dangerouslySetInnerHTML={{ __html: content }}>
