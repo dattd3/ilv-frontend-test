@@ -57,7 +57,7 @@ export default function NewsItemGrid(props) {
                     <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="title">{title}</a>
                     <div className="source-time-info">
                         <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>
-                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.time} | {timePublished.date}</span></span>
+                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
                     </div>
                 </div>
             </div>
