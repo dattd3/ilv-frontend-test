@@ -71,6 +71,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
     return t;
   }
+  
   setStartTime(index, name, startTime) {
     // let t = this.processTimeZero(startTime)
     this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime)
@@ -169,7 +170,6 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   isNullCustomize = value => {
-    //|| value == 0 
     return (value == null || value == "null" || value == "" || value == undefined || value == "#") ? true : false
   }
 
@@ -270,7 +270,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   error(index, name) {
-    return this.state.errors[name + index] ? <div className="text-danger">{this.state.errors[name + index]}</div> : null
+    return this.state.errors[name + index] ? <div className="text-danger validation">{this.state.errors[name + index]}</div> : null
   }
 
   errorWithoutItem(name) {
@@ -278,10 +278,9 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    this.state.timesheets[index].isEdited = !this.state.timesheets[index].isEdited
-    this.setState({
-      timesheets: [...this.state.timesheets]
-    })
+    const timeSheets = [...this.state.timesheets]
+    timeSheets[index].isEdited = !timeSheets[index].isEdited
+    this.setState({ timesheets: timeSheets })
   }
 
   search() {
@@ -368,7 +367,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const { startDate, endDate } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton } = this.state
     const { t } = this.props;
     const lang = localStorage.getItem("locale")
 
@@ -429,15 +428,15 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" className="btn btn-warning w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
+                <button type="button" className="btn btn-warning btn-search w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
               </div>
             </div>
           </div>
         </div>
-        {this.state.timesheets.map((timesheet, index) => {
+        {timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4 pl-0 pr-0"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
                 {!timesheet.isEdited ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
@@ -448,186 +447,117 @@ class InOutTimeUpdateComponent extends React.Component {
                   : null}
 
               </div>
-              <div className="col-2 pr-0 pl-0">
+              <div className="col-2">
                 {!timesheet.isEdited
                   ? <p className="edit text-warning text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-edit"></i> {t("Modify")}</p>
                   : <p className="edit text-danger text-right" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i> {t("Cancel")}</p>}
               </div>
             </div>
-            {timesheet.isEdited ? <div className="row block-time-item-edit">
-              <div className="col-6">
-                <div className="box-time">
-                  <p className="text-center">{t('ActualTime')}</p>
-                  <div className="row">
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("StartTime")} 1:</div>
-                        <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time1_fact)}</b></div>
-                      </div>
-                    </div>
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("EndTime")} 1:</div>
-                        <div className="col-6"><b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></div>
-                      </div>
-                    </div>
+            {timesheet.isEdited ? 
+              <div className="block-time-item-edit">
+                <div className="wrap-item">
+                  <div className="title">
+                    <div className="plan">{t("PlannedShift")}</div>
+                    <div className="actual">{t("ActualTime")}</div>
+                    <div className="editable">{t("InOutChangeRequest")}</div>
                   </div>
-                  <div className="row">
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("StartTime")} 2:</div>
-                        <div className="col-6"><b>{this.printTimeFormat(timesheet.start_time2_fact)}</b></div>
+                  <div className="data">
+                    <div className="row-item">
+                      <div className="item plan">
+                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time1)}</span></div>
+                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time1)}</span></div>
                       </div>
-
-                    </div>
-                    <div className="col-lg-12 col-xl-6 ">
-                      <div className="row">
-                        <div className="col-6">{t("EndTime")} 2:</div>
-                        <div className="col-6"> <b>{this.printTimeFormat(timesheet.end_time2_fact)}</b></div>
+                      <div className="item actual">
+                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time1_fact)}</span></div>
+                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time1_fact)}</span></div>
                       </div>
-                    </div>
-                  </div>
-                  <>
-                    <hr />
-                    <p className="text-center">{t("PlannedShift")}</p>
-                    <div className="row">
-                      <div className="col-lg-12 col-xl-6">
-                        <div className="row">
-                          <div className="col-6">{t("StartTime")} 1:</div>
-                          <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time1)}</b></div>
+                      <div className="item editable">
+                        <div className="first">
+                          <span>{t("StartTime")} 1:</span>
+                          <span className="value">
+                            <DatePicker
+                              selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                              onChange={this.setStartTime.bind(this, index, 'start_time1_fact_update')}
+                              autoComplete="off"
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Giờ"
+                              dateFormat="HH:mm:ss"
+                              timeFormat="HH:mm:ss"
+                              className="form-control input" />
+                              {this.error(index, 'start_time1_fact_update')}
+                          </span>
                         </div>
-
-                      </div>
-                      <div className="col-lg-12 col-xl-6">
-                        <div className="row">
-                          <div className="col-6">{t("EndTime")} 1:</div>
-                          <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time1)}</b></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-12 col-xl-6">
-                        <div className="row">
-                          <div className="col-6">{t("StartTime")} 2:</div>
-                          <div className="col-6"> <b>{this.printTimeFormat(timesheet.from_time2)}</b></div>
-                        </div>
-                      </div>
-                      <div className="col-lg-12 col-xl-6">
-                        <div className="row">
-                          <div className="col-6">{t("EndTime")} 2:</div>
-                          <div className="col-6"> <b>{this.printTimeFormat(timesheet.to_time2)}</b></div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                </div>
-
-              </div>
-
-              <div className="col-6">
-                <div className="box-time">
-                  <p className="text-center">{t('InOutChangeRequest')}</p>
-                  <div className="row">
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("StartTime")} 1:</div>
-                        <div className="col-6">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'start_time1_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="HH:mm:ss"
-                                timeFormat="HH:mm:ss"
-                                className="form-control input" />
-                            </label>
-                          </div>
-                          {this.error(index, 'start_time1_fact_update')}
+                        <div className="second">
+                          <span>{t("EndTime")} 1:</span>
+                          <span className="value">
+                            <DatePicker
+                              selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
+                              onChange={this.setEndTime.bind(this, index, 'end_time1_fact_update')}
+                              autoComplete="off"
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Giờ"
+                              dateFormat="HH:mm:ss"
+                              timeFormat="HH:mm:ss"
+                              className="form-control input" />
+                              {this.error(index, 'end_time1_fact_update')}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("EndTime")} 1:</div>
-                        <div className="col-6">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'end_time1_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="HH:mm:ss"
-                                timeFormat="HH:mm:ss"
-                                className="form-control input" />
-                            </label>
-                          </div>
-                          {this.error(index, 'end_time1_fact_update')}
-                        </div>
+                    <div className="row-item">
+                      <div className="item plan">
+                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time2)}</span></div>
+                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time2)}</span></div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("StartTime")} 2:</div>
-                        <div className="col-6">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setStartTime.bind(this, index, 'start_time2_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="HH:mm:ss"
-                                timeFormat="HH:mm:ss"
-                                className="form-control input" 
-                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
-                            </label>
-                          </div>
-                          {this.error(index, 'start_time2_fact_update')}
-                        </div>
+                      <div className="item actual">
+                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time2_fact)}</span></div>
+                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time2_fact)}</span></div>
                       </div>
-                    </div>
-                    <div className="col-lg-12 col-xl-6">
-                      <div className="row">
-                        <div className="col-6">{t("EndTime")} 2:</div>
-                        <div className="col-6">
-                          <div className="content input-container">
-                            <label>
-                              <DatePicker
-                                selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
-                                onChange={this.setEndTime.bind(this, index, 'end_time2_fact_update')}
-                                autoComplete="off"
-                                showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
-                                timeCaption="Giờ"
-                                dateFormat="HH:mm:ss"
-                                timeFormat="HH:mm:ss"
-                                className="form-control input" 
-                                disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"}/>
-                            </label>
-                          </div>
-                          {this.error(index, 'end_time2_fact_update')}
+                      <div className="item editable">
+                        <div className="first">
+                          <span>{t("StartTime")} 2:</span>
+                          <span className="value">
+                            <DatePicker
+                              selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                              onChange={this.setStartTime.bind(this, index, 'start_time2_fact_update')}
+                              autoComplete="off"
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Giờ"
+                              dateFormat="HH:mm:ss"
+                              timeFormat="HH:mm:ss"
+                              className="form-control input" 
+                              disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
+                              {this.error(index, 'start_time2_fact_update')}
+                          </span>
+                        </div>
+                        <div className="second">
+                          <span>{t("EndTime")} 2:</span>
+                          <span className="value">
+                            <DatePicker
+                              selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
+                              onChange={this.setEndTime.bind(this, index, 'end_time2_fact_update')}
+                              autoComplete="off"
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Giờ"
+                              dateFormat="HH:mm:ss"
+                              timeFormat="HH:mm:ss"
+                              className="form-control input" 
+                              disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
+                              {this.error(index, 'end_time2_fact_update')}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
             </div> : null}
 
             {timesheet.isEdited ? <div className="row block-note-item-edit">
@@ -642,15 +572,15 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         })}
 
-        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? 
+        {timesheets.filter(t => t.isEdited).length > 0 ? 
         <>
-          <AssesserComponent isEdit={t.isEdited} errors={this.state.errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
-          <ApproverComponent errors={this.state.errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
+          <AssesserComponent isEdit={t.isEdited} errors={errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
+          <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
         </>
           : null}
 
         <ul className="list-inline">
-          {this.state.files.map((file, index) => {
+          {files.map((file, index) => {
             return <li className="list-inline-item" key={index}>
               <span className="file-name">
                 <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
@@ -661,13 +591,13 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (this.state.timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ?
+          (timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}
 
-        {this.state.timesheets.filter(t => t.isEdited).length > 0 ? <ButtonComponent files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} /> : null}
+        {timesheets.filter(t => t.isEdited).length > 0 ? <ButtonComponent files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} /> : null}
       </div>
     )
   }

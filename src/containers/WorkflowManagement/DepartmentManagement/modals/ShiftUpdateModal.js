@@ -5,7 +5,7 @@ import _ from 'lodash'
 import Select, { components } from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
-import { Modal, Dropdown, Button, Form } from 'react-bootstrap'
+import { Modal, Dropdown, Button } from 'react-bootstrap'
 import Constants from "../../../../commons/Constants"
 import { formatStringByMuleValue, formatNumberInteger, getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import DropdownCustomize from "../../../LeaveFund/DropdownCustomize"
@@ -79,7 +79,6 @@ function ShiftUpdateModal(props) {
         SetShiftStartTimeOptionsFilter(startTimeOptions)
         SetShiftEndTimeOptionsFilter(endTimeOptions)
     }
-    
 
     useEffect(() => {
         function prepareShifts(responses) {
@@ -275,17 +274,18 @@ function ShiftUpdateModal(props) {
     const verifyInputs = () => {
         let errors = {}
         let requiredFields = ['shiftType', 'reason', 'applicableObjects']
-        const totalTimeBreakValid = 2
 
         shiftInfos.forEach((shiftInfo, index) => {
             if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
                 requiredFields = requiredFields.concat(['shiftSelected'])
             } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
                 requiredFields = requiredFields.concat(['startTime', 'endTime'])
-                if (shiftInfo.shiftType?.value == brokenShiftCode) {
-                    requiredFields = requiredFields.concat(['breakStart', 'breakEnd'])
-                }
             }
+
+            let startTime = shiftInfo.startTime
+            let endTime = shiftInfo.endTime
+            let startBreak = shiftInfo.breakStart
+            let endBreak = shiftInfo.breakEnd
 
             requiredFields.forEach(name => {
                 let errorName = name + '_' + index
@@ -294,40 +294,90 @@ function ShiftUpdateModal(props) {
                     if (!shiftInfo.shiftFilter[name]) {
                         errors[errorName] = t("Required")
                     }
-                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'startTime' || name === 'endTime')) {
-                    errorName = 'rangeTime' + '_' + index
-                    if (!shiftInfo[name]) {
-                        errors[errorName] = t("StartAndEndTimesRequired")
-                    } else {
-                        const start = shiftInfo.startTime
-                        const end = shiftInfo.endTime
-                        if (start >= end) {
-                            errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
+                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
+                    if (name === 'startTime' || name === 'endTime') {
+                        errorName = 'rangeTime' + '_' + index
+                        if (!shiftInfo[name]) {
+                            errors[errorName] = t("StartAndEndTimesRequired")
+                        } else {
+                            if (startTime >= endTime) {
+                                errors[errorName] = t("StartTimeMustBeLessThanTheEndTime")
+                            }
                         }
                     }
-                } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
-                    errorName = 'rangeBreak' + '_' + index
-                    if (!shiftInfo[name]) {
-                        errors[errorName] = t("StartAndEndBreakTimesRequired")
-                    } else {
-                        const start = shiftInfo.startTime
-                        const end = shiftInfo.endTime
-                        const startBreak = shiftInfo.breakStart
-                        const endBreak = shiftInfo.breakEnd
-                        if (startBreak >= endBreak) {
-                            errors[errorName] = t("BreakStartTimeMustBeLessThanTheEndTime")
-                        } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
-                            errors[errorName] = t("TotalTimesForShiftBreakShouldNotBeLessThan2Hours")
-                        } else if (startBreak <= start || end <= endBreak) {
-                            errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc'
-                        }
+                    if (shiftInfo.shiftType?.value == brokenShiftCode && (_.isNull(shiftInfo.breakStart) || _.isNull(shiftInfo.breakEnd))) {
+                        errors['rangeBreak' + '_' + index] = t('StartAndEndBreakTimesRequired')
                     }
+                // } 
+                // else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE && (name === 'breakStart' || name === 'breakEnd')) {
+                    // errorName = 'rangeBreak' + '_' + index
+                    // if (!shiftInfo[name]) {
+                    //     errors[errorName] = t("StartAndEndBreakTimesRequired")
+                    // } else {
+                    //     // const start = shiftInfo.startTime
+                    //     // const end = shiftInfo.endTime
+                    //     // const startBreak = shiftInfo.breakStart
+                    //     // const endBreak = shiftInfo.breakEnd
+                    //     if (startBreak >= endBreak) {
+                    //         errors[errorName] = t("BreakStartTimeMustBeLessThanTheEndTime")
+                    //     } else if (getDuration(startBreak, endBreak) < totalTimeBreakValid) {
+                    //         errors[errorName] = t("TotalTimesForShiftBreakShouldNotBeLessThan2Hours")
+                    //     } else if (startBreak <= startTime || endTime <= endBreak) {
+                    //         errors[errorName] = 'Thời gian nghỉ ca phải nằm trong khoảng thời gian bắt đầu và kết thúc'
+                    //     }
+                    // }
                 } else {
-                    if ((!shiftInfo[name] || shiftInfo[name]?.length === 0) && name !== 'startTime' && name !== 'endTime' && name !== 'breakStart' && name !== 'breakEnd') {
+                    if ((!shiftInfo[name] || shiftInfo[name]?.length === 0) && name !== 'startTime' && name !== 'endTime') {
                         errors[errorName] = t("Required")
                     }
                 }
             })
+
+            if ((_.isNull(shiftInfo.breakStart) && !_.isNull(shiftInfo.breakEnd)) || (!_.isNull(shiftInfo.breakStart) && _.isNull(shiftInfo.breakEnd))) {
+                errors['rangeBreak' + '_' + index] = t('StartAndEndBreakTimesRequired')
+            }
+        
+            if (startTime && endTime) {
+                if (startTime < endTime) {
+                    if (startBreak && endBreak) {
+                        if (startBreak > endBreak) {
+                            errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                        } else if (startBreak < startTime || endBreak > endTime) {
+                            errors['rangeBreak' + '_' + index] = t('WarningBreakTime')
+                        }
+                    }
+                } else {
+                    if (startBreak && endBreak) {
+                        if (startBreak > startTime && endBreak > startTime) {
+                            if (startBreak > endBreak) {
+                                errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                            }
+                        } else if (startBreak < endTime && endBreak < endTime) {
+                            if (startBreak > endBreak) {
+                                errors['breakStart' + '_' + index] = t('WarningBreakStartTimeEndTime')
+                            }
+                        } else if ((startBreak < startTime && startBreak > endTime) || (startBreak >= endTime && startBreak < startTime) 
+                            || (startBreak > startTime && endBreak > endTime) || (startBreak < endTime && endBreak > endTime)) {
+                            errors['rangeBreak' + '_' + index] = t('WarningBreakTime')
+                        }
+                    }
+                }
+                if (startBreak && endBreak) {
+                    if (shiftInfo.shiftUpdateType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
+                        const duration = moment.duration(moment(endBreak, "HHmmss").diff(moment(startBreak, "HHmmss")))
+                        const totalHoursBreak = duration.asHours()
+                        const totalTimeBreakValid = 2
+                        const totalTimeWorkingValid = 10
+                        if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && totalHoursBreak < totalTimeBreakValid) {
+                            errors['totalTime' + '_' + index] = t("WarningTotalBreakTime")
+                        } else if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
+                            errors['totalTime' + '_' + index] = t("WarningTotalRegisTime")
+                        } else {
+                            errors['totalTime' + '_' + index] = null
+                        }
+                    }
+                }
+            }
         })
 
         SetErrors(errors)
@@ -425,29 +475,82 @@ function ShiftUpdateModal(props) {
         const newShiftInfos = [...shiftInfos]
         let totalTime = 0
 
-        if (stateName === "startTime" && time) {
-            totalTime = getDuration(time, newShiftInfos[index].endTime)
-        } else if (stateName === "endTime" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, time)
-        } else if (stateName === "breakStart" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, time) + getDuration(newShiftInfos[index].breakEnd, newShiftInfos[index].endTime)
-        } else if (stateName === "breakEnd" && time) {
-            totalTime = getDuration(newShiftInfos[index].startTime, newShiftInfos[index].breakStart) + getDuration(time, newShiftInfos[index].endTime)
-        }
         newShiftInfos[index].dateChanged = props.dateInfo.date
         newShiftInfos[index].totalTime = totalTime.toFixed(2)
-        newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('HHmmss') : null
-        SetShiftInfos(newShiftInfos)
+        newShiftInfos[index][stateName] = moment(time).isValid() ? moment(time).format('YYYYMMDD HHmmss') : null
+
+        Promise.resolve()
+        .then(() => { SetShiftInfos(newShiftInfos) })
+        .then(() => calculateTotalTime(index))
     }
 
-    const getDuration = (start, end) => {
-        if (start && end) {
-            const startTime = moment(start, "HH:mm:ss")
-            const endTime = moment(end, "HH:mm:ss")
-            const duration = moment.duration(endTime.diff(startTime))
-            return duration.asHours()
+    const calculateTotalTime = (index) => {
+        const newShiftInfos = [...shiftInfos]
+        let totalTime = ""
+        if (newShiftInfos[index]) {
+            const startTimePrepare = newShiftInfos[index]['startTime'] || ""
+            const endTimePrepare = newShiftInfos[index]['endTime'] || ""
+            const startBreakTimePrepare = newShiftInfos[index]['breakStart'] || ""
+            const endBreakTimePrepare = newShiftInfos[index]['breakEnd'] || ""
+
+            if (startTimePrepare && endTimePrepare && moment(startTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss")) {
+                if (!startBreakTimePrepare && !endBreakTimePrepare) {
+                    totalTime = getDuration(endTimePrepare, startTimePrepare)
+                } else if (startBreakTimePrepare && !endBreakTimePrepare) {
+                    totalTime = ""
+                } else if (!startBreakTimePrepare && endBreakTimePrepare) {
+                    totalTime = ""
+                } else {
+                    if (moment(startBreakTimePrepare, "YYYYMMDD HHmmss") >= moment(startTimePrepare, "YYYYMMDD HHmmss") && moment(startBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss") 
+                        && moment(endBreakTimePrepare, "YYYYMMDD HHmmss") >= moment(startTimePrepare, "YYYYMMDD HHmmss") && moment(endBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endTimePrepare, "YYYYMMDD HHmmss") 
+                        && moment(startBreakTimePrepare, "YYYYMMDD HHmmss") <= moment(endBreakTimePrepare, "YYYYMMDD HHmmss")) {
+                        totalTime = getRangeTimeForDuration(startTimePrepare, startBreakTimePrepare, endBreakTimePrepare, endTimePrepare)
+                    } else {
+                        totalTime = ""
+                    }
+                }
+            } else {
+                totalTime = calculateTotalTimeForThroughDay(startTimePrepare, endTimePrepare, startBreakTimePrepare, endBreakTimePrepare)
+            }
+
+            newShiftInfos[index]['totalTime'] = totalTime
+            SetShiftInfos(newShiftInfos)
         }
-        return 0
+    }
+
+    const calculateTotalTimeForThroughDay = (startTime, endTime, startBreakTime, endBreakTime) => {
+        let totalTime = ""
+        if (startTime && endTime && moment(startTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss")) {
+            const endTimeAdditional = moment(endTime, "YYYYMMDD HHmmss").add(1, 'days').format("YYYYMMDD HHmmss")
+            totalTime = getDuration(endTimeAdditional, startTime)
+            if (moment(startBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss")) {
+                totalTime = getRangeTimeForDuration(startTime, startBreakTime, endBreakTime, endTime)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") <= moment(endTime, "YYYYMMDD HHmmss")) {
+                const startBreakTimeAdditional = moment(startBreakTime, "YYYYMMDD HHmmss").add(1, 'days').format("YYYYMMDD HHmmss")
+                totalTime = getRangeTimeForDuration(startTime, startBreakTimeAdditional, endBreakTime, endTime)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") >= moment(startTime, "YYYYMMDD HHmmss")) {
+                totalTime = getRangeTimeForDuration(startTime, startBreakTime, endBreakTime, endTimeAdditional)
+            } else if (moment(startBreakTime, "YYYYMMDD HHmmss") < moment(startTime, "YYYYMMDD HHmmss") && moment(startBreakTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss")) {
+                totalTime = ""
+            } else if (moment(endBreakTime, "YYYYMMDD HHmmss") > moment(endTime, "YYYYMMDD HHmmss") && moment(endBreakTime, "YYYYMMDD HHmmss") < moment(startTime, "YYYYMMDD HHmmss")) {
+                totalTime = ""
+            }
+        }
+        return totalTime
+    }
+
+    const getRangeTimeForDuration = (start1, start2, end2, end1) => {
+        const rangeFirst = getDuration(start2, start1)
+        const rangeSecond = getDuration(end1, end2)
+        const duration = moment.duration(rangeFirst).add(moment.duration(rangeSecond))
+        const totalTime = moment.utc(duration.as('milliseconds')).format("HH:mm")
+        return totalTime
+    }
+
+    const getDuration = (end, start) => {
+        const range = moment(end, "YYYYMMDD HHmmss").diff(moment(start, "YYYYMMDD HHmmss"))
+        const duration = moment.duration(range);
+        return Math.floor(duration.asHours()) + moment.utc(range).format(":mm");
     }
 
     const customizeSelectStyles = {
@@ -545,6 +648,14 @@ function ShiftUpdateModal(props) {
         }
     }
 
+    const customizeSelectShiftTypeStyles = {
+        control: (base, state) => ({
+            ...base,
+            height: 35,
+            minHeight: 35
+        })
+    }
+
     const updateParent = (index, data) => {
         SetNeedReset(false)
         const ids = (props.employeeSelectedFilter).map(esf => esf.uid)
@@ -600,10 +711,6 @@ function ShiftUpdateModal(props) {
                 <div className="wrap-items">
                     {
                         shiftInfos.map((item, index) => {
-                            console.log("employeeSelectedFilter ============>>")
-                            console.log(item.employeeSelectedFilter)
-                            console.log(item.shiftFilter)
-                            console.log(shiftList)
                             let shifts = item.shiftFilter.shiftList || shiftList
                             return <div className="item" key={index}>
                                         <div className="add-item">
@@ -623,16 +730,19 @@ function ShiftUpdateModal(props) {
                                                     {t("EndNewTime")}
                                                 </label>
                                             </div>
-                                            <div className="shift-type">
-                                                <label>{t("ShiftCategory")}</label>
-                                                <div className="wrap-shift-type-select">
-                                                    <Select 
-                                                        value={item.shiftType} 
-                                                        onChange={shiftType => handleSelectChange(index, shiftType, 'shiftType')} 
-                                                        placeholder={t("Select")} 
-                                                        options={substitutionTypes} />
+                                            <div className="apply-time-shift-type">
+                                                <div className="col-second shift-type">
+                                                    <label>{t("ShiftCategory")}<span className="text-danger required">(*)</span></label>
+                                                    <div className="wrap-shift-type-select">
+                                                        <Select 
+                                                            value={item.shiftType} 
+                                                            onChange={shiftType => handleSelectChange(index, shiftType, 'shiftType')} 
+                                                            placeholder={t("Select")} 
+                                                            options={substitutionTypes} 
+                                                            styles={customizeSelectShiftTypeStyles} />
+                                                    </div>
+                                                    { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
                                                 </div>
-                                                { errors[`shiftType_${index}`] ? errorInfos(index, 'shiftType') : null }
                                             </div>
                                             {
                                                 item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ?
@@ -743,9 +853,9 @@ function ShiftUpdateModal(props) {
                                                         <div className="time-planing">
                                                             <div className="time-data">
                                                                 <div className="start-time">
-                                                                    <label>{t("Start1Change")}</label>
+                                                                    <label>{t("Start1Change")}<span className="text-danger required">(*)</span></label>
                                                                     <DatePicker
-                                                                        selected={item.startTime ? moment(item.startTime, 'HHmmss').toDate() : null}
+                                                                        selected={item.startTime ? moment(item.startTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={startTime => handleTimeInputChange(index, startTime, "startTime")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
@@ -758,9 +868,9 @@ function ShiftUpdateModal(props) {
                                                                         className="form-control input" />
                                                                 </div>
                                                                 <div className="end-time">
-                                                                    <label>{t("End1Change")}</label>
+                                                                    <label>{t("End1Change")}<span className="text-danger required">(*)</span></label>
                                                                     <DatePicker
-                                                                        selected={item.endTime ? moment(item.endTime, 'HHmmss').toDate() : null}
+                                                                        selected={item.endTime ? moment(item.endTime, 'YYYYMMDD HHmmss').toDate() : null}
                                                                         onChange={endTime => handleTimeInputChange(index, endTime, "endTime")}
                                                                         autoComplete="off"
                                                                         showTimeSelect
@@ -775,55 +885,52 @@ function ShiftUpdateModal(props) {
                                                             </div>
                                                             { errors[`rangeTime_${index}`] ? errorInfos(index, 'rangeTime') : null }
                                                         </div>
-                                                        {
-                                                            item.shiftType?.value == brokenShiftCode ?
-                                                            <div className="time-break">
-                                                                <div className="time-data">
-                                                                    <div className="start-time-break">
-                                                                        <label>{t("BreakStartTime")}</label>
-                                                                        <DatePicker
-                                                                            selected={item.breakStart ? moment(item.breakStart, 'HHmmss').toDate() : null}
-                                                                            onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm:ss"
-                                                                            timeFormat="HH:mm:ss"
-                                                                            placeholderText={t("Select")}
-                                                                            className="form-control input" />
-                                                                    </div>
-                                                                    <div className="end-time-break">
-                                                                        <label>{t("BreakEndTime")}</label>
-                                                                        <DatePicker
-                                                                            selected={item.breakEnd ? moment(item.breakEnd, 'HHmmss').toDate() : null}
-                                                                            onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
-                                                                            autoComplete="off"
-                                                                            showTimeSelect
-                                                                            showTimeSelectOnly
-                                                                            timeIntervals={15}
-                                                                            timeCaption={t("Hour")}
-                                                                            dateFormat="HH:mm:ss"
-                                                                            timeFormat="HH:mm:ss"
-                                                                            placeholderText={t("Select")}
-                                                                            className="form-control input" />
-                                                                    </div>
+                                                        <div className="time-break">
+                                                            <div className="time-data">
+                                                                <div className="start-time-break">
+                                                                    <label>{t("BreakStartTime")}</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakStart ? moment(item.breakStart, 'YYYYMMDD HHmmss').toDate() : null}
+                                                                        onChange={breakStart => handleTimeInputChange(index, breakStart, "breakStart")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
                                                                 </div>
-                                                                { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
-                                                                <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p>
+                                                                <div className="end-time-break">
+                                                                    <label>{t("BreakEndTime")}</label>
+                                                                    <DatePicker
+                                                                        selected={item.breakEnd ? moment(item.breakEnd, 'YYYYMMDD HHmmss').toDate() : null}
+                                                                        onChange={breakEnd => handleTimeInputChange(index, breakEnd, "breakEnd")}
+                                                                        autoComplete="off"
+                                                                        showTimeSelect
+                                                                        showTimeSelectOnly
+                                                                        timeIntervals={15}
+                                                                        timeCaption={t("Hour")}
+                                                                        dateFormat="HH:mm:ss"
+                                                                        timeFormat="HH:mm:ss"
+                                                                        placeholderText={t("Select")}
+                                                                        className="form-control input" />
+                                                                </div>
                                                             </div>
-                                                            : null
-                                                        }
+                                                            { errors[`rangeBreak_${index}`] ? errorInfos(index, 'rangeBreak') : null }
+                                                            { item.shiftType?.value == brokenShiftCode && <p className="notice-for-break-time errors text-danger">{t("OnlyShiftBreakTime")}</p> }
+                                                        </div>
                                                         <div className="time-total">
                                                             <label>{t("TotalTimes")}</label>
                                                             <p className="total">{item.totalTime || 0}</p>
+                                                            { errors[`totalTime_${index}`] ? errorInfos(index, 'totalTime') : null }
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
                                             <div className="reason">
-                                                <label>{t("Reason")}</label>
+                                                <label>{t("Reason")}<span className="text-danger required">(*)</span></label>
                                                 <input type="text" placeholder={t("EnterReason")} value={item.reason || ""} onChange={e => handleInputTextChange(index, e, 'reason')} />
                                                 { errors[`reason_${index}`] ? errorInfos(index, 'reason') : null }
                                             </div>
@@ -831,6 +938,7 @@ function ShiftUpdateModal(props) {
                                                 <DropdownCustomize 
                                                     index={index}
                                                     label={t("ApplyFor")}
+                                                    isRequired={true}
                                                     employeeSelectedFilter={item.employeeSelectedFilter}
                                                     needReset={needReset}
                                                     getSelecteMembers={updateParent} 

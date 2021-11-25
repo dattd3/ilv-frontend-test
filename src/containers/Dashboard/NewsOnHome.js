@@ -93,7 +93,7 @@ function NewsOnHome(props) {
                         <div className="other-info">
                             <div className="source-time-info">
                                 <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
-                                <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.time} | {timePublishedTopOne?.date}</span></span>
+                                <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
                             </div>
                             <p className="description">{subStringDescription(topOne?.description)}...</p>
                             <div className="btn-detail">
@@ -121,7 +121,7 @@ function NewsOnHome(props) {
                                                 <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
                                                 <div className="source-time-info">
                                                     <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.time} | {timePublished.date}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -155,7 +155,7 @@ function NewsOnHome(props) {
                                                 <p className="description">{subStringDescription(item.description)}...</p>
                                                 <div className="source-time-info">
                                                     <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.time} | {timePublished.date}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
                                                 </div>
                                             </div>
                                             <div className="btn-detail">
