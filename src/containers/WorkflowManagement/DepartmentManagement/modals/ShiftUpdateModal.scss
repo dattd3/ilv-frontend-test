@@ -80,6 +80,38 @@
                 }
                 .main-content-item {
                     position: relative;
+                    .apply-time-shift-type {
+                        margin: 20px 0;
+                        display: flex;
+                        align-items: flex-start;
+                        .col-first {
+                            width: 350px;
+                            .apply-time {
+                                display: flex;
+                                align-items: center;
+                                .info {
+                                    &:last-child {
+                                        margin-left: 1.5rem;
+                                    }
+                                    input {
+                                        font-size: inherit;
+                                        height: 35px;
+                                        &:active {
+                                            outline: none;
+                                            box-shadow: none;
+                                        }
+                                        &:focus {
+                                            outline: none;
+                                            box-shadow: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .col-second {
+                            width: 350px;
+                        }
+                    }
                 }
                 .shift-update-type-group {
                     label {
@@ -92,9 +124,9 @@
                     }
                 }
                 .shift-type {
-                    margin: 10px 0;
+                    // margin: 10px 0;
                     .wrap-shift-type-select {
-                        width: 35%;
+                        // width: 35%;
                     }
                 }
                 .reason {
@@ -147,6 +179,12 @@
                                     flex: 0 0 45%;
                                 }
                                 .end-time {
+                                    flex: 0 0 45%;
+                                }
+                                .start-time-break {
+                                    flex: 0 0 45%;
+                                }
+                                .end-time-break {
                                     flex: 0 0 45%;
                                 }
                                 input {
