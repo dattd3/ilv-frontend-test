@@ -8,10 +8,10 @@
   "Username": "Username",
   "Password": "Password",
   "LoginGuide_Title": "Login Instruction",
-  "LoginGuide_Description": "Click \"Next\" and enter your login credential to access the website",
-  "LoginGuide_UserName": "AD account (as personal account to login Saba system), ex: chiend4@vingroup.net",
+  "LoginGuide_Description": "Click \"Login\" and enter your login credential to access the Website.",
+  "LoginGuide_UserName": "AD account",
   "LoginGuide_Password": "AD password",
-  "LoginGuide_Note": "Forget your password? Contact IT HelpDesk for assistance.",
+  "LoginGuide_Note": "Forget your AD? Contact IT HelpDesk or HR Support for assistance.",
   "LoginGuideNoteSecond": "If you have trouble logging into your account, review tips and common issues ",
   "Here": "here",
   "LoginSuccessful": "Login successful...",
@@ -1033,5 +1033,5 @@
   "LoginErrorByUserIssuesTitle": "User information does not exist on the system!",
   "LoginErrorByUserIssuesDescription": "Please check your AD or contact HR for help!",
   "TryAgain": "Try again",
-  "TroubleshootingGuide": "Please see detailed troubleshooting instructions"
+  "TroubleshootingGuide": "Please see troubleshooting instructions"
 }
