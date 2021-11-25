@@ -119,6 +119,7 @@ class AssesserComponent extends React.Component {
         this.setState({isSearch: false})
         const { approver } = this.props
         if (value !== "") {
+            this.setState({isSearch: true})
             const config = getMuleSoftHeaderConfigurations()
 
             axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
@@ -141,7 +142,6 @@ class AssesserComponent extends React.Component {
                         })
                         const lst = approver ? users.filter(user => user.account !== approver.account) : users;
                         this.setState({ users: lst})
-                        if (Array.isArray(lst) && lst.length > 1) this.setState({isSearch: true})
                     }
                 }).catch(error => { })
         }
