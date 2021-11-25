@@ -360,9 +360,22 @@ class SubstitutionComponent extends React.Component {
     this.setState({ errors: errors })
   }
 
-  updateEditMode(index) {
+  updateEditMode(index, isCancel) {
     const timesheets = [...this.state.timesheets]
     const dateEdit = moment(timesheets[index].date, 'DD-MM-YYYY').format('YYYYMMDD')
+
+    if (isCancel) {
+      timesheets[index].applyFrom = dateEdit
+      timesheets[index].applyTo = dateEdit
+      timesheets[index].isEdited = !timesheets[index].isEdited
+      this.setState({
+        timesheets: [...timesheets]
+      }, () => {
+        this.verifyInput()
+      })
+      return
+    }
+
     const isInValid = this.isInValidApplyTimeByDate(dateEdit)
 
     if (isInValid) {
@@ -376,7 +389,7 @@ class SubstitutionComponent extends React.Component {
 
     timesheets[index].applyFrom = dateEdit
     timesheets[index].applyTo = dateEdit
-    timesheets[index].isEdited = !this.state.timesheets[index].isEdited
+    timesheets[index].isEdited = !timesheets[index].isEdited
     this.setState({
       timesheets: [...timesheets]
     }, () => {
@@ -724,8 +737,8 @@ class SubstitutionComponent extends React.Component {
               </div>
               <div className="col-2 ">
                 {!timesheet.isEdited
-                  ? <p className="edit text-right" onClick={this.updateEditMode.bind(this, index)}><Image src={EditIcon} alt="Edit" className="ic-edit" />{t("Modify")}</p>
-                  : <p className="edit text-danger" onClick={this.updateEditMode.bind(this, index)}><i className="fas fa-times-circle"></i>{t("Cancel")}</p>}
+                  ? <p className="edit text-right" onClick={this.updateEditMode.bind(this, index, false)}><Image src={EditIcon} alt="Edit" className="ic-edit" />{t("Modify")}</p>
+                  : <p className="edit text-danger" onClick={this.updateEditMode.bind(this, index, true)}><i className="fas fa-times-circle"></i>{t("Cancel")}</p>}
               </div>
             </div>
 

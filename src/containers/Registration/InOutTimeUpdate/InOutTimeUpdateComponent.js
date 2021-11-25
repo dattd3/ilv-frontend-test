@@ -71,6 +71,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
     return t;
   }
+  
   setStartTime(index, name, startTime) {
     // let t = this.processTimeZero(startTime)
     this.state.timesheets[index][name] = moment(startTime).isValid() && moment(startTime)
@@ -277,10 +278,9 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   updateEditMode(index) {
-    this.state.timesheets[index].isEdited = !this.state.timesheets[index].isEdited
-    this.setState({
-      timesheets: [...this.state.timesheets]
-    })
+    const timeSheets = [...this.state.timesheets]
+    timeSheets[index].isEdited = !timeSheets[index].isEdited
+    this.setState({ timesheets: timeSheets })
   }
 
   search() {

@@ -212,7 +212,7 @@ class ShiftForm extends React.Component {
                         </div>
                         <div className="text-danger">
                             {this.error(timesheet.index, 'breakTime')}
-                            <div className="text-info validation-message">{t("OnlyShiftBreakTime")}</div>
+                            { isShowStartBreakTimeAndEndBreakTime && <div className="text-danger validation-message">{t("OnlyShiftBreakTime")}</div> }
                         </div>
                     </div>
                 </div>
