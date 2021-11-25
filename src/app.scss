@@ -1352,13 +1352,14 @@ span.badge-notification[data-badge]::after {
       }
     }
     &.relationship {
+      color: #000000;
       .relationship-item {
-        padding: 10px 0;
+        // padding: 10px 0;
         .col-item {
-          padding: 0 15px;
-          input {
-            width: 100%;
-          }
+          padding: 10px 15px;
+          // input {
+          //   width: 100%;
+          // }
         }
         .full-name {
           flex: 0 0 20%;
@@ -1368,12 +1369,14 @@ span.badge-notification[data-badge]::after {
         }
         .birthday {
           flex: 0 0 13%;
+          text-align: center;
         }
         .tax-no {
           flex: 0 0 16%;
         }
         .allowances {
           flex: 0 0 10%;
+          text-align: center;
         }
         .allowances-date {
           flex: 0 0 24%;
