@@ -106,7 +106,12 @@ class SubstitutionComponent extends React.Component {
       }
 
       if (timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
-        const shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
+        let shiftRequiredFields = ['startTime', 'endTime', 'substitutionType']
+
+        if (timesheet?.substitutionType?.value == BROKEN_SHIFT_OPTION_VALUE) {
+          shiftRequiredFields = shiftRequiredFields.concat(['startBreakTime', 'endBreakTime'])
+        }
+
         shiftRequiredFields.forEach(name => {
           errors[name + index] = _.isNull(timesheet[name]) ? t('Required') : null
         })
@@ -123,7 +128,7 @@ class SubstitutionComponent extends React.Component {
         }
       }
       errors['substitutionType' + index] = (_.isNull(timesheet['substitutionType']) || !timesheet['substitutionType']) ? t('Required') : null
-
+      
       if (_.isNull(timesheet['startBreakTime']) && !_.isNull(timesheet['endBreakTime'])) {
         errors['startBreakTime' + index] = t('Required')
       } else if (!_.isNull(timesheet['startBreakTime']) && _.isNull(timesheet['endBreakTime'])) {
