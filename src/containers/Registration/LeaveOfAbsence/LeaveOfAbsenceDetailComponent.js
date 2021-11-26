@@ -139,11 +139,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-xl-3">
               {t("StartDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-xl-3">
               {t("EndDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-xl-3">
               {t("TotalLeaveTime")}
@@ -204,10 +204,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
           {messageSAP && 
             <div className={`d-flex status fail`}>
-              <i className="fas fa-times mr-1 text-danger align-self-center"></i>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
               <div>
                 {messageSAP.map((msg, index) => {
-                  return <div key={index} className="mt-1">{msg}</div>
+                  return <div key={index}>{msg}</div>
                 })}
               </div>
             </div>}
