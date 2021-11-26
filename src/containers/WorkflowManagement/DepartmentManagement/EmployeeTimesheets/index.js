@@ -805,7 +805,7 @@ class EmployeeTimesheets extends Component {
             shift_Id_Old: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? item.timesheets.find(t => t.day == moment(dateChanged, 'YYYYMMDD').format("DD/MM"))?.line1.old_shift_id : "" // Ca trước khi thay đổi
           }
         ],
-        substitutionType: dataChanged[per].shiftType.value, // Loại phân ca - Required
+        substitutionType: dataChanged[per]?.shiftType?.value, // Loại phân ca - Required
         startDate: dateChanged, // Required
         endDate: dateChanged, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
