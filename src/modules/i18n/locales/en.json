@@ -1033,5 +1033,6 @@
   "LoginErrorByUserIssuesTitle": "User information does not exist on the system!",
   "LoginErrorByUserIssuesDescription": "Please check your AD or contact HR for help!",
   "TryAgain": "Try again",
-  "TroubleshootingGuide": "Please see detailed troubleshooting instructions"
+  "TroubleshootingGuide": "Please see detailed troubleshooting instructions",
+  "TitleTripAndTrainning": "WORK/TRAINNING REGISTRATION INFORMATION"
 }

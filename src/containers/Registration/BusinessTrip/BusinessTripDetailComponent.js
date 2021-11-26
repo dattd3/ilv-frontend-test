@@ -67,16 +67,16 @@ class BusinessTripDetailComponent extends React.Component {
         <h5>{t("EmployeeInfomation")}</h5>
         <RequesterDetailComponent user={businessTrip.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleTripAndTrainning}</h5>
+        <h5>{t('TitleTripAndTrainning')}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-xl-4">
               {t("StartDateTime")}
-              <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-xl-4">
               {t("EndDateTime")}
-              <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-xl-4">
               {t('TotalTimeForBizTripAndTraining')}
@@ -100,7 +100,7 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              {Constants.mappingActionType[requestInfo.actionType].ReasonTripAndTrainning}
+              {t('ReasonTripAndTrainning')}
               <div className="detail">{requestInfo.comment}</div>
             </div>
           </div>
