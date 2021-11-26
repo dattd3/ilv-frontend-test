@@ -213,10 +213,10 @@ class SubstitutionDetailComponent extends React.Component {
           <span className={`status ${Constants.mappingStatus[substitution.processStatusId].className}`}>{t(this.showStatus(substitution.processStatusId, substitution.appraiser))}</span>
           {messageSAP && 
             <div className={`d-flex status fail`}>
-              <i className="fas fa-times mr-1 text-danger align-self-center"></i>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
               <div>
                 {messageSAP.map((msg, index) => {
-                  return <div key={index} className="mt-1">{msg}</div>
+                  return <div key={index}>{msg}</div>
                 })}
               </div>
             </div>}

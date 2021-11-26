@@ -1050,5 +1050,6 @@
   "LoginErrorByUserIssuesTitle": "Lỗi người dùng không tồn tại trên hệ thống!",
   "LoginErrorByUserIssuesDescription": "Vui lòng kiểm tra lại mã AD đang sử dụng hoặc liên hệ HR để được trợ giúp!",
   "TryAgain": "Thử lại",
-  "TroubleshootingGuide": "Bạn vui lòng xem chi tiết hướng dẫn khắc phục lỗi"
+  "TroubleshootingGuide": "Bạn vui lòng xem chi tiết hướng dẫn khắc phục lỗi",
+  "TitleTripAndTrainning": "THÔNG TIN ĐĂNG KÝ CÔNG TÁC/ĐÀO TẠO"
 }

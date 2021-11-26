@@ -161,7 +161,7 @@ class ShiftForm extends React.Component {
                     <div className="col-7">
                         <div className="row">
                             <div className="col">
-                                <p>{t("BreakStartTime")}</p>
+                                <p>{t("BreakStartTime")}{isShowStartBreakTimeAndEndBreakTime && <span className="text-danger required">(*)</span>}</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -183,7 +183,7 @@ class ShiftForm extends React.Component {
                                 {this.error(timesheet.index, 'startBreakTime')}
                             </div>
                             <div className="col">
-                                <p>{t("BreakEndTime")}</p>
+                                <p>{t("BreakEndTime")}{isShowStartBreakTimeAndEndBreakTime && <span className="text-danger required">(*)</span>}</p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker

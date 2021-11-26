@@ -630,9 +630,30 @@ class SubstitutionComponent extends React.Component {
 
   handleDatePickerInputChange = (index, value, stateName) => {
     const timeSheets = [...this.state.timesheets]
+    if (stateName === 'applyTo') {
+      const isInValid = this.validateOverlapDate(index, value)
+      if (isInValid) {
+        const statusModal = {...this.state.statusModal}
+        statusModal.isShow = true
+        statusModal.isSuccess = false
+        statusModal.content = this.props.t("ShiftChangeInformationAlreadyExists")
+        timeSheets[index].isEdited = false
+        this.setState({statusModal: statusModal, timesheets: timeSheets})
+        return
+      }
+    }
     const date = value && moment(value).isValid() ?  moment(value).format("YYYYMMDD") : null
     timeSheets[index][stateName] = date
     this.setState({timesheets: timeSheets}, () => { this.verifyInput() })
+  }
+
+  validateOverlapDate = (index, date) => {
+    const timeSheets = [...this.state.timesheets]
+    const currentTimeSheet = timeSheets.find((item, i) => i === index)
+    const timeSheetEdited = timeSheets.filter((item, i) => item.isEdited && i !== index)
+    const currentTimeSheetApplyFrom = currentTimeSheet && currentTimeSheet.applyFrom
+    const timeSheetEditedValid = timeSheetEdited.filter(item => item.applyFrom >= currentTimeSheetApplyFrom && moment(date).format('YYYYMMDD') >= item.applyFrom)
+    return timeSheetEditedValid && timeSheetEditedValid.length > 0 ? true : false
   }
 
   render() {

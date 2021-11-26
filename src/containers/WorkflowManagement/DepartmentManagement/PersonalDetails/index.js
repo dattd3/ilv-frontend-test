@@ -23,8 +23,10 @@ class PersonalDetails extends Component {
     };
   }
 
-  search(startDate, endDate, members, usernames) {
+  search(startDate, endDate, memberInfos, usernames) {
     const { t } = this.props
+    const members = (memberInfos || []).map(item => item.uid)
+
     if(!members || members.length == 0) {
       toast.error(t('staff_selection_warning'));
       return;
