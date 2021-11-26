@@ -223,11 +223,17 @@ function RenderRow1(props) {
                 } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
                     return <td key = {index} rowSpan={4} style={{backgroundColor: '#FFA2001A'}}></td>
                 }
-                if(item.line1.type == EVENT_TYPE.NO_EVENT) {
+
+                if (item.line1.type == EVENT_TYPE.NO_EVENT) {
+                    if (!formatStringByMuleValue(item.line1.from_time1) && !formatStringByMuleValue(item.line1.to_time1) && !formatStringByMuleValue(item.line1.from_time2) && !formatStringByMuleValue(item.line1.to_time2)) {
+                        return <td style={{borderTop: '1px solid #707070', borderBottom: 'none'}} key = {index}></td>
+                    }
+
                     return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
                 } else if( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
-                } 
+                }
+
                 return null;
             })
         }
@@ -421,6 +427,7 @@ function Content(props) {
                         .every(item => formatStringByMuleValue(item.line4?.ot_end_time1) && formatStringByMuleValue(item.line4?.ot_end_time2) 
                         && formatStringByMuleValue(item.line4?.ot_end_time3) && formatStringByMuleValue(item.line4?.ot_start_time1) && 
                         formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
+
                         return <React.Fragment key={index}>
                             <tr style={{borderTop: '1px solid #707070'}} className="line1">
                                 <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col full-name"><span className={timeSheet.isUpdating === true ? 'updating' : ''}>{timeSheet.name || ""}</span></td>
