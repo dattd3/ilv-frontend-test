@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
@@ -8,6 +8,7 @@ import map from '../map.config';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
+import RelationshipList from "./RelationshipList"
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -129,9 +130,9 @@ class MyComponent extends React.Component {
     this.setState({relationshipInformation: relationshipInformation})
   }
 
-  render() {
+  render() {   
     const { t } = this.props
-    const { userFamily } = this.state
+    const { userFamily, relationshipInformation, educationInformation } = this.state
     const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
@@ -508,28 +509,57 @@ class MyComponent extends React.Component {
               }
             </div>
             <Container fluid className="info-tab-content shadow relationship">
-            <div className="relationship-item">
-              <div className="info-label">
-                <div className="col-item full-name">{t("FullName")}</div>
-                <div className="col-item relationship">{t("Relationship")}</div>
-                <div className="col-item birthday">{t("DateOfBirth")}</div>
-                <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
-                <div className="col-item allowances">{t("FamilyAllowances")}</div>
-                <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+            {
+              !relationshipInformation.isEditing ?
+                <RelationshipList relationships={userFamily} />
+              :
+              <div className="editing-section">
+                <div className="old-new-flag">
+                  <span className="flag old">
+                    <span className="box"></span>
+                    <span>Thông tin cũ</span>
+                  </span>
+                  <span className="flag new">
+                    <span className="box"></span>
+                    <span>Nhập thông tin điều chỉnh</span>
+                  </span>
+                </div>
+                <div className="detail-info">
+                  <div className="relationship-item">
+                    <div className="info-label">
+                      <div className="col-item full-name">{t("FullName")}</div>
+                      <div className="col-item relationship">{t("Relationship")}</div>
+                      <div className="col-item birthday">{t("DateOfBirth")}</div>
+                      <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
+                      <div className="col-item allowances">{t("FamilyAllowances")}</div>
+                      <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+                    </div>
+                    {
+                      (userFamily || []).map((item, i) => {
+                        return <Fragment key={i}>
+                                <div className="info-value">
+                                  <div className="col-item full-name">{item.full_name || ""}</div>
+                                  <div className="col-item relationship">{item.relation || ""}</div>
+                                  <div className="col-item birthday">{item.dob || ""}</div>
+                                  <div className="col-item tax-no">{item.tax_number || ""}</div>
+                                  <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
+                                  <div className="col-item allowances-date">{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</div>
+                                </div>
+                                <div className="edit-value">
+                                  <div className="col-item full-name"><input type="text" className="text-box" value={item.full_name || ""} disabled={true} /></div>
+                                  <div className="col-item relationship"><input type="text" className="text-box" value={item.relation || ""} disabled={true} /></div>
+                                  <div className="col-item birthday"><input type="text" className="text-box" value={item.dob || ""} disabled={true} /></div>
+                                  <div className="col-item tax-no"><input type="text" className="text-box" value={item.tax_number || ""} disabled={true} /></div>
+                                  <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
+                                  <div className="col-item allowances-date"><input type="text" className="text-box" value={isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""} disabled={true} /></div>
+                                </div>
+                        </Fragment>
+                      })
+                    }
+                  </div> 
+                </div>
               </div>
-              {(userFamily !== undefined && userFamily.length > 0) ?
-                (userFamily || []).map((item, i) => {
-                  return <div className="info-value" key={i}>
-                            <div className="col-item full-name">{item.full_name || ""}</div>
-                            <div className="col-item relationship">{item.relation || ""}</div>
-                            <div className="col-item birthday">{item.dob || ""}</div>
-                            <div className="col-item tax-no">{item.tax_number || ""}</div>
-                            <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
-                            <div className="col-item allowances-date">{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</div>
-                          </div>
-                }) : t("NoDataFound")
-              }
-              </div>
+            }
             </Container>
           </Tab>
           {
