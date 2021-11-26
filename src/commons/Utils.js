@@ -205,5 +205,19 @@ const getMuleSoftHeaderConfigurations = () => {
     return requestConfigurations
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
+const getDateByRangeAndFormat = (startDate, endDate, format) => {
+    if (startDate && endDate) {
+        let start = moment(startDate, format)
+        let end = moment(endDate, format)
+        let now = start.clone(), dates = []
+        while (now.isSameOrBefore(end)) {
+            dates.push(now.format(format))
+            now.add(1, 'days')
+        }
+        return dates
+    }
+    return []
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations }
