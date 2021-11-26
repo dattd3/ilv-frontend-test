@@ -85,10 +85,12 @@ class FilterData extends React.Component {
     const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
 
     if (clickSearch) {
-      clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
+      clickSearch(startDate, endDate, selectedMembers, checkedMemberUsernames)
     }
     
-    updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    if (updateEmployees) {
+      updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    }
   }
 
   getSelecteMembers(data) {
@@ -129,12 +131,14 @@ class FilterData extends React.Component {
   onClickSelectTab() {
     this.setState({ showMemberOption: true });
   }
+
   onCloseTabEvent(uid) {
     const members = this.state.users;
     const closeMember = members.find(val => val.uid === uid);
     closeMember.checked = false;
     this.getSelecteMembers(members);
   }
+
   onCloseAllEvent() {
     this.resetSelectedMember();
   }
