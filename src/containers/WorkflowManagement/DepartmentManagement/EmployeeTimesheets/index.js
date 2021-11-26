@@ -49,13 +49,14 @@ class EmployeeTimesheets extends Component {
     };
   }
 
-  searchTimesheetByDate(startDate, endDate, memberIds) {
+  searchTimesheetByDate(startDate, endDate, members) {
     this.setState({
       isSearch: false,
       dayList: this.getDates(startDate, endDate),
     });
-    this.search(startDate, endDate, memberIds);
+    this.search(startDate, endDate, members);
   }
+
   getDates(startDate, endDate) {
     const dates = [];
     let currentDate = startDate;
@@ -78,7 +79,8 @@ class EmployeeTimesheets extends Component {
     }, {});
   }
 
-  search(startDate, endDate, memberIds) {
+  search(startDate, endDate, members) {
+    const memberIds = (members || []).map(item => item.uid)
     let start = moment(startDate).format("YYYYMMDD");
     let end = moment(endDate).format("YYYYMMDD");
     const timeoverviewParams = {
@@ -119,9 +121,70 @@ class EmployeeTimesheets extends Component {
               end = endReal < end ? endReal : end;
             }
 
-            //group data by pernr
-            var group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
-            var groups = Object.keys(group_to_values).map(function (key) {
+            let group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
+            const memberIdsExistShift = Object.keys(group_to_values)
+            const firstMemberInfosExistShift = Object.values(group_to_values)[0]
+            const memberIdsNotExistShift = memberIds.filter(item => !memberIdsExistShift.includes(item.toString()))
+            const membersNotExistShift = members.filter(item => memberIdsNotExistShift.includes(item.uid))
+            const memberNeedAdd = membersNotExistShift.reduce((result, item) => {
+              result[[item.uid]] = firstMemberInfosExistShift.map(i => {
+                return {
+                  break_from_time_1: "#",
+                  break_from_time_2: "#",
+                  break_from_time_3: "#",
+                  break_to_time1: "#",
+                  break_to_time2: "#",
+                  break_to_time3: "#",
+                  date: i.date,
+                  department: item.department,
+                  division: item.division,
+                  end_time1_fact: "#",
+                  end_time2_fact: "#",
+                  end_time3_fact: "#",
+                  from_time1: "#",
+                  from_time2: "#",
+                  fullname: item.fullname,
+                  hours: "",
+                  is_holiday: "",
+                  leave_end_time1: "#",
+                  leave_end_time2: "#",
+                  leave_id: "",
+                  leave_start_time1: "#",
+                  leave_start_time2: "#",
+                  manager: item.manager,
+                  organization_lv2: "",
+                  organization_lv3: "",
+                  organization_lv4: "",
+                  organization_lv5: "",
+                  organization_lv6: "",
+                  ot_end_time1: "#",
+                  ot_end_time2: "#",
+                  ot_end_time3: "#",
+                  ot_start_time1: "#",
+                  ot_start_time2: "#",
+                  ot_start_time3: "#",
+                  part: item.part,
+                  pernr: item.uid,
+                  pnl: item.pnl,
+                  shift_id: "",
+                  start_time1_fact: "#",
+                  start_time2_fact: "#",
+                  start_time3_fact: "#",
+                  to_time1: "#",
+                  to_time2: "#",
+                  trip_end_time1: "#",
+                  trip_end_time2: "3",
+                  trip_start_time1: "#",
+                  trip_start_time2: "#",
+                  unit: item.unit,
+                  username: item.username
+                }
+              })
+              return result
+            }, {})
+            group_to_values = {...group_to_values, ...memberNeedAdd}
+
+            const groups = Object.keys(group_to_values).map(function (key) {
               return {
                 per: key,
                 name: group_to_values[key][0].fullname,
