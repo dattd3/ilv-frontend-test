@@ -463,6 +463,8 @@ class TaskList extends React.Component {
                                             if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
+                                            let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
+
                                             return (
                                                 <tr key={index}>
                                                     {
@@ -478,7 +480,7 @@ class TaskList extends React.Component {
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
                                                     <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                                    <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                                    <td className="day-off">{dateChanged}</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
                                                         this.props.page == "approval" 
