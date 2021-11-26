@@ -9,7 +9,7 @@ import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
-import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
 
 const DATE_TYPE = {
@@ -124,10 +124,13 @@ class EmployeeTimesheets extends Component {
             let group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
             const memberIdsExistShift = Object.keys(group_to_values)
             const firstMemberInfosExistShift = Object.values(group_to_values)[0]
-            const memberIdsNotExistShift = memberIds.filter(item => !memberIdsExistShift.includes(item.toString()))
-            const membersNotExistShift = members.filter(item => memberIdsNotExistShift.includes(item.uid))
-            const memberNeedAdd = membersNotExistShift.reduce((result, item) => {
-              result[[item.uid]] = firstMemberInfosExistShift.map(i => {
+            const memberIdsNotExistShift = (memberIds || []).filter(item => (memberIdsExistShift && memberIdsExistShift.length > 0 ? !memberIdsExistShift.includes(item.toString()) : item))
+            const membersNotExistShift = (members || []).filter(item => memberIdsNotExistShift.includes(item.uid))
+            let dateRangeSearched = getDateByRangeAndFormat(moment(startDate).format('DD-MM-YYYY'), moment(endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')
+            dateRangeSearched = dateRangeSearched.sort((pre, next) => moment(next, 'DD-MM-YYYY') - moment(pre, 'DD-MM-YYYY'))
+
+            const memberNeedAdd = (membersNotExistShift || []).reduce((result, item) => {
+              result[[item.uid]] = (firstMemberInfosExistShift || dateRangeSearched).map(i => {
                 return {
                   break_from_time_1: "#",
                   break_from_time_2: "#",
@@ -135,7 +138,7 @@ class EmployeeTimesheets extends Component {
                   break_to_time1: "#",
                   break_to_time2: "#",
                   break_to_time3: "#",
-                  date: i.date,
+                  date: i?.date || i,
                   department: item.department,
                   division: item.division,
                   end_time1_fact: "#",
@@ -187,8 +190,8 @@ class EmployeeTimesheets extends Component {
             const groups = Object.keys(group_to_values).map(function (key) {
               return {
                 per: key,
-                name: group_to_values[key][0].fullname,
-                departmentPartGroup: getDepartmentPartGroupByListData([group_to_values[key][0].part, group_to_values[key][0].unit, group_to_values[key][0].department, group_to_values[key][0].division, group_to_values[key][0].pnl]),
+                name: group_to_values[key][0]?.fullname,
+                departmentPartGroup: getDepartmentPartGroupByListData([group_to_values[key][0]?.part, group_to_values[key][0]?.unit, group_to_values[key][0]?.department, group_to_values[key][0]?.division, group_to_values[key][0]?.pnl]),
                 timesheets: group_to_values[key]
               };
             });
