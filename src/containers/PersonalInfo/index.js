@@ -9,6 +9,8 @@ import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
+import RelationshipListEdit from "./RelationshipListEdit"
+import ActionButtons from "./ActionButtons"
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -128,6 +130,10 @@ class MyComponent extends React.Component {
     const relationshipInformation = {...this.state.relationshipInformation}
     relationshipInformation.isEditing = true
     this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  handleAddNewRelationships = () => {
+
   }
 
   render() {   
@@ -501,66 +507,26 @@ class MyComponent extends React.Component {
               }
             </Container>
           </Tab>
-          <Tab eventKey="PersonalRelations" title={t("Family")}>
-            <div className="clearfix edit-button">
+          <Tab eventKey="PersonalRelations" title={t("Family")} className="tab-relationship">
+            <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <span className="btn btn-primary float-right shadow" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i> {t("Edit")}</span> : null
+                isEnableEditProfile ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <Container fluid className="info-tab-content shadow relationship">
             {
-              !relationshipInformation.isEditing ?
-                <RelationshipList relationships={userFamily} />
-              :
-              <div className="editing-section">
-                <div className="old-new-flag">
-                  <span className="flag old">
-                    <span className="box"></span>
-                    <span>Thông tin cũ</span>
-                  </span>
-                  <span className="flag new">
-                    <span className="box"></span>
-                    <span>Nhập thông tin điều chỉnh</span>
-                  </span>
-                </div>
-                <div className="detail-info">
-                  <div className="relationship-item">
-                    <div className="info-label">
-                      <div className="col-item full-name">{t("FullName")}</div>
-                      <div className="col-item relationship">{t("Relationship")}</div>
-                      <div className="col-item birthday">{t("DateOfBirth")}</div>
-                      <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
-                      <div className="col-item allowances">{t("FamilyAllowances")}</div>
-                      <div className="col-item allowances-date">{t("AllowancesDate")}</div>
-                    </div>
-                    {
-                      (userFamily || []).map((item, i) => {
-                        return <Fragment key={i}>
-                                <div className="info-value">
-                                  <div className="col-item full-name">{item.full_name || ""}</div>
-                                  <div className="col-item relationship">{item.relation || ""}</div>
-                                  <div className="col-item birthday">{item.dob || ""}</div>
-                                  <div className="col-item tax-no">{item.tax_number || ""}</div>
-                                  <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
-                                  <div className="col-item allowances-date">{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</div>
-                                </div>
-                                <div className="edit-value">
-                                  <div className="col-item full-name"><input type="text" className="text-box" value={item.full_name || ""} disabled={true} /></div>
-                                  <div className="col-item relationship"><input type="text" className="text-box" value={item.relation || ""} disabled={true} /></div>
-                                  <div className="col-item birthday"><input type="text" className="text-box" value={item.dob || ""} disabled={true} /></div>
-                                  <div className="col-item tax-no"><input type="text" className="text-box" value={item.tax_number || ""} disabled={true} /></div>
-                                  <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={isNotNull(item.is_reduced)} disabled={true} /></div>
-                                  <div className="col-item allowances-date"><input type="text" className="text-box" value={isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""} disabled={true} /></div>
-                                </div>
-                        </Fragment>
-                      })
-                    }
-                  </div> 
-                </div>
+              relationshipInformation.isEditing ? 
+              <>
+              <RelationshipListEdit relationships={userFamily} />
+              <div className="block-button-add">
+                <button type="button" class="btn btn-primary add" onClick={this.handleAddNewRelationships}><i class="fas fa-plus"></i>Thêm mới</button>
               </div>
+              </>
+              : <RelationshipList relationships={userFamily} />
             }
             </Container>
+            { relationshipInformation.isEditing && <ActionButtons /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
