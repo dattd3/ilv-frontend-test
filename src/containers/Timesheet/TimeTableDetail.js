@@ -622,8 +622,17 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         line1.subtype = '00';
         nextItem.count = line1.count ? line1.count + 1 : 2;
         data[index + 1] = nextItem;
-      }        
+      }       
+      
+      //gio break time
+      if(checkExist(item.break_from_time_1)) {
+        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
+      }
 
+      if(checkExist(item.break_from_time_2)) {
+        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
+      }
+      
       //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong
       let line2 = {type: EVENT_TYPE.NO_EVENT, 
       type1: '00', 
