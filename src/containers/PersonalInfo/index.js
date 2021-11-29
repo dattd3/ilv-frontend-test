@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Redirect, withRouter } from 'react-router-dom';
 import map from '../map.config';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import RelationshipListEdit from "./RelationshipListEdit"
@@ -24,7 +24,8 @@ class MyComponent extends React.Component {
       userDocument: {},
       relationshipInformation: {
         isEditing: false,
-        relationships: []
+        relationships: [],
+        relationshipDataToUpdate : []
       },
       educationInformation: {
         isEditing: false,
@@ -134,6 +135,56 @@ class MyComponent extends React.Component {
 
   handleAddNewRelationships = () => {
 
+  }
+
+  sendRequests = async () => {
+    const { relationshipInformation } = this.state
+    try {
+      const config = getRequestConfigurations()
+
+      const userInfo = {
+        employeeNo: formatStringByMuleValue(localStorage.getItem('employeeNo')),
+        fullName: formatStringByMuleValue(localStorage.getItem('fullName')),
+        jobTitle: formatStringByMuleValue(localStorage.getItem('jobTitle')),
+        department: formatStringByMuleValue(localStorage.getItem('department'))
+      }
+
+      console.log("kakakakakak")
+      console.log(relationshipInformation)
+      return
+      // const userProfileInfoToSap = 
+      let bodyFormData = new FormData()
+      bodyFormData.append('Name', "Quan hệ nhân thân")
+      bodyFormData.append('UserProfileInfo', "Quan hệ nhân thân")
+      bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
+      bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
+      bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
+      bodyFormData.append('UserProfileInfoToSap', "Quan hệ nhân thân")
+      bodyFormData.append('User', JSON.stringify(userInfo))
+      bodyFormData.append('Files', "Quan hệ nhân thân")
+      bodyFormData.append('OrgLv2Id', formatStringByMuleValue(localStorage.getItem('organizationLv2')))
+      bodyFormData.append('OrgLv2Text', formatStringByMuleValue(localStorage.getItem('company')))
+      bodyFormData.append('DivisionId', formatStringByMuleValue(localStorage.getItem('divisionId')))
+      bodyFormData.append('Division', formatStringByMuleValue(localStorage.getItem('division')))
+      bodyFormData.append('RegionId', formatStringByMuleValue(localStorage.getItem('regionId')))
+      bodyFormData.append('Region', formatStringByMuleValue(localStorage.getItem('region')))
+      bodyFormData.append('UnitId', formatStringByMuleValue(localStorage.getItem('unitId')))
+      bodyFormData.append('Unit', formatStringByMuleValue(localStorage.getItem('unit')))
+      bodyFormData.append('PartId', formatStringByMuleValue(localStorage.getItem('partId')))
+      bodyFormData.append('Part', formatStringByMuleValue(localStorage.getItem('part')))
+
+      const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/family`, bodyFormData, config)
+      console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTT")
+      console.log(responses)
+    } catch (e) {
+
+    }
+  }
+
+  updateDataToParent = (relationshipsToUpdate) => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.relationshipDataToUpdate = relationshipsToUpdate
+    this.setState({relationshipInformation: relationshipInformation})
   }
 
   render() {   
@@ -518,15 +569,15 @@ class MyComponent extends React.Component {
             {
               relationshipInformation.isEditing ? 
               <>
-              <RelationshipListEdit relationships={userFamily} />
+              <RelationshipListEdit relationships={userFamily} updateDataToParent={this.updateDataToParent} />
               <div className="block-button-add">
-                <button type="button" class="btn btn-primary add" onClick={this.handleAddNewRelationships}><i class="fas fa-plus"></i>Thêm mới</button>
+                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>Thêm mới</button>
               </div>
               </>
               : <RelationshipList relationships={userFamily} />
             }
             </Container>
-            { relationshipInformation.isEditing && <ActionButtons /> }
+            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */

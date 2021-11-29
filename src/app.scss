@@ -1366,7 +1366,7 @@ span.badge-notification[data-badge]::after {
           flex: 0 0 20%;
         }
         .relationship {
-          flex: 0 0 17%;
+          flex: 0 0 16%;
         }
         .birthday {
           flex: 0 0 13%;
@@ -1376,11 +1376,11 @@ span.badge-notification[data-badge]::after {
           flex: 0 0 16%;
         }
         .allowances {
-          flex: 0 0 10%;
+          flex: 0 0 14%;
           text-align: center;
         }
         .allowances-date {
-          flex: 0 0 24%;
+          flex: 0 0 21%;
         }
         .info-label {
           display: flex;
@@ -1480,7 +1480,7 @@ span.badge-notification[data-badge]::after {
               margin-bottom: 30px;
               .col-item {
                 padding: 0 15px;
-                input {
+                .text-box {
                   font: inherit;
                   display: flex;
                   padding: 0 8px;
@@ -1500,16 +1500,16 @@ span.badge-notification[data-badge]::after {
                   padding-left: 0;
                 }
                 &.last-name {
-                  flex: 0 0 17%;
+                  flex: 0 0 16%;
                 }
                 &.relationship {
-                  flex: 0 0 29%;
+                  flex: 0 0 30%;
                 }
                 &.gender {
-                  flex: 0 0 10%;
+                  flex: 0 0 14%;
                 }
                 &.birthday {
-                  flex: 0 0 24%;
+                  flex: 0 0 21%;
                 }
               }
             }

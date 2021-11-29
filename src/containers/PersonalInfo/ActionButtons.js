@@ -21,7 +21,7 @@ function ActionButtons(props) {
     }
 
     const handleSendRequests = () => {
-
+        props.sendRequests()
     }
 
     return (

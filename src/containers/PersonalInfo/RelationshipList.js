@@ -1,5 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
+import moment from 'moment'
 import { formatStringByMuleValue } from "../../commons/Utils"
 
 function RelationshipList(props) {
@@ -20,12 +21,12 @@ function RelationshipList(props) {
                 relationships && relationships.length > 0 ?
                 (relationships).map((item, i) => {
                     return <div className="info-value" key={i}>
-                                <div className="col-item full-name">{item.full_name || ""}</div>
-                                <div className="col-item relationship">{item.relation || ""}</div>
-                                <div className="col-item birthday">{item.dob || ""}</div>
-                                <div className="col-item tax-no">{item.tax_number || ""}</div>
-                                <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={true} value={formatStringByMuleValue(item.is_reduced)} disabled={true} /></div>
-                                <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</div>
+                                <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
+                                <div className="col-item relationship">{formatStringByMuleValue(item.relation)}</div>
+                                <div className="col-item birthday">{formatStringByMuleValue(item.dob) ? moment(item.dob, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
+                                <div className="col-item tax-no">{formatStringByMuleValue(item.tax_number)}</div>
+                                <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={formatStringByMuleValue(item.is_reduced) ? true : false} disabled={true} /></div>
+                                <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
                             </div>
                 }) : t("NoDataFound")
             }
