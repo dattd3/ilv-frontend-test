@@ -1098,7 +1098,7 @@ class PersonalInfoEdit extends React.Component {
               religions={this.state.religions}
               documentTypes={this.state.documentTypes}
             />
-            <EducationComponent
+            {/* <EducationComponent
               userEducation={this.state.userEducation}
               setState={this.setState.bind(this)}
               certificates={this.state.certificates}
@@ -1108,7 +1108,7 @@ class PersonalInfoEdit extends React.Component {
               updateEducation={this.updateEducation.bind(this)}
               mappingFieldFn={this.mappingFields.bind(this)}
               updateNewEducation={this.updateNewEducation.bind(this)}
-            />
+            /> */}
 
             <ul className="list-inline">
               {this.state.files.map((file, index) => {
