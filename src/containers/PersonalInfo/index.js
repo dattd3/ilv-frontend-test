@@ -1,16 +1,16 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
-import { Redirect, withRouter } from 'react-router-dom';
-import map from '../map.config';
+import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
+import ResultModal from './edit/ResultModal'
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -25,11 +25,19 @@ class MyComponent extends React.Component {
       relationshipInformation: {
         isEditing: false,
         relationships: [],
-        relationshipDataToUpdate : []
+        relationshipDataToUpdate : [],
+        relationshipDataToCreate : [],
+        files: []
       },
       educationInformation: {
         isEditing: false,
         educations: []
+      },
+      resultModal: {
+        isShow: false,
+        title: this.props.t("Notification"),
+        message: "",
+        isSuccess: true
       }
     };
   }
@@ -134,34 +142,58 @@ class MyComponent extends React.Component {
   }
 
   handleAddNewRelationships = () => {
-
+    const relationshipInformation = {...this.state.relationshipInformation}
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const newRelationship = [
+      {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: "",
+        new_dob: "",
+        new_fullname: "",
+        new_lastname: "",
+        new_firstname: "",
+        gender: "",
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    ]
+    relationshipInformation.relationshipDataToCreate = relationshipInformation.relationshipDataToCreate.concat(newRelationship)
+    this.setState({relationshipInformation: relationshipInformation})
   }
 
   sendRequests = async () => {
-    const { relationshipInformation } = this.state
+    const { t } = this.props
+    const { relationshipInformation, resultModal } = this.state
     try {
       const config = getRequestConfigurations()
-
-      const userInfo = {
+      const userInfo = JSON.stringify({
         employeeNo: formatStringByMuleValue(localStorage.getItem('employeeNo')),
         fullName: formatStringByMuleValue(localStorage.getItem('fullName')),
         jobTitle: formatStringByMuleValue(localStorage.getItem('jobTitle')),
         department: formatStringByMuleValue(localStorage.getItem('department'))
-      }
+      })
+      const userProfileInfoUpdateToSap = this.prepareUserProfileInfoUpdateToSap(relationshipInformation.relationshipDataToUpdate)
+      const userProfileInfoCreateToSap = this.prepareUserProfileInfoCreateToSap(relationshipInformation.relationshipDataToCreate)
+      let userProfileInfo = this.prepareUserProfileInfo(relationshipInformation)
+      userProfileInfo = JSON.stringify(userProfileInfo)
+      const userProfileInfoToSap = JSON.stringify([...userProfileInfoUpdateToSap, ...userProfileInfoCreateToSap])
 
-      console.log("kakakakakak")
-      console.log(relationshipInformation)
-      return
-      // const userProfileInfoToSap = 
       let bodyFormData = new FormData()
       bodyFormData.append('Name', "Quan hệ nhân thân")
-      bodyFormData.append('UserProfileInfo', "Quan hệ nhân thân")
+      bodyFormData.append('UserProfileInfo', userProfileInfo)
       bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
       bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
       bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
-      bodyFormData.append('UserProfileInfoToSap', "Quan hệ nhân thân")
-      bodyFormData.append('User', JSON.stringify(userInfo))
-      bodyFormData.append('Files', "Quan hệ nhân thân")
+      bodyFormData.append('UserProfileInfoToSap', userProfileInfoToSap)
+      bodyFormData.append('User', userInfo)
       bodyFormData.append('OrgLv2Id', formatStringByMuleValue(localStorage.getItem('organizationLv2')))
       bodyFormData.append('OrgLv2Text', formatStringByMuleValue(localStorage.getItem('company')))
       bodyFormData.append('DivisionId', formatStringByMuleValue(localStorage.getItem('divisionId')))
@@ -173,23 +205,173 @@ class MyComponent extends React.Component {
       bodyFormData.append('PartId', formatStringByMuleValue(localStorage.getItem('partId')))
       bodyFormData.append('Part', formatStringByMuleValue(localStorage.getItem('part')))
 
-      const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/family`, bodyFormData, config)
-      console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTT")
-      console.log(responses)
-    } catch (e) {
+      const fileSelected = relationshipInformation.files
+      for (let key in fileSelected) {
+        bodyFormData.append('Files', fileSelected[key])
+      }
 
+      const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/family`, bodyFormData, config)
+      resultModal.isShow = true
+      if (responses && responses.data) {
+        const result = responses.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          resultModal.isSuccess = true
+          resultModal.message = t("RequestSent")
+        } else {
+          resultModal.isSuccess = false
+          resultModal.message = result.message
+        }
+      } else {
+        resultModal.isSuccess = false
+        resultModal.message = t("AnErrorOccurred")
+      }
+      this.setState({resultModal: resultModal})
+    } catch (e) {
+      resultModal.isShow = true
+      resultModal.isSuccess = false
+      resultModal.message = t("AnErrorOccurred")
+      this.setState({resultModal: resultModal})
     }
   }
 
-  updateDataToParent = (relationshipsToUpdate) => {
+  prepareUserProfileInfoUpdateToSap = (relationshipDataToUpdate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToUpdate = relationshipDataToUpdate.filter(item => 
+      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
+        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+    )
+    .map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: item.relation_code,
+        pre_dob: moment(item.dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        pre_fullname: item.full_name,
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+
+    return dataToUpdate
+  }
+
+  prepareUserProfileInfoCreateToSap = (relationshipDataToCreate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToCreate = relationshipDataToCreate.map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+    return dataToCreate
+  }
+
+  prepareUserProfileInfo = relationshipInformation => {
+    const dataToUpdate = relationshipInformation.relationshipDataToUpdate.filter(item => 
+      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
+        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+    )
+    const dataToCreate = relationshipInformation.relationshipDataToCreate
+    return {
+      staff: {
+        code: localStorage.getItem('employeeNo'),
+        fullName: localStorage.getItem('fullName'),
+        title: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+      },
+      manager: {},
+      update: {
+        userProfileHistoryMainInfo: {
+          OldMainInfo: {},
+          NewMainInfo: {}
+        },
+        userProfileHistoryEducation: [],
+        userProfileHistoryRelationship: (dataToUpdate || []).map(item => {
+          return {
+            OldRelationship: {
+              firstName: item.firstname || "",
+              lastName: item.lastname || "",
+              relationshipCode: item.relation_code || "",
+              relationshipText: item.relation || "",
+              genderCode: item.gender_code || "",
+              genderText: item.gender || "",
+              birthday: item.dob || ""
+            },
+            NewRelationship: {
+              firstName: item.new_firstname || "",
+              lastName: item.new_lastname || "",
+              relationshipCode: item.new_relation?.value || "",
+              relationshipText: item.new_relation?.label || "",
+              genderCode: item.new_gender.value || "",
+              genderText: item.new_gender.label || "",
+              birthday: item.new_dob || ""
+            }
+          }
+        })
+      },
+      create: {
+        relationships: dataToCreate.map(item => {
+          return {
+            firstName: item.new_firstname || "",
+            lastName: item.new_lastname || "",
+            relationshipCode: item.new_relation?.value || "",
+            relationshipText: item.new_relation?.label || "",
+            genderCode: item.new_gender.value || "",
+            genderText: item.new_gender.label || "",
+            birthday: item.new_dob || ""
+          }
+        })
+      }
+    }
+  }
+
+  updateDataToParent = relationships => {
     const relationshipInformation = {...this.state.relationshipInformation}
-    relationshipInformation.relationshipDataToUpdate = relationshipsToUpdate
+    relationshipInformation.relationshipDataToUpdate = relationships.update
+    relationshipInformation.relationshipDataToCreate = relationships.create
     this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  updateFilesToParent = filesToUpdate => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.files = filesToUpdate
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  onHideResultModal = () => {
+    const resultModal = {...this.state.resultModal}
+    resultModal.isShow = false
+    this.setState({resultModal: resultModal})
   }
 
   render() {   
     const { t } = this.props
-    const { userFamily, relationshipInformation, educationInformation } = this.state
+    const { userFamily, relationshipInformation, educationInformation, resultModal } = this.state
     const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
@@ -220,6 +402,8 @@ class MyComponent extends React.Component {
     }
 
     return (
+      <>
+      <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
         <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
@@ -565,11 +749,12 @@ class MyComponent extends React.Component {
                 isEnableEditProfile ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
+            <h5 className="content-page-header">{t("PersonalRelations")}</h5>
             <Container fluid className="info-tab-content shadow relationship">
             {
               relationshipInformation.isEditing ? 
               <>
-              <RelationshipListEdit relationships={userFamily} updateDataToParent={this.updateDataToParent} />
+              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} />
               <div className="block-button-add">
                 <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>Thêm mới</button>
               </div>
@@ -577,7 +762,7 @@ class MyComponent extends React.Component {
               : <RelationshipList relationships={userFamily} />
             }
             </Container>
-            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} /> }
+            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
@@ -639,9 +824,9 @@ class MyComponent extends React.Component {
               </Tab>
               : null
           }
-
         </Tabs>
-      </div >
+      </div>
+      </>
     )
   }
 }

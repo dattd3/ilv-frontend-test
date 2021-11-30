@@ -1278,7 +1278,7 @@ class PersonalInfoEdit extends React.Component {
             birthCountry={this.props.birthCountry}
             validationMessages={this.state.errors}
           />
-          <EducationComponent
+          {/* <EducationComponent
             userEducation={this.state.userEducation}
             setState={this.setState.bind(this)}
             certificates={this.state.certificates}
@@ -1290,7 +1290,7 @@ class PersonalInfoEdit extends React.Component {
             requestedUserProfile={this.state.requestedUserProfile}
             isEdit={this.state.isEdit}
             validationMessages={this.state.errors}
-          />
+          /> */}
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
           <ul className="list-inline">

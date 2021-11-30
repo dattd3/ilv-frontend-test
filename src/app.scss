@@ -1449,7 +1449,7 @@ span.badge-notification[data-badge]::after {
         }
         .detail-info {
           margin-top: 16px;
-          .relationship-item {
+          .relationship-item, .relationship-item-create {
             border: 1px solid #707070;
             padding: 15px;
             .info-label {
@@ -1495,6 +1495,10 @@ span.badge-notification[data-badge]::after {
                     outline: none;
                   }
                 }
+                input {
+                  font-size: inherit;
+                  color: inherit;
+                }
                 &.first-name {
                   flex: 0 0 20%;
                   padding-left: 0;
@@ -1514,6 +1518,27 @@ span.badge-notification[data-badge]::after {
               }
             }
           }
+          .relationship-item-create {
+            border: none;
+            padding: 15px 0;
+            .edit-value {
+              position: relative;
+              padding: 15px;
+              border: 1px solid #707070;
+              margin-bottom: 20px;
+              .btn-remove-relationship-item {
+                cursor: pointer;
+                position: absolute;
+                padding: 2px 8px;
+                background: #FF0014;
+                color: #FFFFFF;
+                font-size: 14px;
+                top: 0;
+                right: 0;
+                border-bottom-left-radius: 4px;
+              }
+            }
+          }
         }
       }
       .block-button-add {
@@ -1530,6 +1555,23 @@ span.badge-notification[data-badge]::after {
   }
   .tab-relationship {
     font-size: inherit;
+    .list-files {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 15px;
+      .item {
+        padding: 5px 10px;
+        background: #FFFFFF;
+        border: 1px solid #B3B3B3;
+        margin-right: 15px;
+        margin-bottom: 10px;
+        .btn-remove {
+          margin-left: 10px;
+          cursor: pointer;
+        }
+      }
+    }
     .block-button-actions {
       margin-top: 15px;
       display: flex;
