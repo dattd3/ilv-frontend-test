@@ -47,7 +47,7 @@ class FamilyComponent extends React.Component {
         const { t } = this.props
         return (
             <div className="education">
-                <h4 className="title text-uppercase">{t("Family")}</h4>
+                <h4 className="content-page-header">{t("Family")}</h4>
                 <div className="box shadow">
                     <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
                     <span><i className="note note-new"></i> {t("NewInformation")}</span>

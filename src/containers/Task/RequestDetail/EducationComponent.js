@@ -46,7 +46,7 @@ class EducationComponent extends React.Component {
     const userEducationCreate = _.uniqWith(this.props.userEducationCreate, _.isEqual);
     return (
       <div className="education">
-        <h4 className="title text-uppercase">Bằng cấp / Chứng chỉ chuyên môn</h4>
+        <h4 className="content-page-header">Bằng cấp / Chứng chỉ chuyên môn</h4>
         <div className="box shadow">
             <span className="mr-5"><i className="note note-old"></i> Thông tin cũ</span>
             <span className="mr-5"><i className="note note-new"></i> Thông tin điều chỉnh</span>

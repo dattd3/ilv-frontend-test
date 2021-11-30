@@ -570,20 +570,29 @@ class RequestTaskList extends React.Component {
                                     let editLink = null
                                     let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
 
-                                    if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                    if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }
 
-                                    if (child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9) {
+                                    if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE 
+                                        || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
                                         editLink = null;
                                     } else {
                                         editLink = [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
                                     }
 
+                                    let detailLink = ""
+                                    if (child.requestType.id == Constants.UPDATE_PROFILE) {
+                                        detailLink = this.getLinkRegistration(child.id, 1)
+                                    } else if (requestTypeSingleIdList.includes(child.requestType.id)) {
+                                        detailLink = this.getLinkUserProfileHistory(child.id)
+                                    } else {
+                                        detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
+                                    }
+
                                     return (
                                         <tr key={index}>
-                                            {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
-                                            <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                            <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
                                             <td className="day-off">{dateChanged}</td>
                                             <td className="break-time text-center">{totalTime}</td>
