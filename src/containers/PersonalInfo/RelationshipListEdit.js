@@ -11,8 +11,9 @@ registerLocale("vi", vi)
 
 function RelationshipListEdit(props) {
     const { t } = useTranslation()
-    const { relationships } = props
+    const { relationships, propsRelationshipDataToCreate } = props
     const [relationshipData, SetRelationshipData] = useState([])
+    const [relationshipDataToCreate, SetRelationshipDataToCreate] = useState([])
 
     const genderOptions = {
         male: '1',
@@ -67,22 +68,8 @@ function RelationshipListEdit(props) {
     useEffect(() => {
         const prepareRelationships = () => {
             const relationshipsToUpdate = (relationships && relationships || []).map(item => {
-                // let fullName = item.full_name?.trim()
-                // let fullNameToArray = fullName.split(" ")
-                // let firstName = ""
-                // let lastName = ""
-                // if (fullNameToArray.length === 1) {
-                //     lastName = fullNameToArray.toString()
-                // } else {
-                //     fullNameToArray.unshift(fullNameToArray.pop())
-                //     let [last, ...rest] = fullNameToArray
-                //     firstName = rest?.join(" ")
-                //     lastName = last
-                // }
-
                 let gender = genders.find(g => getGenderByRelationshipTypes(item.relation_code).includes(g.value))
                 let newGenderOptions = genders.filter(g => getGenderByRelationshipTypes(item.relation_code).includes(g.value))
-
                 return {
                     ...item,
                     new_firstname: item.firstname,
@@ -98,37 +85,75 @@ function RelationshipListEdit(props) {
         prepareRelationships()
     }, [relationships])
 
-    const handleInputTextChange = (e, index, type) => {
-        const relationshipDataToUpdate = [...relationshipData]
+    useEffect(() => {
+        SetRelationshipDataToCreate(propsRelationshipDataToCreate)
+    }, [propsRelationshipDataToCreate])
+
+    const handleInputTextChange = (e, index, type, isEdit) => {
         const val = e.target.value || ""
-        relationshipDataToUpdate[index][[type]] = val
-        SetRelationshipData(relationshipDataToUpdate)
-        props.updateDataToParent(relationshipDataToUpdate)
+        const relationshipDataToUpdate = [...relationshipData]
+        const relationshipDataToCreateNew = [...relationshipDataToCreate]
+
+        if (isEdit) {
+            relationshipDataToUpdate[index][[type]] = val
+            SetRelationshipData(relationshipDataToUpdate)
+        } else {
+            relationshipDataToCreateNew[index][[type]] = val
+            SetRelationshipDataToCreate(relationshipDataToCreateNew)
+        }
+
+        props.updateDataToParent({update: relationshipDataToUpdate, create: relationshipDataToCreateNew})
     }
 
-    const handleSelectInputChange = (e, index, type) => {
+    const handleSelectInputChange = (e, index, type, isEdit) => {
         const relationshipDataToUpdate = [...relationshipData]
+        const relationshipDataToCreateNew = [...relationshipDataToCreate]
+
         switch (type) {
             case 'new_relation':
                 const newGenderOptions = genders.filter(g => e.genders?.includes(g.value))
-                relationshipDataToUpdate[index]['new_relation'] = e
-                relationshipDataToUpdate[index]['new_gender'] = newGenderOptions[0]
-                relationshipDataToUpdate[index]['new_gender_options'] = newGenderOptions
+                if (isEdit) {
+                    relationshipDataToUpdate[index]['new_relation'] = e
+                    relationshipDataToUpdate[index]['new_gender'] = newGenderOptions[0]
+                    relationshipDataToUpdate[index]['new_gender_options'] = newGenderOptions
+                } else {
+                    relationshipDataToCreateNew[index]['new_relation'] = e
+                    relationshipDataToCreateNew[index]['new_gender'] = newGenderOptions[0]
+                    relationshipDataToCreateNew[index]['new_gender_options'] = newGenderOptions
+                }
                 break;
             case 'new_gender':
-                relationshipDataToUpdate[index]['new_gender'] = e
+                if (isEdit) {
+                    relationshipDataToUpdate[index]['new_gender'] = e
+                } else {
+                    relationshipDataToCreateNew[index]['new_gender'] = e
+                }
                 break;
         }
         SetRelationshipData(relationshipDataToUpdate)
-        props.updateDataToParent(relationshipDataToUpdate)
+        SetRelationshipDataToCreate(relationshipDataToCreateNew)
+        props.updateDataToParent({update: relationshipDataToUpdate, create: relationshipDataToCreateNew})
     }
 
-    const handleDatePickerInputChange = (dateInput, index, type) => {
+    const handleDatePickerInputChange = (dateInput, index, type, isEdit) => {
         const relationshipDataToUpdate = [...relationshipData]
+        const relationshipDataToCreateNew = [...relationshipDataToCreate]
         const date = dateInput && moment(dateInput).isValid() ? moment(dateInput).format('DD-MM-YYYY') : null
-        relationshipDataToUpdate[index][[type]] = date
-        SetRelationshipData(relationshipDataToUpdate)
-        props.updateDataToParent(relationshipDataToUpdate)
+        if (isEdit) {
+            relationshipDataToUpdate[index][[type]] = date
+            SetRelationshipData(relationshipDataToUpdate)
+        } else {
+            relationshipDataToCreateNew[index][[type]] = date
+            SetRelationshipDataToCreate(relationshipDataToCreateNew)
+        }
+        props.updateDataToParent({update: relationshipDataToUpdate, create: relationshipDataToCreateNew})
+    }
+
+    const removeRelationshipCreated = index => {
+        let relationships = [...relationshipDataToCreate]
+        const relationshipsValid = [...relationships.slice(0, index), ...relationships.slice(index + 1)]
+        SetRelationshipDataToCreate(relationshipsValid)
+        props.updateDataToParent({update: relationshipData, create: relationshipsValid})
     }
 
     const customStyles = {
@@ -153,69 +178,120 @@ function RelationshipListEdit(props) {
             </div>
             <div className="detail-info">
                 <div className="relationship-item">
-                <div className="info-label">
-                    <div className="col-item full-name">{t("FullName")}</div>
-                    <div className="col-item relationship">{t("Relationship")}</div>
-                    <div className="col-item birthday">{t("DateOfBirth")}</div>
-                    <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
-                    <div className="col-item allowances">{t("FamilyAllowances")}</div>
-                    <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+                    <div className="info-label">
+                        <div className="col-item full-name">{t("FullName")}</div>
+                        <div className="col-item relationship">{t("Relationship")}</div>
+                        <div className="col-item birthday">{t("DateOfBirth")}</div>
+                        <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
+                        <div className="col-item allowances">{t("FamilyAllowances")}</div>
+                        <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+                    </div>
+                    {
+                        (relationshipData || []).map((item, i) => {
+                            return <Fragment key={i}>
+                                <div className="info-value">
+                                    <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
+                                    <div className="col-item relationship">{formatStringByMuleValue(item.relation)}</div>
+                                    <div className="col-item birthday">{formatStringByMuleValue(item.dob) ? moment(item.dob, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
+                                    <div className="col-item tax-no">{formatStringByMuleValue(item.tax_number)}</div>
+                                    <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={formatStringByMuleValue(item.is_reduced) ? true : false} value={formatStringByMuleValue(item.is_reduced)} disabled={true} /></div>
+                                    <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
+                                </div>
+                                <div className="edit-value">
+                                    <div className="col-item first-name">
+                                        <label>Họ và tên đệm</label>
+                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
+                                    </div>
+                                    <div className="col-item last-name">
+                                        <label>Tên</label>
+                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
+                                    </div>
+                                    <div className="col-item relationship">
+                                        <label>{t("Relationship")}</label>
+                                        <Select 
+                                            options={relationshipTypes} 
+                                            placeholder={`${t("Select")}`} 
+                                            onChange={e => handleSelectInputChange(e, i, 'new_relation', true)} 
+                                            value={item.new_relation} 
+                                            styles={customStyles} />
+                                    </div>
+                                    <div className="col-item gender">
+                                        <label>{t("Gender")}</label>
+                                        <Select 
+                                            options={item.new_gender_options} 
+                                            placeholder={`${t("Select")}`} 
+                                            onChange={e => handleSelectInputChange(e, i, 'new_gender', true)} 
+                                            value={item.new_gender} 
+                                            styles={customStyles} />
+                                    </div>
+                                    <div className="col-item birthday">
+                                        <label>{t("DateOfBirth")}</label>
+                                        <DatePicker
+                                            maxDate={new Date()}
+                                            selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
+                                            onChange={birthday => handleDatePickerInputChange(birthday, i, "new_dob", true)}
+                                            dateFormat="dd/MM/yyyy"
+                                            showMonthDropdown={true}
+                                            showYearDropdown={true}
+                                            locale="vi"
+                                            className="form-control input" />
+                                    </div>
+                                </div>
+                            </Fragment>
+                        })
+                    }
                 </div>
                 {
-                    (relationshipData || []).map((item, i) => {
-                        return <Fragment key={i}>
-                            <div className="info-value">
-                                <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
-                                <div className="col-item relationship">{formatStringByMuleValue(item.relation)}</div>
-                                <div className="col-item birthday">{formatStringByMuleValue(item.dob) ? moment(item.dob, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
-                                <div className="col-item tax-no">{formatStringByMuleValue(item.tax_number)}</div>
-                                <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={formatStringByMuleValue(item.is_reduced) ? true : false} value={formatStringByMuleValue(item.is_reduced)} disabled={true} /></div>
-                                <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
-                            </div>
-                            <div className="edit-value">
-                                <div className="col-item first-name">
-                                    <label>Họ và tên đệm</label>
-                                    <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname')} />
-                                </div>
-                                <div className="col-item last-name">
-                                    <label>Tên</label>
-                                    <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname')} />
-                                </div>
-                                <div className="col-item relationship">
-                                    <label>{t("Relationship")}</label>
-                                    <Select 
-                                        options={relationshipTypes} 
-                                        placeholder={`${t("Select")}`} 
-                                        onChange={e => handleSelectInputChange(e, i, 'new_relation')} 
-                                        value={item.new_relation} 
-                                        styles={customStyles} />
-                                </div>
-                                <div className="col-item gender">
-                                    <label>{t("Gender")}</label>
-                                    <Select 
-                                        options={item.new_gender_options} 
-                                        placeholder={`${t("Select")}`} 
-                                        onChange={e => handleSelectInputChange(e, i, 'new_gender')} 
-                                        value={item.new_gender} 
-                                        styles={customStyles} />
-                                </div>
-                                <div className="col-item birthday">
-                                    <label>{t("DateOfBirth")}</label>
-                                    <DatePicker
-                                        maxDate={new Date()}
-                                        selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
-                                        onChange={birthday => handleDatePickerInputChange(birthday, i, "new_dob")}
-                                        dateFormat="dd/MM/yyyy"
-                                        showMonthDropdown={true}
-                                        showYearDropdown={true}
-                                        locale="vi"
-                                        className="form-control input" />
-                                </div>
-                            </div>
-                        </Fragment>
-                    })
+                    relationshipDataToCreate && relationshipDataToCreate.length > 0 ?
+                    <div className="relationship-item-create">
+                        {
+                            (relationshipDataToCreate || []).map((item, i) => {
+                                return <div className="edit-value" key={i}>
+                                            <span className="btn-remove-relationship-item" onClick={() => removeRelationshipCreated(i)}><i className="fas fa-times"></i></span>
+                                            <div className="col-item first-name">
+                                                <label>Họ và tên đệm</label>
+                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', false)} />
+                                            </div>
+                                            <div className="col-item last-name">
+                                                <label>Tên</label>
+                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', false)} />
+                                            </div>
+                                            <div className="col-item relationship">
+                                                <label>{t("Relationship")}</label>
+                                                <Select 
+                                                    options={relationshipTypes} 
+                                                    placeholder={`${t("Select")}`} 
+                                                    onChange={e => handleSelectInputChange(e, i, 'new_relation', false)} 
+                                                    value={item.new_relation} 
+                                                    styles={customStyles} />
+                                            </div>
+                                            <div className="col-item gender">
+                                                <label>{t("Gender")}</label>
+                                                <Select 
+                                                    options={item.new_gender_options} 
+                                                    placeholder={`${t("Select")}`} 
+                                                    onChange={e => handleSelectInputChange(e, i, 'new_gender', false)} 
+                                                    value={item.new_gender} 
+                                                    styles={customStyles} />
+                                            </div>
+                                            <div className="col-item birthday">
+                                                <label>{t("DateOfBirth")}</label>
+                                                <DatePicker
+                                                    maxDate={new Date()}
+                                                    selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
+                                                    onChange={birthday => handleDatePickerInputChange(birthday, i, "new_dob", false)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                    showMonthDropdown={true}
+                                                    showYearDropdown={true}
+                                                    locale="vi"
+                                                    className="form-control input" />
+                                            </div>
+                                        </div>
+                            })
+                        }
+                    </div>
+                    : null
                 }
-                </div>
             </div>
         </div>
     )
