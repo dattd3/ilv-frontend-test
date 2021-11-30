@@ -311,7 +311,7 @@ class MyComponent extends React.Component {
           NewMainInfo: {}
         },
         userProfileHistoryEducation: [],
-        userProfileHistoryRelationship: (dataToUpdate || []).map(item => {
+        userProfileHistoryFamily: (dataToUpdate || []).map(item => {
           return {
             OldRelationship: {
               firstName: item.firstname || "",
@@ -335,7 +335,7 @@ class MyComponent extends React.Component {
         })
       },
       create: {
-        relationships: dataToCreate.map(item => {
+        families: dataToCreate.map(item => {
           return {
             firstName: item.new_firstname || "",
             lastName: item.new_lastname || "",
