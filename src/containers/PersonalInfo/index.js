@@ -320,7 +320,7 @@ class MyComponent extends React.Component {
               relationshipText: item.relation || "",
               genderCode: item.gender_code || "",
               genderText: item.gender || "",
-              birthday: item.dob || ""
+              birthday: moment(item.dob, "DD-MM-YYYY").format("YYYY-MM-DD")
             },
             NewFamily: {
               firstName: item.new_firstname || "",
@@ -329,7 +329,7 @@ class MyComponent extends React.Component {
               relationshipText: item.new_relation?.label || "",
               genderCode: item.new_gender.value || "",
               genderText: item.new_gender.label || "",
-              birthday: item.new_dob || ""
+              birthday: moment(item.new_dob, "DD-MM-YYYY").format("YYYY-MM-DD")
             }
           }
         })
