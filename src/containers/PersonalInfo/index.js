@@ -3,23 +3,42 @@ import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
-import { Redirect, withRouter } from 'react-router-dom';
-import map from '../map.config';
+import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
+import RelationshipList from "./RelationshipList"
+import RelationshipListEdit from "./RelationshipListEdit"
+import ActionButtons from "./ActionButtons"
+import ResultModal from './edit/ResultModal'
 
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       userProfile: {},
       userDetail: {},
       userEducation: {},
       userFamily: {},
       userHealth: {},
-      userDocument: {}
+      userDocument: {},
+      relationshipInformation: {
+        isEditing: false,
+        relationships: [],
+        relationshipDataToUpdate : [],
+        relationshipDataToCreate : [],
+        files: []
+      },
+      educationInformation: {
+        isEditing: false,
+        educations: []
+      },
+      resultModal: {
+        isShow: false,
+        title: this.props.t("Notification"),
+        message: "",
+        isSuccess: true
+      }
     };
   }
 
@@ -116,16 +135,250 @@ class MyComponent extends React.Component {
     this.setState({ userDocument: result });
   }
 
-  render() {
+  handleEditRelationship = () => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.isEditing = true
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  handleAddNewRelationships = () => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const newRelationship = [
+      {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: "",
+        new_dob: "",
+        new_fullname: "",
+        new_lastname: "",
+        new_firstname: "",
+        gender: "",
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    ]
+    relationshipInformation.relationshipDataToCreate = relationshipInformation.relationshipDataToCreate.concat(newRelationship)
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  sendRequests = async () => {
     const { t } = this.props
+    const { relationshipInformation, resultModal } = this.state
+    try {
+      const config = getRequestConfigurations()
+      const userInfo = JSON.stringify({
+        employeeNo: formatStringByMuleValue(localStorage.getItem('employeeNo')),
+        fullName: formatStringByMuleValue(localStorage.getItem('fullName')),
+        jobTitle: formatStringByMuleValue(localStorage.getItem('jobTitle')),
+        department: formatStringByMuleValue(localStorage.getItem('department'))
+      })
+      const userProfileInfoUpdateToSap = this.prepareUserProfileInfoUpdateToSap(relationshipInformation.relationshipDataToUpdate)
+      const userProfileInfoCreateToSap = this.prepareUserProfileInfoCreateToSap(relationshipInformation.relationshipDataToCreate)
+      let userProfileInfo = this.prepareUserProfileInfo(relationshipInformation)
+      userProfileInfo = JSON.stringify(userProfileInfo)
+      const userProfileInfoToSap = JSON.stringify([...userProfileInfoUpdateToSap, ...userProfileInfoCreateToSap])
+
+      let bodyFormData = new FormData()
+      bodyFormData.append('Name', "Quan hệ nhân thân")
+      bodyFormData.append('UserProfileInfo', userProfileInfo)
+      bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
+      bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
+      bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
+      bodyFormData.append('UserProfileInfoToSap', userProfileInfoToSap)
+      bodyFormData.append('User', userInfo)
+      bodyFormData.append('OrgLv2Id', formatStringByMuleValue(localStorage.getItem('organizationLv2')))
+      bodyFormData.append('OrgLv2Text', formatStringByMuleValue(localStorage.getItem('company')))
+      bodyFormData.append('DivisionId', formatStringByMuleValue(localStorage.getItem('divisionId')))
+      bodyFormData.append('Division', formatStringByMuleValue(localStorage.getItem('division')))
+      bodyFormData.append('RegionId', formatStringByMuleValue(localStorage.getItem('regionId')))
+      bodyFormData.append('Region', formatStringByMuleValue(localStorage.getItem('region')))
+      bodyFormData.append('UnitId', formatStringByMuleValue(localStorage.getItem('unitId')))
+      bodyFormData.append('Unit', formatStringByMuleValue(localStorage.getItem('unit')))
+      bodyFormData.append('PartId', formatStringByMuleValue(localStorage.getItem('partId')))
+      bodyFormData.append('Part', formatStringByMuleValue(localStorage.getItem('part')))
+
+      const fileSelected = relationshipInformation.files
+      for (let key in fileSelected) {
+        bodyFormData.append('Files', fileSelected[key])
+      }
+
+      const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/family`, bodyFormData, config)
+      resultModal.isShow = true
+      if (responses && responses.data) {
+        const result = responses.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          resultModal.isSuccess = true
+          resultModal.message = t("RequestSent")
+        } else {
+          resultModal.isSuccess = false
+          resultModal.message = result.message
+        }
+      } else {
+        resultModal.isSuccess = false
+        resultModal.message = t("AnErrorOccurred")
+      }
+      this.setState({resultModal: resultModal})
+    } catch (e) {
+      resultModal.isShow = true
+      resultModal.isSuccess = false
+      resultModal.message = t("AnErrorOccurred")
+      this.setState({resultModal: resultModal})
+    }
+  }
+
+  prepareUserProfileInfoUpdateToSap = (relationshipDataToUpdate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToUpdate = relationshipDataToUpdate.filter(item => 
+      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
+        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+    )
+    .map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: item.relation_code,
+        pre_dob: moment(item.dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        pre_fullname: item.full_name,
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+
+    return dataToUpdate
+  }
+
+  prepareUserProfileInfoCreateToSap = (relationshipDataToCreate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToCreate = relationshipDataToCreate.map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+    return dataToCreate
+  }
+
+  prepareUserProfileInfo = relationshipInformation => {
+    const dataToUpdate = relationshipInformation.relationshipDataToUpdate.filter(item => 
+      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
+        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+    )
+    const dataToCreate = relationshipInformation.relationshipDataToCreate
+    return {
+      staff: {
+        code: localStorage.getItem('employeeNo'),
+        fullName: localStorage.getItem('fullName'),
+        title: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+      },
+      manager: {},
+      update: {
+        userProfileHistoryMainInfo: {
+          OldMainInfo: {},
+          NewMainInfo: {}
+        },
+        userProfileHistoryEducation: [],
+        userProfileHistoryFamily: (dataToUpdate || []).map(item => {
+          return {
+            OldRelationship: {
+              firstName: item.firstname || "",
+              lastName: item.lastname || "",
+              relationshipCode: item.relation_code || "",
+              relationshipText: item.relation || "",
+              genderCode: item.gender_code || "",
+              genderText: item.gender || "",
+              birthday: item.dob || ""
+            },
+            NewRelationship: {
+              firstName: item.new_firstname || "",
+              lastName: item.new_lastname || "",
+              relationshipCode: item.new_relation?.value || "",
+              relationshipText: item.new_relation?.label || "",
+              genderCode: item.new_gender.value || "",
+              genderText: item.new_gender.label || "",
+              birthday: item.new_dob || ""
+            }
+          }
+        })
+      },
+      create: {
+        families: dataToCreate.map(item => {
+          return {
+            firstName: item.new_firstname || "",
+            lastName: item.new_lastname || "",
+            relationshipCode: item.new_relation?.value || "",
+            relationshipText: item.new_relation?.label || "",
+            genderCode: item.new_gender.value || "",
+            genderText: item.new_gender.label || "",
+            birthday: item.new_dob || ""
+          }
+        })
+      }
+    }
+  }
+
+  updateDataToParent = relationships => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.relationshipDataToUpdate = relationships.update
+    relationshipInformation.relationshipDataToCreate = relationships.create
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  updateFilesToParent = filesToUpdate => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.files = filesToUpdate
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  onHideResultModal = () => {
+    const resultModal = {...this.state.resultModal}
+    resultModal.isShow = false
+    this.setState({resultModal: resultModal})
+  }
+
+  render() {   
+    const { t } = this.props
+    const { userFamily, relationshipInformation, educationInformation, resultModal } = this.state
     const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast,
-          Constants.PnLCODE.VinFastPB,
-          Constants.PnLCODE.VinFastTrading);
+    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastPB, Constants.PnLCODE.VinFastTrading);
+
     function SummaryAddress(obj) {
       let result = '';
       if (typeof (obj) == 'object' && obj.length > 0) {
@@ -149,16 +402,18 @@ class MyComponent extends React.Component {
     }
 
     return (
+      <>
+      <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
-        <div className="clearfix edit-button">
-          <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
-          {
-            isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
-          }
-        </div>
         <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
+            <div className="clearfix edit-button">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+              }
+            </div>
             <Row >
               <Col xs={12} md={12} lg={6}>
                 <h4>{t("PersonalInformation")}</h4>
@@ -421,6 +676,12 @@ class MyComponent extends React.Component {
             </Row>
           </Tab>
           <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")}>
+            <div className="clearfix edit-button">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+              }
+            </div>
             <Container fluid className="info-tab-content shadow">
               {
                 (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
@@ -481,55 +742,27 @@ class MyComponent extends React.Component {
               }
             </Container>
           </Tab>
-          <Tab eventKey="PersonalRelations" title={t("Family")}>
-            <Container fluid className="info-tab-content shadow">
-              {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
-                this.state.userFamily.map((item, i) => {
-                  return <div key={i}>
-                    <Row className="info-label">
-                      <Col xs={12} md={6} lg={3}>
-                        {t("FullName")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("Relationship")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("DateOfBirth")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("AllowancesTaxNo")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("FamilyAllowances")}
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        {t("AllowancesDate")}
-                      </Col>
-                    </Row>
-                    <Row className="info-value">
-                      <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{item.full_name}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        <p>&nbsp;{item.relation}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.dob}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{isNotNull(item.tax_number) ? item.tax_number : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        <p style={{ background: "none" }}>&nbsp;{isNotNull(item.is_reduced) ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</p>
-                      </Col>
-                    </Row>
-                  </div>;
-                }) : t("NoDataFound")
+          <Tab eventKey="PersonalRelations" title={t("Family")} className="tab-relationship">
+            <div className="top-button-actions">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditProfile ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
+            </div>
+            <h5 className="content-page-header">{t("PersonalRelations")}</h5>
+            <Container fluid className="info-tab-content shadow relationship">
+            {
+              relationshipInformation.isEditing ? 
+              <>
+              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} />
+              <div className="block-button-add">
+                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>Thêm mới</button>
+              </div>
+              </>
+              : <RelationshipList relationships={userFamily} />
+            }
             </Container>
+            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
@@ -591,9 +824,9 @@ class MyComponent extends React.Component {
               </Tab>
               : null
           }
-
         </Tabs>
-      </div >
+      </div>
+      </>
     )
   }
 }
