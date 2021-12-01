@@ -68,7 +68,7 @@ function SideBar(props) {
     return (
         <>
             <div>
-                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar shadow' : 'bg-vp-blue sidebar shadow d-none'}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar' : 'bg-vp-blue sidebar d-none'}>
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">
@@ -77,7 +77,6 @@ function SideBar(props) {
                         </div>
                     </Animated>
                     <MetisMenu
-                        className='sidebar sidebar-dark'
                         content={contents}
                         activeLinkFromLocation
                         iconNameStateVisible="arrow_expand"
