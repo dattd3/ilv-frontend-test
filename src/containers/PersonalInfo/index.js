@@ -238,8 +238,8 @@ class MyComponent extends React.Component {
     const currentUserEmail = localStorage.getItem('email')
     const employeeNo = localStorage.getItem('employeeNo')
     const dataToUpdate = relationshipDataToUpdate.filter(item => 
-      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
-        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+      (item.firstname != item.new_firstname || item.lastname != item.new_lastname || item.relation_code != item.new_relation.value 
+        || item.gender_code != item.new_gender.value || item.dob != item.new_dob)
     )
     .map(item => {
       return {
@@ -293,8 +293,8 @@ class MyComponent extends React.Component {
 
   prepareUserProfileInfo = relationshipInformation => {
     const dataToUpdate = relationshipInformation.relationshipDataToUpdate.filter(item => 
-      (item.firstname !== item.new_firstname || item.lastname !== item.new_lastname || item.relation_code !== item.new_relation.value 
-        || item.gender_code !== item.new_gender.value || item.dob !== item.new_dob)
+      (item.firstname != item.new_firstname || item.lastname != item.new_lastname || item.relation_code != item.new_relation.value 
+        || item.gender_code != item.new_gender.value || item.dob != item.new_dob)
     )
     const dataToCreate = relationshipInformation.relationshipDataToCreate
     return {
@@ -313,7 +313,7 @@ class MyComponent extends React.Component {
         userProfileHistoryEducation: [],
         userProfileHistoryFamily: (dataToUpdate || []).map(item => {
           return {
-            OldRelationship: {
+            OldFamily: {
               firstName: item.firstname || "",
               lastName: item.lastname || "",
               relationshipCode: item.relation_code || "",
@@ -322,7 +322,7 @@ class MyComponent extends React.Component {
               genderText: item.gender || "",
               birthday: item.dob || ""
             },
-            NewRelationship: {
+            NewFamily: {
               firstName: item.new_firstname || "",
               lastName: item.new_lastname || "",
               relationshipCode: item.new_relation?.value || "",
@@ -343,7 +343,7 @@ class MyComponent extends React.Component {
             relationshipText: item.new_relation?.label || "",
             genderCode: item.new_gender.value || "",
             genderText: item.new_gender.label || "",
-            birthday: item.new_dob || ""
+            birthday: moment(item.new_dob, "DD-MM-YYYY").format("YYYY-MM-DD")
           }
         })
       }
