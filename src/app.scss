@@ -481,6 +481,16 @@
   color: white;
   padding: 1.3rem 0 !important;
 }
+
+.vg-dard-board {
+  background-color: #e52c08;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: white;
+  padding: 0.5rem 0 !important;
+}
+
 .opacity-1 {
   opacity: 1 !important;
 }
@@ -3357,7 +3367,10 @@ span.badge-notification[data-badge]::after {
         padding: 0 8px 0 0;
         height: auto;
         .thumbnail {
+          object-fit: cover;
+          border-radius: 6px;
           height: 150px;
+          width: 292px;
         }
       }
       .title-source-time-info {
@@ -3554,6 +3567,31 @@ span.badge-notification[data-badge]::after {
     }
   }
 }
+
+.scroll-custom {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 82vh;
+  border-radius: 5px;
+  // &::-webkit-scrollbar {
+  //     width: 10px;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   background-color: #C1C1C1;
+  //   border-radius: 4px;
+  // }
+  // &::-webkit-scrollbar-track {
+  //   background-color: #d3d3d3;
+  //   border-radius: 4px;
+  // }
+}
+.footer-dash-board {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  bottom: 0;
+  padding: 1rem;
+}
+
 
 :root {
   --ck-image-style-spacing: 1.5rem;
