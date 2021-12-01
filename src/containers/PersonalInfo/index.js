@@ -251,7 +251,7 @@ class MyComponent extends React.Component {
         pre_fullname: item.full_name,
         new_relation: item.new_relation.value,
         new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
-        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
         new_lastname: item.new_lastname,
         new_firstname: item.new_firstname,
         gender: item.new_gender.value,
@@ -278,7 +278,7 @@ class MyComponent extends React.Component {
         pre_fullname: "",
         new_relation: item.new_relation.value,
         new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
-        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
         new_lastname: item.new_lastname,
         new_firstname: item.new_firstname,
         gender: item.new_gender.value,
@@ -756,7 +756,7 @@ class MyComponent extends React.Component {
               <>
               <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} />
               <div className="block-button-add">
-                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>Thêm mới</button>
+                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>{t("Add")}</button>
               </div>
               </>
               : <RelationshipList relationships={userFamily} />
