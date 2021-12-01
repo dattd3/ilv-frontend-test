@@ -40,32 +40,26 @@ class ApprovalDetail extends React.Component {
   }
 
   getUserProfileHistoryId = () => {
-    //const pathName = window.location.pathname;
-    //const pathNameArr = pathName.split('/');
-    //return pathNameArr[pathNameArr.length - 1];
     return this.props.id;
   }
 
   processBlockStatuses = (response) => {
     if (response && response.data) {
       const data = response.data;
-      //const code = response.result.code;
-      //if (code != Constants.API_ERROR_CODE) {
-        if ((data.requestInfo.create && data.requestInfo.create.educations && data.requestInfo.create.educations.length > 0) 
-        || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryEducation && data.requestInfo.update.userProfileHistoryEducation.length > 0)) {
-          this.setState({isShowEducationComponent : true});
-        }
-        if ((data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.NewFamily)) {
-          this.setState({isShowFamilyComponent : true});
-        }
-        if (data.requestInfo.update && data.requestInfo.update.userProfileHistoryMainInfo && data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
-          && _.size(data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo) > 0) {
-          this.setState({isShowPersonalComponent : true});
-        }
-        if (data.requestDocuments && data.requestDocuments.length > 0) {
-          this.setState({isShowDocumentComponent : true});
-        }
-      //}
+      if ((data.requestInfo.create && data.requestInfo.create.educations && data.requestInfo.create.educations.length > 0) 
+      || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryEducation && data.requestInfo.update.userProfileHistoryEducation.length > 0)) {
+        this.setState({isShowEducationComponent : true});
+      }
+      if ((data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.NewFamily)) {
+        this.setState({isShowFamilyComponent : true});
+      }
+      if (data.requestInfo.update && data.requestInfo.update.userProfileHistoryMainInfo && data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
+        && _.size(data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo) > 0) {
+        this.setState({isShowPersonalComponent : true});
+      }
+      if (data.requestDocuments && data.requestDocuments.length > 0) {
+        this.setState({isShowDocumentComponent : true});
+      }
     }
   }
 
@@ -81,17 +75,21 @@ class ApprovalDetail extends React.Component {
     }
   }
 
-  // processFamilyInfo = response => {
-  //   if (response && response.data) {
-  //     const data = response.data;
-  //     if (data && data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) {
-  //       this.setState({userFamilyCreate : response.data.requestInfo.create.families});
-  //     }
-  //     if (data && data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.length > 0) {
-  //       this.setState({userFamilyUpdate : data.requestInfo.update.userProfileHistoryFamily});
-  //     }
-  //   }
-  // }
+  processFamilyInfo = response => {
+    let userFamilyCreate = [], userFamilyUpdate = []
+    if (response && response.data) {
+      const data = response.data;
+      if (data) {
+        if (data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) {
+          userFamilyCreate = data.requestInfo.create.families
+        }
+        if (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.length > 0) {
+          userFamilyUpdate = data.requestInfo.update.userProfileHistoryFamily
+        }
+      }
+    }
+    this.setState({userFamilyCreate: userFamilyCreate, userFamilyUpdate: userFamilyUpdate})
+  }
 
   processMainInfo = response => {
     if (response && response.data) {
@@ -192,39 +190,16 @@ class ApprovalDetail extends React.Component {
       const response = this.props;
       this.processBlockStatuses(response);
       this.processEducationInfo(response);
-      // this.processFamilyInfo(response);
+      this.processFamilyInfo(response);
       this.processMainInfo(response);
       this.processDocumentInfo(response);
       this.processUserInfo(response);
       this.prepareStatus(response);
     }
-
-    // let config = {
-    //   headers: {
-    //     'Authorization': localStorage.getItem('accessToken')
-    //   }
-    // }
-  
-    // axios.get(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.getUserProfileHistoryId()}`, config)
-    // .then(res => {
-    //   if (res && res.data) {
-        // const response = res.data;
-        // this.processBlockStatuses(response);
-        // this.processEducationInfo(response);
-        // // this.processFamilyInfo(response);
-        // this.processMainInfo(response);
-        // this.processDocumentInfo(response);
-        // this.processUserInfo(response);
-        // this.prepareStatus(response);
-      //}
-    // }).catch(error => {
-    //   console.log(error);
-    // });
   }
 
   render() {
-    const { t } = this.props
-
+    const { t, data } = this.props
     const determineStatus = {
       5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
@@ -232,10 +207,13 @@ class ApprovalDetail extends React.Component {
       3: {label: t("Recalled"), className: 'fail'},
       6: {label: t("Unsuccessful"), className: 'warning'}
     }
+    const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, userMainInfo, 
+      isShowEducationComponent, isShowFamilyComponent, userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, 
+      processStatusId, approverComment, isShowDocumentComponent, documents } = this.state
     
     return (
       <>
-      <ConfirmationModal data={this.props.data} show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} 
+      <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
       taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
       <div className="edit-personal user-info-request">
         <h4 className="content-page-header">{t("EmployeeInfomation")}</h4>
@@ -245,51 +223,51 @@ class ApprovalDetail extends React.Component {
           <div className="row item-info">
             <div className="col-3">
               <div className="label">{t("FullName")}</div>
-              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.fullName : ""}</div>
+              <div className="detail">{userInfo.staff ? userInfo.staff.fullName : ""}</div>
             </div>
             <div className="col-2">
               <div className="label">{t("EmployeeNo")}</div>
-              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.code : ""}</div>
+              <div className="detail">{userInfo.staff ? userInfo.staff.code : ""}</div>
             </div>
             <div className="col-2">
               <div className="label">{t("Title")}</div>
-              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.title : ""}</div>
+              <div className="detail">{userInfo.staff ? userInfo.staff.title : ""}</div>
             </div>
             <div className="col-5">
               <div className="label">{t("DepartmentManage")}</div>
-              <div className="detail">{this.state.userInfo.staff ? this.state.userInfo.staff.department : ""}</div>
+              <div className="detail">{userInfo.staff ? userInfo.staff.department : ""}</div>
             </div>
           </div>
         </div>
-        {this.state.isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
-        {this.state.isShowPersonalComponent ? <PersonalComponent userMainInfo={this.state.userMainInfo} /> : null }
-        {this.state.isShowEducationComponent ? <EducationComponent userEducationUpdate={this.state.userEducationUpdate} userEducationCreate={this.state.userEducationCreate} /> : null }
-        {this.state.isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={this.state.userFamilyUpdate} userFamilyCreate={this.state.userFamilyCreate} /> : null }
+        {isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
+        {isShowPersonalComponent ? <PersonalComponent userMainInfo={userMainInfo} /> : null }
+        {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
+        {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
         {
-          (this.state.userInfo.manager && (this.state.processStatusId == 2 || this.state.processStatusId == 1)) ?
+          (userInfo.manager && (processStatusId == 2 || processStatusId == 1)) ?
           <>
           <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
                 <div className="label">{t("Approver")}</div>
-                <div className="detail">{this.state.userInfo.manager.fullName || ""}</div>
+                <div className="detail">{userInfo.manager.fullName || ""}</div>
               </div>
               <div className="col-4">
                 <div className="label">{t("Title")}</div>
-                <div className="detail">{this.state.userInfo.manager.title || ""}</div>
+                <div className="detail">{userInfo.manager.title || ""}</div>
               </div>
               <div className="col-4">
                 <div className="label">{t("DepartmentManage")}</div>
-                <div className="detail">{this.state.userInfo.manager.department || ""}</div>
+                <div className="detail">{userInfo.manager.department || ""}</div>
               </div>
             </div>
             {
-              this.state.processStatusId == 1 ?
+              processStatusId == 1 ?
               <div className="row item-info">
                 <div className="col-12">
                   <div className="label">Lý do không phê duyệt</div>
-                  <div className="detail">{this.state.approverComment}</div>
+                  <div className="detail">{approverComment}</div>
                 </div>
               </div>
               : null
@@ -299,17 +277,17 @@ class ApprovalDetail extends React.Component {
           : null
         }
         <div className="block-status">
-          <span className={`status ${determineStatus[this.state.processStatusId]?.className}`}>{determineStatus[this.state.processStatusId]?.label}</span>
+          <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
         </div>
-        { this.state.isShowDocumentComponent ? 
+        { isShowDocumentComponent ? 
           <>
           <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin file đính kèm</h4></div>
-          <DocumentComponent documents={this.state.documents} />
+          <DocumentComponent documents={documents} />
           </>
           : null
         }
         {
-          this.state.processStatusId == 5 ?
+          processStatusId == 5 ?
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>

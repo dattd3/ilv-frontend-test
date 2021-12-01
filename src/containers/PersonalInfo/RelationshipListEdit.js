@@ -20,8 +20,8 @@ function RelationshipListEdit(props) {
         female: '2'
     }
     const genders = [
-        {value: genderOptions.male, label: 'Nam'},
-        {value: genderOptions.female, label: 'Nữ'}
+        {value: genderOptions.male, label: t("Male")},
+        {value: genderOptions.female, label: t("Female")}
     ]
 
     const getGenderByRelationshipTypes = relationshipTypes => {
@@ -47,22 +47,22 @@ function RelationshipListEdit(props) {
     }
 
     const relationshipTypes = [
-        {value: 'V001', label: 'Cha ruột', genders: getGenderByRelationshipTypes('V001')},
-        {value: 'V002', label: 'Mẹ ruột', genders: getGenderByRelationshipTypes('V002')},
-        {value: 'V003', label: 'Cha dượng', genders: getGenderByRelationshipTypes('V003')},
-        {value: 'V004', label: 'Mẹ kế', genders: getGenderByRelationshipTypes('V004')},
-        {value: 'V005', label: 'Vợ', genders: getGenderByRelationshipTypes('V005')},
-        {value: 'V006', label: 'Cha chồng', genders: getGenderByRelationshipTypes('V006')},
-        {value: 'V007', label: 'Mẹ chồng', genders: getGenderByRelationshipTypes('V007')},
-        {value: 'V008', label: 'Cha vợ', genders: getGenderByRelationshipTypes('V008')},
-        {value: 'V009', label: 'Mẹ vợ', genders: getGenderByRelationshipTypes('V009')},
-        {value: 'V010', label: 'Anh ruột', genders: getGenderByRelationshipTypes('V010')},
-        {value: 'V011', label: 'Chị ruột', genders: getGenderByRelationshipTypes('V011')},
-        {value: 'V012', label: 'Em ruột', genders: getGenderByRelationshipTypes('V012')},
-        {value: 'V013', label: 'Chồng', genders: getGenderByRelationshipTypes('V013')},
-        {value: 'V014', label: 'Con trai', genders: getGenderByRelationshipTypes('V014')},
-        {value: 'V015', label: 'Con gái', genders: getGenderByRelationshipTypes('V015')},
-        {value: 'V016', label: 'Khác', genders: getGenderByRelationshipTypes('V016')}
+        {value: 'V001', label: t("RelationshipFather"), genders: getGenderByRelationshipTypes('V001')},
+        {value: 'V002', label: t("RelationshipMother"), genders: getGenderByRelationshipTypes('V002')},
+        {value: 'V003', label: t("RelationshipStepFather"), genders: getGenderByRelationshipTypes('V003')},
+        {value: 'V004', label: t("RelationshipStepMother"), genders: getGenderByRelationshipTypes('V004')},
+        {value: 'V005', label: t("RelationshipWife"), genders: getGenderByRelationshipTypes('V005')},
+        {value: 'V006', label: t("RelationshipHusbandFather"), genders: getGenderByRelationshipTypes('V006')},
+        {value: 'V007', label: t("RelationshipHusbandMother"), genders: getGenderByRelationshipTypes('V007')},
+        {value: 'V008', label: t("RelationshipWifeFather"), genders: getGenderByRelationshipTypes('V008')},
+        {value: 'V009', label: t("RelationshipWifeMother"), genders: getGenderByRelationshipTypes('V009')},
+        {value: 'V010', label: t("RelationshipElderBrother"), genders: getGenderByRelationshipTypes('V010')},
+        {value: 'V011', label: t("RelationshipElderSister"), genders: getGenderByRelationshipTypes('V011')},
+        {value: 'V012', label: t("RelationshipYoungerSibling"), genders: getGenderByRelationshipTypes('V012')},
+        {value: 'V013', label: t("RelationshipHusband"), genders: getGenderByRelationshipTypes('V013')},
+        {value: 'V014', label: t("RelationshipSon"), genders: getGenderByRelationshipTypes('V014')},
+        {value: 'V015', label: t("RelationshipDaughter"), genders: getGenderByRelationshipTypes('V015')},
+        {value: 'V016', label: t("RelationshipOther"), genders: getGenderByRelationshipTypes('V016')}
     ]
 
     useEffect(() => {
@@ -108,13 +108,12 @@ function RelationshipListEdit(props) {
     const handleSelectInputChange = (e, index, type, isEdit) => {
         const relationshipDataToUpdate = [...relationshipData]
         const relationshipDataToCreateNew = [...relationshipDataToCreate]
-
         switch (type) {
             case 'new_relation':
                 const newGenderOptions = genders.filter(g => e.genders?.includes(g.value))
                 if (isEdit) {
                     relationshipDataToUpdate[index]['new_relation'] = e
-                    relationshipDataToUpdate[index]['new_gender'] = newGenderOptions[0]
+                    relationshipDataToUpdate[index]['new_gender'] = null
                     relationshipDataToUpdate[index]['new_gender_options'] = newGenderOptions
                 } else {
                     relationshipDataToCreateNew[index]['new_relation'] = e
