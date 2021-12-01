@@ -1059,5 +1059,6 @@
   "RelationshipHusband": "Husband",
   "RelationshipSon": "Son",
   "RelationshipDaughter": "Daughter",
-  "RelationshipOther": "Other"
+  "RelationshipOther": "Other",
+  "AttachFile": "Attach file"
 }

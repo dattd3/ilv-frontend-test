@@ -1076,5 +1076,6 @@
   "RelationshipHusband": "Chồng",
   "RelationshipSon": "Con trai",
   "RelationshipDaughter": "Con gái",
-  "RelationshipOther": "Khác"
+  "RelationshipOther": "Khác",
+  "AttachFile": "Đính kèm tệp tin"
 }
