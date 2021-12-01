@@ -1,9 +1,8 @@
 import React from "react";
 
 function Footer(props) {
-  const { isDashBoard } = props;
   return (
-    <footer style={{ backgroundColor: localStorage.getItem("companyThemeColor") }} className={`sticky-footer bg-whit shadow ${isDashBoard === true ? 'vg-dard-board' : 'vg-footer'} mb-3`}>
+    <footer style={{ backgroundColor: localStorage.getItem("companyThemeColor") }} className={`sticky-footer bg-whit shadow vg-dard-board`}>
       <div className="container my-auto">
         <div className="copyright text-center my-auto h4">
           <span>Copyright &copy; 2021 <b className="">Vingroup</b>. Designed by <b className="">Vin3S</b> All Rights Reserved</span>

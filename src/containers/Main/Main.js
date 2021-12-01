@@ -35,9 +35,6 @@ function MainLayout(props) {
     history.push(map.NotFound);
   }
 
-
-  const isDashBoard = props.location.pathname === '/';
-  console.log(isDashBoard)
   return (
     <>
       <SideBar show={show} user={user} />
@@ -50,7 +47,7 @@ function MainLayout(props) {
           <ScrollToTop />
         </div>
         <div className="footer-dash-board">
-          <Footer isDashBoard={isDashBoard} />
+          <Footer />
         </div>
 
       </div>

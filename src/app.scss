@@ -586,7 +586,7 @@
   -moz-animation: 0.5s;
   -webkit-animation: 0.5s;
   -o-animation: 0.5s;
-  height: 100vh;
+  height: 100%;
   padding-bottom: 10em;
 }
 .pl-1 {
@@ -3586,8 +3586,10 @@ span.badge-notification[data-badge]::after {
   // }
 }
 .footer-dash-board {
-  padding-left: 1rem;
-  padding-right: 1rem;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  bottom: 0;
+  padding: 1rem;
 }
 
 
