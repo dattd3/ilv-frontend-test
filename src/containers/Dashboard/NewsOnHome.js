@@ -1,12 +1,12 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import { useApi, useFetcher } from "../../modules"
 import ReactList from 'react-list';
+import Footer from '../../components/Common/Footer';
 
 // import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
-import CustomPaging from '../../components/Common/CustomPaging'
 import IconDiamond from '../../assets/img/icon/Icon-Diamond.svg'
 import IconViewDetail from '../../assets/img/icon/Icon-Arrow-Right.svg'
 import IconUser from '../../assets/img/icon/Icon-User.svg'
@@ -24,12 +24,15 @@ const usePreload = (params) => {
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
-    const [pageIndex, SetPageIndex] = useState(1)
-    const [pageSize, SetPageSize] = useState(10000)
+
+    const myRef = useRef(null);
+
     const totalTopArticles = 5
 
-    const listArticles = usePreload([pageIndex, pageSize])
+    const [is_visible, setIs_visible] = useState(false);
+    const listArticles = usePreload([1, 300])
     const articles = listArticles?.data || []
+    const loaded = listArticles?.data ? true : false;
     const totalArticles = articles.totalRecord
     const totalArticlesPerPage = articles.listArticles?.length
     const convertToSlug = input => {
@@ -65,114 +68,148 @@ function NewsOnHome(props) {
         }
     }
 
+    const scrollToTop = () => {
+        myRef.current.scrollTo({ behavior: 'smooth', top: 0 });
+    }
+
+    const onScroll = () => {
+        if (myRef && myRef.current.scrollTop > 0)
+            setIs_visible(true)
+        else {
+            setIs_visible(false)
+        }
+            
+    }
+
     const topOne = totalArticlesPerPage > 0 ? articles.listArticles[0] : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
     const topFour = totalArticlesPerPage > 1 ? articles.listArticles?.slice(1, totalTopArticles) : []
     const others = totalArticlesPerPage > totalTopArticles ? articles.listArticles?.slice(totalTopArticles) : []
 
     return (
-        totalArticles > 0 ?
-            <>
-                <div className="scroll-custom">
-                <h1 className="page-title"><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h1>
-                    <div className="top-news">
-                        <div className="row">
-                            <div className="col-md-6 special">
-                                <div className="top-one">
-                                    <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} title={topOne?.title} className="link-detail">
-                                        <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
-                                            onError={(e) => {
-                                                e.target.src = "/logo-large.svg"
-                                            }}
-                                        />
-                                        <p className="title">{topOne?.title || ""}</p>
-                                    </a>
-                                    <div className="other-info">
-                                        <div className="source-time-info">
-                                            <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
-                                            <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
+        <div onScroll={e => onScroll()} ref={myRef} className="scroll-custom">
+            <div className="container-fluid">
+                {
+                    totalArticles > 0 ?
+                        <>
+
+                            <h1 className="page-title"><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h1>
+                            <div className="top-news">
+                                <div className="row">
+                                    <div className="col-md-6 special">
+                                        <div className="top-one">
+                                            <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} title={topOne?.title} className="link-detail">
+                                                <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
+                                                    onError={(e) => {
+                                                        e.target.src = "/logo-large.svg"
+                                                    }}
+                                                />
+                                                <p className="title">{topOne?.title || ""}</p>
+                                            </a>
+                                            <div className="other-info">
+                                                <div className="source-time-info">
+                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
+                                                </div>
+                                                <p className="description">{subStringDescription(topOne?.description)}...</p>
+                                                <div className="btn-detail">
+                                                    <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} title={topOne?.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="description">{subStringDescription(topOne?.description)}...</p>
-                                        <div className="btn-detail">
-                                            <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} title={topOne?.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                    </div>
+                                    <div className="col-md-6 other">
+                                        <div className="top-four">
+                                            {
+                                                topFour.length > 0 ?
+                                                    topFour.map((item, index) => {
+                                                        let timePublished = getTimeByRawTime(item?.publishedDate)
+                                                        return <div className="item" key={item.id}>
+                                                            <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                                                <Image src={item.thumbnail} className="thumbnail"
+                                                                    onError={(e) => {
+                                                                        e.target.src = "/logo-small.svg"
+                                                                        e.target.className = `thumbnail error`
+                                                                    }}
+                                                                />
+                                                            </a>
+                                                            <div className="title-source-time-info">
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                                <div className="source-time-info">
+                                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
+                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    })
+
+                                                    : t("DataNotFound")
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 other">
-                                <div className="top-four">
-                                    {
-                                        topFour.length > 0 ?
-                                            topFour.map((item, index) => {
-                                                let timePublished = getTimeByRawTime(item?.publishedDate)
-                                                return <div className="item" key={item.id}>
-                                                    <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
-                                                        <Image src={item.thumbnail} className="thumbnail"
-                                                            onError={(e) => {
-                                                                e.target.src = "/logo-small.svg"
-                                                                e.target.className = `thumbnail error`
-                                                            }}
-                                                        />
-                                                    </a>
-                                                    <div className="title-source-time-info">
-                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
-                                                        <div className="source-time-info">
-                                                            <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                            <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                            <div className="other-news">
+                                <div className="row">
+                                    <div className="col-md-12">
+
+                                        <ReactList
+                                            itemRenderer={
+                                                (index, key) => {
+                                                    const item = others[index];
+                                                    let timePublished = getTimeByRawTime(item?.publishedDate)
+                                                    return <div className="item" key={key}>
+                                                        `                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                                            <Image src={item.thumbnail} alt="News" className="thumbnail"
+                                                                onError={(e) => {
+                                                                    e.target.src = "/logo-normal.svg"
+                                                                    e.target.className = `thumbnail error`
+                                                                }}
+                                                            />
+                                                        </a>
+                                                        <div className="title-source-time-info">
+                                                            <div className="main-info">
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                                <p className="description">{subStringDescription(item.description)}...</p>
+                                                                <div className="source-time-info">
+                                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
+                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="btn-detail">
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={topOne.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            })
-
-                                            : t("DataNotFound")
-                                    }
+                                                }
+                                            }
+                                            length={others.length}
+                                            type='variable'
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="other-news">
-                        <div className="row">
-                            <div className="col-md-12">
 
-                                <ReactList
-                                    itemRenderer={
-                                        (index, key) => {
-                                            const item = others[index];
-                                            let timePublished = getTimeByRawTime(item?.publishedDate)
-                                            return <div className="item" key={key}>
-                                                `                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
-                                                    <Image src={item.thumbnail} alt="News" className="thumbnail"
-                                                        onError={(e) => {
-                                                            e.target.src = "/logo-normal.svg"
-                                                            e.target.className = `thumbnail error`
-                                                        }}
-                                                    />
-                                                </a>
-                                                <div className="title-source-time-info">
-                                                    <div className="main-info">
-                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
-                                                        <p className="description">{subStringDescription(item.description)}...</p>
-                                                        <div className="source-time-info">
-                                                            <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                            <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="btn-detail">
-                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={topOne.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
-                                    }
-                                    length={others.length}
-                                    type='variable'
-                                />
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                        : t("DataNotFound")
+                }
+
+            </div>
+            {loaded &&
+                <div>
+                    <Footer />
                 </div>
-            </>
-            : t("DataNotFound")
+            }
+            {is_visible &&
+                <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+
+                    <div>
+                        <span><i className="fa fa-arrow-circle-o-up fa-2x"></i></span>
+                    </div>
+
+                </div>
+            }
+        </div>
     );
 }
 
