@@ -168,11 +168,11 @@ function RelationshipListEdit(props) {
             <div className="old-new-flag">
                 <span className="flag old">
                     <span className="box"></span>
-                    <span>Thông tin cũ</span>
+                    <span>{t("Record")}</span>
                 </span>
                 <span className="flag new">
                     <span className="box"></span>
-                    <span>Nhập thông tin điều chỉnh</span>
+                    <span>{t("UpdateInformation")}</span>
                 </span>
             </div>
             <div className="detail-info">
@@ -198,12 +198,12 @@ function RelationshipListEdit(props) {
                                 </div>
                                 <div className="edit-value">
                                     <div className="col-item first-name">
-                                        <label>Họ và tên đệm</label>
-                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
+                                        <label>{t("FamilyLastName")}</label>
+                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
                                     </div>
                                     <div className="col-item last-name">
-                                        <label>Tên</label>
-                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
+                                        <label>{t("FamilyFirstName")}</label>
+                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
                                     </div>
                                     <div className="col-item relationship">
                                         <label>{t("Relationship")}</label>
@@ -248,12 +248,12 @@ function RelationshipListEdit(props) {
                                 return <div className="edit-value" key={i}>
                                             <span className="btn-remove-relationship-item" onClick={() => removeRelationshipCreated(i)}><i className="fas fa-times"></i></span>
                                             <div className="col-item first-name">
-                                                <label>Họ và tên đệm</label>
-                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', false)} />
+                                                <label>{t("FamilyLastName")}</label>
+                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', false)} />
                                             </div>
                                             <div className="col-item last-name">
-                                                <label>Tên</label>
-                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', false)} />
+                                                <label>{t("FamilyFirstName")}</label>
+                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', false)} />
                                             </div>
                                             <div className="col-item relationship">
                                                 <label>{t("Relationship")}</label>

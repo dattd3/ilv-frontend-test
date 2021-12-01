@@ -44,10 +44,10 @@ class FamilyComponent extends React.Component {
 
                                 {item.OldFamily ? <Row className="info-value old">
                                     <Col xs={12} md={3}>
-                                        <p className="detail">{oldFamily.FirstName}</p>
+                                        <p className="detail">{oldFamily.LastName}</p>
                                     </Col>
                                     <Col xs={12} md={2}>
-                                        <p className="detail">{oldFamily.LastName}</p>
+                                        <p className="detail">{oldFamily.FirstName}</p>
                                     </Col>
                                     <Col xs={12} md={2}>
                                         <p className="detail">{oldFamily.RelationshipText}</p>
@@ -61,10 +61,10 @@ class FamilyComponent extends React.Component {
                                 </Row> : null }
                                 <Row className="info-value new">
                                     <Col xs={12} md={3}>
-                                        <p className="detail">{newFamily.FirstName}</p>
+                                        <p className="detail">{newFamily.LastName}</p>
                                     </Col>
                                     <Col xs={12} md={2}>
-                                        <p className="detail">{newFamily.LastName}</p>
+                                        <p className="detail">{newFamily.FirstName}</p>
                                     </Col>
                                     <Col xs={12} md={2}>
                                         <p className="detail">{newFamily.RelationshipText}</p>
@@ -101,10 +101,10 @@ class FamilyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value create">
                                             <Col xs={12} md={3}>
-                                                <p className="detail">{item.FirstName}</p>
+                                                <p className="detail">{item.LastName}</p>
                                             </Col>
                                             <Col xs={12} md={2}>
-                                                <p className="detail">{item.LastName}</p>
+                                                <p className="detail">{item.FirstName}</p>
                                             </Col>
                                             <Col xs={12} md={2}>
                                                 <p className="detail">{item.RelationshipText}</p>
