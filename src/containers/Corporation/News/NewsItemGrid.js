@@ -48,7 +48,7 @@ export default function NewsItemGrid(props) {
                 <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="link-image-detail">
                     <Image src={thumbnail} className="thumbnail"
                         onError={(e) => {
-                            e.target.src = "/vingroup-logo.svg"
+                            e.target.src = "/logo-small.svg"
                             e.target.className = `thumbnail error`
                         }} 
                     />

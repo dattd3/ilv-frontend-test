@@ -77,7 +77,6 @@ function SideBar(props) {
                         </div>
                     </Animated>
                     <MetisMenu
-                        className='sidebar sidebar-dark'
                         content={contents}
                         activeLinkFromLocation
                         iconNameStateVisible="arrow_expand"

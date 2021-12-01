@@ -24,7 +24,7 @@ function MainLayout(props) {
   const isApp = searchParams.get('isApp') || false;
 
   // if (props.location.pathname.indexOf("training") < 0 || props.location.pathname.indexOf("news") < 0) {
-    const { history } = props;
+  const { history } = props;
   //   let is404 = props.routes.filter(r => r.routeProps.path === props.location.pathname).length <= 0;
   //   if (is404) {
   //     history.push(map.NotFound);
@@ -35,6 +35,9 @@ function MainLayout(props) {
     history.push(map.NotFound);
   }
 
+
+  const isDashBoard = props.location.pathname === '/';
+  console.log(isDashBoard)
   return (
     <>
       <SideBar show={show} user={user} />
@@ -46,7 +49,10 @@ function MainLayout(props) {
           </div>
           <ScrollToTop />
         </div>
-        <Footer />
+        <div className="footer-dash-board">
+          <Footer isDashBoard={isDashBoard} />
+        </div>
+
       </div>
     </>
   );
