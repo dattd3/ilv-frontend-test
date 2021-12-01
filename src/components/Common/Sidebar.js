@@ -68,7 +68,7 @@ function SideBar(props) {
     return (
         <>
             <div>
-                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar' : 'bg-vp-blue sidebar d-none'}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar scroll-custom-sidebar' : 'bg-vp-blue sidebar scroll-custom-sidebar d-none'}>
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">

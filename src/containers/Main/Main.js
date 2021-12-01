@@ -35,21 +35,23 @@ function MainLayout(props) {
     history.push(map.NotFound);
   }
 
+  const isDashBoard = props.location.pathname === '/';
   return (
     <>
       <SideBar show={show} user={user} />
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
           <Header user={user} setShow={setShow} isApp={isApp} />
-          <div className="container-fluid" id='main-content'>
+          <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
             <NestedRoute routes={props.routes} />
           </div>
           <ScrollToTop />
         </div>
-        <div className="footer-dash-board">
-          <Footer />
-        </div>
-
+        {isDashBoard !== true &&
+          <div className="footer-dash-board">
+            <Footer />
+          </div>
+        }
       </div>
     </>
   );
