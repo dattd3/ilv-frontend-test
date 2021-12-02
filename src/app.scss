@@ -1586,6 +1586,10 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    .validation-files {
+      font-style: italic;
+      margin-top: 10px;
+    }
     .block-button-actions {
       margin-top: 15px;
       display: flex;
