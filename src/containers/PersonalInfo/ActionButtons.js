@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 
 function ActionButtons(props) {
     const { t } = useTranslation()
+    const { errors } = props
     const [files, SetFiles] = useState([])
 
     const handleChangeFileInput = e => {
@@ -26,6 +27,7 @@ function ActionButtons(props) {
 
     return (
         <>
+        { errors && errors.other && <div className="text-danger validation-message validation-files">{errors.other}</div> }
         <div className="list-files">
             {
                 (files || []).map((file, i) => {
