@@ -12,6 +12,7 @@ import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
+import map from '../../containers/map.config'
 
 const actionType = {
   disApproval: 1,
@@ -441,6 +442,7 @@ class MyComponent extends React.Component {
     const resultModal = {...this.state.resultModal}
     resultModal.isShow = false
     this.setState({resultModal: resultModal})
+    window.location.href = map.PersonalInfo
   }
 
   onHideModalConfirm = () => {
