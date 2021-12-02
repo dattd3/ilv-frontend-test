@@ -178,22 +178,31 @@ class MyComponent extends React.Component {
     const dataCreate = relationshipInformation.relationshipDataToCreate
     const dataUpdate = relationshipInformation.relationshipDataToUpdate
 
-    requiredFields.forEach(name => {
-      dataCreate?.length > 0 && dataCreate.forEach((item, index) => {
-        let errorName = `create_${name}_${index}`
-        errors[[errorName]] = null
-        if (!item[[name]]) {
-          errors[[errorName]] =  t("Required")
-        }
+    if ((!dataCreate || dataCreate.length === 0) && (!dataUpdate || dataUpdate.length === 0)) {
+      errors['other'] = "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi"
+    } else {
+      requiredFields.forEach(name => {
+        dataCreate?.length > 0 && dataCreate.forEach((item, index) => {
+          let errorName = `create_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
+        dataUpdate?.length > 0 && dataUpdate.forEach((item, index) => {
+          let errorName = `update_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
       })
-      dataUpdate?.length > 0 && dataUpdate.forEach((item, index) => {
-        let errorName = `update_${name}_${index}`
-        errors[[errorName]] = null
-        if (!item[[name]]) {
-          errors[[errorName]] =  t("Required")
-        }
-      })
-    })
+
+      if (!relationshipInformation.files || relationshipInformation.files?.length === 0) {
+        errors['other'] = t("AttachmentRequired")
+      }
+    }
+
     this.setState({errors: errors})
     return errors
   }
@@ -804,7 +813,7 @@ class MyComponent extends React.Component {
               : <RelationshipList relationships={userFamily} />
             }
             </Container>
-            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
+            { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
