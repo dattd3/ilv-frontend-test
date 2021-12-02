@@ -38,7 +38,8 @@ class MyComponent extends React.Component {
         title: this.props.t("Notification"),
         message: "",
         isSuccess: true
-      }
+      },
+      errors: null
     };
   }
 
@@ -169,7 +170,46 @@ class MyComponent extends React.Component {
     this.setState({relationshipInformation: relationshipInformation})
   }
 
+  verifyInputs = () => {
+    const { t } = this.props
+    const { relationshipInformation } = this.state
+    const errors = {}
+    const requiredFields = ['new_lastname', 'new_firstname', 'new_relation', 'new_gender', 'new_dob']
+    const dataCreate = relationshipInformation.relationshipDataToCreate
+    const dataUpdate = relationshipInformation.relationshipDataToUpdate
+
+    requiredFields.forEach(name => {
+      dataCreate?.length > 0 && dataCreate.forEach((item, index) => {
+        let errorName = `create_${name}_${index}`
+        errors[[errorName]] = null
+        if (!item[[name]]) {
+          errors[[errorName]] =  t("Required")
+        }
+      })
+      dataUpdate?.length > 0 && dataUpdate.forEach((item, index) => {
+        let errorName = `update_${name}_${index}`
+        errors[[errorName]] = null
+        if (!item[[name]]) {
+          errors[[errorName]] =  t("Required")
+        }
+      })
+    })
+    this.setState({errors: errors})
+    return errors
+  }
+
+  isValidData = () => {
+    const errors = this.verifyInputs()
+    const hasErrors = !Object.values(errors).every(item => item === null || item === undefined)
+    return hasErrors ? false : true
+  }
+
   sendRequests = async () => {
+    const isValid = this.isValidData()
+    if (!isValid) {
+      return
+    }
+
     const { t } = this.props
     const { relationshipInformation, resultModal } = this.state
     try {
@@ -371,8 +411,10 @@ class MyComponent extends React.Component {
 
   render() {   
     const { t } = this.props
-    const { userFamily, relationshipInformation, educationInformation, resultModal } = this.state
-    const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const { userFamily, relationshipInformation, educationInformation, resultModal, errors } = this.state
+    const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
+    const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
@@ -411,7 +453,7 @@ class MyComponent extends React.Component {
             <div className="clearfix edit-button">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditProfiles ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
               }
             </div>
             <Row >
@@ -679,7 +721,7 @@ class MyComponent extends React.Component {
             <div className="clearfix edit-button">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditEducations ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
               }
             </div>
             <Container fluid className="info-tab-content shadow">
@@ -746,7 +788,7 @@ class MyComponent extends React.Component {
             <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+                isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <h5 className="content-page-header">{t("PersonalRelations")}</h5>
@@ -754,7 +796,7 @@ class MyComponent extends React.Component {
             {
               relationshipInformation.isEditing ? 
               <>
-              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} />
+              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} errors={errors} />
               <div className="block-button-add">
                 <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>{t("Add")}</button>
               </div>
