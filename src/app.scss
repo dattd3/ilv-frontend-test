@@ -1368,9 +1368,6 @@ span.badge-notification[data-badge]::after {
         // padding: 10px 0;
         .col-item {
           padding: 10px 15px;
-          // input {
-          //   width: 100%;
-          // }
         }
         .full-name {
           flex: 0 0 20%;
@@ -1380,7 +1377,6 @@ span.badge-notification[data-badge]::after {
         }
         .birthday {
           flex: 0 0 13%;
-          text-align: center;
         }
         .tax-no {
           flex: 0 0 16%;
@@ -1487,9 +1483,17 @@ span.badge-notification[data-badge]::after {
               border-top: 1px solid #707070;
               padding-top: 5px;
               margin-top: 10px;
-              margin-bottom: 30px;
+              margin-bottom: 20px;
               .col-item {
                 padding: 0 15px;
+                label {
+                  display: block;
+                }
+                .validation-message {
+                  font-size: 12px;
+                  margin-top: 4px;
+                  font-style: italic;
+                }
                 .text-box {
                   font: inherit;
                   display: flex;
