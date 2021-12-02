@@ -11,6 +11,14 @@ import RelationshipList from "./RelationshipList"
 import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
+import ConfirmationModal from './edit/ConfirmationModal'
+
+const actionType = {
+  disApproval: 1,
+  approval: 2,
+  eviction: 3,
+  createRequests: 4
+}
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -38,6 +46,12 @@ class MyComponent extends React.Component {
         title: this.props.t("Notification"),
         message: "",
         isSuccess: true
+      },
+      confirmationModal: {
+        isShow: false,
+        title: "",
+        message: "",
+        actionType: actionType.createRequests
       },
       errors: null
     };
@@ -213,12 +227,22 @@ class MyComponent extends React.Component {
     return hasErrors ? false : true
   }
 
-  sendRequests = async () => {
+  handleSendRequests = () => {
     const isValid = this.isValidData()
     if (!isValid) {
       return
     }
+    
+    const { t } = this.props
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = true
+    confirmationModal.title = t("ConfirmSend")
+    confirmationModal.message = t("ReasonModify")
+    confirmationModal.actionType = actionType.createRequests
+    this.setState({confirmationModal: confirmationModal})
+  }
 
+  sendRequests = async (message) => {
     const { t } = this.props
     const { relationshipInformation, resultModal } = this.state
     try {
@@ -237,7 +261,8 @@ class MyComponent extends React.Component {
 
       let bodyFormData = new FormData()
       bodyFormData.append('Name', "Quan hệ nhân thân")
-      bodyFormData.append('UserProfileInfo', userProfileInfo)
+      bodyFormData.append('Comment', message || "")
+      bodyFormData.append('UserProfileInfo', userProfileInfo) 
       bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
       bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
       bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
@@ -418,9 +443,19 @@ class MyComponent extends React.Component {
     this.setState({resultModal: resultModal})
   }
 
+  onHideModalConfirm = () => {
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = false
+    this.setState({confirmationModal: confirmationModal})
+  }
+
+  updateMessageFromModal = async message => {
+    await this.sendRequests(message)
+  }
+
   render() {   
     const { t } = this.props
-    const { userFamily, relationshipInformation, educationInformation, resultModal, errors } = this.state
+    const { userFamily, relationshipInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
     const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
@@ -454,6 +489,8 @@ class MyComponent extends React.Component {
 
     return (
       <>
+      <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
+        sendData={this.updateMessageFromModal} onHide={this.onHideModalConfirm} />
       <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
@@ -813,7 +850,7 @@ class MyComponent extends React.Component {
               : <RelationshipList relationships={userFamily} />
             }
             </Container>
-            { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
+            { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.handleSendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
