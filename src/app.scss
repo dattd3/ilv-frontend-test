@@ -1543,8 +1543,8 @@ span.badge-notification[data-badge]::after {
                 background: #FF0014;
                 color: #FFFFFF;
                 font-size: 14px;
-                top: 0;
-                right: 0;
+                top: -1px;
+                right: -1px;
                 border-bottom-left-radius: 4px;
               }
             }

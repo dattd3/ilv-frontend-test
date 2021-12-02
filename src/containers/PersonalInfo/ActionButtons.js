@@ -39,7 +39,7 @@ function ActionButtons(props) {
         <div className="block-button-actions">
             <div className="block-buttons">
                 <span className="btn-action btn-attachment">
-                    <label htmlFor="i_files" className="custom-file-upload"><i className="fas fa-paperclip"></i>Đính kèm tệp tin</label>
+                    <label htmlFor="i_files" className="custom-file-upload"><i className="fas fa-paperclip"></i>{t("AttachFile")}</label>
                     <input id="i_files" type="file" name="i_files" onChange={handleChangeFileInput} accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" multiple />
                 </span>
                 <button type="button" className="btn btn-primary ml-3 shadow" onClick={handleSendRequests}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
