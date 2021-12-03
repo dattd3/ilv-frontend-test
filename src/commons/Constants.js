@@ -168,6 +168,8 @@ const Constants = {
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
+    editEducation: 'EDIT_EDUCATION',
+    editRelationship: 'EDIT_RELATIONSHIP',
     qnA: 'QnA',
     changeStaffShift: 'CHANGE_STAFF_SHIFT'
   },

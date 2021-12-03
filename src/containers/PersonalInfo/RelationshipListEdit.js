@@ -68,7 +68,7 @@ function RelationshipListEdit(props) {
     useEffect(() => {
         const prepareRelationships = () => {
             const relationshipsToUpdate = (relationships && relationships || []).map(item => {
-                let gender = genders.find(g => getGenderByRelationshipTypes(item.relation_code).includes(g.value))
+                let gender = genders.find(g => getGenderByRelationshipTypes(item.relation_code).includes(g.value) && g.value == item.gender_code)
                 let newGenderOptions = genders.filter(g => getGenderByRelationshipTypes(item.relation_code).includes(g.value))
                 return {
                     ...item,
@@ -76,7 +76,7 @@ function RelationshipListEdit(props) {
                     new_lastname: item.lastname,
                     new_dob: item.dob,
                     new_relation: {value: item.relation_code, label: item.relation, genders: getGenderByRelationshipTypes(item.relation_code)},
-                    new_gender: {value: getGenderByRelationshipTypes(item.relation_code), label: gender?.label},
+                    new_gender: {value: gender.value, label: gender?.label},
                     new_gender_options: newGenderOptions
                 }
             })
@@ -163,16 +163,25 @@ function RelationshipListEdit(props) {
         })
     }
 
+    const error = (index, action, name) => {
+        const { errors } = props
+        if (!errors) {
+            return null
+        }
+        const validationKey = `${action}_${name}_${index}`
+        return errors[[validationKey]] ? <div className="text-danger validation-message">{errors[[validationKey]]}</div> : null
+    }
+
     return (
         <div className="editing-section">
             <div className="old-new-flag">
                 <span className="flag old">
                     <span className="box"></span>
-                    <span>Thông tin cũ</span>
+                    <span>{t("Record")}</span>
                 </span>
                 <span className="flag new">
                     <span className="box"></span>
-                    <span>Nhập thông tin điều chỉnh</span>
+                    <span>{t("UpdateInformation")}</span>
                 </span>
             </div>
             <div className="detail-info">
@@ -198,33 +207,37 @@ function RelationshipListEdit(props) {
                                 </div>
                                 <div className="edit-value">
                                     <div className="col-item first-name">
-                                        <label>Họ và tên đệm</label>
-                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
+                                        <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>
+                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
+                                        {error(i, 'update', 'new_lastname')}
                                     </div>
                                     <div className="col-item last-name">
-                                        <label>Tên</label>
-                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
+                                        <label>{t("FamilyFirstName")}<span className="text-danger required">(*)</span></label>
+                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
+                                        {error(i, 'update', 'new_firstname')}
                                     </div>
                                     <div className="col-item relationship">
-                                        <label>{t("Relationship")}</label>
+                                        <label>{t("Relationship")}<span className="text-danger required">(*)</span></label>
                                         <Select 
                                             options={relationshipTypes} 
                                             placeholder={`${t("Select")}`} 
                                             onChange={e => handleSelectInputChange(e, i, 'new_relation', true)} 
                                             value={item.new_relation} 
                                             styles={customStyles} />
+                                        {error(i, 'update', 'new_relation')}
                                     </div>
                                     <div className="col-item gender">
-                                        <label>{t("Gender")}</label>
+                                        <label>{t("Gender")}<span className="text-danger required">(*)</span></label>
                                         <Select 
                                             options={item.new_gender_options} 
                                             placeholder={`${t("Select")}`} 
                                             onChange={e => handleSelectInputChange(e, i, 'new_gender', true)} 
                                             value={item.new_gender} 
                                             styles={customStyles} />
+                                        {error(i, 'update', 'new_gender')}
                                     </div>
                                     <div className="col-item birthday">
-                                        <label>{t("DateOfBirth")}</label>
+                                        <label>{t("DateOfBirth")}<span className="text-danger required">(*)</span></label>
                                         <DatePicker
                                             maxDate={new Date()}
                                             selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
@@ -234,6 +247,7 @@ function RelationshipListEdit(props) {
                                             showYearDropdown={true}
                                             locale="vi"
                                             className="form-control input" />
+                                        {error(i, 'update', 'new_dob')}
                                     </div>
                                 </div>
                             </Fragment>
@@ -248,33 +262,37 @@ function RelationshipListEdit(props) {
                                 return <div className="edit-value" key={i}>
                                             <span className="btn-remove-relationship-item" onClick={() => removeRelationshipCreated(i)}><i className="fas fa-times"></i></span>
                                             <div className="col-item first-name">
-                                                <label>Họ và tên đệm</label>
-                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', false)} />
+                                                <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>
+                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', false)} />
+                                                {error(i, 'create', 'new_lastname')}
                                             </div>
                                             <div className="col-item last-name">
-                                                <label>Tên</label>
-                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', false)} />
+                                                <label>{t("FamilyFirstName")}<span className="text-danger required">(*)</span></label>
+                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', false)} />
+                                                {error(i, 'create', 'new_firstname')}
                                             </div>
                                             <div className="col-item relationship">
-                                                <label>{t("Relationship")}</label>
+                                                <label>{t("Relationship")}<span className="text-danger required">(*)</span></label>
                                                 <Select 
                                                     options={relationshipTypes} 
                                                     placeholder={`${t("Select")}`} 
                                                     onChange={e => handleSelectInputChange(e, i, 'new_relation', false)} 
                                                     value={item.new_relation} 
                                                     styles={customStyles} />
+                                                {error(i, 'create', 'new_relation')}
                                             </div>
                                             <div className="col-item gender">
-                                                <label>{t("Gender")}</label>
+                                                <label>{t("Gender")}<span className="text-danger required">(*)</span></label>
                                                 <Select 
                                                     options={item.new_gender_options} 
                                                     placeholder={`${t("Select")}`} 
                                                     onChange={e => handleSelectInputChange(e, i, 'new_gender', false)} 
                                                     value={item.new_gender} 
                                                     styles={customStyles} />
+                                                {error(i, 'create', 'new_gender')}
                                             </div>
                                             <div className="col-item birthday">
-                                                <label>{t("DateOfBirth")}</label>
+                                                <label>{t("DateOfBirth")}<span className="text-danger required">(*)</span></label>
                                                 <DatePicker
                                                     maxDate={new Date()}
                                                     selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
@@ -284,6 +302,7 @@ function RelationshipListEdit(props) {
                                                     showYearDropdown={true}
                                                     locale="vi"
                                                     className="form-control input" />
+                                                {error(i, 'create', 'new_dob')}
                                             </div>
                                         </div>
                             })
