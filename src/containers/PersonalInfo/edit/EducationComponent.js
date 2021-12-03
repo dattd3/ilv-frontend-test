@@ -212,10 +212,9 @@ class EducationComponent extends React.Component {
     const educationLevels = this.props.educationLevels.filter(educationLevel => {
       return !['V060'].includes(localStorage.getItem("companyCode")) ? (educationLevel.ID !== "VN" && educationLevel.ID !== "VO" && educationLevel.ID !== "VM" && educationLevel.ID !== "VA"
         && educationLevel.ID !== "VB" && educationLevel.ID !== "VC" && educationLevel.ID !== "VD") : true
+    }).map(educationLevel => {
+      return { value: educationLevel.ID, label: educationLevel.TEXT }
     })
-      .map(educationLevel => {
-        return { value: educationLevel.ID, label: educationLevel.TEXT }
-      })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
 
@@ -226,7 +225,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].degreeType}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.update[0].degreeType}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -239,7 +238,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].school}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.update[0].school}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -252,7 +251,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].major}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.update[0].major}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -269,7 +268,7 @@ class EducationComponent extends React.Component {
               showMonthDropdown={true}
               showYearDropdown={true}
               autoComplete='off'
-              placeholderText="From"
+              placeholderText={t("From")}
               popperPlacement="bottom-end"
               className="form-control input" />
           </div>
@@ -285,17 +284,17 @@ class EducationComponent extends React.Component {
             showMonthDropdown={true}
             showYearDropdown={true}
             autoComplete='off'
-            placeholderText="To"
+            placeholderText={t("To")}
             popperPlacement="bottom-end"
             className="form-control input" />
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].fromTime}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.update[0].fromTime}</div> : null
         }
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.update) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.update[0].toTime}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.update[0].toTime}</div> : null
         }
         </div>
       </Col>
@@ -321,7 +320,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].degreeType}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.create[0].degreeType}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -334,7 +333,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].school}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.create[0].school}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -347,7 +346,7 @@ class EducationComponent extends React.Component {
         </div>
         {
           (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
-            <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].major}</p> : null
+            <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.create[0].major}</div> : null
         }
       </Col>
       <Col xs={12} md={6} lg={3}>
@@ -364,7 +363,7 @@ class EducationComponent extends React.Component {
               showMonthDropdown={true}
               showYearDropdown={true}
               autoComplete='off'
-              placeholderText="From"
+              placeholderText={t("From")}
               popperPlacement="bottom-end"
               className="form-control input" />
           </div>
@@ -380,17 +379,17 @@ class EducationComponent extends React.Component {
               showMonthDropdown={true}
               showYearDropdown={true}
               autoComplete='off'
-              placeholderText="To"
+              placeholderText={t("To")}
               popperPlacement="bottom-end"
               className="form-control input" />
           </div>
           {
             (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
-              <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].fromTime}</p> : null
+              <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.create[0].fromTime}</div> : null
           }
           {
             (this.state.validationEducationMessagesFromParent && this.state.validationEducationMessagesFromParent.create) ?
-              <p className="text-danger">{this.state.validationEducationMessagesFromParent.create[0].toTime}</p> : null
+              <div className="text-danger validation-message">{this.state.validationEducationMessagesFromParent.create[0].toTime}</div> : null
           }
         </div>
       </Col>
@@ -413,7 +412,7 @@ class EducationComponent extends React.Component {
         </div>
       </Col>
       <Col xs={12} md={6} lg={3}>
-        <div className="detail">{item.from_time} - {item.to_time}</div>
+        <div className="detail">{moment(item.from_time, 'DD-MM-YYYY').isValid() ? moment(item.from_time, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""} - {moment(item.to_time, 'DD-MM-YYYY').isValid() ? moment(item.to_time, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
       </Col>
     </Row>
   }
@@ -448,18 +447,14 @@ class EducationComponent extends React.Component {
 
           {this.state.newUserEducation && this.state.newUserEducation.map((item, i) => {
             return <div className="clearfix new-item" key={i}>
-              <div className="float-left input-table">
-                <div key={i}>
-                  {this.itemHeader()}
-                  {this.educationInput(item, i, 'newUserEducation')}
-                </div>
-              </div>
-              <div className="float-left remove">
-                <button type="button" onClick={this.removeEducation.bind(this, i)} className="close" data-dismiss="alert" aria-label="Close">
-                  <span className="text-danger" aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            </div>
+                    <span className="btn-remove-education-item" onClick={this.removeEducation.bind(this, i)}><i className="fas fa-times"></i></span>
+                    <div className="float-left input-table">
+                      <div key={i}>
+                        {this.itemHeader()}
+                        {this.educationInput(item, i, 'newUserEducation')}
+                      </div>
+                    </div>
+                  </div>
           })}
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from "react"
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import { formatStringByMuleValue } from "../../commons/Utils"
@@ -30,7 +30,7 @@ function EducationList(props) {
                             <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
                         </Col>
                         <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.from_time} - {item.to_time}</p>
+                            <p>&nbsp;{moment(item.from_time, 'DD-MM-YYYY').isValid() ? moment(item.from_time, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""} - {moment(item.to_time, 'DD-MM-YYYY').isValid() ? moment(item.to_time, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p>
                         </Col>
                     </Row>
                 })
