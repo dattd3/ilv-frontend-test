@@ -431,7 +431,6 @@ class EducationComponent extends React.Component {
     const { t } = this.props;
     return (
       <div className="education">
-        <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
           <span className="mr-5"><i className="note note-old"></i> {t("Record")} </span>
           <span><i className="note note-new"></i> {t("NewInformation")}</span>

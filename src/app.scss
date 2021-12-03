@@ -1567,6 +1567,22 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .tab-education, .tab-main-info {
+    .top-button-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      font-size: inherit;
+      .btn {
+        font-size: inherit;
+        i {
+          font-size: 12px;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
   .tab-relationship {
     font-size: inherit;
     .list-files {
