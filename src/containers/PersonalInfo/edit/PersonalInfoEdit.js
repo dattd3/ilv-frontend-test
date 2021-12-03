@@ -18,8 +18,8 @@ const title = localStorage.getItem('jobTitle') || "";
 const department = localStorage.getItem('department') || "";
 
 class PersonalInfoEdit extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     const staff = {
       code: code,
       fullName: fullName,
@@ -1252,45 +1252,52 @@ class PersonalInfoEdit extends React.Component {
   }
 
   render() {
-    const { t } = this.props
+    const { t, isEnableEditEducation, isEnableEditMainInfo } = this.props
     return (
       <div className="edit-personal">
         <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage} confirmStatus={this.state.confirmStatus}
           sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
         <ResultModal show={this.state.isShowResultConfirm} title={this.state.modalTitle} message={this.state.modalMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
         <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
-          <PersonalComponent userDetail={this.state.userDetail}
-            userProfile={this.state.userProfile}
-            removeInfo={this.removePersonalInfo.bind(this)}
-            updateInfo={this.updatePersonalInfo.bind(this)}
-            updateAddress={this.updateAddress.bind(this)}
-            setState={this.setState.bind(this)}
-            genders={this.state.genders}
-            races={this.state.races}
-            marriages={this.state.marriages}
-            nations={this.state.nations}
-            banks={this.state.banks}
-            countries={this.state.countries}
-            religions={this.state.religions}
-            documentTypes={this.state.documentTypes}
-            requestedUserProfile={this.state.requestedUserProfile}
-            isEdit={this.state.isEdit}
-            birthCountry={this.props.birthCountry}
-            validationMessages={this.state.errors}
-          />
-          {/* <EducationComponent
-            userEducation={this.state.userEducation}
-            setState={this.setState.bind(this)}
-            certificates={this.state.certificates}
-            educationLevels={this.state.educationLevels}
-            majors={this.state.majors}
-            schools={this.state.schools}
-            updateEducation={this.updateEducation.bind(this)}
-            addEducation={this.addEducation.bind(this)}
-            requestedUserProfile={this.state.requestedUserProfile}
-            isEdit={this.state.isEdit}
-            validationMessages={this.state.errors}
-          /> */}
+          {
+            isEnableEditMainInfo !== undefined && isEnableEditMainInfo
+            && <PersonalComponent userDetail={this.state.userDetail}
+                  userProfile={this.state.userProfile}
+                  removeInfo={this.removePersonalInfo.bind(this)}
+                  updateInfo={this.updatePersonalInfo.bind(this)}
+                  updateAddress={this.updateAddress.bind(this)}
+                  setState={this.setState.bind(this)}
+                  genders={this.state.genders}
+                  races={this.state.races}
+                  marriages={this.state.marriages}
+                  nations={this.state.nations}
+                  banks={this.state.banks}
+                  countries={this.state.countries}
+                  religions={this.state.religions}
+                  documentTypes={this.state.documentTypes}
+                  requestedUserProfile={this.state.requestedUserProfile}
+                  isEdit={this.state.isEdit}
+                  birthCountry={this.props.birthCountry}
+                  validationMessages={this.state.errors}
+                />
+          }
+          {
+            isEnableEditEducation !== undefined && isEnableEditEducation 
+            && <EducationComponent
+                  userEducation={this.state.userEducation}
+                  setState={this.setState.bind(this)}
+                  certificates={this.state.certificates}
+                  educationLevels={this.state.educationLevels}
+                  majors={this.state.majors}
+                  schools={this.state.schools}
+                  updateEducation={this.updateEducation.bind(this)}
+                  addEducation={this.addEducation.bind(this)}
+                  requestedUserProfile={this.state.requestedUserProfile}
+                  isEdit={this.state.isEdit}
+                  validationMessages={this.state.errors}
+                />
+          }
+
           {/* <FamilyComponent userFamily={this.state.userFamily} setState={this.setState.bind(this)}/> */}
 
           <ul className="list-inline">
@@ -1304,9 +1311,9 @@ class PersonalInfoEdit extends React.Component {
           {this.error('notChange')}
           {(this.state.errors && !this.state.errors.notChange) ? this.error('fileUpload') : null}
 
-          <div className="clearfix mb-5">
+          <div className="clearfix mb-5 block-action-buttons">
             {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>  {t("Send")}</button>
+            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
             <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
             <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
           </div>

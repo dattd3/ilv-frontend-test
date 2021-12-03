@@ -308,6 +308,19 @@
             font-weight: 100;
         }
     }
+    .edit-main-user-info {
+        font-size: 14px;
+        color: #000000;
+    }
+    .block-action-buttons {
+        button {
+            font-size: 14px !important;
+            i {
+                font-size: 12px;
+                margin-right: 5px;
+            }
+        }
+    }
 }
 .document-block {
     .document-item {
