@@ -12,7 +12,7 @@ import _ from 'lodash'
 import { t } from 'i18next'
 
 class RequestDetail extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       userMainInfo: [],
@@ -221,6 +221,20 @@ class RequestDetail extends React.Component {
       6: {label: t("Unsuccessful"), className: 'warning'}
     }
 
+    let messageSAP = null;
+    if (this.props.details.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (this.props.details.responseDataFromSAP && Array.isArray(this.props.details.responseDataFromSAP)) {
+        const data = this.props.details.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
+
     return (
       <>
       <ConfirmationModal show={isShowModalConfirm} title={modalTitle} type={typeRequest} message={modalMessage} 
@@ -286,6 +300,15 @@ class RequestDetail extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index}>{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         { isShowDocumentComponent ? 
           <>
