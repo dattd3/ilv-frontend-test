@@ -8,10 +8,13 @@ import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
+import MainInfoList from "./MainInfoList"
+import EducationList from "./EducationList"
 import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
+import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
 import map from '../../containers/map.config'
 
 const actionType = {
@@ -39,8 +42,10 @@ class MyComponent extends React.Component {
         files: []
       },
       educationInformation: {
+        isEditing: false
+      },
+      mainInformation: {
         isEditing: false,
-        educations: []
       },
       resultModal: {
         isShow: false,
@@ -151,10 +156,10 @@ class MyComponent extends React.Component {
     this.setState({ userDocument: result });
   }
 
-  handleEditRelationship = () => {
-    const relationshipInformation = {...this.state.relationshipInformation}
-    relationshipInformation.isEditing = true
-    this.setState({relationshipInformation: relationshipInformation})
+  handleEditInfo = stateName => {
+    const info = {...this.state[[stateName]]}
+    info.isEditing = true
+    this.setState({[stateName]: info})
   }
 
   handleAddNewRelationships = () => {
@@ -457,7 +462,7 @@ class MyComponent extends React.Component {
 
   render() {   
     const { t } = this.props
-    const { userFamily, relationshipInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
+    const { userFamily, userDetail, userHealth, userProfile, userEducation, relationshipInformation, mainInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
     const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
@@ -467,28 +472,6 @@ class MyComponent extends React.Component {
     const documents = this.state.userDocument.documents;
     const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastPB, Constants.PnLCODE.VinFastTrading);
 
-    function SummaryAddress(obj) {
-      let result = '';
-      if (typeof (obj) == 'object' && obj.length > 0) {
-        for (let i = 0; i < obj.length; i++) {
-          const element = obj[i];
-          if (isNotNull(element)) {
-            result += element + ', '
-          }
-        }
-      }
-      result = result.trim();
-      if (result.length > 0) { result = result.substring(0, result.length - 1); }
-      return result;
-    }
-
-    function isNotNull(input) {
-      if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-        return true;
-      }
-      return false;
-    }
-
     return (
       <>
       <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
@@ -497,338 +480,37 @@ class MyComponent extends React.Component {
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
         <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
-          <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
-            <div className="clearfix edit-button">
+          <Tab eventKey="PersonalInformation" title={t("PersonalInformation")} className="tab-main-info">
+            <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfiles ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditProfiles ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
-            <Row >
-              <Col xs={12} md={12} lg={6}>
-                <h4>{t("PersonalInformation")}</h4>
-                <div className="info-tab-content shadow">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="info-label">{t("FullName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.fullname}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("EmployeeNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.uid}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("SocialInsuranceNumber")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.insurance_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("VinID")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.vinid}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PitNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.tax_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("DateOfBirth")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birthday}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PlaceOfBirth")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birth_province}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Gender")}</td>
-                        <td className="info-value"><p>&nbsp;{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Country")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.nationality}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Ethnic")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.ethinic}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Religion")}</td>
-                        <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? this.state.userDetail.religion : t("None")}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_id_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdDateOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_date_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdPlaceOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_place_of_issue}</p></td>
-                      </tr>
-
-                      <tr>
-                        <td className="info-label">{t("PassportNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_id_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PassportDateOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_date_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PassportPlaceOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_place_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("WorkPermitNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.work_permit_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("ExpiryDate")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PermanentAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("TemporaryAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("MaritalStatus")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.marital_status_code === "1" ? t("MaritalMarried") : (this.state.userDetail.marital_status_code === "2" ? "Ly hôn" : t("MaritalSingle"))}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PersonalEmail")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_email}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("MobileNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("EmergencyPhoneNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.urgent_contact_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankAccountNumber")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_name}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankBranch")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_branch}</p></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </Col>
-              <Col xs={12} md={12} lg={6}>
-                <h4>{t("WorkingInformation")}</h4>
-                <div className="info-tab-content shadow">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="info-label">{t("VingroupOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_inc}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PAndLOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_co}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyEmail")}</td>
-                        <td className="info-value" style={{ textTransform: "lowercase" }}><p>&nbsp;{this.state.userProfile.company_email}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CurrentTitle")}</td>
-                        <td className="info-value"><p>&nbsp; {this.state.userProfile.current_position}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("GradeByTitle")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name_title}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("ActualGrade")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BenefitLevel")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.benefit_level}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("DivisionName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.division}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PropertyName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Team")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.part}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("RegionName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.department}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyPhone")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.fix_phone}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyPhoneExtension")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.extension_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("WorkingAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userProfile.building, this.state.userProfile.street_name, this.state.userProfile.wards, this.state.userProfile.district, this.state.userProfile.province])}</p></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                {
-                  (this.state.userHealth !== undefined && this.state.userHealth !== null) ?
-                    <>
-                      <h4>{t("HealthCheckInfo")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("HealthInsuranceNumber")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("RegisteredHospital")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userProfile.hospital_name}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("HealthCheckDate")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.examined_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfHealthCheck")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.health_type}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <h4>{t("OccupationalDisease")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("DateofOccupationalDiseaseDiagnosis")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.found_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.diseased_type}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ReasonsOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.reason}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <h4>{t("AccidentsAtWork")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("DateOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("LocationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.place}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_type}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ReasonsOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.cause_accident}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                    : null
-                }
-              </Col>
-            </Row>
+            <h5 className="content-page-header">{t("PersonalInformation")}</h5>
+            <Container fluid className="info-tab-content shadow main-info">
+              {
+                mainInformation.isEditing ?
+                <PersonalInfoEdit isEnableEditEducation={false} isEnableEditMainInfo={true} />
+                :
+                <MainInfoList userDetail={userDetail} userHealth={userHealth} userProfile={userProfile} />
+              }
+            </Container>
           </Tab>
-          <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")}>
-            <div className="clearfix edit-button">
+          <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")} className="tab-education">
+            <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditEducations ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditEducations ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("educationInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
-            <Container fluid className="info-tab-content shadow">
+            <h5 className="content-page-header">{t("Certification")}</h5>
+            <Container fluid className="info-tab-content shadow education">
               {
-                (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
-                  <><h4>{t("Degree")}</h4>
-                    {this.state.userEducation.map((item, i) => {
-                      return <div key={i}>
-                        <Row className="info-label">
-                          <Col xs={12} md={6} lg={3}>
-                            {t("SchoolName")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("TypeOfDegree")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("Major")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("Cohort")}
-                          </Col>
-                        </Row>
-                        <Row className="info-value">
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{isNotNull(item.university_name) ? item.university_name : item.other_uni_name}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.academic_level}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.from_time} - {item.to_time}</p>
-                          </Col>
-                        </Row>
-                      </div>;
-                    })}
-                    {/* <h4>{t("Certificate")}</h4>
-                    <Row>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateName")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateIssuesBy")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateIssuesDate")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateExpireDate")}
-                          
-                      </Col>
-                    </Row> */}
-                  </>
-                  : t("NoDataFound")
+                educationInformation.isEditing ?
+                <PersonalInfoEdit isEnableEditEducation={true} isEnableEditMainInfo={false} />
+                :
+                <EducationList educations={userEducation} />
               }
             </Container>
           </Tab>
@@ -836,7 +518,7 @@ class MyComponent extends React.Component {
             <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+                isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("relationshipInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <h5 className="content-page-header">{t("PersonalRelations")}</h5>
@@ -854,6 +536,7 @@ class MyComponent extends React.Component {
             </Container>
             { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.handleSendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
+
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
             checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
@@ -883,19 +566,18 @@ class MyComponent extends React.Component {
                                 return obj.documentList.map((item, index) => {
                                   if (index === 0) {
                                     return <tr key={index}>
-                                      <td >{item.index}</td>
+                                      <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
-                                      <td >{item.number}</td>
+                                      <td>{item.number}</td>
                                       {!checkVinfast && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
-                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                      <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   } else {
                                     return <tr key={index}>
-                                      <td >{item.index}</td>
+                                      <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
-                                      <td >{item.number}</td>
-
-                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                      <td>{item.number}</td>
+                                      <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   }
                                 })

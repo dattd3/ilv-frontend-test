@@ -352,16 +352,11 @@ class PersonalComponent extends React.Component {
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
         return (
-            <div className="info">
-                <h4 className="title text-uppercase">{t("PersonalInformation")}</h4>
+            <div className="info edit-main-user-info">
                 <div className="box shadow">
                     <div className="row">
-                        <div className="col">
-                            <i className="note note-old"></i> {t("Record")}
-                </div>
-                        <div className="col">
-                            <i className="note note-new"></i> {t("NewInformation")}
-                </div>
+                        <div className="col"><i className="note note-old"></i> {t("Record")}</div>
+                        <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>
                     </div>
                     <hr />
                     <div className="row">
