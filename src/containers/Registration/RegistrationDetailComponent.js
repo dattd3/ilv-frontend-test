@@ -71,7 +71,7 @@ class RegistrationDetailComponent extends React.Component {
         {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
         {this.state.data && this.state.data.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={this.props.action} substitution={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent/> : null}
+        {this.state.data && this.state.data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent details={this.state.data}/> : null}
         {/* {
           data.status == 0 && this.getTypeDetail() === "request" ?
           <div className="clearfix mb-5 registration-detail">
