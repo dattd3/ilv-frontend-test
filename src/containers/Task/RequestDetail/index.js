@@ -31,7 +31,8 @@ class RequestDetail extends React.Component {
       typeRequest: 1,
       userInfo: {},
       status: 5,
-      taskId: 0
+      taskId: 0,
+      requestTypeId: null
     }
   }
 
@@ -48,7 +49,7 @@ class RequestDetail extends React.Component {
       || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryEducation && data.userProfileInfo.update.userProfileHistoryEducation.length > 0)) {
         this.setState({isShowEducationComponent : true});
       }
-      if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.NewFamily)) {
+      if ((data.userProfileInfo.create && data.userProfileInfo.create.families && data.userProfileInfo.create.families.length > 0) || (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryFamily && data.userProfileInfo.update.userProfileHistoryFamily.length > 0)) {
         this.setState({isShowFamilyComponent : true});
       }
       if (data.userProfileInfo.update && data.userProfileInfo.update.userProfileHistoryMainInfo && data.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
@@ -195,6 +196,7 @@ class RequestDetail extends React.Component {
         const result = res.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
           const response = res.data.data
+          this.setState({requestTypeId: response.requestTypeId})
           this.processBlockStatuses(response);
           this.processEducationInfo(response);
           this.processMainInfo(response);
@@ -212,7 +214,7 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
-      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents } = this.state
+      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId } = this.state
     const statusOptions = {
       5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
@@ -266,7 +268,7 @@ class RequestDetail extends React.Component {
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
         {
-          (userInfo.manager && (status == 2 || status == 1)) ?
+          (requestTypeId != Constants.UPDATE_PROFILE && userInfo.manager && (status == Constants.STATUS_APPROVED || status == Constants.STATUS_NOT_APPROVED)) ?
           <>
           <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
@@ -285,7 +287,7 @@ class RequestDetail extends React.Component {
               </div>
             </div>
             {
-              status == 1 ?
+              status == Constants.STATUS_NOT_APPROVED ?
               <div className="row item-info">
                 <div className="col-12">
                   <div className="label">Lý do không phê duyệt</div>

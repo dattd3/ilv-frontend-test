@@ -11,6 +11,15 @@ import RelationshipList from "./RelationshipList"
 import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
+import ConfirmationModal from './edit/ConfirmationModal'
+import map from '../../containers/map.config'
+
+const actionType = {
+  disApproval: 1,
+  approval: 2,
+  eviction: 3,
+  createRequests: 4
+}
 
 class MyComponent extends React.Component {
   constructor(props) {
@@ -38,7 +47,14 @@ class MyComponent extends React.Component {
         title: this.props.t("Notification"),
         message: "",
         isSuccess: true
-      }
+      },
+      confirmationModal: {
+        isShow: false,
+        title: "",
+        message: "",
+        actionType: actionType.createRequests
+      },
+      errors: null
     };
   }
 
@@ -169,7 +185,65 @@ class MyComponent extends React.Component {
     this.setState({relationshipInformation: relationshipInformation})
   }
 
-  sendRequests = async () => {
+  verifyInputs = () => {
+    const { t } = this.props
+    const { relationshipInformation } = this.state
+    const errors = {}
+    const requiredFields = ['new_lastname', 'new_firstname', 'new_relation', 'new_gender', 'new_dob']
+    const dataCreate = relationshipInformation.relationshipDataToCreate
+    const dataUpdate = relationshipInformation.relationshipDataToUpdate
+
+    if ((!dataCreate || dataCreate.length === 0) && (!dataUpdate || dataUpdate.length === 0)) {
+      errors['other'] = "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi"
+    } else {
+      requiredFields.forEach(name => {
+        dataCreate?.length > 0 && dataCreate.forEach((item, index) => {
+          let errorName = `create_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
+        dataUpdate?.length > 0 && dataUpdate.forEach((item, index) => {
+          let errorName = `update_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
+      })
+
+      if (!relationshipInformation.files || relationshipInformation.files?.length === 0) {
+        errors['other'] = t("AttachmentRequired")
+      }
+    }
+
+    this.setState({errors: errors})
+    return errors
+  }
+
+  isValidData = () => {
+    const errors = this.verifyInputs()
+    const hasErrors = !Object.values(errors).every(item => item === null || item === undefined)
+    return hasErrors ? false : true
+  }
+
+  handleSendRequests = () => {
+    const isValid = this.isValidData()
+    if (!isValid) {
+      return
+    }
+    
+    const { t } = this.props
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = true
+    confirmationModal.title = t("ConfirmSend")
+    confirmationModal.message = t("ReasonModify")
+    confirmationModal.actionType = actionType.createRequests
+    this.setState({confirmationModal: confirmationModal})
+  }
+
+  sendRequests = async (message) => {
     const { t } = this.props
     const { relationshipInformation, resultModal } = this.state
     try {
@@ -188,7 +262,8 @@ class MyComponent extends React.Component {
 
       let bodyFormData = new FormData()
       bodyFormData.append('Name', "Quan hệ nhân thân")
-      bodyFormData.append('UserProfileInfo', userProfileInfo)
+      bodyFormData.append('Comment', message || "")
+      bodyFormData.append('UserProfileInfo', userProfileInfo) 
       bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
       bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
       bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
@@ -251,7 +326,7 @@ class MyComponent extends React.Component {
         pre_fullname: item.full_name,
         new_relation: item.new_relation.value,
         new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
-        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
         new_lastname: item.new_lastname,
         new_firstname: item.new_firstname,
         gender: item.new_gender.value,
@@ -278,7 +353,7 @@ class MyComponent extends React.Component {
         pre_fullname: "",
         new_relation: item.new_relation.value,
         new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
-        new_fullname: `${item.new_firstname} ${item.new_lastname}`,
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
         new_lastname: item.new_lastname,
         new_firstname: item.new_firstname,
         gender: item.new_gender.value,
@@ -320,7 +395,7 @@ class MyComponent extends React.Component {
               relationshipText: item.relation || "",
               genderCode: item.gender_code || "",
               genderText: item.gender || "",
-              birthday: item.dob || ""
+              birthday: moment(item.dob, "DD-MM-YYYY").format("YYYY-MM-DD")
             },
             NewFamily: {
               firstName: item.new_firstname || "",
@@ -329,7 +404,7 @@ class MyComponent extends React.Component {
               relationshipText: item.new_relation?.label || "",
               genderCode: item.new_gender.value || "",
               genderText: item.new_gender.label || "",
-              birthday: item.new_dob || ""
+              birthday: moment(item.new_dob, "DD-MM-YYYY").format("YYYY-MM-DD")
             }
           }
         })
@@ -367,12 +442,25 @@ class MyComponent extends React.Component {
     const resultModal = {...this.state.resultModal}
     resultModal.isShow = false
     this.setState({resultModal: resultModal})
+    window.location.href = map.PersonalInfo
+  }
+
+  onHideModalConfirm = () => {
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = false
+    this.setState({confirmationModal: confirmationModal})
+  }
+
+  updateMessageFromModal = async message => {
+    await this.sendRequests(message)
   }
 
   render() {   
     const { t } = this.props
-    const { userFamily, relationshipInformation, educationInformation, resultModal } = this.state
-    const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const { userFamily, relationshipInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
+    const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
+    const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
@@ -403,6 +491,8 @@ class MyComponent extends React.Component {
 
     return (
       <>
+      <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
+        sendData={this.updateMessageFromModal} onHide={this.onHideModalConfirm} />
       <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
@@ -411,7 +501,7 @@ class MyComponent extends React.Component {
             <div className="clearfix edit-button">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditProfiles ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
               }
             </div>
             <Row >
@@ -679,7 +769,7 @@ class MyComponent extends React.Component {
             <div className="clearfix edit-button">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
+                isEnableEditEducations ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
               }
             </div>
             <Container fluid className="info-tab-content shadow">
@@ -746,7 +836,7 @@ class MyComponent extends React.Component {
             <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfile ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+                isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={this.handleEditRelationship}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <h5 className="content-page-header">{t("PersonalRelations")}</h5>
@@ -754,15 +844,15 @@ class MyComponent extends React.Component {
             {
               relationshipInformation.isEditing ? 
               <>
-              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} />
+              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} errors={errors} />
               <div className="block-button-add">
-                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>Thêm mới</button>
+                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>{t("Add")}</button>
               </div>
               </>
               : <RelationshipList relationships={userFamily} />
             }
             </Container>
-            { relationshipInformation.isEditing && <ActionButtons sendRequests={this.sendRequests} updateFilesToParent={this.updateFilesToParent} /> }
+            { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.handleSendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */

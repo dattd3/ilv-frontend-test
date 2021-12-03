@@ -50,7 +50,7 @@ class ApprovalDetail extends React.Component {
       || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryEducation && data.requestInfo.update.userProfileHistoryEducation.length > 0)) {
         this.setState({isShowEducationComponent : true});
       }
-      if ((data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.NewFamily)) {
+      if ((data.requestInfo.create && data.requestInfo.create.families && data.requestInfo.create.families.length > 0) || (data.requestInfo.update && data.requestInfo.update.userProfileHistoryFamily && data.requestInfo.update.userProfileHistoryFamily.length > 0)) {
         this.setState({isShowFamilyComponent : true});
       }
       if (data.requestInfo.update && data.requestInfo.update.userProfileHistoryMainInfo && data.requestInfo.update.userProfileHistoryMainInfo.NewMainInfo != null 
@@ -244,7 +244,7 @@ class ApprovalDetail extends React.Component {
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
         {
-          (userInfo.manager && (processStatusId == 2 || processStatusId == 1)) ?
+          (data.requestTypeId != Constants.UPDATE_PROFILE && userInfo.manager && (processStatusId == Constants.STATUS_APPROVED || processStatusId == Constants.STATUS_NOT_APPROVED)) ?
           <>
           <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
           <div className="box shadow">
@@ -287,7 +287,7 @@ class ApprovalDetail extends React.Component {
           : null
         }
         {
-          processStatusId == 5 ?
+          processStatusId == Constants.STATUS_WAITING ?
           <div className="clearfix mb-5">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
