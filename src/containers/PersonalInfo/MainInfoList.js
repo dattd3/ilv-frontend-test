@@ -1,3 +1,4 @@
+import moment from "moment"
 import React from "react"
 import { Row, Col } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
@@ -50,7 +51,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("DateOfBirth")}</td>
-                                <td className="info-value"><p>&nbsp;{userDetail.birthday}</p></td>
+                                <td className="info-value"><p>&nbsp;{moment(userDetail.birthday, 'DD-MM-YYYY').isValid() ? moment(userDetail.birthday, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("PlaceOfBirth")}</td>
@@ -78,7 +79,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("IdDateOfIssue")}</td>
-                                <td className="info-value"><p>&nbsp;{userDetail.pid_date_of_issue}</p></td>
+                                <td className="info-value"><p>&nbsp;{moment(userDetail.pid_date_of_issue, 'DD-MM-YYYY').isValid() ? moment(userDetail.pid_date_of_issue, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("IdPlaceOfIssue")}</td>
@@ -91,7 +92,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("PassportDateOfIssue")}</td>
-                                <td className="info-value"><p>&nbsp;{userDetail.passport_date_of_issue}</p></td>
+                                <td className="info-value"><p>&nbsp;{moment(userDetail.passport_date_of_issue, 'DD-MM-YYYY').isValid() ? moment(userDetail.passport_date_of_issue, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("PassportPlaceOfIssue")}</td>
@@ -152,11 +153,11 @@ function MainInfoList(props) {
                     <tbody>
                       <tr>
                         <td className="info-label">{t("VingroupOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{userProfile.starting_date_inc}</p></td>
+                        <td className="info-value"><p>&nbsp;{moment(userProfile.starting_date_inc, 'DD-MM-YYYY').isValid() ? moment(userProfile.starting_date_inc, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("PAndLOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{userProfile.starting_date_co}</p></td>
+                        <td className="info-value"><p>&nbsp;{moment(userProfile.starting_date_co, 'DD-MM-YYYY').isValid() ? moment(userProfile.starting_date_co, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("CompanyEmail")}</td>
@@ -226,7 +227,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                               <td className="info-label">{t("HealthCheckDate")}</td>
-                              <td className="info-value"><p>&nbsp;{userHealth.examined_date}</p></td>
+                              <td className="info-value"><p>&nbsp;{moment(userHealth.examined_date, 'DD-MM-YYYY').isValid() ? moment(userHealth.examined_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ClassificationOfHealthCheck")}</td>
@@ -241,7 +242,7 @@ function MainInfoList(props) {
                           <tbody>
                             <tr>
                               <td className="info-label">{t("DateofOccupationalDiseaseDiagnosis")}</td>
-                              <td className="info-value"><p>&nbsp;{userHealth.found_date}</p></td>
+                              <td className="info-value"><p>&nbsp;{moment(userHealth.found_date, 'DD-MM-YYYY').isValid() ? moment(userHealth.found_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("ClassificationOfOccupationalDisease")}</td>
@@ -260,7 +261,7 @@ function MainInfoList(props) {
                           <tbody>
                             <tr>
                               <td className="info-label">{t("DateOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{userHealth.accident_date}</p></td>
+                              <td className="info-value"><p>&nbsp;{moment(userHealth.accident_date, 'DD-MM-YYYY').isValid() ? moment(userHealth.accident_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
                             </tr>
                             <tr>
                               <td className="info-label">{t("LocationOfAccidentsIncurred")}</td>
