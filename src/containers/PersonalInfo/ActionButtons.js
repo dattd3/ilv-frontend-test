@@ -27,7 +27,7 @@ function ActionButtons(props) {
 
     return (
         <>
-        { errors && errors.other && <div className="text-danger validation-message validation-files">{errors.other}</div> }
+        { errors && errors.other && <div className="text-danger validation-message validation-other">{errors.other}</div> }
         <div className="list-files">
             {
                 (files || []).map((file, i) => {
