@@ -1081,8 +1081,7 @@ class PersonalInfoEdit extends React.Component {
         <div className="edit-personal-detail-request">
           <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
             confirmStatus={this.state.confirmStatus} onHide={this.onHideModalConfirm} />
-          <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
-
+          <Form encType="multipart/form-data">
             <PersonalComponent userDetail={this.state.userDetail}
               userProfile={this.state.userProfile}
               removeInfo={this.removePersonalInfo.bind(this)}

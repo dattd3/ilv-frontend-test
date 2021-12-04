@@ -1567,6 +1567,38 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .tab-education, .tab-main-info {
+    color: #000000;
+    .top-button-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      font-size: inherit;
+      .btn {
+        font-size: inherit;
+        i {
+          font-size: 12px;
+          margin-right: 5px;
+        }
+      }
+    }
+    .validation-message {
+      font-size: 13px;
+      font-style: italic;
+      padding: 4px 0;
+    }
+    input {
+      font-size: inherit;
+      color: #000000;
+    }
+    button {
+      font-size: inherit;
+      i {
+        font-size: 12px;
+      }
+    }
+  }
   .tab-relationship {
     font-size: inherit;
     .list-files {
@@ -1586,7 +1618,7 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
-    .validation-files {
+    .validation-other {
       font-style: italic;
       margin-top: 10px;
     }
