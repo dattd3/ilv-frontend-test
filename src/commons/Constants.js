@@ -163,10 +163,13 @@ const Constants = {
     VinSmart: "V073",
     VinSoftware: "V096",
     VinFast: "V070",
-    VinFastTrading: "V077"
+    VinFastTrading: "V077",
+    VinITIS: "V097"
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
+    editEducation: 'EDIT_EDUCATION',
+    editRelationship: 'EDIT_RELATIONSHIP',
     qnA: 'QnA',
     changeStaffShift: 'CHANGE_STAFF_SHIFT'
   },
@@ -179,6 +182,7 @@ const Constants = {
     VinFast: "V077",
     VinFastTrading: "V078",
     VinFastPB: "V070"
-  }
+  },
+  LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf"
 };
 export default Constants

@@ -14,7 +14,7 @@ import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 
 const FULL_DAY = 1
@@ -84,28 +84,13 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     componentDidMount() {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            },
-            params: {
-                date: moment().format('YYYYMMDD')
-            }
+        const config = getMuleSoftHeaderConfigurations()
+        config['params'] = {
+            date: moment().format('YYYYMMDD')
         }
 
         const { leaveOfAbsence, t } = this.props
-        if (t("locale") === "vi") {
-            registerLocale("vi", vi)
-        } else {
-            registerLocale("en-US", enUS)
-        }
-
-        // {
-        //     perno: localStorage.getItem('employeeNo'),
-        //     date: moment().format('YYYYMMDD')
-        // }
+        registerLocale("vi", t("locale") === "vi" ? vi : enUS)
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
             .then(res => {
@@ -115,6 +100,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             }).catch(error => {
             })
+
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
@@ -276,8 +262,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const hasOverlap = requestInfo.flat().filter(req => {
             const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
             const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
-
-            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end)) {
+            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end) && start < end) {
                 return req
             }
         })
@@ -658,7 +643,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
-            id: 2,
+            id: Constants.LEAVE_OF_ABSENCE,
             name: "Đăng ký nghỉ"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))

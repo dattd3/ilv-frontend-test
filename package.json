@@ -33,6 +33,7 @@
     "react-easy-crop": "^3.5.2",
     "react-html-table-to-excel": "^2.0.0",
     "react-i18next": "^10.12.2",
+    "react-list": "^0.8.16",
     "react-metismenu": "^1.4.0",
     "react-moment": "^0.9.7",
     "react-paginate": "^6.3.2",

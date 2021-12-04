@@ -1,12 +1,20 @@
-import React from "react"; 
-import map from './map.config';
+import React from "react"
+import { Image } from 'react-bootstrap'
+import { useTranslation } from "react-i18next"
+import ApplicationImage from '../assets/img/application_name.svg'
 
 export default function Maintenance({ location }) {
+  const { t } = useTranslation()
+
   return (
-    <div className="container text-center mt-2">
-      <div className="error mx-auto" data-text="503">503</div>
-      <p className="lead text-gray-800 mb-2">BẢO TRÌ, NÂNG CẤP HỆ THỐNG</p>
-      <p className="text-gray-500 mb-0">Hệ thống đang tạm dừng hoạt động để IT nâng cấp hệ thống</p>
+    <div className="maintenance-page">
+      <div className="maintenance-content">
+        <h1 className="title">{t('Announcement')}</h1>
+        <div className="message-block">
+          <Image src={ApplicationImage} alt="Application name" className="application-image" />
+          <span className="message">đang tiến hành nâng cấp và bảo trì hệ thống!</span>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

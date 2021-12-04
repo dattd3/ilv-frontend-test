@@ -3,6 +3,7 @@ import axios from 'axios';
 import KPIDetailGroupItem from './KPIDetailGroupItem';
 import SuccessFactorInfo from "./SuccessFactorInfo";
 import { withTranslation } from "react-i18next";
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class ShowKPIDetail extends React.Component {
   constructor(props) {
@@ -48,13 +49,7 @@ class ShowKPIDetail extends React.Component {
 
     this.resetData();
     
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    let config = getMuleSoftHeaderConfigurations()
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general?Period=${Period}`, config)
       .then(res => {        
         if (res && res.data && res.data.data) {

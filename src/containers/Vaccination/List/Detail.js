@@ -1,21 +1,17 @@
 import React from "react"
 import { Button, Modal } from 'react-bootstrap'
-import { useTranslation } from "react-i18next"
-import Constants from "../../../commons/Constants"
 import Select from 'react-select'
-import moment from 'moment'
-import StatusModal from '../../../components/Common/StatusModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
+import { useTranslation } from "react-i18next"
+import moment from 'moment'
 import axios from 'axios'
 import _ from "lodash"
+import StatusModal from '../../../components/Common/StatusModal'
+import Constants from "../../../commons/Constants"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
+import 'react-datepicker/dist/react-datepicker.css'
+import vi from 'date-fns/locale/vi'
 import { t } from "i18next"
-let config = {
-    headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-    }
-}
 registerLocale("vi", vi)
 
 const numberInitial = 1
@@ -78,6 +74,7 @@ class VaccinationDetail extends React.Component {
 
     getInfo(id){
         const { t } = this.props;
+        const config = getRequestConfigurations()
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/detail-vaccin/${id}?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
@@ -120,6 +117,7 @@ class VaccinationDetail extends React.Component {
 
     getEffect() {
         const { t } = this.props;
+        const config = getRequestConfigurations()
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/effects?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
@@ -134,6 +132,7 @@ class VaccinationDetail extends React.Component {
 
     getMasterData(call) {
         const { t } = this.props;
+        const config = getRequestConfigurations()
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/datas?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
@@ -252,7 +251,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getListCity(call){
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=VN`, config)
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=VN`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -270,7 +270,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getListDistrict(proviceCode, call){
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${proviceCode}`, config)
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${proviceCode}`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -291,7 +292,8 @@ class VaccinationDetail extends React.Component {
     }
 
     getListWard(districtCode){
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${districtCode}`, config)
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${districtCode}`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -343,7 +345,7 @@ class VaccinationDetail extends React.Component {
             dataRequest['id'] = rowId;
             message = t('successfulUpdateVaccination');
         }
-
+        const config = getRequestConfigurations()
         axios.post(`${process.env.REACT_APP_REQUEST_URL}vaccin/${rowId !== null || rowId ? 'update': 'create'}-vaccin/`, dataRequest, config)
         .then(res => {
             if (res.data) {

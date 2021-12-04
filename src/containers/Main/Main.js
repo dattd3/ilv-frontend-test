@@ -24,7 +24,7 @@ function MainLayout(props) {
   const isApp = searchParams.get('isApp') || false;
 
   // if (props.location.pathname.indexOf("training") < 0 || props.location.pathname.indexOf("news") < 0) {
-    const { history } = props;
+  const { history } = props;
   //   let is404 = props.routes.filter(r => r.routeProps.path === props.location.pathname).length <= 0;
   //   if (is404) {
   //     history.push(map.NotFound);
@@ -35,18 +35,23 @@ function MainLayout(props) {
     history.push(map.NotFound);
   }
 
+  const isDashBoard = props.location.pathname === '/';
   return (
     <>
       <SideBar show={show} user={user} />
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
           <Header user={user} setShow={setShow} isApp={isApp} />
-          <div className="container-fluid" id='main-content'>
+          <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
             <NestedRoute routes={props.routes} />
           </div>
           <ScrollToTop />
         </div>
-        <Footer />
+        {isDashBoard !== true &&
+          <div className="footer-dash-board">
+            <Footer />
+          </div>
+        }
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import vi from "date-fns/locale/vi";
 import axios from "axios";
 import MemberOption from "../MemberOption"
 import SelectTab from "../SelectTab"
+import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 registerLocale("vi", vi);
 
 class FilterData extends React.Component {
@@ -51,19 +52,9 @@ class FilterData extends React.Component {
   }
 
   getApproverInfo = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-        client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-      },
-    };
+    const config = getMuleSoftHeaderConfigurations()
 
-    axios
-      .get(
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`,
-        config
-      )
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
           const users = res.data.data || [];
@@ -94,10 +85,12 @@ class FilterData extends React.Component {
     const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
 
     if (clickSearch) {
-      clickSearch(startDate, endDate, checkedMemberIds, checkedMemberUsernames)
+      clickSearch(startDate, endDate, selectedMembers, checkedMemberUsernames)
     }
     
-    updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    if (updateEmployees) {
+      updateEmployees(selectedMembers, 'employeeSelectedFilter')
+    }
   }
 
   getSelecteMembers(data) {
@@ -138,12 +131,14 @@ class FilterData extends React.Component {
   onClickSelectTab() {
     this.setState({ showMemberOption: true });
   }
+
   onCloseTabEvent(uid) {
     const members = this.state.users;
     const closeMember = members.find(val => val.uid === uid);
     closeMember.checked = false;
     this.getSelecteMembers(members);
   }
+
   onCloseAllEvent() {
     this.resetSelectedMember();
   }
