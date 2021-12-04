@@ -4,12 +4,14 @@ import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
+import axios from 'axios'
 import moment from 'moment';
 import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
 import UploadAvatar from '../../containers/UploadAvatar'
+import { getRequestConfigurations } from "../../commons/Utils"
 
 const usePreload = (params) => {
     const api = useApi();
@@ -194,11 +196,38 @@ function Header(props) {
         setShow(isShow);
     }
 
-    const onChangeLocale = lang => {
-        setActiveLang(lang);
-        if(window.location.pathname.match('vaccination')){
-            window.location.reload();
+    const onChangeLocale = async lang => {
+        const isChangedLanguage = await updateLanguageByCode(lang)
+        if (isChangedLanguage) {
+            setActiveLang(lang)
+            if (window.location.pathname.match('vaccination')) {
+                window.location.reload()
+            }
         }
+    }
+
+    const updateLanguageByCode = async lang => {
+        if (lang) {
+            try {
+                const languageKeyMapping = {
+                    'en-US': 'en',
+                    'vi-VN': 'vi'
+                }
+                const config = getRequestConfigurations()
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.API_SUCCESS_CODE) {
+                        return true
+                    }
+                    return false
+                }
+                return false
+            } catch (e) {
+                return false
+            }
+        }
+        return false
     }
 
     const openUploadAvatarPopup = () => {
