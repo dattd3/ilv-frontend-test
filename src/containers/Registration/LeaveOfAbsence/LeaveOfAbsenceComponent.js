@@ -262,8 +262,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const hasOverlap = requestInfo.flat().filter(req => {
             const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
             const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
-
-            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end)) {
+            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end) && start < end) {
                 return req
             }
         })
@@ -644,7 +643,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
-            id: 2,
+            id: Constants.LEAVE_OF_ABSENCE,
             name: "Đăng ký nghỉ"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
