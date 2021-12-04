@@ -1,5 +1,5 @@
 import React from 'react'
-import editButton from '../../assets/img/Icon-edit.png'
+import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
@@ -159,7 +159,7 @@ class RequestTaskList extends React.Component {
                     }
                 ]
             }
-        // console.log(prepareDataForCancel);
+
         this.setState({
             modalTitle: t("CancelRequest"),
             modalMessage: t("ConfirmCancelRequest"),
@@ -259,13 +259,20 @@ class RequestTaskList extends React.Component {
 
         return convertedDate < minDate ? false : true
     }
-    isShowEditButton = (status, appraiser, requestTypeId, startdate) => {
+
+    isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
+        const { page } = this.props
         let isShow = true;
 
-        if (this.props.page == "approval") {
+        if (page == "approval") {
             isShow = false;
         } else {
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2 || (status == 5 && appraiser)) && this.checkDateLessThanPayPeriod(startdate)) {
+            if (
+                (requestTypeId != Constants.SUBSTITUTION && requestTypeId != Constants.IN_OUT_TIME_UPDATE && requestTypeId != Constants.UPDATE_PROFILE && requestTypeId != Constants.CHANGE_DIVISON_SHIFT && requestTypeId != Constants.DEPARTMENT_TIMESHEET) 
+                && (status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser)) 
+                && this.checkDateLessThanPayPeriod(startDate) 
+                && isEditOnceTime
+            ) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -556,27 +563,38 @@ class RequestTaskList extends React.Component {
                             <tbody>
                             {
                                 tasks.map((child, index) => {
-                                    let isShowEditButton = this.isShowEditButton(child.processStatusId,child.appraiserId, child.requestType.id, child.startDate);
+                                    let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate, child.isEdit);
                                     let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
                                     let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
-                                    let totalTime = null;
+                                    let totalTime = null
                                     let editLink = null
-                                    if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                    let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
+
+                                    if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }
-                                    if(child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1  || child.requestType.id == 8 || child.requestType.id == 9)
-                                    {
+
+                                    if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE 
+                                        || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
                                         editLink = null;
+                                    } else {
+                                        editLink = [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
                                     }
-                                    else{
-                                        editLink = [Constants.STATUS_WAITING,Constants.STATUS_WAITING_CONSENTED,Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
+
+                                    let detailLink = ""
+                                    if (child.requestType.id == Constants.UPDATE_PROFILE) {
+                                        detailLink = this.getLinkRegistration(child.id, 1)
+                                    } else if (requestTypeSingleIdList.includes(child.requestType.id)) {
+                                        detailLink = this.getLinkUserProfileHistory(child.id)
+                                    } else {
+                                        detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
                                     }
+
                                     return (
                                         <tr key={index}>
-                                            {/* child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1 */}
-                                            <td className="code"><a href={requestTypeSingleIdList.includes(child.requestType.id) ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                            <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off">{child.requestType.id !== 1 ? child.startDate : null}</td>
+                                            <td className="day-off">{dateChanged}</td>
                                             <td className="break-time text-center">{totalTime}</td>
                                             <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                             <td className="tool">

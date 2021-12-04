@@ -3,37 +3,71 @@ import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
-import { Redirect, withRouter } from 'react-router-dom';
-import map from '../map.config';
+import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
 import { checkIsExactPnL } from '../../commons/commonFunctions';
+import RelationshipList from "./RelationshipList"
+import MainInfoList from "./MainInfoList"
+import EducationList from "./EducationList"
+import RelationshipListEdit from "./RelationshipListEdit"
+import ActionButtons from "./ActionButtons"
+import ResultModal from './edit/ResultModal'
+import ConfirmationModal from './edit/ConfirmationModal'
+import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
+import map from '../../containers/map.config'
+
+const actionType = {
+  disApproval: 1,
+  approval: 2,
+  eviction: 3,
+  createRequests: 4
+}
 
 class MyComponent extends React.Component {
-
   constructor(props) {
     super(props);
-
     this.state = {
       userProfile: {},
       userDetail: {},
       userEducation: {},
       userFamily: {},
       userHealth: {},
-      userDocument: {}
+      userDocument: {},
+      relationshipInformation: {
+        isEditing: false,
+        relationships: [],
+        relationshipDataToUpdate : [],
+        relationshipDataToCreate : [],
+        files: []
+      },
+      educationInformation: {
+        isEditing: false
+      },
+      mainInformation: {
+        isEditing: false,
+      },
+      resultModal: {
+        isShow: false,
+        title: this.props.t("Notification"),
+        message: "",
+        isSuccess: true
+      },
+      confirmationModal: {
+        isShow: false,
+        title: "",
+        message: "",
+        actionType: actionType.createRequests
+      },
+      errors: null
     };
   }
 
   componentDidMount() {
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
@@ -44,7 +78,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
@@ -55,7 +89,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userEducation = res.data.data;
@@ -66,7 +100,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userFamily = res.data.data;
@@ -77,7 +111,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userHealth = res.data.data[0];
@@ -87,6 +121,7 @@ class MyComponent extends React.Component {
         // localStorage.clear();
         // window.location.href = map.Login;
       });
+
     axios.get(`${process.env.REACT_APP_HRDX_URL}api/onboarding/staffdocument?EmployeeCode=${localStorage.getItem('employeeNo')}`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
@@ -94,6 +129,7 @@ class MyComponent extends React.Component {
         }
       })
   }
+
   prepareUserDocumentData = (data) => {
     const result = { status: data.status, documents: [] };
     let count = 0;
@@ -120,421 +156,387 @@ class MyComponent extends React.Component {
     this.setState({ userDocument: result });
   }
 
-  render() {
+  handleEditInfo = stateName => {
+    const info = {...this.state[[stateName]]}
+    info.isEditing = true
+    this.setState({[stateName]: info})
+  }
+
+  handleAddNewRelationships = () => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const newRelationship = [
+      {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: "",
+        new_dob: "",
+        new_fullname: "",
+        new_lastname: "",
+        new_firstname: "",
+        gender: "",
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    ]
+    relationshipInformation.relationshipDataToCreate = relationshipInformation.relationshipDataToCreate.concat(newRelationship)
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  verifyInputs = () => {
     const { t } = this.props
-    const isEnableEditProfile = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const { relationshipInformation } = this.state
+    const errors = {}
+    const requiredFields = ['new_lastname', 'new_firstname', 'new_relation', 'new_gender', 'new_dob']
+    const dataCreate = relationshipInformation.relationshipDataToCreate
+    const dataUpdate = relationshipInformation.relationshipDataToUpdate
+
+    if ((!dataCreate || dataCreate.length === 0) && (!dataUpdate || dataUpdate.length === 0)) {
+      errors['other'] = t("PersonalInfoNoChange")
+    } else {
+      requiredFields.forEach(name => {
+        dataCreate?.length > 0 && dataCreate.forEach((item, index) => {
+          let errorName = `create_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
+        dataUpdate?.length > 0 && dataUpdate.forEach((item, index) => {
+          let errorName = `update_${name}_${index}`
+          errors[[errorName]] = null
+          if (!item[[name]]) {
+            errors[[errorName]] =  t("Required")
+          }
+        })
+      })
+
+      if (!relationshipInformation.files || relationshipInformation.files?.length === 0) {
+        errors['other'] = t("AttachmentRequired")
+      }
+    }
+
+    this.setState({errors: errors})
+    return errors
+  }
+
+  isValidData = () => {
+    const errors = this.verifyInputs()
+    const hasErrors = !Object.values(errors).every(item => item === null || item === undefined)
+    return hasErrors ? false : true
+  }
+
+  handleSendRequests = () => {
+    const isValid = this.isValidData()
+    if (!isValid) {
+      return
+    }
+    
+    const { t } = this.props
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = true
+    confirmationModal.title = t("ConfirmSend")
+    confirmationModal.message = t("ReasonModify")
+    confirmationModal.actionType = actionType.createRequests
+    this.setState({confirmationModal: confirmationModal})
+  }
+
+  sendRequests = async (message) => {
+    const { t } = this.props
+    const { relationshipInformation, resultModal } = this.state
+    try {
+      const config = getRequestConfigurations()
+      const userInfo = JSON.stringify({
+        employeeNo: formatStringByMuleValue(localStorage.getItem('employeeNo')),
+        fullName: formatStringByMuleValue(localStorage.getItem('fullName')),
+        jobTitle: formatStringByMuleValue(localStorage.getItem('jobTitle')),
+        department: formatStringByMuleValue(localStorage.getItem('department'))
+      })
+      const userProfileInfoUpdateToSap = this.prepareUserProfileInfoUpdateToSap(relationshipInformation.relationshipDataToUpdate)
+      const userProfileInfoCreateToSap = this.prepareUserProfileInfoCreateToSap(relationshipInformation.relationshipDataToCreate)
+      let userProfileInfo = this.prepareUserProfileInfo(relationshipInformation)
+      userProfileInfo = JSON.stringify(userProfileInfo)
+      const userProfileInfoToSap = JSON.stringify([...userProfileInfoUpdateToSap, ...userProfileInfoCreateToSap])
+
+      let bodyFormData = new FormData()
+      bodyFormData.append('Name', "Quan hệ nhân thân")
+      bodyFormData.append('Comment', message || "")
+      bodyFormData.append('UserProfileInfo', userProfileInfo) 
+      bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
+      bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
+      bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
+      bodyFormData.append('UserProfileInfoToSap', userProfileInfoToSap)
+      bodyFormData.append('User', userInfo)
+      bodyFormData.append('OrgLv2Id', formatStringByMuleValue(localStorage.getItem('organizationLv2')))
+      bodyFormData.append('OrgLv2Text', formatStringByMuleValue(localStorage.getItem('company')))
+      bodyFormData.append('DivisionId', formatStringByMuleValue(localStorage.getItem('divisionId')))
+      bodyFormData.append('Division', formatStringByMuleValue(localStorage.getItem('division')))
+      bodyFormData.append('RegionId', formatStringByMuleValue(localStorage.getItem('regionId')))
+      bodyFormData.append('Region', formatStringByMuleValue(localStorage.getItem('region')))
+      bodyFormData.append('UnitId', formatStringByMuleValue(localStorage.getItem('unitId')))
+      bodyFormData.append('Unit', formatStringByMuleValue(localStorage.getItem('unit')))
+      bodyFormData.append('PartId', formatStringByMuleValue(localStorage.getItem('partId')))
+      bodyFormData.append('Part', formatStringByMuleValue(localStorage.getItem('part')))
+
+      const fileSelected = relationshipInformation.files
+      for (let key in fileSelected) {
+        bodyFormData.append('Files', fileSelected[key])
+      }
+
+      const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/family`, bodyFormData, config)
+      resultModal.isShow = true
+      if (responses && responses.data) {
+        const result = responses.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          resultModal.isSuccess = true
+          resultModal.message = t("RequestSent")
+        } else {
+          resultModal.isSuccess = false
+          resultModal.message = result.message
+        }
+      } else {
+        resultModal.isSuccess = false
+        resultModal.message = t("AnErrorOccurred")
+      }
+      this.setState({resultModal: resultModal})
+    } catch (e) {
+      resultModal.isShow = true
+      resultModal.isSuccess = false
+      resultModal.message = t("AnErrorOccurred")
+      this.setState({resultModal: resultModal})
+    }
+  }
+
+  prepareUserProfileInfoUpdateToSap = (relationshipDataToUpdate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToUpdate = relationshipDataToUpdate.filter(item => 
+      (item.firstname != item.new_firstname || item.lastname != item.new_lastname || item.relation_code != item.new_relation.value 
+        || item.gender_code != item.new_gender.value || item.dob != item.new_dob)
+    )
+    .map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: item.relation_code,
+        pre_dob: moment(item.dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        pre_fullname: item.full_name,
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+
+    return dataToUpdate
+  }
+
+  prepareUserProfileInfoCreateToSap = (relationshipDataToCreate) => {
+    const currentUserEmail = localStorage.getItem('email')
+    const employeeNo = localStorage.getItem('employeeNo')
+    const dataToCreate = relationshipDataToCreate.map(item => {
+      return {
+        username: currentUserEmail?.split('@')[0],
+        approval_date: "",
+        uid: employeeNo,
+        pre_relation: "",
+        pre_dob: "",
+        pre_fullname: "",
+        new_relation: item.new_relation.value,
+        new_dob: moment(item.new_dob, 'DD-MM-YYYY').format('YYYYMMDD'),
+        new_fullname: `${item.new_lastname} ${item.new_firstname}`,
+        new_lastname: item.new_lastname,
+        new_firstname: item.new_firstname,
+        gender: item.new_gender.value,
+        tax_number: "",
+        family_deduction: "",
+        deduction_from: "",
+        deduction_to: ""
+      }
+    })
+    return dataToCreate
+  }
+
+  prepareUserProfileInfo = relationshipInformation => {
+    const dataToUpdate = relationshipInformation.relationshipDataToUpdate.filter(item => 
+      (item.firstname != item.new_firstname || item.lastname != item.new_lastname || item.relation_code != item.new_relation.value 
+        || item.gender_code != item.new_gender.value || item.dob != item.new_dob)
+    )
+    const dataToCreate = relationshipInformation.relationshipDataToCreate
+    return {
+      staff: {
+        code: localStorage.getItem('employeeNo'),
+        fullName: localStorage.getItem('fullName'),
+        title: localStorage.getItem('jobTitle'),
+        department: localStorage.getItem('department'),
+      },
+      manager: {},
+      update: {
+        userProfileHistoryMainInfo: {
+          OldMainInfo: {},
+          NewMainInfo: {}
+        },
+        userProfileHistoryEducation: [],
+        userProfileHistoryFamily: (dataToUpdate || []).map(item => {
+          return {
+            OldFamily: {
+              firstName: item.firstname || "",
+              lastName: item.lastname || "",
+              relationshipCode: item.relation_code || "",
+              relationshipText: item.relation || "",
+              genderCode: item.gender_code || "",
+              genderText: item.gender || "",
+              birthday: moment(item.dob, "DD-MM-YYYY").format("YYYY-MM-DD")
+            },
+            NewFamily: {
+              firstName: item.new_firstname || "",
+              lastName: item.new_lastname || "",
+              relationshipCode: item.new_relation?.value || "",
+              relationshipText: item.new_relation?.label || "",
+              genderCode: item.new_gender.value || "",
+              genderText: item.new_gender.label || "",
+              birthday: moment(item.new_dob, "DD-MM-YYYY").format("YYYY-MM-DD")
+            }
+          }
+        })
+      },
+      create: {
+        families: dataToCreate.map(item => {
+          return {
+            firstName: item.new_firstname || "",
+            lastName: item.new_lastname || "",
+            relationshipCode: item.new_relation?.value || "",
+            relationshipText: item.new_relation?.label || "",
+            genderCode: item.new_gender.value || "",
+            genderText: item.new_gender.label || "",
+            birthday: moment(item.new_dob, "DD-MM-YYYY").format("YYYY-MM-DD")
+          }
+        })
+      }
+    }
+  }
+
+  updateDataToParent = relationships => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.relationshipDataToUpdate = relationships.update
+    relationshipInformation.relationshipDataToCreate = relationships.create
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  updateFilesToParent = filesToUpdate => {
+    const relationshipInformation = {...this.state.relationshipInformation}
+    relationshipInformation.files = filesToUpdate
+    this.setState({relationshipInformation: relationshipInformation})
+  }
+
+  onHideResultModal = () => {
+    const resultModal = {...this.state.resultModal}
+    resultModal.isShow = false
+    this.setState({resultModal: resultModal})
+    window.location.href = map.PersonalInfo
+  }
+
+  onHideModalConfirm = () => {
+    const confirmationModal = {...this.state.confirmationModal}
+    confirmationModal.isShow = false
+    this.setState({confirmationModal: confirmationModal})
+  }
+
+  updateMessageFromModal = async message => {
+    await this.sendRequests(message)
+  }
+
+  render() {   
+    const { t } = this.props
+    const { userFamily, userDetail, userHealth, userProfile, userEducation, relationshipInformation, mainInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
+    const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
+    const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
+    const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast,
-          Constants.PnLCODE.VinFastPB,
-          Constants.PnLCODE.VinFastTrading);
-    function SummaryAddress(obj) {
-      let result = '';
-      if (typeof (obj) == 'object' && obj.length > 0) {
-        for (let i = 0; i < obj.length; i++) {
-          const element = obj[i];
-          if (isNotNull(element)) {
-            result += element + ', '
-          }
-        }
-      }
-      result = result.trim();
-      if (result.length > 0) { result = result.substring(0, result.length - 1); }
-      return result;
-    }
-
-    function isNotNull(input) {
-      if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-        return true;
-      }
-      return false;
-    }
+    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastPB, Constants.PnLCODE.VinFastTrading);
 
     return (
+      <>
+      <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
+        sendData={this.updateMessageFromModal} onHide={this.onHideModalConfirm} />
+      <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
-        <div className="clearfix edit-button">
-          <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
-          {
-            isEnableEditProfile ? <a href="/personal-info/edit" className="btn btn-primary float-right shadow"><i className="fas fa-user-edit"></i> {t("Edit")}</a> : null
-          }
-        </div>
         <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
-          <Tab eventKey="PersonalInformation" title={t("PersonalInformation")}>
-            <Row >
-              <Col xs={12} md={12} lg={6}>
-                <h4>{t("PersonalInformation")}</h4>
-                <div className="info-tab-content shadow">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="info-label">{t("FullName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.fullname}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("EmployeeNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.uid}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("SocialInsuranceNumber")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.insurance_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("VinID")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.vinid}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PitNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.tax_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("DateOfBirth")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birthday}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PlaceOfBirth")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.birth_province}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Gender")}</td>
-                        <td className="info-value"><p>&nbsp;{(this.state.userDetail.gender !== undefined && this.state.userDetail.gender !== '2') ? t("Male") : t("Female")}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Country")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.nationality}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Ethnic")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.ethinic}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Religion")}</td>
-                        <td className="info-value"><p>&nbsp;{isNotNull(this.state.userDetail.religion) ? this.state.userDetail.religion : t("None")}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_id_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdDateOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_date_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("IdPlaceOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.pid_place_of_issue}</p></td>
-                      </tr>
-
-                      <tr>
-                        <td className="info-label">{t("PassportNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_id_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PassportDateOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_date_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PassportPlaceOfIssue")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.passport_place_of_issue}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("WorkPermitNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.work_permit_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("ExpiryDate")}</td>
-                        <td className="info-value"><p>&nbsp;</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PermanentAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("TemporaryAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("MaritalStatus")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.marital_status_code === "1" ? t("MaritalMarried") : (this.state.userDetail.marital_status_code === "2" ? "Ly hôn" : t("MaritalSingle"))}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PersonalEmail")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.personal_email}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("MobileNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.cell_phone_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("EmergencyPhoneNo")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.urgent_contact_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankAccountNumber")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_number}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_name}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BankBranch")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userDetail.bank_branch}</p></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </Col>
-              <Col xs={12} md={12} lg={6}>
-                <h4>{t("WorkingInformation")}</h4>
-                <div className="info-tab-content shadow">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="info-label">{t("VingroupOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_inc}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PAndLOnboardDate")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.starting_date_co}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyEmail")}</td>
-                        <td className="info-value" style={{ textTransform: "lowercase" }}><p>&nbsp;{this.state.userProfile.company_email}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CurrentTitle")}</td>
-                        <td className="info-value"><p>&nbsp; {this.state.userProfile.current_position}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("GradeByTitle")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name_title}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("ActualGrade")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.rank_name}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("BenefitLevel")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.benefit_level}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("DivisionName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.division}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("PropertyName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.unit}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("Team")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.part}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("RegionName")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.department}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyPhone")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.fix_phone}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("CompanyPhoneExtension")}</td>
-                        <td className="info-value"><p>&nbsp;{this.state.userProfile.extension_no}</p></td>
-                      </tr>
-                      <tr>
-                        <td className="info-label">{t("WorkingAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{SummaryAddress([this.state.userProfile.building, this.state.userProfile.street_name, this.state.userProfile.wards, this.state.userProfile.district, this.state.userProfile.province])}</p></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                {
-                  (this.state.userHealth !== undefined && this.state.userHealth !== null) ?
-                    <>
-                      <h4>{t("HealthCheckInfo")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("HealthInsuranceNumber")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userProfile.health_insurance_number}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("RegisteredHospital")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userProfile.hospital_name}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("HealthCheckDate")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.examined_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfHealthCheck")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.health_type}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <h4>{t("OccupationalDisease")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("DateofOccupationalDiseaseDiagnosis")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.found_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.diseased_type}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ReasonsOfOccupationalDisease")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.reason}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <h4>{t("AccidentsAtWork")}</h4>
-                      <div className="info-tab-content shadow">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="info-label">{t("DateOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_date}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("LocationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.place}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ClassificationOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.accident_type}</p></td>
-                            </tr>
-                            <tr>
-                              <td className="info-label">{t("ReasonsOfAccidentsIncurred")}</td>
-                              <td className="info-value"><p>&nbsp;{this.state.userHealth.cause_accident}</p></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                    : null
-                }
-              </Col>
-            </Row>
-          </Tab>
-          <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")}>
-            <Container fluid className="info-tab-content shadow">
+          <Tab eventKey="PersonalInformation" title={t("PersonalInformation")} className="tab-main-info">
+            <div className="top-button-actions">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                (this.state.userEducation !== undefined && this.state.userEducation.length > 0) ?
-                  <><h4>{t("Degree")}</h4>
-                    {this.state.userEducation.map((item, i) => {
-                      return <div key={i}>
-                        <Row className="info-label">
-                          <Col xs={12} md={6} lg={3}>
-                            {t("SchoolName")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("TypeOfDegree")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("Major")}
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            {t("Cohort")}
-                          </Col>
-                        </Row>
-                        <Row className="info-value">
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{isNotNull(item.university_name) ? item.university_name : item.other_uni_name}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.academic_level}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.major_id === 0 ? item.other_major : item.major}</p>
-                          </Col>
-                          <Col xs={12} md={6} lg={3}>
-                            <p>&nbsp;{item.from_time} - {item.to_time}</p>
-                          </Col>
-                        </Row>
-                      </div>;
-                    })}
-                    {/* <h4>{t("Certificate")}</h4>
-                    <Row>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateName")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateIssuesBy")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateIssuesDate")}
-                          
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                          {t("CertificateExpireDate")}
-                          
-                      </Col>
-                    </Row> */}
-                  </>
-                  : t("NoDataFound")
+                isEnableEditProfiles ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+              }
+            </div>
+            <h5 className="content-page-header">{t("PersonalInformation")}</h5>
+            <Container fluid className="info-tab-content shadow main-info">
+              {
+                mainInformation.isEditing ?
+                <PersonalInfoEdit isEnableEditEducation={false} isEnableEditMainInfo={true} />
+                :
+                <MainInfoList userDetail={userDetail} userHealth={userHealth} userProfile={userProfile} />
               }
             </Container>
           </Tab>
-          <Tab eventKey="PersonalRelations" title={t("Family")}>
-            <Container fluid className="info-tab-content shadow">
-              {(this.state.userFamily !== undefined && this.state.userFamily.length > 0) ?
-                this.state.userFamily.map((item, i) => {
-                  return <div key={i}>
-                    <Row className="info-label">
-                      <Col xs={12} md={6} lg={3}>
-                        {t("FullName")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("Relationship")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("DateOfBirth")}
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        {t("AllowancesTaxNo")}
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        {t("FamilyAllowances")}
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        {t("AllowancesDate")}
-                      </Col>
-                    </Row>
-                    <Row className="info-value">
-                      <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{item.full_name}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        <p>&nbsp;{item.relation}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{item.dob}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={2}>
-                        <p>&nbsp;{isNotNull(item.tax_number) ? item.tax_number : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={1}>
-                        <p style={{ background: "none" }}>&nbsp;{isNotNull(item.is_reduced) ? <i style={{ color: 'green' }} className="fas fa-check-circle"></i> : ""}</p>
-                      </Col>
-                      <Col xs={12} md={6} lg={3}>
-                        <p>&nbsp;{isNotNull(item.is_reduced) ? (item.from_date + ` - ` + item.to_date) : ""}</p>
-                      </Col>
-                    </Row>
-                  </div>;
-                }) : t("NoDataFound")
+          <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")} className="tab-education">
+            <div className="top-button-actions">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditEducations ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("educationInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+              }
+            </div>
+            <h5 className="content-page-header">{t("Certification")}</h5>
+            <Container fluid className="info-tab-content shadow education">
+              {
+                educationInformation.isEditing ?
+                <PersonalInfoEdit isEnableEditEducation={true} isEnableEditMainInfo={false} />
+                :
+                <EducationList educations={userEducation} />
               }
             </Container>
           </Tab>
+          <Tab eventKey="PersonalRelations" title={t("Family")} className="tab-relationship">
+            <div className="top-button-actions">
+              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              {
+                isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("relationshipInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+              }
+            </div>
+            <h5 className="content-page-header">{t("PersonalRelations")}</h5>
+            <Container fluid className="info-tab-content shadow relationship">
+            {
+              relationshipInformation.isEditing ? 
+              <>
+              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} errors={errors} />
+              <div className="block-button-add">
+                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>{t("Add")}</button>
+              </div>
+              </>
+              : <RelationshipList relationships={userFamily} />
+            }
+            </Container>
+            { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.handleSendRequests} updateFilesToParent={this.updateFilesToParent} /> }
+          </Tab>
+
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
             checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
@@ -564,19 +566,18 @@ class MyComponent extends React.Component {
                                 return obj.documentList.map((item, index) => {
                                   if (index === 0) {
                                     return <tr key={index}>
-                                      <td >{item.index}</td>
+                                      <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
-                                      <td >{item.number}</td>
+                                      <td>{item.number}</td>
                                       {!checkVinfast && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
-                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                      <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   } else {
                                     return <tr key={index}>
-                                      <td >{item.index}</td>
+                                      <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
-                                      <td >{item.number}</td>
-
-                                      <td> <input type="checkbox" checked={item.status} readOnly /> </td>
+                                      <td>{item.number}</td>
+                                      <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   }
                                 })
@@ -595,9 +596,9 @@ class MyComponent extends React.Component {
               </Tab>
               : null
           }
-
         </Tabs>
-      </div >
+      </div>
+      </>
     )
   }
 }

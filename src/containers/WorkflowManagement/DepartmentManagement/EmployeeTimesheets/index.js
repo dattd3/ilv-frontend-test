@@ -9,7 +9,7 @@ import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
-import { formatStringByMuleValue } from "../../../../commons/Utils"
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
 
 const DATE_TYPE = {
@@ -49,13 +49,14 @@ class EmployeeTimesheets extends Component {
     };
   }
 
-  searchTimesheetByDate(startDate, endDate, memberIds) {
+  searchTimesheetByDate(startDate, endDate, members) {
     this.setState({
       isSearch: false,
       dayList: this.getDates(startDate, endDate),
     });
-    this.search(startDate, endDate, memberIds);
+    this.search(startDate, endDate, members);
   }
+
   getDates(startDate, endDate) {
     const dates = [];
     let currentDate = startDate;
@@ -78,13 +79,10 @@ class EmployeeTimesheets extends Component {
     }, {});
   }
 
-  search(startDate, endDate, memberIds) {
+  search(startDate, endDate, members) {
+    const memberIds = (members || []).map(item => item.uid)
     let start = moment(startDate).format("YYYYMMDD");
     let end = moment(endDate).format("YYYYMMDD");
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    };
-
     const timeoverviewParams = {
       from_date: start,
       to_date: end,
@@ -94,25 +92,23 @@ class EmployeeTimesheets extends Component {
       startdate: start,
       endDate: end,
     };
+
+    const config = getRequestConfigurations()
+    config['params'] = reasonParams
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
+
     this.setState({isLoading: true});
     const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
-    const requestTimOverview = axios.post(
-      timOverviewEndpoint,
-      timeoverviewParams,
-      {headers}
-    );
-    const requestReson = axios.get(ReasonEndpoint, {
-      headers,
-      params: reasonParams,
-    });
+    const requestTimOverview = axios.post(timOverviewEndpoint, timeoverviewParams, muleSoftConfig);
+    const requestReason = axios.get(ReasonEndpoint, config);
 
     const getDepartmentPartGroupByListData = listData => {
       const result = listData.find(item => item && item !== '#')
       return result
     }
 
-    axios.all([requestReson, requestTimOverview]).then(
+    axios.all([requestReason, requestTimOverview]).then(
       axios.spread((...responses) => {
         if (responses[1]) {
           const res = responses[1];
@@ -125,13 +121,77 @@ class EmployeeTimesheets extends Component {
               end = endReal < end ? endReal : end;
             }
 
-            //group data by pernr
-            var group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
-            var groups = Object.keys(group_to_values).map(function (key) {
+            let group_to_values = this.groupArrayOfObjects(dataSorted, "pernr");
+            const memberIdsExistShift = Object.keys(group_to_values)
+            const firstMemberInfosExistShift = Object.values(group_to_values)[0]
+            const memberIdsNotExistShift = (memberIds || []).filter(item => (memberIdsExistShift && memberIdsExistShift.length > 0 ? !memberIdsExistShift.includes(item.toString()) : item))
+            const membersNotExistShift = (members || []).filter(item => memberIdsNotExistShift.includes(item.uid))
+            let dateRangeSearched = getDateByRangeAndFormat(moment(startDate).format('DD-MM-YYYY'), moment(endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')
+            dateRangeSearched = dateRangeSearched.sort((pre, next) => moment(next, 'DD-MM-YYYY') - moment(pre, 'DD-MM-YYYY'))
+
+            const memberNeedAdd = (membersNotExistShift || []).reduce((result, item) => {
+              result[[item.uid]] = (firstMemberInfosExistShift || dateRangeSearched).map(i => {
+                return {
+                  break_from_time_1: "#",
+                  break_from_time_2: "#",
+                  break_from_time_3: "#",
+                  break_to_time1: "#",
+                  break_to_time2: "#",
+                  break_to_time3: "#",
+                  date: i?.date || i,
+                  department: item.department,
+                  division: item.division,
+                  end_time1_fact: "#",
+                  end_time2_fact: "#",
+                  end_time3_fact: "#",
+                  from_time1: "#",
+                  from_time2: "#",
+                  fullname: item.fullname,
+                  hours: "",
+                  is_holiday: "",
+                  leave_end_time1: "#",
+                  leave_end_time2: "#",
+                  leave_id: "",
+                  leave_start_time1: "#",
+                  leave_start_time2: "#",
+                  manager: item.manager,
+                  organization_lv2: "",
+                  organization_lv3: "",
+                  organization_lv4: "",
+                  organization_lv5: "",
+                  organization_lv6: "",
+                  ot_end_time1: "#",
+                  ot_end_time2: "#",
+                  ot_end_time3: "#",
+                  ot_start_time1: "#",
+                  ot_start_time2: "#",
+                  ot_start_time3: "#",
+                  part: item.part,
+                  pernr: item.uid,
+                  pnl: item.pnl,
+                  shift_id: "",
+                  start_time1_fact: "#",
+                  start_time2_fact: "#",
+                  start_time3_fact: "#",
+                  to_time1: "#",
+                  to_time2: "#",
+                  trip_end_time1: "#",
+                  trip_end_time2: "3",
+                  trip_start_time1: "#",
+                  trip_start_time2: "#",
+                  unit: item.unit,
+                  username: item.username
+                }
+              })
+              return result
+            }, {})
+            group_to_values = {...group_to_values, ...memberNeedAdd}
+
+            const groups = Object.keys(group_to_values).map(function (key) {
               return {
                 per: key,
-                name: group_to_values[key][0].fullname,
-                departmentPartGroup: getDepartmentPartGroupByListData([group_to_values[key][0].part, group_to_values[key][0].unit, group_to_values[key][0].department, group_to_values[key][0].division, group_to_values[key][0].pnl]),
+                name: group_to_values[key][0]?.fullname,
+                departmentPartGroup: getDepartmentPartGroupByListData([group_to_values[key][0]?.part, group_to_values[key][0]?.unit, group_to_values[key][0]?.department, group_to_values[key][0]?.division, group_to_values[key][0]?.pnl]),
                 timesheets: group_to_values[key]
               };
             });
@@ -748,7 +808,7 @@ class EmployeeTimesheets extends Component {
             shift_Id_Old: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? item.timesheets.find(t => t.day == moment(dateChanged, 'YYYYMMDD').format("DD/MM"))?.line1.old_shift_id : "" // Ca trước khi thay đổi
           }
         ],
-        substitutionType: dataChanged[per].shiftType.value, // Loại phân ca - Required
+        substitutionType: dataChanged[per]?.shiftType?.value, // Loại phân ca - Required
         startDate: dateChanged, // Required
         endDate: dateChanged, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
@@ -767,11 +827,7 @@ class EmployeeTimesheets extends Component {
       const {timeTables, dateChanged, dataChanged} = this.state
       const timeSheetsUpdating = (timeTables || []).filter(item => item.isUpdating)
       const payload = this.prepareDataToSubmit(timeSheetsUpdating, dateChanged, dataChanged)
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
+      const config = getRequestConfigurations()
 
       const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}leaderchanges/shifts`, payload, config)
       if (response && response.data) {

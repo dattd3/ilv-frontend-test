@@ -7,6 +7,7 @@ import vi from "date-fns/locale/vi";
 import axios from "axios";
 import MemberOption from "../WorkflowManagement/ShareComponents/MemberOption"
 import SelectTab from "../WorkflowManagement/ShareComponents/SelectTab"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import "./dropdown-customize.scss"
 registerLocale("vi", vi);
 
@@ -56,19 +57,9 @@ class DropdownCustomize extends React.Component {
     }
 
     getApproverInfo = () => {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                client_id: process.env.REACT_APP_MULE_CLIENT_ID,
-                client_secret: process.env.REACT_APP_MULE_CLIENT_SECRET,
-            },
-        };
+        const config = getMuleSoftHeaderConfigurations()
 
-        axios
-            .get(
-                `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`,
-                config
-            )
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`, config)
             .then((res) => {
                 if (res && res.data && res.data.data) {
                     let users = res.data.data || [];
@@ -155,13 +146,13 @@ class DropdownCustomize extends React.Component {
     }
 
     render() {
-        const { t, employeeSelectedFilter, label, type, needReset } = this.props;
+        const { t, employeeSelectedFilter, label, type, needReset, isRequired } = this.props;
         const { users, loading, selectedMembers, showMemberOption } = this.state
         const data = employeeSelectedFilter && employeeSelectedFilter.length > 0 ? employeeSelectedFilter : users
 
         return (
             <div className="timesheet-box">
-                <div className="title">{label ? t(label) : t("SelectEmployees")}</div>
+                <div className="title">{label ? isRequired ? <><span>{t(label)}</span><span className="text-danger required">(*)</span></> : t(label) : isRequired ? <><span>{t("SelectEmployees")}</span><span className="text-danger required">(*)</span></> : t("SelectEmployees")}</div>
                 <SelectTab className="content input-container" selectedMembers={needReset ? [] : selectedMembers} onClick={this.onClickSelectTab}
                     onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
                 {

@@ -4,6 +4,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 
 class AddressModal extends React.Component {
     constructor(props) {
@@ -20,16 +21,6 @@ class AddressModal extends React.Component {
             ward: props.ward || null,
             street_name: props.street || "",
             errors: []
-        }
-    }
-
-    config() {
-        return {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
         }
     }
 
@@ -61,7 +52,8 @@ class AddressModal extends React.Component {
     }
 
     getProvices(country_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, this.config())
+        const config = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;
@@ -71,7 +63,8 @@ class AddressModal extends React.Component {
     }
 
     getDistricts(province_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${province_id}`, this.config())
+        const config = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${province_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let districts = res.data.data;
@@ -81,7 +74,8 @@ class AddressModal extends React.Component {
     }
 
     getWards(district_id) {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${district_id}`, this.config())
+        const config = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${district_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let wards = res.data.data;

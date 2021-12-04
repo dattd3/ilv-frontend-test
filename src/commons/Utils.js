@@ -3,14 +3,6 @@ import html2canvas from "html2canvas"
 import moment from 'moment'
 import Constants from '../commons/Constants'
 
-const getRequestConfigurations = () => {
-    return {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-    }
-}
-
 const removeAccents = value => {
     if (value === "" || value == null || value == undefined) {
         return ""
@@ -152,7 +144,13 @@ const isEnableFunctionByFunctionName = name => {
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VincomRetail]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
+            break
+        case Constants.listFunctionsForPnLACL.editEducation:
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
+            break
+        case Constants.listFunctionsForPnLACL.editRelationship:
+            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl]
@@ -197,5 +195,35 @@ const getRequestTypeIdsAllowedToReApproval = () => {
     return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, 
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval }
+const getRequestConfigurations = () => {
+    return {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }
+}
+
+const getMuleSoftHeaderConfigurations = () => {
+    const requestConfigurations = getRequestConfigurations()
+    requestConfigurations.headers['client_id'] = process.env.REACT_APP_MULE_CLIENT_ID
+    requestConfigurations.headers['client_secret'] = process.env.REACT_APP_MULE_CLIENT_SECRET
+    
+    return requestConfigurations
+}
+
+const getDateByRangeAndFormat = (startDate, endDate, format) => {
+    if (startDate && endDate) {
+        let start = moment(startDate, format)
+        let end = moment(endDate, format)
+        let now = start.clone(), dates = []
+        while (now.isSameOrBefore(end)) {
+            dates.push(now.format(format))
+            now.add(1, 'days')
+        }
+        return dates
+    }
+    return []
+}
+
+export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations }

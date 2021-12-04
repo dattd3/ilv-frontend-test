@@ -3,6 +3,7 @@ import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 import axios from 'axios'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class ApplyPositionModal extends React.Component {
     constructor(props) {
@@ -32,13 +33,7 @@ class ApplyPositionModal extends React.Component {
     }
 
     componentWillMount () {
-        let config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-              'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-          }
+        const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
             .then(res => {

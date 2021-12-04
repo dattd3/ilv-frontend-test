@@ -1,18 +1,10 @@
-.personal-info {
-    .edit-button {
-        .btn {
-            margin: 5px;
-        }
-    }
-}
-
 .block-status {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 20px;
     .status {
-        padding: 4px 20px;
+        padding: 10px 20px;
         border: 1px solid;
         border-radius: 30px;
         background: #FFFFFF;
@@ -123,7 +115,7 @@
         border-radius: 10px;
         margin-bottom: 30px;
         .note {
-            padding: 2px 10px;
+            padding: 0 8px;
             margin-right: 5px;
         }
         .note-old {
@@ -154,15 +146,21 @@
             border-radius: 5px;
             padding: 6px 10px;
             min-height: 40px;
+            display: flex;
+            align-items: center;
         }
         .old {
             .detail {
                 background-color: #ececec;
+                display: flex;
+                align-items: center;
             }
         }
         .new {
             .detail {
                 background-color: #D4D6E5;
+                display: flex;
+                align-items: center;
             }
         }
         .edit {
@@ -180,18 +178,22 @@
 
     .education {
         .item {
-            border: 1px solid #aaa;
-            padding: 15px;
+            border: 1px solid #707070;
+            padding: 15px 15px 0 15px;
             margin-bottom: 15px;
             .info-value {
                 &.old {
                     .detail {
                         background-color: #ececec;
+                        display: flex;
+                        align-items: center;
                     }
                 }
                 &.new {
                     .detail {
                         background-color: #D4D6E5;
+                        display: flex;
+                        align-items: center;
                     }
                 }
                 .detail {
@@ -199,6 +201,8 @@
                     border-radius: 5px;
                     padding: 6px 10px;
                     min-height: 40px;
+                    display: flex;
+                    align-items: center;
                 }
                 .other-field {
                     display: flex;
@@ -223,12 +227,16 @@
 
         .new-item {
             width: 100%;
-            // border: 1px solid #aaa;
-            padding: 15px;
+            padding: 15px 15px 0 15px;
+            position: relative;
+            border: 1px solid #707070;
+            margin-top: 15px;
             .info-value {
                 &.create {
                     .detail {
                         background-color: #FFE5CC;
+                        display: flex;
+                        align-items: center;
                     }
                 }
                 .detail {
@@ -236,7 +244,20 @@
                     border-radius: 5px;
                     padding: 6px 10px;
                     min-height: 40px;
+                    display: flex;
+                    align-items: center;
                 }
+            }
+            .btn-remove-education-item {
+                cursor: pointer;
+                position: absolute;
+                padding: 2px 8px;
+                background: #FF0014;
+                color: #FFFFFF;
+                font-size: 14px;
+                top: -1px;
+                right: -1px;
+                border-bottom-left-radius: 4px;
             }
         }
 
@@ -299,6 +320,35 @@
         i {
             font-size: 24px;
             font-weight: 100;
+        }
+    }
+    .edit-main-user-info {
+        font-size: 14px;
+        color: #000000;
+        .input-container {   
+            .input {
+                margin:0;
+                padding-right: 50px;
+                width: 300px;
+            }
+            .input-img {
+                position: absolute;
+                top: 10px;
+                left: 272px;
+            }
+            i {
+                font-size: 18px;
+                font-weight: 100;
+            }
+        }
+    }
+    .block-action-buttons {
+        button {
+            font-size: 14px !important;
+            i {
+                font-size: 12px;
+                margin-right: 5px;
+            }
         }
     }
 }
