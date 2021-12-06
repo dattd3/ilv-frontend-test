@@ -20,6 +20,7 @@ const EVENT_TYPE = {
   EVENT_LOICONG: 4,
   EVENT_GIONGHI: 5,
   EVENT_CONGTAC: 6,
+  EVENT_NGHI_CONGTAC: 30,
   EVENT_OT: 7
 };
 const EVENT_STYLE = {
@@ -216,7 +217,7 @@ function RenderItem(props) {
           {
             item.line3.subtype[1] == 1 ?
             <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
-                <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.trip_start_time2} - ${item.line3.trip_end_time2}` }</div>
+                <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
             </RenderTooltip>
             : null
           }
@@ -234,12 +235,42 @@ function RenderItem(props) {
           {
             item.line3.subtype[1] == 1 ?
             <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
-                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
+                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
             </RenderTooltip>
             : null
           }
         </div>
-      
+    case EVENT_TYPE.EVENT_NGHI_CONGTAC: 
+      return <div className="d-flex">
+          {
+            item.line3.subtype[0] == 1 ?
+            <RenderTooltip item = {item.line3.leave_start_time1_comment} timeExpand = {`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}`}>
+                <div className={EVENT_STYLE.EVENT_GIONGHI}>{`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
+            </RenderTooltip>
+            : null
+          }
+          {
+            item.line3.subtype[1] == 1 ?
+            <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}-`}>
+                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
+            </RenderTooltip>
+            : null
+          }
+          { 
+            item.line3.subtype[2] == 1 ?
+            <RenderTooltip item = {item.line3.trip_start_time1_comment} timeExpand = {`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}`}>
+                <div className={EVENT_STYLE.EVENT_CONGTAC}>{`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
+            </RenderTooltip>
+            : null
+          }
+          {
+            item.line3.subtype[3] == 1 ?
+            <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}`}>
+                <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
+            </RenderTooltip>
+            : null
+          }
+        </div>
     case EVENT_TYPE.EVENT_GIOTHUCTE:
       return <div className="d-flex">
         {
@@ -344,7 +375,7 @@ function RenderRow3(props) {
     }
     if (item.line3.type == EVENT_TYPE.NO_EVENT) {
         return <td className={`none-border-top ${rowSpan == timeSheetLinesIgnoreOnceLine ? 'border-bottom' : 'none-border-bottom'}`} key={index}><div>&nbsp;</div></td>
-    } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
+    } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC || item.line3.type == EVENT_TYPE.EVENT_NGHI_CONGTAC) {
         return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line3.type} /></td>
     }
     return null;
@@ -591,8 +622,17 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         line1.subtype = '00';
         nextItem.count = line1.count ? line1.count + 1 : 2;
         data[index + 1] = nextItem;
-      }        
+      }       
+      
+      //gio break time
+      if(checkExist(item.break_from_time_1)) {
+        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
+      }
 
+      if(checkExist(item.break_from_time_2)) {
+        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
+      }
+      
       //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong
       let line2 = {type: EVENT_TYPE.NO_EVENT, 
       type1: '00', 
@@ -658,17 +698,27 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         line3.subtype = line3.subtype[0] + 1
         timeSteps.push( getDatetimeForCheckFail(item.leave_start_time2, item.leave_end_time2, currentDay, nextDay));
       }
+
+      const line3ForTrip = {...line3};
+
       if( checkExist(item.trip_start_time1)) {
-        line3.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3.subtype =1 + line3.subtype[1]
+        line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
+        line3ForTrip.subtype =1 + line3ForTrip.subtype[1]
         
         timeSteps.push( getDatetimeForCheckFail(item.trip_start_time1, item.trip_end_time1, currentDay, nextDay));
       }
       if( checkExist(item.trip_start_time2)) {
-        line3.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3.subtype = line3.subtype[0] + 1
+        line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
+        line3ForTrip.subtype = line3ForTrip.subtype[0] + 1
         timeSteps.push( getDatetimeForCheckFail(item.trip_start_time2, item.trip_end_time2, currentDay, nextDay));
       }
+
+      if(line3.type == EVENT_TYPE.EVENT_GIONGHI && line3ForTrip.type == EVENT_TYPE.EVENT_CONGTAC) {
+        line3.type = EVENT_TYPE.EVENT_NGHI_CONGTAC;
+        line3.subtype = line3.subtype + line3ForTrip.subtype;
+      } else if(line3ForTrip.type == EVENT_TYPE.EVENT_CONGTAC) {
+        line3 = {...line3ForTrip};
+      } 
 
       //gio OT
       const line4 = {
@@ -704,6 +754,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       let minStart = 0, maxEnd = 0, minStart2 = null, maxEnd2 = null;  
       const kehoach1 =  getDatetimeForCheckFail(item.from_time1, item.to_time1, currentDay, nextDay)
       const kehoach2 =  getDatetimeForCheckFail(item.from_time2, item.to_time2, currentDay, nextDay);
+      
       if(timeSteps && timeSteps.length > 0) {
         minStart = timeStepsSorted[0].start;
         maxEnd = timeStepsSorted[0].end

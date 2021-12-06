@@ -8,6 +8,7 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
+import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import { debounce } from 'lodash';
 registerLocale("vi", vi)
 
@@ -78,13 +79,7 @@ class PersonalComponent extends React.Component {
     }
 
     async componentDidMount() {
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        let config = getMuleSoftHeaderConfigurations()
         const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
         const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
         const requestProfile = axios.get(profileEndpoint, config);
@@ -217,13 +212,7 @@ class PersonalComponent extends React.Component {
     }
 
     getBirthProvinces = (country_id) => {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
+        const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
@@ -363,16 +352,11 @@ class PersonalComponent extends React.Component {
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
         return (
-            <div className="info">
-                <h4 className="title text-uppercase">{t("PersonalInformation")}</h4>
+            <div className="info edit-main-user-info">
                 <div className="box shadow">
                     <div className="row">
-                        <div className="col">
-                            <i className="note note-old"></i> {t("Record")}
-                </div>
-                        <div className="col">
-                            <i className="note note-new"></i> {t("NewInformation")}
-                </div>
+                        <div className="col"><i className="note note-old"></i> {t("Record")}</div>
+                        <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>
                     </div>
                     <hr />
                     <div className="row">
@@ -750,40 +734,41 @@ class PersonalComponent extends React.Component {
                         localStorage.getItem("companyCode") != "V070" ?
                         <>
                             <div className="row">
-                        <div className="col-2">
-                            <div className="label">{t("BankAccountNumber")}</div>
-                        </div>
-                        <div className="col-4 old">
-                            <div className="detail">{userDetail.bank_number || ""}</div>
-                        </div>
-                        <div className="col-6">
-                            <input className="form-control" name="BankAccountNumber" type="text" value={this.state.userDetail.bank_number || ""}
-                                onChange={this.handleTextInputChange.bind(this)} />
-                            {
-                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bankAccountNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.bankAccountNumber}</p> : null
-                            }
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-2">
-                            <div className="label">{t("BankName")}</div>
-                        </div>
-                        <div className="col-4 old">
-                            <div className="detail">{userDetail.bank_name || ""}</div>
-                        </div>
-                        <div className="col-6">
-                            <Select placeholder={t("SelectBank")} name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
-                                onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
-                            {
-                                (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bank) ? <p className="text-danger">{this.state.validationMessagesFromParent.bank}</p> : null
-                            }
-                        </div>
-                    </div>
-                        </> : null
+                                <div className="col-2">
+                                    <div className="label">{t("BankAccountNumber")}</div>
+                                </div>
+                                <div className="col-4 old">
+                                    <div className="detail">{userDetail.bank_number || ""}</div>
+                                </div>
+                                <div className="col-6">
+                                    <input className="form-control" name="BankAccountNumber" type="text" value={this.state.userDetail.bank_number || ""}
+                                        onChange={this.handleTextInputChange.bind(this)} />
+                                    {
+                                        (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bankAccountNumber) ? <p className="text-danger">{this.state.validationMessagesFromParent.bankAccountNumber}</p> : null
+                                    }
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-2">
+                                    <div className="label">{t("BankName")}</div>
+                                </div>
+                                <div className="col-4 old">
+                                    <div className="detail">{userDetail.bank_name || ""}</div>
+                                </div>
+                                <div className="col-6">
+                                    <Select placeholder={t("SelectBank")} name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
+                                        onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
+                                    {
+                                        (this.state.validationMessagesFromParent && this.state.validationMessagesFromParent.bank) ? <p className="text-danger">{this.state.validationMessagesFromParent.bank}</p> : null
+                                    }
+                                </div>
+                            </div>
+                        </>
+                        : null
                     }
-                    
                 </div>
-            </div>)
+            </div>
+        )
     }
 }
 

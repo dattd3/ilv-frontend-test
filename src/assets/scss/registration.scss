@@ -1,6 +1,5 @@
 .registration-popover {
     max-width: 300px;
-    
     p {
         padding: 5px;
         margin: 0;
@@ -9,6 +8,11 @@
 
 .registration-section {
     font: normal 14px Arial, Helvetica, sans-serif;
+    .validation-message {
+        font-size: 13px;
+        margin: 6px 0;
+        font-style: italic;
+    }
     .task{
         input{
             min-height: 40px;
@@ -30,7 +34,121 @@
         }
     }
     .in-out-time-update {
+        color: #000000;
+        .validation {
+            font-size: 12px;
+            margin-top: 4px;
+            font-style: italic;
+        }
         .block-time-item-edit {
+            margin-bottom: 10px;
+            .wrap-items {
+                border: 1px solid #d1d3e2;
+                border-radius: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                @media only screen and (max-width: 940px) {
+                    border-radius: 10px;
+                    .item {
+                        border-radius: 9px;
+                        border: none !important;
+                        .title {
+                            border-radius: 0 !important;
+                        }
+                        &:first-child {
+                            .title {
+                                border-top-left-radius: 10px !important;
+                                border-top-right-radius: 10px !important;
+                            }
+                        }
+                        &:last-child {
+                            flex: 0 0 100% !important;
+                            max-width: 100% !important;
+                        }
+                    }
+                }
+                .item {
+                    flex: 0 0 32%;
+                    max-width: 32%;
+                    border-right: 1px solid #d1d3e2;
+                    &:last-child {
+                        border: none;
+                        flex: 0 0 36%;
+                        max-width: 36%;
+                        .title {
+                            border-top-right-radius: 10px;
+                        }
+                    }
+                    .title {
+                        height: 35px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        background: #F2F2F2;
+                    }
+                    &:first-child {
+                        .title {
+                            border-top-left-radius: 10px;
+                        }
+                    }
+                    .content {
+                        width: 100%;
+                        .row-customize {
+                            padding: 0 5px;
+                            display: flex;
+                            height: 50px;
+                            align-items: center;
+                            .col-customize {
+                                flex: 0 0 50%;
+                                max-width: 50%;
+                                display: flex;
+                                align-items: center;
+                                .value {
+                                    flex: 1 1;
+                                    input {
+                                        height: 28px;
+                                        font-size: 13px;
+                                        color: inherit;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    &:nth-child(2) {
+                        border-right: none;
+                        @media only screen and (max-width: 1200px) {
+                            .title {
+                                border-top-right-radius: 10px !important;
+                            }
+                        }
+                        @media only screen and (max-width: 940px) {
+                            .title {
+                                border-top-right-radius: 0px !important;
+                            }
+                        }
+                        @media only screen and (min-width: 1200px) {
+                            border-right: 1px solid #d1d3e2;
+                        }
+                    }
+                    @media only screen and (max-width: 1200px) {
+                        flex: 0 0 50%;
+                        max-width: 50%;
+                        border-bottom: 1px solid #d1d3e2;
+                        &:last-child {
+                            flex: 0 0 50%;
+                            max-width: 50%;
+                            .title {
+                                border-top-right-radius: 0;
+                            }
+                        }
+                    }
+                    @media only screen and (max-width: 940px) {
+                        flex: 0 0 100%;
+                        max-width: 100%;
+                    }
+                }
+            }
             .react-datepicker__time-list {
                 .react-datepicker__time-list-item {
                     line-height: 20px;
@@ -65,7 +183,6 @@
                 top: 6px;
             }
         }
-
     }
     .business-type {
         display: flex;
@@ -75,7 +192,6 @@
         margin: 10px 0 5px 0;
         span {
             display: inline-block;
-            
             padding: 2px 0;
             &.smaller {
                 width: 46%;
@@ -83,10 +199,6 @@
         }
     }
     .shift-table {
-        overflow-x: auto;
-        overflow-y: auto;
-        max-height: 350px;
-
         thead th {
             position: sticky;
             top: 0;
@@ -96,6 +208,144 @@
     .shift-work {
         .total-time {
             margin-top: 40px;
+        }
+        .guide-message {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #d1d3e2;
+            margin-bottom: 10px;
+        }
+        .shift-change-type-field {
+            padding: 10px 0;
+        }
+        .shift {
+            border-collapse: separate;
+            border-spacing: 0;
+            thead {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                background: #4e73df;
+                color: #FFFFFF;
+                th {
+                    font-weight: normal;
+                    text-align: center;
+                    vertical-align: middle;
+                    padding: 0;
+                    border-bottom: none;
+                    &.col-shift-code {
+                        button {
+                            font-size: inherit;
+                            background: transparent;
+                            border-color: transparent;
+                            outline: none;
+                            box-shadow: none;
+                            border: none;
+                            &::after {
+                                display: inline-block;
+                                vertical-align: 0.2em;
+                                color: #FFFFFF;
+                                content: "";
+                                border-top: 0.4em solid;
+                                border-right: 0.4em solid transparent;
+                                border-bottom: 0;
+                                border-left: 0.4em solid transparent;
+                            }
+                            .shift-code {
+                                margin-right: 5px;
+                            }
+                            &:active {
+                                background: transparent;
+                                border: none;
+                                box-shadow: none;
+                            }
+                            &:focus {
+                                background: transparent;
+                                border: none;
+                                box-shadow: none;
+                            }
+                        }
+                        .shift-code-popup {
+                            padding: 5px 10px;
+                            .input-shift-code {
+                                input {
+                                    border: none;
+                                    font-size: 12px;
+                                    &:focus {
+                                        border: none;
+                                        outline: none;
+                                    }
+                                    &:active {
+                                        border: none;
+                                        outline: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .start-time, .end-time {
+                        width: 110px;
+                        display: inline-block;
+                        .caret-down {
+                            &::after {
+                                display: inline-block;
+                                vertical-align: 0.2em;
+                                color: #FFFFFF;
+                                content: "";
+                                border-top: 0.4em solid;
+                                border-right: 0.4em solid transparent;
+                                border-bottom: 0;
+                                border-left: 0.4em solid transparent;
+                            }
+                        }
+                    }
+                }
+            }
+            tbody {
+                display: block;
+                max-height: 150px;
+                overflow-y: auto;
+                &::-webkit-scrollbar {
+                    background-color: #F5F5F5;
+                    width: 8px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: #a4afb7;
+                    border-left: 1px solid white;
+                    border-right: 1px solid white;
+                    border-top: 1px solid white;
+                    border-bottom: 1px solid white;
+                    border-radius: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                    background-color: #d3d3d3;
+                    border-left: 3.5px solid white;
+                    border-right: 3.5px solid white;
+                    border-top: 3.5px solid white;
+                    border-bottom: 3.5px solid white;
+                }
+                tr {
+                    display: table;
+                    width: 100%;
+                    table-layout: fixed;
+                    td {
+                        padding: 6px 10px;
+                        text-align: center;
+                        border-left: 1px solid #d1d3e2;
+                        border-bottom: 1px solid #d1d3e2;
+                        &.col-shift-code {
+                            border-right: 1px solid #d1d3e2;
+                        }
+                        input {
+                            cursor: pointer;
+                        }
+                    }
+                    &:last-child {
+                        td {
+                            border-bottom: 1.5px solid #d1d3e2;
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -119,17 +369,17 @@
             border: 1px solid #ddd;
             background-color: #eee;
         }
-
     }
     .mv-10{
         margin-top: 10px;
     }
-    [class$="-container"] {
-        margin: 10px 0;
-    }
+    // [class$="-container"] {
+    //     margin: 10px 0;
+    // }
     .react-datepicker-wrapper{
         [class$="-container"] {
-            margin: 10px 0 0 0 ;
+            // margin: 10px 0 0 0 ;
+            margin: 0;
         }
     }
     .document{
@@ -355,11 +605,9 @@
 
     .input-container {
         position:relative;
-
         label, .react-datepicker-wrapper {
             width: 100%;
         }
-
         .input {
             margin:0;
             padding-right: 10px;
@@ -367,12 +615,11 @@
         }
         .input-img {
             position: absolute;
-            bottom: 5px;
-            right: 0;
+            top: 8px;
+            right: 2px;
             width: 24px;
             height: 24px;
         }
-
         .input-clock {
             position: absolute;
             bottom: 15px;
@@ -380,7 +627,6 @@
             width: 24px;
             height: 24px;
         }
-
         label {
             margin-bottom: 0;
         }
@@ -456,6 +702,12 @@
                 font-size: inherit;
             }
         }
+        &.shift-change-section {
+            .date-info-edit {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
     }
     .business-trip {
         .leave-type {
@@ -470,9 +722,40 @@
         }
     }
     .in-out-time-update, .shift-work {
+        input, button {
+            font-size: inherit;
+        }
+        .shift-change-type {
+            font-size: inherit;
+        }
         .edit {
             cursor: pointer;
             font-weight: 600;
+            color: #ff7f00;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            img {
+                height: 15px;
+                width: 15px;
+                object-fit: cover;
+                margin-right: 5px;
+            }
+            i {
+                font-size: 15px;
+                margin-right: 5px;
+            }
+        }
+        span {
+            margin-left: 5px;
+        }
+        .shift-change-type-field {
+            .required {
+                margin-left: 5px;
+            }
+        }
+        .react-datepicker-popper {
+            z-index: 2;
         }
     }
     .approver {

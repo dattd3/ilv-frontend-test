@@ -2,6 +2,8 @@ import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
+import { t } from 'i18next'
+import moment from 'moment'
 
 class EducationComponent extends React.Component {
   constructor(props) {
@@ -35,10 +37,10 @@ class EducationComponent extends React.Component {
         <div className="detail">{!this.isNullCustomize(item.OtherMajor) ? item.OtherMajor : item.MajorCodeText}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.FromTime}</div>
+        <div className="detail">{moment(item.FromTime, 'DD-MM-YYYY').isValid() ? moment(item.FromTime, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
       </Col>
       <Col xs={12} md={6} lg={2}>
-        <div className="detail">{item.ToTime}</div>
+        <div className="detail">{moment(item.ToTime, 'DD-MM-YYYY').isValid() ? moment(item.ToTime, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
       </Col>
     </Row>
   }

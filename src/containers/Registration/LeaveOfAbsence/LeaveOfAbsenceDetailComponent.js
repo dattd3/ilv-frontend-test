@@ -3,7 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
-import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -24,15 +24,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
   componentDidMount() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      },
-      params: {
-        date: moment().format('YYYYMMDD')
-      }
+    const config = getMuleSoftHeaderConfigurations()
+    config['params'] = {
+      date: moment().format('YYYYMMDD')
     }
 
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
@@ -76,7 +70,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))
-
+    
+    let messageSAP = null;
+    if (this.props.leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (this.props.leaveOfAbsence.responseDataFromSAP && Array.isArray(this.props.leaveOfAbsence.responseDataFromSAP)) {
+        const data = this.props.leaveOfAbsence.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -132,11 +139,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <div className="row">
             <div className="col-xl-3">
               {t("StartDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-xl-3">
               {t("EndDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
             </div>
             <div className="col-xl-3">
               {t("TotalLeaveTime")}
@@ -195,6 +202,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index}>{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         {
           requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 

@@ -5,6 +5,7 @@ import LeaveTimeDetail from './LeaveTimeDetail'
 import axios from 'axios'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class LeaveTimePage extends React.Component {
 
@@ -20,14 +21,7 @@ class LeaveTimePage extends React.Component {
         }
     }
     componentWillMount() {
-        const config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-              'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
-
+        const config = getMuleSoftHeaderConfigurations()
         const thisYear = new Date().getFullYear()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/leaveofabsence?current_year=${thisYear}`, config)
@@ -73,14 +67,7 @@ class LeaveTimePage extends React.Component {
     searchTimesheetByDate (startDate, endDate) {
         this.setState({ isSearch: false, errorMessage: '' })
 
-        const config = {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-              'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-            }
-        }
-
+        const config = getMuleSoftHeaderConfigurations()
         const start = moment(startDate).format('YYYYMMDD').toString()
         const end = moment(endDate).format('YYYYMMDD').toString()
 

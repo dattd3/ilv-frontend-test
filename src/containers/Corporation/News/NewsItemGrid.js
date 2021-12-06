@@ -1,8 +1,11 @@
-import React from "react";
-import moment from 'moment';
+import React from "react"
+import { Image } from 'react-bootstrap'
+import moment from 'moment'
+import IconUser from '../../../assets/img/icon/Icon-User.svg'
+import IconTime from '../../../assets/img/icon/Icon-Time.svg'
 
 function convertToSlug(input) {
-    var slug = input.toLowerCase();
+    let slug = input.toLowerCase();
 
     slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a')
         .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e')
@@ -23,11 +26,11 @@ function convertToSlug(input) {
     return slug;
 }
 
-function SubStringDescription(input) {
-    if (input.length > 150) {
-        return input.substr(0, 149);
-    } else {
-        return input;
+const getTimeByRawTime = rawTime => {
+    const time = moment(rawTime).isValid() ? moment(rawTime) : null
+    return {
+        time: time?.format("HH:mm") || "",
+        date: time?.format("DD/MM/YYYY") || ""
     }
 }
 
@@ -36,27 +39,26 @@ export default function NewsItemGrid(props) {
     const { col } = props;
     var column = 4;
     if (col) column = col;
-    return (
-        <div key={id} className={`col-xl-${column} content-margin-bottom`}>
-            <div className="w3-quarter shadow-sm news-item">
-                <a href={`/news/${convertToSlug(title)}/${id}`}>
-                    {thumbnail ?
-                        <div className="news-thumbnail" style={{ backgroundImage: `url(${thumbnail})` }}></div> :
-                        <div className="news-thumbnail" style={{ backgroundImage: `url('/noimage.png')`, backgroundSize: '250px 250px' }}></div>
-                    }
 
+    const timePublished = getTimeByRawTime(publishedDate)
+
+    return (
+        <div key={id} className={`col-md-6`}>
+            <div className="item" key={id}>
+                <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="link-image-detail">
+                    <Image src={thumbnail} className="thumbnail"
+                        onError={(e) => {
+                            e.target.src = "/logo-normal.svg"
+                            e.target.className = `thumbnail error`
+                        }} 
+                    />
                 </a>
-                <div className="content-padding">
-                    <a href={`/news/${convertToSlug(title)}/${id}`}><h5>{title}</h5> </a>
-                    <div className="news-author mb-2">
-                        <span className="datetime-info w3-left">
-                            <i className="far fa-user"></i> &nbsp; {sourceSite}
-                        </span>
-                        <span className="datetime-info w3-right">
-                            <i className="far">&#xf017;</i> &nbsp;{moment(publishedDate).format('DD/MM/YYYY')}
-                        </span>
+                <div className="title-source-time-info">
+                    <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="title">{title}</a>
+                    <div className="source-time-info">
+                        <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>
+                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
                     </div>
-                    <p className="text-sm">{SubStringDescription(description)}...</p>
                 </div>
             </div>
         </div>
