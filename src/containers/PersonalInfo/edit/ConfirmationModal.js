@@ -32,7 +32,7 @@ class ConfirmationModal extends React.Component {
             if (code === Constants.API_SUCCESS_CODE && res.data?.data[0]?.sub[0]?.status === "S") {
                 this.setState({
                     resultTitle: t("Successful"),
-                    resultMessage: res.data?.data[0]?.sub[0]?.message,
+                    resultMessage: t("successfulApprvalReq"),
                     isSuccess: true
                 });
             } else {
@@ -42,8 +42,7 @@ class ConfirmationModal extends React.Component {
                     isSuccess: false
                 });
             }
-        }else
-        {
+        } else {
             this.setState({
                 resultTitle: "Thông Báo",
                 resultMessage: "Có lỗi ngoại lệ xảy ra, liên hệ IT",

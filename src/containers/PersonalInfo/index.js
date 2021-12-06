@@ -199,7 +199,7 @@ class MyComponent extends React.Component {
     const dataUpdate = relationshipInformation.relationshipDataToUpdate
 
     if ((!dataCreate || dataCreate.length === 0) && (!dataUpdate || dataUpdate.length === 0)) {
-      errors['other'] = "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi"
+      errors['other'] = t("PersonalInfoNoChange")
     } else {
       requiredFields.forEach(name => {
         dataCreate?.length > 0 && dataCreate.forEach((item, index) => {

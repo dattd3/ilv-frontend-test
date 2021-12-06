@@ -4,7 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation, useTranslation} from "react-i18next";
 import Constants from "../../commons/Constants"
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -97,7 +97,7 @@ class ApproverComponent extends React.Component {
 
   loadRecentlyApprover = async () => {
     try {
-      const config = getMuleSoftHeaderConfigurations() 
+      const config = getRequestConfigurations()
       const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
       if (response && response.data) {
         const result = response.data.result
