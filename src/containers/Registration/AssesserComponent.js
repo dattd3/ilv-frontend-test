@@ -93,10 +93,8 @@ class AssesserComponent extends React.Component {
     }
 
     isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
-        const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
+        const indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+        const indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
 
         if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
             return false
@@ -105,9 +103,6 @@ class AssesserComponent extends React.Component {
             return false
         }
 
-        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
-        //     return true
-        // }
         if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
             return true
         }
