@@ -454,26 +454,65 @@ class InOutTimeUpdateComponent extends React.Component {
               </div>
             </div>
             {timesheet.isEdited ? 
+              <>
               <div className="block-time-item-edit">
-                <div className="wrap-item">
-                  <div className="title">
-                    <div className="plan">{t("PlannedShift")}</div>
-                    <div className="actual">{t("ActualTime")}</div>
-                    <div className="editable">{t("InOutChangeRequest")}</div>
-                  </div>
-                  <div className="data">
-                    <div className="row-item">
-                      <div className="item plan">
-                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time1)}</span></div>
-                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time1)}</span></div>
-                      </div>
-                      <div className="item actual">
-                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time1_fact)}</span></div>
-                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time1_fact)}</span></div>
-                      </div>
-                      <div className="item editable">
-                        <div className="first">
+                <div className="wrap-items">
+                  <div className="item">
+                    <div className="title plan">{t("PlannedShift")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
                           <span>{t("StartTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time1)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time1)}</span>
+                        </div>
+                      </div>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time2)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="title actual">{t("ActualTime")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time1_fact)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time1_fact)}</span>
+                        </div>
+                      </div>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time2_fact)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time2_fact)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="title editable">{t("InOutChangeRequest")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span className="label">{t("StartTime")} 1:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
@@ -486,11 +525,11 @@ class InOutTimeUpdateComponent extends React.Component {
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input" />
-                              {this.error(index, 'start_time1_fact_update')}
+                            {this.error(index, 'start_time1_fact_update')}
                           </span>
                         </div>
-                        <div className="second">
-                          <span>{t("EndTime")} 1:</span>
+                        <div className="col-customize">
+                          <span className="label">{t("EndTime")} 1:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
@@ -503,23 +542,13 @@ class InOutTimeUpdateComponent extends React.Component {
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input" />
-                              {this.error(index, 'end_time1_fact_update')}
+                            {this.error(index, 'end_time1_fact_update')}
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div className="row-item">
-                      <div className="item plan">
-                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time2)}</span></div>
-                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time2)}</span></div>
-                      </div>
-                      <div className="item actual">
-                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time2_fact)}</span></div>
-                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time2_fact)}</span></div>
-                      </div>
-                      <div className="item editable">
-                        <div className="first">
-                          <span>{t("StartTime")} 2:</span>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span className="label">{t("StartTime")} 2:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
@@ -533,11 +562,11 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
                               disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
-                              {this.error(index, 'start_time2_fact_update')}
+                            {this.error(index, 'start_time2_fact_update')}
                           </span>
                         </div>
-                        <div className="second">
-                          <span>{t("EndTime")} 2:</span>
+                        <div className="col-customize">
+                          <span className="label">{t("EndTime")} 2:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
@@ -551,14 +580,15 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
                               disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
-                              {this.error(index, 'end_time2_fact_update')}
+                            {this.error(index, 'end_time2_fact_update')}
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-            </div> : null}
+              </div>
+            </> : null}
 
             {timesheet.isEdited ? <div className="row block-note-item-edit">
               <div className="col-12 pb-2">
