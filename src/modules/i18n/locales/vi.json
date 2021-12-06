@@ -1077,5 +1077,6 @@
   "RelationshipSon": "Con trai",
   "RelationshipDaughter": "Con gái",
   "RelationshipOther": "Khác",
-  "AttachFile": "Đính kèm tệp tin"
+  "AttachFile": "Đính kèm tệp tin",
+  "PersonalInfoNoChange": "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi."
 }
