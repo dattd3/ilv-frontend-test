@@ -281,7 +281,7 @@ class ApprovalDetail extends React.Component {
         </div>
         { isShowDocumentComponent ? 
           <>
-          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin file đính kèm</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("RegistrationAttachmentInformation")}</h4></div>
           <DocumentComponent documents={documents} />
           </>
           : null

@@ -796,7 +796,8 @@
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
   
   "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
-  "GROSSCovidCampaignBonus": "GROSS Covid Campaign Bonus",
+  "GROSSSUPCovidCampaignBonus": "GROSS Covid Campaign Bonus",
+  "GROSSCovidCampaignBonus": "Covid - 19 Campaign Bonus(gross)",
   "CovidMobilzationAllowance": "Covid mobilzation allowance",
   "GROSSCovid19PandemicSubsidy": "GROSS Covid 19 pandemic subsidy",
   "NETF0EmployeesSubsidy": "NET F0 employees subsidy",
