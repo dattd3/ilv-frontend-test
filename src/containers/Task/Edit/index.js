@@ -12,6 +12,7 @@ import st from '../../../store'
 import { Provider } from 'react-redux'
 import { updatePersonalDataAction } from '../../../actions'
 import { convertObjectkeyToCamelCase } from '../../Utils/ObjectHelpers'
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
@@ -963,20 +964,15 @@ class PersonalInfoEdit extends React.Component {
   //#endregion private function ============
 
   async componentDidMount() {
-
-    let configWithinSecretKey = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        // 'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        // 'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
+    const config = getRequestConfigurations()
+    const muleSoftConfig = getMuleSoftHeaderConfigurations()
     const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
     const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
     const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`;
-    const requestProfile = axios.get(profileEndpoint, configWithinSecretKey);
-    const requestPersonalInfo = axios.get(personalInfoEndpoint, configWithinSecretKey);
-    const requestEducation = axios.get(personalEducationEnpoint, configWithinSecretKey);
+
+    const requestProfile = axios.get(profileEndpoint, muleSoftConfig);
+    const requestPersonalInfo = axios.get(personalInfoEndpoint, muleSoftConfig);
+    const requestEducation = axios.get(personalEducationEnpoint, muleSoftConfig);
     await axios.all([requestProfile, requestPersonalInfo, requestEducation]).then(axios.spread((...responses) => {
       this.processProfile(responses[0]);
       this.processPersonalInfo(responses[1]);
@@ -985,14 +981,7 @@ class PersonalInfoEdit extends React.Component {
 
     })
 
-    let config = {
-      headers: {
-        'Authorization': localStorage.getItem('accessToken'),
-        'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-        'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-      }
-    }
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, configWithinSecretKey)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -1003,7 +992,7 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data
@@ -1092,8 +1081,7 @@ class PersonalInfoEdit extends React.Component {
         <div className="edit-personal-detail-request">
           <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
             confirmStatus={this.state.confirmStatus} onHide={this.onHideModalConfirm} />
-          <Form className="create-notification-form" id="create-notification-form" encType="multipart/form-data">
-
+          <Form encType="multipart/form-data">
             <PersonalComponent userDetail={this.state.userDetail}
               userProfile={this.state.userProfile}
               removeInfo={this.removePersonalInfo.bind(this)}
@@ -1109,7 +1097,7 @@ class PersonalInfoEdit extends React.Component {
               religions={this.state.religions}
               documentTypes={this.state.documentTypes}
             />
-            <EducationComponent
+            {/* <EducationComponent
               userEducation={this.state.userEducation}
               setState={this.setState.bind(this)}
               certificates={this.state.certificates}
@@ -1119,7 +1107,7 @@ class PersonalInfoEdit extends React.Component {
               updateEducation={this.updateEducation.bind(this)}
               mappingFieldFn={this.mappingFields.bind(this)}
               updateNewEducation={this.updateNewEducation.bind(this)}
-            />
+            /> */}
 
             <ul className="list-inline">
               {this.state.files.map((file, index) => {
@@ -1133,7 +1121,7 @@ class PersonalInfoEdit extends React.Component {
               {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
               <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}</button>
               <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
-              <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> Đính kèm tệp tin</button>
+              <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachFile")}</button>
             </div>
           </Form>
         </div>

@@ -7,6 +7,7 @@ import VaccinationDetail from "./Detail";
 import moment from 'moment';
 import axios from 'axios';
 import _ from "lodash";
+import { getRequestConfigurations } from "../../../commons/Utils"
 
 class Vaccination extends React.Component {
     constructor(props) {
@@ -22,11 +23,8 @@ class Vaccination extends React.Component {
 
     componentDidMount() {
         const { t } = this.props;
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            }
-        }
+        const config = getRequestConfigurations()
+
         axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/list?culture=${t('langCode')}`, config)
         .then(res => {
             if (res && res.data && res.data.data) {
@@ -47,7 +45,8 @@ class Vaccination extends React.Component {
     
     render() {
         const { t } = this.props;
-        const lastItem = this.state.listData[this.state.listData.length - 1];
+        const { listData } = this.state
+        const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {}
 
         return <>
             <div className="row vaccine-info-page">

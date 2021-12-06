@@ -92,6 +92,19 @@ class InOutUpdateDetailComponent extends React.Component {
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId))
   
+    let messageSAP = null;
+    if (inOutTimeUpdate.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (inOutTimeUpdate.responseDataFromSAP && Array.isArray(inOutTimeUpdate.responseDataFromSAP)) {
+        const data = inOutTimeUpdate.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -204,6 +217,15 @@ class InOutUpdateDetailComponent extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(inOutTimeUpdate.processStatusId, inOutTimeUpdate.appraiser))}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index}>{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         {
           inOutTimeUpdate 

@@ -49,21 +49,34 @@ class BusinessTripDetailComponent extends React.Component {
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
 
+    let messageSAP = null;
+    if (businessTrip.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    {
+      if (businessTrip.responseDataFromSAP && Array.isArray(businessTrip.responseDataFromSAP)) {
+        const data = businessTrip.responseDataFromSAP.filter(val => val.STATUS === 'E');
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
     return (
       <div className="business-trip">
         <h5>{t("EmployeeInfomation")}</h5>
         <RequesterDetailComponent user={businessTrip.user} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>{Constants.mappingActionType[requestInfo.actionType].TitleTripAndTrainning}</h5>
+        <h5>{t('TitleTripAndTrainning')}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-xl-4">
               {t("StartDateTime")}
-              <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-xl-4">
               {t("EndDateTime")}
-              <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '')}</div>
+              <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
             </div>
             <div className="col-xl-4">
               {t('TotalTimeForBizTripAndTraining')}
@@ -87,7 +100,7 @@ class BusinessTripDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              {Constants.mappingActionType[requestInfo.actionType].ReasonTripAndTrainning}
+              {t('ReasonTripAndTrainning')}
               <div className="detail">{requestInfo.comment}</div>
             </div>
           </div>
@@ -128,6 +141,15 @@ class BusinessTripDetailComponent extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
+          {messageSAP && 
+            <div className={`d-flex status fail`}>
+              <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+              <div>
+                {messageSAP.map((msg, index) => {
+                  return <div key={index}>{msg}</div>
+                })}
+              </div>
+            </div>}
         </div>
         {
           requestInfo
