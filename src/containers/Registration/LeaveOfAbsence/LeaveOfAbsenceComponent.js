@@ -233,29 +233,17 @@ class LeaveOfAbsenceComponent extends React.Component {
     setStartTime(startTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endTime, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
 
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        const startTimeToSave = moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        let end = endTime
-
-        if (end === undefined || (moment(startTime).isValid() && moment(startTimeToSave, Constants.LEAVE_TIME_FORMAT) > moment(endTime, Constants.LEAVE_TIME_FORMAT))) {
-            end = moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") < moment("08:00", "HH:mm"))) {
-            end = endTime
-        }
         requestInfo[indexReq].startTime = start
-        requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         if (checkVinmec === false)
-            this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+            this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
     }
 
     onBlurEndTime(groupId, groupItem) {
@@ -293,30 +281,17 @@ class LeaveOfAbsenceComponent extends React.Component {
     setEndTime(endTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startTime, startDate, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
 
-        const endTimeToSave = moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        let start = startTime
-
-        if (startTime === undefined || (moment(endTime).isValid() && moment(endTimeToSave, Constants.LEAVE_TIME_FORMAT) < moment(startTime, Constants.LEAVE_TIME_FORMAT))) {
-            start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") < moment("08:00", "HH:mm"))) {
-            start = startTime
-        }
-
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].startTime = start
         requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         if (checkVinmec === false) // Trường hợp vinmec tính thời gian khi lost focus
-            this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
     isOverlapDateTime(startDateTime, endDateTime, indexReq) {
