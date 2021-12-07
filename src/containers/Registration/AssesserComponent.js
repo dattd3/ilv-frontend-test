@@ -7,6 +7,7 @@ import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 const currentUserEmailLogged = localStorage.getItem("email")
+const currentUserPnLVCodeLogged = localStorage.getItem("companyCode")
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -86,7 +87,7 @@ class AssesserComponent extends React.Component {
         if (value) {
             const currentUserLevel = localStorage.getItem('employeeLevel')
             this.setState({ [name]: value })
-            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+            const isAppraiser = this.isAppraiser(value.employeeLevel, currentUserLevel, value.account)
             this.props.updateAppraiser(value, isAppraiser)
         } else {
             this.setState({ [name]: value, users: [] })
@@ -94,18 +95,23 @@ class AssesserComponent extends React.Component {
         }
     }
 
-    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
-        const indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        const indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
-
-        if (indexAppraiserFilterLevel === -1 || indexCurrentUserLevel > indexAppraiserFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
+    isAppraiser = (levelAppraiserFilter, currentUserLevel, account) => {
+        const listLevelsSpecificPnL = ['M3', 'M2', 'M1', 'M0']
+        let listLevelsAdditional = []
+        if ([Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+            listLevelsAdditional = listLevelsSpecificPnL
+        }
+        listLevelsAdditional = listLevelsAdditional.concat(Constants.CONSENTER_LIST_LEVEL)
+        const indexCurrentUserLevel = _.findIndex(listLevelsAdditional, function (item) { return item == currentUserLevel })
+        const indexAppraiserFilterLevel = _.findIndex(listLevelsAdditional, function (item) { return item == levelAppraiserFilter }, 0)
+        if (indexAppraiserFilterLevel === -1 
+            || (indexCurrentUserLevel > indexAppraiserFilterLevel && (!listLevelsSpecificPnL.includes(currentUserLevel) || !listLevelsSpecificPnL.includes(levelAppraiserFilter))) 
+            || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
             return false
         }
-
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
+        if (listLevelsAdditional.includes(levelAppraiserFilter)) {
             return true
         }
-
         return false
     }
 

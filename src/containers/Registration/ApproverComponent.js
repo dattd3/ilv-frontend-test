@@ -7,6 +7,7 @@ import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 const currentUserEmailLogged = localStorage.getItem("email")
+const currentUserPnLVCodeLogged = localStorage.getItem("companyCode")
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -143,18 +144,18 @@ class ApproverComponent extends React.Component {
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
-    const indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-    const indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
-
+    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
+    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+      listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
+    }
+    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
+    const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
     if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
       return false
     }
-
-    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter)) {
+    if (listLevelsApprover.includes(levelApproverFilter)) {
       return true
     }
-
     return false
   }
 
