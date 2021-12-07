@@ -16,6 +16,7 @@ import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
+import { checkIsExactPnL } from '../../../commons/commonFunctions';
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
@@ -203,6 +204,32 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
+    onBlurStartTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].startTime, Constants.LEAVE_TIME_FORMAT);
+            let m = time.minutes();
+            if (m > 30) {
+                time.set('minute', 30);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 0);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
+    }
+
     setStartTime(startTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -226,9 +253,43 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false)
+            this.calculateTotalTime(startDate, endDate, start, end, indexReq)
     }
 
+    onBlurEndTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].endTime, Constants.LEAVE_TIME_FORMAT);
+            let h = time.hours();
+            let m = time.minutes();
+            if (m > 30) {
+                if (h < 24) {
+                    h = h + 1;
+                    m = 0;
+                    time.set('hour', h);
+                    time.set('minute', m);
+                    const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                    requestInfo[indexReq].endTime = end;
+                    this.setState({ requestInfo })
+                    
+                }
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 30);
+                const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].endTime = end;
+                this.setState({ requestInfo })
+            }
+            // Trường hợp vinmec tính thời gian khi lost focus
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
+    }
     setEndTime(endTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -253,7 +314,9 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false) // Trường hợp vinmec tính thời gian khi lost focus
+            this.calculateTotalTime(startDate, endDate, start, end, indexReq)
     }
 
     isOverlapDateTime(startDateTime, endDateTime, indexReq) {
@@ -810,6 +873,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         return (
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
@@ -916,7 +980,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input  type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
                                                             <label>{t('FullDay')}</label>
                                                         </div>
                                                         : null
@@ -932,12 +996,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -954,12 +1019,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
                                                                                         autoComplete="off"
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1059,12 +1125,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1107,12 +1174,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
                                                                                         autoComplete="off"
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1160,6 +1228,15 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+                                {checkVinmec === true &&
+                                    <div className="row business-type">
+                                        <div className="col-12">
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 text-info smaller">* {t('Block30Notification')}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
 
                                 <div className="row">
                                     <div className="col-12">
