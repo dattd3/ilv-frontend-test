@@ -93,43 +93,43 @@ class RequestComponent extends React.Component {
       let itemStatus
       if(isVinbrain) {
         itemStatus = {
-          onboardingStatus1: item.logistic.status,
-          supporterDes1: item.logistic.note,
+          onboardingStatus1: item.item1.status,
+          supporterDes1: item.item1.note,
 
-          onboardingStatus2: item.setup.status,
-          supporterDes2: item.setup.note,
+          onboardingStatus2: item.item2.status,
+          supporterDes2: item.item2.note,
 
-          onboardingStatus3: item.employee.status,
-          supporterDes3: item.employee.note,
+          onboardingStatus3: item.item3.status,
+          supporterDes3: item.item3.note,
 
-          onboardingStatus4: item.welcomeLetter.status,
-          supporterDes4: item.welcomeLetter.note,
+          onboardingStatus4: item.item4.status,
+          supporterDes4: item.item4.note,
 
-          onboardingStatus5: item.training.status,
-          supporterDes5: item.training.note,
+          onboardingStatus5: item.item5.status,
+          supporterDes5: item.item5.note,
 
-          onboardingStatus6: item.document.status,
-          supporterDes6: item.document.note,
+          onboardingStatus6: item.item6.status,
+          supporterDes6: item.item6.note,
 
-          onboardingStatus7: item.email.status,
-          supporterDes7: item.email.note,
+          onboardingStatus7: item.item7.status,
+          supporterDes7: item.item7.note,
 
-          onboardingStatus8: item.contract.status,
-          supporterDes8: item.contract.note,
+          onboardingStatus8: item.item8.status,
+          supporterDes8: item.item8.note,
         }
       } else {
         itemStatus = {
-          onboardingStatus1: item.devices.status,
-          supporterDes1: item.devices.note,
+          onboardingStatus1: item.item1.status,
+          supporterDes1: item.item1.note,
 
-          onboardingStatus2: item.account.status,
-          supporterDes2: item.account.note,
+          onboardingStatus2: item.item2.status,
+          supporterDes2: item.item2.note,
 
-          onboardingStatus3: item.voucher.status,
-          supporterDes3: item.voucher.note,
+          onboardingStatus3: item.item3.status,
+          supporterDes3: item.item3.note,
 
-          onboardingStatus4: item.dormitory.status,
-          supporterDes4: item.dormitory.note,
+          onboardingStatus4: item.item4.status,
+          supporterDes4: item.item4.note,
         }
       }
       return  {
@@ -177,67 +177,56 @@ class RequestComponent extends React.Component {
             startWork: item.recruitingDate || '',
             timeExpire: item.expireDate || '',
             requestCode: item.requestCode,
-            devices: {
-                status: item.supportOnboardInfo?.onboardingStatus1 || false,
-                note: item.supportOnboardInfo?.supporterDes1 || '',
-                isEditable: item.onboardingIndicator1
+            item1: {
+              status: item.supportOnboardInfo?.onboardingStatus1 || false,
+              note: item.supportOnboardInfo?.supporterDes1 || '',
+              isEditable: item.onboardingIndicator1
             },
-            account: {
-                status: item.supportOnboardInfo?.onboardingStatus2 || false ,
+            item2: {
+                status: item.supportOnboardInfo?.onboardingStatus2 || false,
                 note: item.supportOnboardInfo?.supporterDes2 || '',
                 isEditable: item.onboardingIndicator2
             },
-            voucher: {
-                status: item.supportOnboardInfo?.onboardingStatus3 || false ,
+            item3: {
+                status: item.supportOnboardInfo?.onboardingStatus3 || false,
                 note: item.supportOnboardInfo?.supporterDes3 || '',
                 isEditable: item.onboardingIndicator3
             },
-            dormitory: {
-                status: item.supportOnboardInfo?.onboardingStatus4 || false ,
+            item4: {
+                status: item.supportOnboardInfo?.onboardingStatus4 || false,
                 note: item.supportOnboardInfo?.supporterDes4 || '',
                 isEditable: item.onboardingIndicator4
             },
-            //work for vinbrain
-            logistic: { //  Chuẩn bị Logistic: chỗ ngồi, máy móc, voucher, VPP ...
-                status: item.supportOnboardInfo?.onboardingStatus1 || false ,
-                note: item.supportOnboardInfo?.supporterDes1 || '',
-                isEditable: item.onboardingIndicator1
+            item5: {
+                status: item.supportOnboardInfo?.onboardingStatus5 || false,
+                note: item.supportOnboardInfo?.supporterDes5 || '',
+                isEditable: item.onboardingIndicator5
             },
-            setup: { // Tạo account, cài đặt máy tính
-              status: item.supportOnboardInfo?.onboardingStatus2 || false ,
-              note: item.supportOnboardInfo?.supporterDes2 || '',
-              isEditable: item.onboardingIndicator2
+            item6: {
+                status: item.supportOnboardInfo?.onboardingStatus6 || false,
+                note: item.supportOnboardInfo?.supporterDes6 || '',
+                isEditable: item.onboardingIndicator6
             },
-            employee: { // Tạo mã nhân viên và HĐLĐ/HĐTV, cam kết
-              status: item.supportOnboardInfo?.onboardingStatus3 || false ,
-              note: item.supportOnboardInfo?.supporterDes3 || '',
-              isEditable: item.onboardingIndicator3
+            item7: {
+                status: item.supportOnboardInfo?.onboardingStatus7 || false,
+                note: item.supporterDes7 || '',
+                isEditable: item.onboardingIndicator7
             },
-            welcomeLetter: { // Gửi thư chào mừng nhân viên mới: Nội quy/SĐTC/Hệ thống nội bộ/ contact hữu dụng
-              status: item.supportOnboardInfo?.onboardingStatus4 || false ,
-              note: item.supportOnboardInfo?.supporterDes4 || '',
-              isEditable: item.onboardingIndicator4
+            item8: {
+                status: item.supportOnboardInfo?.onboardingStatus8 || false,
+                note: item.supportOnboardInfo?.supporterDes8 || '',
+                isEditable: item.onboardingIndicator8
             },
-            training: { // Tổ chức khóa Đào tạo định hướng
-              status: item.supportOnboardInfo?.onboardingStatus5 || false ,
-              note: item.supportOnboardInfo?.supporterDes5 || '',
-              isEditable: item.onboardingIndicator5
+            item9: {
+                status: item.supportOnboardInfo?.onboardingStatus9 || false,
+                note: item.supportOnboardInfo?.supporterDes9 || '',
+                isEditable: item.onboardingIndicator9
             },
-            document: { // Hoàn thiện hồ sơ theo quy định Tập đoàn
-              status: item.supportOnboardInfo?.onboardingStatus6 || false ,
-              note: item.supportOnboardInfo?.supporterDes6 || '',
-              isEditable: item.onboardingIndicator6
-            },
-            email: { // Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams
-              status: item.supportOnboardInfo?.onboardingStatus7 || false ,
-              note: item.supportOnboardInfo?.supporterDes7 || '',
-              isEditable: item.onboardingIndicator7
-            },
-            contract: { // Ký HĐLĐ
-              status: item.supportOnboardInfo?.onboardingStatus8 || false ,
-              note: item.supportOnboardInfo?.supporterDes8 || '',
-              isEditable: item.onboardingIndicator8
-            },
+            item10: {
+                status: item.supportOnboardInfo?.onboardingStatus10 || false,
+                note: item.supportOnboardInfo?.supporterDes10 || '',
+                isEditable: item.onboardingIndicator10
+            }
         }
     });
 
@@ -412,6 +401,13 @@ class RequestComponent extends React.Component {
                                     <th scope="col" className="col-devices text-center">Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams</th>
                                     <th scope="col" className="col-devices text-center">Ký HĐLĐ</th>
                                   </>
+                                  : checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                                    <>
+                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</div>
+                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Máy tính / Điện thoại bàn</div>
+                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Đồng phục / Thẻ tên / Tủ cá nhân / Chìa khóa kho… Văn phòng phẩm</div>
+                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Lấy vân tay cho CBNV vào ngày đầu làm việc</div>
+                                    </>
                                   :
                                   <>
                                     {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">Chuẩn bị công cụ dụng cụ <br/> (Phòng làm việc, Bàn/ghế/tủ, máy tính, đồng phục)</th> : null}
@@ -444,21 +440,21 @@ class RequestComponent extends React.Component {
                                 {
                                   checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
                                   <>
-                                    {this.renderActionView(true, item.employeeNo, item.logistic, 'logistic')}
-                                    {this.renderActionView(true, item.employeeNo, item.setup, 'setup')}
-                                    {this.renderActionView(true, item.employeeNo, item.employee, 'employee')}
-                                    {this.renderActionView(true, item.employeeNo, item.welcomeLetter, 'welcomeLetter')}
-                                    {this.renderActionView(true, item.employeeNo, item.training, 'training')}
-                                    {this.renderActionView(true, item.employeeNo, item.document, 'document')}
-                                    {this.renderActionView(true, item.employeeNo, item.email, 'email')}
-                                    {this.renderActionView(true, item.employeeNo, item.contract, 'contract')}
+                                    {this.renderActionView(true, item.employeeNo, item.item1, 'item1')}
+                                    {this.renderActionView(true, item.employeeNo, item.item2, 'item2')}
+                                    {this.renderActionView(true, item.employeeNo, item.item3, 'item3')}
+                                    {this.renderActionView(true, item.employeeNo, item.item4, 'item4')}
+                                    {this.renderActionView(true, item.employeeNo, item.item5, 'item5')}
+                                    {this.renderActionView(true, item.employeeNo, item.item6, 'item6')}
+                                    {this.renderActionView(true, item.employeeNo, item.item7, 'item8')}
+                                    {this.renderActionView(true, item.employeeNo, item.item9, 'item9')}
                                   </>
                                   :
                                   <>
-                                    {this.renderActionView(this.state.isShowDevices, item.employeeNo, item.devices, 'devices')}
-                                    {this.renderActionView(this.state.isShowAccount, item.employeeNo, item.account, 'account')}
-                                    {this.renderActionView(this.state.isShowVoucher, item.employeeNo, item.voucher, 'voucher')}
-                                    {this.renderActionView(this.state.isShowDonitory, item.employeeNo, item.dormitory, 'dormitory')}
+                                    {this.renderActionView(this.state.isShowDevices, item.employeeNo, item.item1, 'item1')}
+                                    {this.renderActionView(this.state.isShowAccount, item.employeeNo, item.item2, 'item2')}
+                                    {this.renderActionView(this.state.isShowVoucher, item.employeeNo, item.item3, 'item3')}
+                                    {this.renderActionView(this.state.isShowDonitory, item.employeeNo, item.item4, 'item4')}
                                   </>
                                 }
                                 
