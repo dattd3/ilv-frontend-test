@@ -45,7 +45,7 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
-        if(localStorage.getItem('companyCode') == 'V030') {
+        if( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinPearl].includes(localStorage.getItem('companyCode')) ) {
             this.checkPermissonShowPrepareTab();
         }
     }
