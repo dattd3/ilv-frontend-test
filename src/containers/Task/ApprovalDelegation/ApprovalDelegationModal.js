@@ -51,7 +51,7 @@ function ApprovalDelegationModal(props) {
                             employeeNo: res.uid,
                             fullName: res.fullName,
                             avatar: res.avatar,
-                            employeeLevel: res.employee_level,
+                            employeeLevel: res.rank_title || res.employee_level,
                             pnl: res.pnl,
                             userAccount: res.user_account,
                             part: res.part,

@@ -6,6 +6,8 @@ import { withTranslation, useTranslation} from "react-i18next";
 import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
+const currentUserEmailLogged = localStorage.getItem("email")
+
 const MyOption = props => {
   const { innerProps, innerRef } = props;
   const { t } = useTranslation();
@@ -142,20 +144,13 @@ class ApproverComponent extends React.Component {
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
     const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
-    const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
+    const indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+    const indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
 
-    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
-      return false
-    }
-    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
       return false
     }
 
-    // if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
-    //   return true
-    // }
     if (APPROVER_LIST_LEVEL.includes(levelApproverFilter)) {
       return true
     }
@@ -180,7 +175,7 @@ class ApproverComponent extends React.Component {
                 value: res.user_account,
                 fullName: res.fullName,
                 avatar: res.avatar,
-                employeeLevel: res.employee_level,
+                employeeLevel: res.rank_title || res.employee_level, // Cấp bậc chức danh để phân quyền
                 pnl: res.pnl,
                 orglv2Id: res.orglv2_id,
                 account: res.user_account,
