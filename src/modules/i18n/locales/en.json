@@ -1062,5 +1062,6 @@
   "RelationshipDaughter": "Daughter",
   "RelationshipOther": "Other",
   "AttachFile": "Attach file",
-  "PersonalInfoNoChange": "You have not changed your information. Please enter the change information."
+  "PersonalInfoNoChange": "You have not changed your information. Please enter the change information.",
+  "Block30Notification" : "Please note that employees have to require for a break in block of 30 minutes."
 }

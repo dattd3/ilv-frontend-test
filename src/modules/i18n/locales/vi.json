@@ -1079,5 +1079,6 @@
   "RelationshipDaughter": "Con gái",
   "RelationshipOther": "Khác",
   "AttachFile": "Đính kèm tệp tin",
-  "PersonalInfoNoChange": "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi."
+  "PersonalInfoNoChange": "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi.",
+  "Block30Notification" : "CBNV lưu ý xin nghỉ theo block 30 phút."
 }
