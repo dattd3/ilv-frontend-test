@@ -57,7 +57,6 @@ function Authorize(props) {
             })
             .catch(error => {
                 SetIsloading(false);
-                // SetIsLoadingUser(false);
                 SetIsGetUser(true)
                 SetIsError(true)
                 SetErrorType(ERROR_TYPE.NETWORK)
@@ -105,7 +104,7 @@ function Authorize(props) {
                             jobTitle: user.job_name,
                             jobId: user.job_id,
                             benefitLevel: user.benefit_level || user.employee_level,
-                            employeeLevel: user.rank_title, // Cấp bậc chức danh để phân quyền.
+                            employeeLevel: user.rank_title || user.employee_level, // Cấp bậc chức danh để phân quyền.
                             benefitTitle: benefitTitle,
                             company: user.pnl,
                             sabaId: `saba-${user.uid}`,
@@ -143,7 +142,7 @@ function Authorize(props) {
                         jobTitle: user.job_name,
                         jobId: user.job_id,
                         benefitLevel: user.benefit_level || user.employee_level,
-                        employeeLevel: user.rank_title, // Cấp bậc chức danh để phân quyền.
+                        employeeLevel: user.rank_title || user.employee_level, // Cấp bậc chức danh để phân quyền.
                         benefitTitle: benefitTitle,
                         company: user.pnl,
                         sabaId: `saba-${user.uid}`,

@@ -6,6 +6,8 @@ import { withTranslation, useTranslation } from "react-i18next";
 import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
+const currentUserEmailLogged = localStorage.getItem("email")
+
 const MyOption = props => {
     const { innerProps, innerRef } = props;
     const { t } = useTranslation();
@@ -96,10 +98,7 @@ class AssesserComponent extends React.Component {
         const indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
         const indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
 
-        if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
-            return false
-        }
-        if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
+        if (indexAppraiserFilterLevel === -1 || indexCurrentUserLevel > indexAppraiserFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
             return false
         }
 
@@ -127,7 +126,7 @@ class AssesserComponent extends React.Component {
                                 value: res.user_account,
                                 fullName: res.fullName,
                                 avatar: res.avatar,
-                                employeeLevel: res.employee_level,
+                                employeeLevel: res.rank_title || res.employee_level, // Cấp bậc chức danh để phân quyền
                                 pnl: res.pnl,
                                 orglv2Id: res.orglv2_id,
                                 account: res.user_account,
