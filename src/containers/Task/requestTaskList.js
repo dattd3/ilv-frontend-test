@@ -277,11 +277,37 @@ class RequestTaskList extends React.Component {
             } else {
                 isShow = false;
             }
+            // Chỉnh lại ẩn hiện cho list yêu cầu
+            if (page === "request") {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED) {
+                    isShow = true;
+                }
+                else 
+                    isShow = false;
+            }
         }
+        
         return isShow;
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
+        // Chỉnh lại ẩn hiện cho list yêu cầu
+        const { page } = this.props
+        let isShow = true;
+        if (page === "request") {
+            if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP ||
+                requestTypeId === Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE ||
+                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET) 
+                && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
+                isShow = true;
+            }
+            else 
+                isShow = false;
+            // 
+            if (requestTypeId === Constants.UPDATE_PROFILE && status === Constants.STATUS_WAITING && appraiser !== null && Object.keys(appraiser).length === 0)
+                isShow = true;
+            return isShow;
+        }
         return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9)  ? true : false;
     }
     
@@ -296,7 +322,16 @@ class RequestTaskList extends React.Component {
             } else {
                 isShow = false;
             }
+            // Chỉnh lại ẩn hiện cho list yêu cầu
+            if (this.props.page === "request") {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED) {
+                    isShow = true;
+                }
+                else 
+                    isShow = false;
+            }
         }
+        
         return isShow;
     }
 
