@@ -88,7 +88,7 @@ class RequestTaskList extends React.Component {
             ...this.state.dataForSearch,
             pageIndex: index
         }}, () => {
-            this.seachRemoteData(false);
+            this.searchRemoteData(false);
         });
         //this.setState({ pageNumber: index })
     }
@@ -493,7 +493,7 @@ class RequestTaskList extends React.Component {
         }});
     }
 
-    seachRemoteData = (isSearch) => {
+    searchRemoteData = (isSearch) => {
         const dataForSearch = this.state.dataForSearch;
         let needRefresh = false;
         if(isSearch){
@@ -518,6 +518,78 @@ class RequestTaskList extends React.Component {
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
         const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+
+        const isAdjacentDateBy2Date = (start, end) => {
+            const startToCompare = moment(start, 'DD/MM/YYYY')
+            if (startToCompare.add(1, 'days').format('DD/MM/YYYY') == end) {
+                return true
+            }
+            return false
+        }
+
+        const getDateChanged = (childStartDate) => {
+            const dateSorted = childStartDate && childStartDate.length > 0 ?  [...new Set(childStartDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')) : []
+            if (dateSorted.length === 0) {
+                return ""
+            }
+            let rangeDate = []
+            let result = []
+            for (let i = 0; i < dateSorted.length; i++) {
+                let item = dateSorted[i]
+                if (i === 0) {
+                    if (isAdjacentDateBy2Date(item, dateSorted[i + 1])) {
+                        rangeDate[0] = item
+                        rangeDate[1] = dateSorted[i + 1]
+                    } else {
+                        result = result.concat(item)
+                        rangeDate[0] = null
+                        rangeDate[1] = dateSorted[i + 1]
+                    }
+                    i = i + 1
+                } else {
+                    if (isAdjacentDateBy2Date(rangeDate[1], item)) {
+                        if (rangeDate[0] == null) {
+                            rangeDate[0] = rangeDate[1]
+                        }
+                        rangeDate[1] = item
+                        if (i === dateSorted.length - 1) {
+                            if (rangeDate[0]) {
+                                result = result.concat([[...rangeDate]])
+                            } else {
+                                result = result.concat(rangeDate[1])
+                            }
+                        }
+                    } else {
+                        if (rangeDate[0]) {
+                            result = result.concat([[...rangeDate]])
+                        } else {
+                            result = result.concat(rangeDate[1])
+                        }
+                        rangeDate = [null, item]
+                        if (i === dateSorted.length - 1) {
+                            result = result.concat(item)
+                        }
+                    }
+                }
+            }
+
+            return result.reduce((initial, item, index) => {
+                if (Array.isArray(item)) {
+                    if (index === 0) {
+                        initial = initial.concat(item.join(" - "))
+                    } else {
+                        initial = initial.concat(",\r", item.join(" - "))
+                    }
+                } else {
+                    if (index === 0) {
+                        initial = initial.concat(item)
+                    } else {
+                        initial = initial.concat(",\r", item)
+                    }
+                }
+                return initial
+            }, "")
+        }
 
         return (
             <>
@@ -575,7 +647,7 @@ class RequestTaskList extends React.Component {
                     </InputGroup>
                     </div>
                     <div className="col-4">
-                        <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
+                        <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
                 <div className="block-title">
@@ -603,8 +675,7 @@ class RequestTaskList extends React.Component {
                                     let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
                                     let totalTime = null
                                     let editLink = null
-                                    let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
-
+                                    
                                     if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }
@@ -629,13 +700,13 @@ class RequestTaskList extends React.Component {
                                         <tr key={index}>
                                             <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off">{dateChanged}</td>
+                                            <td className="day-off">{getDateChanged(child.startDate)}</td>
                                             <td className="break-time text-center">{totalTime}</td>
                                             <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                             <td className="tool">
                                                 {
                                                     isShowEditButton && child.absenceType?.value != "PN02" 
-                                                    ? <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                    ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
                                                     : null
                                                 }
                                                 {

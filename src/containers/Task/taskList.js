@@ -75,7 +75,7 @@ class TaskList extends React.Component {
             ...this.state.dataForSearch,
             pageIndex: index
         }}, () => {
-            this.seachRemoteData(false);
+            this.searchRemoteData(false);
         })
     }
 
@@ -321,7 +321,7 @@ class TaskList extends React.Component {
         }});
     }
 
-    seachRemoteData = (isSearch) => {
+    searchRemoteData = (isSearch) => {
         const dataForSearch = this.state.dataForSearch;
         let needRefresh = false;
         if(isSearch){
@@ -410,7 +410,7 @@ class TaskList extends React.Component {
                         </InputGroup>
                         </div>
                         <div className="col-4">
-                            <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
+                            <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
                    
