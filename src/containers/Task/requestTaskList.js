@@ -12,7 +12,7 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import {InputGroup, FormControl} from 'react-bootstrap'
+import { InputGroup, FormControl } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate } from "../../commons/Utils"
 
@@ -38,7 +38,7 @@ class RequestTaskList extends React.Component {
             dataToPrepareToSAP: {},
             dataToUpdate: [],
             isShowModalRegistrationConfirm: false,
-            statusSelected:null,
+            statusSelected: null,
             query: null,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
@@ -72,23 +72,23 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    componentDidMount()
-    {
-        this.setState({tasks: this.props.tasks})
+    componentDidMount() {
+        this.setState({ tasks: this.props.tasks })
     }
-    
-    componentWillReceiveProps()
-    {
-        this.setState({tasks: this.props.tasks})
+
+    componentWillReceiveProps() {
+        this.setState({ tasks: this.props.tasks })
     }
 
     onChangePage = index => {
         index = index < Constants.TASK_PAGE_INDEX_DEFAULT ? Constants.TASK_PAGE_INDEX_DEFAULT : index;
         index = index * this.state.dataForSearch.pageSize > this.props.total ? (1 + parseInt(this.props.total / this.state.dataForSearch.pageSize)) : index;
-        this.setState({ pageNumber: index, dataForSearch: {
-            ...this.state.dataForSearch,
-            pageIndex: index
-        }}, () => {
+        this.setState({
+            pageNumber: index, dataForSearch: {
+                ...this.state.dataForSearch,
+                pageIndex: index
+            }
+        }, () => {
             this.searchRemoteData(false);
         });
         //this.setState({ pageNumber: index })
@@ -107,8 +107,8 @@ class RequestTaskList extends React.Component {
     }
 
     showModalConfirm = (status, requestId) => {
-        const {t} = this.props;
-         const requestUpdateProfile = 1
+        const { t } = this.props;
+        const requestUpdateProfile = 1
         if (requestId == requestUpdateProfile) {
             this.setState({
                 modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
@@ -119,7 +119,7 @@ class RequestTaskList extends React.Component {
         } else {
             this.setState({
                 modalTitle: status == Constants.STATUS_NOT_APPROVED ? t("RejectApproveRequest") : t("ApproveRequest"),
-                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveRequestHolder", {name: t(this.requestRegistraion[requestId].request)}),
+                modalMessage: status == Constants.STATUS_NOT_APPROVED ? t("ReasonRejectingRequest") : t("ConfirmApproveRequestHolder", { name: t(this.requestRegistraion[requestId].request) }),
                 isShowModalRegistrationConfirm: true,
                 typeRequest: status == Constants.STATUS_NOT_APPROVED ? Constants.STATUS_NOT_APPROVED : Constants.STATUS_APPROVED,
                 requestUrl: this.requestRegistraion[requestId].requestUrl
@@ -128,17 +128,17 @@ class RequestTaskList extends React.Component {
     }
 
     evictionRequest = (requestTypeId, child) => {
-        const {t} = this.props;
+        const { t } = this.props;
         let prepareDataForRevoke =
-            {
-                id: parseInt(child.id.split(".")[0]),
-                requestTypeId: requestTypeId,
-                sub: [
-                    {
-                        id: child.id,
-                    }
-                ]
-            }
+        {
+            id: parseInt(child.id.split(".")[0]),
+            requestTypeId: requestTypeId,
+            sub: [
+                {
+                    id: child.id,
+                }
+            ]
+        }
         this.setState({
             modalTitle: t("ConfirmRequestRecall"),
             modalMessage: t("SureApprovalRecall"),
@@ -149,17 +149,17 @@ class RequestTaskList extends React.Component {
     }
 
     deleteRequest = (requestTypeId, child) => {
-        const {t} = this.props;
+        const { t } = this.props;
         let prepareDataForCancel =
-            {
-                id: parseInt(child.id.split(".")[0]),
-                requestTypeId: requestTypeId,
-                sub: [
-                    {
-                        id: child.id,
-                    }
-                ]
-            }
+        {
+            id: parseInt(child.id.split(".")[0]),
+            requestTypeId: requestTypeId,
+            sub: [
+                {
+                    id: child.id,
+                }
+            ]
+        }
 
         this.setState({
             modalTitle: t("CancelRequest"),
@@ -217,7 +217,7 @@ class RequestTaskList extends React.Component {
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
-        
+
         // if(taskData != null && statusOriginal == 5) {
         //     statusOriginal = 20;
         // }
@@ -228,7 +228,7 @@ class RequestTaskList extends React.Component {
         return this.props.page === "approval" ? `/registration/${id}/1` : `/registration/${id}/1/request`
     }
 
-    getLinkRegistration(id,childId) {
+    getLinkRegistration(id, childId) {
         return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
     }
 
@@ -247,7 +247,7 @@ class RequestTaskList extends React.Component {
     }
 
     checkDateLessThanPayPeriod = (date) => {
-        let convertedDate = moment(date,'DD/MM/YYYY');
+        let convertedDate = moment(date, 'DD/MM/YYYY');
         let minDate = null;
         let today = new Date();
         let currentDay = today.getDate();
@@ -255,7 +255,7 @@ class RequestTaskList extends React.Component {
             minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 29)
         }
         if (currentDay > 29) {
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() ), 29)
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth()), 29)
         }
 
         return convertedDate < minDate ? false : true
@@ -269,9 +269,9 @@ class RequestTaskList extends React.Component {
             isShow = false;
         } else {
             if (
-                (requestTypeId != Constants.SUBSTITUTION && requestTypeId != Constants.IN_OUT_TIME_UPDATE && requestTypeId != Constants.UPDATE_PROFILE && requestTypeId != Constants.CHANGE_DIVISON_SHIFT && requestTypeId != Constants.DEPARTMENT_TIMESHEET) 
-                && (status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser)) 
-                && this.checkDateLessThanPayPeriod(startDate) 
+                (requestTypeId != Constants.SUBSTITUTION && requestTypeId != Constants.IN_OUT_TIME_UPDATE && requestTypeId != Constants.UPDATE_PROFILE && requestTypeId != Constants.CHANGE_DIVISON_SHIFT && requestTypeId != Constants.DEPARTMENT_TIMESHEET)
+                && (status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser))
+                && this.checkDateLessThanPayPeriod(startDate)
                 && isEditOnceTime
             ) {
                 isShow = true;
@@ -280,47 +280,47 @@ class RequestTaskList extends React.Component {
             }
             // Chỉnh lại ẩn hiện cho list yêu cầu
             if (page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) 
-                && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startDate) 
-                && isEditOnceTime) {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP)
+                    && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startDate)
+                    && isEditOnceTime) {
                     isShow = true;
                 }
-                else 
+                else
                     isShow = false;
             }
         }
-        
+
         return isShow;
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
         // Chỉnh lại ẩn hiện cho list yêu cầu
         const { page } = this.props
-        let isShow = true;
+        let isShow = false;
         if (page === "request") {
             if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP ||
-                requestTypeId === (actionType == "INS" && (Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE)) ||
-                requestTypeId === (actionType == "INS" && (Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET)) ) 
-                && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
+                requestTypeId === Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE ||
+                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET ||
+                actionType == "INS") && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
                 isShow = true;
             }
-            else 
-                isShow = false;
-            // 
-            if (requestTypeId === Constants.UPDATE_PROFILE && status === Constants.STATUS_WAITING && appraiser !== null && Object.keys(appraiser).length === 0)
-                isShow = true;
+            if (requestTypeId === Constants.UPDATE_PROFILE) {
+                if ((status === Constants.STATUS_WAITING && appraiser !== null && Object.keys(appraiser).length === 0) ||
+                    status === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+                    isShow = true;
+            }
             return isShow;
         }
-        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9)  ? true : false;
+        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9) ? true : false;
     }
-    
+
     isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
         let isShow = true;
         if (this.props.page == "approval") {
             isShow = false;
         } else {
             // || (status == 5 && appraiser)
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)){
+            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)) {
                 isShow = true;
             } else {
                 isShow = false;
@@ -330,11 +330,11 @@ class RequestTaskList extends React.Component {
                 if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startdate)) {
                     isShow = true;
                 }
-                else 
+                else
                     isShow = false;
             }
         }
-        
+
         return isShow;
     }
 
@@ -479,38 +479,44 @@ class RequestTaskList extends React.Component {
         return dataToSAP
     }
     handleSelectChange(name, value) {
-        this.setState({ [name]: value, dataForSearch: {
-            ...this.state.dataForSearch,
-            status: value,
-            pageIndex: 1
-        }});
+        this.setState({
+            [name]: value, dataForSearch: {
+                ...this.state.dataForSearch,
+                status: value,
+                pageIndex: 1
+            }
+        });
 
     }
 
     //re code
     handleInputChange = (event) => {
-        this.setState({  query: event.target.value, dataForSearch: {
-            ...this.state.dataForSearch,
-            id: event.target.value,
-            pageIndex: 1
-        }});
+        this.setState({
+            query: event.target.value, dataForSearch: {
+                ...this.state.dataForSearch,
+                id: event.target.value,
+                pageIndex: 1
+            }
+        });
     }
 
     searchRemoteData = (isSearch) => {
         const dataForSearch = this.state.dataForSearch;
         let needRefresh = false;
-        if(isSearch){
+        if (isSearch) {
             dataForSearch.pageIndex = 1;
             needRefresh = true;
         }
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.id ? `id=${dataForSearch.id}&` : '';
         params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
-        this.setState({dataForSearch: {
-            ...dataForSearch,
-            needRefresh: needRefresh
-        }})
-        this.props.requestRemoteData(params);  
+        this.setState({
+            dataForSearch: {
+                ...dataForSearch,
+                needRefresh: needRefresh
+            }
+        })
+        this.props.requestRemoteData(params);
     }
 
     render() {
@@ -526,56 +532,56 @@ class RequestTaskList extends React.Component {
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
                     taskId={this.state.taskId} onHide={this.onHideModalConfirm} /> */}
-                     <ConfirmationModal
-                        dataToSap={this.state.dataToUpdate}
-                        id={this.props.id}
-                        show={this.state.isShowModalConfirm}
-                        title={this.state.modalTitle}
-                        type={this.state.typeRequest}
-                        message={this.state.modalMessage}
-                        onHide={this.onHideModalConfirm.bind(this)}
-                    />
+                <ConfirmationModal
+                    dataToSap={this.state.dataToUpdate}
+                    id={this.props.id}
+                    show={this.state.isShowModalConfirm}
+                    title={this.state.modalTitle}
+                    type={this.state.typeRequest}
+                    message={this.state.modalMessage}
+                    onHide={this.onHideModalConfirm.bind(this)}
+                />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
                     <div className="col-xl-4">
                         <InputGroup className="d-flex">
-                        <InputGroup.Prepend className="">
-                            <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <Select name="absenceType" 
-                                className="w-75" 
+                            <InputGroup.Prepend className="">
+                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Select name="absenceType"
+                                className="w-75"
                                 // defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || ""} 
+                                value={this.state.absenceType || ""}
                                 isClearable={false}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)} 
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata} 
+                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata}
                                 styles={{
                                     menu: provided => ({ ...provided, zIndex: 2 })
                                 }}
                                 theme={theme => ({
-                                ...theme,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: '#F9C20A',
-                                    primary: '#F9C20A',
-                                },
-                                })}/>
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        primary25: '#F9C20A',
+                                        primary: '#F9C20A',
+                                    },
+                                })} />
                         </InputGroup>
                     </div>
                     <div className="col-xl-4">
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            placeholder={t('SearchRequester')}
-                            aria-label="SearchRequester"
-                            aria-describedby="basic-addon2"
-                            className="request-user"
-                            onChange={this.handleInputChange}
-                        />
-                    </InputGroup>
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                placeholder={t('SearchRequester')}
+                                aria-label="SearchRequester"
+                                aria-describedby="basic-addon2"
+                                className="request-user"
+                                onChange={this.handleInputChange}
+                            />
+                        </InputGroup>
                     </div>
                     <div className="col-4">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
@@ -587,85 +593,85 @@ class RequestTaskList extends React.Component {
                 <div className="task-list request-list shadow">
                     {
                         tasks.length > 0 ?
-                        <table className="table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th scope="col" className="code">{t("RequestNo")}</th>
-                                    <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                    <th scope="col" className="day-off">{t("Times")}</th>
-                                    <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
-                                    <th scope="col" className="status text-center">{t("Status")}</th>
-                                    <th scope="col" className="tool text-center">{t("action")}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                tasks.map((child, index) => {
-                                    let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate, child.isEdit);
-                                    let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
-                                    let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
-                                    let totalTime = null
-                                    let editLink = null
-                                    
-                                    if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
-                                        totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
-                                    }
-                                    if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE 
-                                        || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
-                                        editLink = null;
-                                    } else {
-                                        editLink = [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])
-                                    }
+                            <table className="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className="code">{t("RequestNo")}</th>
+                                        <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
+                                        <th scope="col" className="day-off">{t("Times")}</th>
+                                        <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                        <th scope="col" className="status text-center">{t("Status")}</th>
+                                        <th scope="col" className="tool text-center">{t("action")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        tasks.map((child, index) => {
+                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate, child.isEdit);
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
+                                            let totalTime = null
+                                            let editLink = null
 
-                                    let detailLink = ""
-                                    if (child.requestType.id == Constants.UPDATE_PROFILE) {
-                                        detailLink = this.getLinkRegistration(child.id, 1)
-                                    } else if (requestTypeSingleIdList.includes(child.requestType.id)) {
-                                        detailLink = this.getLinkUserProfileHistory(child.id)
-                                    } else {
-                                        detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
+                                            if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
+                                                totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                            }
+                                            if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE
+                                                || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
+                                                editLink = null;
+                                            } else {
+                                                editLink = [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
+                                            }
+
+                                            let detailLink = ""
+                                            if (child.requestType.id == Constants.UPDATE_PROFILE) {
+                                                detailLink = this.getLinkRegistration(child.id, 1)
+                                            } else if (requestTypeSingleIdList.includes(child.requestType.id)) {
+                                                detailLink = this.getLinkUserProfileHistory(child.id)
+                                            } else {
+                                                detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
+                                            }
+
+                                            let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
+                                                    <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} /></td>
+                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
+                                                    <td className="tool">
+                                                        {
+                                                            isShowEditButton && child.absenceType?.value != "PN02"
+                                                                ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
+                                                                : null
+                                                        }
+                                                        {
+                                                            isShowEvictionButton && child.absenceType?.value != "PN02"
+                                                                ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
+                                                                : null
+                                                        }
+                                                        {
+                                                            isShowDeleteButton
+                                                                ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                                : null
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
                                     }
-
-                                    let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
-
-                                    return (
-                                        <tr key={index}>
-                                            <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                            <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
-                                            <td className="break-time text-center">{totalTime}</td>
-                                            <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
-                                            <td className="tool">
-                                                {
-                                                    isShowEditButton && child.absenceType?.value != "PN02" 
-                                                    ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
-                                                    : null
-                                                }
-                                                {
-                                                    isShowEvictionButton && child.absenceType?.value != "PN02" 
-                                                    ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
-                                                    : null
-                                                }
-                                                {
-                                                    isShowDeleteButton 
-                                                    ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
-                                                    : null
-                                                }
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            </tbody>
-                        </table>
-                        : <div className="data-not-found">{t("NoDataFound")}</div>
+                                </tbody>
+                            </table>
+                            : <div className="data-not-found">{t("NoDataFound")}</div>
                     }
                 </div>
                 {tasks.length > 0 ? <div className="row paging mt-4">
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh}/>
+                        <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh} />
                     </div>
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {total}</div>
