@@ -14,6 +14,7 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
+import { showRangeDateGroupByArrayDate } from "../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -519,78 +520,6 @@ class RequestTaskList extends React.Component {
         // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
         const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
 
-        const isAdjacentDateBy2Date = (start, end) => {
-            const startToCompare = moment(start, 'DD/MM/YYYY')
-            if (startToCompare.add(1, 'days').format('DD/MM/YYYY') == end) {
-                return true
-            }
-            return false
-        }
-
-        const getDateChanged = (childStartDate) => {
-            const dateSorted = childStartDate && childStartDate.length > 0 ?  [...new Set(childStartDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')) : []
-            if (dateSorted.length === 0) {
-                return ""
-            }
-            let rangeDate = []
-            let result = []
-            for (let i = 0; i < dateSorted.length; i++) {
-                let item = dateSorted[i]
-                if (i === 0) {
-                    if (isAdjacentDateBy2Date(item, dateSorted[i + 1])) {
-                        rangeDate[0] = item
-                        rangeDate[1] = dateSorted[i + 1]
-                    } else {
-                        result = result.concat(item)
-                        rangeDate[0] = null
-                        rangeDate[1] = dateSorted[i + 1]
-                    }
-                    i = i + 1
-                } else {
-                    if (isAdjacentDateBy2Date(rangeDate[1], item)) {
-                        if (rangeDate[0] == null) {
-                            rangeDate[0] = rangeDate[1]
-                        }
-                        rangeDate[1] = item
-                        if (i === dateSorted.length - 1) {
-                            if (rangeDate[0]) {
-                                result = result.concat([[...rangeDate]])
-                            } else {
-                                result = result.concat(rangeDate[1])
-                            }
-                        }
-                    } else {
-                        if (rangeDate[0]) {
-                            result = result.concat([[...rangeDate]])
-                        } else {
-                            result = result.concat(rangeDate[1])
-                        }
-                        rangeDate = [null, item]
-                        if (i === dateSorted.length - 1) {
-                            result = result.concat(item)
-                        }
-                    }
-                }
-            }
-
-            return result.reduce((initial, item, index) => {
-                if (Array.isArray(item)) {
-                    if (index === 0) {
-                        initial = initial.concat(item.join(" - "))
-                    } else {
-                        initial = initial.concat(",\r", item.join(" - "))
-                    }
-                } else {
-                    if (index === 0) {
-                        initial = initial.concat(item)
-                    } else {
-                        initial = initial.concat(",\r", item)
-                    }
-                }
-                return initial
-            }, "")
-        }
-
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -679,7 +608,6 @@ class RequestTaskList extends React.Component {
                                     if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }
-
                                     if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE 
                                         || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
                                         editLink = null;
@@ -696,11 +624,13 @@ class RequestTaskList extends React.Component {
                                         detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
                                     }
 
+                                    let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
+
                                     return (
                                         <tr key={index}>
                                             <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off">{getDateChanged(child.startDate)}</td>
+                                            <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
                                             <td className="break-time text-center">{totalTime}</td>
                                             <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                             <td className="tool">

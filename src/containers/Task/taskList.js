@@ -17,7 +17,7 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
-import { getRequestTypeIdsAllowedToReApproval } from "../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate } from "../../commons/Utils"
 
 class TaskList extends React.Component {
     constructor() {
@@ -463,7 +463,7 @@ class TaskList extends React.Component {
                                             if (child.requestTypeId == 2 || child.requestTypeId == 3) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
-                                            let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
+                                            let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             return (
                                                 <tr key={index}>
