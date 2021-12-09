@@ -279,7 +279,9 @@ class RequestTaskList extends React.Component {
             }
             // Chỉnh lại ẩn hiện cho list yêu cầu
             if (page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED) {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) 
+                && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startDate) 
+                && isEditOnceTime) {
                     isShow = true;
                 }
                 else 
@@ -296,8 +298,8 @@ class RequestTaskList extends React.Component {
         let isShow = true;
         if (page === "request") {
             if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP ||
-                requestTypeId === Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE ||
-                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET) 
+                requestTypeId === (actionType == "INS" && (Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE)) ||
+                requestTypeId === (actionType == "INS" && (Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET)) ) 
                 && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
                 isShow = true;
             }
@@ -324,7 +326,7 @@ class RequestTaskList extends React.Component {
             }
             // Chỉnh lại ẩn hiện cho list yêu cầu
             if (this.props.page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED) {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startdate)) {
                     isShow = true;
                 }
                 else 
