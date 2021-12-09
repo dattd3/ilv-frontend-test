@@ -14,6 +14,7 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import {InputGroup, FormControl} from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
+import { showRangeDateGroupByArrayDate } from "../../commons/Utils"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -88,7 +89,7 @@ class RequestTaskList extends React.Component {
             ...this.state.dataForSearch,
             pageIndex: index
         }}, () => {
-            this.seachRemoteData(false);
+            this.searchRemoteData(false);
         });
         //this.setState({ pageNumber: index })
     }
@@ -495,7 +496,7 @@ class RequestTaskList extends React.Component {
         }});
     }
 
-    seachRemoteData = (isSearch) => {
+    searchRemoteData = (isSearch) => {
         const dataForSearch = this.state.dataForSearch;
         let needRefresh = false;
         if(isSearch){
@@ -577,7 +578,7 @@ class RequestTaskList extends React.Component {
                     </InputGroup>
                     </div>
                     <div className="col-4">
-                        <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
+                        <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
                 <div className="block-title">
@@ -605,12 +606,10 @@ class RequestTaskList extends React.Component {
                                     let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
                                     let totalTime = null
                                     let editLink = null
-                                    let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
-
+                                    
                                     if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                         totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                     }
-
                                     if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE 
                                         || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
                                         editLink = null;
@@ -627,17 +626,19 @@ class RequestTaskList extends React.Component {
                                         detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
                                     }
 
+                                    let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
+
                                     return (
                                         <tr key={index}>
                                             <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
                                             <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
-                                            <td className="day-off">{dateChanged}</td>
+                                            <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
                                             <td className="break-time text-center">{totalTime}</td>
                                             <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId )}</td>
                                             <td className="tool">
                                                 {
                                                     isShowEditButton && child.absenceType?.value != "PN02" 
-                                                    ? <a href={editLink} title="Chỉnh sửa thông tin"><img alt="Edit task" src={editButton} /></a>
+                                                    ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
                                                     : null
                                                 }
                                                 {
