@@ -246,18 +246,34 @@ class RequestTaskList extends React.Component {
         }
     }
 
+    getMaxDayOfMonth = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        let isLeapYear = false
+        if (year % 4 === 0 && year % 100 !== 0) isLeapYear = true;
+        const month31Days = [1,3,5,7,8,10,12];
+        const month30Days = [4,6,9,11];
+        if (month31Days.includes(month)) return 29;
+        if (month30Days.includes(month)) return 30;
+        if (month === 2) {
+            if (isLeapYear === true) return 29;
+            else return 28;
+        }
+        return 30;
+    }
     checkDateLessThanPayPeriod = (date) => {
+        const endOfMonth = this.getMaxDayOfMonth();
         let convertedDate = moment(date, 'DD/MM/YYYY');
         let minDate = null;
         let today = new Date();
         let currentDay = today.getDate();
-        if (currentDay < 29) {
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 29)
+        if (currentDay < endOfMonth && currentDay >= 26) {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
         }
-        if (currentDay > 29) {
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth()), 29)
+        else {
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth()), 26)
         }
-
         return convertedDate < minDate ? false : true
     }
 
@@ -305,7 +321,7 @@ class RequestTaskList extends React.Component {
                 isShow = true;
             }
             if (requestTypeId === Constants.UPDATE_PROFILE) {
-                if ((status === Constants.STATUS_WAITING && appraiser !== null && Object.keys(appraiser).length === 0) ||
+                if ((status === Constants.STATUS_WAITING && ((appraiser !== null && Object.keys(appraiser).length === 0) || !appraiser)) ||
                     status === Constants.STATUS_PARTIALLY_SUCCESSFUL)
                     isShow = true;
             }
@@ -327,7 +343,9 @@ class RequestTaskList extends React.Component {
             }
             // Chỉnh lại ẩn hiện cho list yêu cầu
             if (this.props.page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP) && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startdate)) {
+                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP || requestTypeId === Constants.CHANGE_DIVISON_SHIFT) 
+                    && status === Constants.STATUS_APPROVED 
+                    && this.checkDateLessThanPayPeriod(startdate)) {
                     isShow = true;
                 }
                 else
