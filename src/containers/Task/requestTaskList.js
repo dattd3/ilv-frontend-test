@@ -319,8 +319,8 @@ class RequestTaskList extends React.Component {
         if (page === "request") {
             if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP ||
                 requestTypeId === Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE ||
-                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET ||
-                actionType == "INS") && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
+                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET) &&
+                actionType?.toUpperCase() !== "DEL" && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
                 isShow = true;
             }
             if (requestTypeId === Constants.UPDATE_PROFILE) {
