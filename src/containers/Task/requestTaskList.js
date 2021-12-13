@@ -254,7 +254,7 @@ class RequestTaskList extends React.Component {
         if (year % 4 === 0 && year % 100 !== 0) isLeapYear = true;
         const month31Days = [1,3,5,7,8,10,12];
         const month30Days = [4,6,9,11];
-        if (month31Days.includes(month)) return 29;
+        if (month31Days.includes(month)) return 31;
         if (month30Days.includes(month)) return 30;
         if (month === 2) {
             if (isLeapYear === true) return 29;
@@ -268,11 +268,14 @@ class RequestTaskList extends React.Component {
         let minDate = null;
         let today = new Date();
         let currentDay = today.getDate();
-        if (currentDay < endOfMonth && currentDay >= 26) {
+        if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
             minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
         }
-        else {
+        else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
             minDate = new Date((new Date()).getFullYear(), (new Date().getMonth()), 26)
+        }
+        else { // Ngày sửa/thu hồi 1,..,25
+            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
         }
         return convertedDate < minDate ? false : true
     }
