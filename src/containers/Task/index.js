@@ -45,9 +45,9 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
-        if( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinPearl].includes(localStorage.getItem('companyCode')) ) {
-            this.checkPermissonShowPrepareTab();
-        }
+        //if( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinPearl].includes(localStorage.getItem('companyCode')) ) {
+        this.checkPermissonShowPrepareTab();
+        //}
     }
 
     checkPermissonShowPrepareTab = async () => {
@@ -57,7 +57,7 @@ class Task extends React.Component {
                   'Authorization': `${localStorage.getItem('accessToken')}`
                 }
             }
-            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint`, config)
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${localStorage.getItem('companyCode')}`, config)
 
             if (response && response.data) {
                 this.setState({

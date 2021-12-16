@@ -142,6 +142,7 @@ class RequestComponent extends React.Component {
         positionName: item.rank,
         recruitingDate: item.startWork,
         expireDate: item.timeExpire,
+        companyCode: localStorage.getItem('companyCode'),
         ...itemStatus
       }
     })
@@ -403,10 +404,10 @@ class RequestComponent extends React.Component {
                                   </>
                                   : checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
                                     <>
-                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</div>
-                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Máy tính / Điện thoại bàn</div>
-                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Đồng phục / Thẻ tên / Tủ cá nhân / Chìa khóa kho… Văn phòng phẩm</div>
-                                        <div className="font-weight-bold item title col-devices expand-advanced-search">Lấy vân tay cho CBNV vào ngày đầu làm việc</div>
+                                        <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</th>
+                                        <th scope="col" className="col-devices text-center">Máy tính / Điện thoại bàn</th>
+                                        <th scope="col" className="col-devices text-center">Đồng phục / Thẻ tên / Tủ cá nhân / Chìa khóa kho… Văn phòng phẩm</th>
+                                        <th scope="col" className="col-devices text-center">Lấy vân tay cho CBNV vào ngày đầu làm việc</th>
                                     </>
                                   :
                                   <>
@@ -446,8 +447,8 @@ class RequestComponent extends React.Component {
                                     {this.renderActionView(true, item.employeeNo, item.item4, 'item4')}
                                     {this.renderActionView(true, item.employeeNo, item.item5, 'item5')}
                                     {this.renderActionView(true, item.employeeNo, item.item6, 'item6')}
-                                    {this.renderActionView(true, item.employeeNo, item.item7, 'item8')}
-                                    {this.renderActionView(true, item.employeeNo, item.item9, 'item9')}
+                                    {this.renderActionView(true, item.employeeNo, item.item7, 'item7')}
+                                    {this.renderActionView(true, item.employeeNo, item.item8, 'item8')}
                                   </>
                                   :
                                   <>
