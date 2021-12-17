@@ -539,7 +539,8 @@ class MyComponent extends React.Component {
 
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
-            checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
+            // checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
+            true ?
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>
