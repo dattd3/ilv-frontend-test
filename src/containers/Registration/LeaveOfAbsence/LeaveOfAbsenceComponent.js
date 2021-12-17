@@ -17,23 +17,16 @@ import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY } from "../../Task/Constants"
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
-
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
     2: { day: 1, time: 8 },
     3: { day: 3, time: 24 }
 }
-
-const ANNUAL_LEAVE_KEY = "PQ01"
-const COMPENSATORY_LEAVE_KEY = "PQ02"
-const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
-const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
-const MATERNITY_LEAVE_KEY = "IN02"
 const totalDaysForSameDay = 1
-
 const queryString = window.location.search
 
 class LeaveOfAbsenceComponent extends React.Component {
@@ -810,26 +803,8 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     render() {
         const { t } = this.props;
-        let absenceTypes = [
-            { value: 'IN01', label: t('SickLeave') },
-            { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
-            { value: 'IN03', label: t('RecoveryLeave') },
-            { value: 'PN01', label: t('LeaveForExpats') },
-            { value: 'PN02', label: t("LeaveForMother") },
-            { value: 'PN03', label: t('LeaveForMarriageFuneral') },
-            // { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
-            { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
-            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: t("AdvancedLeave") },
-            { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
-            // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
-            { value: 'UN01', label: t('UnpaidLeave') }
-        ]
-
-        const PN03List = [
-            { value: '1', label: 'Bản thân Kết hôn' },
-            { value: '2', label: 'Con kết hôn' },
-            { value: '3', label: 'Bố đẻ, mẹ đẻ, bố vợ, mẹ vợ hoặc bố chồng, mẹ chồng mất; vợ chết hoặc chồng mất; con mất' },
-        ];
+        const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
+        const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
             requestInfo,
             annualLeaveSummary,
@@ -923,14 +898,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <div>
                                                     <p className="title">{t('LeaveCategory')}</p>
                                                     <div>
-                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
                                                     </div>
                                                     {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
 
-                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
+                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">{t("MarriageFuneral")}</p> : null}
                                                     {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
                                                         <div>
-                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
+                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
                                                         :
                                                         null}

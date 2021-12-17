@@ -3,7 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
-import { getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, getRequestConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -23,20 +23,29 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       annualLeaveSummary: {}
     }
   }
-  componentDidMount() {
-    const config = getMuleSoftHeaderConfigurations()
-    config['params'] = {
-      date: moment().format('YYYYMMDD')
-    }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
-      .then(res => {
-        if (res && res.data) {
-          const annualLeaveSummary = res.data.data
-          this.setState({ annualLeaveSummary: annualLeaveSummary })
+  componentDidMount() {
+    this.processAbsenceData()
+  }
+
+  processAbsenceData = async () => {
+    const { leaveOfAbsence } = this.props
+    if (leaveOfAbsence && leaveOfAbsence.id) {
+      const config = getRequestConfigurations()
+      config.params = {
+        id: leaveOfAbsence.id
+      }
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/employee/currentabsence`, config)
+        if (response && response.data) {
+          const result = response.data.result
+          if (result && result.code == Constants.API_SUCCESS_CODE) {
+            const annualLeaveSummary = response.data.data || {}
+            this.setState({ annualLeaveSummary: annualLeaveSummary })
+          }
         }
-      }).catch(error => {
-      })
+      } catch (e) {}
+    }
   }
 
   getTypeDetail = () => {

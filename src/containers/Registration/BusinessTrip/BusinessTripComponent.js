@@ -555,7 +555,7 @@ class BusinessTripComponent extends React.Component {
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
-            id: 3,
+            id: Constants.BUSINESS_TRIP,
             name: "Đăng ký công tác đào tạo"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
