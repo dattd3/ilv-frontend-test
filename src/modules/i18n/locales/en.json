@@ -609,6 +609,7 @@
   "To": "To",
   "EvaluationSuccessFactor": "To perform evaluation/To check detailed result, please login to SuccessFactor",
   "ToilIfAny": "TOIL (If any)",
+  "AdvancedTOIL": "Advanced TOIL",
   "ToilDay": "TOIL Day",
   "ToilHours": "TOIL Hours",
   "ToilHoursBalance": "Carrying-over TOIL Hours",

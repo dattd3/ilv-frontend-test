@@ -14,7 +14,8 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { InputGroup, FormControl } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate } from "../../commons/Utils"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
+import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -57,10 +58,10 @@ class RequestTaskList extends React.Component {
         };
 
         this.requestRegistraion = {
-            2: { request: "Đăng ký nghỉ", requestUrl: "requestabsence" },
-            3: { request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance" },
-            4: { request: "Thay đổi phân ca", requestUrl: "requestsubstitution" },
-            5: { request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping" }
+            [Constants.LEAVE_OF_ABSENCE]: { request: "Đăng ký nghỉ", requestUrl: "requestabsence" },
+            [Constants.BUSINESS_TRIP]: { request: "Đăng ký Công tác/Đào tạo", requestUrl: "requestattendance" },
+            [Constants.SUBSTITUTION]: { request: "Thay đổi phân ca", requestUrl: "requestsubstitution" },
+            [Constants.IN_OUT_TIME_UPDATE]: { request: "Sửa giờ vào - ra", requestUrl: "requesttimekeeping" }
         }
 
         this.typeFeedbackMapping = {
@@ -217,10 +218,6 @@ class RequestTaskList extends React.Component {
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
-
-        // if(taskData != null && statusOriginal == 5) {
-        //     statusOriginal = 20;
-        // }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -230,20 +227,6 @@ class RequestTaskList extends React.Component {
 
     getLinkRegistration(id, childId) {
         return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
-    }
-
-    getTaskCode = code => {
-        if (code > 0 && code < 10) {
-            return "0000" + code;
-        } else if (code >= 10 && code < 100) {
-            return "000" + code;
-        } else if (code >= 100 && code < 1000) {
-            return "00" + code;
-        } else if (code >= 1000 && code < 10000) {
-            return "0" + code;
-        } else {
-            return code;
-        }
     }
 
     getMaxDayOfMonth = () => {
@@ -541,13 +524,21 @@ class RequestTaskList extends React.Component {
     }
 
     render() {
-        const recordPerPage = 10
         const { t, total, tasks } = this.props
-        // let tasksRaw = this.state.tasks.length > 0 || this.state.statusSelected || this.state.query ? this.state.tasks : this.props.tasks
-        // let tasks = TableUtil.updateData(tasksRaw || [], this.state.pageNumber - 1, recordPerPage)
+        const { pageNumber } = this.state
+
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
-        // child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 1
         const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+
+        const getRequestTypeLabel = (requestType, absenceTypeValue) => {
+            if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
+                const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
+                return absenceType ? t(absenceType.label) : ""
+            } else {
+                const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
+                return requestTypeObj ? t(requestTypeObj.label) : ""
+            }
+        }
 
         return (
             <>
@@ -657,8 +648,8 @@ class RequestTaskList extends React.Component {
 
                                             return (
                                                 <tr key={index}>
-                                                    <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{this.getTaskCode(child.id)}</a></td>
-                                                    <td className="request-type">{child.requestTypeId == 2 ? child.absenceType?.label : child.requestType.name}</td>
+                                                    <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
+                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} /></td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
@@ -688,7 +679,7 @@ class RequestTaskList extends React.Component {
                             : <div className="data-not-found">{t("NoDataFound")}</div>
                     }
                 </div>
-                {tasks.length > 0 ? <div className="row paging mt-4">
+                {(tasks.length > 0 || Math.ceil(total/Constants.TASK_PAGE_SIZE_DEFAULT) == pageNumber) ? <div className="row paging mt-4">
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">

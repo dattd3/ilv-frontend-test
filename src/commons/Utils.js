@@ -300,6 +300,20 @@ const showRangeDateGroupByArrayDate = (arrayDate) => {
     }, "")
 }
 
+const generateTaskCodeByCode = code => {
+    if (code > 0 && code < 10) {
+        return "0000" + code
+    } else if (code >= 10 && code < 100) {
+        return "000" + code
+    } else if (code >= 100 && code < 1000) {
+        return "00" + code
+    } else if (code >= 1000 && code < 10000) {
+        return "0" + code
+    } else {
+        return code
+    }
+}
+
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations, 
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate }
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode }
