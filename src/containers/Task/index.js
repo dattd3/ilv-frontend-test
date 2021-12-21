@@ -45,7 +45,9 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
-        this.checkPermissonShowPrepareTab();
+        if( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinPearl].includes(localStorage.getItem('companyCode')) ) {
+            this.checkPermissonShowPrepareTab();
+        }
     }
 
     checkPermissonShowPrepareTab = async () => {
