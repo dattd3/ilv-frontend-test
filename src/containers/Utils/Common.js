@@ -1,5 +1,6 @@
 import moment from 'moment'
 import Constants from '../../commons/Constants'
+import { MOTHER_LEAVE_KEY } from "../Task/Constants"
 
 const getDateByRange = (startDate, endDate) => {
     if (startDate && endDate) {
@@ -70,7 +71,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             let indexPosition = listRequestIdOriginals.indexOf(e.id, index + 1);
             // taskListOriginal[indexPosition].startDate = (e.startDate + ",\r" + taskListOriginal[indexPosition].startDate);
             taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate.concat(e.startDate)
-        } else if (e.absenceType && e.absenceType.value == "PN02") {
+        } else if (e.absenceType && e.absenceType.value == MOTHER_LEAVE_KEY) {
             let startDate = moment(e.startDate, "DD/MM/YYYY")
             let endDate = moment(e.endDate, "YYYYMMDD")
             let now = startDate, dates = []

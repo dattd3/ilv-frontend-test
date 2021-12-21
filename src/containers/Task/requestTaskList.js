@@ -16,6 +16,7 @@ import { InputGroup, FormControl } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
 import { absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { MOTHER_LEAVE_KEY } from "./Constants"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -655,12 +656,12 @@ class RequestTaskList extends React.Component {
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
                                                         {
-                                                            isShowEditButton && child.absenceType?.value != "PN02"
+                                                            isShowEditButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                                 ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
                                                                 : null
                                                         }
                                                         {
-                                                            isShowEvictionButton && child.absenceType?.value != "PN02"
+                                                            isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                                 ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
                                                                 : null
                                                         }

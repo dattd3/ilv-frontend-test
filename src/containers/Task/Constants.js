@@ -5,14 +5,16 @@ const COMPENSATORY_LEAVE_KEY = "PQ02"
 const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 const MATERNITY_LEAVE_KEY = "IN02"
+const MARRIAGE_FUNERAL_LEAVE_KEY = "PN03"
+const MOTHER_LEAVE_KEY = 'PN02'
 
 const absenceRequestTypes = [
   { value: 'IN01', label: 'SickLeave' },
   { value: MATERNITY_LEAVE_KEY, label: 'MaternityLeave' },
   { value: 'IN03', label: 'RecoveryLeave' },
   { value: 'PN01', label: 'LeaveForExpats' },
-  { value: 'PN02', label: "LeaveForMother" },
-  { value: 'PN03', label: 'LeaveForMarriageFuneral' },
+  { value: MOTHER_LEAVE_KEY, label: "LeaveForMother" },
+  { value: MARRIAGE_FUNERAL_LEAVE_KEY, label: 'LeaveForMarriageFuneral' },
   // { value: 'PN04', label: 'LeaveForWorkAccidentOccupationalDisease' },
   { value: ANNUAL_LEAVE_KEY, label: 'AnnualLeaveYear' },
   { value: ADVANCE_ABSENCE_LEAVE_KEY, label: "AdvancedLeave" },
@@ -35,4 +37,4 @@ const PN03List = [
   { value: '3', label: 'DeceaseOfParents' },
 ];
 
-export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY }
+export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY }
