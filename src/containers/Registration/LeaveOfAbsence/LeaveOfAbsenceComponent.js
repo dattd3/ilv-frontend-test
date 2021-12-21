@@ -38,7 +38,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             annualLeaveSummary: null,
             files: [],
             isUpdateFiles: false,
-            isEdit: false,
+            isEdit: props.isEdit,
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
@@ -99,7 +99,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
             this.setState({
-                isEdit: true,
                 approver: approver,
                 appraiser: appraiser,
                 requestInfo: [
@@ -590,11 +589,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     submit() {
         const { t } = this.props
-        const {
-            files,
-            isEdit,
-            requestInfo
-        } = this.state
+        const { files, isEdit, requestInfo } = this.state
 
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -1181,9 +1176,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </div>
                     )
                 })}
-                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
 
+                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
                 <ApproverComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
+
                 <ul className="list-inline">
                     {files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>
