@@ -626,11 +626,11 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       
       //gio break time
       if(checkExist(item.break_from_time_1)) {
-        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
+        timeSteps.push(getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
       }
 
       if(checkExist(item.break_from_time_2)) {
-        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
+        timeSteps.push(getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
       }
       
       //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong

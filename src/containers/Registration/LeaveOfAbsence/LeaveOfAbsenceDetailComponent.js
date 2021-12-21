@@ -171,7 +171,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div> : null}
           <div className="row">
-            <div className="col">
+            <div className="col" style={{marginTop: 10}}>
               {t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}
               <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
             </div>

@@ -178,7 +178,7 @@ class SubstitutionDetailComponent extends React.Component {
             </div> : null}
 
             <div className="row">
-              <div className="col">
+              <div className="col" style={{marginTop: 10}}>
                 {t("ShiftChangeReason")}
               <div className="detail">{timesheet.note}</div>
               </div>

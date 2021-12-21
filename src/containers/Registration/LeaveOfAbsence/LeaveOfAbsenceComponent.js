@@ -14,10 +14,10 @@ import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY } from "../../Task/Constants"
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
@@ -153,7 +153,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartDate(startDate, groupId, groupItem, isShowHintLeaveForMother) {
-        let { requestInfo } = this.state;
+        const requestInfo = [...this.state.requestInfo]
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem);
         const { endDate, startTime, endTime } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
@@ -171,7 +171,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
-        this.setState({ requestInfo })
+        this.setState({requestInfo: requestInfo})
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
@@ -271,6 +271,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
         }
     }
+
     setEndTime(endTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -301,7 +302,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
-        const { requestInfo } = this.state
+        const requestInfo = [...this.state.requestInfo]
         const { isAllDay, isAllDayCheckbox } = requestInfo[indexReq]
         if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
         if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
@@ -311,18 +312,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime) {
             requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian !"
-            this.setState({ requestInfo })
-            return
+            return this.setState({ requestInfo })
         }
-        this.validateTimeRequest(requestInfo)
+        
+        this.validateTimeRequest(requestInfo, indexReq)
     }
 
-    validateTimeRequest(requestInfo) {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+    validateTimeRequest(requestInfo, indexItem) {
+        const config = getRequestConfigurations()
         const times = [];
         requestInfo.forEach(req => {
             const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
@@ -343,14 +340,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
 
         if (times.length === 0) return
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
-            perno: localStorage.getItem('employeeNo'),
-            times: times,
-        }, config)
+
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: localStorage.getItem('employeeNo'), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
+                    const newRequestInfo = requestInfo.map((req, index) => {
+                        let errors = req.errors
                         let totalTimes
                         let totalDays
                         res.data.data.times.map(time => {
@@ -360,6 +355,15 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 totalDays = time.days
                             }
                         })
+
+                        if (index == indexItem) {
+                            errors['funeralWeddingInfo'] = null
+                            if (req.isAllDay && req.absenceType && req.funeralWeddingInfo && req.startDate && req.endDate && totalDays > absenceTypesAndDaysOffMapping[req?.funeralWeddingInfo?.value].day) {
+                                let days = absenceTypesAndDaysOffMapping[req?.funeralWeddingInfo?.value].day
+                                errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
+                            }
+                        }
+
                         return {
                             ...req,
                             errors,
@@ -381,7 +385,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.setState({ newRequestInfo })
                 }
             }).catch(error => {
-                if (error.response.status == 401) {
+                if (error.response?.status == 401) {
                     window.location.reload();
                 }
                 else {
@@ -452,61 +456,31 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+        const requestInfo = [...this.state.requestInfo]
+        const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
 
-        const { requestInfo } = this.state
-        let newRequestInfo = []
         if (name === "absenceType") {
-            newRequestInfo = requestInfo.map(req => {
-                let check = false;
-                if (value.value === "PN02") {
-                    check = true;
-                }
-                else {
-                    check = false;
-                }
-
-                const errors = {
-                    ...req.errors,
-                    absenceType: null
-                }
-                if (req.groupId === groupId) {
-
-                    return {
-                        ...req,
-                        absenceType: value,
-                        isShowHintLeaveForMother: check,
-                        // isChecked: check ? false : req.isChecked,
-                        isAllDayCheckbox: req.isChecked,
-                        startDate: check ? null : req.startDate,
-                        endDate: check ? null : req.endDate,
-                        errors
-                    }
-                }
-
-                return { ...req }
-            })
+            let check = false
+            if (value.value === MOTHER_LEAVE_KEY) {
+                check = true
+            }
+            requestInfo[index].absenceType = value
+            requestInfo[index].isShowHintLeaveForMother = check
+            requestInfo[index].isAllDayCheckbox =  requestInfo[index].isChecked
+            requestInfo[index].startDate = check ? null : requestInfo[index].startDate
+            requestInfo[index].endDate = check ? null : requestInfo[index].endDate
         } else if (name === "funeralWeddingInfo") {
-            newRequestInfo = requestInfo.map(req => {
-                let errors = req.errors
-                if (req.funeralWeddingInfo && (req.isAllDay && req.totalDays > absenceTypesAndDaysOffMapping[req.funeralWeddingInfo.value].day)) {
-                    const days = absenceTypesAndDaysOffMapping[req.funeralWeddingInfo.value].day
-                    errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
-                } else {
-                    errors['funeralWeddingInfo'] = null
-                }
+            requestInfo[index].funeralWeddingInfo = value
+            requestInfo[index].errors['funeralWeddingInfo'] = null
 
-                if (req.groupId === groupId) {
-                    return {
-                        ...req,
-                        funeralWeddingInfo: value,
-                        errors
-                    }
-                }
-                return { ...req }
-            })
+            const currentItem = requestInfo[index]
+            if (currentItem.isAllDay && currentItem.totalDays > absenceTypesAndDaysOffMapping[value.value].day) {
+                const days = absenceTypesAndDaysOffMapping[value.value].day
+                requestInfo[index].errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
+            }
         }
-        this.setState({ requestInfo: newRequestInfo })
-        this.validateTimeRequest(newRequestInfo)
+        this.setState({ requestInfo: requestInfo })
+        this.validateTimeRequest(requestInfo, index)
     }
 
     verifyInput() {
@@ -530,7 +504,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (!req.comment) {
                 requestInfo[indexReq].errors.comment = this.props.t('Required')
             }
-            requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === 'PN03' && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
+            requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
         })
         const employeeLevel = localStorage.getItem("employeeLevel")
 
@@ -578,10 +552,11 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     onAddLeave() {
-        const { requestInfo, dateRequest } = this.state;
+        const { dateRequest } = this.state;
+        let requestInfo = [...this.state.requestInfo]
         const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
         const maxGroupItem = _.maxBy(requestInfo, 'groupItem').groupItem;
-        requestInfo.push({
+        requestInfo = requestInfo.concat({
             startDate: dateRequest,
             startTime: null,
             endDate: dateRequest,
@@ -599,7 +574,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         document.querySelector('.list-inline').scrollIntoView({
             behavior: 'smooth'
         });
-        this.setState({ requestInfo })
+        this.setState({requestInfo: requestInfo})
     }
 
     onRemoveLeave(groupId, groupItem) {
@@ -898,12 +873,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <div>
                                                     <p className="title">{t('LeaveCategory')}</p>
                                                     <div>
-                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== MARRIAGE_FUNERAL_LEAVE_KEY))} />
                                                     </div>
                                                     {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
 
-                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">{t("MarriageFuneral")}</p> : null}
-                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
+                                                    {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ? <p className="title">{t("MarriageFuneral")}</p> : null}
+                                                    {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ?
                                                         <div>
                                                             <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
@@ -930,7 +905,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked || false} className="check-box mr-2" onChange={this.handleCheckboxChange} />
                                                             <label>{t('FullDay')}</label>
                                                         </div>
                                                         : null
