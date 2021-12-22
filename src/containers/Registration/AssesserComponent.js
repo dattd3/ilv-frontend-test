@@ -46,6 +46,18 @@ class AssesserComponent extends React.Component {
     }
 
     async componentDidMount() {
+        const { appraiser, isEdit } = this.props
+
+        if (isEdit) {
+          return this.setState({
+            appraiser: {
+              ...appraiser,
+              label: appraiser.fullName,
+              value: appraiser.account
+            }
+          })
+        }
+
         const recentlyAppraiser = await this.loadRecentlyAppraiser()
         this.setState({ users: recentlyAppraiser })
     }
@@ -174,7 +186,8 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit } = this.props;
+        const { t, isEdit, errors } = this.props
+        const { appraiser, users, isSearch } = this.state
 
         return <div className="appraiser">
             <div className="box shadow">
@@ -192,27 +205,27 @@ class AssesserComponent extends React.Component {
                                 isDisabled={isEdit}
                                 isClearable={true}
                                 styles={customStyles}
-                                components={{ Option: e => MyOption({...e, isSearch: this.state.isSearch})}}
+                                components={{ Option: e => MyOption({...e, isSearch: isSearch})}}
                                 onInputChange={this.onInputChange.bind(this)}
                                 name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                value={this.state.appraiser}
+                                onChange={appraiserItem => this.handleSelectChange('appraiser', appraiserItem)}
+                                value={appraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
-                                options={this.state.users} />
+                                options={users} />
                         </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
+                        {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={appraiser?.current_position || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('DepartmentManage')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
+                            <input type="text" className="form-control" value={appraiser?.department || ""} readOnly />
                         </div>
                     </div>
                 </div>
