@@ -194,6 +194,7 @@ function Header(props) {
     const handleClickSetShow = () => {
         SetIsShow(!isShow);
         setShow(isShow);
+        props.updateLayout(!isShow)
     }
 
     const onChangeLocale = async lang => {

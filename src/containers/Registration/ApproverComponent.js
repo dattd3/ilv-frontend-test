@@ -46,10 +46,20 @@ class ApproverComponent extends React.Component {
   }
 
   async componentDidMount() {
-    const { approver } = this.props
+    const { approver, isEdit } = this.props
+
+    if (isEdit) {
+      return this.setState({
+        approver: {
+          ...approver,
+          label: approver.fullName,
+          value: approver.account
+        }
+      })
+    }
+
     const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
-    const currentUserPnLVCode = localStorage.getItem("companyCode")
-    if (companiesUsing.includes(currentUserPnLVCode)) {
+    if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
       const managerApproval = await this.loadApproverForPnL()
       this.setState({approver: managerApproval} , () => {
         if (approver) {
@@ -217,7 +227,9 @@ class ApproverComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit } = this.props;
+    const { t, isEdit, errors } = this.props;
+    const { isSearch, approver, users } = this.state
+
     return <div className="approver">
       <div className="box shadow">
       <div className="row">
@@ -233,33 +245,33 @@ class ApproverComponent extends React.Component {
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
-                components={{ Option: e => MyOption({...e, isSearch: this.state.isSearch})}}
+                components={{ Option: e => MyOption({...e, isSearch: isSearch})}}
                 onInputChange={this.onInputChange.bind(this)}
                 name="approver"
-                onChange={approver => this.handleSelectChange('approver', approver)}
-                value={this.state.approver}
+                onChange={approverItem => this.handleSelectChange('approver', approverItem)}
+                value={approver}
                 placeholder={t('Search') + '...'}
                 key="approver"
-                options={this.state.users}
+                options={users}
                />
             </div>
-            {this.props.errors && this.props.errors['approver'] ? <div className="text-danger validation-message">{this.props.errors['approver']}</div> : null}
+            {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
           </div>
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
             </div>
           </div>
           <div className="col-4">
             <p className="title2">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver?.department || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.department || ""} readOnly />
             </div>
           </div>
         </div>
         {
-          localStorage.getItem("companyCode") === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
+          currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
         }
       </div>
     </div>

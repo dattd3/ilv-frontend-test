@@ -7,14 +7,14 @@ import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
 import ScrollToTop from '../../components/Common/ScrollToTop';
 import map from "../map.config";
-// import { useTranslation } from "react-i18next";
 
 
 function MainLayout(props) {
-  const [show, SetShow] = useState(true);
   const guard = useGuardStore();
   const user = guard.getCurentUser();
-  // const { t } = useTranslation();
+  const { history } = props;
+  const [show, SetShow] = useState(true);
+  const [isHideSidebar, SetIsHideSidebar] = useState(false);
 
   const setShow = (show) => {
     SetShow(show);
@@ -22,26 +22,23 @@ function MainLayout(props) {
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
-
-  // if (props.location.pathname.indexOf("training") < 0 || props.location.pathname.indexOf("news") < 0) {
-  const { history } = props;
-  //   let is404 = props.routes.filter(r => r.routeProps.path === props.location.pathname).length <= 0;
-  //   if (is404) {
-  //     history.push(map.NotFound);
-  //   }
-  // }
-
+  
   if (props.location.pathname.indexOf("training") > 0 && localStorage.getItem("companyCode") !== "V030") {
     history.push(map.NotFound);
   }
 
   const isDashBoard = props.location.pathname === '/';
+
+  const updateLayout = (isHideSidebar) => {
+    SetIsHideSidebar(isHideSidebar)
+  }
+
   return (
     <>
       <SideBar show={show} user={user} />
-      <div id="content-wrapper" className="d-flex flex-column">
+      <div id="content-wrapper" className={`d-flex flex-column ${isHideSidebar ? 'w-100' : ''}`}>
         <div id="content">
-          <Header user={user} setShow={setShow} isApp={isApp} />
+          <Header user={user} setShow={setShow} isApp={isApp} updateLayout={updateLayout} />
           <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
             <NestedRoute routes={props.routes} />
           </div>
