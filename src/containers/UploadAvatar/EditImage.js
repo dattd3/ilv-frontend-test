@@ -6,7 +6,7 @@ import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import ImgDialog from "./ImgDialog";
-import getCroppedImg from "./cropImage";
+import finishCroppedImage from "./cropImage";
 import ResultModal from '../../containers/Registration/ResultModal'
 import Spinner from 'react-bootstrap/Spinner'
 
@@ -31,7 +31,7 @@ const EditImage = (props) => {
   const showCroppedImage = useCallback(async () => {
     setIsLoading(true);
     try {
-      const croppedImage = await getCroppedImg(
+      const croppedImage = await finishCroppedImage(
         imageSrc,
         croppedAreaPixels,
         rotation
@@ -87,7 +87,7 @@ const EditImage = (props) => {
     <div>
       <ResultModal show={isShowStatusModal} title={resultTitle} message={resultMessage} isSuccess={isSuccess} onHide={hideStatusModal} />
       <div className="">
-        <Cropper image={imageSrc} crop={crop} rotation={rotation} zoom={zoom} showGrid={false} aspect={1}  cropShape="round"
+        <Cropper image={imageSrc} crop={crop} rotation={rotation} zoom={zoom} showGrid={true} aspect={1} objectFit="contain" 
           onCropChange={setCrop} onRotationChange={setRotation} onCropComplete={onCropComplete} onZoomChange={setZoom} />
       </div>
       <div className="d-flex control-image">
