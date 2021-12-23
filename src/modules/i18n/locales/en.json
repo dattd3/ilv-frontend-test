@@ -833,6 +833,8 @@
   "RollOutBonus" : "Roll out Bonus",
   "KpiGrossBonus" : "KPI Gross bonus",
   "OtherNetBonus" : "Other NET bonus",
+  "WageTypeBonusForCareManager": "Bonus for Care manager",
+  "WageTypeTopicsBonus": "Topics bonus",
   "MarriageSupport" : "Marriage support",
   "FunerralSupport" : "Funerral support",
   "FullDayBizTrip": "Full Day",

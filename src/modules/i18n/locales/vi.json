@@ -855,6 +855,8 @@
   "RollOutBonus": "Thưởng roll-out",
   "KpiGrossBonus": "Thưởng KPI (GROSSUP từ khoản NET tương ứng)",
   "OtherNetBonus": "Thưởng khác (NET)",
+  "WageTypeBonusForCareManager": "Thưởng doanh thu Care manager",
+  "WageTypeTopicsBonus": "Thưởng đề tài",
   "MarriageSupport": "Hỗ trợ kết hôn",
   "FunerralSupport": "Hỗ trợ ma chay",
   "FullDayBizTrip": "Cả ngày",

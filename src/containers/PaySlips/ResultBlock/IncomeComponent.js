@@ -34,10 +34,10 @@ function IncomeComponent(props) {
         case 'V073':
             incomeTables = IncomeTablesConfig(t).VinSmart
             break
-            case 'V040':
+        case 'V040':
             incomeTables = IncomeTablesConfig(t).VinHome
             break
-            case 'V061':
+        case 'V061':
             incomeTables = IncomeTablesConfig(t).VinSchool
             break
         default:

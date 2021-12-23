@@ -51,7 +51,8 @@ class PaySlipsComponent extends React.Component {
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip`, bodyFormData, config)
     .then(res => {
         if (res && res.data && res.data.data && res.data.data.payslips) {
-            this.setState({payslip: res.data.data.payslips[0], isSearch: true})
+          const paySlipInfos = res.data.data.payslips[0]
+          this.setState({payslip: paySlipInfos, isSearch: true})
         } else if(res && res.data && res.data.data.error == 'Invalid token.') {
           this.setState({acessToken: null, payslip: null, isSearch: false})
         } else {
