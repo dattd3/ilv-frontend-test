@@ -172,7 +172,8 @@ const Constants = {
     editEducation: 'EDIT_EDUCATION',
     editRelationship: 'EDIT_RELATIONSHIP',
     qnA: 'QnA',
-    changeStaffShift: 'CHANGE_STAFF_SHIFT'
+    changeStaffShift: 'CHANGE_STAFF_SHIFT',
+    selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H'
   },
   PnLCODE: {
     Vinhome: "V040",

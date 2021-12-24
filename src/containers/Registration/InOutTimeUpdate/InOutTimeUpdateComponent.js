@@ -10,7 +10,8 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import Constants from '../../../commons/Constants'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -90,6 +91,15 @@ class InOutTimeUpdateComponent extends React.Component {
 
   }
 
+  handleCheckboxChange = (index, name, e) => {
+    const timesheets = [...this.state.timesheets]
+    timesheets[index][name] = e.target.checked
+
+    this.setState({
+      timesheets: timesheets
+    }, () => { this.verifyInput() })
+  }
+
   updateFiles(files) {
     this.setState({ files: files }, () => { this.verifyInput() })
   }
@@ -115,6 +125,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
     this.setState({ errors: errors })
   }
+
   handleInputChange(index, event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -190,19 +201,6 @@ class InOutTimeUpdateComponent extends React.Component {
     delete approver.avatar
     // delete appraiser.avatar
 
-    const data = {
-      timesheets: timesheets,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate,
-      user: {
-        fullname: localStorage.getItem('fullName'),
-        jobTitle: localStorage.getItem('jobTitle'),
-        department: localStorage.getItem('department'),
-        employeeNo: localStorage.getItem('employeeNo')
-      },
-      approver: approver,
-    }
-
     const user = {
         fullname: localStorage.getItem('fullName'),
         jobTitle: localStorage.getItem('jobTitle'),
@@ -222,9 +220,7 @@ class InOutTimeUpdateComponent extends React.Component {
         });
     })
     
-    const comments = timesheets
-      .filter(item => (item.note))
-      .map(item => item.note).join(" - ")
+    const comments = timesheets.filter(item => (item.note)).map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', t("ModifyInOut"))
@@ -308,7 +304,8 @@ class InOutTimeUpdateComponent extends React.Component {
               start_time1_fact_update: null,
               start_time2_fact_update: null,
               end_time1_fact_update: null,
-              end_time2_fact_update: null
+              end_time2_fact_update: null,
+              isNextDay: false
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -370,6 +367,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { startDate, endDate, timesheets, errors, files, disabledSubmitButton } = this.state
     const { t } = this.props;
     const lang = localStorage.getItem("locale")
+    const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
 
     return (
       <div className="in-out-time-update">
@@ -584,6 +582,13 @@ class InOutTimeUpdateComponent extends React.Component {
                           </span>
                         </div>
                       </div>
+                      {
+                        isShowSelectWorkingShift24h && 
+                        <div className='next-day-selection'>
+                          <input type="checkbox" id={`next-day-selection-${index}`} name={`next-day-selection-${index}`} checked={timesheet.isNextDay || false} onChange={e => this.handleCheckboxChange(index, 'isNextDay', e)} />
+                          <label htmlFor={`next-day-selection-${index}`}>{t("InOutUpdateNextDaySelection")}</label>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
