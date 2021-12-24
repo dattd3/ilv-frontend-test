@@ -62,7 +62,7 @@ class ImgDialog extends React.Component {
                 onClick={this.props.onClose}
                 aria-label="Close"
               >
-                <i class="fas fa-times"></i>
+                <i className="fas fa-times"></i>
               </IconButton>
               <Typography
                 variant="title"

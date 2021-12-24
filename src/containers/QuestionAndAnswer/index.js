@@ -119,19 +119,23 @@ class MyComponent extends React.Component {
 
   render() {
     const { t } = this.props;
+    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter } = this.state
+
     const reload = () => {
-      if (this.state.isShowStatusModal) {
+      if (isShowStatusModal) {
         window.location.reload();
       }
     }
+
     return (
       <div className="personal-info qna-page">
-        <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} onExited={reload} />
+        <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} onExited={reload} />
         <SubmitQuestionModal
-          isEdit={this.state.isEditQuestion}
-          editQuestion={this.state.questionContent}
-          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
-        <HistoryModal show={this.state.isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
+          isEdit={isEditQuestion}
+          editQuestion={questionContent}
+          categories={categories}
+          show={isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
+        <HistoryModal show={isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
           showStatusModal={this.showStatusModal.bind(this)}
           showEditModal={this.showEditModal.bind(this)}
         />
@@ -148,17 +152,17 @@ class MyComponent extends React.Component {
                 <input type="text" className="form-control" placeholder={t("Search")} id="txt-search" name="keySearch" aria-describedby="emailHelp" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChange.bind(this)} />
               </div>
               <div className="col-sm-12 col-md-3 mb-2">
-                <button type="button" className="btn btn-warning pr-5 pl-5 btn-search" onClick={() => this.search(this.state.keySearch)}><i className="icon-search mr-1"></i>{t("Search")}</button>
+                <button type="button" className="btn btn-warning pr-5 pl-5 btn-search" onClick={() => this.search(keySearch)}><i className="icon-search mr-1"></i>{t("Search")}</button>
               </div>
             </div>
           </div>
         </Container>
         <h1 className="mt-3 mb-3 text-center content-page-header">{t("Faqs")}</h1>
         {
-          this.state.commonTicketList && this.state.commonTicketList.length ?
+          commonTicketList && commonTicketList.length ?
             (
-              (this.state.categories && this.state.categories.length && this.state.commonTicketListFilter && this.state.commonTicketListFilter.length) ? this.state.categories.map((category, index) => {
-                let commonticketFiler = this.filterCommonTicket(this.state.commonTicketListFilter, category.id)
+              (categories && categories.length && commonTicketListFilter && commonTicketListFilter.length) ? categories.map((category, index) => {
+                let commonticketFiler = this.filterCommonTicket(commonTicketListFilter, category.id)
                 return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="mb-2 shadow border-radius-035">
                   <CommonQuestionComponent questions={commonticketFiler} categoryName={category.name} />
                 </div>

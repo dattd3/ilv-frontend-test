@@ -1083,5 +1083,6 @@
   "RelationshipOther": "Khác",
   "AttachFile": "Đính kèm tệp tin",
   "PersonalInfoNoChange": "Bạn chưa có thông tin thay đổi. Vui lòng nhập thông tin thay đổi.",
-  "Block30Notification" : "CBNV lưu ý xin nghỉ theo block 30 phút."
+  "Block30Notification" : "CBNV lưu ý xin nghỉ theo block 30 phút.",
+  "InOutUpdateNextDaySelection": "Lựa chọn nếu ca làm việc là 24 giờ"
 }
