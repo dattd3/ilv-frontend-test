@@ -452,7 +452,7 @@ class TaskList extends React.Component {
                                             let totalTime = null;
                                             let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
                                             let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
-                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                            if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
