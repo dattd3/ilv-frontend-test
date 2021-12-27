@@ -258,6 +258,9 @@ const showRangeDateGroupByArrayDate = (arrayDate) => {
                 rangeDate[1] = dateSorted[i + 1]
             }
             i = i + 1
+            if (i === dateSorted.length - 1) {
+                result = result.concat([[...rangeDate]])
+            }
         } else {
             if (isAdjacentDateBy2Date(rangeDate[1], item)) {
                 if (rangeDate[0] == null) {
