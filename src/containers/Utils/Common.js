@@ -44,7 +44,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                         } else {
                             date = getDateByRange(e?.applyFrom, e?.applyTo)
                         }
-                    } else if (element.requestTypeId == Constants.LEAVE_OF_ABSENCE) {
+                    } else if (element.requestTypeId == Constants.LEAVE_OF_ABSENCE || element.requestTypeId == Constants.BUSINESS_TRIP) {
                         if (e?.startDate && e?.startDate === e?.endDate) {
                             date = [moment(e?.startDate, 'YYYYMMDD').format("DD/MM/YYYY")]
                         } else {
