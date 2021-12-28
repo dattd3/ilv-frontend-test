@@ -19,6 +19,7 @@ const getDateByRange = (startDate, endDate) => {
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
     const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
     dataRawFromApi.forEach(element => {
         if (element.requestInfo) {
             element.requestInfo.forEach(e => {
@@ -30,7 +31,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
 
                 if (element.requestTypeId == Constants.UPDATE_PROFILE) {
                     e.processStatusId = element.processStatusId
-                    e.id = element.id.toString()
                     e.comment = element.comment;
                     e.approverComment = element.approverComment;
                 }
@@ -52,16 +52,17 @@ export default function processingDataReq(dataRawFromApi, tab) {
                         }
                     }
                     e.processStatusId = element.processStatusId
-                    e.id = element.id.toString()
                     e.startDate = date
                     e.comment = element.comment;
                     e.approverComment = element.approverComment;
                 }
-                if (element.requestTypeId == Constants.UPDATE_PROFILE) {
-                    e.startDate = [moment(element.createdDate).format("DD/MM/YYYY")]
-                }
                 if (e.processStatusId == 8 || (e.processStatusId == 5 && tab == "approval")) {
                     e.canChecked = true
+                }
+                if (listRequestTypeIdToGetSubId.includes(element.requestTypeId)) {
+                    e.id = e.id.toString()
+                } else {
+                    e.id = element.id.toString()
                 }
                 e.isEdit = element.isEdit
                 taskList.push(e);
@@ -89,7 +90,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 dates.push(now.format('DD/MM/YYYY'));
                 now.add(1, 'days')
             }
-            // e.startDate = dates.join(",\r")
             e.startDate = dates
             return e
         } else {

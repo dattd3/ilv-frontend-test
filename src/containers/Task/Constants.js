@@ -28,7 +28,11 @@ const requestTypes = [
   { value: [Constants.LEAVE_OF_ABSENCE], label: 'LeaveRequest' },
   { value: [Constants.BUSINESS_TRIP], label: 'BizTrip_TrainingRequest' },
   { value: [Constants.SUBSTITUTION], label: 'ShiftChange' },
-  { value: [Constants.IN_OUT_TIME_UPDATE], label: 'InOutChangeRequest' }
+  { value: [Constants.IN_OUT_TIME_UPDATE], label: 'InOutChangeRequest' },
+  { value: [Constants.CHANGE_DIVISON_SHIFT], label: 'AdminUploadShiftChange' },
+  { value: [Constants.DEPARTMENT_TIMESHEET], label: 'DepartmentTimesheet' },
+  // { value: [Constants.ONBOARDING], label: 'InOutChangeRequest' },
+  // { value: [Constants.RESIGN_SELF], label: 'InOutChangeRequest' }
 ]
 
 const PN03List = [
