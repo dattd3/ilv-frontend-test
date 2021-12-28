@@ -381,6 +381,8 @@
   "IncorrectMobileNo": "(Điện thoại di động không đúng định dạng)",
   "Explanation": "Giải trình công",
   "InOutChangeRequest": "Sửa giờ vào ra",
+  "AdminUploadShiftChange": "Phân ca bộ phận từ Admin",
+  "DepartmentTimesheet": "Bảng chấm công bộ phận",
   "IntermittenShiftSupport": "Hỗ trợ ca gãy",
   "InternalRecruitment": "Tuyển dụng nội bộ",
   "InvalidApprover": "Người phê duyệt không có thẩm quyền!",

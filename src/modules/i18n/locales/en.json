@@ -369,6 +369,8 @@
   "IncorrectMobileNo": "Incorrect Mobile No.",
   "Explanation": "In-Out Change Request",
   "InOutChangeRequest": "In-Out Change Request",
+  "AdminUploadShiftChange": "Admin upload Shift change",
+  "DepartmentTimesheet": "Department Timesheet",
   "IntermittenShiftSupport": "Intermitten Shift Support",
   "InternalRecruitment": "Internal Recruitment",
   "InvalidApprover": "Invalid Approver",
