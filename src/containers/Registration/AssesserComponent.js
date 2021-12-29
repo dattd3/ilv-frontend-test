@@ -132,23 +132,28 @@ class AssesserComponent extends React.Component {
         const { approver } = this.props
         if (value !== "") {
             this.setState({isSearch: true})
-            const config = getMuleSoftHeaderConfigurations()
+            const config = getRequestConfigurations()
+            const payload = {
+                account: value,
+                employee_type: "APPRAISER",
+                status: Constants.statusUserActiveMulesoft
+            }
 
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
+            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
                 .then(res => {
                     if (res && res.data && res.data.data) {
                         const data = res.data.data || []
                         const users = data.map(res => {
                             return {
-                                label: res.fullName,
-                                value: res.user_account,
-                                fullName: res.fullName,
+                                label: res.fullname,
+                                value: res.username,
+                                fullName: res.fullname,
                                 avatar: res.avatar,
-                                employeeLevel: res.rank_title || res.employee_level, // Cấp bậc chức danh để phân quyền
+                                employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
                                 pnl: res.pnl,
-                                orglv2Id: res.orglv2_id,
-                                account: res.user_account,
-                                current_position: res.title,
+                                orglv2Id: res.organization_lv2,
+                                account: res.username,
+                                current_position: res.postition_name,
                                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
                             }
                         })
