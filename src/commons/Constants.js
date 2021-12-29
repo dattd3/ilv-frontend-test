@@ -174,6 +174,7 @@ const Constants = {
     VinFastTrading: "V078",
     VinFastPB: "V070"
   },
-  LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf"
+  LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
+  statusUserActiveMulesoft: 3
 };
 export default Constants
