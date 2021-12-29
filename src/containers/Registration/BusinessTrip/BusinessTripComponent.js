@@ -11,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import moment from 'moment'
+import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
@@ -618,7 +619,7 @@ class BusinessTripComponent extends React.Component {
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.reload();
+            window.location.href = `${map.Registration}?tab=BusinessTripRegistration`
         }
     }
 
