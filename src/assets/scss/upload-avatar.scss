@@ -29,9 +29,14 @@
   margin-bottom: 0 !important;
 }
 .action-upload-popup {
-  background: #f2f2f2 0% 0% no-repeat padding-box;
+  background: #f2f2f2;
   border-radius: 5px;
-  padding: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+  label {
+    width: 100%;
+    cursor: pointer;
+  }
 }
 .title-popup {
   font-family: Arial, Helvetica, sans-serif;

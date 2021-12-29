@@ -33,10 +33,10 @@ class SubmitQuestionModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categories: {},
+            categories: props.categories,
             hrProfiles: {},
             tcktProfiles: {},
-            categorySelectedId: 0,
+            categorySelectedId: props.categories[0]?.id,
             validated: false,
             questionContent: "",
             supervise: {},
@@ -48,19 +48,7 @@ class SubmitQuestionModal extends React.Component {
     }
 
     componentWillMount() {
-        const config = getRequestConfigurations()
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
-
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/`+ localStorage.getItem("companyCode"), config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                    let categoriesResult = res.data.data;
-                    this.setState({ categories: categoriesResult, categorySelectedId: categoriesResult[0].id });
-                }
-            }).catch(error => {
-                //localStorage.clear();
-                //window.location.href = map.Login;
-            });
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, muleSoftConfig)
             .then(res => {
@@ -74,6 +62,12 @@ class SubmitQuestionModal extends React.Component {
             }).catch(error => {
 
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.categories !== this.props.categories) {
+            this.setState({ categories: nextProps.categories, categorySelectedId: nextProps.categories[0]?.id })
+        }
     }
 
     alertSuccess = () => {

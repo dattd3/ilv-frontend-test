@@ -758,7 +758,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       if(timeSteps && timeSteps.length > 0) {
         minStart = timeStepsSorted[0].start;
         maxEnd = timeStepsSorted[0].end
-        minStart2 = timeStepsSorted[0].start;;
+        minStart2 = timeStepsSorted[0].start;
         maxEnd2 = timeStepsSorted[0].end;
         for(let i = 0, j = 1; j < timeStepsSorted.length; i++, j++) {
           minStart = isShift1 && timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
@@ -769,9 +769,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
           }
           maxEnd = isShift1 && timeStepsSorted[j].end >  maxEnd ? timeStepsSorted[j].end : maxEnd; 
           maxEnd2 =  (timeStepsSorted[j].end > maxEnd2) ? timeStepsSorted[j].end : maxEnd2;
-
-          if(timeStepsSorted[i].end < timeStepsSorted[j].start) {
-
+          if(maxEnd < timeStepsSorted[j].start) {
             if(line1.subtype == '11' && (timeStepsSorted[i].end >= kehoach1.end && timeStepsSorted[j].start <= kehoach2.start)) {
               isShift1 = false;
               maxEnd = timeStepsSorted[i].end;

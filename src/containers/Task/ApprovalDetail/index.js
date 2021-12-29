@@ -239,7 +239,7 @@ class ApprovalDetail extends React.Component {
             </div>
           </div>
         </div>
-        {isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
+        {isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("RegistrationUpdateInformation")}</h4></div> : null}
         {isShowPersonalComponent ? <PersonalComponent userMainInfo={userMainInfo} /> : null }
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }

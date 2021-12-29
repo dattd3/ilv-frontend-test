@@ -6,12 +6,11 @@ import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
+import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
@@ -458,28 +457,45 @@ class LeaveOfAbsenceComponent extends React.Component {
         const requestInfo = [...this.state.requestInfo]
         const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
 
-        if (name === "absenceType") {
-            let check = false
-            if (value.value === MOTHER_LEAVE_KEY) {
-                check = true
-            }
-            requestInfo[index].absenceType = value
-            requestInfo[index].isShowHintLeaveForMother = check
-            requestInfo[index].isAllDayCheckbox =  requestInfo[index].isChecked
-            requestInfo[index].startDate = check ? null : requestInfo[index].startDate
-            requestInfo[index].endDate = check ? null : requestInfo[index].endDate
-        } else if (name === "funeralWeddingInfo") {
-            requestInfo[index].funeralWeddingInfo = value
-            requestInfo[index].errors['funeralWeddingInfo'] = null
+        // console.log("==============================")
+        // console.log(requestInfo)
+        // console.log(name)
+        // console.log(value)
+        // console.log(groupId)
 
-            const currentItem = requestInfo[index]
-            if (currentItem.isAllDay && currentItem.totalDays > absenceTypesAndDaysOffMapping[value.value].day) {
-                const days = absenceTypesAndDaysOffMapping[value.value].day
-                requestInfo[index].errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
-            }
+        let newRequestInfo = []
+        if (name === "absenceType") {
+            const check = value.value === MOTHER_LEAVE_KEY
+            newRequestInfo = requestInfo.map(item => {
+                return item.groupId === groupId ? {
+                    ...item,
+                    absenceType: value,
+                    isShowHintLeaveForMother: check,
+                    isAllDayCheckbox: item.isChecked,
+                    startDate: check ? null : item.startDate,
+                    endDate: check ? null : item.endDate
+                }
+                : {...item}
+            })
+        } else if (name === "funeralWeddingInfo") {
+            newRequestInfo = requestInfo.map(item => {
+                let errors = item.errors
+                errors['funeralWeddingInfo'] = null
+                if (item.isAllDay && item.totalDays > absenceTypesAndDaysOffMapping[value.value].day) {
+                    const days = absenceTypesAndDaysOffMapping[value.value].day
+                    errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
+                }
+
+                return item.groupId === groupId ? {
+                    ...item,
+                    funeralWeddingInfo: value,
+                    errors
+                }
+                : {...item}
+            })
         }
-        this.setState({ requestInfo: requestInfo })
-        this.validateTimeRequest(requestInfo, index)
+        this.setState({ requestInfo: newRequestInfo })
+        this.validateTimeRequest(newRequestInfo, index)
     }
 
     verifyInput() {
@@ -664,20 +680,20 @@ class LeaveOfAbsenceComponent extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data.data && response.data.result) {
-                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
-                    this.setDisabledSubmitButton(false)
-                }
-                else {
-                    this.showStatusModal(t("Notification"), response.data.result.message, false)
-                    this.setDisabledSubmitButton(false)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        .then(response => {
+            if (response && response.data.data && response.data.result) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            })
+            }
+            else {
+                this.showStatusModal(t("Notification"), response.data.result.message, false)
+                this.setDisabledSubmitButton(false)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        })
     }
 
     error(name, groupId, groupItem) {
@@ -702,7 +718,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.reload();
+            window.location.href = map.Registration;
         }
     }
 
