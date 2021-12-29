@@ -450,9 +450,9 @@ class TaskList extends React.Component {
                                     {
                                         tasks.map((child, index) => {
                                             let totalTime = null;
-                                            let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
-                                            let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
-                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                            let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
+                                            let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
+                                            if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
@@ -467,12 +467,12 @@ class TaskList extends React.Component {
                                                         </td>
                                                         : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                     }
-                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
+                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this, reId, childId)}><a href="#" title={child.id} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
                                                     <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
-                                                    <td className="day-off">{dateChanged}</td>
+                                                    <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
                                                         this.props.page == "approval" 

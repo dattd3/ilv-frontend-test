@@ -230,6 +230,39 @@ class RequestTaskList extends React.Component {
         return this.props.page === "approval" ? `/registration/${id}/${childId}/approval` : `/registration/${id}/${childId}/request`
     }
 
+    getRequestDetailLink = (id, requestTypeId) => {
+        const { page } = this.props
+        const idLengthWrapSub = 2
+        let mainId = id
+        let subId = 1 // subId default
+        const ids = id.split(".")
+        if (ids && ids.length == idLengthWrapSub) {
+            mainId = ids[0] // is first item
+            subId = ids[1] // is second item
+        }
+
+        if (page === 'approval') {
+            return requestTypeId == Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
+        }
+        return `/registration/${mainId}/${subId}/request`
+    }
+
+    getRequestEditLink = (id, requestTypeId, processStatusId) => {
+        if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+            return null
+        } else {
+            const idLengthWrapSub = 2
+            let mainId = id
+            let subId = 1 // subId default
+            const ids = id.split(".")
+            if (ids && ids.length == idLengthWrapSub) {
+                mainId = ids[0] // is first item
+                subId = ids[1] // is second item
+            }
+            return [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(processStatusId) ? `/tasks-request/${mainId}/${subId}/edit` : ""
+        }
+    }
+
     getMaxDayOfMonth = () => {
         const today = new Date();
         const year = today.getFullYear();
@@ -624,27 +657,13 @@ class RequestTaskList extends React.Component {
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
                                             let totalTime = null
-                                            let editLink = null
 
-                                            if (child.requestTypeId == Constants.LEAVE_OF_ABSENCE || child.requestTypeId == Constants.BUSINESS_TRIP) {
+                                            if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                             }
-                                            if (child.requestType.id == Constants.SUBSTITUTION || child.requestType.id == Constants.IN_OUT_TIME_UPDATE || child.requestType.id == Constants.UPDATE_PROFILE
-                                                || child.requestType.id == Constants.CHANGE_DIVISON_SHIFT || child.requestType.id == Constants.DEPARTMENT_TIMESHEET) {
-                                                editLink = null;
-                                            } else {
-                                                editLink = [Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_APPROVED].includes(child.processStatusId) ? `/tasks-request/${child.id.split(".")[0]}/${child.id.split(".")[1]}/edit` : this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
-                                            }
 
-                                            let detailLink = ""
-                                            if (child.requestType.id == Constants.UPDATE_PROFILE) {
-                                                detailLink = this.getLinkRegistration(child.id, 1)
-                                            } else if (requestTypeSingleIdList.includes(child.requestType.id)) {
-                                                detailLink = this.getLinkUserProfileHistory(child.id)
-                                            } else {
-                                                detailLink = this.getLinkRegistration(child.id.split(".")[0], child.id.split(".")[1])
-                                            }
-
+                                            let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
+                                            let detailLink = this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             return (
@@ -657,17 +676,17 @@ class RequestTaskList extends React.Component {
                                                     <td className="tool">
                                                         {
                                                             isShowEditButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                                ? <a href={editLink} title={t("Edit")}><img alt="Edit task" src={editButton} /></a>
+                                                                ? <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>
                                                                 : null
                                                         }
                                                         {
                                                             isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                                ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Edit task" src={evictionButton} /></span>
+                                                                ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>
                                                                 : null
                                                         }
                                                         {
                                                             isShowDeleteButton
-                                                                ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Edit task" src={deleteButton} /></span>
+                                                                ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>
                                                                 : null
                                                         }
                                                     </td>

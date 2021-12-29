@@ -18,6 +18,8 @@ const getDateByRange = (startDate, endDate) => {
 
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
+    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
     dataRawFromApi.forEach(element => {
         if (element.requestInfo) {
             element.requestInfo.forEach(e => {
@@ -26,15 +28,13 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 e.appraiserId = element.appraiserId
                 e.requestType = element.requestType
                 e.requestTypeId = element.requestTypeId
-                // e.startDate = moment(e.startDate).format("DD/MM/YYYY")
-                e.startDate = []
+
                 if (element.requestTypeId == Constants.UPDATE_PROFILE) {
                     e.processStatusId = element.processStatusId
-                    e.id = element.id.toString()
                     e.comment = element.comment;
                     e.approverComment = element.approverComment;
                 }
-                if (element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.SUBSTITUTION) {
+                if (listRequestTypeIdToShowTime.includes(element.requestTypeId)) {
                     let date = [moment(e.date).format("DD/MM/YYYY")]
                     if (element.requestTypeId == Constants.SUBSTITUTION) {
                         if (!e?.applyFrom && !e?.applyTo) {
@@ -44,15 +44,25 @@ export default function processingDataReq(dataRawFromApi, tab) {
                         } else {
                             date = getDateByRange(e?.applyFrom, e?.applyTo)
                         }
+                    } else if (element.requestTypeId == Constants.LEAVE_OF_ABSENCE || element.requestTypeId == Constants.BUSINESS_TRIP) {
+                        if (e?.startDate && e?.startDate === e?.endDate) {
+                            date = [moment(e?.startDate, 'YYYYMMDD').format("DD/MM/YYYY")]
+                        } else {
+                            date = getDateByRange(e?.startDate, e?.endDate)
+                        }
                     }
                     e.processStatusId = element.processStatusId
-                    e.id = element.id.toString()
-                    e.startDate = date 
+                    e.startDate = date
                     e.comment = element.comment;
                     e.approverComment = element.approverComment;
                 }
                 if (e.processStatusId == 8 || (e.processStatusId == 5 && tab == "approval")) {
                     e.canChecked = true
+                }
+                if (listRequestTypeIdToGetSubId.includes(element.requestTypeId)) {
+                    e.id = e.id.toString()
+                } else {
+                    e.id = element.id.toString()
                 }
                 e.isEdit = element.isEdit
                 taskList.push(e);
@@ -80,7 +90,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 dates.push(now.format('DD/MM/YYYY'));
                 now.add(1, 'days')
             }
-            // e.startDate = dates.join(",\r")
             e.startDate = dates
             return e
         } else {
