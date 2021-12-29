@@ -56,26 +56,15 @@ const Constants = {
   STATUS_EVICTION: 3, // thu hồi
   STATUS_REVOCATION: 4, // hủy
   STATUS_WAITING: 5, // chờ phê duyệt
-  STATUS_CONSENTED: 20,// thẩm định
   STATUS_PARTIALLY_SUCCESSFUL: 6, //không thành công
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
+  STATUS_CONSENTED: 20,// thẩm định
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
   STATUS_USE_COMMENT: [0,1,3,4,7],
-  mappingStatus: {
-    1: {label: 'Rejected', className: 'fail'},//từ chối phê duyệt
-    2: {label: 'Approved', className: 'success'},// đã phê duyệt
-    3: {label: 'Canceled', className: ''}, // đã thu hồi
-    4: {label: 'Canceled', className: ''}, // đã hủy
-    5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    6: { label: "PartiallySuccessful", className: 'warning' },
-    7: {label: 'Rejected', className: ''},// từ chối thẩm định
-    8: {label: 'Waiting', className: ''}, // đang chờ thẩm định
-    20:{ label: "Consented", className: '' }
-  },
-
+  
   mappingStatusRequest: {
     1: { label: 'Rejected', className: 'fail' },
     2: { label: 'Approved', className: 'success' },
