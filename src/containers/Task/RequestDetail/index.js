@@ -215,12 +215,17 @@ class RequestDetail extends React.Component {
     const { t } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
       userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId } = this.state
+
     const statusOptions = {
-      5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: 'fail'},
-      6: {label: t("Unsuccessful"), className: 'warning'}
+      4: {label: t("Canceled"), className: 'fail'},
+      5: {label: t("Waiting"), className: 'waiting'},
+      6: {label: t("Unsuccessful"), className: 'warning'},
+      7: { label: "Rejected", className: 'fail' },
+      8: { label: "PendingConsent", className: 'waiting' },
+      20:{ label: "Consented", className: 'waiting' }
     }
 
     let messageSAP = null;
