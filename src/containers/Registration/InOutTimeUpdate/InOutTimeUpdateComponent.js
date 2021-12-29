@@ -7,6 +7,7 @@ import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
@@ -322,7 +323,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
-    window.location.reload();
+    window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
   }
 
   removeFile(index) {

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Select from 'react-select'
 import { Image } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -16,6 +15,7 @@ import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
+import map from '../../../../src/containers/map.config'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -492,7 +492,7 @@ class SubstitutionComponent extends React.Component {
 
   hideResultModal = () => {
     this.setState({ isShowResultModal: false });
-    window.location.reload();
+    window.location.href = `${map.Registration}?tab=SubstitutionRegistration`
   }
 
   hideStatusModal = () => {

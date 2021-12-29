@@ -6,12 +6,11 @@ import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
+import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
@@ -664,20 +663,20 @@ class LeaveOfAbsenceComponent extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data.data && response.data.result) {
-                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
-                    this.setDisabledSubmitButton(false)
-                }
-                else {
-                    this.showStatusModal(t("Notification"), response.data.result.message, false)
-                    this.setDisabledSubmitButton(false)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        .then(response => {
+            if (response && response.data.data && response.data.result) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            })
+            }
+            else {
+                this.showStatusModal(t("Notification"), response.data.result.message, false)
+                this.setDisabledSubmitButton(false)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        })
     }
 
     error(name, groupId, groupItem) {
@@ -702,7 +701,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.reload();
+            window.location.href = map.Registration;
         }
     }
 
