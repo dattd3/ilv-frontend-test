@@ -27,10 +27,24 @@ const TRAINING_OPTION_VALUE = "DT01"
 const totalDaysForSameDay = 1
 const queryString = window.location.search
 
+const isEditPage = () => {
+    const currentURL = window.location.pathname
+    const arrURL = currentURL.split("/")
+    const arrURLLength = arrURL.length
+    if (arrURLLength > 3) {
+        if (arrURL[arrURLLength - 1] && arrURL[arrURLLength - 1] === 'edit' && arrURL[arrURLLength - 2] && arrURL[arrURLLength - 3]) {
+            return true
+        }
+        return false
+    }
+    return false
+}
+
 class BusinessTripComponent extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
+            isEdit: isEditPage(),
             approver: null,
             files: [],
             isUpdateFiles: false,
@@ -73,13 +87,12 @@ class BusinessTripComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {
+    componentDidMount() {       
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo[0]
             const { appraiser, approver, requestDocuments } = businessTrip
             this.setState({
-                isEdit: true,
                 approver: approver,
                 appraiser: appraiser,
                 requestInfo: [
