@@ -309,7 +309,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const endDateTime = moment(`${endDate} ${endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime) {
-            requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian !"
+            requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
             return this.setState({ requestInfo })
         }
         
