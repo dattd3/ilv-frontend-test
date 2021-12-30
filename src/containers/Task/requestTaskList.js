@@ -264,116 +264,107 @@ class RequestTaskList extends React.Component {
     }
 
     getMaxDayOfMonth = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        let isLeapYear = false
-        if (year % 4 === 0 && year % 100 !== 0) isLeapYear = true;
-        const month31Days = [1,3,5,7,8,10,12];
-        const month30Days = [4,6,9,11];
-        if (month31Days.includes(month)) return 31;
-        if (month30Days.includes(month)) return 30;
+        const today = moment()
+        const year = today.year()
+        const month = today.month() + 1 // Need + 1 because issue January is 0 and December is 11
+        const isLeapYear = year % 4 === 0 && year % 100 !== 0
+
+        const month31Days = [1, 3, 5, 7, 8, 10, 12]
+        const month30Days = [4, 6, 9, 11]
+        if (month31Days.includes(month)) return 31
+        if (month30Days.includes(month)) return 30
         if (month === 2) {
-            if (isLeapYear === true) return 29;
-            else return 28;
+            if (isLeapYear) {
+                return 29
+            }
+            return 28
         }
-        return 30;
+        return 30
     }
+
     checkDateLessThanPayPeriod = (date) => {
-        const endOfMonth = this.getMaxDayOfMonth();
-        let convertedDate = moment(date, 'DD/MM/YYYY');
-        let minDate = null;
-        let today = new Date();
-        let currentDay = today.getDate();
+        const endOfMonth = this.getMaxDayOfMonth()
+        const convertedDate = moment(date, 'DD/MM/YYYY')
+        let minDate = null
+        const today = new Date()
+        const currentDay = today.getDate()
+        const year = today.getFullYear()
+        const month = today.getMonth() + 1
+        
         if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
-        }
-        else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth()), 26)
-        }
-        else { // Ngày sửa/thu hồi 1,..,25
-            minDate = new Date((new Date()).getFullYear(), (new Date().getMonth() - 1), 26)
+            if (month === 1) {
+                minDate = new Date(year - 1, 12, 26)
+            } else {
+                minDate = new Date(year, month - 1, 26)
+            }
+        } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
+            minDate = new Date(year, month, 26)
+        } else { // Ngày sửa/thu hồi 1,..,25
+            if (month === 1) {
+                minDate = new Date(year - 1, 12, 26)
+            } else {
+                minDate = new Date(year, month - 1, 26)
+            }
         }
         return convertedDate < minDate ? false : true
     }
 
     isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
-        let isShow = true;
 
-        if (page == "approval") {
-            isShow = false;
+        if (page === "approval" || !isEditOnceTime) {
+            return false
         } else {
-            if (
-                (requestTypeId != Constants.SUBSTITUTION && requestTypeId != Constants.IN_OUT_TIME_UPDATE && requestTypeId != Constants.UPDATE_PROFILE && requestTypeId != Constants.CHANGE_DIVISON_SHIFT && requestTypeId != Constants.DEPARTMENT_TIMESHEET)
-                && (status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser))
-                && this.checkDateLessThanPayPeriod(startDate)
-                && isEditOnceTime
-            ) {
-                isShow = true;
-            } else {
-                isShow = false;
-            }
-            // Chỉnh lại ẩn hiện cho list yêu cầu
-            if (page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP)
-                    && status === Constants.STATUS_APPROVED && this.checkDateLessThanPayPeriod(startDate)
-                    && isEditOnceTime) {
-                    isShow = true;
+            if ((status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser)) && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+                if (status == Constants.STATUS_APPROVED) {
+                    const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+                    if (this.checkDateLessThanPayPeriod(firstStartDate)) {
+                        return true
+                    }
+                    return false
                 }
-                else
-                    isShow = false;
+                return true
             }
+            return false
         }
-
-        return isShow;
     }
 
-    isShowDeleteButton = (status, appraiser, requestTypeId, actionType, startdate) => {
-        // Chỉnh lại ẩn hiện cho list yêu cầu
+    isShowEvictionButton = (status, requestTypeId, startDate) => {
         const { page } = this.props
-        let isShow = false;
-        if (page === "request") {
-            if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP ||
-                requestTypeId === Constants.SUBSTITUTION || requestTypeId === Constants.IN_OUT_TIME_UPDATE ||
-                requestTypeId === Constants.CHANGE_DIVISON_SHIFT || requestTypeId === Constants.DEPARTMENT_TIMESHEET) &&
-                actionType?.toUpperCase() !== "DEL" && (status === Constants.STATUS_WAITING_CONSENTED || status === Constants.STATUS_WAITING)) {
-                isShow = true;
+
+        if (page === "approval") {
+            return false
+        } else {
+            const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+            if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.checkDateLessThanPayPeriod(firstStartDate)) {
+                return true
             }
-            if (requestTypeId === Constants.UPDATE_PROFILE) {
-                if ((status === Constants.STATUS_WAITING && ((appraiser !== null && Object.keys(appraiser).length === 0) || !appraiser)) ||
-                    status === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-                    isShow = true;
-            }
-            return isShow;
+            return false
         }
-        return (requestTypeId != 1) && ((status == 5 && appraiser == null) || status == 8) && (actionType == "INS" || requestTypeId == 4 || requestTypeId == 5 || requestTypeId == 8 || requestTypeId == 9) ? true : false;
     }
 
-    isShowEvictionButton = (status, appraiser, requestTypeId, startdate) => {
-        let isShow = true;
-        if (this.props.page == "approval") {
-            isShow = false;
-        } else {
-            // || (status == 5 && appraiser)
-            if ((requestTypeId != 4 && requestTypeId != 5 && requestTypeId != 1 && requestTypeId != 8 && requestTypeId != 9) && (status == 2) && this.checkDateLessThanPayPeriod(startdate)) {
-                isShow = true;
-            } else {
-                isShow = false;
-            }
-            // Chỉnh lại ẩn hiện cho list yêu cầu
-            if (this.props.page === "request") {
-                if ((requestTypeId === Constants.LEAVE_OF_ABSENCE || requestTypeId === Constants.BUSINESS_TRIP || requestTypeId === Constants.CHANGE_DIVISON_SHIFT) 
-                    && status === Constants.STATUS_APPROVED 
-                    && this.checkDateLessThanPayPeriod(startdate)) {
-                    isShow = true;
-                }
-                else
-                    isShow = false;
-            }
-        }
+    isShowDeleteButton = (status, appraiser, requestTypeId) => {
+        const { page } = this.props
 
-        return isShow;
+        if (page === "approval") {
+            return false
+        } else {
+            if ([Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(status)) {
+                if ((status == Constants.STATUS_WAITING_CONSENTED || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0))  
+                    && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+                    return true
+                }
+                if (status == Constants.STATUS_WAITING && (!appraiser || _.size(appraiser) === 0) 
+                    && [Constants.UPDATE_PROFILE, Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+                    return true
+                }
+                if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && [Constants.UPDATE_PROFILE].includes(requestTypeId)) {
+                    return true
+                }
+                return false
+            }
+            return false
+        }
     }
 
     getTaskLink = id => {
@@ -560,9 +551,8 @@ class RequestTaskList extends React.Component {
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
-
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
-        const requestTypeSingleIdList = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+        const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
@@ -653,13 +643,13 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate, child.isEdit);
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.appraiserId, child.requestType.id, child.startDate);
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestType.id, child.actionType, child.startDate);
+                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
+                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId)
                                             let totalTime = null
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
-                                                totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                                totalTime = child.days >= fullDay ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
@@ -674,21 +664,10 @@ class RequestTaskList extends React.Component {
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
-                                                        {
-                                                            isShowEditButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                                ? <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>
-                                                                : null
-                                                        }
-                                                        {
-                                                            isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                                ? <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>
-                                                                : null
-                                                        }
-                                                        {
-                                                            isShowDeleteButton
-                                                                ? <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>
-                                                                : null
-                                                        }
+                                                        { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
+                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY 
+                                                            && <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span> }
+                                                        { isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span> }
                                                     </td>
                                                 </tr>
                                             )

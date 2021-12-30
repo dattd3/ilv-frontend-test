@@ -257,7 +257,7 @@ class BusinessTripComponent extends React.Component {
 
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime && startDateTime && endDateTime) {
-            requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian !"
+            requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
             this.setState({ requestInfo })
             return
         }
