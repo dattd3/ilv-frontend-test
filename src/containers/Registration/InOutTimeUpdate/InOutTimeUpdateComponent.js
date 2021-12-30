@@ -523,7 +523,8 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
-                              className="form-control input" />
+                              className="form-control input"
+                              disabled={!timesheet.from_time1 || timesheet.from_time1 == "#"} />
                             {this.error(index, 'start_time1_fact_update')}
                           </span>
                         </div>
@@ -540,7 +541,8 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
-                              className="form-control input" />
+                              className="form-control input" 
+                              disabled={!timesheet.from_time1 || timesheet.from_time1 == "#"} />
                             {this.error(index, 'end_time1_fact_update')}
                           </span>
                         </div>
