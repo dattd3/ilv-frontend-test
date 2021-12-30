@@ -315,7 +315,7 @@ class RequestTaskList extends React.Component {
         if (page === "approval" || !isEditOnceTime) {
             return false
         } else {
-            if ((status == Constants.STATUS_APPROVED || (status == Constants.STATUS_WAITING && appraiser)) && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+            if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
                 if (status == Constants.STATUS_APPROVED) {
                     const firstStartDate = startDate?.length > 0 ? startDate[0] : null
                     if (this.checkDateLessThanPayPeriod(firstStartDate)) {
