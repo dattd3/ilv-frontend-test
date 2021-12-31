@@ -91,6 +91,7 @@ class RequestComponent extends React.Component {
     const isVinbrain = checkIsExactPnL(Constants.PnLCODE.Vinbrain);
     return data.map(item => {
       let itemStatus
+      let supportSearch = item.item1.status ? 'Đã xong' : 'Chưa xong';
       if(isVinbrain) {
         itemStatus = {
           onboardingStatus1: item.item1.status,
@@ -117,6 +118,9 @@ class RequestComponent extends React.Component {
           onboardingStatus8: item.item8.status,
           supporterDes8: item.item8.note,
         }
+        for(let i = 2; i <= 8; i++) {
+          supportSearch += '#' + (item['item' + i]?.status ? 'Đã xong' : 'Chưa xong')
+        }
       } else {
         itemStatus = {
           onboardingStatus1: item.item1.status,
@@ -131,6 +135,9 @@ class RequestComponent extends React.Component {
           onboardingStatus4: item.item4.status,
           supporterDes4: item.item4.note,
         }
+        for(let i = 2; i <= 4; i++) {
+          supportSearch += '#' + (item['item' + i]?.status ? 'Đã xong' : 'Chưa xong')
+        }
       }
       return  {
         id: item.id,
@@ -143,7 +150,8 @@ class RequestComponent extends React.Component {
         recruitingDate: item.startWork,
         expireDate: item.timeExpire,
         companyCode: localStorage.getItem('companyCode'),
-        ...itemStatus
+        ...itemStatus,
+        supportSearch: supportSearch
       }
     })
   }
