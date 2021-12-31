@@ -19,16 +19,6 @@ class RegistrationDetailComponent extends React.Component {
       }
   }
 
-  getTypeDetail = () => {
-    const pathName = window.location.pathname;
-    const pathNameArr = pathName.split('/');
-    return pathNameArr[pathNameArr.length - 1];
-  }
-
-  evictionRequest = (taskId) => {
-    alert(taskId)
-  }
-
   componentDidMount() {
     const taskId = this.props.match.params.id
     const subId = this.props.match.params.childId
@@ -58,27 +48,21 @@ class RegistrationDetailComponent extends React.Component {
   }
 
   render() {
-    const data = this.state.data
+    const { data, isShowModalRegistrationConfirm, taskId, modalTitle, modalMessage, typeRequest, requestUrl } = this.state
+    const { action } = this.props
 
     return (
       <>
-      <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage} 
-        type={this.state.typeRequest} urlName={this.state.requestUrl} onHide={this.onHideModalRegistrationConfirm} />
+      <RegistrationConfirmationModal show={isShowModalRegistrationConfirm} id={taskId} title={modalTitle} message={modalMessage} 
+        type={typeRequest} urlName={requestUrl} onHide={this.onHideModalRegistrationConfirm} />
       <div className="registration-section">
-        {this.state.data && this.state.data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={this.props.action} substitution={this.state.data}/> : null}
-        {this.state.data && this.state.data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent details={this.state.data}/> : null}
-        {/* {
-          data.status == 0 && this.getTypeDetail() === "request" ?
-          <div className="clearfix mb-5 registration-detail">
-            <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(data.id)}><i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
-          </div>
-          : null
-        } */}
+        {data && data.requestTypeId == Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceDetailComponent leaveOfAbsence={data}/> : null}
+        {data && data.requestTypeId == Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent businessTrip={data}/> : null}
+        {data && data.requestTypeId == Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent inOutTimeUpdate={data}/> : null}
+        {data && data.requestTypeId == Constants.SUBSTITUTION ? <SubstitutionDetailComponent substitution={data}/> : null}
+        {data && data.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data}/> : null}
+        {data && data.requestTypeId == Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={action} substitution={data}/> : null}
+        {data && data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent details={data}/> : null}
       </div>
       </>
     )

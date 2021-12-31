@@ -27,6 +27,7 @@ const absenceTypesAndDaysOffMapping = {
 }
 const totalDaysForSameDay = 1
 const queryString = window.location.search
+const currentEmployeeNo = localStorage.getItem('employeeNo')
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -339,7 +340,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         if (times.length === 0) return
 
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: localStorage.getItem('employeeNo'), times: times}, config)
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
                     const newRequestInfo = requestInfo.map((req, index) => {
@@ -648,7 +649,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
-        bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
+        bodyFormData.append('employeeNo', currentEmployeeNo)
         bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
         bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
         bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")

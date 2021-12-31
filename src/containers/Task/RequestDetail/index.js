@@ -184,7 +184,7 @@ class RequestDetail extends React.Component {
 
   prepareStatus = response => {
     if (response) {
-      this.setState({status: response.status, hrComment: response.hrComment ? response.hrComment : ""})
+      this.setState({status: response.status, hrComment: response.hrComment ? response.hrComment : "", responseDataFromSAP: response.responseDataFromSAP ? response.responseDataFromSAP : ""})
     }
   }
 
@@ -214,7 +214,7 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
-      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId } = this.state
+      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId, responseDataFromSAP } = this.state
 
     const statusOptions = {
       1: {label: t("Reject"), className: 'fail'},
@@ -226,20 +226,6 @@ class RequestDetail extends React.Component {
       7: { label: "Rejected", className: 'fail' },
       8: { label: "PendingConsent", className: 'waiting' },
       20:{ label: "Consented", className: 'waiting' }
-    }
-
-    let messageSAP = null;
-    if (this.props.details.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-    {
-      if (this.props.details.responseDataFromSAP && Array.isArray(this.props.details.responseDataFromSAP)) {
-        const data = this.props.details.responseDataFromSAP.filter(val => val.STATUS === 'E');
-        if (data) {
-          const temp = data.map(val => val?.MESSAGE);
-          messageSAP = temp.filter(function(item, pos) {
-            return temp.indexOf(item) === pos;
-          })
-        }
-      }
     }
 
     return (
@@ -312,15 +298,12 @@ class RequestDetail extends React.Component {
         
         <div className="block-status">
           <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
-          {messageSAP && 
+          { (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>
-              <div>
-                {messageSAP.map((msg, index) => {
-                  return <div key={index}>{msg}</div>
-                })}
-              </div>
-            </div>}
+              <div>{responseDataFromSAP}</div>
+            </div>
+          }
         </div>
         { isShowDocumentComponent ? 
           <>
