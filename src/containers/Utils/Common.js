@@ -51,7 +51,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                             date = getDateByRange(e?.startDate, e?.endDate)
                         }
                     }
-                    e.processStatusId = element.processStatusId
+                    e.processStatusId = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.processStatusId : element.processStatusId
                     e.startDate = date
                     e.comment = element.comment;
                     e.approverComment = element.approverComment;
