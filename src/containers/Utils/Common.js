@@ -64,8 +64,8 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 } else {
                     e.id = element.id.toString()
                 }
-                e.isEdit = element.isEdit
-                taskList.push(e);
+                e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
+                taskList.push(e)
             })
         }
         if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
