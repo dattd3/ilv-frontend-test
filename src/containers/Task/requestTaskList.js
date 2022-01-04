@@ -24,10 +24,10 @@ const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
 class RequestTaskList extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            tasks: [],
+            tasks: props.tasks,
             taskChecked: [],
             isShowModalConfirm: false,
             modalTitle: "",
@@ -74,12 +74,10 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.setState({ tasks: this.props.tasks })
-    }
-
-    componentWillReceiveProps() {
-        this.setState({ tasks: this.props.tasks })
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.tasks !== this.props.tasks) {
+            this.setState({ tasks: nextProps.tasks })
+        }
     }
 
     onChangePage = index => {
