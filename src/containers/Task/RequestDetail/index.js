@@ -184,7 +184,7 @@ class RequestDetail extends React.Component {
 
   prepareStatus = response => {
     if (response) {
-      this.setState({status: response.status, hrComment: response.hrComment ? response.hrComment : ""})
+      this.setState({status: response.status, hrComment: response.hrComment ? response.hrComment : "", responseDataFromSAP: response.responseDataFromSAP ? response.responseDataFromSAP : ""})
     }
   }
 
@@ -214,27 +214,18 @@ class RequestDetail extends React.Component {
   render() {
     const { t } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
-      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId } = this.state
+      userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId, responseDataFromSAP } = this.state
+
     const statusOptions = {
-      5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: 'fail'},
-      6: {label: t("Unsuccessful"), className: 'warning'}
-    }
-
-    let messageSAP = null;
-    if (this.props.details.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-    {
-      if (this.props.details.responseDataFromSAP && Array.isArray(this.props.details.responseDataFromSAP)) {
-        const data = this.props.details.responseDataFromSAP.filter(val => val.STATUS === 'E');
-        if (data) {
-          const temp = data.map(val => val?.MESSAGE);
-          messageSAP = temp.filter(function(item, pos) {
-            return temp.indexOf(item) === pos;
-          })
-        }
-      }
+      4: {label: t("Canceled"), className: 'fail'},
+      5: {label: t("Waiting"), className: 'waiting'},
+      6: {label: t("Unsuccessful"), className: 'warning'},
+      7: { label: "Rejected", className: 'fail' },
+      8: { label: "PendingConsent", className: 'waiting' },
+      20:{ label: "Consented", className: 'waiting' }
     }
 
     return (
@@ -268,49 +259,51 @@ class RequestDetail extends React.Component {
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
         {
-          (requestTypeId != Constants.UPDATE_PROFILE && userInfo.manager && (status == Constants.STATUS_APPROVED || status == Constants.STATUS_NOT_APPROVED)) ?
+          (userInfo.manager && (status == Constants.STATUS_APPROVED || status == Constants.STATUS_NOT_APPROVED)) ?
           <>
-          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
+          {
+            requestTypeId != Constants.UPDATE_PROFILE && <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
+          }
           <div className="box shadow">
-            <div className="row item-info">
-              <div className="col-4">
-                <div className="label">{t("Approver")}</div>
-                <div className="detail">{userInfo.manager.fullName || ""}</div>
-              </div>
-              <div className="col-4">
-                <div className="label">{t("Title")}</div>
-                <div className="detail">{userInfo.manager.title || ""}</div>
-              </div>
-              <div className="col-4">
-                <div className="label">{t("DepartmentManage")}</div>
-                <div className="detail">{userInfo.manager.department || ""}</div>
-              </div>
-            </div>
             {
-              status == Constants.STATUS_NOT_APPROVED ?
+              requestTypeId != Constants.UPDATE_PROFILE &&
+              <div className="row item-info">
+                <div className="col-4">
+                  <div className="label">{t("Approver")}</div>
+                  <div className="detail">{userInfo.manager.fullName || ""}</div>
+                </div>
+                <div className="col-4">
+                  <div className="label">{t("Title")}</div>
+                  <div className="detail">{userInfo.manager.title || ""}</div>
+                </div>
+                <div className="col-4">
+                  <div className="label">{t("DepartmentManage")}</div>
+                  <div className="detail">{userInfo.manager.department || ""}</div>
+                </div>
+              </div>
+            }
+            {
+              status == Constants.STATUS_NOT_APPROVED &&
               <div className="row item-info">
                 <div className="col-12">
                   <div className="label">Lý do không phê duyệt</div>
                   <div className="detail">{hrComment}</div>
                 </div>
               </div>
-              : null
             }
           </div>
           </>
           : null
         }
+        
         <div className="block-status">
           <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
-          {messageSAP && 
+          { (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>
-              <div>
-                {messageSAP.map((msg, index) => {
-                  return <div key={index}>{msg}</div>
-                })}
-              </div>
-            </div>}
+              <div>{responseDataFromSAP}</div>
+            </div>
+          }
         </div>
         { isShowDocumentComponent ? 
           <>
@@ -318,13 +311,6 @@ class RequestDetail extends React.Component {
           <DocumentComponent documents={documents} />
           </>
           : null
-        }
-        {
-          // (this.state.status == 1) ?
-          // <div className="clearfix mb-5">
-          //   <a className="btn btn-primary float-right ml-3 shadow btn-edit-task" title="Chỉnh sửa thông tin" href={`/tasks-request/${this.getUserProfileHistoryId()}/edit`}><i className="fa fa-edit" aria-hidden="true"></i>  Sửa thông tin</a>
-          // </div>
-          // : null
         }
         {
           (status == 0) ?

@@ -6,6 +6,9 @@ import { withTranslation, useTranslation } from "react-i18next";
 import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
+const currentUserEmailLogged = localStorage.getItem("email")
+const currentUserPnLVCodeLogged = localStorage.getItem("companyCode")
+
 const MyOption = props => {
     const { innerProps, innerRef } = props;
     const { t } = useTranslation();
@@ -43,6 +46,18 @@ class AssesserComponent extends React.Component {
     }
 
     async componentDidMount() {
+        const { appraiser, isEdit } = this.props
+
+        if (isEdit) {
+          return this.setState({
+            appraiser: {
+              ...appraiser,
+              label: appraiser.fullName,
+              value: appraiser.account
+            }
+          })
+        }
+
         const recentlyAppraiser = await this.loadRecentlyAppraiser()
         this.setState({ users: recentlyAppraiser })
     }
@@ -84,7 +99,7 @@ class AssesserComponent extends React.Component {
         if (value) {
             const currentUserLevel = localStorage.getItem('employeeLevel')
             this.setState({ [name]: value })
-            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+            const isAppraiser = this.isAppraiser(value.employeeLevel, currentUserLevel, value.account)
             this.props.updateAppraiser(value, isAppraiser)
         } else {
             this.setState({ [name]: value, users: [] })
@@ -92,26 +107,23 @@ class AssesserComponent extends React.Component {
         }
     }
 
-    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
-        const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter }, 0);
-
-        if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
+    isAppraiser = (levelAppraiserFilter, currentUserLevel, account) => {
+        const listLevelsSpecificPnL = ['M3', 'M2', 'M1', 'M0']
+        let listLevelsAdditional = []
+        if ([Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+            listLevelsAdditional = listLevelsSpecificPnL
+        }
+        listLevelsAdditional = listLevelsAdditional.concat(Constants.CONSENTER_LIST_LEVEL)
+        const indexCurrentUserLevel = _.findIndex(listLevelsAdditional, function (item) { return item == currentUserLevel })
+        const indexAppraiserFilterLevel = _.findIndex(listLevelsAdditional, function (item) { return item == levelAppraiserFilter }, 0)
+        if (indexAppraiserFilterLevel === -1 
+            || (indexCurrentUserLevel > indexAppraiserFilterLevel && (!listLevelsSpecificPnL.includes(currentUserLevel) || !listLevelsSpecificPnL.includes(levelAppraiserFilter))) 
+            || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
             return false
         }
-        if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-            return false
-        }
-
-        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
-        //     return true
-        // }
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
+        if (listLevelsAdditional.includes(levelAppraiserFilter)) {
             return true
         }
-
         return false
     }
 
@@ -120,23 +132,29 @@ class AssesserComponent extends React.Component {
         const { approver } = this.props
         if (value !== "") {
             this.setState({isSearch: true})
-            const config = getMuleSoftHeaderConfigurations()
+            const config = getRequestConfigurations()
+            const payload = {
+                account: value,
+                employee_type: "APPRAISER",
+                status: Constants.statusUserActiveMulesoft
+            }
 
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
+            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
                 .then(res => {
                     if (res && res.data && res.data.data) {
                         const data = res.data.data || []
                         const users = data.map(res => {
                             return {
-                                label: res.fullName,
-                                value: res.user_account,
-                                fullName: res.fullName,
+                                value: res.username,
+                                label: res.fullname,
+                                uid: res.uid,
+                                fullName: res.fullname,
                                 avatar: res.avatar,
-                                employeeLevel: res.employee_level,
+                                employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
                                 pnl: res.pnl,
-                                orglv2Id: res.orglv2_id,
-                                account: res.user_account,
-                                current_position: res.title,
+                                orglv2Id: res.organization_lv2,
+                                account: res.username,
+                                current_position: res.postition_name,
                                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
                             }
                         })
@@ -156,6 +174,12 @@ class AssesserComponent extends React.Component {
         })
     }
 
+    filterOption = (option, inputValue) => {
+        const { users } = this.state
+        const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)))
+        return options
+    }
+
     render() {
         const customStyles = {
             option: (styles, state) => ({
@@ -169,7 +193,8 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit } = this.props;
+        const { t, isEdit, errors } = this.props
+        const { appraiser, users, isSearch } = this.state
 
         return <div className="appraiser">
             <div className="box shadow">
@@ -187,27 +212,28 @@ class AssesserComponent extends React.Component {
                                 isDisabled={isEdit}
                                 isClearable={true}
                                 styles={customStyles}
-                                components={{ Option: e => MyOption({...e, isSearch: this.state.isSearch})}}
+                                components={{ Option: e => MyOption({...e, isSearch: isSearch})}}
                                 onInputChange={this.onInputChange.bind(this)}
                                 name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
-                                value={this.state.appraiser}
+                                onChange={appraiserItem => this.handleSelectChange('appraiser', appraiserItem)}
+                                value={appraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
-                                options={this.state.users} />
+                                filterOption={this.filterOption}
+                                options={users} />
                         </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
+                        {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={appraiser?.current_position || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('DepartmentManage')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
+                            <input type="text" className="form-control" value={appraiser?.department || ""} readOnly />
                         </div>
                     </div>
                 </div>

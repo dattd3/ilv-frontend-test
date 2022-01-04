@@ -7,10 +7,12 @@ import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import Constants from '../../../commons/Constants'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -90,6 +92,15 @@ class InOutTimeUpdateComponent extends React.Component {
 
   }
 
+  handleCheckboxChange = (index, name, e) => {
+    const timesheets = [...this.state.timesheets]
+    timesheets[index][name] = e.target.checked
+
+    this.setState({
+      timesheets: timesheets
+    }, () => { this.verifyInput() })
+  }
+
   updateFiles(files) {
     this.setState({ files: files }, () => { this.verifyInput() })
   }
@@ -115,6 +126,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
     this.setState({ errors: errors })
   }
+
   handleInputChange(index, event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -190,19 +202,6 @@ class InOutTimeUpdateComponent extends React.Component {
     delete approver.avatar
     // delete appraiser.avatar
 
-    const data = {
-      timesheets: timesheets,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate,
-      user: {
-        fullname: localStorage.getItem('fullName'),
-        jobTitle: localStorage.getItem('jobTitle'),
-        department: localStorage.getItem('department'),
-        employeeNo: localStorage.getItem('employeeNo')
-      },
-      approver: approver,
-    }
-
     const user = {
         fullname: localStorage.getItem('fullName'),
         jobTitle: localStorage.getItem('jobTitle'),
@@ -222,9 +221,7 @@ class InOutTimeUpdateComponent extends React.Component {
         });
     })
     
-    const comments = timesheets
-      .filter(item => (item.note))
-      .map(item => item.note).join(" - ")
+    const comments = timesheets.filter(item => (item.note)).map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', t("ModifyInOut"))
@@ -308,7 +305,8 @@ class InOutTimeUpdateComponent extends React.Component {
               start_time1_fact_update: null,
               start_time2_fact_update: null,
               end_time1_fact_update: null,
-              end_time2_fact_update: null
+              end_time2_fact_update: null,
+              isNextDay: false
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -325,7 +323,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
-    window.location.reload();
+    window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
   }
 
   removeFile(index) {
@@ -370,6 +368,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { startDate, endDate, timesheets, errors, files, disabledSubmitButton } = this.state
     const { t } = this.props;
     const lang = localStorage.getItem("locale")
+    const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
 
     return (
       <div className="in-out-time-update">
@@ -454,26 +453,65 @@ class InOutTimeUpdateComponent extends React.Component {
               </div>
             </div>
             {timesheet.isEdited ? 
+              <>
               <div className="block-time-item-edit">
-                <div className="wrap-item">
-                  <div className="title">
-                    <div className="plan">{t("PlannedShift")}</div>
-                    <div className="actual">{t("ActualTime")}</div>
-                    <div className="editable">{t("InOutChangeRequest")}</div>
-                  </div>
-                  <div className="data">
-                    <div className="row-item">
-                      <div className="item plan">
-                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time1)}</span></div>
-                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time1)}</span></div>
-                      </div>
-                      <div className="item actual">
-                        <div className="first">{t("StartTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time1_fact)}</span></div>
-                        <div className="second">{t("EndTime")} 1: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time1_fact)}</span></div>
-                      </div>
-                      <div className="item editable">
-                        <div className="first">
+                <div className="wrap-items">
+                  <div className="item">
+                    <div className="title plan">{t("PlannedShift")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
                           <span>{t("StartTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time1)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time1)}</span>
+                        </div>
+                      </div>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time2)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="title actual">{t("ActualTime")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time1_fact)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 1:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time1_fact)}</span>
+                        </div>
+                      </div>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span>{t("StartTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time2_fact)}</span>
+                        </div>
+                        <div className="col-customize">
+                          <span>{t("EndTime")} 2:</span>
+                          <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time2_fact)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="item">
+                    <div className="title editable">{t("InOutChangeRequest")}</div>
+                    <div className="content">
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span className="label">{t("StartTime")} 1:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.start_time1_fact_update) ? moment(timesheet.start_time1_fact_update, 'HH:mm:ss').toDate() : null}
@@ -485,12 +523,13 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
-                              className="form-control input" />
-                              {this.error(index, 'start_time1_fact_update')}
+                              className="form-control input"
+                              disabled={!timesheet.from_time1 || timesheet.from_time1 == "#"} />
+                            {this.error(index, 'start_time1_fact_update')}
                           </span>
                         </div>
-                        <div className="second">
-                          <span>{t("EndTime")} 1:</span>
+                        <div className="col-customize">
+                          <span className="label">{t("EndTime")} 1:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.end_time1_fact_update) ? moment(timesheet.end_time1_fact_update, 'HH:mm:ss').toDate() : null}
@@ -502,24 +541,15 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeCaption="Giờ"
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
-                              className="form-control input" />
-                              {this.error(index, 'end_time1_fact_update')}
+                              className="form-control input" 
+                              disabled={!timesheet.from_time1 || timesheet.from_time1 == "#"} />
+                            {this.error(index, 'end_time1_fact_update')}
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div className="row-item">
-                      <div className="item plan">
-                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.from_time2)}</span></div>
-                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.to_time2)}</span></div>
-                      </div>
-                      <div className="item actual">
-                        <div className="first">{t("StartTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.start_time2_fact)}</span></div>
-                        <div className="second">{t("EndTime")} 2: <span className="font-weight-bold value">{this.printTimeFormat(timesheet.end_time2_fact)}</span></div>
-                      </div>
-                      <div className="item editable">
-                        <div className="first">
-                          <span>{t("StartTime")} 2:</span>
+                      <div className="row-customize">
+                        <div className="col-customize">
+                          <span className="label">{t("StartTime")} 2:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.start_time2_fact_update) ? moment(timesheet.start_time2_fact_update, 'HH:mm:ss').toDate() : null}
@@ -533,11 +563,11 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
                               disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
-                              {this.error(index, 'start_time2_fact_update')}
+                            {this.error(index, 'start_time2_fact_update')}
                           </span>
                         </div>
-                        <div className="second">
-                          <span>{t("EndTime")} 2:</span>
+                        <div className="col-customize">
+                          <span className="label">{t("EndTime")} 2:</span>
                           <span className="value">
                             <DatePicker
                               selected={!this.isNullCustomize(timesheet.end_time2_fact_update) ? moment(timesheet.end_time2_fact_update, 'HH:mm:ss').toDate() : null}
@@ -551,14 +581,22 @@ class InOutTimeUpdateComponent extends React.Component {
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
                               disabled={!timesheet.from_time2 || timesheet.from_time2 == "#"} />
-                              {this.error(index, 'end_time2_fact_update')}
+                            {this.error(index, 'end_time2_fact_update')}
                           </span>
                         </div>
                       </div>
+                      {
+                        isShowSelectWorkingShift24h && 
+                        <div className='next-day-selection'>
+                          <input type="checkbox" id={`next-day-selection-${index}`} name={`next-day-selection-${index}`} checked={timesheet.isNextDay || false} onChange={e => this.handleCheckboxChange(index, 'isNextDay', e)} />
+                          <label htmlFor={`next-day-selection-${index}`}>{t("InOutUpdateNextDaySelection")}</label>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
-            </div> : null}
+              </div>
+            </> : null}
 
             {timesheet.isEdited ? <div className="row block-note-item-edit">
               <div className="col-12 pb-2">
