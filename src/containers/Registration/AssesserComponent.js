@@ -145,8 +145,9 @@ class AssesserComponent extends React.Component {
                         const data = res.data.data || []
                         const users = data.map(res => {
                             return {
-                                label: res.fullname,
                                 value: res.username,
+                                label: res.fullname,
+                                uid: res.uid,
                                 fullName: res.fullname,
                                 avatar: res.avatar,
                                 employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
@@ -171,6 +172,12 @@ class AssesserComponent extends React.Component {
         this.setState({ appraiserTyping: value }, () => {
             this.onInputChange(value)
         })
+    }
+
+    filterOption = (option, inputValue) => {
+        const { users } = this.state
+        const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)))
+        return options
     }
 
     render() {
@@ -212,6 +219,7 @@ class AssesserComponent extends React.Component {
                                 value={appraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
+                                filterOption={this.filterOption}
                                 options={users} />
                         </div>
                         {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
