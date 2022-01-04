@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Select from 'react-select'
 import { Image } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -16,7 +15,8 @@ import ShiftTable from './ShiftTable'
 import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import map from '../../../../src/containers/map.config'
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -219,18 +219,18 @@ class SubstitutionComponent extends React.Component {
         pernr: currentUserNo,
         isEdited: item.isEdited,
         date: moment(item.date, "DD/MM/YYYY").format('YYYYMMDD'),
-        endBreakTimeEdited: item.endBreakTime ? this.formatTime(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT): null,
-        toTimeEdited: item.endTime ? this.formatTime(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, // sửa giờ kết thúc
-        fromTimeByPlan: item.fromTime ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, // giờ bắt đầu theo kế hoạch
+        endBreakTimeEdited: formatStringByMuleValue(item.endBreakTime) ? this.formatTime(item.endBreakTime, Constants.SUBSTITUTION_TIME_FORMAT): null,
+        toTimeEdited: formatStringByMuleValue(item.endTime) ? this.formatTime(item.endTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, // sửa giờ kết thúc
+        fromTimeByPlan: formatStringByMuleValue(item.fromTime) ? moment(item.fromTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, // giờ bắt đầu theo kế hoạch
         note: item.note,
         shiftHours: item.shiftHours,
         shiftId: item.shiftId,
         shiftIndex: 1,
         // shiftType: item.shiftType,
-        startBreakTimeEdited: item.startBreakTime ? this.formatTime(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT) : null,
-        fromTimeEdited: item.startTime ? this.formatTime(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, //sửa giờ bắt đầu
+        startBreakTimeEdited: formatStringByMuleValue(item.startBreakTime) ? this.formatTime(item.startBreakTime, Constants.SUBSTITUTION_TIME_FORMAT) : null,
+        fromTimeEdited: formatStringByMuleValue(item.startTime) ? this.formatTime(item.startTime, Constants.SUBSTITUTION_TIME_FORMAT) : null, //sửa giờ bắt đầu
         substitutionType: item.substitutionType,
-        toTimeByplan: item.toTime ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, //giờ kết thúc theo kế hoạch
+        toTimeByplan: formatStringByMuleValue(item.toTime) ? moment(item.toTime, Constants.SUBSTITUTION_TIME_FORMAT).format('HHmm00') : null, //giờ kết thúc theo kế hoạch
         startDateSearching: moment(startDate, "DD/MM/YYYY").format('YYYYMMDD'),
         endDateSearching: moment(endDate, "DD/MM/YYYY").format('YYYYMMDD'),
         applyFrom: item.applyFrom,
@@ -492,7 +492,7 @@ class SubstitutionComponent extends React.Component {
 
   hideResultModal = () => {
     this.setState({ isShowResultModal: false });
-    window.location.reload();
+    window.location.href = `${map.Registration}?tab=SubstitutionRegistration`
   }
 
   hideStatusModal = () => {

@@ -64,9 +64,9 @@ function ListNotifications(props) {
         const minutes = duration.asMinutes();
         const hours = duration.asHours();
         if (minutes < 60) {
-            timePost = Math.floor(minutes) + t("minutesAgo");
+            timePost = Math.floor(minutes) + " " + t("minutesAgo");
         } else if (hours < 24) {
-            timePost = Math.floor(hours) + t("hoursAgo");
+            timePost = Math.floor(hours) + " " + t("hoursAgo");
         }
         return timePost;
     }

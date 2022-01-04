@@ -210,7 +210,53 @@ class ApprovalDetail extends React.Component {
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, userMainInfo, 
       isShowEducationComponent, isShowFamilyComponent, userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, 
       processStatusId, approverComment, isShowDocumentComponent, documents } = this.state
-    
+    const { responseDataFromSAP } = data
+
+    const getSAPResponsePartiallySuccess = () => {
+      const SAPFailedCode = 'E'
+      let SAPMessages = []
+      if (responseDataFromSAP && Array.isArray(responseDataFromSAP)) {
+        SAPMessages = responseDataFromSAP.reduce((initial, current) => {
+          let { data } = current
+          if (data === undefined || !data) {
+            if (current.STATUS === SAPFailedCode) {
+              initial = initial.concat(current.MESSAGE)
+            }
+          } else {
+            for (const [key, value] of Object.entries(data)) {
+              if (Array.isArray(value)) {
+                // Education, Work experience - array
+                let messages = value.filter(item => item.STATUS === SAPFailedCode).map(item => item.MESSAGE)
+                initial = initial.concat(messages)
+              } else {
+                // Main information - object
+                if (value.STATUS === SAPFailedCode) {
+                  initial = initial.concat(value.MESSAGE)
+                }
+              }
+            }
+          }
+
+          return initial
+        }, [])
+      }
+  
+      if (processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && SAPMessages && SAPMessages.length > 0) {
+        return (
+          <div className={`d-flex status fail`}>
+            <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+            {
+              (SAPMessages || []).map((item, i) => {
+                return <div key={i}>{item}</div>
+              })
+            }
+        </div>
+        )
+      }
+
+      return null
+    }
+
     return (
       <>
       <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
@@ -239,7 +285,7 @@ class ApprovalDetail extends React.Component {
             </div>
           </div>
         </div>
-        {isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin đăng ký chỉnh sửa</h4></div> : null}
+        {isShowPersonalComponent ? <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("RegistrationUpdateInformation")}</h4></div> : null}
         {isShowPersonalComponent ? <PersonalComponent userMainInfo={userMainInfo} /> : null }
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
@@ -263,7 +309,7 @@ class ApprovalDetail extends React.Component {
               </div>
             </div>
             {
-              processStatusId == 1 ?
+              processStatusId == Constants.STATUS_NOT_APPROVED ?
               <div className="row item-info">
                 <div className="col-12">
                   <div className="label">Lý do không phê duyệt</div>
@@ -278,10 +324,11 @@ class ApprovalDetail extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
+          { getSAPResponsePartiallySuccess() }
         </div>
         { isShowDocumentComponent ? 
           <>
-          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin file đính kèm</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("RegistrationAttachmentInformation")}</h4></div>
           <DocumentComponent documents={documents} />
           </>
           : null

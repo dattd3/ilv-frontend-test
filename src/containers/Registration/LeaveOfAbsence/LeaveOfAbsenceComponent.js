@@ -6,34 +6,28 @@ import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
 import ResultModal from '../ResultModal'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash'
+import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
+import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY } from "../../Task/Constants"
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
-
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
     2: { day: 1, time: 8 },
     3: { day: 3, time: 24 }
 }
-
-const ANNUAL_LEAVE_KEY = "PQ01"
-const COMPENSATORY_LEAVE_KEY = "PQ02"
-const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
-const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
-const MATERNITY_LEAVE_KEY = "IN02"
 const totalDaysForSameDay = 1
-
 const queryString = window.location.search
+const currentEmployeeNo = localStorage.getItem('employeeNo')
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -44,7 +38,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             annualLeaveSummary: null,
             files: [],
             isUpdateFiles: false,
-            isEdit: false,
+            isEdit: props.isEdit,
             titleModal: "",
             messageModal: "",
             disabledSubmitButton: false,
@@ -105,7 +99,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
             const { appraiser, approver, requestDocuments } = leaveOfAbsence
             this.setState({
-                isEdit: true,
                 approver: approver,
                 appraiser: appraiser,
                 requestInfo: [
@@ -159,7 +152,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     setStartDate(startDate, groupId, groupItem, isShowHintLeaveForMother) {
-        let { requestInfo } = this.state;
+        const requestInfo = [...this.state.requestInfo]
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem);
         const { endDate, startTime, endTime } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
@@ -177,7 +170,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
-        this.setState({ requestInfo })
+        this.setState({requestInfo: requestInfo})
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
@@ -203,57 +196,95 @@ class LeaveOfAbsenceComponent extends React.Component {
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
+    onBlurStartTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].startTime, Constants.LEAVE_TIME_FORMAT);
+            let m = time.minutes();
+            if (m > 30) {
+                time.set('minute', 30);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 0);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
+    }
+
     setStartTime(startTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endTime, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
 
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        const startTimeToSave = moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        let end = endTime
-
-        if (end === undefined || (moment(startTime).isValid() && moment(startTimeToSave, Constants.LEAVE_TIME_FORMAT) > moment(endTime, Constants.LEAVE_TIME_FORMAT))) {
-            end = moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") < moment("08:00", "HH:mm"))) {
-            end = endTime
-        }
         requestInfo[indexReq].startTime = start
-        requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false)
+            this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
+    }
+
+    onBlurEndTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].endTime, Constants.LEAVE_TIME_FORMAT);
+            let h = time.hours();
+            let m = time.minutes();
+            if (m > 30) {
+                if (h < 24) {
+                    h = h + 1;
+                    m = 0;
+                    time.set('hour', h);
+                    time.set('minute', m);
+                    const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                    requestInfo[indexReq].endTime = end;
+                    this.setState({ requestInfo })
+                    
+                }
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 30);
+                const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].endTime = end;
+                this.setState({ requestInfo })
+            }
+            // Trường hợp vinmec tính thời gian khi lost focus
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
     }
 
     setEndTime(endTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startTime, startDate, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
 
-        const endTimeToSave = moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        let start = startTime
-
-        if (startTime === undefined || (moment(endTime).isValid() && moment(endTimeToSave, Constants.LEAVE_TIME_FORMAT) < moment(startTime, Constants.LEAVE_TIME_FORMAT))) {
-            start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") < moment("08:00", "HH:mm"))) {
-            start = startTime
-        }
-
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].startTime = start
         requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false) // Trường hợp vinmec tính thời gian khi lost focus
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
     isOverlapDateTime(startDateTime, endDateTime, indexReq) {
@@ -270,7 +301,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
-        const { requestInfo } = this.state
+        const requestInfo = [...this.state.requestInfo]
         const { isAllDay, isAllDayCheckbox } = requestInfo[indexReq]
         if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
         if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
@@ -279,19 +310,15 @@ class LeaveOfAbsenceComponent extends React.Component {
         const endDateTime = moment(`${endDate} ${endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime) {
-            requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian !"
-            this.setState({ requestInfo })
-            return
+            requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
+            return this.setState({ requestInfo })
         }
-        this.validateTimeRequest(requestInfo)
+        
+        this.validateTimeRequest(requestInfo, indexReq)
     }
 
-    validateTimeRequest(requestInfo) {
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+    validateTimeRequest(requestInfo, indexItem) {
+        const config = getRequestConfigurations()
         const times = [];
         requestInfo.forEach(req => {
             const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
@@ -312,14 +339,12 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
 
         if (times.length === 0) return
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
-            perno: localStorage.getItem('employeeNo'),
-            times: times,
-        }, config)
+
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
+                    const newRequestInfo = requestInfo.map((req, index) => {
+                        let errors = req.errors
                         let totalTimes
                         let totalDays
                         res.data.data.times.map(time => {
@@ -329,6 +354,15 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 totalDays = time.days
                             }
                         })
+
+                        if (index == indexItem) {
+                            errors['funeralWeddingInfo'] = null
+                            if (req.isAllDay && req.absenceType && req.funeralWeddingInfo && req.startDate && req.endDate && totalDays > absenceTypesAndDaysOffMapping[req?.funeralWeddingInfo?.value].day) {
+                                let days = absenceTypesAndDaysOffMapping[req?.funeralWeddingInfo?.value].day
+                                errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
+                            }
+                        }
+
                         return {
                             ...req,
                             errors,
@@ -350,7 +384,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.setState({ newRequestInfo })
                 }
             }).catch(error => {
-                if (error.response.status == 401) {
+                if (error.response?.status == 401) {
                     window.location.reload();
                 }
                 else {
@@ -421,61 +455,48 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+        const requestInfo = [...this.state.requestInfo]
+        const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
 
-        const { requestInfo } = this.state
+        // console.log("==============================")
+        // console.log(requestInfo)
+        // console.log(name)
+        // console.log(value)
+        // console.log(groupId)
+
         let newRequestInfo = []
         if (name === "absenceType") {
-            newRequestInfo = requestInfo.map(req => {
-                let check = false;
-                if (value.value === "PN02") {
-                    check = true;
+            const check = value.value === MOTHER_LEAVE_KEY
+            newRequestInfo = requestInfo.map(item => {
+                return item.groupId === groupId ? {
+                    ...item,
+                    absenceType: value,
+                    isShowHintLeaveForMother: check,
+                    isAllDayCheckbox: item.isChecked,
+                    startDate: check ? null : item.startDate,
+                    endDate: check ? null : item.endDate
                 }
-                else {
-                    check = false;
-                }
-
-                const errors = {
-                    ...req.errors,
-                    absenceType: null
-                }
-                if (req.groupId === groupId) {
-
-                    return {
-                        ...req,
-                        absenceType: value,
-                        isShowHintLeaveForMother: check,
-                        // isChecked: check ? false : req.isChecked,
-                        isAllDayCheckbox: req.isChecked,
-                        startDate: check ? null : req.startDate,
-                        endDate: check ? null : req.endDate,
-                        errors
-                    }
-                }
-
-                return { ...req }
+                : {...item}
             })
         } else if (name === "funeralWeddingInfo") {
-            newRequestInfo = requestInfo.map(req => {
-                let errors = req.errors
-                if (req.funeralWeddingInfo && (req.isAllDay && req.totalDays > absenceTypesAndDaysOffMapping[req.funeralWeddingInfo.value].day)) {
-                    const days = absenceTypesAndDaysOffMapping[req.funeralWeddingInfo.value].day
+            newRequestInfo = requestInfo.map(item => {
+                let errors = item.errors
+                errors['funeralWeddingInfo'] = null
+                if (item.isAllDay && item.totalDays > absenceTypesAndDaysOffMapping[value.value].day) {
+                    const days = absenceTypesAndDaysOffMapping[value.value].day
                     errors['funeralWeddingInfo'] = `Thời gian được đăng ký nghỉ tối đa là ${days} ngày`
-                } else {
-                    errors['funeralWeddingInfo'] = null
                 }
 
-                if (req.groupId === groupId) {
-                    return {
-                        ...req,
-                        funeralWeddingInfo: value,
-                        errors
-                    }
+                return item.groupId === groupId ? {
+                    ...item,
+                    funeralWeddingInfo: value,
+                    errors
                 }
-                return { ...req }
+                : {...item}
             })
         }
         this.setState({ requestInfo: newRequestInfo })
-        this.validateTimeRequest(newRequestInfo)
+        this.validateTimeRequest(newRequestInfo, index)
     }
 
     verifyInput() {
@@ -499,7 +520,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (!req.comment) {
                 requestInfo[indexReq].errors.comment = this.props.t('Required')
             }
-            requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === 'PN03' && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
+            requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
         })
         const employeeLevel = localStorage.getItem("employeeLevel")
 
@@ -547,10 +568,11 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     onAddLeave() {
-        const { requestInfo, dateRequest } = this.state;
+        const { dateRequest } = this.state;
+        let requestInfo = [...this.state.requestInfo]
         const maxGroup = _.maxBy(requestInfo, 'groupId').groupId;
         const maxGroupItem = _.maxBy(requestInfo, 'groupItem').groupItem;
-        requestInfo.push({
+        requestInfo = requestInfo.concat({
             startDate: dateRequest,
             startTime: null,
             endDate: dateRequest,
@@ -568,7 +590,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         document.querySelector('.list-inline').scrollIntoView({
             behavior: 'smooth'
         });
-        this.setState({ requestInfo })
+        this.setState({requestInfo: requestInfo})
     }
 
     onRemoveLeave(groupId, groupItem) {
@@ -584,11 +606,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     submit() {
         const { t } = this.props
-        const {
-            files,
-            isEdit,
-            requestInfo
-        } = this.state
+        const { files, isEdit, requestInfo } = this.state
 
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -631,7 +649,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
-        bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'))
+        bodyFormData.append('employeeNo', currentEmployeeNo)
         bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
         bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")
         bodyFormData.append("regionId", !this.isNullCustomize(localStorage.getItem('regionId')) ? localStorage.getItem('regionId') : "")
@@ -663,20 +681,20 @@ class LeaveOfAbsenceComponent extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data.data && response.data.result) {
-                    this.showStatusModal(t("Successful"), t("RequestSent"), true)
-                    this.setDisabledSubmitButton(false)
-                }
-                else {
-                    this.showStatusModal(t("Notification"), response.data.result.message, false)
-                    this.setDisabledSubmitButton(false)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        .then(response => {
+            if (response && response.data.data && response.data.result) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            })
+            }
+            else {
+                this.showStatusModal(t("Notification"), response.data.result.message, false)
+                this.setDisabledSubmitButton(false)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        })
     }
 
     error(name, groupId, groupItem) {
@@ -701,7 +719,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.reload();
+            window.location.href = map.Registration;
         }
     }
 
@@ -772,26 +790,8 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     render() {
         const { t } = this.props;
-        let absenceTypes = [
-            { value: 'IN01', label: t('SickLeave') },
-            { value: MATERNITY_LEAVE_KEY, label: t('MaternityLeave') },
-            { value: 'IN03', label: t('RecoveryLeave') },
-            { value: 'PN01', label: t('LeaveForExpats') },
-            { value: 'PN02', label: t("LeaveForMother") },
-            { value: 'PN03', label: t('LeaveForMarriageFuneral') },
-            // { value: 'PN04', label: t('LeaveForWorkAccidentOccupationalDisease') },
-            { value: ANNUAL_LEAVE_KEY, label: t('AnnualLeaveYear') },
-            { value: ADVANCE_ABSENCE_LEAVE_KEY, label: t("AdvancedLeave") },
-            { value: COMPENSATORY_LEAVE_KEY, label: t('ToilIfAny') },
-            // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'Nghỉ bù tạm ứng' },
-            { value: 'UN01', label: t('UnpaidLeave') }
-        ]
-
-        const PN03List = [
-            { value: '1', label: 'Bản thân Kết hôn' },
-            { value: '2', label: 'Con kết hôn' },
-            { value: '3', label: 'Bố đẻ, mẹ đẻ, bố vợ, mẹ vợ hoặc bố chồng, mẹ chồng mất; vợ chết hoặc chồng mất; con mất' },
-        ];
+        const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
+        const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
             requestInfo,
             annualLeaveSummary,
@@ -810,6 +810,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         return (
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
@@ -884,14 +885,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <div>
                                                     <p className="title">{t('LeaveCategory')}</p>
                                                     <div>
-                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceTypes.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== 'IN02' && absenceType.value !== 'IN03' && absenceType.value !== 'PN03'))} />
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== MARRIAGE_FUNERAL_LEAVE_KEY))} />
                                                     </div>
                                                     {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
 
-                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ? <p className="title">Thông tin hiếu, hỉ</p> : null}
-                                                    {req[0].absenceType && req[0].absenceType.value === 'PN03' ?
+                                                    {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ? <p className="title">{t("MarriageFuneral")}</p> : null}
+                                                    {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ?
                                                         <div>
-                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03List} />
+                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
                                                         :
                                                         null}
@@ -916,7 +917,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input  type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked || false} className="check-box mr-2" onChange={this.handleCheckboxChange} />
                                                             <label>{t('FullDay')}</label>
                                                         </div>
                                                         : null
@@ -932,12 +933,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -954,12 +956,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
                                                                                         autoComplete="off"
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1059,12 +1062,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
                                                                                         showTimeSelect
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1107,12 +1111,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
+                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
                                                                                         autoComplete="off"
                                                                                         showTimeSelectOnly
-                                                                                        timeIntervals={15}
+                                                                                        timeIntervals={checkVinmec === true ? 30 : 15}
                                                                                         timeCaption={t("Hour")}
                                                                                         dateFormat="HH:mm"
                                                                                         timeFormat="HH:mm"
@@ -1160,6 +1165,15 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+                                {checkVinmec === true &&
+                                    <div className="row business-type">
+                                        <div className="col-12">
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 text-info smaller">* {t('Block30Notification')}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
 
                                 <div className="row">
                                     <div className="col-12">
@@ -1179,9 +1193,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </div>
                     )
                 })}
-                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
 
+                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
                 <ApproverComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
+
                 <ul className="list-inline">
                     {files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>
