@@ -289,19 +289,19 @@ class RequestTaskList extends React.Component {
         const today = new Date()
         const currentDay = today.getDate()
         const year = today.getFullYear()
-        const month = today.getMonth() + 1
+        const month = today.getMonth()
         
         if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
-            if (month === 1) {
-                minDate = new Date(year - 1, 12, 26)
+            if (month === 0) {
+                minDate = new Date(year - 1, 11, 26)
             } else {
                 minDate = new Date(year, month - 1, 26)
             }
         } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
             minDate = new Date(year, month, 26)
         } else { // Ngày sửa/thu hồi 1,..,25
-            if (month === 1) {
-                minDate = new Date(year - 1, 12, 26)
+            if (month === 0) {
+                minDate = new Date(year - 1, 11, 26)
             } else {
                 minDate = new Date(year, month - 1, 26)
             }
