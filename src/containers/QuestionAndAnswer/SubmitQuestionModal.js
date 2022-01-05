@@ -36,7 +36,7 @@ class SubmitQuestionModal extends React.Component {
             categories: props.categories,
             hrProfiles: {},
             tcktProfiles: {},
-            categorySelectedId: props.categories[0]?.id,
+            categorySelectedId: 0,
             validated: false,
             questionContent: "",
             supervise: {},
