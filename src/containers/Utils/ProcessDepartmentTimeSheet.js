@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 // import { formatStringByMuleValue } from "../../commons/Utils"
-// import Constants from "../../commons/Constants";
+import Constants from "../../commons/Constants";
 
 const DATE_TYPE = {
     DATE_OFFSET: 0,
@@ -18,7 +18,7 @@ const EVENT_TYPE = {
     EVENT_CONGTAC: 6,
     EVENT_OT: 7,
 };
-
+const currentUserPnLCode = localStorage.getItem("companyCode")
 
 const getDepartmentPartGroupByListData = listData => {
     const result = listData.find(item => item && item !== '#')
@@ -42,7 +42,7 @@ const checkExist = (text) => {
 };
 
 const isHoliday = (item) => {
-    return item.shift_id == "OFF" || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
+    return item.shift_id == "OFF" || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec);
 };
 
 const getDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay) => {
@@ -374,19 +374,13 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
 
         //check with propose time
         if (checkExist(item.from_time1) && !isHoliday(item)) {
-            isValid1 =
-                minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1
-                    ? true
-                    : false;
+            isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
 
-            line2.type1 =
-                isValid1 == false && currentDay <= today
-                    ? EVENT_TYPE.EVENT_LOICONG + line2.type1[1]
-                    : line2.type1;
-            line2.type1 =
-                isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG
-                    ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1]
-                    : line2.type1;
+            line2.type1 = isValid1 == false && currentDay <= today ? EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
+            line2.type1 = isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : line2.type1;
+            if (item.is_holiday == 1 && currentUserPnLCode == Constants.pnlVCode.VinMec) {
+                line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
+              }
             if (line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
                 line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
                 line2.subtype = "1" + line2.subtype[1];

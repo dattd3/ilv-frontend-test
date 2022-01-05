@@ -36,6 +36,7 @@ const EVENT_STYLE = {
 const totalTimeSheetLines = 4
 const timeSheetLinesAlwayShow = 2
 const timeSheetLinesIgnoreOnceLine = 3
+const currentUserPnLCode = localStorage.getItem("companyCode")
 
 function WorkingDay(props) {
   const { t } = useTranslation();
@@ -57,10 +58,9 @@ const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.lengt
 
 function RenderRow0(props) {
   const { t } = useTranslation()
-  const PnLVCode = localStorage.getItem("companyCode")
-  const backDate = calculateBackDateByPnLVCodeAndFormatType(PnLVCode, 'YYYYMMDD')
-  const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
-  const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
+  const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+  const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
+  const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
   const pathName = window.location.pathname
 
   return (props.timesheets || []).map((item, index) => {
@@ -509,7 +509,7 @@ function TimeTableDetail(props) {
   }, [props.isSearch])
 
   const isHoliday = (item) => {
-    return item.shift_id == 'OFF' || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060")
+    return item.shift_id == 'OFF' || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)
   }
 
   const getDayOffset = (currentDate, offset) => {
@@ -797,6 +797,9 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         
         line2.type1 = isValid1 == false && currentDay <= today  ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
         line2.type1 = isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : line2.type1;
+        if (item.is_holiday == 1 && currentUserPnLCode == Constants.pnlVCode.VinMec) {
+          line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
+        }
         if(line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
           line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = '1' + line2.subtype[1];

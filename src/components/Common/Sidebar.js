@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-// import logo from '../../assets/img/LogoVinsoftware.svg';
+import VingroupLogo from '../../assets/img/LogoVingroup.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import MetisMenu from 'react-metismenu';
 import { Navigation } from '../../modules';
@@ -72,7 +72,7 @@ function SideBar(props) {
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">
-                                <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : 'https://vingroup.net/assets/images/logo.png'} alt='My VinGroup' />
+                                <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : VingroupLogo} alt='My VinGroup' />
                             </a>
                         </div>
                     </Animated>
