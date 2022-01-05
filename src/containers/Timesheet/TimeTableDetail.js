@@ -251,8 +251,8 @@ function RenderItem(props) {
           }
           {
             item.line3.subtype[1] == 1 ?
-            <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}-`}>
-                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
+            <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}>
+                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}</div>
             </RenderTooltip>
             : null
           }
