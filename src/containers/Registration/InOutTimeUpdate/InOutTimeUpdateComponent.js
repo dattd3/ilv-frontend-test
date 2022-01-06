@@ -17,6 +17,7 @@ registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
 const queryString = window.location.search
+const currentUserPnLCode = localStorage.getItem("companyCode")
 
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
@@ -147,8 +148,10 @@ class InOutTimeUpdateComponent extends React.Component {
 
   verifyInput() {  
     const { t } = this.props
+    const { timesheets, approver, files } = this.state
+
     let errors = {}
-    this.state.timesheets.forEach((timesheet, index) => {
+    timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdited) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
           errors['start_time1_fact_update' + index] = this.props.t("Required")
@@ -169,10 +172,39 @@ class InOutTimeUpdateComponent extends React.Component {
       }
     })
 
-    if (_.isNull(this.state.approver)) {
+    if (_.isNull(approver)) {
       errors['approver'] = this.props.t("Required")
     }
-    errors['files'] = ((_.isNull(this.state.files) || this.state.files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ? t("AttachmentRequired") : null
+
+    let errorsFile = null
+    errorsFile = ((_.isNull(files) || files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(currentUserPnLCode)) ? t("AttachmentRequired") : this.isNullCustomize
+
+    if (files && files?.length > 0) {
+      const maximumFileSize = 4 // Unit MB
+      let sizeTotal = 0
+      const fileExtensionAccepting = [
+        'application/msword', // doc
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
+        'application/vnd.ms-excel', // xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
+        'application/pdf', // pdf,
+        'image/png', // png
+        'image/jpeg' // jpg and jpeg
+      ]
+      for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
+        let file = files[index]
+        if (!fileExtensionAccepting.includes(file.type)) {
+          errorsFile = 'Tồn tại tệp đính kèm không đúng định dạng.'
+          break
+        }
+        sizeTotal += parseInt(file.size)
+      }
+
+      if (parseFloat(sizeTotal / 1000000) > maximumFileSize) {
+        errorsFile = `Tổng dung lượng các file đính kèm không được vượt quá ${maximumFileSize}MB`
+      }
+		}
+    errors['files'] = errorsFile
     this.setState({ errors: errors })
     return errors
   }
@@ -243,7 +275,7 @@ class InOutTimeUpdateComponent extends React.Component {
     bodyFormData.append('user', JSON.stringify(user))
     // bodyFormData.append('UserProfileInfoToSap', {})
     // bodyFormData.append('UserManagerId', approver ? approver.userAccount : "")
-    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+    bodyFormData.append('companyCode', currentUserPnLCode)
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -629,7 +661,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(localStorage.getItem("companyCode"))) ?
+          (timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(currentUserPnLCode)) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
