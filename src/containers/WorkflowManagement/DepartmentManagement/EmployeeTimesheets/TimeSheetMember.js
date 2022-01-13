@@ -22,6 +22,7 @@ const EVENT_TYPE = {
     EVENT_LOICONG: 4,
     EVENT_GIONGHI: 5,
     EVENT_CONGTAC: 6,
+    EVENT_NGHI_CONGTAC: 30,
     EVENT_OT: 7
 };
 const EVENT_STYLE = {
@@ -91,7 +92,7 @@ function RenderItem(props) {
                         <div className={EVENT_STYLE.EVENT_KE_HOACH_CONTINUE}><div>{times}</div></div>
                     </RenderTooltip>
             }
-            return <div style={{display: 'flex'}}>
+            return <div className="d-flex">
                 {
                     item.line1.subtype[0] == 1 ?
                     <RenderTooltip shift_id = {item.line1.shift_id} timeExpand = {item.line1.subtype =='11' ? `${moment(item.line1.from_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line1.to_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
@@ -109,7 +110,7 @@ function RenderItem(props) {
             </div>
              
         case EVENT_TYPE.EVENT_CONGTAC: 
-            return <div style={{display: 'flex'}}>
+            return <div className="d-flex">
                 { item.line3.subtype[0] == 1 ?
                     <RenderTooltip item = {item.line3.trip_start_time1_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_CONGTAC}>{`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
@@ -118,14 +119,14 @@ function RenderItem(props) {
                 }
                 { item.line3.subtype[1] == 1 ?
                     <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
-                        <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.trip_start_time2} - ${item.line3.trip_end_time2}` }</div>
+                        <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
                     </RenderTooltip>
-                     : null
-                } 
-                </div>
+                    : null
+                }
+            </div>
         
         case EVENT_TYPE.EVENT_GIONGHI: 
-            return <div style={{display: 'flex'}}>
+            return <div className="d-flex">
                 { item.line3.subtype[0] == 1 ?
                     <RenderTooltip item = {item.line3.leave_start_time1_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` : null}>
                         <div className={EVENT_STYLE.EVENT_GIONGHI}>{`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
@@ -134,14 +135,44 @@ function RenderItem(props) {
                 }
                 { item.line3.subtype[1] == 1 ?
                     <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = {item.line3.subtype =='11' ? `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` : null}>
-                        <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
+                        <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
                     </RenderTooltip>
-                     : null
-                } 
-                </div>
-        
+                    : null
+                }
+            </div>
+        case EVENT_TYPE.EVENT_NGHI_CONGTAC: 
+            return <div className="d-flex">
+                {
+                    item.line3.subtype[0] == 1 ?
+                    <RenderTooltip item = {item.line3.leave_start_time1_comment} timeExpand = {`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}`}>
+                        <div className={EVENT_STYLE.EVENT_GIONGHI}>{`${moment(item.line3.leave_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
+                    </RenderTooltip>
+                    : null
+                }
+                {
+                    item.line3.subtype[1] == 1 ?
+                    <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}>
+                        <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}</div>
+                    </RenderTooltip>
+                    : null
+                }
+                { 
+                    item.line3.subtype[2] == 1 ?
+                    <RenderTooltip item = {item.line3.trip_start_time1_comment} timeExpand = {`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}`}>
+                        <div className={EVENT_STYLE.EVENT_CONGTAC}>{`${moment(item.line3.trip_start_time1, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time1, 'HHmmss').format('HH:mm:ss')}` }</div> 
+                    </RenderTooltip>
+                    : null
+                }
+                {
+                    item.line3.subtype[3] == 1 ?
+                    <RenderTooltip item = {item.line3.trip_start_time2_comment} timeExpand = {`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}`}>
+                        <div className={EVENT_STYLE.EVENT_CONGTAC} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.trip_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.trip_end_time2, 'HHmmss').format('HH:mm:ss')}` }</div>
+                    </RenderTooltip>
+                    : null
+                }
+            </div>
         case EVENT_TYPE.EVENT_GIOTHUCTE:
-            return <div style = {{display: 'flex'}}>
+            return <div className="d-flex">
                 {
                     item.line2.subtype[0] == 1 ?
                         item.line2.type1[0] == EVENT_TYPE.EVENT_GIOTHUCTE ?
@@ -168,7 +199,7 @@ function RenderItem(props) {
                 } */}
             </div>
         case EVENT_TYPE.EVENT_LOICONG:
-            return <div style = {{display: 'flex'}}>
+            return <div className="d-flex">
                 {
                     item.line2.subtype[0] == 1 ?
                     <div className={EVENT_STYLE.EVENT_LOICONG}>{`${moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss')}` }</div> : null
@@ -183,7 +214,7 @@ function RenderItem(props) {
                 }
             </div>
         case EVENT_TYPE.EVENT_OT: 
-            return <div style = {{display: 'flex'}}>
+            return <div className="d-flex">
                 {
                     item.line4.subtype[0] == 1 ?
                         <RenderTooltip >
@@ -262,9 +293,7 @@ function RenderRow2(props) {
 }
 
 function RenderRow3(props) {
-    return <>
-    {
-        props.member.timesheets.map((item, index) => {
+    return props.member.timesheets.map((item, index) => {
             if ( item.date_type == DATE_TYPE.DATE_OFFSET) {
                 return null
             }
@@ -272,20 +301,19 @@ function RenderRow3(props) {
             if (props.isShowLineOT) {
                 if (item.line3.type == EVENT_TYPE.NO_EVENT) {
                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
+                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC || item.line3.type == EVENT_TYPE.EVENT_NGHI_CONGTAC) {
                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item= {item} type = {item.line3.type}/></td>
                 }
             } else {
                 if (item.line3.type == EVENT_TYPE.NO_EVENT) {
                     return <td style={{borderTop: 'none'}} key = {index}><div>&nbsp;</div></td>
-                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC) {
+                } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC || item.line3.type == EVENT_TYPE.EVENT_NGHI_CONGTAC) {
                     return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><RenderItem item= {item} type = {item.line3.type}/></td>
                 }
             }
             return null
-        })
-    }
-    </>
+        }
+    )
 }
 
 function RenderRow4(props) {
@@ -424,9 +452,9 @@ function Content(props) {
                     <tbody>
                     { memberTimeData.map((timeSheet, index) => {
                         let isShowLineOT = (timeSheet?.timesheets || [])
-                        .every(item => formatStringByMuleValue(item.line4?.ot_end_time1) && formatStringByMuleValue(item.line4?.ot_end_time2) 
-                        && formatStringByMuleValue(item.line4?.ot_end_time3) && formatStringByMuleValue(item.line4?.ot_start_time1) && 
-                        formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_start_time3))
+                        .some(item => (formatStringByMuleValue(item.line4?.ot_start_time1) && formatStringByMuleValue(item.line4?.ot_end_time1)) 
+                        || (formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_end_time2)) 
+                        || (formatStringByMuleValue(item.line4?.ot_start_time3) && formatStringByMuleValue(item.line4?.ot_end_time3)))
 
                         return <React.Fragment key={index}>
                             <tr style={{borderTop: '1px solid #707070'}} className="line1">

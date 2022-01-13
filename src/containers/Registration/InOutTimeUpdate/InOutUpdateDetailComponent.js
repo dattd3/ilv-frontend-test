@@ -85,8 +85,9 @@ class InOutUpdateDetailComponent extends React.Component {
     if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
       return Constants.mappingStatusRequest[status].label;
     } 
-    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
+
   render() {
     const { t, action, inOutTimeUpdate } = this.props
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
@@ -193,7 +194,7 @@ class InOutUpdateDetailComponent extends React.Component {
               <ApproverDetailComponent title={t("Approver")} approver={inOutTimeUpdate.approver} status={inOutTimeUpdate.processStatusId} hrComment={inOutTimeUpdate.approverComment} />
             </> : null
             // <div className="block-status">
-            //   <span className={`status ${Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatus[this.props.inOutTimeUpdate.processStatusId].label)}</span>
+            //   <span className={`status ${Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].label)}</span>
             //   {
             //     this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
             //       <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
@@ -216,7 +217,7 @@ class InOutUpdateDetailComponent extends React.Component {
             : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(inOutTimeUpdate.processStatusId, inOutTimeUpdate.appraiser))}</span>
+          <span className={`status ${Constants.mappingStatusRequest[inOutTimeUpdate.processStatusId].className}`}>{t(this.showStatus(inOutTimeUpdate.processStatusId, inOutTimeUpdate.appraiser))}</span>
           {messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>

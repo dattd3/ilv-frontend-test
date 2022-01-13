@@ -4,7 +4,7 @@ import _ from 'lodash'
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
 import { Modal, Button, Form } from 'react-bootstrap'
-import { formatStringByMuleValue, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { formatStringByMuleValue, getRequestConfigurations } from "../../../commons/Utils"
 import './ApprovalDelegationModal.scss'
 import defaultAvartar from '../../../components/Common/DefaultAvartar'
 import { actionApprovalDelegation } from "./Constant"
@@ -38,24 +38,30 @@ function ApprovalDelegationModal(props) {
 
     useEffect(() => {
         async function searchUsers() {
-            const config = getMuleSoftHeaderConfigurations()
-            const response = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: keyword, should_check_superviser: false }, config)
+            const config = getRequestConfigurations()
+            const payload = {
+                account: keyword,
+                employee_type: "EMPLOYEE",
+                status: Constants.statusUserActiveMulesoft
+            }
+
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
             if (response && response.data) {
                 const result = response.data.result
                 if (result.code == Constants.API_SUCCESS_CODE) {
                     const data = response.data.data
                     const users = (data || []).map(res => {
                         return {
-                            value: res.user_account,
-                            label: res.fullName,
+                            value: res.username,
+                            label: res.fullname,
                             employeeNo: res.uid,
-                            fullName: res.fullName,
+                            fullName: res.fullname,
                             avatar: res.avatar,
-                            employeeLevel: res.employee_level,
+                            employeeLevel: res.rank_title || res.rank,
                             pnl: res.pnl,
-                            userAccount: res.user_account,
+                            userAccount: res.username,
                             part: res.part,
-                            current_position: res.title,
+                            current_position: res.postition_name,
                             department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
                         }
                     })

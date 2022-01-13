@@ -292,7 +292,7 @@ class MyComponent extends React.Component {
                                                         </div>
                                                         <div className="form-group col-md-12">
                                                             <div className="info-label mb-2">{t("ViolationGroup")}</div>
-                                                            <p className="mb-0">{item.violation_group}&nbsp;</p>
+                                                            <p className="mb-0">{item.diciplinary_type}&nbsp;</p>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">

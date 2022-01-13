@@ -3,7 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
-import { getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, getRequestConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -23,20 +23,29 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       annualLeaveSummary: {}
     }
   }
-  componentDidMount() {
-    const config = getMuleSoftHeaderConfigurations()
-    config['params'] = {
-      date: moment().format('YYYYMMDD')
-    }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
-      .then(res => {
-        if (res && res.data) {
-          const annualLeaveSummary = res.data.data
-          this.setState({ annualLeaveSummary: annualLeaveSummary })
+  componentDidMount() {
+    this.processAbsenceData()
+  }
+
+  processAbsenceData = async () => {
+    const { leaveOfAbsence } = this.props
+    if (leaveOfAbsence && leaveOfAbsence.id) {
+      const config = getRequestConfigurations()
+      config.params = {
+        id: leaveOfAbsence.id
+      }
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/employee/currentabsence`, config)
+        if (response && response.data) {
+          const result = response.data.result
+          if (result && result.code == Constants.API_SUCCESS_CODE) {
+            const annualLeaveSummary = response.data.data || {}
+            this.setState({ annualLeaveSummary: annualLeaveSummary })
+          }
         }
-      }).catch(error => {
-      })
+      } catch (e) {}
+    }
   }
 
   getTypeDetail = () => {
@@ -57,7 +66,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
       return Constants.mappingStatusRequest[status].label;
     } 
-    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
 
   render() {
@@ -162,7 +171,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
           </div> : null}
           <div className="row">
-            <div className="col">
+            <div className="col" style={{marginTop: 10}}>
               {t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}
               <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
             </div>
@@ -201,7 +210,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
+          <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
           {messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>

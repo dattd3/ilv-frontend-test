@@ -6,6 +6,9 @@ import { withTranslation, useTranslation} from "react-i18next";
 import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
+const currentUserEmailLogged = localStorage.getItem("email")
+const currentUserPnLVCodeLogged = localStorage.getItem("companyCode")
+
 const MyOption = props => {
   const { innerProps, innerRef } = props;
   const { t } = useTranslation();
@@ -43,10 +46,20 @@ class ApproverComponent extends React.Component {
   }
 
   async componentDidMount() {
-    const { approver } = this.props
+    const { approver, isEdit } = this.props
+
+    if (isEdit) {
+      return this.setState({
+        approver: {
+          ...approver,
+          label: approver.fullName,
+          value: approver.account
+        }
+      })
+    }
+
     const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
-    const currentUserPnLVCode = localStorage.getItem("companyCode")
-    if (companiesUsing.includes(currentUserPnLVCode)) {
+    if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
       const managerApproval = await this.loadApproverForPnL()
       this.setState({approver: managerApproval} , () => {
         if (approver) {
@@ -141,25 +154,18 @@ class ApproverComponent extends React.Component {
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
-    const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-    let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-    let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
-
-    if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
+    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
+    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+      listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
+    }
+    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
+    const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
+    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
       return false
     }
-    if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-      return false
-    }
-
-    // if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
-    //   return true
-    // }
-    if (APPROVER_LIST_LEVEL.includes(levelApproverFilter)) {
+    if (listLevelsApprover.includes(levelApproverFilter)) {
       return true
     }
-
     return false
   }
 
@@ -168,23 +174,28 @@ class ApproverComponent extends React.Component {
     const { appraiser } = this.props
     if (value !== "") {
       this.setState({isSearch: true})
-      const config = getMuleSoftHeaderConfigurations()
-
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, config)
+      const config = getRequestConfigurations()
+      const payload = {
+        account: value,
+        employee_type: "APPROVER",
+        status: Constants.statusUserActiveMulesoft
+      }
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
             const users = data.map(res => {
               return {
-                label: res.fullName,
-                value: res.user_account,
-                fullName: res.fullName,
+                value: res.username,
+                label: res.fullname,
+                uid: res.uid,
+                fullName: res.fullname,
                 avatar: res.avatar,
-                employeeLevel: res.employee_level,
+                employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
                 pnl: res.pnl,
-                orglv2Id: res.orglv2_id,
-                account: res.user_account,
-                current_position: res.title,
+                orglv2Id: res.organization_lv2,
+                account: res.username,
+                current_position: res.postition_name,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
@@ -204,6 +215,12 @@ class ApproverComponent extends React.Component {
     })
   }
 
+  filterOption = (option, inputValue) => {
+    const { users } = this.state
+    const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)))
+    return options
+  }
+
   render() {
     const customStyles = {
       option: (styles, state) => ({
@@ -217,7 +234,9 @@ class ApproverComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit } = this.props;
+    const { t, isEdit, errors } = this.props;
+    const { isSearch, approver, users } = this.state
+
     return <div className="approver">
       <div className="box shadow">
       <div className="row">
@@ -233,33 +252,34 @@ class ApproverComponent extends React.Component {
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
-                components={{ Option: e => MyOption({...e, isSearch: this.state.isSearch})}}
+                components={{ Option: e => MyOption({...e, isSearch: isSearch})}}
                 onInputChange={this.onInputChange.bind(this)}
                 name="approver"
-                onChange={approver => this.handleSelectChange('approver', approver)}
-                value={this.state.approver}
+                onChange={approverItem => this.handleSelectChange('approver', approverItem)}
+                value={approver}
                 placeholder={t('Search') + '...'}
                 key="approver"
-                options={this.state.users}
+                filterOption={this.filterOption}
+                options={users}
                />
             </div>
-            {this.props.errors && this.props.errors['approver'] ? <div className="text-danger validation-message">{this.props.errors['approver']}</div> : null}
+            {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
           </div>
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
             </div>
           </div>
           <div className="col-4">
             <p className="title2">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={this.state.approver?.department || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.department || ""} readOnly />
             </div>
           </div>
         </div>
         {
-          localStorage.getItem("companyCode") === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
+          currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
         }
       </div>
     </div>

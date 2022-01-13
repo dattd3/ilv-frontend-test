@@ -58,7 +58,6 @@ class ConfirmationModal extends React.Component {
     }
 
     ok = (e) => {
-
         if (this.state.disabledSubmitButton) {
             return;
         }
@@ -76,62 +75,59 @@ class ConfirmationModal extends React.Component {
                 if (this.props.type == Constants.STATUS_NOT_APPROVED) {
                     const errors = this.verifyInput()
                     const message = this.state.message
-                    const manager = JSON.stringify(this.state.manager)
+
                     if (!_.isEmpty(errors)) {
                         return
                     }
-                    //let formData = new FormData()
-                    //formData.append('HRComment', message)
-                    //formData.append('ManagerInfo', manager)
+
                     let data = [{
                         id: this.props.data.id,
-                        requestTypeId:1,
+                        requestTypeId: Constants.UPDATE_PROFILE,
                         sub:[
                             {
                                 id: this.props.data.id,
-                                processStatusId: 1
+                                processStatusId: Constants.STATUS_NOT_APPROVED,
+                                comment: message
                             }
                         ]
                     }]
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}request/approve`, data, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                        .finally(() => {
-                            window.location.href = "/tasks?tab=approval";
-                        })
+                    .finally(() => {
+                        window.location.href = "/tasks?tab=approval";
+                    })
                 } else if (this.props.type == Constants.STATUS_APPROVED) {
-                    // let formData = new FormData()
-                    // formData.append('ManagerInfo', JSON.stringify(this.state.manager))
                     let data = [{
                         id: this.props.data.id,
-                        requestTypeId:1,
+                        requestTypeId: Constants.UPDATE_PROFILE,
                         sub:[
                             {
                                 id: this.props.data.id,
-                                processStatusId: 2
+                                processStatusId: Constants.STATUS_APPROVED
                             }
                         ]
                     }]
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}request/approve`, data, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                        .then(response => {
-                            this.showResultModal(response);
-                        })
-                        .finally(res => {
-                            this.props.onHide()
-                        })
-                        .catch(error => {
-                            this.showResultModal(error);
-                        });
+                    .then(response => {
+                        this.showResultModal(response);
+                    })
+                    .finally(res => {
+                        this.props.onHide()
+                    })
+                    .catch(error => {
+                        this.showResultModal(error);
+                    });
                         
                 } else if (this.props.type == Constants.STATUS_EVICTION) {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.props.taskId}/eviction`, {}, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
-                        .finally(() => {
-                            window.location.href = "/tasks";
-                        })
+                    .finally(() => {
+                        window.location.href = "/tasks";
+                    })
 
                     setTimeout(() => { this.props.onHide()}, 600);
                 } else if (this.props.type == this.sendRequest) {
@@ -139,8 +135,7 @@ class ConfirmationModal extends React.Component {
                     setTimeout(() => { 
                         this.props.onHide();
                         this.setState({ disabledSubmitButton: false });
-                    }, 400);
-                    
+                    }, 400);   
                 }
             }
         }

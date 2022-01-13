@@ -17,7 +17,7 @@ function getRadianAngle(degreeValue) {
  * @param {Object} pixelCrop - pixelCrop Object provided by react-easy-crop
  * @param {number} rotation - optional rotation parameter
  */
-export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
+async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -63,4 +63,37 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
   //     resolve(URL.createObjectURL(file))
   //   }, 'image/jpeg')
   // })
+}
+
+export default async function finishCroppedImage(imageSrc, pixelCrop, rotation = 0) {
+  const imageCropped = await getCroppedImg(imageSrc, pixelCrop, rotation)
+
+  const canvas = document.createElement("canvas")
+  const ctx = canvas.getContext("2d")
+  const canvasCopy = document.createElement("canvas")
+  const copyContext = canvasCopy.getContext("2d")
+  const MAX_WIDTH_CROP = 900
+  const MAX_HEIGHT_CROP = 900
+  const qualityToExport = 0.8
+  const img = await createImage(imageCropped)
+  ctx.drawImage(img, img.width, img.height)
+
+  let ratio = 1
+  if (img.width > MAX_WIDTH_CROP) {
+    ratio = MAX_WIDTH_CROP / img.width
+  } else if (img.height > MAX_HEIGHT_CROP) {
+    ratio = MAX_HEIGHT_CROP / img.height
+  }
+
+  // Draw original image in second canvas
+  canvasCopy.width = img.width
+  canvasCopy.height = img.height
+  copyContext.drawImage(img, 0, 0)
+
+  // Copy and resize second canvas to first canvas
+  canvas.width = img.width * ratio
+  canvas.height = img.height * ratio
+
+  ctx.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height, 0, 0, canvas.width, canvas.height)
+  return canvas.toDataURL('image/jpeg', qualityToExport)
 }
