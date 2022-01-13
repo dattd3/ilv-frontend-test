@@ -74,7 +74,7 @@ class DepartmentTimeSheetDetail extends React.Component {
     if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
       return Constants.mappingStatusRequest[status].label;
     }
-    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
 
   exportTimeSheetsFile = () => {
@@ -195,7 +195,7 @@ class DepartmentTimeSheetDetail extends React.Component {
             : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
+          <span className={`status ${Constants.mappingStatusRequest[this.props.substitution.processStatusId].className}`}>{t(this.showStatus(this.props.substitution.processStatusId, this.props.substitution.appraiser))}</span>
           {
             // this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ?
               !isDisableTimeSheetFunction &&

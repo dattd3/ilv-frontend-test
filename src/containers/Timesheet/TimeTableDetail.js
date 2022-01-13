@@ -36,6 +36,7 @@ const EVENT_STYLE = {
 const totalTimeSheetLines = 4
 const timeSheetLinesAlwayShow = 2
 const timeSheetLinesIgnoreOnceLine = 3
+const currentUserPnLCode = localStorage.getItem("companyCode")
 
 function WorkingDay(props) {
   const { t } = useTranslation();
@@ -57,10 +58,9 @@ const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.lengt
 
 function RenderRow0(props) {
   const { t } = useTranslation()
-  const PnLVCode = localStorage.getItem("companyCode")
-  const backDate = calculateBackDateByPnLVCodeAndFormatType(PnLVCode, 'YYYYMMDD')
-  const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
-  const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
+  const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+  const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
+  const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
   const pathName = window.location.pathname
 
   return (props.timesheets || []).map((item, index) => {
@@ -251,8 +251,8 @@ function RenderItem(props) {
           }
           {
             item.line3.subtype[1] == 1 ?
-            <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}-`}>
-                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${item.line3.leave_start_time2} - ${item.line3.leave_end_time2}` }</div>
+            <RenderTooltip item = {item.line3.leave_start_time2_comment} timeExpand = { `${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}>
+                <div className={EVENT_STYLE.EVENT_GIONGHI} style={{borderLeft: '1px solid #707070'}}>{`${moment(item.line3.leave_start_time2, 'HHmmss').format('HH:mm:ss')} - ${moment(item.line3.leave_end_time2, 'HHmmss').format('HH:mm:ss')}`}</div>
             </RenderTooltip>
             : null
           }
@@ -509,7 +509,7 @@ function TimeTableDetail(props) {
   }, [props.isSearch])
 
   const isHoliday = (item) => {
-    return item.shift_id == 'OFF' || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060")
+    return item.shift_id == 'OFF' || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)
   }
 
   const getDayOffset = (currentDate, offset) => {
@@ -626,11 +626,11 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       
       //gio break time
       if(checkExist(item.break_from_time_1)) {
-        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
+        timeSteps.push(getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
       }
 
       if(checkExist(item.break_from_time_2)) {
-        timeSteps.push( getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
+        timeSteps.push(getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
       }
       
       //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong
@@ -758,7 +758,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       if(timeSteps && timeSteps.length > 0) {
         minStart = timeStepsSorted[0].start;
         maxEnd = timeStepsSorted[0].end
-        minStart2 = timeStepsSorted[0].start;;
+        minStart2 = timeStepsSorted[0].start;
         maxEnd2 = timeStepsSorted[0].end;
         for(let i = 0, j = 1; j < timeStepsSorted.length; i++, j++) {
           minStart = isShift1 && timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
@@ -769,9 +769,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
           }
           maxEnd = isShift1 && timeStepsSorted[j].end >  maxEnd ? timeStepsSorted[j].end : maxEnd; 
           maxEnd2 =  (timeStepsSorted[j].end > maxEnd2) ? timeStepsSorted[j].end : maxEnd2;
-
-          if(timeStepsSorted[i].end < timeStepsSorted[j].start) {
-
+          if(maxEnd < timeStepsSorted[j].start) {
             if(line1.subtype == '11' && (timeStepsSorted[i].end >= kehoach1.end && timeStepsSorted[j].start <= kehoach2.start)) {
               isShift1 = false;
               maxEnd = timeStepsSorted[i].end;
@@ -799,6 +797,9 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         
         line2.type1 = isValid1 == false && currentDay <= today  ?  EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
         line2.type1 = isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : line2.type1;
+        if (item.is_holiday == 1 && currentUserPnLCode == Constants.pnlVCode.VinMec) {
+          line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
+        }
         if(line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
           line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = '1' + line2.subtype[1];

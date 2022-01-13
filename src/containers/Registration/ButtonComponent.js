@@ -60,7 +60,7 @@ class ButtonComponent extends React.Component {
                 {
                     !this.props.isEdit ?
                     <>
-                        <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
+                        <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple accept=".docx, .doc, .pdf, .xls, .xlsx, .png, .jpg, .jpeg" />
                         <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t('AttachmentFile')}</button>
                     </> : null
                 }

@@ -2,6 +2,7 @@ import React from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { useApi, useFetcher } from "../../../modules"
+import { prepareNews } from "./NewsUtils"
 import NewsItemGrid from "./NewsItemGrid"
 import IconDiamond from '../../../assets/img/icon/Icon-Diamond.svg'
 
@@ -29,7 +30,8 @@ export default function NewsRelation(props) {
                 <div className="row list-news">
                     {
                         objDataRes.map((item, i) => {
-                            return <NewsItemGrid article={item} key={item.id} id={item.id} />
+                            let news = prepareNews(item)
+                            return <NewsItemGrid article={news} key={news.id} id={news.id} />
                         })
                     }
                 </div>

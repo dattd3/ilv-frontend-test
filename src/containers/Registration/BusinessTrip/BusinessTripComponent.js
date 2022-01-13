@@ -11,8 +11,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import moment from 'moment'
+import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString } from "../../../commons/Utils"
+import { checkIsExactPnL } from '../../../commons/commonFunctions';
 
 registerLocale("vi", vi)
 
@@ -25,10 +27,24 @@ const TRAINING_OPTION_VALUE = "DT01"
 const totalDaysForSameDay = 1
 const queryString = window.location.search
 
+const isEditPage = () => {
+    const currentURL = window.location.pathname
+    const arrURL = currentURL.split("/")
+    const arrURLLength = arrURL.length
+    if (arrURLLength > 3) {
+        if (arrURL[arrURLLength - 1] && arrURL[arrURLLength - 1] === 'edit' && arrURL[arrURLLength - 2] && arrURL[arrURLLength - 3]) {
+            return true
+        }
+        return false
+    }
+    return false
+}
+
 class BusinessTripComponent extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
+            isEdit: isEditPage(),
             approver: null,
             files: [],
             isUpdateFiles: false,
@@ -71,13 +87,12 @@ class BusinessTripComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {
+    componentDidMount() {       
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo[0]
             const { appraiser, approver, requestDocuments } = businessTrip
             this.setState({
-                isEdit: true,
                 approver: approver,
                 appraiser: appraiser,
                 requestInfo: [
@@ -151,57 +166,95 @@ class BusinessTripComponent extends React.Component {
         this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
+    onBlurStartTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].startTime, Constants.LEAVE_TIME_FORMAT);
+            let m = time.minutes();
+            if (m > 30) {
+                time.set('minute', 30);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 0);
+                const start = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].startTime = start;
+                this.setState({ requestInfo })
+            }
+            
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
+    }
+
     setStartTime(startTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endTime, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
 
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        const startTimeToSave = moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        let end = endTime
-
-        if (end === undefined || (moment(startTime).isValid() && moment(startTimeToSave, Constants.LEAVE_TIME_FORMAT) > moment(endTime, Constants.LEAVE_TIME_FORMAT))) {
-            end = moment(startTime).isValid() && moment(startTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime).isValid() && moment(startTimeToSave, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime, "HH:mm").isValid() && moment(endTime, "HH:mm") < moment("08:00", "HH:mm"))) {
-            end = endTime
-        }
         requestInfo[indexReq].startTime = start
-        requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false)
+            this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
+    }
+
+    onBlurEndTime(groupId, groupItem) {
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === true) {
+            let { requestInfo } = this.state
+            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
+            const { startDate, endDate } = request
+            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
+            const time = moment(requestInfo[indexReq].endTime, Constants.LEAVE_TIME_FORMAT);
+            let h = time.hours();
+            let m = time.minutes();
+            if (m > 30) {
+                if (h < 24) {
+                    h = h + 1;
+                    m = 0;
+                    time.set('hour', h);
+                    time.set('minute', m);
+                    const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                    requestInfo[indexReq].endTime = end;
+                    this.setState({ requestInfo })
+                    
+                }
+            }
+            else if (m < 30 && m > 0) {
+                time.set('minute', 30);
+                const end = time.format(Constants.LEAVE_TIME_FORMAT);
+                requestInfo[indexReq].endTime = end;
+                this.setState({ requestInfo })
+            }
+            // Trường hợp vinmec tính thời gian khi lost focus
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+        }
     }
 
     setEndTime(endTime, groupId, groupItem) {
         let { requestInfo } = this.state
         const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startTime, startDate, endDate } = request
+        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
 
-        const endTimeToSave = moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        let start = startTime
-
-        if (startTime === undefined || (moment(endTime).isValid() && moment(endTimeToSave, Constants.LEAVE_TIME_FORMAT) < moment(startTime, Constants.LEAVE_TIME_FORMAT))) {
-            start = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        }
-
-        if ((moment(startTime, "HH:mm").isValid() && moment(startTime, "HH:mm") >= moment("16:00", Constants.LEAVE_TIME_FORMAT))
-            && (moment(endTime).isValid() && moment(endTimeToSave, "HH:mm") < moment("08:00", "HH:mm"))) {
-            start = startTime
-        }
-
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].startTime = start
         requestInfo[indexReq].endTime = end
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(startDate, endDate, start, end, indexReq)
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        if (checkVinmec === false)
+            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
     calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null, indexReq) {
@@ -217,7 +270,7 @@ class BusinessTripComponent extends React.Component {
 
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime && startDateTime && endDateTime) {
-            requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian !"
+            requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
             this.setState({ requestInfo })
             return
         }
@@ -516,7 +569,7 @@ class BusinessTripComponent extends React.Component {
         bodyFormData.append('approver', JSON.stringify(approver))
         bodyFormData.append('appraiser', JSON.stringify(appraiser))
         bodyFormData.append('RequestType', JSON.stringify({
-            id: 3,
+            id: Constants.BUSINESS_TRIP,
             name: "Đăng ký công tác đào tạo"
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
@@ -579,7 +632,7 @@ class BusinessTripComponent extends React.Component {
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.reload();
+            window.location.href = `${map.Registration}?tab=BusinessTripRegistration`
         }
     }
 
@@ -733,6 +786,7 @@ class BusinessTripComponent extends React.Component {
                 { value: 'WFH2', label: t('WFHNoPerDiemNoMeals') },
             ]
         }
+        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         return (
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -805,12 +859,13 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
+                                                                            onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.startTime ? moment(reqDetail.startTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             showTimeSelect
                                                                             showTimeSelectOnly
-                                                                            timeIntervals={15}
+                                                                            timeIntervals={checkVinmec === true ? 30 : 15}
                                                                             timeCaption="Giờ"
                                                                             dateFormat="HH:mm"
                                                                             timeFormat="HH:mm"
@@ -852,12 +907,13 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
+                                                                            onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.endTime ? moment(reqDetail.endTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             showTimeSelect
                                                                             showTimeSelectOnly
-                                                                            timeIntervals={15}
+                                                                            timeIntervals={checkVinmec === true ? 30 : 15}
                                                                             timeCaption="Giờ"
                                                                             dateFormat="HH:mm"
                                                                             timeFormat="HH:mm"
@@ -898,6 +954,15 @@ class BusinessTripComponent extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+                                {checkVinmec === true &&
+                                    <div className="row business-type">
+                                        <div className="col-12">
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 text-info smaller">* {t('Block30Notification')}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
 
                                 <div className="row">
                                     <div className="col-5">

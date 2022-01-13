@@ -144,16 +144,19 @@ const isEnableFunctionByFunctionName = name => {
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
-            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS]
+            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinUni]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl]
+            break
+        case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
+            listPnLAccepted = [Constants.pnlVCode.VinMec]
             break
     }
 
@@ -225,5 +228,98 @@ const getDateByRangeAndFormat = (startDate, endDate, format) => {
     return []
 }
 
+// Check is adjacent date by 2 date (for format DD/MM/YY)
+const isAdjacentDateBy2Date = (start, end) => {
+    const startToCompare = moment(start, 'DD/MM/YYYY')
+    if (startToCompare.add(1, 'days').format('DD/MM/YYYY') == end) {
+        return true
+    }
+    return false
+}
+
+// Show range date as string group by date array. Ex: ['10/10/2021', '12/10/2021', '13/10/2021', '14/10/2021', '16/10/2021'] => return 10/10/2021, 12/10/2021 - 14/10/2021, 16/10/2021
+// Apply for format DD/MM/YYYY
+const showRangeDateGroupByArrayDate = (arrayDate) => {
+    const dateSorted = arrayDate && arrayDate.length > 0 ?  [...new Set(arrayDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')) : []
+    if (dateSorted.length === 0) {
+        return ""
+    }
+    let rangeDate = []
+    let result = []
+    for (let i = 0; i < dateSorted.length; i++) {
+        let item = dateSorted[i]
+        if (i === 0) {
+            if (isAdjacentDateBy2Date(item, dateSorted[i + 1])) {
+                rangeDate[0] = item
+                rangeDate[1] = dateSorted[i + 1]
+            } else {
+                result = result.concat(item)
+                rangeDate[0] = null
+                rangeDate[1] = dateSorted[i + 1]
+            }
+            i = i + 1
+            if (i === dateSorted.length - 1) {
+                result = result.concat([[...rangeDate]])
+            }
+        } else {
+            if (isAdjacentDateBy2Date(rangeDate[1], item)) {
+                if (rangeDate[0] == null) {
+                    rangeDate[0] = rangeDate[1]
+                }
+                rangeDate[1] = item
+                if (i === dateSorted.length - 1) {
+                    if (rangeDate[0]) {
+                        result = result.concat([[...rangeDate]])
+                    } else {
+                        result = result.concat(rangeDate[1])
+                    }
+                }
+            } else {
+                if (rangeDate[0]) {
+                    result = result.concat([[...rangeDate]])
+                } else {
+                    result = result.concat(rangeDate[1])
+                }
+                rangeDate = [null, item]
+                if (i === dateSorted.length - 1) {
+                    result = result.concat(item)
+                }
+            }
+        }
+    }
+
+    return result.reduce((initial, item, index) => {
+        if (Array.isArray(item)) {
+            if (index === 0) {
+                initial = initial.concat(item.join(" - "))
+            } else {
+                initial = initial.concat(", <br>", item.join(" - "))
+            }
+        } else {
+            if (index === 0) {
+                initial = initial.concat(item)
+            } else {
+                initial = initial.concat(", <br>", item)
+            }
+        }
+        return initial
+    }, "")
+}
+
+const generateTaskCodeByCode = code => {
+    if (code > 0 && code < 10) {
+        return "0000" + code
+    } else if (code >= 10 && code < 100) {
+        return "000" + code
+    } else if (code >= 100 && code < 1000) {
+        return "00" + code
+    } else if (code >= 1000 && code < 10000) {
+        return "0" + code
+    } else {
+        return code
+    }
+}
+
 export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations }
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations, 
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode }
