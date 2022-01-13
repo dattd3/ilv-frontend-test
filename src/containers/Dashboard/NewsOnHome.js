@@ -5,7 +5,7 @@ import moment from 'moment'
 import { useApi, useFetcher } from "../../modules"
 import ReactList from 'react-list';
 import Footer from '../../components/Common/Footer';
-
+import { prepareNews } from "../Corporation/News/NewsUtils"
 // import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 import IconDiamond from '../../assets/img/icon/Icon-Diamond.svg'
 import IconViewDetail from '../../assets/img/icon/Icon-Arrow-Right.svg'
@@ -81,10 +81,10 @@ function NewsOnHome(props) {
             
     }
 
-    const topOne = totalArticlesPerPage > 0 ? articles.listArticles[0] : null
+    const topOne = totalArticlesPerPage > 0 ? prepareNews(articles.listArticles[0]) : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
-    const topFour = totalArticlesPerPage > 1 ? articles.listArticles?.slice(1, totalTopArticles) : []
-    const others = totalArticlesPerPage > totalTopArticles ? articles.listArticles?.slice(totalTopArticles) : []
+    const topFour = totalArticlesPerPage > 1 && articles.listArticles?.slice(1, totalTopArticles).map(item => prepareNews(item)) || []
+    const others = totalArticlesPerPage > totalTopArticles && articles.listArticles?.slice(totalTopArticles).map(item => prepareNews(item)) || []
 
     return (
         <div onScroll={e => onScroll()} ref={myRef} className="scroll-custom">

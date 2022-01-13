@@ -56,26 +56,15 @@ const Constants = {
   STATUS_EVICTION: 3, // thu hồi
   STATUS_REVOCATION: 4, // hủy
   STATUS_WAITING: 5, // chờ phê duyệt
-  STATUS_CONSENTED: 20,// thẩm định
   STATUS_PARTIALLY_SUCCESSFUL: 6, //không thành công
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
+  STATUS_CONSENTED: 20,// thẩm định
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
   STATUS_USE_COMMENT: [0,1,3,4,7],
-  mappingStatus: {
-    1: {label: 'Rejected', className: 'fail'},//từ chối phê duyệt
-    2: {label: 'Approved', className: 'success'},// đã phê duyệt
-    3: {label: 'Canceled', className: ''}, // đã thu hồi
-    4: {label: 'Canceled', className: ''}, // đã hủy
-    5: {label: 'Waiting', className: ''}, // đang chờ phê duyệt
-    6: { label: "PartiallySuccessful", className: 'warning' },
-    7: {label: 'Rejected', className: ''},// từ chối thẩm định
-    8: {label: 'Waiting', className: ''}, // đang chờ thẩm định
-    20:{ label: "Consented", className: '' }
-  },
-
+  
   mappingStatusRequest: {
     1: { label: 'Rejected', className: 'fail' },
     2: { label: 'Approved', className: 'success' },
@@ -128,9 +117,9 @@ const Constants = {
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
 
   // user level
-  CONSENTER_LIST_LEVEL : ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  APPROVER_LIST_LEVEL :  ["C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C2", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
@@ -164,14 +153,16 @@ const Constants = {
     VinSoftware: "V096",
     VinFast: "V070",
     VinFastTrading: "V077",
-    VinITIS: "V097"
+    VinITIS: "V097",
+    VinUni: "V066"
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
     editEducation: 'EDIT_EDUCATION',
     editRelationship: 'EDIT_RELATIONSHIP',
     qnA: 'QnA',
-    changeStaffShift: 'CHANGE_STAFF_SHIFT'
+    changeStaffShift: 'CHANGE_STAFF_SHIFT',
+    selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H'
   },
   PnLCODE: {
     Vinhome: "V040",
@@ -183,6 +174,7 @@ const Constants = {
     VinFastTrading: "V078",
     VinFastPB: "V070"
   },
-  LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf"
+  LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
+  statusUserActiveMulesoft: 3
 };
 export default Constants

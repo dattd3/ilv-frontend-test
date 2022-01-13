@@ -67,7 +67,7 @@ class SubstitutionDetailComponent extends React.Component {
     if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
       return Constants.mappingStatusRequest[status].label;
     } 
-    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatus[20].label : Constants.mappingStatus[status].label
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
   render() {
     const { t, substitution, action } = this.props
@@ -178,7 +178,7 @@ class SubstitutionDetailComponent extends React.Component {
             </div> : null}
 
             <div className="row">
-              <div className="col">
+              <div className="col" style={{marginTop: 10}}>
                 {t("ShiftChangeReason")}
               <div className="detail">{timesheet.note}</div>
               </div>
@@ -210,7 +210,7 @@ class SubstitutionDetailComponent extends React.Component {
           : null
         }
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[substitution.processStatusId].className}`}>{t(this.showStatus(substitution.processStatusId, substitution.appraiser))}</span>
+          <span className={`status ${Constants.mappingStatusRequest[substitution.processStatusId].className}`}>{t(this.showStatus(substitution.processStatusId, substitution.appraiser))}</span>
           {messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>

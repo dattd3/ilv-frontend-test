@@ -1,23 +1,19 @@
 import React from 'react'
-// import editButton from '../../assets/img/Icon-edit.png'
-import notetButton from '../../assets/img/icon-note.png'
-import excelButton from '../../assets/img/excel-icon.svg'
-import commentButton from '../../assets/img/Icon-comment.png'
-import CustomPaging from '../../components/Common/CustomPaging'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
 import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
-// import ConfirmationModal from '../PersonalInfo/edit/ConfirmationModal'
-import Constants from '../../commons/Constants'
-// import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
+import noteButton from '../../assets/img/icon-note.png'
+import excelButton from '../../assets/img/excel-icon.svg'
+import commentButton from '../../assets/img/Icon-comment.png'
+import CustomPaging from '../../components/Common/CustomPaging'
 import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
-import {InputGroup, FormControl} from 'react-bootstrap'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
-import { getRequestTypeIdsAllowedToReApproval } from "../../commons/Utils"
+import Constants from '../../commons/Constants'
+import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
+import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 
 class TaskList extends React.Component {
     constructor() {
@@ -75,7 +71,7 @@ class TaskList extends React.Component {
             ...this.state.dataForSearch,
             pageIndex: index
         }}, () => {
-            this.seachRemoteData(false);
+            this.searchRemoteData(false);
         })
     }
 
@@ -184,20 +180,6 @@ class TaskList extends React.Component {
 
     getLinkRegistration(id,childId) {
         return this.props.page ? `/registration/${id}/${childId}/${this.props.page}` : `/registration/${id}/${childId}/request`
-    }
-
-    getTaskCode = code => {
-        if (code > 0 && code < 10) {
-            return "0000" + code;
-        } else if (code >= 10 && code < 100) {
-            return "000" + code;
-        } else if (code >= 100 && code < 1000) {
-            return "00" + code;
-        } else if (code >= 1000 && code < 10000) {
-            return "0" + code;
-        } else {
-            return code;
-        }
     }
 
     isShowEditButton = status => {
@@ -321,7 +303,7 @@ class TaskList extends React.Component {
         }});
     }
 
-    seachRemoteData = (isSearch) => {
+    searchRemoteData = (isSearch) => {
         const dataForSearch = this.state.dataForSearch;
         let needRefresh = false;
         if(isSearch){
@@ -361,6 +343,16 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
+        const getRequestTypeLabel = (requestType, absenceTypeValue) => {
+            if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
+                const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
+                return absenceType ? t(absenceType.label) : ""
+            } else {
+                const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
+                return requestTypeObj ? t(requestTypeObj.label) : ""
+            }
+        }
 
         return (
             <>
@@ -410,7 +402,7 @@ class TaskList extends React.Component {
                         </InputGroup>
                         </div>
                         <div className="col-4">
-                            <button type="button" onClick={() => this.seachRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
+                            <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
                    
@@ -458,12 +450,12 @@ class TaskList extends React.Component {
                                     {
                                         tasks.map((child, index) => {
                                             let totalTime = null;
-                                            let reId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? child.id : child.id.split(".")[0]
-                                            let childId = child.requestType.id == 4 || child.requestType.id == 5 || child.requestType.id == 8 ? 1 : child.id.split(".")[1]
-                                            if (child.requestTypeId == 2 || child.requestTypeId == 3) {
+                                            let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
+                                            let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
+                                            if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
-                                            let dateChanged = child.startDate && child.startDate.length > 0 ?  [...new Set(child.startDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')).join(",\r") : null
+                                            let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             return (
                                                 <tr key={index}>
@@ -475,12 +467,12 @@ class TaskList extends React.Component {
                                                         </td>
                                                         : <td scope="col" className="check-box text-center sticky-col"><input type="checkbox" disabled checked={false}/></td>
                                                     }
-                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this,reId, childId)}><a href="#" title={child.id} className="task-title">{this.getTaskCode(child.id)}</a></td>
+                                                    <td className="code sticky-col" onClick={this.showModalTaskDetail.bind(this, reId, childId)}><a href="#" title={child.id} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     {/* {child.requestType.id == 4 || child.requestType.id == 5 ? this.getLinkUserProfileHistory(child.id) : this.getLinkRegistration(child.id.split(".")[0],child.id.split(".")[1])} */}
                                                     {!['V073'].includes(localStorage.getItem("companyCode")) ? <td className="sticky-col user-request">{child.user?.fullName??''}</td> : null}
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
-                                                    <td className="request-type">{child.requestTypeId == 2 ? child.absenceType.label : child.requestType.name}</td>
-                                                    <td className="day-off">{dateChanged}</td>
+                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
+                                                    <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     {
                                                         this.props.page == "approval" 
@@ -501,8 +493,8 @@ class TaskList extends React.Component {
                                                                             {child.comment}
                                                                         </Popover.Content>
                                                                     </Popover>}>
-                                                                    <img alt="Note task" src={notetButton} title={t("Reason")} />
-                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} title={t("Reason")} className="disabled" />}
+                                                                    <img alt="Note task" src={noteButton} title={t("Reason")} />
+                                                                </OverlayTrigger> : <img alt="Note task" src={noteButton} title={t("Reason")} className="disabled" />}
                                                                 {child.approverComment ? <OverlayTrigger
                                                                     rootClose
                                                                     trigger="click"
@@ -514,7 +506,7 @@ class TaskList extends React.Component {
                                                                         </Popover.Content>
                                                                     </Popover>}>
                                                                     <img alt="comment task" src={commentButton} title={typeFeedbackMapping[child.requestType.id]} />
-                                                                </OverlayTrigger> : <img alt="Note task" src={notetButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
+                                                                </OverlayTrigger> : <img alt="Note task" src={noteButton} className="disabled" title={typeFeedbackMapping[child.requestType.id]} />}
                                                             </td>
                                                         :null
                                                     }

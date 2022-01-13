@@ -15,6 +15,10 @@ const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
 const title = localStorage.getItem('jobTitle') || "";
 const department = localStorage.getItem('department') || "";
+const actionTypes = {
+  create: 'create',
+  update: 'update'
+}
 
 class PersonalInfoEdit extends React.Component {
   constructor(props) {
@@ -293,42 +297,7 @@ class PersonalInfoEdit extends React.Component {
     return idRegex.test(id)
   }
 
-  getValidationEducationItem = (education) => {
-    const { t } = this.props
-    let obj = {}
-    if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.DegreeType) {
-      obj.degreeType = t("TypeOfDegreeRequired")
-    }
-    if ((education.DegreeType || education.ToTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.FromTime) {
-      obj.fromTime = t("StartDateRequired")
-    }
-    if ((education.DegreeType || education.FromTime || education.MajorCode || education.OtherMajor || education.OtherSchool || education.SchoolCode) && !education.ToTime) {
-      obj.toTime = t("EndDateRequired")
-    }
-    if ((education.FromTime || education.ToTime || education.MajorCode || education.OtherMajor || education.DegreeType) && (!education.OtherSchool && !education.SchoolCode)) {
-      obj.school = t("UniversityAndCollegeRequired")
-    }
-    if ((education.FromTime || education.ToTime || education.OtherSchool || education.SchoolCode || education.DegreeType) && (!education.MajorCode && !education.OtherMajor)) {
-      obj.major = t("MajorRequired")
-    }
-    return obj
-  }
-
-  getValidationEducationObj = (education, type) => {
-    let obj = {}
-    if (type === "create") {
-      obj = this.getValidationEducationItem(education)
-      return obj
-    }
-    if (type === "update") {
-      const educationUpdate = education.NewEducation
-      obj = this.getValidationEducationItem(educationUpdate)
-      return obj
-    }
-    return null
-  }
-
-  verifyInput = (data, files = null) => {
+  verifyInput = (data, files = null, listIndexChanged) => {
     let errors = {}
     let newMainInfo = {}
     const { t } = this.props;
@@ -393,42 +362,85 @@ class PersonalInfoEdit extends React.Component {
           errors.personalIdentifyPlace = t("PlaceOfIssueRequiredIdCard")
         }
       }
+      
       if (update.userProfileHistoryEducation) {
         const educationUpdated = update.userProfileHistoryEducation
-        let updateErrors = []
-        for (let i = 0, len = educationUpdated.length; i < len; i++) {
-          const education = educationUpdated[i]
-          let obj = this.getValidationEducationObj(education, "update")
-          if (!_.isEmpty(obj)) {
-            updateErrors = updateErrors.concat(obj)
-          }
-        }
-        if (updateErrors.length > 0) {
-          errors.update = updateErrors
+        const updateErrors = this.getValidationEducations(educationUpdated, actionTypes.update, listIndexChanged)
+        if (_.size(updateErrors) > 0) {
+          errors[[actionTypes.update]] = {...updateErrors}
         }
       }
     }
 
     if (data && data.create && data.create.educations && data.create.educations.length > 0) {
       const educationCreated = data.create.educations
-      let createErrors = []
-      for (let i = 0, len = educationCreated.length; i < len; i++) {
-        const education = educationCreated[i]
-        let obj = this.getValidationEducationObj(education, "create")
-        if (!_.isEmpty(obj)) {
-          createErrors = createErrors.concat(obj)
-        }
-      }
-      if (createErrors.length > 0) {
-        errors.create = createErrors
+      const createErrors = this.getValidationEducations(educationCreated, actionTypes.create, listIndexChanged)
+      if (_.size(createErrors) > 0) {
+        errors[[actionTypes.create]] = {...createErrors}
       }
     }
 
-
-
-
     this.setState({ errors: errors })
     return errors
+  }
+
+  getValidationEducations = (education, action, listIndexChanged) => {
+    const { t } = this.props
+    if (action === actionTypes.update) {
+      const errorObj = listIndexChanged && listIndexChanged.reduce((initial, current) => {
+        const objValidation = {}
+        let currentItemEdited = education.find(item => item?.NewEducation?.Index == current && item?.OldEducation?.Index == current)
+        currentItemEdited = currentItemEdited?.NewEducation || {}
+        if (currentItemEdited) {
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.DegreeType) {
+            objValidation[[`degreeType_${action}`]] = t("TypeOfDegreeRequired")
+          }
+          if ((currentItemEdited.DegreeType || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.FromTime) {
+            objValidation[[`fromTime_${action}`]] = t("StartDateRequired")
+          }
+          if ((currentItemEdited.DegreeType || currentItemEdited.FromTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.ToTime) {
+            objValidation[[`toTime_${action}`]] = t("EndDateRequired")
+          }
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.DegreeType) && (!currentItemEdited.OtherSchool && !currentItemEdited.SchoolCode)) {
+            objValidation[[`school_${action}`]] = t("UniversityAndCollegeRequired")
+          }
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode || currentItemEdited.DegreeType) && (!currentItemEdited.MajorCode && !currentItemEdited.OtherMajor)) {
+            objValidation[[`major_${action}`]] = t("MajorRequired")
+          }
+        }
+        initial[current] = {...objValidation}
+        return initial
+      }, {})
+
+      return errorObj
+    } else if (action === actionTypes.create) {
+      const errorObj = listIndexChanged && listIndexChanged.reduce((initial, current) => {
+        const objValidation = {}
+        let currentItemEdited = education.find(item => item?.Index == current)
+        if (currentItemEdited) {
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.DegreeType) {
+            objValidation[[`degreeType_${action}`]] = t("TypeOfDegreeRequired")
+          }
+          if ((currentItemEdited.DegreeType || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.FromTime) {
+            objValidation[[`fromTime_${action}`]] = t("StartDateRequired")
+          }
+          if ((currentItemEdited.DegreeType || currentItemEdited.FromTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode) && !currentItemEdited.ToTime) {
+            objValidation[[`toTime_${action}`]] = t("EndDateRequired")
+          }
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.MajorCode || currentItemEdited.OtherMajor || currentItemEdited.DegreeType) && (!currentItemEdited.OtherSchool && !currentItemEdited.SchoolCode)) {
+            objValidation[[`school_${action}`]] = t("UniversityAndCollegeRequired")
+          }
+          if ((currentItemEdited.FromTime || currentItemEdited.ToTime || currentItemEdited.OtherSchool || currentItemEdited.SchoolCode || currentItemEdited.DegreeType) && (!currentItemEdited.MajorCode && !currentItemEdited.OtherMajor)) {
+            objValidation[[`major_${action}`]] = t("MajorRequired")
+          }
+        }
+        initial[current] = {...objValidation}
+        return initial
+      }, {})
+
+      return errorObj
+    }
+    return {}
   }
 
   removeItemForValueNull = (dataInput) => {
@@ -518,6 +530,7 @@ class PersonalInfoEdit extends React.Component {
 
     const updateFields = this.getFieldUpdates();
     const dataPostToSAP = this.getDataPostToSap(this.state.data);
+
     let userInfo = {
       employeeNo: localStorage.getItem('employeeNo'),
       fullName: localStorage.getItem('fullName'),
@@ -1034,8 +1047,7 @@ class PersonalInfoEdit extends React.Component {
     return [];
   }
 
-  prepareEducationModel = (data, action, type) => {
-
+  prepareEducationModel = (data, action, type, index) => {
     let obj = {
       SchoolCode: data.school_id || "",
       SchoolName: data.university_name,
@@ -1044,10 +1056,11 @@ class PersonalInfoEdit extends React.Component {
       MajorCode: data.major_id || "",
       OtherMajor: data.other_major || "",
       FromTime: data.from_time || "",
-      ToTime: data.to_time || ""
+      ToTime: data.to_time || "",
+      Index: index
     }
     let objClone = { ...obj };
-    if (action === "insert" || (action === "update" && type === "new")) {
+    if (action === actionTypes.create || (action === actionTypes.update && type === "new")) {
       let isObjectEmpty = !Object.values(objClone).some(x => (x !== null && x !== ""));
       if (isObjectEmpty) return null
       objClone.DegreeTypeText = data.degree_text || data.academic_level;
@@ -1082,21 +1095,21 @@ class PersonalInfoEdit extends React.Component {
   updateEducation(educationNew) {
     const educationOriginal = this.state.userEducation;
     let userProfileHistoryEducation = [];
-
+    let listIndexChanged = []
     educationNew.forEach((element, index) => {
       let oldEdu = this.preparePreEducation(educationOriginal[index])
       let newEdu = this.preparePreEducation(element)
-
       if (oldEdu != null && newEdu != null && !_.isEqual(oldEdu, newEdu)) {
-        const oldObj = this.prepareEducationModel(educationOriginal[index], "update", "old");
-        const newObj = this.prepareEducationModel(element, "update", "new");
+        listIndexChanged = listIndexChanged.concat(index)
+        const oldObj = this.prepareEducationModel(educationOriginal[index], actionTypes.update, "old", index);
+        const newObj = this.prepareEducationModel(element, actionTypes.update, "new", index);
         if (newObj) {
           const obj =
           {
             OldEducation: oldObj,
             NewEducation: newObj
           }
-          userProfileHistoryEducation = userProfileHistoryEducation.concat(...userProfileHistoryEducation, obj);
+          userProfileHistoryEducation = userProfileHistoryEducation.concat({...obj});
         }
       }
     });
@@ -1117,16 +1130,17 @@ class PersonalInfoEdit extends React.Component {
         });
 
         let dataClone = this.removeItemForValueNull({ ...this.state.data, update: this.state.update })
-        this.verifyInput(dataClone)
+        this.verifyInput(dataClone, null, listIndexChanged)
       })
     });
-
   }
 
   addEducation(value) {
     let tempEducationArr = [];
-    value.forEach(element => {
-      const educations = this.prepareEducationModel(element, "insert", "");
+    let listIndexChanged = []
+    value.forEach((element, index) => {
+      listIndexChanged = listIndexChanged.concat(index)
+      const educations = this.prepareEducationModel(element, actionTypes.create, "", index);
       if (educations) tempEducationArr = tempEducationArr.concat(educations);
     });
     const educations = {
@@ -1142,7 +1156,7 @@ class PersonalInfoEdit extends React.Component {
         }
       });
       let dataClone = this.removeItemForValueNull({ ...this.state.data, create: this.state.create })
-      this.verifyInput(dataClone)
+      this.verifyInput(dataClone, null, listIndexChanged)
     });
   }
 
@@ -1232,6 +1246,17 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ isShowResultConfirm: false });
   }
 
+  handleSendRequest = () => {
+    let dataClone = this.removeItemForValueNull({ ...this.state.data })
+    const errors = this.verifyInput(dataClone)
+
+    if (!this.isEmptyCustomize(errors)) {
+      return
+    }
+
+    this.sendRequest()
+  }
+
   sendRequest = () => {
     const { t } = this.props
     this.setState({
@@ -1312,7 +1337,7 @@ class PersonalInfoEdit extends React.Component {
           {(errors && !errors.notChange) ? this.error('fileUpload') : null}
 
           <div className="clearfix mb-5 block-action-buttons">
-            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
+            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.handleSendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
             <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
             <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
           </div>
