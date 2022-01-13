@@ -25,6 +25,7 @@ const EVENT_TYPE = {
   EVENT_LOICONG: 4,
   EVENT_GIONGHI: 5,
   EVENT_CONGTAC: 6,
+  EVENT_NGHI_CONGTAC: 30,
   EVENT_OT: 7,
 };
 
@@ -266,7 +267,6 @@ class EmployeeTimesheets extends Component {
       }
     }
     return line2;
-
   }
 
   processDataForTable = (data1, fromDateString, toDateString, reasonData) => {   
@@ -321,6 +321,15 @@ class EmployeeTimesheets extends Component {
         line1.subtype = "00";
         nextItem.count = line1.count ? line1.count + 1 : 2;
         data[index + 1] = nextItem;
+      }
+
+      //gio break time
+      if(this.checkExist(item.break_from_time_1)) {
+        timeSteps.push(this.getDatetimeForCheckFail(item.break_from_time_1, item.break_to_time1, currentDay, nextDay));
+      }
+
+      if(this.checkExist(item.break_from_time_2)) {
+        timeSteps.push(this.getDatetimeForCheckFail(item.break_from_time_2, item.break_to_time2, currentDay, nextDay));
       }
 
       //gio thuc te  // khong co event , 1 : gio thuc te, 2 : loi cham cong
@@ -397,54 +406,34 @@ class EmployeeTimesheets extends Component {
       if (this.checkExist(item.leave_start_time1)) {
         line3.type = EVENT_TYPE.EVENT_GIONGHI;
         line3.subtype = 1 + line3.subtype[1];
-        timeSteps.push(
-          this.getDatetimeForCheckFail(
-            item.leave_start_time1,
-            item.leave_end_time1,
-            currentDay,
-            nextDay
-          )
-        );
+        timeSteps.push(this.getDatetimeForCheckFail(item.leave_start_time1, item.leave_end_time1, currentDay, nextDay));
       }
 
       if (this.checkExist(item.leave_start_time2)) {
         line3.type = EVENT_TYPE.EVENT_GIONGHI;
         line3.subtype = line3.subtype[0] + 1;
-        timeSteps.push(
-          this.getDatetimeForCheckFail(
-            item.leave_start_time2,
-            item.leave_end_time2,
-            currentDay,
-            nextDay
-          )
-        );
+        timeSteps.push(this.getDatetimeForCheckFail(item.leave_start_time2, item.leave_end_time2, currentDay, nextDay));
       }
 
-      if (this.checkExist(item.trip_start_time1)) {
-        line3.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3.subtype = 1 + line3.subtype[1];
+      const line3ForTrip = {...line3};
 
-        timeSteps.push(
-          this.getDatetimeForCheckFail(
-            item.trip_start_time1,
-            item.trip_end_time1,
-            currentDay,
-            nextDay
-          )
-        );
+      if (this.checkExist(item.trip_start_time1)) {
+        line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
+        line3ForTrip.subtype =1 + line3ForTrip.subtype[1]
+        timeSteps.push(this.getDatetimeForCheckFail(item.trip_start_time1, item.trip_end_time1, currentDay, nextDay));
       }
 
       if (this.checkExist(item.trip_start_time2)) {
-        line3.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3.subtype = line3.subtype[0] + 1;
-        timeSteps.push(
-          this.getDatetimeForCheckFail(
-            item.trip_start_time2,
-            item.trip_end_time2,
-            currentDay,
-            nextDay
-          )
-        );
+        line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
+        line3ForTrip.subtype = line3ForTrip.subtype[0] + 1
+        timeSteps.push(this.getDatetimeForCheckFail(item.trip_start_time2, item.trip_end_time2, currentDay, nextDay));
+      }
+
+      if (line3.type == EVENT_TYPE.EVENT_GIONGHI && line3ForTrip.type == EVENT_TYPE.EVENT_CONGTAC) {
+        line3.type = EVENT_TYPE.EVENT_NGHI_CONGTAC;
+        line3.subtype = line3.subtype + line3ForTrip.subtype;
+      } else if (line3ForTrip.type == EVENT_TYPE.EVENT_CONGTAC) {
+        line3 = {...line3ForTrip};
       }
 
       //gio OT

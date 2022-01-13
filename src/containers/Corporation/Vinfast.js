@@ -34,7 +34,7 @@ function Vingroup(props) {
 
     return (
       <>
-        <body class="path-ve-chung-toi context-ve-chung-toi shadow" data-target="#header" data-spy="scroll" data-offset="100">
+        <body className="path-ve-chung-toi context-ve-chung-toi shadow" data-target="#header" data-spy="scroll" data-offset="100">
           <div className="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
             <div className="about_us_page">
               <div className="about_us_banner">

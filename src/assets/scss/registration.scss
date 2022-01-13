@@ -71,6 +71,17 @@
                     flex: 0 0 32%;
                     max-width: 32%;
                     border-right: 1px solid #d1d3e2;
+                    .next-day-selection {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding-bottom: 10px;
+                        label {
+                            margin: 0 0 0 4px;
+                            cursor: pointer;
+                            color: #286BA6;
+                        }
+                    }
                     &:last-child {
                         border: none;
                         flex: 0 0 36%;
@@ -707,6 +718,12 @@
                 padding-left: 0;
                 padding-right: 0;
             }
+        }
+        .detail {
+            padding: 0 10px;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
         }
     }
     .business-trip {
