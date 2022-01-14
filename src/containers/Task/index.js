@@ -132,7 +132,7 @@ class Task extends React.Component {
         const approvalDelegationClass = approvalDelegationModal.userApprovalDelegation ? 'approval-delegation end-approval-delegation' : 'approval-delegation create-approval-delegation'
         const companyCode = localStorage.getItem("companyCode")
         const employeeLevel = localStorage.getItem("employeeLevel")
-        const smallNavClass = Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) ? 'nav-tabs-small' : '';
+        const smallNavClass = Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) && this.state.isShowPrepareTab == true ? 'nav-tabs-small' : '';
 
         return (
             <>
