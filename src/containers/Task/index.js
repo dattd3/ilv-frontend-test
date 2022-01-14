@@ -45,9 +45,7 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
-        if( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinPearl].includes(localStorage.getItem('companyCode')) ) {
-            this.checkPermissonShowPrepareTab();
-        }
+        this.checkPermissonShowPrepareTab();
     }
 
     checkPermissonShowPrepareTab = async () => {
@@ -134,6 +132,7 @@ class Task extends React.Component {
         const approvalDelegationClass = approvalDelegationModal.userApprovalDelegation ? 'approval-delegation end-approval-delegation' : 'approval-delegation create-approval-delegation'
         const companyCode = localStorage.getItem("companyCode")
         const employeeLevel = localStorage.getItem("employeeLevel")
+        const smallNavClass = Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) && this.state.isShowPrepareTab == true ? 'nav-tabs-small' : '';
 
         return (
             <>
@@ -150,7 +149,7 @@ class Task extends React.Component {
                 isSuccess={statusModal.isSuccess}
                 onHide={() => this.onHideModal('statusModal', 'isShowStatusModal')} />
             <div className="task-page">
-                <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs`} onSelect={(key) => this.updateTabLink(key)}>
+                <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs ${smallNavClass}`} onSelect={(key) => this.updateTabLink(key)}>
                     <Tab eventKey={tabKey.request} title={t("Request")}>
                         <RequestComponent />
                     </Tab>
