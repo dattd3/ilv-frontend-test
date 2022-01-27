@@ -177,7 +177,7 @@ class InOutTimeUpdateComponent extends React.Component {
     }
 
     let errorsFile = null
-    errorsFile = ((_.isNull(files) || files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(currentUserPnLCode)) ? t("AttachmentRequired") : this.isNullCustomize
+    errorsFile = ((_.isNull(files) || files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(currentUserPnLCode)) ? t("AttachmentRequired") : null
 
     if (files && files?.length > 0) {
       const maximumFileSize = 4 // Unit MB
@@ -298,12 +298,12 @@ class InOutTimeUpdateComponent extends React.Component {
       })
   }
 
-  error(index, name) {
-    return this.state.errors[name + index] ? <div className="text-danger validation">{this.state.errors[name + index]}</div> : null
+  error = (index, name) => {
+    return this.state.errors[name + index] && <div className="text-danger validation">{this.state.errors[name + index]}</div>
   }
 
-  errorWithoutItem(name) {
-    return this.state.errors[name] ? <div className="text-danger">{this.state.errors[name]}</div> : null
+  errorWithoutItem = (name) => {
+    return this.state.errors[name] && <div className="text-danger">{this.state.errors[name]}</div>
   }
 
   updateEditMode(index) {
