@@ -1,0 +1,85 @@
+.table-customize {
+    display: block;
+    overflow: scroll;
+    position: relative;
+    .row-customize {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: auto;
+        .col-customize {
+            &.no {
+                flex: 0 0 40px;
+                display: flex;
+                justify-content: center;
+            }
+            &.project-name {
+                flex: 0 0 200px;
+            }
+            &.short-name {
+                flex: 0 0 100px;
+            }
+            &.manager {
+                flex: 0 0 120px;
+            }
+            &.request-summary {
+                flex: 0 0 300px;
+            }
+            &.start-date {
+                flex: 0 0 100px;
+            }
+            &.end-date {
+                flex: 0 0 100px;
+            }
+            &.status {
+                flex: 0 0 100px;
+            }
+            &.customer {
+                flex: 0 0 220px;
+            }
+            &.pnl {
+                flex: 0 0 66px;
+            }
+            &.block {
+                flex: 0 0 154px;
+            }
+            &.time {
+                flex: 0 0 300px;
+            }
+            &.start-date {
+                flex: 0 0 80px;
+            }
+            &.end-date {
+                flex: 0 0 80px;
+            }
+            .col-top {
+                display: flex;
+                justify-content: center;
+            }
+            .col-bottom {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .first {
+                    flex: 0 0 30%;
+                    display: flex;
+                    justify-content: center;
+                }
+                .second {
+                    flex: 0 0 70%;
+                    display: flex;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+    .head {
+        background: #484848;
+        color: #FFFFFF;
+    }
+    .body {
+        .row-customize {
+            padding: 10px 5px;
+        }
+    }
+}
