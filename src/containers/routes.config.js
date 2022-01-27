@@ -506,6 +506,22 @@ export default [
             path: map.ClinicVinmec,
           },
           component: lazy(() => import("./Corporation/Vinmec")),
+        },
+        {
+          key: "list-projects",
+          routeProps: {
+            exact: true,
+            path: map.ListProjects,
+          },
+          component: lazy(() => import("./ProjectInformation/ListProjects")),
+        },
+        {
+          key: "my-projects",
+          routeProps: {
+            exact: true,
+            path: map.MyProjects,
+          },
+          component: lazy(() => import("./ProjectInformation/MyProjects")),
         }
       ],
     },
