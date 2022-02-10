@@ -1089,5 +1089,6 @@
   "InOutUpdateNextDaySelection": "Lựa chọn nếu ca làm việc là 24 giờ",
   "MenuProjectInformation": "Thông tin dự án",
   "MenuListProjects": "Danh mục dự án",
-  "MenuMyProjects": "Dự án của tôi"
+  "MenuMyProjects": "Dự án của tôi",
+  "MenuMyProfile": "Hồ sơ của tôi"
 }

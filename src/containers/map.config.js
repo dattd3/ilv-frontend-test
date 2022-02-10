@@ -85,5 +85,7 @@ export default {
 
   // Thông tin dự án
   ListProjects: "/list-projects",
-  MyProjects: "/my-projects"
+  MyProjects: "/my-projects",
+  ProjectDetail: "/project/:id",
+  MyProfile: "/my-profile"
 };

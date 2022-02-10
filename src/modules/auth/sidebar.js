@@ -83,6 +83,14 @@ export const Navigation = [
     label: "MenuMyProjects",
     role: "U",
   },
+  {
+    id: 99803,
+    parentId: 998,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.MyProfile,
+    label: "MenuMyProfile",
+    role: "U",
+  },
   //workflow management
   {
     id: 999,

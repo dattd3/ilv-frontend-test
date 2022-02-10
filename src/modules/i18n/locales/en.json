@@ -1072,5 +1072,6 @@
   "InOutUpdateNextDaySelection": "Select if Working shift is 24h",
   "MenuProjectInformation": "Project information",
   "MenuListProjects": "List projects",
-  "MenuMyProjects": "My projects"
+  "MenuMyProjects": "My projects",
+  "MenuMyProfile": "My profile"
 }

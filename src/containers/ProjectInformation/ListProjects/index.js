@@ -1,60 +1,112 @@
-import React from 'react';
-// import BenefitItem from './BenefitItem'
-// import { useApi, useFetcher } from "../../modules";
-// import NoteItem from './NoteItem'
-// import IconLevelUrl from '../../assets/img/icon-level.svg'
- 
-function ListProjects() {
-//   var benefitLevel = localStorage.getItem('benefitLevel');  
-//   var benefitTitle = localStorage.getItem('benefitTitle'); 
-  
-//   var result = usePreload([benefitLevel.toLowerCase()]);
-//   if(result && result.data) {
-//     var items = result.data;
-    return (     
-        <div className="timesheet-section department-timesheet">
+import React, { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import axios from 'axios'
+import Constants from '../../../commons/Constants'
+import { status, myProjectPageKey } from '../Constants'
+import { getRequestConfigurations } from '../../../commons/Utils'
+import ProjectRowItem from '../Share/ProjectRowItem'
+import LoadingModal from '../../../components/Common/LoadingModal'
+import map from '../../map.config'
+
+function ListProjects(props) {
+    const { t } = useTranslation()
+    const [projectData, SetProjectData] = useState({projects: [], totalRecord: 0})
+    const [paging, SetPaging] = useState({pageIndex: 1, pageSize: 10})
+    const [isLoading, SetIsLoading] = useState(false)
+
+    useEffect(() => {
+        const processProjectData = response => {
+            if (response && response.data) {
+                const result = response.data.result
+                if (result && result.code == Constants.API_SUCCESS_CODE) {
+                    const data = response.data?.data
+                    const projectDataToSave = {...projectData}
+                    // if (props.from === myProjectPageKey) {
+                    //     const projects = [...data.projectInProcess, ...data.projectCloseds]
+                    //     projectDataToSave.projects = projects
+                    //     projectDataToSave.totalRecord = projects.length || 0
+                    // } else {
+                    //     projectDataToSave.projects = data?.details || []
+                    //     projectDataToSave.totalRecord = data?.totalRecord || 0
+                    // }
+                    projectDataToSave.projects = data?.details || []
+                    projectDataToSave.totalRecord = data?.totalRecord || 0
+                    SetProjectData(projectDataToSave)
+                }
+            }
+            SetIsLoading(false)
+        }
+
+        const getProjectData = async () => {
+            SetIsLoading(true)
+            try {
+                const config = getRequestConfigurations()
+                config.params = {
+                    pageIndex: paging.pageIndex,
+                    pageSize: paging.pageSize
+                }
+                const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/open'
+                const response = await axios.get(`${process.env.REACT_APP_RSM_URL}${apiUrl}`, config)
+                processProjectData(response)
+            } catch (e) {
+                console.error(e)
+                SetIsLoading(false)
+            }
+        }
+
+        getProjectData()
+    }, [paging])
+
+    const handleStatusClick = (projectId, statusId) => {
+        if ([status.open, status.inProgress].includes(statusId)) {
+            return window.location.replace(`/project/${projectId}`)
+        }
+    }
+
+    const renderListProjects = () => {
+        return (
+            (projectData.projects || []).map((item, index) => {
+                return <ProjectRowItem item={item} key={index} handleStatusClick={handleStatusClick} />
+            })
+        )
+    }
+
+    return (
+        <>
+        <LoadingModal show={isLoading} />
+        <div className="list-projects-page">
             <h1 className="content-page-header">danh mục dự án</h1>
-            <div className="table-customize">
-                <div className='head'>
-                    <div className='row-customize'>
-                        <div className='col-customize no'>#</div>
-                        <div className='col-customize project-name'>Tên dự án</div>
-                        <div className='col-customize short-name'>Tên rút gọn</div>
-                        <div className='col-customize manager'>Quản lý dự án</div>
-                        <div className='col-customize request-summary'>Tóm tắt yêu cầu</div>
-                        <div className='col-customize customer'>
-                            <div className='col-top'>Khách hàng</div>
-                            <div className='col-bottom'>
-                                <div className='first'>P&L</div>
-                                <div className='second'>Khối</div>
-                            </div>
-                        </div>
-                        <div className='col-customize time'>
-                            <div className='col-top'>Thời gian</div>
-                            <div className='col-bottom'>
-                                <div className='first'>Ngày bắt đầu</div>
-                                <div className='second'>Ngày kết thúc</div>
-                            </div>
-                        </div>
-                        <div className='col-customize status'>Trạng thái</div>
-                    </div>
+            {
+                projectData.projects.length === 0
+                ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
+                : <div className="wrap-table-list-projects">
+                    <table className='table-list-projects'>
+                        <thead>
+                            <tr>
+                                <th rowSpan={2} className='sticky-column c-no'><div className='no'>#</div></th>
+                                <th rowSpan={2} className='sticky-column c-project-name'><div className='project-name'>Tên dự án</div></th>
+                                <th rowSpan={2} className='sticky-column c-short-name'><div className='short-name'>Tên rút gọn</div></th>
+                                <th rowSpan={2} className='sticky-column c-manager'><div className='manager'>Quản lý dự án</div></th>
+                                <th rowSpan={2}><div className='request-summary'>Tóm tắt yêu cầu</div></th>
+                                <th colSpan={2}><div className='customer'>Khách hàng</div></th>
+                                <th colSpan={2}><div className='time'>Thời gian</div></th>
+                                <th rowSpan={2} className='sticky-column c-status'><div className='status'>Trạng thái</div></th>
+                            </tr>
+                            <tr>
+                                <th className='col-pnl'><div className='text-center pnl'>P&L</div></th>
+                                <th className='col-block'><div className='block'>Khối</div></th>
+                                <th className='col-start-date'><div className='start-date'>Ngày bắt đầu</div></th>
+                                <th className='col-end-date'><div className='end-date'>Ngày kết thúc</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { renderListProjects() }
+                        </tbody>
+                    </table>
                 </div>
-                <div className='body'>
-                    <div className='row-customize'>
-                        <div className='col-customize data no'>1</div>
-                        <div className='col-customize data project-name'>ILoveVingroup</div>
-                        <div className='col-customize data short-name'>ILVG</div>
-                        <div className='col-customize data manager'>Trần Văn Pháp</div>
-                        <div className='col-customize data request-summary'>Dự án chuyển đổi số cho Quản lý Nhân sự</div>
-                        <div className='col-customize data pnl'>VG</div>
-                        <div className='col-customize data block'>Quản lý Nhân sự & Đào tạo</div>
-                        <div className='col-customize data start-date'>01/06/2021</div>
-                        <div className='col-customize data end-date'>31/12/2022</div>
-                        <div className='col-customize data status'>Open</div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
+        </>
     )
 
 }
