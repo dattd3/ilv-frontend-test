@@ -522,6 +522,22 @@ export default [
             path: map.MyProjects,
           },
           component: lazy(() => import("./ProjectInformation/MyProjects")),
+        },
+        {
+          key: "project-detail",
+          routeProps: {
+            exact: true,
+            path: map.ProjectDetail,
+          },
+          component: lazy(() => import("./ProjectInformation/ProjectDetail")),
+        },
+        {
+          key: "my-profile",
+          routeProps: {
+            exact: true,
+            path: map.MyProfile,
+          },
+          component: lazy(() => import("./ProjectInformation/MyProfile")),
         }
       ],
     },
