@@ -4,7 +4,7 @@ import { statusStyleMapping } from '../Constants'
 
 function ProjectRowItem(props) {
     const { item } = props
-    const processStatus = item?.processStatus || 0
+    const processStatus = item?.processStatus
     const className = statusStyleMapping[processStatus?.key].className
 
     const handleStatusClick = (projectId, statusId) => {
