@@ -47,7 +47,7 @@ function UserInfo(props) {
                                         <span className="list-skill">
                                         {
                                             (userInfo?.skills || []).map((item, i) => {
-                                                return <span className="skill">{item || ""}</span>
+                                                return <span className="skill" key={i}>{item || ""}</span>
                                             })
                                         }
                                         </span>
