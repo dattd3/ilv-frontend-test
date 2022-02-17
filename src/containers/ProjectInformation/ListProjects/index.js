@@ -7,6 +7,7 @@ import { getRequestConfigurations } from '../../../commons/Utils'
 import ProjectRowItem from '../Share/ProjectRowItem'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import map from '../../map.config'
+import { Fragment } from "react"
 
 function ListProjects(props) {
     const { t } = useTranslation()
@@ -66,7 +67,9 @@ function ListProjects(props) {
     const renderListProjects = () => {
         return (
             (projectData.projects || []).map((item, index) => {
-                return <ProjectRowItem item={item} key={index} handleStatusClick={handleStatusClick} />
+                return <React.Fragment key={index}>
+                    <ProjectRowItem item={item} index={index + 1} handleStatusClick={handleStatusClick} />
+                </React.Fragment>
             })
         )
     }
@@ -90,6 +93,8 @@ function ListProjects(props) {
                                 <th rowSpan={2}><div className='request-summary'>Tóm tắt yêu cầu</div></th>
                                 <th colSpan={2}><div className='customer'>Khách hàng</div></th>
                                 <th colSpan={2}><div className='time'>Thời gian</div></th>
+                                <th rowSpan={2} className='c-complexity'><div className='complexity'>Complexity</div></th>
+                                <th rowSpan={2} className='c-criticality'><div className='criticality'>Criticality</div></th>
                                 <th rowSpan={2} className='sticky-column c-status'><div className='status'>Trạng thái</div></th>
                             </tr>
                             <tr>

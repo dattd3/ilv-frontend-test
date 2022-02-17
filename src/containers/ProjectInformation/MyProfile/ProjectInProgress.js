@@ -1,10 +1,27 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import ProjectRowItem from "./ProjectRowItem"
+import moment from 'moment'
 
-function ListProjects(props) {
+function ProjectInProgress(props) {
     const { t } = useTranslation()
     const { title, projects } = props
+
+    console.log("44444444444444444")
+    console.log(projects)
+
+    const renderRowItems = () => {
+        return (projects || []).map((item, index) => {
+            return <tr key={index}>
+                <td className="sticky-column c-no"><div className="no">{index + 1}</div></td>
+                <td className="sticky-column c-project-name"><div className="project-name text-truncate">{item?.projectName || ''}</div></td>
+                <td className="sticky-column c-project-manager"><div className="project-manager text-truncate">{item?.projectManager || ''}</div></td>
+                <td className="sticky-column c-start-date"><div className="start-date">{item?.startDate && moment(item.startDate).format('DD/MM/YYYY')}</div></td>
+                <td className="sticky-column c-end-date"><div className="end-date">{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
+                <td className="c-role"><div className="role text-truncate">{item?.role || ''}</div></td>
+                <td className="c-manday"><div className="manday">{item?.manDays || 0}</div></td>
+            </tr>
+        })
+    }
 
     return (
         <div className="project-list-table-my-profile">
@@ -22,19 +39,11 @@ function ListProjects(props) {
                                 <th className="sticky-column c-start-date"><div className="start-date">Ngày bắt đầu</div></th>
                                 <th className="sticky-column c-end-date"><div className="end-date">Ngày kết thúc</div></th>
                                 <th className="c-role"><div className="role">Vai trò</div></th>
-                                <th className="c-effort"><div className="effort">% Effort</div></th>
-                                <th className="c-planned-hours"><div className="planned-hours">Planned Hours</div></th>
-                                <th className="c-actual-hours"><div className="actual-hours">Actual Hours</div></th>
-                                <th className="c-review"><div className="review">Đánh giá</div></th>
-                                <th className="c-review-comment"><div className="review-comment">Ý kiến đánh giá</div></th>
+                                <th className="c-manday"><div className="manday">Mandays</div></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                (projects || []).map((item, index) => {
-                                    return <React.Fragment key={index}><ProjectRowItem project={item} index={index + 1} /></React.Fragment>
-                                })
-                            }
+                            { renderRowItems() }
                         </tbody>
                     </table>
                 }
@@ -43,4 +52,4 @@ function ListProjects(props) {
     )
 }
 
-export default ListProjects
+export default ProjectInProgress

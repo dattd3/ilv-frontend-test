@@ -33,34 +33,28 @@ function UserInfo(props) {
                     <div className="info-detail">
                         <div className="full-name-and-job-title">
                             <div className="full-name">{userInfo?.fullName || ""}</div>
-                            <div className="job-title">{userInfo?.title || ""}</div>
+                            <div className="job-title">{userInfo?.postition || ""}</div>
                         </div>
                         <div className="other-info">
-                            <div className="col-first">
-                                <div className="row-first">
-                                    <span className="code"><Image src={IconMaNhanVien} alt="Mã nhân viên" />Mã NV: {userInfo?.employeeNo || ""}</span>
-                                    <span className="email"><Image src={IconEmail} alt="Email" />Email: {userInfo?.email || ""}</span>
-                                </div>
-                                <div className="row-second">
-                                    <span className="skill-block">
-                                        <Image src={IconKyNang} alt="Kỹ năng" />Kỹ năng: 
-                                        <span className="list-skill">
-                                        {
-                                            (userInfo?.skills || []).map((item, i) => {
-                                                return <span className="skill" key={i}>{item || ""}</span>
-                                            })
-                                        }
-                                        </span>
-                                    </span>
-                                </div>
+                            <div className="row-info">
+                                <span className="code"><Image src={IconMaNhanVien} alt="Mã nhân viên" />Mã NV: {userInfo?.employeeNo || ""}</span>
+                                <span className="email"><Image src={IconEmail} alt="Email" />Email: {userInfo?.email || ""}</span>
+                                <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || ""} năm</span>
                             </div>
-                            <div className="col-second">
-                                <div className="row-first">
-                                    <span className="position"><Image src={IconViTri} alt="Vị trí" />Vị trí: {userInfo?.postition || ""}</span>
-                                </div>
-                                <div className="row-second">
-                                    <span className="code"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || ""} năm</span>
-                                </div>
+                            <div className="row-info">
+                                <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.postition || ""}</span>
+                            </div>
+                            <div className="row-info">
+                                <span className="skill-block">
+                                    <Image src={IconKyNang} alt="Kỹ năng" />Kỹ năng: 
+                                    <span className="list-skill">
+                                    {
+                                        (userInfo?.skills || []).map((item, i) => {
+                                            return <span className="skill" key={i}>{item || ""}</span>
+                                        })
+                                    }
+                                    </span>
+                                </span>
                             </div>
                         </div>
                     </div>
