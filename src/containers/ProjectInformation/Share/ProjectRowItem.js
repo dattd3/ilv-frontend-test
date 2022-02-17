@@ -1,11 +1,13 @@
 import React from "react"
 import moment from 'moment'
-import { statusStyleMapping } from '../Constants'
+import { statusStyleMapping, complexityColorMapping, criticalityColorMapping } from '../Constants'
 
 function ProjectRowItem(props) {
-    const { item } = props
+    const { item, index } = props
     const processStatus = item?.processStatus
-    const className = statusStyleMapping[processStatus?.key].className
+    const statusClassName = statusStyleMapping[processStatus?.key]?.className
+    const complexityClassName = complexityColorMapping[item?.complexity]?.className || complexityColorMapping.Low.className
+    const criticalityClassName = criticalityColorMapping[item?.criticality]?.className || criticalityColorMapping.NoCritical.className
 
     const handleStatusClick = (projectId, statusId) => {
         props.handleStatusClick(projectId, statusId)
@@ -13,7 +15,7 @@ function ProjectRowItem(props) {
 
     return (
         <tr>
-            <td className='sticky-column c-no'><div className='no'>{item?.id}</div></td>
+            <td className='sticky-column c-no'><div className='no'>{index}</div></td>
             <td className='sticky-column c-project-name'><div className='project-name'>{item?.projectName || ''}</div></td>
             <td className='sticky-column c-short-name'><div className='short-name'>{item?.projectShortName || ''}</div></td>
             <td className='sticky-column c-manager'><div className='manager'>{item?.projectManager || ''}</div></td>
@@ -22,7 +24,9 @@ function ProjectRowItem(props) {
             <td><div className='block'>{item?.unitName || ''}</div></td>
             <td><div className='start-date'>{item?.startDate && moment(item.startDate).format('DD/MM/YYYY')}</div></td>
             <td><div className='end-date'>{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
-            <td className='text-center sticky-column c-status'><div className={`status ${className}`} onClick={() => handleStatusClick(item?.id, item?.processStatus?.key)}>{item?.processStatus?.value}</div></td>
+            <td><div className='complexity'><span className={`status ${complexityClassName}`}>{item?.complexity || ""}</span></div></td>
+            <td><div className='criticality'><span className={`status ${criticalityClassName}`}>{item?.criticality || ""}</span></div></td>
+            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`} onClick={() => handleStatusClick(item?.id, item?.processStatus?.key)}>{item?.processStatus?.value}</div></td>
         </tr>
     )
 }

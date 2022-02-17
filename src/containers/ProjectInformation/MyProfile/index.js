@@ -5,12 +5,13 @@ import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import ListProjects from "./ListProjects"
+import ProjectInProgress from "./ProjectInProgress"
 import UserInfo from './UserInfo'
 import LoadingModal from '../../../components/Common/LoadingModal'
 
 function MyProfile() {
     const { t } = useTranslation()
-    const [userProfile, SetUserProfile] = useState({})
+    const [userProfile, SetUserProfile] = useState(null)
     const [isLoading, SetIsLoading] = useState(false)
 
     useEffect(() => {
@@ -50,7 +51,7 @@ function MyProfile() {
                 <>
                     <UserInfo userInfo={_.omit(userProfile, 'projectCloseds', 'projectInProcess')} />
                     <div className="project-in-progress">
-                        <ListProjects title="I. Dự án đang tiến hành" projects={userProfile?.projectInProcess} />
+                        <ProjectInProgress title="I. Dự án đang tiến hành" projects={userProfile?.projectInProcess} />
                     </div>
                     <div className="project-completed">
                         <ListProjects title="II. Dự án đã hoàn hành" projects={userProfile?.projectCloseds} />

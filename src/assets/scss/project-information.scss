@@ -1,5 +1,5 @@
 .list-projects-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     .wrap-table-list-projects {
         overflow: auto;
@@ -87,7 +87,6 @@
             }
             .pnl {
                 width: 160px;
-                // text-align: center;
             }
             .block {
                 width: 140px;
@@ -101,99 +100,152 @@
                 width: 110px;
                 text-align: center;
             }
+            .complexity, .criticality {
+                width: 120px;
+                text-align: center;
+            }
             .status {
-                width: 180px;
+                width: 160px;
                 text-align: center;
             }
             tbody {
                 color: #0D1B3C;
                 tr {
                     border-bottom: 1px solid #CED4DA;
+                    td {
+                        padding: 5px 0;
+                        // height: 45px;
+                        .complexity, .criticality {
+                            width: 100px;
+                            text-align: center;
+                            margin: 0 auto;
+                            .status {
+                                width: 90px;
+                                height: 30px;
+                                border-radius: 15px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #FFFFFF;
+                                border: 1px solid;
+                                font-weight: normal;
+                                font-size: 12px;
+                                cursor: default;
+                                &.low {
+                                    background: #2ED87C;
+                                }
+                                &.medium {
+                                    background: #FF7F00;
+                                }
+                                &.high {
+                                    background: #FF5370;
+                                }
+                                &.critical {
+                                    background: #FFFFFF;
+                                    color: #FF5370;
+                                    border-color: #FF5370;
+                                }
+                                &.no-critical {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border-color: #CED4DA;
+                                }
+                            }
+                        }
+                        .status {
+                            display: inline-flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 120px;
+                            font-size: 12px;
+                            height: 30px;
+                            border-radius: 15px;
+                            cursor: default;
+                            &.draft {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.deny-approval {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.open {
+                                background: #4099FF;
+                                color: #FFFFFF;
+                                cursor: pointer;
+                            }
+                            &.in-progress {
+                                background: #FFFFFF;
+                                color: #FF7F00;
+                                cursor: pointer;
+                                border: 1px solid #FF7F00;
+                            }
+                            &.cancelled {
+                                background: #FF5370;
+                                color: #FFFFFF;
+                                border-color: transparent;
+                            }
+                            &.pending-approval {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.deny {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.pending-review {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.re-open {
+                                background: #FFFFFF;
+                                color: #4099FF;
+                                border: 1px solid #4099FF;
+                            }
+                            &.pending-schedule {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.closed {
+                                background: #2ED87C;
+                                color: #FFFFFF;
+                            }
+                        }
+                        &.c-no {
+                            left: 0;
+                            background: #FFFFFF;
+                        }
+                        &.c-project-name {
+                            left: 45px;
+                            background: #FFFFFF;
+                        }
+                        &.c-short-name {
+                            left: 245px;
+                            background: #FFFFFF;
+                        }
+                        &.c-manager {
+                            left: 355px;
+                            background: #FFFFFF;
+                        }
+                        &.c-status {
+                            right: 0;
+                            background: #FFFFFF;
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
+                        }
+                    }
                     &:last-child {
                         border-bottom: none;
-                    }
-                }
-                td {
-                    padding: 5px 0;
-                    // height: 45px;
-                    .status {
-                        display: inline-flex;
-                        justify-content: center;
-                        width: 120px;
-                        font-size: 12px;
-                        padding: 5px;
-                        border-radius: 50px;
-                        cursor: default;
-                        &.draft {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.refuse-approval {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.open {
-                            background: #4099FF;
-                            color: #FFFFFF;
-                            cursor: pointer;
-                        }
-                        &.in-progress {
-                            background: #FFFFFF;
-                            color: #FF7F00;
-                            cursor: pointer;
-                            border: 1px solid #FF7F00;
-                        }
-                        &.cancelled {
-                            background: #FF5370;
-                            color: #FFFFFF;
-                            border-color: transparent;
-                        }
-                        &.waiting-approval {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.refuse-appraisal {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.waiting-appraisal {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.re-open {
-                            background: #FFFFFF;
-                            color: #4099FF;
-                            border: 1px solid #4099FF;
-                        }
-                        &.closed {
-                            background: #2ED87C;
-                            color: #FFFFFF;
-                        }
-                    }
-                    &.c-no {
-                        left: 0;
-                        background: #FFFFFF;
-                    }
-                    &.c-project-name {
-                        left: 45px;
-                        background: #FFFFFF;
-                    }
-                    &.c-short-name {
-                        left: 245px;
-                        background: #FFFFFF;
-                    }
-                    &.c-manager {
-                        left: 355px;
-                        background: #FFFFFF;
-                    }
-                    &.c-status {
-                        right: 0;
-                        background: #FFFFFF;
                     }
                 }
             }
@@ -202,7 +254,7 @@
 }
 
 .projects-detail-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     & > .project-name {
         display: flex;
@@ -306,6 +358,12 @@
                 }
                 tbody {
                     tr {
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
                         &:last-child {
                             border-bottom: none;
                         }
@@ -371,12 +429,18 @@
                 tbody {
                     tr {
                         border-bottom: 1px solid #CED4DA;
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
                         &:last-child {
                             border-bottom: none;
                         }
-                    }
-                    td {
-                        padding: 5px 0;
+                        td {
+                            padding: 5px 0;
+                        }
                     }
                 }
             }
@@ -392,14 +456,19 @@
             font-weight: bold;
             padding: 5px 10px;
         }
-        .report {
+        .report-block {
             display: flex;
             align-items: center;
-            background: #E2E9F1;
-            color: #0D1B3C;
-            padding: 5px 10px;
-            & > img {
-                margin: 0 8px;
+            .headcount, .total-manday {
+                flex: 1 1;
+                display: flex;
+                align-items: center;
+                background: #E2E9F1;
+                color: #0D1B3C;
+                padding: 5px 10px;
+                & > img {
+                    margin: 0 8px;
+                }
             }
         }
         .project-team-block {
@@ -445,12 +514,18 @@
                     tbody {
                         tr {
                             border-bottom: 0.5px solid #CED4DA;
+                            &:hover {
+                                background: #FAEFE1;
+                                td {
+                                    background: #FAEFE1;
+                                }
+                            }
                             &:last-child {
                                 border-bottom: none;
                             }
-                        }
-                        td {
-                            padding: 5px 0;
+                            td {
+                                padding: 5px 0;
+                            }
                         }
                     }
                 }
@@ -474,13 +549,13 @@
                         text-align: center;
                     }
                     .c-pnl {
-                        width: 15%;
+                        width: 12%;
                     }
                     .c-full-name {
-                        width: 14%;
+                        width: 10%;
                     }
                     .c-email {
-                        width: 14%;
+                        width: 11%;
                     }
                     .c-interest-level {        
                         width: 12%;
@@ -488,25 +563,34 @@
                     .c-affect-level {
                         width: 13%;
                     }
+                    .c-role-in-project {
+                        width: 16%;
+                    }
                     .c-note {
-                        width: 28%;
+                        width: 22%;
                     }
                     tbody {
                         tr {
                             border-bottom: 0.5px solid #CED4DA;
+                            &:hover {
+                                background: #FAEFE1;
+                                td {
+                                    background: #FAEFE1;
+                                }
+                            }
                             &:last-child {
                                 border-bottom: none;
                             }
-                        }
-                        td {
-                            padding: 5px 0;
+                            td {
+                                padding: 5px 0;
+                            }
                         }
                     }
                 }
             }
         }
     }
-    
+
     .general-information {
         padding: 10px 0;
         .general-information-table-wrapper {
@@ -541,13 +625,11 @@
                 }
                 thead {
                     color: #0D1B3C;
-                    tr {
-                        border-bottom: 0.5px solid #CED4DA;
-                    }
                     th {
                         padding: 6px 0;
                         .customer, .time {
                             background: #CCDCF0;
+                            width: 100%;
                         }
                         .pnl, .block, .start-date, .end-date {
                             background: #E2E9F1;
@@ -576,8 +658,8 @@
                             right: 0;
                             background: #FFFFFF !important;
                         }
-                        &.c-customer {
-                            padding: 0 4px;
+                        &.c-time, &.c-customer {
+                            padding: 4px 4px 0 4px;
                         }
                     }
                 }
@@ -604,7 +686,6 @@
                 }
                 .pnl {
                     width: 160px;
-                    // text-align: center;
                 }
                 .block {
                     width: 140px;
@@ -618,6 +699,42 @@
                     width: 110px;
                     text-align: center;
                 }
+                .complexity, .criticality {
+                    width: 120px;
+                    text-align: center;
+                    .status {
+                        width: 90px;
+                        height: 24px;
+                        border-radius: 12px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #FFFFFF;
+                        border: 1px solid;
+                        font-weight: normal;
+                        font-size: 12px;
+                        cursor: default;
+                        &.low {
+                            background: #2ED87C;
+                        }
+                        &.medium {
+                            background: #FF7F00;
+                        }
+                        &.high {
+                            background: #FF5370;
+                        }
+                        &.critical {
+                            background: #FFFFFF;
+                            color: #FF5370;
+                            border-color: #FF5370;
+                        }
+                        &.no-critical {
+                            background: #FFFFFF;
+                            color: #0D1B3C;
+                            border-color: #CED4DA;
+                        }
+                    }
+                }
                 .status {
                     width: 180px;
                     text-align: center;
@@ -625,92 +742,100 @@
                 tbody {
                     color: #0D1B3C;
                     tr {
-                        border-bottom: 1px solid #CED4DA;
-                        &:last-child {
-                            border-bottom: none;
+                        border-top: 1px solid #CED4DA;
+                        td {
+                            padding: 5px 0;
+                            // height: 45px;
+                            .status {
+                                display: inline-flex;
+                                justify-content: center;
+                                width: 120px;
+                                font-size: 12px;
+                                padding: 5px;
+                                border-radius: 50px;
+                                cursor: default;
+                                &.draft {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.deny-approval {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.open {
+                                    background: #4099FF;
+                                    color: #FFFFFF;
+                                    cursor: pointer;
+                                }
+                                &.in-progress {
+                                    background: #FFFFFF;
+                                    color: #FF7F00;
+                                    cursor: pointer;
+                                    border: 1px solid #FF7F00;
+                                }
+                                &.cancelled {
+                                    background: #FF5370;
+                                    color: #FFFFFF;
+                                    border-color: transparent;
+                                }
+                                &.pending-approval {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.deny {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.pending-schedule {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.pending-review {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.re-open {
+                                    background: #FFFFFF;
+                                    color: #4099FF;
+                                    border: 1px solid #4099FF;
+                                }
+                                &.closed {
+                                    background: #2ED87C;
+                                    color: #FFFFFF;
+                                }
+                            }
+                            &.c-no {
+                                left: 0;
+                                background: #FFFFFF;
+                            }
+                            &.c-project-name {
+                                left: 45px;
+                                background: #FFFFFF;
+                            }
+                            &.c-short-name {
+                                left: 245px;
+                                background: #FFFFFF;
+                            }
+                            &.c-manager {
+                                left: 355px;
+                                background: #FFFFFF;
+                            }
+                            &.c-status {
+                                right: 0;
+                                background: #FFFFFF;
+                            }
                         }
-                    }
-                    td {
-                        padding: 5px 0;
-                        // height: 45px;
-                        .status {
-                            display: inline-flex;
-                            justify-content: center;
-                            width: 120px;
-                            font-size: 12px;
-                            padding: 5px;
-                            border-radius: 50px;
-                            cursor: default;
-                            &.draft {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
                             }
-                            &.refuse-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.open {
-                                background: #4099FF;
-                                color: #FFFFFF;
-                                cursor: pointer;
-                            }
-                            &.in-progress {
-                                background: #FFFFFF;
-                                color: #FF7F00;
-                                cursor: pointer;
-                                border: 1px solid #FF7F00;
-                            }
-                            &.cancelled {
-                                background: #FF5370;
-                                color: #FFFFFF;
-                                border-color: transparent;
-                            }
-                            &.waiting-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.refuse-appraisal {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.waiting-appraisal {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.re-open {
-                                background: #FFFFFF;
-                                color: #4099FF;
-                                border: 1px solid #4099FF;
-                            }
-                            &.closed {
-                                background: #2ED87C;
-                                color: #FFFFFF;
-                            }
-                        }
-                        &.c-no {
-                            left: 0;
-                            background: #FFFFFF;
-                        }
-                        &.c-project-name {
-                            left: 45px;
-                            background: #FFFFFF;
-                        }
-                        &.c-short-name {
-                            left: 245px;
-                            background: #FFFFFF;
-                        }
-                        &.c-manager {
-                            left: 355px;
-                            background: #FFFFFF;
-                        }
-                        &.c-status {
-                            right: 0;
-                            background: #FFFFFF;
                         }
                     }
                 }
@@ -720,14 +845,14 @@
 }
 
 .my-profile-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     .info {
         background: url("../img/icon/Icon_Edge.svg") #171717;
         background-repeat: no-repeat;
         background-position: right;
         background-size: contain;
-        height: 150px;
+        height: 160px;
         display: flex;
         border-bottom: 4px solid #F2B153;
         .left {
@@ -765,7 +890,7 @@
             display: flex;
             align-items: center;
             .right-content {
-                height: 60%;
+                height: 70%;
                 width: 100%;
                 padding-left: 15px;
                 border-left: 0.5px solid #F2B153;
@@ -777,6 +902,7 @@
                     justify-content: space-between;
                     .full-name-and-job-title {
                         color: #F2B153;
+                        margin-bottom: 4px;
                         .full-name {
                             text-transform: uppercase;
                             font-size: 15px;
@@ -784,34 +910,32 @@
                         }
                         .job-title {
                             font-size: 12px;
+                            margin-top: -2px;
                         }
                     }
                     .other-info {
-                        display: flex;
                         color: #FFFFFF;
                         font-size: 13px;
                         img {
                             width: 13px;
                             margin-right: 5px;
                         }
-                        .col-second {
-                            margin-left: 20px;
-                        }
-                        .row-first {
+                        .row-info {
                             display: flex;
                             align-items: center;
-                            height: 30px;
-                            .code, .email {
+                            padding: 2px 0;
+                            .code, .email, .seniority {
                                 display: flex;
                                 align-items: center;
-                                margin-right: 30px;
+                                margin-right: 15px;
                             }
-                            .email {
+                            .seniority {
                                 margin-right: 0;
                             }
-                        }
-                        .row-second {
-                            height: 30px;
+                            .position {
+                                display: flex;
+                                align-items: center;
+                            }
                             .skill-block {
                                 display: flex;
                                 align-items: center;
@@ -980,7 +1104,7 @@
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.refuse-approval {
+                            &.deny-approval {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
@@ -1001,17 +1125,22 @@
                                 color: #FFFFFF;
                                 border-color: transparent;
                             }
-                            &.waiting-approval {
+                            &.pending-approval {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.refuse-appraisal {
+                            &.deny {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.waiting-appraisal {
+                            &.pending-review {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.pending-schedule {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
@@ -1025,6 +1154,12 @@
                                 background: #2ED87C;
                                 color: #FFFFFF;
                             }
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
                         }
                     }
                     &:last-child {
