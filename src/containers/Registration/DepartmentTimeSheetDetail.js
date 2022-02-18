@@ -200,9 +200,9 @@ class DepartmentTimeSheetDetail extends React.Component {
             // this.props.substitution.processStatusId == 2 || this.props.substitution.processStatusId == 6 ?
               !isDisableTimeSheetFunction &&
               <div className="d-flex justify-content-center align-items-center">
-                <div className="mr-2">
+                {/* <div className="mr-2">
                   <button className="btn-export-err p-2 text-dark" onClick={this.exportTimeSheetsFile}><img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> {`${t('baseNameBCCFile')} ${this.props.substitution.createField.replace('/','_')}.xlsx`}</button>
-                </div>
+                </div> */}
               </div>
               // : null
           }
