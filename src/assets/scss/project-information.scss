@@ -474,6 +474,27 @@
         .project-team-block {
             .project-structure-table-wrapper {
                 background: #FFFFFF;
+                overflow: auto;
+            background: #FFFFFF;
+            &::-webkit-scrollbar {
+                height: 8px;
+                background-color: #f5f5f5;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #a4afb7;
+                border-left: 1px solid #FFFFFF;
+                border-right: 1px solid #FFFFFF;
+                border-top: 1px solid #FFFFFF;
+                border-bottom: 1px solid #FFFFFF;
+                border-radius: 4px;
+            }
+            &::-webkit-scrollbar-track {
+                background-color: #d3d3d3;
+                border-left: 3.5px solid #FFFFFF;
+                border-right: 3.5px solid #FFFFFF;
+                border-top: 3.5px solid #FFFFFF;
+                border-bottom: 3.5px solid #FFFFFF;
+            }
                 .project-structure-table {
                     border-collapse: collapse;
                     width: 100%;
@@ -481,35 +502,42 @@
                     thead {
                         th {
                             padding: 10px 0;
+                            & > div {
+                                padding: 0 10px;
+                            }
                         }
                     }
-                    .c-no {
-                        width: 4%;
+                    .no {
+                        width: 45px;
                         text-align: center;
                     }
-                    .c-role {
-                        width: 7%;
+                    .role {
+                        width: 150px;
                     }
-                    .c-skill {
-                        width: 19%;
+                    .skill {
+                        width: 200px;
                     }
-                    .c-start-date {
-                        width: 10%;
+                    .manday {
+                        width: 110px;
                     }
-                    .c-end-date {
-                        width: 10%;
+                    .full-name {
+                        width: 160px;
                     }
-                    .c-effort {
-                        width: 9%;
+                    .email {
+                        width: 150px;
                     }
-                    .c-plan-hour {
-                        width: 10%;
+                    .source {
+                        width: 140px;
                     }
-                    .c-source {
-                        width: 11%;
+                    .pm-note {
+                        width: 220px;
                     }
-                    .c-note {
-                        width: 20%;
+                    .scheduler-note {
+                        width: 220px;
+                    }
+                    .start-date, .end-date {
+                        width: 120px;
+                        text-align: center;
                     }
                     tbody {
                         tr {
@@ -525,6 +553,9 @@
                             }
                             td {
                                 padding: 5px 0;
+                                & > div {
+                                    padding: 0 10px;
+                                }
                             }
                         }
                     }
@@ -1000,8 +1031,82 @@
     }
 }
 
-// Common styles
-.project-list-table-my-profile {
+.project-in-progress-table-my-profile {
+    padding: 15px 0;
+    &>h2 {
+        text-transform: uppercase;
+        font-size: 16px;
+        font-weight: bold;
+        color: #0D1B3C;
+        background: rgba(242, 177, 83, 0.1);
+        padding: 6px;
+        margin-bottom: 0.5rem;
+    }
+    .project-table-wrapper {
+        background: #FFFFFF;
+        .project-table-my-profile {
+            width: 100%;
+            border-collapse: collapse;
+            color: #0D1B3C;
+            thead {
+                tr {
+                    border-bottom: 1px solid #CED4DA;
+                    th {
+                        padding: 10px 0;
+                        &.c-manday {
+                            padding: 10px 15px 10px 0;
+                        }
+                    }
+                }
+            }
+            tbody {
+                tr {
+                    border-bottom: 1px solid #CED4DA;
+                    td {
+                        padding: 10px 0;
+                        &.c-no {
+                            width: 4%;
+                            text-align: center;
+                        }
+                        &.c-project-name {
+                            width: 26%;
+                            padding: 0 5px;
+                        }
+                        &.c-project-manager {
+                            width: 16%;
+                            padding: 0 5px;
+                        }
+                        &.c-start-date, &.c-end-date {
+                            width: 14%;
+                            text-align: center;
+                            padding: 0 5px;
+                        }
+                        &.c-role {
+                            width: 17%;
+                            padding: 0 5px;
+                        }
+                        &.c-manday {
+                            width: 9%;
+                            text-align: right;
+                            padding: 0 15px 0 5px;
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
+                        }
+                    }
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.project-completed-table-my-profile {
     padding: 15px 0;
     &>h2 {
         text-transform: uppercase;
@@ -1040,7 +1145,7 @@
             color: #0D1B3C;
             thead {
                 tr {
-                    border-bottom: 1px solid #CED4DA;
+                    border-bottom: 0.5px solid #CED4DA;
                     th {
                         padding: 10px 0;
                         &.c-no {
@@ -1063,12 +1168,15 @@
                             left: 495px;
                             background: #FFFFFF;
                         }
+                        & > div {
+                            padding: 0 10px;
+                        }
                     }
                 }
             }
             tbody {
                 tr {
-                    border-bottom: 1px solid #CED4DA;
+                    border-bottom: 0.5px solid #CED4DA;
                     td {
                         padding: 10px 0;
                         &.c-no {
@@ -1097,7 +1205,7 @@
                             align-items: center;
                             justify-content: center;
                             height: 25px;
-                            width: 70%;
+                            width: 120px;
                             border-radius: 15px;
                             &.draft {
                                 background: #FFFFFF;
@@ -1155,6 +1263,17 @@
                                 color: #FFFFFF;
                             }
                         }
+                        & > div {
+                            padding: 0 10px;
+                        }
+                        .comment {
+                            -webkit-box-orient: vertical;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: normal;
+                        }
                     }
                     &:hover {
                         background: #FAEFE1;
@@ -1179,47 +1298,23 @@
             }
             .project-name {
                 width: 200px;
-                padding: 0 5px;
             }
             .project-manager {
                 width: 140px;
-                padding: 0 5px;
             }
             .start-date, .end-date {
-                width: 110px;
+                width: 120px;
                 text-align: center;
-                padding: 0 5px;
-            }
-            .end-date {
-                z-index: 0;
             }
             .role {
                 width: 120px;
-                padding: 0 5px;
             }
-            .effort {
-                width: 80px;
+            .manday {
+                width: 90px;
                 text-align: right;
-                padding: 0 5px;
             }
-            .planned-hours {
-                width: 120px;
-                text-align: right;
-                padding: 0 5px;
-            }
-            .actual-hours {
-                width: 100px;
-                text-align: right;
-                padding: 0 5px;
-            }
-            .review {
-                width: 150px;
-                text-align: center;
-                padding: 0 5px;
-            }
-            .review-comment {
-                width: 300px;
-                padding: 0 5px;
+            .professional-capacity-assessment, .attitude-behavior, .leadership-skill, .overall {
+                width: 250px;
             }
         }
     }

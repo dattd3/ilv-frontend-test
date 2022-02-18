@@ -4,8 +4,8 @@ import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
-import ListProjects from "./ListProjects"
 import ProjectInProgress from "./ProjectInProgress"
+import ProjectCompleted from "./ProjectCompleted"
 import UserInfo from './UserInfo'
 import LoadingModal from '../../../components/Common/LoadingModal'
 
@@ -54,7 +54,8 @@ function MyProfile() {
                         <ProjectInProgress title="I. Dự án đang tiến hành" projects={userProfile?.projectInProcess} />
                     </div>
                     <div className="project-completed">
-                        <ListProjects title="II. Dự án đã hoàn hành" projects={userProfile?.projectCloseds} />
+                        {/* <ProjectCompleted title="II. Dự án đã hoàn hành" projects={userProfile?.projectCloseds} /> */}
+                        <ProjectCompleted title="II. Dự án đã hoàn hành" projects={userProfile?.projectInProcess} />
                     </div>
                 </>
                 : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>

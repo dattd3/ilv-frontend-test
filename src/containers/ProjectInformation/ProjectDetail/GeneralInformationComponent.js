@@ -12,6 +12,7 @@ function GeneralInformationComponent(props) {
     const statusClassName = statusStyleMapping[processStatus?.key]?.className
     const complexityClassName = complexityColorMapping[complexity?.key]?.className || complexityColorMapping.Low.className
     const criticalityClassName = criticalityColorMapping[criticality?.key]?.className || criticalityColorMapping.NoCritical.className
+    const rsmBudgets = projectData.rsmBudgets
 
     return (
         <div className="general-information">
@@ -57,6 +58,28 @@ function GeneralInformationComponent(props) {
                     </tbody>
                 </table>
             </div>
+
+            {/* Ngân sách dự án  */}
+            {/* <div className="project-budget-table-wrapper">
+                <table className="project-budget-table">
+                    <thead>
+                        <tr>
+                            <th className='c-no'><div className='no'>#</div></th>
+                            <th className='c-category'><div className='category'>Hạng mục</div></th>
+                            <th className='c-currency'><div className='currency'>Tiền tệ</div></th>
+                            <th className='c-amount-money'><div className='amount-money'>Số tiền</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className='c-no'><div className='no'>{1}</div></td>
+                            <td className='c-category'><div className='category'>{projectData?.projectName || ''}</div></td>
+                            <td className='c-currency'><div className='currency'>{projectData?.projectShortName || ''}</div></td>
+                            <td className='c-amount-money'><div className='amount-money'>{projectData?.projectManager || ''}</div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> */}
         </div>
     )
 }
