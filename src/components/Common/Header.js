@@ -153,6 +153,8 @@ function Header(props) {
                                         return `/timesheet`
                                     case 20:
                                          return '/personal-info?tab=document'
+                                    case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
+                                        return `/project/${item?.userProfileHistoryId}`
                                     default:
                                         return `${item.url}`
                                 }
