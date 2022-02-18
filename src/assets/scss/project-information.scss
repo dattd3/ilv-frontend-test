@@ -1,5 +1,5 @@
 .list-projects-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     .wrap-table-list-projects {
         overflow: auto;
@@ -87,7 +87,6 @@
             }
             .pnl {
                 width: 160px;
-                // text-align: center;
             }
             .block {
                 width: 140px;
@@ -101,99 +100,152 @@
                 width: 110px;
                 text-align: center;
             }
+            .complexity, .criticality {
+                width: 120px;
+                text-align: center;
+            }
             .status {
-                width: 180px;
+                width: 160px;
                 text-align: center;
             }
             tbody {
                 color: #0D1B3C;
                 tr {
                     border-bottom: 1px solid #CED4DA;
+                    td {
+                        padding: 5px 0;
+                        // height: 45px;
+                        .complexity, .criticality {
+                            width: 100px;
+                            text-align: center;
+                            margin: 0 auto;
+                            .status {
+                                width: 90px;
+                                height: 30px;
+                                border-radius: 15px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #FFFFFF;
+                                border: 1px solid;
+                                font-weight: normal;
+                                font-size: 12px;
+                                cursor: default;
+                                &.low {
+                                    background: #2ED87C;
+                                }
+                                &.medium {
+                                    background: #FF7F00;
+                                }
+                                &.high {
+                                    background: #FF5370;
+                                }
+                                &.critical {
+                                    background: #FFFFFF;
+                                    color: #FF5370;
+                                    border-color: #FF5370;
+                                }
+                                &.no-critical {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border-color: #CED4DA;
+                                }
+                            }
+                        }
+                        .status {
+                            display: inline-flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 120px;
+                            font-size: 12px;
+                            height: 30px;
+                            border-radius: 15px;
+                            cursor: default;
+                            &.draft {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.deny-approval {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.open {
+                                background: #4099FF;
+                                color: #FFFFFF;
+                                cursor: pointer;
+                            }
+                            &.in-progress {
+                                background: #FFFFFF;
+                                color: #FF7F00;
+                                cursor: pointer;
+                                border: 1px solid #FF7F00;
+                            }
+                            &.cancelled {
+                                background: #FF5370;
+                                color: #FFFFFF;
+                                border-color: transparent;
+                            }
+                            &.pending-approval {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.deny {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.pending-review {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.re-open {
+                                background: #FFFFFF;
+                                color: #4099FF;
+                                border: 1px solid #4099FF;
+                            }
+                            &.pending-schedule {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.closed {
+                                background: #2ED87C;
+                                color: #FFFFFF;
+                            }
+                        }
+                        &.c-no {
+                            left: 0;
+                            background: #FFFFFF;
+                        }
+                        &.c-project-name {
+                            left: 45px;
+                            background: #FFFFFF;
+                        }
+                        &.c-short-name {
+                            left: 245px;
+                            background: #FFFFFF;
+                        }
+                        &.c-manager {
+                            left: 355px;
+                            background: #FFFFFF;
+                        }
+                        &.c-status {
+                            right: 0;
+                            background: #FFFFFF;
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
+                        }
+                    }
                     &:last-child {
                         border-bottom: none;
-                    }
-                }
-                td {
-                    padding: 5px 0;
-                    // height: 45px;
-                    .status {
-                        display: inline-flex;
-                        justify-content: center;
-                        width: 120px;
-                        font-size: 12px;
-                        padding: 5px;
-                        border-radius: 50px;
-                        cursor: default;
-                        &.draft {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.refuse-approval {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.open {
-                            background: #4099FF;
-                            color: #FFFFFF;
-                            cursor: pointer;
-                        }
-                        &.in-progress {
-                            background: #FFFFFF;
-                            color: #FF7F00;
-                            cursor: pointer;
-                            border: 1px solid #FF7F00;
-                        }
-                        &.cancelled {
-                            background: #FF5370;
-                            color: #FFFFFF;
-                            border-color: transparent;
-                        }
-                        &.waiting-approval {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.refuse-appraisal {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.waiting-appraisal {
-                            background: #FFFFFF;
-                            color: #0D1B3C;
-                            border: 1px solid #0D1B3C;
-                        }
-                        &.re-open {
-                            background: #FFFFFF;
-                            color: #4099FF;
-                            border: 1px solid #4099FF;
-                        }
-                        &.closed {
-                            background: #2ED87C;
-                            color: #FFFFFF;
-                        }
-                    }
-                    &.c-no {
-                        left: 0;
-                        background: #FFFFFF;
-                    }
-                    &.c-project-name {
-                        left: 45px;
-                        background: #FFFFFF;
-                    }
-                    &.c-short-name {
-                        left: 245px;
-                        background: #FFFFFF;
-                    }
-                    &.c-manager {
-                        left: 355px;
-                        background: #FFFFFF;
-                    }
-                    &.c-status {
-                        right: 0;
-                        background: #FFFFFF;
                     }
                 }
             }
@@ -202,7 +254,7 @@
 }
 
 .projects-detail-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     & > .project-name {
         display: flex;
@@ -306,6 +358,12 @@
                 }
                 tbody {
                     tr {
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
                         &:last-child {
                             border-bottom: none;
                         }
@@ -371,12 +429,18 @@
                 tbody {
                     tr {
                         border-bottom: 1px solid #CED4DA;
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
                         &:last-child {
                             border-bottom: none;
                         }
-                    }
-                    td {
-                        padding: 5px 0;
+                        td {
+                            padding: 5px 0;
+                        }
                     }
                 }
             }
@@ -392,19 +456,45 @@
             font-weight: bold;
             padding: 5px 10px;
         }
-        .report {
+        .report-block {
             display: flex;
             align-items: center;
-            background: #E2E9F1;
-            color: #0D1B3C;
-            padding: 5px 10px;
-            & > img {
-                margin: 0 8px;
+            .headcount, .total-manday {
+                flex: 1 1;
+                display: flex;
+                align-items: center;
+                background: #E2E9F1;
+                color: #0D1B3C;
+                padding: 5px 10px;
+                & > img {
+                    margin: 0 8px;
+                }
             }
         }
         .project-team-block {
             .project-structure-table-wrapper {
                 background: #FFFFFF;
+                overflow: auto;
+            background: #FFFFFF;
+            &::-webkit-scrollbar {
+                height: 8px;
+                background-color: #f5f5f5;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #a4afb7;
+                border-left: 1px solid #FFFFFF;
+                border-right: 1px solid #FFFFFF;
+                border-top: 1px solid #FFFFFF;
+                border-bottom: 1px solid #FFFFFF;
+                border-radius: 4px;
+            }
+            &::-webkit-scrollbar-track {
+                background-color: #d3d3d3;
+                border-left: 3.5px solid #FFFFFF;
+                border-right: 3.5px solid #FFFFFF;
+                border-top: 3.5px solid #FFFFFF;
+                border-bottom: 3.5px solid #FFFFFF;
+            }
                 .project-structure-table {
                     border-collapse: collapse;
                     width: 100%;
@@ -412,45 +502,61 @@
                     thead {
                         th {
                             padding: 10px 0;
+                            & > div {
+                                padding: 0 10px;
+                            }
                         }
                     }
-                    .c-no {
-                        width: 4%;
+                    .no {
+                        width: 45px;
                         text-align: center;
                     }
-                    .c-role {
-                        width: 7%;
+                    .role {
+                        width: 150px;
                     }
-                    .c-skill {
-                        width: 19%;
+                    .skill {
+                        width: 200px;
                     }
-                    .c-start-date {
-                        width: 10%;
+                    .manday {
+                        width: 110px;
                     }
-                    .c-end-date {
-                        width: 10%;
+                    .full-name {
+                        width: 160px;
                     }
-                    .c-effort {
-                        width: 9%;
+                    .email {
+                        width: 150px;
                     }
-                    .c-plan-hour {
-                        width: 10%;
+                    .source {
+                        width: 140px;
                     }
-                    .c-source {
-                        width: 11%;
+                    .pm-note {
+                        width: 220px;
                     }
-                    .c-note {
-                        width: 20%;
+                    .scheduler-note {
+                        width: 220px;
+                    }
+                    .start-date, .end-date {
+                        width: 120px;
+                        text-align: center;
                     }
                     tbody {
                         tr {
                             border-bottom: 0.5px solid #CED4DA;
+                            &:hover {
+                                background: #FAEFE1;
+                                td {
+                                    background: #FAEFE1;
+                                }
+                            }
                             &:last-child {
                                 border-bottom: none;
                             }
-                        }
-                        td {
-                            padding: 5px 0;
+                            td {
+                                padding: 5px 0;
+                                & > div {
+                                    padding: 0 10px;
+                                }
+                            }
                         }
                     }
                 }
@@ -474,13 +580,13 @@
                         text-align: center;
                     }
                     .c-pnl {
-                        width: 15%;
+                        width: 12%;
                     }
                     .c-full-name {
-                        width: 14%;
+                        width: 10%;
                     }
                     .c-email {
-                        width: 14%;
+                        width: 11%;
                     }
                     .c-interest-level {        
                         width: 12%;
@@ -488,25 +594,34 @@
                     .c-affect-level {
                         width: 13%;
                     }
+                    .c-role-in-project {
+                        width: 16%;
+                    }
                     .c-note {
-                        width: 28%;
+                        width: 22%;
                     }
                     tbody {
                         tr {
                             border-bottom: 0.5px solid #CED4DA;
+                            &:hover {
+                                background: #FAEFE1;
+                                td {
+                                    background: #FAEFE1;
+                                }
+                            }
                             &:last-child {
                                 border-bottom: none;
                             }
-                        }
-                        td {
-                            padding: 5px 0;
+                            td {
+                                padding: 5px 0;
+                            }
                         }
                     }
                 }
             }
         }
     }
-    
+
     .general-information {
         padding: 10px 0;
         .general-information-table-wrapper {
@@ -541,13 +656,11 @@
                 }
                 thead {
                     color: #0D1B3C;
-                    tr {
-                        border-bottom: 0.5px solid #CED4DA;
-                    }
                     th {
                         padding: 6px 0;
                         .customer, .time {
                             background: #CCDCF0;
+                            width: 100%;
                         }
                         .pnl, .block, .start-date, .end-date {
                             background: #E2E9F1;
@@ -576,8 +689,8 @@
                             right: 0;
                             background: #FFFFFF !important;
                         }
-                        &.c-customer {
-                            padding: 0 4px;
+                        &.c-time, &.c-customer {
+                            padding: 4px 4px 0 4px;
                         }
                     }
                 }
@@ -604,7 +717,6 @@
                 }
                 .pnl {
                     width: 160px;
-                    // text-align: center;
                 }
                 .block {
                     width: 140px;
@@ -618,6 +730,42 @@
                     width: 110px;
                     text-align: center;
                 }
+                .complexity, .criticality {
+                    width: 120px;
+                    text-align: center;
+                    .status {
+                        width: 90px;
+                        height: 24px;
+                        border-radius: 12px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #FFFFFF;
+                        border: 1px solid;
+                        font-weight: normal;
+                        font-size: 12px;
+                        cursor: default;
+                        &.low {
+                            background: #2ED87C;
+                        }
+                        &.medium {
+                            background: #FF7F00;
+                        }
+                        &.high {
+                            background: #FF5370;
+                        }
+                        &.critical {
+                            background: #FFFFFF;
+                            color: #FF5370;
+                            border-color: #FF5370;
+                        }
+                        &.no-critical {
+                            background: #FFFFFF;
+                            color: #0D1B3C;
+                            border-color: #CED4DA;
+                        }
+                    }
+                }
                 .status {
                     width: 180px;
                     text-align: center;
@@ -625,92 +773,100 @@
                 tbody {
                     color: #0D1B3C;
                     tr {
-                        border-bottom: 1px solid #CED4DA;
-                        &:last-child {
-                            border-bottom: none;
+                        border-top: 1px solid #CED4DA;
+                        td {
+                            padding: 5px 0;
+                            // height: 45px;
+                            .status {
+                                display: inline-flex;
+                                justify-content: center;
+                                width: 120px;
+                                font-size: 12px;
+                                padding: 5px;
+                                border-radius: 50px;
+                                cursor: default;
+                                &.draft {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.deny-approval {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.open {
+                                    background: #4099FF;
+                                    color: #FFFFFF;
+                                    cursor: pointer;
+                                }
+                                &.in-progress {
+                                    background: #FFFFFF;
+                                    color: #FF7F00;
+                                    cursor: pointer;
+                                    border: 1px solid #FF7F00;
+                                }
+                                &.cancelled {
+                                    background: #FF5370;
+                                    color: #FFFFFF;
+                                    border-color: transparent;
+                                }
+                                &.pending-approval {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.deny {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.pending-schedule {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.pending-review {
+                                    background: #FFFFFF;
+                                    color: #0D1B3C;
+                                    border: 1px solid #0D1B3C;
+                                }
+                                &.re-open {
+                                    background: #FFFFFF;
+                                    color: #4099FF;
+                                    border: 1px solid #4099FF;
+                                }
+                                &.closed {
+                                    background: #2ED87C;
+                                    color: #FFFFFF;
+                                }
+                            }
+                            &.c-no {
+                                left: 0;
+                                background: #FFFFFF;
+                            }
+                            &.c-project-name {
+                                left: 45px;
+                                background: #FFFFFF;
+                            }
+                            &.c-short-name {
+                                left: 245px;
+                                background: #FFFFFF;
+                            }
+                            &.c-manager {
+                                left: 355px;
+                                background: #FFFFFF;
+                            }
+                            &.c-status {
+                                right: 0;
+                                background: #FFFFFF;
+                            }
                         }
-                    }
-                    td {
-                        padding: 5px 0;
-                        // height: 45px;
-                        .status {
-                            display: inline-flex;
-                            justify-content: center;
-                            width: 120px;
-                            font-size: 12px;
-                            padding: 5px;
-                            border-radius: 50px;
-                            cursor: default;
-                            &.draft {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
                             }
-                            &.refuse-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.open {
-                                background: #4099FF;
-                                color: #FFFFFF;
-                                cursor: pointer;
-                            }
-                            &.in-progress {
-                                background: #FFFFFF;
-                                color: #FF7F00;
-                                cursor: pointer;
-                                border: 1px solid #FF7F00;
-                            }
-                            &.cancelled {
-                                background: #FF5370;
-                                color: #FFFFFF;
-                                border-color: transparent;
-                            }
-                            &.waiting-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.refuse-appraisal {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.waiting-appraisal {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.re-open {
-                                background: #FFFFFF;
-                                color: #4099FF;
-                                border: 1px solid #4099FF;
-                            }
-                            &.closed {
-                                background: #2ED87C;
-                                color: #FFFFFF;
-                            }
-                        }
-                        &.c-no {
-                            left: 0;
-                            background: #FFFFFF;
-                        }
-                        &.c-project-name {
-                            left: 45px;
-                            background: #FFFFFF;
-                        }
-                        &.c-short-name {
-                            left: 245px;
-                            background: #FFFFFF;
-                        }
-                        &.c-manager {
-                            left: 355px;
-                            background: #FFFFFF;
-                        }
-                        &.c-status {
-                            right: 0;
-                            background: #FFFFFF;
                         }
                     }
                 }
@@ -720,14 +876,14 @@
 }
 
 .my-profile-page {
-    font-size: 13px;
+    font-size: 14px;
     padding: 10px 0 0 0;
     .info {
         background: url("../img/icon/Icon_Edge.svg") #171717;
         background-repeat: no-repeat;
         background-position: right;
         background-size: contain;
-        height: 150px;
+        height: 160px;
         display: flex;
         border-bottom: 4px solid #F2B153;
         .left {
@@ -765,7 +921,7 @@
             display: flex;
             align-items: center;
             .right-content {
-                height: 60%;
+                height: 70%;
                 width: 100%;
                 padding-left: 15px;
                 border-left: 0.5px solid #F2B153;
@@ -777,6 +933,7 @@
                     justify-content: space-between;
                     .full-name-and-job-title {
                         color: #F2B153;
+                        margin-bottom: 4px;
                         .full-name {
                             text-transform: uppercase;
                             font-size: 15px;
@@ -784,34 +941,32 @@
                         }
                         .job-title {
                             font-size: 12px;
+                            margin-top: -2px;
                         }
                     }
                     .other-info {
-                        display: flex;
                         color: #FFFFFF;
                         font-size: 13px;
                         img {
                             width: 13px;
                             margin-right: 5px;
                         }
-                        .col-second {
-                            margin-left: 20px;
-                        }
-                        .row-first {
+                        .row-info {
                             display: flex;
                             align-items: center;
-                            height: 30px;
-                            .code, .email {
+                            padding: 2px 0;
+                            .code, .email, .seniority {
                                 display: flex;
                                 align-items: center;
-                                margin-right: 30px;
+                                margin-right: 15px;
                             }
-                            .email {
+                            .seniority {
                                 margin-right: 0;
                             }
-                        }
-                        .row-second {
-                            height: 30px;
+                            .position {
+                                display: flex;
+                                align-items: center;
+                            }
                             .skill-block {
                                 display: flex;
                                 align-items: center;
@@ -876,8 +1031,82 @@
     }
 }
 
-// Common styles
-.project-list-table-my-profile {
+.project-in-progress-table-my-profile {
+    padding: 15px 0;
+    &>h2 {
+        text-transform: uppercase;
+        font-size: 16px;
+        font-weight: bold;
+        color: #0D1B3C;
+        background: rgba(242, 177, 83, 0.1);
+        padding: 6px;
+        margin-bottom: 0.5rem;
+    }
+    .project-table-wrapper {
+        background: #FFFFFF;
+        .project-table-my-profile {
+            width: 100%;
+            border-collapse: collapse;
+            color: #0D1B3C;
+            thead {
+                tr {
+                    border-bottom: 1px solid #CED4DA;
+                    th {
+                        padding: 10px 0;
+                        &.c-manday {
+                            padding: 10px 15px 10px 0;
+                        }
+                    }
+                }
+            }
+            tbody {
+                tr {
+                    border-bottom: 1px solid #CED4DA;
+                    td {
+                        padding: 10px 0;
+                        &.c-no {
+                            width: 4%;
+                            text-align: center;
+                        }
+                        &.c-project-name {
+                            width: 26%;
+                            padding: 0 5px;
+                        }
+                        &.c-project-manager {
+                            width: 16%;
+                            padding: 0 5px;
+                        }
+                        &.c-start-date, &.c-end-date {
+                            width: 14%;
+                            text-align: center;
+                            padding: 0 5px;
+                        }
+                        &.c-role {
+                            width: 17%;
+                            padding: 0 5px;
+                        }
+                        &.c-manday {
+                            width: 9%;
+                            text-align: right;
+                            padding: 0 15px 0 5px;
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
+                        }
+                    }
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.project-completed-table-my-profile {
     padding: 15px 0;
     &>h2 {
         text-transform: uppercase;
@@ -916,7 +1145,7 @@
             color: #0D1B3C;
             thead {
                 tr {
-                    border-bottom: 1px solid #CED4DA;
+                    border-bottom: 0.5px solid #CED4DA;
                     th {
                         padding: 10px 0;
                         &.c-no {
@@ -939,12 +1168,15 @@
                             left: 495px;
                             background: #FFFFFF;
                         }
+                        & > div {
+                            padding: 0 10px;
+                        }
                     }
                 }
             }
             tbody {
                 tr {
-                    border-bottom: 1px solid #CED4DA;
+                    border-bottom: 0.5px solid #CED4DA;
                     td {
                         padding: 10px 0;
                         &.c-no {
@@ -973,14 +1205,14 @@
                             align-items: center;
                             justify-content: center;
                             height: 25px;
-                            width: 70%;
+                            width: 120px;
                             border-radius: 15px;
                             &.draft {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.refuse-approval {
+                            &.deny-approval {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
@@ -1001,17 +1233,22 @@
                                 color: #FFFFFF;
                                 border-color: transparent;
                             }
-                            &.waiting-approval {
+                            &.pending-approval {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.refuse-appraisal {
+                            &.deny {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
                             }
-                            &.waiting-appraisal {
+                            &.pending-review {
+                                background: #FFFFFF;
+                                color: #0D1B3C;
+                                border: 1px solid #0D1B3C;
+                            }
+                            &.pending-schedule {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
                                 border: 1px solid #0D1B3C;
@@ -1025,6 +1262,23 @@
                                 background: #2ED87C;
                                 color: #FFFFFF;
                             }
+                        }
+                        & > div {
+                            padding: 0 10px;
+                        }
+                        .comment {
+                            -webkit-box-orient: vertical;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: normal;
+                        }
+                    }
+                    &:hover {
+                        background: #FAEFE1;
+                        td {
+                            background: #FAEFE1;
                         }
                     }
                     &:last-child {
@@ -1044,47 +1298,23 @@
             }
             .project-name {
                 width: 200px;
-                padding: 0 5px;
             }
             .project-manager {
                 width: 140px;
-                padding: 0 5px;
             }
             .start-date, .end-date {
-                width: 110px;
+                width: 120px;
                 text-align: center;
-                padding: 0 5px;
-            }
-            .end-date {
-                z-index: 0;
             }
             .role {
                 width: 120px;
-                padding: 0 5px;
             }
-            .effort {
-                width: 80px;
+            .manday {
+                width: 90px;
                 text-align: right;
-                padding: 0 5px;
             }
-            .planned-hours {
-                width: 120px;
-                text-align: right;
-                padding: 0 5px;
-            }
-            .actual-hours {
-                width: 100px;
-                text-align: right;
-                padding: 0 5px;
-            }
-            .review {
-                width: 150px;
-                text-align: center;
-                padding: 0 5px;
-            }
-            .review-comment {
-                width: 300px;
-                padding: 0 5px;
+            .professional-capacity-assessment, .attitude-behavior, .leadership-skill, .overall {
+                width: 250px;
             }
         }
     }
