@@ -19,6 +19,9 @@ function ProjectTeamComponent(props) {
         )
     }
 
+    console.log(222222222222)
+    console.log(rsmProjectTeams)
+
     return (
         <div className="project-team-block">
             {
@@ -35,10 +38,12 @@ function ProjectTeamComponent(props) {
                                     <th className='c-skill'><div className='skill'>Kỹ năng</div></th>
                                     <th className='c-start-date'><div className='start-date text-center'>Ngày bắt đầu</div></th>
                                     <th className='c-end-date'><div className='end-date text-center'>Ngày kết thúc</div></th>
-                                    <th className='c-effort'><div className='effort text-center'>% Effort</div></th>
-                                    <th className='c-plan-hour'><div className='plan-hour text-center'>Plan Hour</div></th>
+                                    <th className='c-manday'><div className='manday text-center'>Mandays</div></th>
+                                    <th className='c-full-name'><div className='full-name'>Họ và tên</div></th>
+                                    <th className='c-email'><div className='email'>Email</div></th>
                                     <th className='c-source'><div className='source'>Nguồn</div></th>
-                                    <th className='c-note'><div className='note'>Ghi chú</div></th>
+                                    <th className='c-pm-note'><div className='pm-note'>Ghi chú của PM</div></th>
+                                    <th className='c-scheduler-note'><div className='scheduler-note'>Ghi chú của Scheduler</div></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,10 +56,12 @@ function ProjectTeamComponent(props) {
                                             <td className='c-skill'><div className='skill'>{skills}</div></td>
                                             <td className='c-start-date'><div className='start-date text-center'>{item?.startDate && moment(item?.startDate).format("DD/MM/YYYY")}</div></td>
                                             <td className='c-end-date'><div className='end-date text-center'>{item?.endDate && moment(item?.endDate).format("DD/MM/YYYY")}</div></td>
-                                            <td className='c-effort'><div className='effort text-center'>{item?.effort || '0%'}</div></td>
-                                            <td className='c-plan-hour'><div className='plan-hour text-center'>{item?.plannedHours || 0}</div></td>
-                                            <td className='c-source'><div className='source'>{item?.resources}</div></td>
-                                            <td className='c-note'><div className='note'>{item?.note}</div></td>
+                                            <td className='c-manday'><div className='manday text-center'>{item?.manDays || 0}</div></td>
+                                            <td className='c-full-name'><div className='full-name'>{item?.rsmResources?.fullName || ""}</div></td>
+                                            <td className='c-email'><div className='email text-truncate'>{item?.rsmResources?.email || ""}</div></td>
+                                            <td className='c-source'><div className='source'>{item?.resources || ""}</div></td>
+                                            <td className='c-pm-note'><div className='pm-note'>{item?.note || ""}</div></td>
+                                            <td className='c-scheduler-note'><div className='scheduler-note'>{item?.schedulerNote || ""}</div></td>
                                         </tr>
                                     })
                                 }
