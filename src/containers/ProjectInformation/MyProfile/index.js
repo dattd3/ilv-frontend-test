@@ -54,8 +54,7 @@ function MyProfile() {
                         <ProjectInProgress title="I. Dự án đang tiến hành" projects={userProfile?.projectInProcess} />
                     </div>
                     <div className="project-completed">
-                        {/* <ProjectCompleted title="II. Dự án đã hoàn hành" projects={userProfile?.projectCloseds} /> */}
-                        <ProjectCompleted title="II. Dự án đã hoàn hành" projects={userProfile?.projectInProcess} />
+                        <ProjectCompleted title="II. Dự án đã hoàn hành" projects={userProfile?.projectCloseds} />
                     </div>
                 </>
                 : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
