@@ -278,6 +278,14 @@
         border-bottom: 1px solid #CED4DA;
         margin: 0;
     }
+    .table-title {
+        text-transform: uppercase;
+        font-size: 14px;
+        background: #CCDCF0;
+        color: #0D1B3C;
+        font-weight: bold;
+        padding: 5px 10px;
+    }
     .level-style {
         color: #FFFFFF;
         width: 80px;
@@ -624,6 +632,104 @@
 
     .general-information {
         padding: 10px 0;
+        .project-budget-table-wrapper {
+            margin-top: 5px;
+            .bottom-table-title {
+                display: flex;
+                align-items: center;
+                background: #E2E9F1;
+                color: #0D1B3C;
+                padding: 5px 10px;
+            }
+            .project-budget-table {
+                border-collapse: collapse;
+                width: 100%;
+                thead {
+                    color: #0D1B3C;
+                    th {
+                        padding: 6px 0;
+                    }
+                }
+                tbody {
+                    color: #0D1B3C;
+                    tr {
+                        border-top: 0.5px solid #CED4DA;
+                        td {
+                            padding: 5px 0;
+                            &.c-no {
+                                width: 4%;
+                                text-align: center;
+                            }
+                            &.c-category {
+                                width: 30%;
+                                padding: 0 5px;
+                            }
+                            &.c-currency {
+                                width: 10%;
+                                padding: 0 5px;
+                            }
+                            &.c-amount-money {
+                                width: 56%;
+                                padding: 0 5px;
+                            }
+                        }
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .risk-assessment-table-wrapper {
+            margin-top: 5px;
+            .bottom-table-title {
+                display: flex;
+                align-items: center;
+                background: #E2E9F1;
+                color: #0D1B3C;
+                padding: 5px 10px;
+            }
+            .risk-assessment-table {
+                border-collapse: collapse;
+                width: 100%;
+                thead {
+                    color: #0D1B3C;
+                    th {
+                        padding: 6px 0;
+                    }
+                }
+                tbody {
+                    color: #0D1B3C;
+                    tr {
+                        border-top: 0.5px solid #CED4DA;
+                        td {
+                            padding: 5px 0;
+                            &.c-no {
+                                width: 4%;
+                                text-align: center;
+                            }
+                            &.c-business-impact {
+                                width: 30%;
+                                padding: 0 5px;
+                            }
+                            &.c-urgency {
+                                width: 66%;
+                                padding: 0 5px;
+                            }
+                        }
+                        &:hover {
+                            background: #FAEFE1;
+                            td {
+                                background: #FAEFE1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         .general-information-table-wrapper {
             overflow: auto;
             background: #FFFFFF;

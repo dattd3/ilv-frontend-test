@@ -19,9 +19,6 @@ function ProjectTeamComponent(props) {
         )
     }
 
-    console.log(222222222222)
-    console.log(rsmProjectTeams)
-
     return (
         <div className="project-team-block">
             {
@@ -52,14 +49,14 @@ function ProjectTeamComponent(props) {
                                         let skills = renderSkills(item?.skills)
                                         return <tr key={index}>
                                             <td className='c-no'><div className='no'>{index + 1}</div></td>
-                                            <td className='c-role'><div className='role'>{item?.role || ""}</div></td>
+                                            <td className='c-role'><div className='role'>{item?.role?.value || ""}</div></td>
                                             <td className='c-skill'><div className='skill'>{skills}</div></td>
                                             <td className='c-start-date'><div className='start-date text-center'>{item?.startDate && moment(item?.startDate).format("DD/MM/YYYY")}</div></td>
                                             <td className='c-end-date'><div className='end-date text-center'>{item?.endDate && moment(item?.endDate).format("DD/MM/YYYY")}</div></td>
                                             <td className='c-manday'><div className='manday text-center'>{item?.manDays || 0}</div></td>
                                             <td className='c-full-name'><div className='full-name'>{item?.rsmResources?.fullName || ""}</div></td>
                                             <td className='c-email'><div className='email text-truncate'>{item?.rsmResources?.email || ""}</div></td>
-                                            <td className='c-source'><div className='source'>{item?.resources || ""}</div></td>
+                                            <td className='c-source'><div className='source'>{item?.resources?.value || ""}</div></td>
                                             <td className='c-pm-note'><div className='pm-note'>{item?.note || ""}</div></td>
                                             <td className='c-scheduler-note'><div className='scheduler-note'>{item?.schedulerNote || ""}</div></td>
                                         </tr>

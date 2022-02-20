@@ -6,9 +6,6 @@ function BusinessOwnerComponent(props) {
     const { t } = useTranslation()
     const { rsmBusinessOwners } = props
 
-    console.log(44444444444)
-    console.log(rsmBusinessOwners)
-
     return (
         <div className="business-owner-block">
             <div className="business-owner">Thông tin Business owner</div>

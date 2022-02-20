@@ -111,9 +111,6 @@ function ProjectDetail(props) {
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
 
-    console.log("kakakakakak")
-    console.log(projectData)
-
     return (
         <>
         <LoadingModal show={isLoading} />
