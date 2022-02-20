@@ -13,12 +13,43 @@ function GeneralInformationComponent(props) {
     const complexityClassName = complexityColorMapping[complexity?.key]?.className || complexityColorMapping.Low.className
     const criticalityClassName = criticalityColorMapping[criticality?.key]?.className || criticalityColorMapping.NoCritical.className
     const rsmBudgets = projectData.rsmBudgets
+    const rsmRisks = projectData.rsmRisks
+
+    const renderProjectBudget = () => {
+        return (rsmBudgets || []).map((item, i) => {
+            return <tr key={i}>
+                        <td className='c-no'><div className='no'>{i + 1}</div></td>
+                        <td className='c-category'><div className='category'>{item?.category || ''}</div></td>
+                        <td className='c-currency'><div className='currency'>{item?.currency || ''}</div></td>
+                        <td className='c-amount-money'><div className='amount-money'>{item?.amount || ''}</div></td>
+                    </tr>
+        })
+    }
+
+    const getProjectBudgetTotal = () => {
+        const total = (rsmBudgets || []).reduce((initial, current) => {
+            initial += current.amount || 0
+            return initial
+        }, 0)
+        return total ? `${total} ${rsmBudgets[0]?.currency}` : 0
+    }
+
+    const renderRiskAssessment = () => {
+        return (rsmRisks || []).map((item, i) => {
+            return <tr key={i}>
+                        <td className='c-no'><div className='no'>{i + 1}</div></td>
+                        <td className='c-business-impact'><div className='business-impact'>{item?.businessImpact || ''}</div></td>
+                        <td className='c-urgency'><div className='urgency'>{item?.urgency || ''}</div></td>
+                    </tr>
+        })
+    }
 
     return (
         <div className="general-information">
             <h2 className="title-block">I. Thông tin chung</h2>
             <hr className="line-seperate"></hr>
             <div className="general-information-table-wrapper">
+                <div className="table-title">Thông tin chung</div>
                 <table className="general-information-table">
                     <thead>
                         <tr>
@@ -60,26 +91,40 @@ function GeneralInformationComponent(props) {
             </div>
 
             {/* Ngân sách dự án  */}
-            {/* <div className="project-budget-table-wrapper">
+            <div className="project-budget-table-wrapper">
+                <div className="table-title">Ngân sách dự án</div>
                 <table className="project-budget-table">
                     <thead>
                         <tr>
-                            <th className='c-no'><div className='no'>#</div></th>
+                            <th className='c-no'><div className='no text-center'>#</div></th>
                             <th className='c-category'><div className='category'>Hạng mục</div></th>
                             <th className='c-currency'><div className='currency'>Tiền tệ</div></th>
                             <th className='c-amount-money'><div className='amount-money'>Số tiền</div></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className='c-no'><div className='no'>{1}</div></td>
-                            <td className='c-category'><div className='category'>{projectData?.projectName || ''}</div></td>
-                            <td className='c-currency'><div className='currency'>{projectData?.projectShortName || ''}</div></td>
-                            <td className='c-amount-money'><div className='amount-money'>{projectData?.projectManager || ''}</div></td>
-                        </tr>
+                        { renderProjectBudget() }
                     </tbody>
                 </table>
-            </div> */}
+                <div className="bottom-table-title">Tổng số tiền: {getProjectBudgetTotal()}</div>
+            </div>
+
+            {/* Đánh giá rủi ro  */}
+            <div className="risk-assessment-table-wrapper">
+                <div className="table-title">Đánh giá rủi ro</div>
+                <table className="risk-assessment-table">
+                    <thead>
+                        <tr>
+                            <th className='c-no'><div className='no text-center'>#</div></th>
+                            <th className='c-business-impact'><div className='business-impact'>Business Impact</div></th>
+                            <th className='c-urgency'><div className='urgency'>Urgency</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { renderRiskAssessment() }
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
