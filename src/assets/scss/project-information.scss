@@ -256,6 +256,380 @@
 .projects-detail-page {
     font-size: 14px;
     padding: 10px 0 0 0;
+    color: #0D1B3C;
+    & > .nav-tabs {
+        margin: 15px 0;
+        border-bottom: 0;
+        .nav-item {
+            background: #FFFFFF;
+            color: #F2B153;
+            border: 1px solid #F2B153;
+            border-radius: 3px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            &#project-detail-tabs-tab-plan {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            &#project-detail-tabs-tab-project-management {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                border-left: 0;
+            }
+            &.active {
+                background: #F2B153;
+                color: #FFFFFF;
+            }
+        }
+    }
+    .project-management {
+        background: #FFFFFF;
+        padding: 15px 10px;
+        font-size: 13px;
+        .col-left {
+            flex: 0 0 25%;
+        }
+        .col-right {
+            flex: 1 1;
+            margin-left: 15px;
+        }
+        .content {
+            .header-block {
+                // border-bottom: 1px solid #CED4DA;
+                padding-bottom: 10px;
+                .filter-block {
+                    padding: 0;
+                    .option-filter {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        margin-bottom: 15px;
+                        & > span {
+                            padding: 0 15px;
+                            height: 28px;
+                            display: inline-flex;
+                            align-items: center;
+                            font-size: 12px;
+                            cursor: pointer;
+                            &.week {
+                                background: rgba(242, 177, 83, 0.1);
+                                color: #F2B153;
+                                border-radius: 15px;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                }
+                .other-filter-block {
+                    display: flex;
+                    .col-left {
+                        .row-date {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            .date-filter {
+                                flex: 0 0 46%;
+                                .filter-from-date, .filter-to-date {
+                                    height: 30px;
+                                    font-size: inherit;
+                                }
+                                label {
+                                    margin-bottom: 5px;
+                                }
+                                input {
+                                    font-size: 13px;
+                                    padding: 0 0.75rem;
+                                    border: 1px solid #CED4DA;
+                                    &:active {
+                                        outline: none;
+                                    }
+                                    &:focus {
+                                        outline: none;
+                                        box-shadow: none;
+                                        border-color:#CED4DA;
+                                    }
+                                }
+                            }
+                        }
+                        .row-employee {
+                            margin-top: 10px;
+                            label {
+                                margin-bottom: 5px;
+                            }
+                        }
+                    }
+                    .col-right {
+                        border: 1px solid #CED4DA;
+                        .main-label {
+                            width: 150px;
+                            border-right: 1px solid #CED4DA;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            padding-left: 5px;
+                        }
+                        .main-data {
+                            flex: 1 1;
+                            display: flex;
+                            align-items: center;
+                            height: 100%;
+                            &.option {
+                                justify-content: center;
+                                img {
+                                    height: 10px;
+                                }
+                                & > span {
+                                    margin: 0 5px;
+                                }
+                                .ic-action {
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+                        .top-label {
+                            display: flex;
+                            align-items: center;
+                            height: 50%;
+                            border-bottom: 1px solid #CED4DA;
+                        }
+                        .bottom-label {
+                            display: flex;
+                            align-items: center;
+                            height: 50%;
+                            .day-item {
+                                width: 14.2857142857%;
+                                height: 100%;
+                                border-right: 1px solid #CED4DA;
+                                padding: 5px;
+                                &:last-child {
+                                    border-right: none;  
+                                }
+                                .st {
+                                    color: #0D1B3C;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .data-block {
+                .data-item {
+                    display: flex;
+                    margin: 10px 0;
+                    .col-left {
+                        max-width: 25%;
+                        .user-info {
+                            width: 100%;
+                            border: 1px solid #CED4DA;
+                            padding: 10px 5px 5px 5px;
+                            position: relative;
+                            .source {
+                                position: absolute;
+                                font-size: 11px;
+                                top: -1px;
+                                left: -1px;
+                                display: inline-block;
+                                padding: 2px 5px;
+                                border: 1px solid #FF7F00;
+                                color: #FF7F00;
+                                border-bottom-right-radius: 3px;
+                            }
+                            .avatar-block {
+                                width: 100%;
+                                text-align: center;
+                                img {
+                                    width: 45px;
+                                    height: 45px;
+                                    object-fit: cover;
+                                    border-radius: 50%;
+                                }
+                            }
+                            .full-name {
+                                text-align: center;
+                                font-weight: bold;
+                                padding: 5px 0 0 0;
+                            }
+                            .title {
+                                text-align: center;
+                            }
+                            .other-info {
+                                padding: 15px 0 5px 0;
+                                font-size: 11px;
+                                img {
+                                    margin-right: 3px;
+                                }
+                                .first {
+                                    display: flex;
+                                    align-items: center;
+                                    .employee-no {
+                                        flex: 0 0 40%;
+                                        display: flex;
+                                        align-items: center;
+                                    }
+                                    .pool {
+                                        flex: 1 1;
+                                        display: flex;
+                                        align-items: center;
+                                    }
+                                }
+                                .second {
+                                    display: flex;
+                                    align-items: center;
+                                    .email {
+                                        flex: 0 0 40%;
+                                        max-width: 40%;
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        align-items: center;
+                                        & > span {
+                                            min-width: 0;
+                                            flex-basis: 80%;
+                                            display: block;
+                                            text-overflow: ellipsis;
+                                            overflow: hidden;
+                                            white-space: nowrap;
+                                        }
+                                    }
+                                    .skill {
+                                        flex: 1 1;
+                                        display: flex;
+                                        align-items: center;
+                                        .skills {
+                                            display: flex;
+                                            align-items: center;
+                                            list-style: none;
+                                            margin: 0;
+                                            padding: 0;
+                                            font-size: 11px;
+                                            & > li {
+                                                padding: 0 5px;
+                                                height: 24px;
+                                                line-height: 24px;
+                                                background: #F2F2F2;
+                                                color: #2C72C6;
+                                                border-radius: 12px;
+                                                margin: 0 2px;
+                                                &:first-child {
+                                                    margin-left: 0;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .col-right {
+                        .time-sheet-item {
+                            display: flex;
+                            align-items: center;
+                            height: 100%;
+                            border: 1px solid #CED4DA;
+                            .col-first {
+                                width: 150px;
+                                display: flex;
+                                align-items: center;
+                                flex-direction: column;
+                                height: 100%;
+                                border-right: 1px solid #CED4DA;
+                                .planned {
+                                    width: 100%;
+                                    height: 50%;
+                                    border-bottom: 1px solid #CED4DA;
+                                    padding-left: 5px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    justify-content: center;
+                                }
+                                .actual {
+                                    width: 100%;
+                                    height: 50%;
+                                    padding-left: 5px;
+                                    display: flex;
+                                    align-items: center;
+                                    font-weight: bold;
+                                }
+                            }
+                            .col-item {
+                                flex: 1 1;
+                                display: flex;
+                                align-items: center;
+                                height: 100%;
+                                .item {
+                                    width: 14.2857142857%;
+                                    height: 100%;
+                                    border-right: 1px solid #CED4DA;
+                                    .top {
+                                        height: 50%;
+                                        padding: 0 5px;
+                                        border-bottom: 1px solid #CED4DA;
+                                        display: flex;
+                                        align-items: center;
+                                        font-weight: bold;
+                                        position: relative;
+                                        .note {
+                                            position: absolute;
+                                            top: 0;
+                                            right: 0;
+                                        }
+                                    }
+                                    .bottom {
+                                        height: 50%;
+                                        padding: 0 5px;
+                                        display: flex;
+                                        align-items: center;
+                                        font-weight: bold;
+                                        position: relative;
+                                        .status {
+                                            position: absolute;
+                                            top: 4px;
+                                            right: 2px;
+                                            font-weight: normal;
+                                            font-size: 10px;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            height: 18px;
+                                            padding: 0 5px;
+                                            border-radius: 9px;
+                                            &.approved {
+                                                border: 1px solid #2ED87C;
+                                                color: #2ED87C;
+                                            }
+                                            &.pending {
+                                                border: 1px solid #CED4DA;
+                                                color: #0D1B3C;
+                                            }
+                                        }
+                                        .time {
+                                            input {
+                                                width: 60%;
+                                                border: 1px solid #CED4DA;
+                                                &:focus {
+                                                    outline: none;
+                                                }
+                                                &:active {
+                                                    outline: none;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    &:nth-child(7) {
+                                        border-right: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    &.me {
+                        border-top: 1px solid #CED4DA;
+                        border-bottom: 1px solid #CED4DA;
+                        padding: 10px 0;
+                    }
+                }
+            }
+        }
+    }
     & > .project-name {
         display: flex;
         align-items: center;
@@ -343,6 +717,7 @@
             }
             &.cancel {
                 background: #C2C2C2;
+                text-decoration: none;
             }
             &.apply {
                 background: #347EF9;

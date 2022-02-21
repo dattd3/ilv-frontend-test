@@ -7,7 +7,6 @@ import IconCheck from '../../../assets/img/icon/Icon_Check.svg'
 
 function ButtonComponent(props) {
     const { t } = useTranslation()
-    // const { rsmBusinessOwners } = props
 
     const handleApply = () => {
         props.handleApply()
@@ -15,7 +14,7 @@ function ButtonComponent(props) {
 
     return (
         <div className="button-block">
-            <button className="button cancel"><Image src={IconCancel} alt="Hủy" />Hủy</button>
+            <a className="button cancel" href="/my-projects"><Image src={IconCancel} alt="Hủy" />Hủy</a>
             <button className="button apply" onClick={handleApply}><Image src={IconCheck} alt="Ứng tuyển" />Ứng tuyển </button>
         </div>
     )
