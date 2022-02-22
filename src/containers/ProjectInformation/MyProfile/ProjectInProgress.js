@@ -14,7 +14,7 @@ function ProjectInProgress(props) {
                 <td className="c-project-manager"><div className="project-manager text-truncate">{item?.projectManager || ''}</div></td>
                 <td className="c-start-date"><div className="start-date">{item?.startDate && moment(item.startDate).format('DD/MM/YYYY')}</div></td>
                 <td className="c-end-date"><div className="end-date">{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
-                <td className="c-role"><div className="role text-truncate">{item?.role || ''}</div></td>
+                <td className="c-role"><div className="role text-truncate">{item?.role?.value || ''}</div></td>
                 <td className="c-manday"><div className="manday text-right">{item?.manDays || 0}</div></td>
             </tr>
         })
@@ -35,7 +35,7 @@ function ProjectInProgress(props) {
                                 <th className="c-project-manager"><div className="project-manager">Quản lý dự án</div></th>
                                 <th className="c-start-date text-center"><div className="start-date">Ngày bắt đầu</div></th>
                                 <th className="c-end-date text-center"><div className="end-date">Ngày kết thúc</div></th>
-                                <th className="c-role"><div className="role">Vai trò</div></th>
+                                <th className="c-role"><div className="role">Năng lực chuyên môn</div></th>
                                 <th className="c-manday"><div className="manday text-right">Mandays</div></th>
                             </tr>
                         </thead>

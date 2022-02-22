@@ -20,7 +20,7 @@ function ProjectCompleted(props) {
                         <td className="sticky-column c-project-manager"><div className="project-manager text-truncate" title={item?.projectManager || ''}>{item?.projectManager || ''}</div></td>
                         <td className="sticky-column c-start-date"><div className="start-date">{item?.startDate && moment(item.startDate).format('DD/MM/YYYY')}</div></td>
                         <td className="sticky-column c-end-date"><div className="end-date">{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
-                        <td className="c-role"><div className="role text-truncate" title={item?.role || ''}>{item?.role || ''}</div></td>
+                        <td className="c-role"><div className="role text-truncate" title={item?.role?.value || ''}>{item?.role?.value || ''}</div></td>
                         <td className="c-manday"><div className="manday">{item?.manDays || 0}</div></td>
                         <td className="c-professional-capacity-assessment">
                             <div className="professional-capacity-assessment">
@@ -65,7 +65,7 @@ function ProjectCompleted(props) {
                                 <th className="sticky-column c-project-manager"><div className="project-manager">Quản lý dự án</div></th>
                                 <th className="sticky-column c-start-date"><div className="start-date">Ngày bắt đầu</div></th>
                                 <th className="sticky-column c-end-date"><div className="end-date">Ngày kết thúc</div></th>
-                                <th className="c-role"><div className="role">Vai trò</div></th>
+                                <th className="c-role"><div className="role">Năng lực chuyên môn</div></th>
                                 <th className="c-manday"><div className="manday">Mandays</div></th>
                                 <th className="c-professional-capacity-assessment"><div className="professional-capacity-assessment">Năng lực chuyên môn</div></th>
                                 <th className="c-attitude-behavior"><div className="attitude-behavior">Hành vi thái độ</div></th>
