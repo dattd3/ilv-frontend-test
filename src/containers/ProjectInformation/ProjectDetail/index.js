@@ -24,6 +24,7 @@ import IconMaNhanVienBlue from '../../../assets/img/icon/Icon_Manhanvien_Blue.sv
 import IconVitriBlue from '../../../assets/img/icon/Icon_Vitri_Blue.svg'
 import IconEmailBlue from '../../../assets/img/icon/Icon_Email_Blue.svg'
 import IconKyNangBlue from '../../../assets/img/icon/Icon_Kynang_Blue.svg'
+import IconCheckWhite from '../../../assets/img/icon/Icon_Check_White.svg'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -322,6 +323,41 @@ function ProjectDetail(props) {
 
     }
 
+    const submitTimeSheet = () => {
+        alert(1)
+    }
+
+    const setActualTimeForListTimeSheet = (timeSheets, index, val) => {
+        const result = (timeSheets || []).map((item, i) => {
+            return {
+                ...item,
+                actualHoursTemp: index === i ? val : item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours
+            }
+        })
+        return result
+    }
+
+    const handleChangeActualTime = (timeSheetIndex, e) => {
+        const value = e?.target?.value
+
+        console.log(timeSheetIndex)
+        console.log(value)
+
+        const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
+            if (item?.employeeId != currentEmployeeNoLogged) {
+                return item
+            }
+            return {
+                ...item,
+                timeSheets: setActualTimeForListTimeSheet(item?.timeSheets, timeSheetIndex, value)
+            }
+        })
+
+        console.log(projectTimeSheetOriginalTemp)
+
+        SetProjectTimeSheetOriginal(projectTimeSheetOriginalTemp)
+    }
+
     const handleChangeSelect = e => {
         const filterTemp = {...filter}
         filterTemp.employeeSelected = e
@@ -377,8 +413,9 @@ function ProjectDetail(props) {
         })
     };
 
-    console.log("===============================")
-    console.log(projectTimeSheetOriginal)
+    // console.log("===============================")
+    // console.log(projectTimeSheetFiltered)
+    // console.log(projectTimeSheetOriginal)
 
     return (
         <>
@@ -493,7 +530,7 @@ function ProjectDetail(props) {
                                                                     <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
                                                                 </div>
                                                                 <div className="second">
-                                                                    <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
+                                                                    <div className="email" title={item?.email || ""}><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
                                                                     <div className="skill">
                                                                         <Image src={IconKyNangBlue} alt='Skill' />
                                                                         <ul className="skills">
@@ -518,6 +555,7 @@ function ProjectDetail(props) {
                                                                 <div className="actual">Actual</div>
                                                             </div>             
                                                             <div className="col-item">
+                                                                { isMe && <button className="btn-submit" onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button>}
                                                                 {
                                                                     (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                         return <div className="item" key={tIndex}>
@@ -532,7 +570,7 @@ function ProjectDetail(props) {
                                                                                         <div className="time">
                                                                                             {
                                                                                                 isMe 
-                                                                                                ? <input type="text" placeholder="Nhập" value={""} />
+                                                                                                ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} />
                                                                                                 : `${timeSheet?.actualHours}h`
                                                                                             }
                                                                                         </div>

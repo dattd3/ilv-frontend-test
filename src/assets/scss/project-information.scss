@@ -434,7 +434,6 @@
                                 padding: 2px 5px;
                                 border: 1px solid #FF7F00;
                                 color: #FF7F00;
-                                border-bottom-right-radius: 3px;
                             }
                             .avatar-block {
                                 width: 100%;
@@ -560,6 +559,24 @@
                                 display: flex;
                                 align-items: center;
                                 height: 100%;
+                                position: relative;
+                                .btn-submit {
+                                    border: none;
+                                    position: absolute;
+                                    right: -1px;
+                                    top: 0;
+                                    background: #347EF9;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    width: 22px;
+                                    height: 100%;
+                                    z-index: 2;
+                                    outline: none;
+                                    img {
+                                        width: 10px;
+                                    }
+                                }
                                 .item {
                                     width: 14.2857142857%;
                                     height: 100%;
@@ -633,6 +650,17 @@
                         border-top: 1px solid #CED4DA;
                         border-bottom: 1px solid #CED4DA;
                         padding: 10px 0;
+                        .col-right {
+                            .time-sheet-item {
+                                .col-item {
+                                    .item {
+                                        &:nth-child(7) {
+                                            border-right: 1px solid #CED4DA;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
