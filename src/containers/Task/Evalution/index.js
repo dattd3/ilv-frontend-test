@@ -166,7 +166,7 @@ class RequestComponent extends React.Component {
       <ResultModal show={modal.isShowStatusModal} title="Thông báo" message={modal.textContentStatusModal} isSuccess={modal.isSuccessStatusModal} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
       {this.state.dataResponse ?
       <>
-      <div className="task-section">
+      <div className="task-section1">
         <div className="block-title" >
           <h4 className="title text-uppercase">QUẢN LÝ THÔNG TIN ĐÁNH GIÁ CÔNG VIỆC</h4>
         </div>
