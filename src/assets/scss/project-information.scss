@@ -407,6 +407,7 @@
                                 }
                                 .st {
                                     color: #0D1B3C;
+                                    text-transform: capitalize;
                                 }
                             }
                         }
@@ -541,6 +542,9 @@
                                     display: flex;
                                     flex-direction: column;
                                     justify-content: center;
+                                    .range-time {
+                                        font-size: 12px;
+                                    }
                                 }
                                 .actual {
                                     width: 100%;
@@ -599,6 +603,10 @@
                                             &.pending {
                                                 border: 1px solid #CED4DA;
                                                 color: #0D1B3C;
+                                            }
+                                            &.denied {
+                                                border: 1px solid #FF5370;
+                                                color: #FF5370;
                                             }
                                         }
                                         .time {

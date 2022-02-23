@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { Tabs, Tab } from 'react-bootstrap'
 import Select from 'react-select'
 import DatePicker, {registerLocale } from 'react-datepicker'
 import axios from 'axios'
+import moment from 'moment'
+import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import NoteComponent from './NoteComponent'
@@ -27,9 +29,15 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
+const currentEmployeeNoLogged = localStorage.getItem('employeeNo')
+
 function ProjectDetail(props) {
     const { t } = useTranslation()
     const [projectData, SetProjectData] = useState({})
+    const [projectTimeSheetOriginal, SetProjectTimeSheetOriginal] = useState([])
+    const [projectTimeSheetFiltered, SetProjectTimeSheetFiltered] = useState([])
+    const [days, SetDays] = useState([])
+    const [dateChange, SetDateChange] = useState(null)
     const [isLoading, SetIsLoading] = useState(false)
     const [confirmModal, SetConfirmModal] = useState({isShow: false, confirmHeader: 'Xác nhận ứng tuyển', confirmContent: 'Bạn chắc chắn muốn tham gia dự án này?'})
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: ''})
@@ -40,37 +48,218 @@ function ProjectDetail(props) {
         employees: [],
         employeeSelected: []
     })
-    const projectId = props.match.params.id
+    const projectId = parseInt(props.match.params.id)
+    const [weekNumber, SetWeekNumber] = useState(moment().week())
+    const actionForWeek = {
+        previous: 0,
+        next: 1
+    }
+    const employeeSource = {
+        NOI_BO: 'NB',
+        THUE_NGOAI: 'TN'
+    }
+    const timeSheetStatusStyleMapping = {
+        0: {label: 'Pending', className: 'pending'},
+        1: {label: 'Approved', className: 'approved'},
+        2: {label: 'Denied', className: 'denied'}
+    }
+    const usePrevious = (value) => {
+        const ref = useRef()
+        useEffect(() => {
+            ref.current = value
+        })
+        return ref.current
+    }
+
+    const useHasChanged= (val) => {
+        const prevVal = usePrevious(val)
+        return !_.isEqual(prevVal, val)
+    }
+
+    const hasProjectDataChanged = useHasChanged(projectData)
 
     useEffect(() => {
-        const processProjectData = response => {
+        const dayTemps = getDaysOfWeekByDateOnWeek(moment())
+        setDateForFilter(dayTemps)
+        SetDays(dayTemps)
+    }, [])
+
+    useEffect(() => {
+        const prepareProjectDetailData = response => {
             if (response && response.data) {
                 const result = response.data.result
                 if (result && result.code == Constants.API_SUCCESS_CODE) {
                     const data = response.data?.data
-                    SetProjectData(data)
+                    return data
                 }
+                return null
             }
-            SetIsLoading(false)
+            return null
         }
 
         const getProjectDetail = async (projectId) => {
-            SetIsLoading(true)
             try {
                 const config = getRequestConfigurations()
                 config.params = {
                     id: projectId
                 }
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}projects/detail`, config)
-                processProjectData(response)
+                return prepareProjectDetailData(response)
             } catch (e) {
-                console.error(e)
-                SetIsLoading(false)
+                return null
             }
         }
 
-        getProjectDetail(projectId)
-    }, [])
+        const prepareProjectTimeSheetData = response => {
+            if (response && response.data) {
+                const result = response.data.result
+                if (result && result.code == Constants.API_SUCCESS_CODE) {
+                    let data = response.data?.data
+                    data = [...data].map(item => {
+                        return {
+                            ...item,
+                            rsmTimeSheets: (item?.rsmTimeSheet || []).sort((current, next) => {
+                                let first = moment(current.date, 'DD-MM-YYYY')
+                                let second = moment(next.date, 'DD-MM-YYYY')
+                                return first - second
+                            })
+                        }
+                    })
+
+                    const timeSheets = (data || []).map(item => {
+                        return {
+                            avatar: item?.rsmResources?.avatar,
+                            fullName: item?.rsmResources?.fullName,
+                            title: item?.rsmResources?.title,
+                            employeeId: item?.rsmResources?.employeeNo,
+                            position: item?.rsmResources?.postition,
+                            email: item?.rsmResources?.email,
+                            skills: item?.rsmResources?.skills ? JSON.parse(item?.rsmResources?.skills) : [],
+                            source: item?.resources,
+                            timeSheets: [],
+                            rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date)
+                        }
+                    })
+                    return timeSheets
+                }
+                return []
+            }
+            return []
+        }
+
+        const getProjectTimeSheetData = async (projectId, payload) => {
+            try {
+                const config = getRequestConfigurations()
+                const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/list-timesheet`, payload, config)
+                return prepareProjectTimeSheetData(response)
+            } catch (e) {
+                return []
+            }
+        }
+
+        const prepareUserTimeSheetData = response => {
+            if (response && response.data) {
+                const result = response.data.result
+                if (result && result.code == Constants.API_SUCCESS_CODE) {
+                    let data = response.data?.data
+                    data = data.sort((current, next) => {
+                        let first = moment(current.date, 'DD-MM-YYYY')
+                        let second = moment(next.date, 'DD-MM-YYYY')
+                        return first - second
+                    })
+                    .map(item => {
+                        return {
+                            date: item.date,
+                            hoursValue: item.hoursValue,
+                            is_holiday: item.is_holiday,
+                            pernr: item.pernr,
+                            username: item.username,
+                            status: item.status,
+                            actualHours: 0,
+                            rsmStatus: null
+                        }
+                    })
+                    const timeSheets = _.groupBy(data, item => item.pernr)
+                    return timeSheets
+                }
+                return null
+            }
+            return null
+        }
+
+        const getUserTimeSheetData = async (projectId, payload) => {
+            try {
+                const config = getRequestConfigurations()
+                const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/timeoverview`, payload, config)
+                return prepareUserTimeSheetData(response)
+            } catch (e) {
+                return null
+            }
+        }
+
+        const mappingActualHours = (arrayIncludeKey, objIncludeKey) => {
+            const result = (arrayIncludeKey || []).map(item => {
+                return {
+                    ...item,
+                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.hours : 0,
+                    rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
+                }
+            })
+
+            return result
+        }
+
+        const fetchData = async () => {
+            // SetIsLoading(true)
+            const projectDetailData = await getProjectDetail(projectId)
+            if (projectDetailData) {
+                const startDate = moment(days[0]).format('YYYY-MM-DD')
+                const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
+                const employeeIds = (projectDetailData?.rsmProjectTeams || []).map(item => item?.rsmResources?.employeeNo)
+                const payload = {
+                    employeeIds: employeeIds,
+                    projectId: projectId,
+                    startDate: startDate,
+                    endDate: endDate
+                }
+
+                let projectTimeSheetData = await getProjectTimeSheetData(projectId, payload)
+                const userTimeSheetData = await getUserTimeSheetData(projectId, payload)
+
+                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))
+                projectTimeSheetData = (projectTimeSheetData || []).map(item => {
+                    return {
+                        ...item,
+                        timeSheets: mappingActualHours(item?.timeSheets, item?.rsmTimeSheet)
+                    }
+                })
+                
+                SetProjectTimeSheetOriginal(projectTimeSheetData)
+
+                const filterTemp = {...filter}
+                filterTemp.employees = projectTimeSheetData.map(item => {
+                    return {
+                        value: item.employeeId,
+                        label: item.fullName
+                    }
+                })
+                SetFilter(filterTemp)
+            }
+        }
+
+        if (days && days.length > 0) {
+            fetchData()
+        }
+    }, [days])
+
+    const setDateForFilter = (dayInputs) => {
+        const startDate = moment(dayInputs[0]).format('YYYY-MM-DD')
+        const endDate = moment(dayInputs[dayInputs?.length - 1]).format('YYYY-MM-DD')
+        const filterTemp = {...filter}
+        filterTemp.fromDate = startDate
+        filterTemp.toDate = endDate
+        SetFilter(filterTemp)
+    }
 
     const handleApply = () => {
         const confirmModalTemp = {...confirmModal}
@@ -134,10 +323,51 @@ function ProjectDetail(props) {
     }
 
     const handleChangeSelect = e => {
+        const filterTemp = {...filter}
+        filterTemp.employeeSelected = e
+        const employeeIds = (e || []).map(item => item.value)
+        const projectTimeSheetFilteredTemp = projectTimeSheetOriginal.filter(item => employeeIds.includes(item.employeeId))
+        SetFilter(filterTemp)
+        SetProjectTimeSheetFiltered(projectTimeSheetFilteredTemp)
+    }
 
+    const handleChangeWeekNumber = (type) => {
+        if (weekNumber <= 1 && type === actionForWeek.previous) {
+            return
+        }
+
+        let dateOnWeekChanged = dateChange || moment()
+        let daysOfWeek = []
+        let weekNumberTemp = weekNumber
+        if (type === actionForWeek.next) {
+            weekNumberTemp += 1
+            dateOnWeekChanged = moment(dateOnWeekChanged).add(1, 'weeks')
+            daysOfWeek = getDaysOfWeekByDateOnWeek(dateOnWeekChanged)
+        } else {
+            weekNumberTemp -= 1
+            dateOnWeekChanged = moment(dateOnWeekChanged).subtract(1, 'weeks')
+            daysOfWeek = getDaysOfWeekByDateOnWeek(dateOnWeekChanged)
+        }
+
+        setDateForFilter(daysOfWeek)
+        SetWeekNumber(weekNumberTemp)
+        SetDateChange(dateOnWeekChanged)
+        SetDays(daysOfWeek)
+    }
+
+    const getDaysOfWeekByDateOnWeek = date => {
+        const weekStart = moment(date).clone().startOf('week')
+        const daysOfWeek = 6
+        let days = []
+        for (let i = 0; i <= daysOfWeek; i++) {
+          const date = moment(weekStart).add(i, 'days')
+          days.push(date)
+        }
+        return days
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
+    const rangeTimeFilter = `${filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''} - ${filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}`
 
     const customStyles = {
         control: base => ({
@@ -147,6 +377,9 @@ function ProjectDetail(props) {
         })
     };
 
+    console.log("===============================")
+    console.log(projectTimeSheetOriginal)
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -155,7 +388,7 @@ function ProjectDetail(props) {
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
         <div className="projects-detail-page">
             <h1 className="content-page-header project-name"><Image src={IconArrowLeft} alt='Arrow' />{projectData?.projectName}</h1>
-            <Tabs defaultActiveKey="plan" id="project-detail-tabs">
+            <Tabs defaultActiveKey="project-management" id="project-detail-tabs">
                 <Tab eventKey="plan" title='Kế hoạch' className="tab-item">
                     <GeneralInformationComponent projectData={projectData} />
                     <GoalComponent rsmTargets={rsmTargets} />
@@ -188,183 +421,134 @@ function ProjectDetail(props) {
                                             <div className="date-filter from">
                                                 <label>Từ ngày</label>
                                                 <DatePicker 
-                                                    selectsStart 
-                                                    selected={filter.fromDate}
-                                                    startDate={filter.fromDate}
-                                                    endDate={filter.toDate}
+                                                    selected={filter.fromDate && moment(filter.fromDate).isValid() ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
                                                     onChange={time => handleChangeDatePicker(time)}
                                                     dateFormat="dd/MM/yyyy"
+                                                    disabled
                                                     locale="vi"
                                                     className="form-control input filter-from-date" />
                                             </div>
                                             <div className="date-filter to">
                                                 <label>Đến ngày</label>
                                                 <DatePicker 
-                                                    selectsStart 
-                                                    selected={filter.toDate}
-                                                    startDate={filter.toDate}
-                                                    endDate={filter.toDate}
+                                                    selected={filter.toDate && moment(filter.toDate).isValid() ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
                                                     onChange={time => handleChangeDatePicker(time)}
                                                     dateFormat="dd/MM/yyyy"
+                                                    disabled
                                                     locale="vi"
                                                     className="form-control input filter-to-date" />
                                             </div>
                                         </div>
                                         <div className="row-employee">
                                             <label>Họ và tên</label>
-                                            <Select placeholder={'Chọn'} options={filter.employees} onChange={handleChangeSelect} styles={customStyles} />
+                                            <Select placeholder={'Chọn'} isMulti options={filter.employees} values={filter.employeeSelected} onChange={handleChangeSelect} />
                                         </div>
                                     </div>
                                     <div className="col-right">
                                         <div className="top-label">
                                             <div className="main-label font-weight-bold text-uppercase month">Tháng</div>
                                             <div className="main-data option">
-                                                <span className="ic-action"><Image src={IconArrowPrevious} alt='Previous' /></span>
-                                                <span className="font-weight-bold text-uppercase">Tuần 1</span>
-                                                <span className="ic-action"><Image src={IconArrowNext} alt='Next' /></span>
+                                                <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.previous)}><Image src={IconArrowPrevious} alt='Previous' /></span>
+                                                <span className="font-weight-bold text-uppercase">Tuần {weekNumber}</span>
+                                                <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.next)}><Image src={IconArrowNext} alt='Next' /></span>
                                             </div>
                                         </div>
                                         <div className="bottom-label">
                                             <div className="main-label font-weight-bold text-uppercase">Ngày</div>
                                             <div className="main-data">
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">01/01</div>
-                                                    <div className="st">Thứ Hai</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">02/01</div>
-                                                    <div className="st">Thứ Ba</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">03/01</div>
-                                                    <div className="st">Thứ Tư</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">04/01</div>
-                                                    <div className="st">Thứ Năm</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">05/01</div>
-                                                    <div className="st">Thứ Sáu</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">06/01</div>
-                                                    <div className="st">Thứ Bảy</div>
-                                                </div>
-                                                <div className="day-item">
-                                                    <div className="day font-weight-bold">07/01</div>
-                                                    <div className="st">Chủ nhật</div>
-                                                </div>
+                                                {
+                                                    (days || []).map((item, index) => {
+                                                        return <div className="day-item" key={index}>
+                                                                    <div className="day font-weight-bold">{item && moment(item).format('DD/MM')}</div>
+                                                                    <div className="st">{item && moment(item).format('dddd')}</div>
+                                                                </div>
+                                                    })
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="data-block">
-                                <div className="data-item me">
-                                    <div className="col-left">
-                                        <div className="user-info">
-                                            <span className="source">Thuê ngoài</span>
-                                            <div className="avatar-block"><Image src='https://znews-photo.zadn.vn/w660/Uploaded/bzwvopcg/2022_02_07/thumbff.jpg' /></div>
-                                            <div className="full-name">Nguyễn Văn Cường</div>
-                                            <div className="title">Chuyên viên Lập trình</div>
-                                            <div className="other-info">
-                                                <div className="first">
-                                                    <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />3651641</div>
-                                                    <div className="pool"><Image src={IconVitriBlue} alt='Pool' />BA</div>
-                                                </div>
-                                                <div className="second">
-                                                    <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>cuongnv56@vingroup.net</span></div>
-                                                    <div className="skill">
-                                                        <Image src={IconKyNangBlue} alt='Skill' />
-                                                        <ul className="skills">
-                                                            <li>Kotlin</li>
-                                                            <li>Javascript</li>
-                                                            <li>HTML</li>
-                                                        </ul>
+                                {
+                                    (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
+                                        let isMe = currentEmployeeNoLogged == item.employeeId
+
+                                        return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
+                                                    <div className="col-left">
+                                                        <div className="user-info">
+                                                            { item.source?.key == employeeSource.THUE_NGOAI && <span className="source">Thuê ngoài</span> }
+                                                            <div className="avatar-block">
+                                                            <Image src={`data:image/png;base64,${item?.avatar}`} alt="Avatar" className="avatar"
+                                                                onError={(e) => {
+                                                                    e.target.src = "/LogoVingroupCircle.svg"
+                                                                }}
+                                                            />
+                                                            </div>
+                                                            <div className="full-name">{item?.fullName || ""}</div>
+                                                            <div className="title">{item?.title || ""}</div>
+                                                            <div className="other-info">
+                                                                <div className="first">
+                                                                    <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />{item?.employeeId || ""}</div>
+                                                                    <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
+                                                                </div>
+                                                                <div className="second">
+                                                                    <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
+                                                                    <div className="skill">
+                                                                        <Image src={IconKyNangBlue} alt='Skill' />
+                                                                        <ul className="skills">
+                                                                            {
+                                                                                (item?.skills || []).map((item, sId) => {
+                                                                                    return <li key={sId}>{item}</li>
+                                                                                })
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-right">
+                                                        <div className="time-sheet-item">
+                                                            <div className="col-first">
+                                                                <div className="planned">
+                                                                    <div className="font-weight-bold">Planned Total</div>
+                                                                    <div className="range-time">{rangeTimeFilter}</div>
+                                                                </div>
+                                                                <div className="actual">Actual</div>
+                                                            </div>             
+                                                            <div className="col-item">
+                                                                {
+                                                                    (item?.timeSheets || []).map((timeSheet, tIndex) => {
+                                                                        return <div className="item" key={tIndex}>
+                                                                                    <div className="top">
+                                                                                        <span className="note">Note</span>
+                                                                                        <div className="time">{`${timeSheet?.hoursValue}h`}</div>
+                                                                                    </div>
+                                                                                    <div className="bottom">
+                                                                                        { timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> }
+                                                                                        {/* <span className="status pending">Pending</span>
+                                                                                        <span className="status approved">Approved</span> */}
+                                                                                        <div className="time">
+                                                                                            {
+                                                                                                isMe 
+                                                                                                ? <input type="text" placeholder="Nhập" value={""} />
+                                                                                                : `${timeSheet?.actualHours}h`
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                    })
+                                                                }
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-right">
-                                        <div className="time-sheet-item">
-                                            <div className="col-first">
-                                                <div className="planned">
-                                                    <div className="font-weight-bold">Planned Total</div>
-                                                    <div>01/12/2021 - 01/06/2021</div>
-                                                </div>
-                                                <div className="actual">Actual</div>
-                                            </div>             
-                                            <div className="col-item">
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <div className="time"><input type="text" placeholder="Nhập" value={""} /></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="data-item">
+                                    })
+                                }
+
+                                
+                                {/* <div className="data-item">
                                     <div className="col-left">
                                         <div className="user-info">
                                             <span className="source">Thuê ngoài</span>
@@ -473,7 +657,7 @@ function ProjectDetail(props) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
