@@ -213,6 +213,7 @@ function ProjectDetail(props) {
         const fetchData = async () => {
             // SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
+            SetProjectData(projectDetailData)
             if (projectDetailData) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
@@ -324,7 +325,8 @@ function ProjectDetail(props) {
     }
 
     const submitTimeSheet = () => {
-        alert(1) 
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAA")
+        console.log(projectTimeSheetOriginal)
 
         // https://rsm-api.cloudvst.net/api/projects/update-timesheet
     }
@@ -412,6 +414,9 @@ function ProjectDetail(props) {
     // console.log("===============================")
     // console.log(projectTimeSheetFiltered)
     // console.log(projectTimeSheetOriginal)
+
+    console.log(1211111111111)
+    console.log(projectData)
 
     return (
         <>
