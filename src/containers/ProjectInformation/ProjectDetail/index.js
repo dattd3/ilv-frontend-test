@@ -8,6 +8,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
+import { status } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import NoteComponent from './NoteComponent'
 import ProjectStructureComponent from './ProjectStructureComponent'
@@ -202,7 +203,7 @@ function ProjectDetail(props) {
             const result = (arrayIncludeKey || []).map(item => {
                 return {
                     ...item,
-                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.hours : 0,
+                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || 0 : 0,
                     rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
                 }
             })
@@ -311,12 +312,14 @@ function ProjectDetail(props) {
                 statusModalTemp.content = t("AnErrorOccurred")
             }
             SetStatusModal(statusModalTemp)
+            window.location.reload()
         } catch (e) {
             statusModalTemp.isShow = true
             statusModalTemp.isSuccess = false
             statusModalTemp.content = t("AnErrorOccurred")
             SetIsLoading(false)
             SetStatusModal(statusModalTemp)
+            window.location.reload();
         }
     }
 
@@ -324,11 +327,52 @@ function ProjectDetail(props) {
 
     }
 
-    const submitTimeSheet = () => {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAA")
-        console.log(projectTimeSheetOriginal)
+    const submitTimeSheet = async () => {
+        const statusModalTemp = {...statusModal}
+        try {
+            SetIsLoading(true)
+            const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
+            const { rsmTimeSheet, timeSheets } = dataToSubmit
+            const payload = (timeSheets || []).map(item => {
+                return {
+                    id: rsmTimeSheet[[item.date]][0]?.id,
+                    projectId: rsmTimeSheet[[item.date]][0]?.projectId,
+                    resourceId: rsmTimeSheet[[item.date]][0]?.resourceId,
+                    projetctTeamId: rsmTimeSheet[[item.date]][0]?.projetctTeamId,
+                    date: rsmTimeSheet[[item.date]][0]?.date,
+                    shift_Id: rsmTimeSheet[[item.date]][0]?.shift_Id,
+                    plannedTotal: rsmTimeSheet[[item.date]][0]?.plannedTotal,
+                    hours: rsmTimeSheet[[item.date]][0]?.hours,
+                    actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
+                    statusId: rsmTimeSheet[[item.date]][0]?.statusId,
+                    isEdit: rsmTimeSheet[[item.date]][0]?.isEdit
+                }
+            })
+            const config = getRequestConfigurations()
+            const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/update-timesheet`, payload, config)
 
-        // https://rsm-api.cloudvst.net/api/projects/update-timesheet
+            SetIsLoading(false)
+            statusModalTemp.isShow = true
+
+            if (response && response.data) {
+                const result = response.data.result
+                statusModalTemp.content = result?.message
+                if (result && result.code == Constants.API_SUCCESS_CODE) {
+                    statusModalTemp.isSuccess = true
+                } else {
+                    statusModalTemp.isSuccess = false
+                }
+            } else {
+                statusModalTemp.content = t("AnErrorOccurred")
+            }
+            SetStatusModal(statusModalTemp)
+        } catch (e) {
+            SetIsLoading(false)
+            statusModalTemp.isShow = true
+            statusModalTemp.isSuccess = false
+            statusModalTemp.content = t("AnErrorOccurred")
+            SetStatusModal(statusModalTemp)
+        }
     }
 
     const setActualTimeForListTimeSheet = (timeSheets, index, val) => {
@@ -415,9 +459,6 @@ function ProjectDetail(props) {
     // console.log(projectTimeSheetFiltered)
     // console.log(projectTimeSheetOriginal)
 
-    console.log(1211111111111)
-    console.log(projectData)
-
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -426,7 +467,7 @@ function ProjectDetail(props) {
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
         <div className="projects-detail-page">
             <h1 className="content-page-header project-name"><Image src={IconArrowLeft} alt='Arrow' />{projectData?.projectName}</h1>
-            <Tabs defaultActiveKey="project-management" id="project-detail-tabs">
+            <Tabs defaultActiveKey="plan" id="project-detail-tabs">
                 <Tab eventKey="plan" title='Kế hoạch' className="tab-item">
                     <GeneralInformationComponent projectData={projectData} />
                     <GoalComponent rsmTargets={rsmTargets} />
@@ -441,266 +482,269 @@ function ProjectDetail(props) {
                     <NoteComponent projectComment={projectComment} />
                     <ButtonComponent handleApply={handleApply} />
                 </Tab>
-                <Tab eventKey="project-management" title='Quản lý dự án'>
-                    <div className="table-title">Đội ngũ dự án</div>
-                    <div className="project-management">
-                        <div className="content">
-                            <div className="header-block">
-                                <div className="filter-block">
-                                    <div className="option-filter">
-                                        <span className="date">Ngày</span>
-                                        <span className="week">Tuần</span>
-                                        <span className="month">Tháng</span>
+                {
+                    projectData?.processStatusId == status.inProgress
+                    && <Tab eventKey="project-management" title='Quản lý dự án'>
+                        <div className="table-title">Đội ngũ dự án</div>
+                        <div className="project-management">
+                            <div className="content">
+                                <div className="header-block">
+                                    <div className="filter-block">
+                                        <div className="option-filter">
+                                            <span className="date">Ngày</span>
+                                            <span className="week">Tuần</span>
+                                            <span className="month">Tháng</span>
+                                        </div>
+                                    </div>
+                                    <div className="other-filter-block">
+                                        <div className="col-left">
+                                            <div className="row-date">
+                                                <div className="date-filter from">
+                                                    <label>Từ ngày</label>
+                                                    <DatePicker 
+                                                        selected={filter.fromDate && moment(filter.fromDate).isValid() ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                                        onChange={time => handleChangeDatePicker(time)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        disabled
+                                                        locale="vi"
+                                                        className="form-control input filter-from-date" />
+                                                </div>
+                                                <div className="date-filter to">
+                                                    <label>Đến ngày</label>
+                                                    <DatePicker 
+                                                        selected={filter.toDate && moment(filter.toDate).isValid() ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                                        onChange={time => handleChangeDatePicker(time)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        disabled
+                                                        locale="vi"
+                                                        className="form-control input filter-to-date" />
+                                                </div>
+                                            </div>
+                                            <div className="row-employee">
+                                                <label>Họ và tên</label>
+                                                <Select placeholder={'Chọn'} isMulti options={filter.employees} values={filter.employeeSelected} onChange={handleChangeSelect} />
+                                            </div>
+                                        </div>
+                                        <div className="col-right">
+                                            <div className="top-label">
+                                                <div className="main-label font-weight-bold text-uppercase month">Tháng</div>
+                                                <div className="main-data option">
+                                                    <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.previous)}><Image src={IconArrowPrevious} alt='Previous' /></span>
+                                                    <span className="font-weight-bold text-uppercase">Tuần {weekNumber}</span>
+                                                    <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.next)}><Image src={IconArrowNext} alt='Next' /></span>
+                                                </div>
+                                            </div>
+                                            <div className="bottom-label">
+                                                <div className="main-label font-weight-bold text-uppercase">Ngày</div>
+                                                <div className="main-data">
+                                                    {
+                                                        (days || []).map((item, index) => {
+                                                            return <div className="day-item" key={index}>
+                                                                        <div className="day font-weight-bold">{item && moment(item).format('DD/MM')}</div>
+                                                                        <div className="st">{item && moment(item).format('dddd')}</div>
+                                                                    </div>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="other-filter-block">
-                                    <div className="col-left">
-                                        <div className="row-date">
-                                            <div className="date-filter from">
-                                                <label>Từ ngày</label>
-                                                <DatePicker 
-                                                    selected={filter.fromDate && moment(filter.fromDate).isValid() ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                                    onChange={time => handleChangeDatePicker(time)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    disabled
-                                                    locale="vi"
-                                                    className="form-control input filter-from-date" />
-                                            </div>
-                                            <div className="date-filter to">
-                                                <label>Đến ngày</label>
-                                                <DatePicker 
-                                                    selected={filter.toDate && moment(filter.toDate).isValid() ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                                    onChange={time => handleChangeDatePicker(time)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    disabled
-                                                    locale="vi"
-                                                    className="form-control input filter-to-date" />
-                                            </div>
-                                        </div>
-                                        <div className="row-employee">
-                                            <label>Họ và tên</label>
-                                            <Select placeholder={'Chọn'} isMulti options={filter.employees} values={filter.employeeSelected} onChange={handleChangeSelect} />
-                                        </div>
-                                    </div>
-                                    <div className="col-right">
-                                        <div className="top-label">
-                                            <div className="main-label font-weight-bold text-uppercase month">Tháng</div>
-                                            <div className="main-data option">
-                                                <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.previous)}><Image src={IconArrowPrevious} alt='Previous' /></span>
-                                                <span className="font-weight-bold text-uppercase">Tuần {weekNumber}</span>
-                                                <span className="ic-action" onClick={() => handleChangeWeekNumber(actionForWeek.next)}><Image src={IconArrowNext} alt='Next' /></span>
-                                            </div>
-                                        </div>
-                                        <div className="bottom-label">
-                                            <div className="main-label font-weight-bold text-uppercase">Ngày</div>
-                                            <div className="main-data">
-                                                {
-                                                    (days || []).map((item, index) => {
-                                                        return <div className="day-item" key={index}>
-                                                                    <div className="day font-weight-bold">{item && moment(item).format('DD/MM')}</div>
-                                                                    <div className="st">{item && moment(item).format('dddd')}</div>
-                                                                </div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="data-block">
-                                {
-                                    (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
-                                        let isMe = currentEmployeeNoLogged == item.employeeId
+                                <div className="data-block">
+                                    {
+                                        (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
+                                            let isMe = currentEmployeeNoLogged == item.employeeId
 
-                                        return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
-                                                    <div className="col-left">
-                                                        <div className="user-info">
-                                                            { item.source?.key == employeeSource.THUE_NGOAI && <span className="source">Thuê ngoài</span> }
-                                                            <div className="avatar-block">
-                                                            <Image src={`data:image/png;base64,${item?.avatar}`} alt="Avatar" className="avatar"
-                                                                onError={(e) => {
-                                                                    e.target.src = "/LogoVingroupCircle.svg"
-                                                                }}
-                                                            />
-                                                            </div>
-                                                            <div className="full-name">{item?.fullName || ""}</div>
-                                                            <div className="title">{item?.title || ""}</div>
-                                                            <div className="other-info">
-                                                                <div className="first">
-                                                                    <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />{item?.employeeId || ""}</div>
-                                                                    <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
+                                            return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
+                                                        <div className="col-left">
+                                                            <div className="user-info">
+                                                                { item.source?.key == employeeSource.THUE_NGOAI && <span className="source">Thuê ngoài</span> }
+                                                                <div className="avatar-block">
+                                                                <Image src={`data:image/png;base64,${item?.avatar}`} alt="Avatar" className="avatar"
+                                                                    onError={(e) => {
+                                                                        e.target.src = "/LogoVingroupCircle.svg"
+                                                                    }}
+                                                                />
                                                                 </div>
-                                                                <div className="second">
-                                                                    <div className="email" title={item?.email || ""}><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
-                                                                    <div className="skill">
-                                                                        <Image src={IconKyNangBlue} alt='Skill' />
-                                                                        <ul className="skills">
-                                                                            {
-                                                                                (item?.skills || []).map((item, sId) => {
-                                                                                    return <li key={sId}>{item}</li>
-                                                                                })
-                                                                            }
-                                                                        </ul>
+                                                                <div className="full-name">{item?.fullName || ""}</div>
+                                                                <div className="title">{item?.title || ""}</div>
+                                                                <div className="other-info">
+                                                                    <div className="first">
+                                                                        <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />{item?.employeeId || ""}</div>
+                                                                        <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
+                                                                    </div>
+                                                                    <div className="second">
+                                                                        <div className="email" title={item?.email || ""}><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
+                                                                        <div className="skill">
+                                                                            <Image src={IconKyNangBlue} alt='Skill' />
+                                                                            <ul className="skills">
+                                                                                {
+                                                                                    (item?.skills || []).map((item, sId) => {
+                                                                                        return <li key={sId}>{item}</li>
+                                                                                    })
+                                                                                }
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="col-right">
-                                                        <div className="time-sheet-item">
-                                                            <div className="col-first">
-                                                                <div className="planned">
-                                                                    <div className="font-weight-bold">Planned Total</div>
-                                                                    <div className="range-time">{rangeTimeFilter}</div>
-                                                                </div>
-                                                                <div className="actual">Actual</div>
-                                                            </div>             
-                                                            <div className="col-item">
-                                                                { isMe && <button className="btn-submit" onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button>}
-                                                                {
-                                                                    (item?.timeSheets || []).map((timeSheet, tIndex) => {
-                                                                        return <div className="item" key={tIndex}>
-                                                                                    <div className="top">
-                                                                                        <span className="note">Note</span>
-                                                                                        <div className="time">{`${timeSheet?.hoursValue}h`}</div>
-                                                                                    </div>
-                                                                                    <div className="bottom">
-                                                                                        { timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> }
-                                                                                        {/* <span className="status pending">Pending</span>
-                                                                                        <span className="status approved">Approved</span> */}
-                                                                                        <div className="time">
-                                                                                            {
-                                                                                                isMe 
-                                                                                                ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} />
-                                                                                                : `${timeSheet?.actualHours}h`
-                                                                                            }
+                                                        <div className="col-right">
+                                                            <div className="time-sheet-item">
+                                                                <div className="col-first">
+                                                                    <div className="planned">
+                                                                        <div className="font-weight-bold">Planned Total</div>
+                                                                        <div className="range-time">{rangeTimeFilter}</div>
+                                                                    </div>
+                                                                    <div className="actual">Actual</div>
+                                                                </div>             
+                                                                <div className="col-item">
+                                                                    { isMe && <button className="btn-submit" onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button>}
+                                                                    {
+                                                                        (item?.timeSheets || []).map((timeSheet, tIndex) => {
+                                                                            return <div className="item" key={tIndex}>
+                                                                                        <div className="top">
+                                                                                            <span className="note">Note</span>
+                                                                                            <div className="time">{`${timeSheet?.hoursValue}h`}</div>
+                                                                                        </div>
+                                                                                        <div className="bottom">
+                                                                                            { timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> }
+                                                                                            {/* <span className="status pending">Pending</span>
+                                                                                            <span className="status approved">Approved</span> */}
+                                                                                            <div className="time">
+                                                                                                {
+                                                                                                    isMe 
+                                                                                                    ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} />
+                                                                                                    : `${timeSheet?.actualHours}h`
+                                                                                                }
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                    })
-                                                                }
+                                                                        })
+                                                                    }
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                    })
-                                }
+                                        })
+                                    }
 
-                                
-                                {/* <div className="data-item">
-                                    <div className="col-left">
-                                        <div className="user-info">
-                                            <span className="source">Thuê ngoài</span>
-                                            <div className="avatar-block"><Image src='https://znews-photo.zadn.vn/w660/Uploaded/bzwvopcg/2022_02_07/thumbff.jpg' /></div>
-                                            <div className="full-name">Nguyễn Văn Cường</div>
-                                            <div className="title">Chuyên viên Lập trình</div>
-                                            <div className="other-info">
-                                                <div className="first">
-                                                    <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />3651641</div>
-                                                    <div className="pool"><Image src={IconVitriBlue} alt='Pool' />BA</div>
-                                                </div>
-                                                <div className="second">
-                                                    <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>cuongnv56@vingroup.net</span></div>
-                                                    <div className="skill">
-                                                        <Image src={IconKyNangBlue} alt='Skill' />
-                                                        <ul className="skills">
-                                                            <li>Kotlin</li>
-                                                            <li>Javascript</li>
-                                                            <li>HTML</li>
-                                                        </ul>
+                                    
+                                    {/* <div className="data-item">
+                                        <div className="col-left">
+                                            <div className="user-info">
+                                                <span className="source">Thuê ngoài</span>
+                                                <div className="avatar-block"><Image src='https://znews-photo.zadn.vn/w660/Uploaded/bzwvopcg/2022_02_07/thumbff.jpg' /></div>
+                                                <div className="full-name">Nguyễn Văn Cường</div>
+                                                <div className="title">Chuyên viên Lập trình</div>
+                                                <div className="other-info">
+                                                    <div className="first">
+                                                        <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />3651641</div>
+                                                        <div className="pool"><Image src={IconVitriBlue} alt='Pool' />BA</div>
+                                                    </div>
+                                                    <div className="second">
+                                                        <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>cuongnv56@vingroup.net</span></div>
+                                                        <div className="skill">
+                                                            <Image src={IconKyNangBlue} alt='Skill' />
+                                                            <ul className="skills">
+                                                                <li>Kotlin</li>
+                                                                <li>Javascript</li>
+                                                                <li>HTML</li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-right">
-                                        <div className="time-sheet-item">
-                                            <div className="col-first">
-                                                <div className="planned">
-                                                    <div className="font-weight-bold">Planned Total</div>
-                                                    <div>01/12/2021 - 01/06/2021</div>
-                                                </div>
-                                                <div className="actual">Actual</div>
-                                            </div>             
-                                            <div className="col-item">
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
+                                        <div className="col-right">
+                                            <div className="time-sheet-item">
+                                                <div className="col-first">
+                                                    <div className="planned">
+                                                        <div className="font-weight-bold">Planned Total</div>
+                                                        <div>01/12/2021 - 01/06/2021</div>
                                                     </div>
-                                                    <div className="bottom">
-                                                        <span className="status approved">Approved</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="actual">Actual</div>
+                                                </div>             
+                                                <div className="col-item">
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                    <div className="bottom">
-                                                        <span className="status pending">Pending</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                    <div className="bottom">
-                                                        <span className="status approved">Approved</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
-                                                    <div className="bottom">
-                                                        <span className="status approved">Approved</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <span className="status pending">Pending</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <span className="status approved">Approved</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="top">
-                                                        <span className="note">Note</span>
-                                                        <div className="time">8h</div>
-                                                    </div>
-                                                    <div className="bottom">
-                                                        <span className="status approved">Approved</span>
-                                                        <div className="time">8h</div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div> */}
+                                    </div> */}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Tab>
+                    </Tab>
+                }
             </Tabs>
         </div>
         </>

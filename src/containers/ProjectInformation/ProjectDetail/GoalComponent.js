@@ -37,7 +37,7 @@ function GoalComponent(props) {
                                         <td className='c-goal-title'><div className='goal-title'>{item?.targetName || ""}</div></td>
                                         <td className='c-unit'><div className='unit'>{item?.unit || ""}</div></td>
                                         <td className='c-detail'><div className='detail'>{item?.explainDetails || ''}</div></td>
-                                        <td className='c-priority'><div className='priority status'><span className={`level-style ${levelColorMapping[item?.prioritize]?.className}`}>{item?.prioritize || ""}</span></div></td>
+                                        <td className='c-priority'><div className='priority text-center status'><span className={`level-style ${levelColorMapping[item?.prioritize]?.className}`}>{item?.prioritize || ""}</span></div></td>
                                         <td><div className='lsl text-center'>{item?.lsl || ''}</div></td>
                                         <td><div className='usl text-center'>{item?.usl || ''}</div></td>
                                     </tr>
