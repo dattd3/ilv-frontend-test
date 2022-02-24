@@ -70,9 +70,6 @@ function ProjectDetail(props) {
         1: {label: 'Approved', className: 'approved'},
         2: {label: 'Denied', className: 'denied'}
     }
-    const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
-    const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
-
     const usePrevious = (value) => {
         const ref = useRef()
         useEffect(() => {
@@ -146,27 +143,8 @@ function ProjectDetail(props) {
                             email: item?.rsmResources?.email,
                             skills: item?.rsmResources?.skills ? JSON.parse(item?.rsmResources?.skills) : [],
                             source: item?.resources,
-                            timeSheets: [],
-                            rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date),
-                            // rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
-                            rsmLeaveTypeAndComment: [
-                                {
-                                    baseTypeModel: {value: "PQ01", label: "Nghỉ phép năm"},
-                                    endDate: "20220223",
-                                    endTime: "1100",
-                                    startDate: "20220222",
-                                    startTime: "0900",
-                                    user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                                },
-                                {
-                                    baseTypeModel: {value: "WFH1", label: "WFH (Không CTP, có ăn ca)"},
-                                    endDate: "20220224",
-                                    endTime: "1730",
-                                    startDate: "20220224",
-                                    startTime: "0830",
-                                    user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                                }
-                            ]
+                            timeSheets: item?.rsmTimeSheets,
+                            rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date)
                         }
                     })
                     return timeSheets
@@ -186,63 +164,6 @@ function ProjectDetail(props) {
             }
         }
 
-        const prepareUserTimeSheetData = response => {
-            if (response && response.data) {
-                const result = response.data.result
-                if (result && result.code == Constants.API_SUCCESS_CODE) {
-                    let data = response.data?.data
-                    data = data.sort((current, next) => {
-                        let first = moment(current.date, 'DD-MM-YYYY')
-                        let second = moment(next.date, 'DD-MM-YYYY')
-                        return first - second
-                    })
-                    .map(item => {
-                        return {
-                            date: item.date,
-                            hoursValue: item.hoursValue,
-                            is_holiday: item.is_holiday,
-                            pernr: item.pernr,
-                            username: item.username,
-                            status: item.status,
-                            shift_id: item.shift_id,
-                            from_time1: item.from_time1, // Bắt đầu kế hoạch
-                            to_time1: item.to_time1, // Kết thúc kế hoạch
-                            start_time1_fact: item.start_time1_fact, // Bắt đầu thực tế
-                            end_time1_fact: item.end_time1_fact, // Kết thúc thực tế
-                            actualHours: 0,
-                            rsmStatus: null,
-                        }
-                    })
-                    const timeSheets = _.groupBy(data, item => item.pernr)
-                    return timeSheets
-                }
-                return null
-            }
-            return null
-        }
-
-        const getUserTimeSheetData = async (projectId, payload) => {
-            try {
-                const config = getRequestConfigurations()
-                const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/timeoverview`, payload, config)
-                return prepareUserTimeSheetData(response)
-            } catch (e) {
-                return null
-            }
-        }
-
-        const mappingActualHours = (arrayIncludeKey, objIncludeKey) => {
-            const result = (arrayIncludeKey || []).map(item => {
-                return {
-                    ...item,
-                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || 0 : 0,
-                    rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
-                }
-            })
-
-            return result
-        }
-
         const fetchData = async () => {
             SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
@@ -258,17 +179,35 @@ function ProjectDetail(props) {
                     endDate: endDate
                 }
 
+                const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
                 let projectTimeSheetData = await getProjectTimeSheetData(projectId, payload)
-                const userTimeSheetData = await getUserTimeSheetData(projectId, payload)
-
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))
-                projectTimeSheetData = (projectTimeSheetData || []).map(item => {
+                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => {
+                    let randomItemHasData = (item?.timeSheets || []).find(ts => ts)
                     return {
                         ...item,
-                        timeSheets: mappingActualHours(item?.timeSheets, item?.rsmTimeSheet)
+                        timeSheets: daysFormat.reduce((initial, current) => {
+                            let itemExist = (item?.timeSheets || []).find(i => i.date == current)
+                            if (itemExist) {
+                                initial.push(itemExist)
+                            } else {
+                                initial.push({
+                                    actual: 0,
+                                    date: current,
+                                    hours: 0,
+                                    id: randomItemHasData?.id,
+                                    isEdit: true,
+                                    plannedTotal: randomItemHasData?.plannedTotal,
+                                    projectId: randomItemHasData?.projectId,
+                                    projetctTeamId: randomItemHasData?.projetctTeamId,
+                                    resourceId: randomItemHasData?.resourceId,
+                                    shift_Id: null,
+                                    statusId: null
+                                })
+                            }
+                            return initial
+                        }, [])
                     }
                 })
-                
                 SetProjectTimeSheetOriginal(projectTimeSheetData)
 
                 const filterTemp = {...filter}
@@ -375,11 +314,12 @@ function ProjectDetail(props) {
                     shift_Id: rsmTimeSheet[[item.date]][0]?.shift_Id,
                     plannedTotal: rsmTimeSheet[[item.date]][0]?.plannedTotal,
                     hours: rsmTimeSheet[[item.date]][0]?.hours,
-                    actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
+                    actual: item?.actualTemp !== null && item?.actualTemp !== undefined ? item?.actualTemp : item?.actual,
                     statusId: rsmTimeSheet[[item.date]][0]?.statusId,
                     isEdit: rsmTimeSheet[[item.date]][0]?.isEdit
                 }
             })
+
             const config = getRequestConfigurations()
             const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/update-timesheet`, payload, config)
 
@@ -399,6 +339,8 @@ function ProjectDetail(props) {
             }
             SetStatusModal(statusModalTemp)
         } catch (e) {
+            
+
             SetIsLoading(false)
             statusModalTemp.isShow = true
             statusModalTemp.isSuccess = false
@@ -411,7 +353,7 @@ function ProjectDetail(props) {
         const result = (timeSheets || []).map((item, i) => {
             return {
                 ...item,
-                actualHoursTemp: index === i ? val : item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours
+                actualTemp: index === i ? val : item?.actualTemp !== null && item?.actualTemp !== undefined ? item?.actualTemp : item?.actual
             }
         })
         return result
@@ -487,65 +429,9 @@ function ProjectDetail(props) {
         })
     };
 
-    const formatMulesoftValue = val => {
-        if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
-            return ""
-        }
-        return val
-    }
-
-    const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment) => {
-//         const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
-//         const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
-
-        console.log("kakakakakakakakak")
-        console.log(timeSheet)
-        console.log(rsmLeaveTypeAndComment)
-
-        const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
-        const toTime1 = formatMulesoftValue(timeSheet.to_time1)
-        const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
-        const endTime1Fact = formatMulesoftValue(timeSheet.end_time1_fact)
-
-        let icon = IconInfoRed
-        let hasLeave = false
-        let hasBusinessTripTraining = false
-        let notes = []
-        const isUnusualShift = (
-            ((!fromTime1 || !toTime1) && (timeSheet.shift_id !== 'OFF' || timeSheet.is_holiday != 0))
-            || ((startTime1Fact > fromTime1 || endTime1Fact < toTime1) && (timeSheet.shift_id !== 'OFF'))
-        )
-
-        if (isUnusualShift) {
-            icon = IconInfoRed
-            let unusualShiftData = {}
-            unusualShiftData['className'] = 'red' // 'red', 'yellow', 'violet'
-            unusualShiftData['line1'] = 'Bất thường công:'
-            unusualShiftData['line2'] = `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`
-            unusualShiftData['line3'] = `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
-            notes.push(unusualShiftData)
-        } else {
-            const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value))
-            const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value))
-            if (leaveData && leaveData?.length > 0) {
-                icon = IconInfoYellow
-            } else if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-                icon = IconInfoViolet
-            }
-        }
-
-
-        return {
-            hasShowNote: isUnusualShift || hasLeave || hasBusinessTripTraining,
-            // isUnusualShift: isUnusualShift,
-            icon: icon,
-            notes: notes
-        }
-    }
-
-    // console.log("===============================")
+    console.log("===============================")
     // console.log(projectTimeSheetFiltered)
-    // console.log(projectTimeSheetOriginal)
+    console.log(projectTimeSheetOriginal)
 
     return (
         <>
@@ -571,7 +457,7 @@ function ProjectDetail(props) {
                     <ButtonComponent handleApply={handleApply} projectStatus={projectData?.processStatusId} />
                 </Tab>
                 {
-                    [status.inProgress, status.closed].includes(projectData?.processStatusId)
+                    [status.inProgress, status.closed].includes(projectData?.processStatusId) 
                     && <Tab eventKey="project-management" title='Quản lý dự án'>
                         <div className="table-title">Đội ngũ dự án</div>
                         <div className="project-management">
@@ -690,59 +576,26 @@ function ProjectDetail(props) {
                                                                     <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">
                                                                         <span>Xác nhận Timesheet</span>
                                                                     </ReactTooltip>
+
                                                                     { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
                                                                     {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
-                                                                            let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment)
-
-                                                                            console.log("TTTTTTTTTTTTTTTT")
-                                                                            console.log(noteInfos)
-
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
-                                                                                            {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? <div className="text-center off-shift">OFF</div>
-                                                                                                : <>
-                                                                                                {
-                                                                                                    noteInfos.hasShowNote
-                                                                                                    ? <>
-                                                                                                        <ReactTooltip id='note-infos' scrollHide isCapture place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
-                                                                                                            <ul>
-                                                                                                                {
-                                                                                                                    (noteInfos?.notes).map((note, nIndex) => {
-                                                                                                                        return <li key={nIndex}>
-                                                                                                                                    <p className={`title ${note?.className}`}>{note?.line1}</p>
-                                                                                                                                    <ul>
-                                                                                                                                        <li>{note?.line2}</li>
-                                                                                                                                        <li>{note?.line3}</li>
-                                                                                                                                    </ul>
-                                                                                                                                </li>
-                                                                                                                    })
-                                                                                                                }
-                                                                                                            </ul>
-                                                                                                        </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for='note-infos'><Image src={noteInfos.icon} alt="Note" /></span>
-                                                                                                    </>
-                                                                                                    : null
-                                                                                                }
-                                                                                                <div className="time">{`${timeSheet?.hoursValue}h`}</div>
-                                                                                                </>
-                                                                                            }
+                                                                                            <span className="note"><Image src={IconInfoRed} alt="Note" /></span>
+                                                                                            <div className="time">{`${timeSheet?.hours}h`}</div>
                                                                                         </div>
                                                                                         <div className="bottom">
-                                                                                            {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? null
-                                                                                                : timeSheet?.rsmStatus !== null && <><span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> 
-                                                                                                <div className="time">
-                                                                                                    {
-                                                                                                        isMe && projectData?.processStatusId != status.closed
-                                                                                                        ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} /><span>h</span></>
-                                                                                                        : `${timeSheet?.actualHours || 0}h`
-                                                                                                    }
-                                                                                                </div></>
-                                                                                            }
+                                                                                            { timeSheet?.statusId !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.statusId]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.statusId]?.label}</span> }
+                                                                                            {/* <span className="status pending">Pending</span>
+                                                                                            <span className="status approved">Approved</span> */}
+                                                                                            <div className="time">
+                                                                                                {
+                                                                                                    isMe && projectData?.processStatusId != status.closed
+                                                                                                    ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualTemp !== null && timeSheet?.actualTemp !== undefined ? timeSheet?.actualTemp : timeSheet?.actual || 0} />
+                                                                                                    : `${timeSheet?.actual || 0}h`
+                                                                                                }
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                         })
@@ -753,6 +606,118 @@ function ProjectDetail(props) {
                                                     </div>
                                         })
                                     }
+
+                                    
+                                    {/* <div className="data-item">
+                                        <div className="col-left">
+                                            <div className="user-info">
+                                                <span className="source">Thuê ngoài</span>
+                                                <div className="avatar-block"><Image src='https://znews-photo.zadn.vn/w660/Uploaded/bzwvopcg/2022_02_07/thumbff.jpg' /></div>
+                                                <div className="full-name">Nguyễn Văn Cường</div>
+                                                <div className="title">Chuyên viên Lập trình</div>
+                                                <div className="other-info">
+                                                    <div className="first">
+                                                        <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />3651641</div>
+                                                        <div className="pool"><Image src={IconVitriBlue} alt='Pool' />BA</div>
+                                                    </div>
+                                                    <div className="second">
+                                                        <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>cuongnv56@vingroup.net</span></div>
+                                                        <div className="skill">
+                                                            <Image src={IconKyNangBlue} alt='Skill' />
+                                                            <ul className="skills">
+                                                                <li>Kotlin</li>
+                                                                <li>Javascript</li>
+                                                                <li>HTML</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-right">
+                                            <div className="time-sheet-item">
+                                                <div className="col-first">
+                                                    <div className="planned">
+                                                        <div className="font-weight-bold">Planned Total</div>
+                                                        <div>01/12/2021 - 01/06/2021</div>
+                                                    </div>
+                                                    <div className="actual">Actual</div>
+                                                </div>             
+                                                <div className="col-item">
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

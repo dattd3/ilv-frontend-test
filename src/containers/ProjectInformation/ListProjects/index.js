@@ -6,8 +6,8 @@ import { status, myProjectPageKey } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import ProjectRowItem from '../Share/ProjectRowItem'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import CustomPaging from '../../../components/Common/CustomPaging'
 import map from '../../map.config'
-import { Fragment } from "react"
 
 function ListProjects(props) {
     const { t } = useTranslation()
@@ -22,14 +22,6 @@ function ListProjects(props) {
                 if (result && result.code == Constants.API_SUCCESS_CODE) {
                     const data = response.data?.data
                     const projectDataToSave = {...projectData}
-                    // if (props.from === myProjectPageKey) {
-                    //     const projects = [...data.projectInProcess, ...data.projectCloseds]
-                    //     projectDataToSave.projects = projects
-                    //     projectDataToSave.totalRecord = projects.length || 0
-                    // } else {
-                    //     projectDataToSave.projects = data?.details || []
-                    //     projectDataToSave.totalRecord = data?.totalRecord || 0
-                    // }
                     projectDataToSave.projects = data?.details || []
                     projectDataToSave.totalRecord = data?.totalRecord || 0
                     SetProjectData(projectDataToSave)
@@ -59,9 +51,13 @@ function ListProjects(props) {
     }, [paging])
 
     const handleStatusClick = (projectId, statusId) => {
-        if ([status.open, status.inProgress].includes(statusId)) {
-            return window.location.replace(`/project/${projectId}`)
-        }
+        window.location.replace(`/project/${projectId}`)
+    }
+
+    const onChangePage = () => {
+        const pagingTemp = {...paging}
+        pagingTemp.pageIndex += 1
+        SetPaging(pagingTemp)
     }
 
     const renderListProjects = () => {
@@ -78,7 +74,7 @@ function ListProjects(props) {
         <>
         <LoadingModal show={isLoading} />
         <div className="list-projects-page">
-            <h1 className="content-page-header">danh mục dự án</h1>
+            <h1 className="content-page-header">{props.from === myProjectPageKey ? 'Dự án của tôi' : 'Danh mục dự án'}</h1>
             {
                 projectData.projects.length === 0
                 ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
@@ -110,6 +106,7 @@ function ListProjects(props) {
                     </table>
                 </div>
             }
+            <CustomPaging pageSize={parseInt(paging?.pageSize)} onChangePage={onChangePage} totalRecords={projectData?.totalRecord} />
         </div>
         </>
     )

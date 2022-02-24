@@ -48,8 +48,8 @@ function GeneralInformationComponent(props) {
         <div className="general-information">
             <h2 className="title-block">I. Thông tin chung</h2>
             <hr className="line-seperate"></hr>
+            <div className="table-title">Thông tin chung</div>
             <div className="general-information-table-wrapper">
-                <div className="table-title">Thông tin chung</div>
                 <table className="general-information-table">
                     <thead>
                         <tr>
