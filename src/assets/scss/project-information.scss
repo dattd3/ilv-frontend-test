@@ -1,6 +1,10 @@
 .list-projects-page {
     font-size: 14px;
     padding: 10px 0 0 0;
+    & > .pagination {
+        justify-content: center;
+        margin-top: 15px;
+    }
     .wrap-table-list-projects {
         overflow: auto;
         background: #FFFFFF;
@@ -112,6 +116,7 @@
                 color: #0D1B3C;
                 tr {
                     border-bottom: 1px solid #CED4DA;
+                    cursor: pointer;
                     td {
                         padding: 5px 0;
                         // height: 45px;
@@ -260,6 +265,7 @@
     & > .nav-tabs {
         margin: 15px 0;
         border-bottom: 0;
+        font-size: 13px;
         .nav-item {
             background: #FFFFFF;
             color: #F2B153;
@@ -510,6 +516,7 @@
                                                 color: #2C72C6;
                                                 border-radius: 12px;
                                                 margin: 0 2px;
+                                                overflow: hidden;
                                                 &:first-child {
                                                     margin-left: 0;
                                                 }
@@ -560,6 +567,10 @@
                                 align-items: center;
                                 height: 100%;
                                 position: relative;
+                                .item-tooltip-submit-time-sheet {
+                                    font-size: 12px;
+                                    // box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+                                }
                                 .btn-submit {
                                     border: none;
                                     position: absolute;
@@ -589,10 +600,51 @@
                                         align-items: center;
                                         font-weight: bold;
                                         position: relative;
+                                        .off-shift {
+                                            width: 100%;
+                                        }
                                         .note {
                                             position: absolute;
                                             top: 0;
-                                            right: 0;
+                                            right: 4px;
+                                            cursor: pointer;
+                                            img {
+                                                height: 15px;
+                                                object-fit: cover;
+                                            }
+                                        }
+                                        .note-time-sheet {
+                                            font-size: 12px;
+                                            padding: 0;
+                                            & > ul {
+                                                margin: 0;
+                                                padding: 0;
+                                                list-style: none;
+                                                & > li {
+                                                    padding: 5px 10px;
+                                                    .title {
+                                                        margin: 0;
+                                                    }
+                                                    .red {
+                                                        color: #FF5370;
+                                                    }
+                                                    .yellow {
+                                                        color: #F2B153;
+                                                    }
+                                                    .violet {
+                                                        color: #9C4DCC;
+                                                    }
+                                                    ul {
+                                                        margin: 0 0 0 15px;
+                                                        padding: 0;
+                                                        font-weight: normal;
+                                                    }
+                                                    border-bottom: 1px solid #CED4DA;
+                                                    &:last-child {
+                                                        border-bottom: none;
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     .bottom {
@@ -628,8 +680,9 @@
                                         }
                                         .time {
                                             input {
-                                                width: 60%;
+                                                width: 40%;
                                                 border: 1px solid #CED4DA;
+                                                margin-right: 5px;
                                                 &:focus {
                                                     outline: none;
                                                 }
@@ -639,7 +692,7 @@
                                             }
                                         }
                                     }
-                                    &:nth-child(7) {
+                                    &:nth-child(8) {
                                         border-right: none;
                                     }
                                 }
@@ -654,8 +707,11 @@
                             .time-sheet-item {
                                 .col-item {
                                     .item {
-                                        &:nth-child(7) {
+                                        &:nth-child(8) {
                                             border-right: 1px solid #CED4DA;
+                                        }
+                                        &:nth-child(9) {
+                                            border-right: none;
                                         }
                                     }
                                 }

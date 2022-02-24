@@ -14,7 +14,7 @@ function ProjectRowItem(props) {
     }
 
     return (
-        <tr>
+        <tr onClick={() => handleStatusClick(item?.id, item?.processStatus?.key)}>
             <td className='sticky-column c-no'><div className='no'>{index}</div></td>
             <td className='sticky-column c-project-name'><div className='project-name'>{item?.projectName || ''}</div></td>
             <td className='sticky-column c-short-name'><div className='short-name'>{item?.projectShortName || ''}</div></td>
@@ -26,7 +26,7 @@ function ProjectRowItem(props) {
             <td><div className='end-date'>{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
             <td><div className='complexity'><span className={`status ${complexityClassName}`}>{item?.complexity || ""}</span></div></td>
             <td><div className='criticality'><span className={`status ${criticalityClassName}`}>{item?.criticality || ""}</span></div></td>
-            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`} onClick={() => handleStatusClick(item?.id, item?.processStatus?.key)}>{item?.processStatus?.value}</div></td>
+            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`}>{item?.processStatus?.value}</div></td>
         </tr>
     )
 }
