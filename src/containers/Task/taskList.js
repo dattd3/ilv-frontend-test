@@ -1,8 +1,5 @@
 import React from 'react'
 // import editButton from '../../assets/img/Icon-edit.png'
-import notetButton from '../../assets/img/icon-note.png'
-import commentButton from '../../assets/img/Icon-comment.png'
-import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
