@@ -324,7 +324,9 @@ function ProjectDetail(props) {
     }
 
     const submitTimeSheet = () => {
-        alert(1)
+        alert(1) 
+
+        // https://rsm-api.cloudvst.net/api/projects/update-timesheet
     }
 
     const setActualTimeForListTimeSheet = (timeSheets, index, val) => {
@@ -339,10 +341,6 @@ function ProjectDetail(props) {
 
     const handleChangeActualTime = (timeSheetIndex, e) => {
         const value = e?.target?.value
-
-        console.log(timeSheetIndex)
-        console.log(value)
-
         const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
             if (item?.employeeId != currentEmployeeNoLogged) {
                 return item
@@ -352,8 +350,6 @@ function ProjectDetail(props) {
                 timeSheets: setActualTimeForListTimeSheet(item?.timeSheets, timeSheetIndex, value)
             }
         })
-
-        console.log(projectTimeSheetOriginalTemp)
 
         SetProjectTimeSheetOriginal(projectTimeSheetOriginalTemp)
     }

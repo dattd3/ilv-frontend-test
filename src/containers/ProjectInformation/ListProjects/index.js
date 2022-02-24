@@ -46,7 +46,7 @@ function ListProjects(props) {
                     pageIndex: paging.pageIndex,
                     pageSize: paging.pageSize
                 }
-                const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/open'
+                const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/list'
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}${apiUrl}`, config)
                 processProjectData(response)
             } catch (e) {
