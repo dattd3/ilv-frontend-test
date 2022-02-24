@@ -138,7 +138,7 @@ function ProjectDetail(props) {
                             email: item?.rsmResources?.email,
                             skills: item?.rsmResources?.skills ? JSON.parse(item?.rsmResources?.skills) : [],
                             source: item?.resources,
-                            timeSheets: [],
+                            timeSheets: item?.rsmTimeSheets,
                             rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date)
                         }
                     })
@@ -159,58 +159,6 @@ function ProjectDetail(props) {
             }
         }
 
-        const prepareUserTimeSheetData = response => {
-            if (response && response.data) {
-                const result = response.data.result
-                if (result && result.code == Constants.API_SUCCESS_CODE) {
-                    let data = response.data?.data
-                    data = data.sort((current, next) => {
-                        let first = moment(current.date, 'DD-MM-YYYY')
-                        let second = moment(next.date, 'DD-MM-YYYY')
-                        return first - second
-                    })
-                    .map(item => {
-                        return {
-                            date: item.date,
-                            hoursValue: item.hoursValue,
-                            is_holiday: item.is_holiday,
-                            pernr: item.pernr,
-                            username: item.username,
-                            status: item.status,
-                            actualHours: 0,
-                            rsmStatus: null
-                        }
-                    })
-                    const timeSheets = _.groupBy(data, item => item.pernr)
-                    return timeSheets
-                }
-                return null
-            }
-            return null
-        }
-
-        const getUserTimeSheetData = async (projectId, payload) => {
-            try {
-                const config = getRequestConfigurations()
-                const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/timeoverview`, payload, config)
-                return prepareUserTimeSheetData(response)
-            } catch (e) {
-                return null
-            }
-        }
-
-        const mappingActualHours = (arrayIncludeKey, objIncludeKey) => {
-            const result = (arrayIncludeKey || []).map(item => {
-                return {
-                    ...item,
-                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || 0 : 0,
-                    rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
-                }
-            })
-
-            return result
-        }
-
         const fetchData = async () => {
             // SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
@@ -226,17 +174,35 @@ function ProjectDetail(props) {
                     endDate: endDate
                 }
 
+                const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
                 let projectTimeSheetData = await getProjectTimeSheetData(projectId, payload)
-                const userTimeSheetData = await getUserTimeSheetData(projectId, payload)
-
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))
-                projectTimeSheetData = (projectTimeSheetData || []).map(item => {
+                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => {
+                    let randomItemHasData = (item?.timeSheets || []).find(ts => ts)
                     return {
                         ...item,
-                        timeSheets: mappingActualHours(item?.timeSheets, item?.rsmTimeSheet)
+                        timeSheets: daysFormat.reduce((initial, current) => {
+                            let itemExist = (item?.timeSheets || []).find(i => i.date == current)
+                            if (itemExist) {
+                                initial.push(itemExist)
+                            } else {
+                                initial.push({
+                                    actual: 0,
+                                    date: current,
+                                    hours: 0,
+                                    id: randomItemHasData?.id,
+                                    isEdit: true,
+                                    plannedTotal: randomItemHasData?.plannedTotal,
+                                    projectId: randomItemHasData?.projectId,
+                                    projetctTeamId: randomItemHasData?.projetctTeamId,
+                                    resourceId: randomItemHasData?.resourceId,
+                                    shift_Id: null,
+                                    statusId: null
+                                })
+                            }
+                            return initial
+                        }, [])
                     }
                 })
-                
                 SetProjectTimeSheetOriginal(projectTimeSheetData)
 
                 const filterTemp = {...filter}
@@ -343,11 +309,12 @@ function ProjectDetail(props) {
                     shift_Id: rsmTimeSheet[[item.date]][0]?.shift_Id,
                     plannedTotal: rsmTimeSheet[[item.date]][0]?.plannedTotal,
                     hours: rsmTimeSheet[[item.date]][0]?.hours,
-                    actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
+                    actual: item?.actualTemp !== null && item?.actualTemp !== undefined ? item?.actualTemp : item?.actual,
                     statusId: rsmTimeSheet[[item.date]][0]?.statusId,
                     isEdit: rsmTimeSheet[[item.date]][0]?.isEdit
                 }
             })
+
             const config = getRequestConfigurations()
             const response = await axios.post(`${process.env.REACT_APP_RSM_URL}projects/update-timesheet`, payload, config)
 
@@ -366,12 +333,14 @@ function ProjectDetail(props) {
                 statusModalTemp.content = t("AnErrorOccurred")
             }
             SetStatusModal(statusModalTemp)
+            window.location.reload()
         } catch (e) {
             SetIsLoading(false)
             statusModalTemp.isShow = true
             statusModalTemp.isSuccess = false
             statusModalTemp.content = t("AnErrorOccurred")
             SetStatusModal(statusModalTemp)
+            window.location.reload()
         }
     }
 
@@ -379,7 +348,7 @@ function ProjectDetail(props) {
         const result = (timeSheets || []).map((item, i) => {
             return {
                 ...item,
-                actualHoursTemp: index === i ? val : item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours
+                actualTemp: index === i ? val : item?.actualTemp !== null && item?.actualTemp !== undefined ? item?.actualTemp : item?.actual
             }
         })
         return result
@@ -455,9 +424,9 @@ function ProjectDetail(props) {
         })
     };
 
-    // console.log("===============================")
+    console.log("===============================")
     // console.log(projectTimeSheetFiltered)
-    // console.log(projectTimeSheetOriginal)
+    console.log(projectTimeSheetOriginal)
 
     return (
         <>
@@ -604,18 +573,18 @@ function ProjectDetail(props) {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
-                                                                                            <span className="note">Note</span>
-                                                                                            <div className="time">{`${timeSheet?.hoursValue}h`}</div>
+                                                                                            {/* <span className="note">Note</span> */}
+                                                                                            <div className="time">{`${timeSheet?.hours}h`}</div>
                                                                                         </div>
                                                                                         <div className="bottom">
-                                                                                            { timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> }
+                                                                                            { timeSheet?.statusId !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.statusId]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.statusId]?.label}</span> }
                                                                                             {/* <span className="status pending">Pending</span>
                                                                                             <span className="status approved">Approved</span> */}
                                                                                             <div className="time">
                                                                                                 {
                                                                                                     isMe 
-                                                                                                    ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} />
-                                                                                                    : `${timeSheet?.actualHours}h`
+                                                                                                    ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualTemp !== null && timeSheet?.actualTemp !== undefined ? timeSheet?.actualTemp : timeSheet?.actual || 0} />
+                                                                                                    : `${timeSheet?.actual || 0}h`
                                                                                                 }
                                                                                             </div>
                                                                                         </div>
