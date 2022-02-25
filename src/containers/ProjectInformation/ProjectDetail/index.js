@@ -71,6 +71,7 @@ function ProjectDetail(props) {
     }
     const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
     const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
+    const prefixOutSource = 'TN'
 
     const usePrevious = (value) => {
         const ref = useRef()
@@ -242,6 +243,61 @@ function ProjectDetail(props) {
             return result
         }
 
+        const prepareOutSourceTimeSheets = (rsmTimeSheet, employeeId, email) => {
+            const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
+            const itemExist = Object.values(rsmTimeSheet)[0][0]
+            // project/157
+
+            const timeSheets = daysFormat.reduce((initial, current) => {
+                if (rsmTimeSheet[current]?.length > 0) {
+                    const itemExistToSave = {...itemExist}
+                    itemExistToSave['actualHours'] = itemExistToSave?.actual
+                    itemExistToSave['end_time1_fact'] = null
+                    itemExistToSave['date'] = current
+                    itemExistToSave['from_time1'] = null
+                    itemExistToSave['hoursValue'] = itemExistToSave?.hours
+                    itemExistToSave['is_holiday'] = '0'
+                    itemExistToSave['pernr'] = employeeId
+                    itemExistToSave['rsmStatus'] = itemExistToSave?.statusId
+                    itemExistToSave['shift_id'] = itemExistToSave?.shift_Id
+                    itemExistToSave['start_time1_fact'] = null
+                    itemExistToSave['status'] = 0
+                    itemExistToSave['to_time1'] = null
+                    itemExistToSave['username'] = email
+                    initial.push(itemExistToSave)
+                } else {
+                    initial.push({
+                        id: itemExist?.id,
+                        projectId: itemExist?.projectId,
+                        resourceId: itemExist?.resourceId,
+                        actualHours: itemExist?.actual,
+                        actual: itemExist?.actual,
+                        plannedTotal: itemExist?.plannedTotal,
+                        date: current,
+                        end_time1_fact: null,
+                        hours: itemExist?.hours,
+                        from_time1: null,
+                        hoursValue: itemExist?.hours,
+                        is_holiday: '0',
+                        pernr: employeeId,
+                        rsmStatus: itemExist?.statusId,
+                        shift_id: itemExist?.shift_Id,
+                        shift_Id: itemExist?.shift_Id,
+                        start_time1_fact: null,
+                        status: 0,
+                        to_time1: null,
+                        username: email,
+                        statusId: itemExist?.statusId,
+                        isEdit: itemExist?.isEdit,
+                        projetctTeamId: itemExist?.projetctTeamId
+                    })
+                }
+                return initial
+            }, [])
+
+            return timeSheets
+        }
+
         const fetchData = async () => {
             SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
@@ -249,18 +305,27 @@ function ProjectDetail(props) {
             if (projectDetailData) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
+                const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
+                .filter(item => item?.rsmResources?.employeeNo && !item?.rsmResources?.employeeNo?.startsWith(prefixOutSource))
+                .map(item => item?.rsmResources?.employeeNo)
                 const employeeIds = (projectDetailData?.rsmProjectTeams || []).map(item => item?.rsmResources?.employeeNo)
-                const payload = {
+                const payloadUserTimeSheet = {
+                    employeeIds: internalEmployeeIds,
+                    projectId: projectId,
+                    startDate: startDate,
+                    endDate: endDate
+                }
+                const payloadProjectTimeSheet = {
                     employeeIds: employeeIds,
                     projectId: projectId,
                     startDate: startDate,
                     endDate: endDate
                 }
 
-                let projectTimeSheetData = await getProjectTimeSheetData(projectId, payload)
-                const userTimeSheetData = await getUserTimeSheetData(projectId, payload)
+                let projectTimeSheetData = await getProjectTimeSheetData(projectId, payloadProjectTimeSheet)
+                const userTimeSheetData = await getUserTimeSheetData(projectId, payloadUserTimeSheet)
+                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
 
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))
                 projectTimeSheetData = (projectTimeSheetData || []).map(item => {
                     return {
                         ...item,
@@ -493,7 +558,7 @@ function ProjectDetail(props) {
         return val
     }
 
-    const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment) => {
+    const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
         const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
         const toTime1 = formatMulesoftValue(timeSheet.to_time1)
         const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
@@ -567,15 +632,11 @@ function ProjectDetail(props) {
         }
 
         return {
-            hasShowNote: isUnusualShift || hasLeave || hasBusinessTripTraining,
+            hasShowNote: source == employeeSource.THUE_NGOAI ? false : (isUnusualShift || hasLeave || hasBusinessTripTraining),
             icon: icon,
             notes: notes
         }
     }
-
-    // console.log("===============================")
-    // console.log(projectTimeSheetFiltered)
-    // console.log(projectTimeSheetOriginal)
 
     return (
         <>
@@ -672,7 +733,6 @@ function ProjectDetail(props) {
                                     {
                                         (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
                                             let isMe = currentEmployeeNoLogged == item.employeeId
-
                                             return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
                                                         <div className="col-left">
                                                             <div className="user-info">
@@ -715,7 +775,7 @@ function ProjectDetail(props) {
                                                                         <div className="range-time">{rangeTimeFilter}</div>
                                                                     </div>
                                                                     <div className="actual">Actual</div>
-                                                                </div>             
+                                                                </div>
                                                                 <div className="col-item">
                                                                     <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">
                                                                         <span>Xác nhận Timesheet</span>
@@ -723,7 +783,7 @@ function ProjectDetail(props) {
                                                                     { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
                                                                     {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
-                                                                            let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment)
+                                                                            let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
                                                                                             {
@@ -733,7 +793,7 @@ function ProjectDetail(props) {
                                                                                                 {
                                                                                                     noteInfos.hasShowNote
                                                                                                     ? <>
-                                                                                                        <ReactTooltip id={`note-infos-${tIndex}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
+                                                                                                        <ReactTooltip id={`note-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
                                                                                                             <ul>
                                                                                                                 {
                                                                                                                     (noteInfos?.notes).map((note, nIndex) => {
@@ -748,7 +808,7 @@ function ProjectDetail(props) {
                                                                                                                 }
                                                                                                             </ul>
                                                                                                         </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}`}><Image src={noteInfos.icon} alt="Note" /></span>
+                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span>
                                                                                                     </>
                                                                                                     : null
                                                                                                 }
@@ -760,14 +820,18 @@ function ProjectDetail(props) {
                                                                                             {
                                                                                                 timeSheet.shift_id === 'OFF' 
                                                                                                 ? null
-                                                                                                : timeSheet?.rsmStatus !== null && <><span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> 
-                                                                                                <div className="time">
-                                                                                                    {
-                                                                                                        isMe && projectData?.processStatusId != status.closed
-                                                                                                        ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} /><span>h</span></>
-                                                                                                        : `${timeSheet?.actualHours || 0}h`
-                                                                                                    }
-                                                                                                </div></>
+                                                                                                : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
+                                                                                            }
+                                                                                            {
+                                                                                                timeSheet.shift_id === 'OFF' 
+                                                                                                ? null
+                                                                                                : <div className="time">
+                                                                                                {
+                                                                                                    isMe && projectData?.processStatusId != status.closed
+                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} /><span>h</span></>
+                                                                                                    : `${timeSheet?.actualHours || 0}h`
+                                                                                                }
+                                                                                                </div>
                                                                                             }
                                                                                         </div>
                                                                                     </div>
