@@ -42,7 +42,7 @@ function UserInfo(props) {
                                 <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || ""} năm</span>
                             </div>
                             <div className="row-info">
-                                <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.postition || ""}</span>
+                                <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.specialize || ""}</span>
                             </div>
                             <div className="row-info">
                                 <span className="skill-block">
