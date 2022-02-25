@@ -27,7 +27,6 @@ import IconVitriBlue from '../../../assets/img/icon/Icon_Vitri_Blue.svg'
 import IconEmailBlue from '../../../assets/img/icon/Icon_Email_Blue.svg'
 import IconKyNangBlue from '../../../assets/img/icon/Icon_Kynang_Blue.svg'
 import IconCheckWhite from '../../../assets/img/icon/Icon_Check_White.svg'
-
 import IconInfoRed from '../../../assets/img/icon/Icon_Info_Red.svg'
 import IconInfoViolet from '../../../assets/img/icon/Icon_Info_Violet.svg'
 import IconInfoYellow from '../../../assets/img/icon/Icon_Info_Yellow.svg'
@@ -148,25 +147,25 @@ function ProjectDetail(props) {
                             source: item?.resources,
                             timeSheets: [],
                             rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date),
-                            // rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
-                            rsmLeaveTypeAndComment: [
-                                {
-                                    baseTypeModel: {value: "PQ01", label: "Nghỉ phép năm"},
-                                    endDate: "20220223",
-                                    endTime: "1100",
-                                    startDate: "20220222",
-                                    startTime: "0900",
-                                    user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                                },
-                                {
-                                    baseTypeModel: {value: "WFH1", label: "WFH (Không CTP, có ăn ca)"},
-                                    endDate: "20220224",
-                                    endTime: "1730",
-                                    startDate: "20220224",
-                                    startTime: "0830",
-                                    user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                                }
-                            ]
+                            rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
+                            // rsmLeaveTypeAndComment: [
+                            //     {
+                            //         baseTypeModel: {value: "PQ01", label: "Nghỉ phép năm"},
+                            //         endDate: "20220223",
+                            //         endTime: "1100",
+                            //         startDate: "20220222",
+                            //         startTime: "0900",
+                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
+                            //     },
+                            //     {
+                            //         baseTypeModel: {value: "WFH1", label: "WFH (Không CTP, có ăn ca)"},
+                            //         endDate: "20220224",
+                            //         endTime: "1730",
+                            //         startDate: "20220224",
+                            //         startTime: "0830",
+                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
+                            //     }
+                            // ]
                         }
                     })
                     return timeSheets
@@ -495,49 +494,80 @@ function ProjectDetail(props) {
     }
 
     const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment) => {
-//         const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
-//         const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
-
-        console.log("kakakakakakakakak")
-        console.log(timeSheet)
-        console.log(rsmLeaveTypeAndComment)
-
         const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
         const toTime1 = formatMulesoftValue(timeSheet.to_time1)
         const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
         const endTime1Fact = formatMulesoftValue(timeSheet.end_time1_fact)
 
-        let icon = IconInfoRed
         let hasLeave = false
         let hasBusinessTripTraining = false
+        let icon = IconInfoRed
         let notes = []
         const isUnusualShift = (
-            ((!fromTime1 || !toTime1) && (timeSheet.shift_id !== 'OFF' || timeSheet.is_holiday != 0))
+            ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
             || ((startTime1Fact > fromTime1 || endTime1Fact < toTime1) && (timeSheet.shift_id !== 'OFF'))
+        )
+
+        const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
+            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
+            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
+        )
+        const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value)
+            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
+            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
         )
 
         if (isUnusualShift) {
             icon = IconInfoRed
-            let unusualShiftData = {}
-            unusualShiftData['className'] = 'red' // 'red', 'yellow', 'violet'
-            unusualShiftData['line1'] = 'Bất thường công:'
-            unusualShiftData['line2'] = `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`
-            unusualShiftData['line3'] = `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
-            notes.push(unusualShiftData)
         } else {
-            const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value))
-            const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value))
             if (leaveData && leaveData?.length > 0) {
                 icon = IconInfoYellow
+                hasLeave = true
             } else if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
                 icon = IconInfoViolet
+                hasBusinessTripTraining = true
             }
         }
 
+        if (isUnusualShift) {
+            notes.push({
+                className: 'red',
+                line1: 'Bất thường công:',
+                line2: `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`,
+                line3: `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
+            })
+        }
+
+        if (leaveData && leaveData?.length > 0) {
+            icon = IconInfoYellow
+            const leaveDataToSave = leaveData.map(item => {
+                return {
+                    className: 'yellow',
+                    line1: `${item?.baseTypeModel?.label}:`,
+                    line2: item?.user_Comment,
+                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
+                    
+                }
+            })
+            notes = notes.concat(leaveDataToSave)
+        }
+
+        if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
+            icon = IconInfoViolet
+            const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
+                return {
+                    className: 'violet',
+                    line1: `${item?.baseTypeModel?.label}:`,
+                    line2: item?.user_Comment,
+                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
+                    
+                }
+            })
+            notes = notes.concat(businessTripTrainingDataToSave)
+        }
 
         return {
             hasShowNote: isUnusualShift || hasLeave || hasBusinessTripTraining,
-            // isUnusualShift: isUnusualShift,
             icon: icon,
             notes: notes
         }
@@ -694,10 +724,6 @@ function ProjectDetail(props) {
                                                                     {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment)
-
-                                                                            console.log("TTTTTTTTTTTTTTTT")
-                                                                            console.log(noteInfos)
-
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
                                                                                             {
@@ -707,7 +733,7 @@ function ProjectDetail(props) {
                                                                                                 {
                                                                                                     noteInfos.hasShowNote
                                                                                                     ? <>
-                                                                                                        <ReactTooltip id='note-infos' scrollHide isCapture place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
+                                                                                                        <ReactTooltip id={`note-infos-${tIndex}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
                                                                                                             <ul>
                                                                                                                 {
                                                                                                                     (noteInfos?.notes).map((note, nIndex) => {
@@ -722,7 +748,7 @@ function ProjectDetail(props) {
                                                                                                                 }
                                                                                                             </ul>
                                                                                                         </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for='note-infos'><Image src={noteInfos.icon} alt="Note" /></span>
+                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}`}><Image src={noteInfos.icon} alt="Note" /></span>
                                                                                                     </>
                                                                                                     : null
                                                                                                 }
