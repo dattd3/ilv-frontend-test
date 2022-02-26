@@ -488,7 +488,11 @@ function ProjectDetail(props) {
     }
 
     const handleChangeActualTime = (timeSheetIndex, e) => {
-        const value = e?.target?.value
+        const actualTimeValid = [0, 2, 4, 6, 8]
+        let value = e?.target?.value || ""
+        if (!actualTimeValid.includes(parseInt(value))) {
+            value = ""
+        }
         const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
             if (item?.employeeId != currentEmployeeNoLogged) {
                 return item
@@ -675,10 +679,13 @@ function ProjectDetail(props) {
                             <div className="content">
                                 <div className="header-block">
                                     <div className="filter-block">
-                                        <div className="option-filter">
-                                            <span className="date">Ngày</span>
-                                            <span className="week">Tuần</span>
-                                            <span className="month">Tháng</span>
+                                        <div className="wrap-note">
+                                            <div className="alert alert-warning note-actual-time" role="alert">Giờ actual phải thuộc các giá trị: 0, 2, 4, 6, 8</div>
+                                            <div className="option-filter">
+                                                <span className="date">Ngày</span>
+                                                <span className="week">Tuần</span>
+                                                <span className="month">Tháng</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="other-filter-block">
@@ -834,7 +841,7 @@ function ProjectDetail(props) {
                                                                                                 : <div className="time">
                                                                                                 {
                                                                                                     isMe && projectData?.processStatusId != status.closed && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
-                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} /><span>h</span></>
+                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
                                                                                                     : `${timeSheet?.actualHours || 0}h`
                                                                                                 }
                                                                                                 </div>

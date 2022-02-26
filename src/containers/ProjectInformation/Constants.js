@@ -46,7 +46,7 @@ const criticalityColorMapping = {
 const reviewColorMapping = {
     0: {label: 'Không đạt', className: 'fail'},
     1: {label: 'Đạt', className: 'ok'},
-    2: {label: 'Vượt trội', lassName: 'outstanding'}
+    2: {label: 'Vượt trội', className: 'outstanding'}
 }
 
 const myProjectPageKey = 'my-project'
