@@ -302,7 +302,7 @@ function ProjectDetail(props) {
             SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
             SetProjectData(projectDetailData)
-            if (projectDetailData) {
+            if (projectDetailData && [status.inProgress, status.closed].includes(projectDetailData?.processStatusId)) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
                 const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
