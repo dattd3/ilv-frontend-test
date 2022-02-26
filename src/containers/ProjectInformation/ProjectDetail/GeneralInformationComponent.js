@@ -83,7 +83,7 @@ function GeneralInformationComponent(props) {
                             <td><div className='start-date'>{projectData?.startDate && moment(projectData.startDate).format('DD/MM/YYYY')}</div></td>
                             <td><div className='end-date'>{projectData?.endDate && moment(projectData.endDate).format('DD/MM/YYYY')}</div></td>
                             <th className='c-complexity'><div className="complexity"><span className={`status ${complexityClassName}`}>{complexity?.value || 'No Critical'}</span></div></th>
-                            <th className='c-criticality'><div className="criticality"><span className={`status ${criticalityClassName}`}>{complexity?.value || 'Low'}</span></div></th>
+                            <th className='c-criticality'><div className="criticality"><span className={`status ${criticalityClassName}`}>{criticality?.value || 'Low'}</span></div></th>
                             <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`}>{processStatus?.value}</div></td>
                         </tr>
                     </tbody>
