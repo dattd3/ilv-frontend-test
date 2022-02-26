@@ -64,10 +64,14 @@ function ProjectDetail(props) {
         NOI_BO: 'NB',
         THUE_NGOAI: 'TN'
     }
+
+    const timeSheetStatusApproved = 1
+    const timeSheetStatusDenied = 2
+
     const timeSheetStatusStyleMapping = {
         0: {label: 'Pending', className: 'pending'},
-        1: {label: 'Approved', className: 'approved'},
-        2: {label: 'Denied', className: 'denied'}
+        [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
+        [timeSheetStatusDenied]: {label: 'Denied', className: 'denied'}
     }
     const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
     const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
@@ -829,7 +833,7 @@ function ProjectDetail(props) {
                                                                                                 ? null
                                                                                                 : <div className="time">
                                                                                                 {
-                                                                                                    isMe && projectData?.processStatusId != status.closed
+                                                                                                    isMe && projectData?.processStatusId != status.closed && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
                                                                                                     ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} /><span>h</span></>
                                                                                                     : `${timeSheet?.actualHours || 0}h`
                                                                                                 }
