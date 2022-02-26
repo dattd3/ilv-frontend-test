@@ -9,9 +9,10 @@ function GeneralInformationComponent(props) {
     const processStatus = projectData?.processStatus
     const complexity = projectData?.complexity
     const criticality = projectData?.criticality
+    const criticalityKey = criticality === "No Critical" ? "NoCritical" : criticality
     const statusClassName = statusStyleMapping[processStatus?.key]?.className
-    const complexityClassName = complexityColorMapping[complexity?.key]?.className || complexityColorMapping.Low.className
-    const criticalityClassName = criticalityColorMapping[criticality?.key]?.className || criticalityColorMapping.NoCritical.className
+    const complexityClassName = complexityColorMapping[complexity]?.className || complexityColorMapping.Low.className
+    const criticalityClassName = criticalityColorMapping[criticalityKey]?.className || criticalityColorMapping.NoCritical.className
     const rsmBudgets = projectData.rsmBudgets
     const rsmRisks = projectData.rsmRisks
 
@@ -82,8 +83,8 @@ function GeneralInformationComponent(props) {
                             <td><div className='block'>{projectData?.unitName || ''}</div></td>
                             <td><div className='start-date'>{projectData?.startDate && moment(projectData.startDate).format('DD/MM/YYYY')}</div></td>
                             <td><div className='end-date'>{projectData?.endDate && moment(projectData.endDate).format('DD/MM/YYYY')}</div></td>
-                            <th className='c-complexity'><div className="complexity"><span className={`status ${complexityClassName}`}>{complexity?.value || 'No Critical'}</span></div></th>
-                            <th className='c-criticality'><div className="criticality"><span className={`status ${criticalityClassName}`}>{criticality?.value || 'Low'}</span></div></th>
+                            <th className='c-complexity'><div className="complexity"><span className={`status ${complexityClassName}`}>{complexity || 'No Critical'}</span></div></th>
+                            <th className='c-criticality'><div className="criticality"><span className={`status ${criticalityClassName}`}>{criticality || 'Low'}</span></div></th>
                             <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`}>{processStatus?.value}</div></td>
                         </tr>
                     </tbody>
