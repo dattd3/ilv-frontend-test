@@ -302,28 +302,41 @@
         }
         .content {
             .header-block {
-                // border-bottom: 1px solid #CED4DA;
                 padding-bottom: 10px;
                 .filter-block {
                     padding: 0;
-                    .option-filter {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    margin-bottom: 15px;
+                    .wrap-note {
+                        width: calc(75% - 15px);
                         display: flex;
+                        justify-content: space-between;
                         align-items: center;
-                        justify-content: flex-end;
-                        margin-bottom: 15px;
-                        & > span {
-                            padding: 0 15px;
-                            height: 28px;
-                            display: inline-flex;
+                        .option-filter {
+                            display: flex;
                             align-items: center;
-                            font-size: 12px;
-                            cursor: pointer;
-                            &.week {
-                                background: rgba(242, 177, 83, 0.1);
-                                color: #F2B153;
-                                border-radius: 15px;
-                                font-weight: bold;
+                            justify-content: flex-end;
+                            // margin-bottom: 15px;
+                            & > span {
+                                padding: 0 15px;
+                                height: 28px;
+                                display: inline-flex;
+                                align-items: center;
+                                font-size: 12px;
+                                cursor: pointer;
+                                &.week {
+                                    background: rgba(242, 177, 83, 0.1);
+                                    color: #F2B153;
+                                    border-radius: 15px;
+                                    font-weight: bold;
+                                }
                             }
+                        }
+                        .note-actual-time {
+                            margin: 0;
+                            padding: 8px 15px;
                         }
                     }
                 }
@@ -1888,6 +1901,18 @@
             }
             .professional-capacity-assessment, .attitude-behavior, .leadership-skill, .overall {
                 width: 250px;
+                .ok {
+                    color: #4099FF;
+                    border: 1px solid #4099FF;
+                }
+                .fail {
+                    color: #FF7F00;
+                    border: 1px solid #FF7F00;
+                }
+                .outstanding {
+                    color: #2ED87C;
+                    border: 1px solid #2ED87C;
+                }
             }
         }
     }
