@@ -429,19 +429,21 @@ function ProjectDetail(props) {
             SetIsLoading(true)
             const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
             const { rsmTimeSheet, timeSheets } = dataToSubmit
-            const payload = (timeSheets || []).map(item => {
+            const payload = (timeSheets || [])
+            .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
+            .map(item => {
                 return {
-                    id: rsmTimeSheet[[item.date]][0]?.id,
-                    projectId: rsmTimeSheet[[item.date]][0]?.projectId,
-                    resourceId: rsmTimeSheet[[item.date]][0]?.resourceId,
-                    projetctTeamId: rsmTimeSheet[[item.date]][0]?.projetctTeamId,
-                    date: rsmTimeSheet[[item.date]][0]?.date,
-                    shift_Id: rsmTimeSheet[[item.date]][0]?.shift_Id,
-                    plannedTotal: rsmTimeSheet[[item.date]][0]?.plannedTotal,
-                    hours: rsmTimeSheet[[item.date]][0]?.hours,
+                    id: rsmTimeSheet[item.date][0]?.id,
+                    projectId: rsmTimeSheet[item.date][0]?.projectId,
+                    resourceId: rsmTimeSheet[item.date][0]?.resourceId,
+                    projetctTeamId: rsmTimeSheet[item.date][0]?.projetctTeamId,
+                    date: rsmTimeSheet[item.date][0]?.date,
+                    shift_Id: rsmTimeSheet[item.date][0]?.shift_Id,
+                    plannedTotal: rsmTimeSheet[item.date][0]?.plannedTotal,
+                    hours: rsmTimeSheet[item.date][0]?.hours,
                     actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
-                    statusId: rsmTimeSheet[[item.date]][0]?.statusId,
-                    isEdit: rsmTimeSheet[[item.date]][0]?.isEdit
+                    statusId: rsmTimeSheet[item.date][0]?.statusId,
+                    isEdit: rsmTimeSheet[item.date][0]?.isEdit
                 }
             })
             const config = getRequestConfigurations()
@@ -541,7 +543,7 @@ function ProjectDetail(props) {
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
-    const rangeTimeFilter = `${filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''} - ${filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}`
+    const rangeTimeFilter = `${projectData.startDate ? moment(projectData.startDate).format('DD/MM/YYYY') : ''} - ${projectData.endDate ? moment(projectData.endDate).format('DD/MM/YYYY') : ''}`
 
     const customStyles = {
         control: base => ({
