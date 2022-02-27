@@ -33,7 +33,7 @@ function UserInfo(props) {
                     <div className="info-detail">
                         <div className="full-name-and-job-title">
                             <div className="full-name">{userInfo?.fullName || ""}</div>
-                            <div className="job-title">{userInfo?.postition || ""}</div>
+                            <div className="job-title">{userInfo?.title || ""}</div>
                         </div>
                         <div className="other-info">
                             <div className="row-info">
