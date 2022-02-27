@@ -213,7 +213,7 @@ function ProjectDetail(props) {
                             to_time1: item.to_time1, // Kết thúc kế hoạch
                             start_time1_fact: item.start_time1_fact, // Bắt đầu thực tế
                             end_time1_fact: item.end_time1_fact, // Kết thúc thực tế
-                            actualHours: 0,
+                            actualHours: "",
                             rsmStatus: null,
                         }
                     })
@@ -239,7 +239,7 @@ function ProjectDetail(props) {
             const result = (arrayIncludeKey || []).map(item => {
                 return {
                     ...item,
-                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || 0 : 0,
+                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || "" : "",
                     rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
                 }
             })
@@ -255,7 +255,7 @@ function ProjectDetail(props) {
             const timeSheets = daysFormat.reduce((initial, current) => {
                 if (rsmTimeSheet[current]?.length > 0) {
                     const itemExistToSave = {...itemExist}
-                    itemExistToSave['actualHours'] = itemExistToSave?.actual
+                    itemExistToSave['actualHours'] = itemExistToSave?.actual || ""
                     itemExistToSave['end_time1_fact'] = null
                     itemExistToSave['date'] = current
                     itemExistToSave['from_time1'] = null
@@ -274,7 +274,7 @@ function ProjectDetail(props) {
                         id: itemExist?.id,
                         projectId: itemExist?.projectId,
                         resourceId: itemExist?.resourceId,
-                        actualHours: itemExist?.actual,
+                        actualHours: itemExist?.actual || "",
                         actual: itemExist?.actual,
                         plannedTotal: itemExist?.plannedTotal,
                         date: current,
@@ -487,7 +487,7 @@ function ProjectDetail(props) {
         return result
     }
 
-    const handleChangeActualTime = (timeSheetIndex, e) => {
+    const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
         const actualTimeValid = [0, 2, 4, 6, 8]
         let value = e?.target?.value || ""
         if (!actualTimeValid.includes(parseInt(value))) {
@@ -680,7 +680,7 @@ function ProjectDetail(props) {
                                 <div className="header-block">
                                     <div className="filter-block">
                                         <div className="wrap-note">
-                                            <div className="alert alert-warning note-actual-time" role="alert">Giờ actual phải thuộc các giá trị: 0, 2, 4, 6, 8</div>
+                                            <div className="alert alert-warning note-actual-time" role="alert">Giờ ACTUAL phải thuộc các giá trị: 0, 2, 4, 6, 8</div>
                                             <div className="option-filter">
                                                 <span className="date">Ngày</span>
                                                 <span className="week">Tuần</span>
@@ -797,6 +797,10 @@ function ProjectDetail(props) {
                                                                     {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
+                                                                            let hasEditTime = isMe && projectData?.processStatusId != status.closed 
+                                                                                                && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
+                                                                                                && moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+                                                                                                && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
                                                                                             {
@@ -840,8 +844,8 @@ function ProjectDetail(props) {
                                                                                                 ? null
                                                                                                 : <div className="time">
                                                                                                 {
-                                                                                                    isMe && projectData?.processStatusId != status.closed && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
-                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
+                                                                                                    hasEditTime
+                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(index, tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
                                                                                                     : `${timeSheet?.actualHours || 0}h`
                                                                                                 }
                                                                                                 </div>
