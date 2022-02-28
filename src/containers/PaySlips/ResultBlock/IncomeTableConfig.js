@@ -467,6 +467,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance'},
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: "Hỗ trợ cọc xe VF", field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -705,6 +706,8 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: "Hỗ trợ cọc xe VF (NET)/VF car electric stake (net)", field: 'vf_car_electric_stake_net' },
+                                    { label: "Hỗ trợ cọc xe VF (GROSSUP)/VF car electric stake (gross)", field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -1518,6 +1521,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: "Hỗ trợ cọc xe VF", field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
