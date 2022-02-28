@@ -250,20 +250,19 @@ function ProjectDetail(props) {
         const prepareOutSourceTimeSheets = (rsmTimeSheet, employeeId, email) => {
             const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
             const itemExist = Object.values(rsmTimeSheet)[0][0]
-            // project/157
-
             const timeSheets = daysFormat.reduce((initial, current) => {
+                let item = rsmTimeSheet[current] && rsmTimeSheet[current].length > 0 ? rsmTimeSheet[current][0] : {}
                 if (rsmTimeSheet[current]?.length > 0) {
                     const itemExistToSave = {...itemExist}
-                    itemExistToSave['actualHours'] = itemExistToSave?.actual || ""
+                    itemExistToSave['actualHours'] = item?.actual || ""
                     itemExistToSave['end_time1_fact'] = null
                     itemExistToSave['date'] = current
                     itemExistToSave['from_time1'] = null
-                    itemExistToSave['hoursValue'] = itemExistToSave?.hours
+                    itemExistToSave['hoursValue'] = item?.hours
                     itemExistToSave['is_holiday'] = '0'
                     itemExistToSave['pernr'] = employeeId
-                    itemExistToSave['rsmStatus'] = itemExistToSave?.statusId
-                    itemExistToSave['shift_id'] = itemExistToSave?.shift_Id
+                    itemExistToSave['rsmStatus'] = item?.statusId
+                    itemExistToSave['shift_id'] = item?.shift_Id
                     itemExistToSave['start_time1_fact'] = null
                     itemExistToSave['status'] = 0
                     itemExistToSave['to_time1'] = null
