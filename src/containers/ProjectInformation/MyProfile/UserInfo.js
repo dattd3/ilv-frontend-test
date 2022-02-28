@@ -39,7 +39,7 @@ function UserInfo(props) {
                             <div className="row-info">
                                 <span className="code"><Image src={IconMaNhanVien} alt="Mã nhân viên" />Mã NV: {userInfo?.employeeNo || ""}</span>
                                 <span className="email"><Image src={IconEmail} alt="Email" />Email: {userInfo?.email || ""}</span>
-                                <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || ""} năm</span>
+                                <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || 0} năm</span>
                             </div>
                             <div className="row-info">
                                 <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.specialize || ""}</span>
