@@ -59,7 +59,38 @@ export const Navigation = [
   //   to: map.ClinicVinmec,
   //   role: ['V060']
   // },
-  
+  {
+    id: 998,
+    parentId: 0,
+    icon: 'project-info',
+    to: "",
+    label: "MenuProjectInformation",
+    role: ['V005'],
+  },
+  {
+    id: 99802,
+    parentId: 998,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.MyProjects,
+    label: "MenuMyProjects",
+    role: "U",
+  },
+  {
+    id: 99801,
+    parentId: 998,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.ListProjects,
+    label: "MenuListProjects",
+    role: "U",
+  },
+  {
+    id: 99803,
+    parentId: 998,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.MyProfile,
+    label: "MenuMyProfile",
+    role: "U",
+  },
   //workflow management
   {
     id: 999,

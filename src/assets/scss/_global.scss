@@ -101,6 +101,7 @@ a {
 
 .info-modal-common {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
   .modal-content {
     .modal-header {
       background: #FFFFFF;
@@ -149,9 +150,13 @@ a {
         margin-top: 8px;
       }
       button {
+        font-size: 14px;
         &.bg-not-approved {
           background: #e74a3b;
           border-color: #e74a3b;
+        }
+        &:last-child {
+          margin-left: 10px;
         }
       }
     }
@@ -363,6 +368,11 @@ a {
           }
         }
       }
+    }
+  }
+  &.apply-project {
+    .modal-body {
+      padding: 1rem 1rem 2rem 1rem;
     }
   }
 }
