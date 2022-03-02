@@ -1069,5 +1069,11 @@
   "AttachFile": "Attach file",
   "PersonalInfoNoChange": "You have not changed your information. Please enter the change information.",
   "Block30Notification" : "Please note to request leave in block of 30 minutes.",
-  "InOutUpdateNextDaySelection": "Select if Working shift is 24h"
+  "InOutUpdateNextDaySelection": "Select if Working shift is 24h",
+  "MenuProjectInformation": "Project information",
+  "MenuListProjects": "List projects",
+  "MenuMyProjects": "My projects",
+  "MenuMyProfile": "My profile",
+  "VFCarElectricStakeNet": "VF car electric stake (net)",
+  "VFCarElectricStakeGross": "VF car electric stake (gross)"
 }

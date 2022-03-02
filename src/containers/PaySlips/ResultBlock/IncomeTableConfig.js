@@ -89,6 +89,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -279,6 +280,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -467,6 +469,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance'},
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -705,6 +708,8 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeNet"), field: 'vf_car_electric_stake_net' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -898,6 +903,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -1088,6 +1094,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -1284,6 +1291,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]
@@ -1518,6 +1526,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
                             }
                         ]

@@ -81,5 +81,11 @@ export default {
   Instruct: "/instruct",
   VinmecDTLS: "/VinmecDTLS",
   ClinicVinmec: "/clinic-vinmec",
-  ChangeShiftReport: "/workflow-management/change-shift-report"
+  ChangeShiftReport: "/workflow-management/change-shift-report",
+
+  // Thông tin dự án
+  ListProjects: "/list-projects",
+  MyProjects: "/my-projects",
+  ProjectDetail: "/project/:id",
+  MyProfile: "/my-profile"
 };

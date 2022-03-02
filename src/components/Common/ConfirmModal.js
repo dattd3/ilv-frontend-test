@@ -1,6 +1,5 @@
 import React from "react"
-import { Modal, Image, Form, Button } from 'react-bootstrap'
-import _ from 'lodash'
+import { Modal, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 
 class ConfirmModal extends React.Component {
@@ -8,23 +7,21 @@ class ConfirmModal extends React.Component {
         super(props);
     }
     render() {
-        const { t } = this.props
+        const { t, show, confirmHeader, confirmContent, onHide, onCancelClick, onAcceptClick, tempButtonLabel, mainButtonLabel, modalClassName } = this.props
         return (
             <Modal backdrop="static" keyboard={false}
-                className='info-modal-common position-apply-modal'
-                centered show={this.props.show}
-                onHide={this.props.onHide}
+                className={modalClassName ? `info-modal-common position-apply-modal ${modalClassName}` : 'info-modal-common position-apply-modal'}
+                centered show={show}
+                onHide={onHide}
             >
                 <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>{this.props.confirmHeader}</Modal.Title>
+                    <Modal.Title>{confirmHeader}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="wrap-result text-left">
-                        {this.props.confirmContent}
-                    </p>
+                    <p className="wrap-result text-left">{confirmContent}</p>
                     <div className="clearfix edit-button text-right">
-                        <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onCancelClick}>{t("No")}</Button>{' '}
-                        <Button variant="primary" className="pr-4 pl-4" onClick={this.props.onAcceptClick}>{t("Yes")}</Button>
+                        <Button variant="secondary" className="pr-4 pl-4" onClick={onCancelClick}>{tempButtonLabel ? tempButtonLabel : t("No")}</Button>
+                        <Button variant="primary" className="pr-4 pl-4" onClick={onAcceptClick}>{mainButtonLabel ? mainButtonLabel : t("Yes")}</Button>
                     </div>
                 </Modal.Body>
             </Modal>
