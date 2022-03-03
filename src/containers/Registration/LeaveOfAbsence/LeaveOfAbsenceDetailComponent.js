@@ -93,6 +93,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
       }
     }
+
+    let isShowAppraisalInfo = false
+    if (appraiser && Object.values(appraiser).some(item => item !== null && item !== '')
+      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
+      isShowAppraisalInfo = true
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -179,13 +186,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         {
-          requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId )) ? 
+          isShowAppraisalInfo && 
           <>
             <h5>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
-          : null
         }
+
         {
           // this.getTypeDetail() === "request" ?
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?

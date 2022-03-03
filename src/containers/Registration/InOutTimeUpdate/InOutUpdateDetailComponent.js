@@ -106,6 +106,12 @@ class InOutUpdateDetailComponent extends React.Component {
         }
       }
     }
+
+    let isShowAppraisalInfo = false
+    if (inOutTimeUpdate && inOutTimeUpdate.appraiser && Object.values(inOutTimeUpdate.appraiser).some(item => item !== null && item !== '')) {
+      isShowAppraisalInfo = true
+    }
+    
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -185,8 +191,14 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={inOutTimeUpdate.appraiser} status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""} hrComment={inOutTimeUpdate.appraiserComment} />
+        {
+          isShowAppraisalInfo &&
+          <>
+            <h5>{t("ConsenterInformation")}</h5>
+            <ApproverDetailComponent title={t("Consenter")} approver={inOutTimeUpdate.appraiser} status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""} hrComment={inOutTimeUpdate.appraiserComment} />
+          </>
+        }
+        
         {
           inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) ?
             <>
