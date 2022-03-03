@@ -89,6 +89,13 @@ class SubstitutionDetailComponent extends React.Component {
         }
       }
     }
+
+    let isShowAppraisalInfo = false
+    if (substitution && Object.values(substitution.appraiser).some(item => item !== null && item !== '')
+      && Constants.STATUS_TO_SHOW_CONSENTER.includes(substitution.processStatusId)) {
+      isShowAppraisalInfo = true
+    }
+
     return (
       <div className="leave-of-absence shift-change-section">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -185,8 +192,15 @@ class SubstitutionDetailComponent extends React.Component {
             </div>
           </div>
         })}
-        <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={substitution.appraiser} status={substitution.requestInfo ? substitution.processStatusId : ""} hrComment={substitution.appraiserComment} />
+
+        {
+          isShowAppraisalInfo && 
+          <>
+            <h5>{t("ConsenterInformation")}</h5>
+            <ApproverDetailComponent title={t("Consenter")} approver={substitution.appraiser} status={substitution.requestInfo ? substitution.processStatusId : ""} hrComment={substitution.appraiserComment} />
+          </>
+        }
+        
         {
           substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) ?
           <>
