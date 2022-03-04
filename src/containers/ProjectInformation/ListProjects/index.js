@@ -33,10 +33,15 @@ function ListProjects(props) {
         const getProjectData = async () => {
             SetIsLoading(true)
             try {
+                const ILoveVinGroupSite = 0
                 const config = getRequestConfigurations()
                 config.params = {
                     pageIndex: paging.pageIndex,
-                    pageSize: paging.pageSize
+                    pageSize: paging.pageSize,
+                    site: ILoveVinGroupSite
+                }
+                if (props.from === myProjectPageKey) {
+                    delete config.params.site
                 }
                 const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/list'
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}${apiUrl}`, config)
