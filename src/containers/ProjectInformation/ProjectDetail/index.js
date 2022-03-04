@@ -9,7 +9,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
-import { status } from '../Constants'
+import { status, ILoveVinGroupSite } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import NoteComponent from './NoteComponent'
 import ProjectStructureComponent from './ProjectStructureComponent'
@@ -30,6 +30,7 @@ import IconCheckWhite from '../../../assets/img/icon/Icon_Check_White.svg'
 import IconInfoRed from '../../../assets/img/icon/Icon_Info_Red.svg'
 import IconInfoViolet from '../../../assets/img/icon/Icon_Info_Violet.svg'
 import IconInfoYellow from '../../../assets/img/icon/Icon_Info_Yellow.svg'
+// import { useHistory } from 'react-router'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -38,6 +39,7 @@ registerLocale("vi", vi)
 const currentEmployeeNoLogged = localStorage.getItem('employeeNo')
 
 function ProjectDetail(props) {
+    // const history = useHistory();
     const { t } = useTranslation()
     const [projectData, SetProjectData] = useState({})
     const [projectTimeSheetOriginal, SetProjectTimeSheetOriginal] = useState([])
@@ -115,7 +117,8 @@ function ProjectDetail(props) {
             try {
                 const config = getRequestConfigurations()
                 config.params = {
-                    id: projectId
+                    id: projectId,
+                    site: ILoveVinGroupSite
                 }
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}projects/detail`, config)
                 return prepareProjectDetailData(response)
@@ -567,6 +570,11 @@ function ProjectDetail(props) {
         return val
     }
 
+    const goBack = () => {
+        const backUrl = localStorage.getItem('backUrl')
+        window.location.href = backUrl
+    }
+
     const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
         const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
         const toTime1 = formatMulesoftValue(timeSheet.to_time1)
@@ -654,7 +662,7 @@ function ProjectDetail(props) {
             confirmContent={confirmModal.confirmContent} onCancelClick={onCancelClick} onAcceptClick={onAcceptClick} onHide={onHide} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
         <div className="projects-detail-page">
-            <h1 className="content-page-header project-name"><a href="/my-projects" title="Back"><Image src={IconArrowLeft} alt='Arrow' /></a>{projectData?.projectName}</h1>
+            <h1 className="content-page-header project-name"><span title="Back" onClick={goBack} style={{cursor: 'pointer'}}><Image src={IconArrowLeft} alt='Arrow' /></span>{projectData?.projectName}</h1>
             <Tabs defaultActiveKey="plan" id="project-detail-tabs">
                 <Tab eventKey="plan" title='Kế hoạch' className="tab-item">
                     <GeneralInformationComponent projectData={projectData} />
