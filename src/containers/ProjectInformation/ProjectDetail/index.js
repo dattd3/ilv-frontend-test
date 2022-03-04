@@ -9,7 +9,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
-import { status } from '../Constants'
+import { status, ILoveVinGroupSite } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import NoteComponent from './NoteComponent'
 import ProjectStructureComponent from './ProjectStructureComponent'
@@ -115,7 +115,8 @@ function ProjectDetail(props) {
             try {
                 const config = getRequestConfigurations()
                 config.params = {
-                    id: projectId
+                    id: projectId,
+                    site: ILoveVinGroupSite
                 }
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}projects/detail`, config)
                 return prepareProjectDetailData(response)

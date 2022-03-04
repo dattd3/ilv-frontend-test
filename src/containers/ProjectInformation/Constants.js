@@ -50,5 +50,6 @@ const reviewColorMapping = {
 }
 
 const myProjectPageKey = 'my-project'
+const ILoveVinGroupSite = 0
 
-export { status, statusStyleMapping, myProjectPageKey, levelColorMapping, complexityColorMapping, criticalityColorMapping, reviewColorMapping }
+export { status, statusStyleMapping, myProjectPageKey, levelColorMapping, complexityColorMapping, criticalityColorMapping, reviewColorMapping, ILoveVinGroupSite }

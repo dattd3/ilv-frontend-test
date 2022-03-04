@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
-import { status, myProjectPageKey } from '../Constants'
+import { status, myProjectPageKey, ILoveVinGroupSite } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import ProjectRowItem from '../Share/ProjectRowItem'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -33,7 +33,6 @@ function ListProjects(props) {
         const getProjectData = async () => {
             SetIsLoading(true)
             try {
-                const ILoveVinGroupSite = 0
                 const config = getRequestConfigurations()
                 config.params = {
                     pageIndex: paging.pageIndex,
