@@ -54,10 +54,10 @@ function ListProjects(props) {
         window.location.replace(`/project/${projectId}`)
     }
 
-    const onChangePage = () => {
-        const pagingTemp = {...paging}
-        pagingTemp.pageIndex += 1
-        SetPaging(pagingTemp)
+    const onChangePage = (page) => {
+        // const pagingTemp = {...paging}
+        // pagingTemp.pageIndex = page
+        SetPaging({...paging, pageIndex: page})
     }
 
     const renderListProjects = () => {
