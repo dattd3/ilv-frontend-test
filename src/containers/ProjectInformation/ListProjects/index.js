@@ -14,6 +14,14 @@ function ListProjects(props) {
     const [projectData, SetProjectData] = useState({projects: [], totalRecord: 0})
     const [paging, SetPaging] = useState({pageIndex: 1, pageSize: 10})
     const [isLoading, SetIsLoading] = useState(false)
+    
+    useEffect(() => {
+        if (props.isSetBackUrl === false) {
+            return
+        } else {
+            localStorage.setItem('backUrl', window.location.href)
+        }
+    }, [])
 
     useEffect(() => {
         const processProjectData = response => {
