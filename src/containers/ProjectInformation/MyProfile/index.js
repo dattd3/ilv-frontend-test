@@ -13,6 +13,7 @@ function MyProfile() {
     const { t } = useTranslation()
     const [userProfile, SetUserProfile] = useState(null)
     const [isLoading, SetIsLoading] = useState(false)
+    localStorage.setItem('backUrl', window.location.href)
 
     useEffect(() => {
         const processProjectData = response => {

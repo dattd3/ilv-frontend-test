@@ -3,9 +3,10 @@ import ListProjects from "../ListProjects"
 import { myProjectPageKey } from "../Constants"
 
 function MyProjects() {
+    localStorage.setItem('backUrl', window.location.href)
 
     return (
-        <ListProjects from={myProjectPageKey} />
+        <ListProjects from={myProjectPageKey} isSetBackUrl={false} />
     )
 }
 
