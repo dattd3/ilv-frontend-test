@@ -33,16 +33,16 @@ function UserInfo(props) {
                     <div className="info-detail">
                         <div className="full-name-and-job-title">
                             <div className="full-name">{userInfo?.fullName || ""}</div>
-                            <div className="job-title">{userInfo?.postition || ""}</div>
+                            <div className="job-title">{userInfo?.title || ""}</div>
                         </div>
                         <div className="other-info">
                             <div className="row-info">
                                 <span className="code"><Image src={IconMaNhanVien} alt="Mã nhân viên" />Mã NV: {userInfo?.employeeNo || ""}</span>
                                 <span className="email"><Image src={IconEmail} alt="Email" />Email: {userInfo?.email || ""}</span>
-                                <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || ""} năm</span>
+                                <span className="seniority"><Image src={IconThamNien} alt="Thâm niên" />Thâm niên: {userInfo?.yearNumber || 0} năm</span>
                             </div>
                             <div className="row-info">
-                                <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.postition || ""}</span>
+                                <span className="position"><Image src={IconViTri} alt="Vị trí" />Năng lực chuyên môn: {userInfo?.specialize || ""}</span>
                             </div>
                             <div className="row-info">
                                 <span className="skill-block">

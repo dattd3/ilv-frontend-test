@@ -62,6 +62,14 @@ class BusinessTripDetailComponent extends React.Component {
         }
       }
     }
+
+    let isShowAppraisalInfo = false
+    if (businessTrip && businessTrip.appraiser 
+      && Object.values(businessTrip.appraiser).some(item => item !== null && item !== '')
+      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
+      isShowAppraisalInfo = true
+    }
+
     return (
       <div className="business-trip">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -105,14 +113,15 @@ class BusinessTripDetailComponent extends React.Component {
             </div>
           </div>
         </div>
+
         {
-          requestInfo && (Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) ? 
+          isShowAppraisalInfo && 
           <>
             <h5>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={businessTrip.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
-          : null
         }
+
         {
           this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)?
           <>

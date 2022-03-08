@@ -1073,5 +1073,7 @@
   "MenuProjectInformation": "Project information",
   "MenuListProjects": "List projects",
   "MenuMyProjects": "My projects",
-  "MenuMyProfile": "My profile"
+  "MenuMyProfile": "My profile",
+  "VFCarElectricStakeNet": "VF car electric stake (net)",
+  "VFCarElectricStakeGross": "VF car electric stake (gross)"
 }

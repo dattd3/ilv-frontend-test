@@ -2,18 +2,26 @@ import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
-import { status, myProjectPageKey } from '../Constants'
+import { status, myProjectPageKey, ILoveVinGroupSite } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import ProjectRowItem from '../Share/ProjectRowItem'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import CustomPaging from '../../../components/Common/CustomPaging'
 import map from '../../map.config'
-import { Fragment } from "react"
 
 function ListProjects(props) {
     const { t } = useTranslation()
     const [projectData, SetProjectData] = useState({projects: [], totalRecord: 0})
     const [paging, SetPaging] = useState({pageIndex: 1, pageSize: 10})
     const [isLoading, SetIsLoading] = useState(false)
+    
+    useEffect(() => {
+        if (props.isSetBackUrl === false) {
+            return
+        } else {
+            localStorage.setItem('backUrl', window.location.href)
+        }
+    }, [])
 
     useEffect(() => {
         const processProjectData = response => {
@@ -22,14 +30,6 @@ function ListProjects(props) {
                 if (result && result.code == Constants.API_SUCCESS_CODE) {
                     const data = response.data?.data
                     const projectDataToSave = {...projectData}
-                    // if (props.from === myProjectPageKey) {
-                    //     const projects = [...data.projectInProcess, ...data.projectCloseds]
-                    //     projectDataToSave.projects = projects
-                    //     projectDataToSave.totalRecord = projects.length || 0
-                    // } else {
-                    //     projectDataToSave.projects = data?.details || []
-                    //     projectDataToSave.totalRecord = data?.totalRecord || 0
-                    // }
                     projectDataToSave.projects = data?.details || []
                     projectDataToSave.totalRecord = data?.totalRecord || 0
                     SetProjectData(projectDataToSave)
@@ -44,9 +44,13 @@ function ListProjects(props) {
                 const config = getRequestConfigurations()
                 config.params = {
                     pageIndex: paging.pageIndex,
-                    pageSize: paging.pageSize
+                    pageSize: paging.pageSize,
+                    site: ILoveVinGroupSite
                 }
-                const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/open'
+                if (props.from === myProjectPageKey) {
+                    delete config.params.site
+                }
+                const apiUrl = props.from === myProjectPageKey ? 'projects/me' : 'projects/list'
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}${apiUrl}`, config)
                 processProjectData(response)
             } catch (e) {
@@ -59,9 +63,13 @@ function ListProjects(props) {
     }, [paging])
 
     const handleStatusClick = (projectId, statusId) => {
-        if ([status.open, status.inProgress].includes(statusId)) {
-            return window.location.replace(`/project/${projectId}`)
-        }
+        window.location.replace(`/project/${projectId}`)
+    }
+
+    const onChangePage = (page) => {
+        // const pagingTemp = {...paging}
+        // pagingTemp.pageIndex = page
+        SetPaging({...paging, pageIndex: page})
     }
 
     const renderListProjects = () => {
@@ -78,7 +86,7 @@ function ListProjects(props) {
         <>
         <LoadingModal show={isLoading} />
         <div className="list-projects-page">
-            <h1 className="content-page-header">danh mục dự án</h1>
+            <h1 className="content-page-header">{props.from === myProjectPageKey ? 'Dự án của tôi' : 'Danh mục dự án'}</h1>
             {
                 projectData.projects.length === 0
                 ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
@@ -110,6 +118,7 @@ function ListProjects(props) {
                     </table>
                 </div>
             }
+            <CustomPaging pageSize={parseInt(paging?.pageSize)} onChangePage={onChangePage} totalRecords={projectData?.totalRecord} />
         </div>
         </>
     )
