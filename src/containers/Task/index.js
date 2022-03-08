@@ -61,7 +61,7 @@ class Task extends React.Component {
             if (response && response.data) {
                 this.setState({
                     ...this.state,
-                    isShowPrepareTab: response.data.data?.isSupporter == true ? true : false
+                    isShowPrepareTab: response.data.data?.isSupporter == true || response.data.data?.hasSubordinate  == true ? true : false
                 })
             }
         } catch(e) {
