@@ -43,7 +43,7 @@ function SideBar(props) {
         if (user.companyCode !== "V030") {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
-        if(user.companyCode != 'V030' || user.prepare != 'true') {
+        if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)
         }
         return rootNav;
