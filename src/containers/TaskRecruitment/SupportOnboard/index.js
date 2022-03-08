@@ -10,7 +10,7 @@ import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
 import {checkIsExactPnL} from '../../../commons/commonFunctions';
 
-class RequestComponent extends React.Component {
+class SupportOnboardComponent extends React.Component {
   CONFIRM_STATUS = [
     {value: true, label: 'Đã xong'},
     {value: false, label: 'Chưa xong'},
@@ -492,4 +492,4 @@ class RequestComponent extends React.Component {
   }
 }
 
-export default withTranslation()(RequestComponent)
+export default withTranslation()(SupportOnboardComponent)

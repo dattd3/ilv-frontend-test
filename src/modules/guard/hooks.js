@@ -74,6 +74,7 @@ const Storage = {
     localStorage.setItem('partId', currentAuthUser.partId);
     localStorage.setItem('part', currentAuthUser.part);
     localStorage.setItem('role_assigment', currentAuthUser.role_assigment);
+    localStorage.setItem('prepare', currentAuthUser.prepare);
 
   },
   load() {
@@ -112,7 +113,8 @@ const Storage = {
       unit: localStorage.getItem('unit'),
       partId: localStorage.getItem('partId'),
       part: localStorage.getItem('part'),
-      role_assigment: localStorage.getItem('role_assigment')
+      role_assigment: localStorage.getItem('role_assigment'),
+      prepare: localStorage.getItem('prepare')
     }
   },
   reset() {
@@ -149,6 +151,7 @@ const Storage = {
     localStorage.removeItem('partId');
     localStorage.removeItem('part');
     localStorage.removeItem('role_assigment');
+    localStorage.removeItem('prepare')
   }
 }
 
@@ -185,5 +188,6 @@ const deserialize = (currentAuthUser) => ({
   unit: currentAuthUser.unit,
   partId: currentAuthUser.partId,
   part: currentAuthUser.part,
-  role_assigment: currentAuthUser.role_assigment
+  role_assigment: currentAuthUser.role_assigment,
+  prepare: currentAuthUser.prepare
 })
