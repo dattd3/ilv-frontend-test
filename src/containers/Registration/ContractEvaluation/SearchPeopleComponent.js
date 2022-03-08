@@ -150,21 +150,28 @@ class ApproverComponent extends React.Component {
         }
       }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+      const payload = {
+        account: value,
+        status: 3,
+        pnl_code: localStorage.getItem('companyCode')
+      }
+      
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
             const users = data.map(res => {
               return {
-                label: res.fullName,
-                value: res.user_account,
-                fullname: res.fullName,
+                label: res.fullname,
+                value: res.username,
+                fullname: res.fullname,
                 avatar: res.avatar,
-                employeeLevel: res.employee_level,
+                employeeLevel: res.rank_title || res.rank,
                 pnl: res.pnl,
+                pnlEmail: res.company_email,
                 orglv2Id: res.orglv2_id,
-                account: res.user_account,
-                current_position: res.title,
+                account: res.username,
+                current_position: res.postition_name,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
