@@ -42,9 +42,11 @@ function Authorize(props) {
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
-                    checkUser(userProfile, jwtToken, vgEmail);
+                    checkUser(userProfile, jwtToken, vgEmail, () => {
+                        SetIsShowLoadingModal(false)
+                    });
                     updateUser(userProfile,jwtToken)
-                    SetIsShowLoadingModal(false)
+                   
                 }
                 else {
                     SetIsError(true)
@@ -64,7 +66,24 @@ function Authorize(props) {
             });
     }
 
-    const checkUser = (user, jwtToken, vgEmail) => {
+    const hasPermissonShowPrepareTab = async (token, companyCode) => {
+        try {
+            const config = {
+                headers: {
+                  'Authorization': token
+                }
+            }
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
+            if (response && response.data) {
+                return  response.data.data?.isSupporter == true || response.data.data?.hasSubordinate  == true ? true : false;
+            }
+            return false;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    const checkUser = async (user, jwtToken, vgEmail, onSaveSuccess) => {
         if (user == null || user.uid == null) {
             SetIsError(true)
             SetErrorType(ERROR_TYPE.USER_NOT_EXIST)
@@ -84,6 +103,8 @@ function Authorize(props) {
             } else {
                 benefitTitle = user.rank_name;
             }
+            //check permission show prepare tab 
+            const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
             // Get company config
             var companyConfig = null
             axios.get(`${process.env.REACT_APP_REQUEST_URL}company/detail/${user.company_code}/${user.pnl}`, {
@@ -126,7 +147,8 @@ function Authorize(props) {
                             unit: user.unit,
                             partId: user.organization_lv6,
                             part: user.part,
-                            role_assigment: user.role_assigment
+                            role_assigment: user.role_assigment,
+                            prepare: shouldShowPrepareOnboard
                         });
                     }
                 })
@@ -163,11 +185,13 @@ function Authorize(props) {
                         unit: user.unit,
                         partId: user.organization_lv6,
                         part: user.part,
-                        role_assigment: user.role_assigment
+                        role_assigment: user.role_assigment,
+                        prepare: shouldShowPrepareOnboard
                     });
                 })
                 .finally(result => {
                     //history.push(map.Dashboard);
+                    onSaveSuccess();
                 })
         }
     }

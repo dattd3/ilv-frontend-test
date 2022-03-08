@@ -56,6 +56,10 @@ export default {
   RequestTaskDetail: "/tasks-request/:id",
   ApprovalTaskDetail: "/tasks-approval/:id",
 
+  //stream 2
+  SupportOnBoarding: "/support-onboard",
+  EvaluationManager: "/evaluation-manager",
+
   //Registration
   Registration: "/registration",
   RegistrationEdit: "/registration/:id/edit",

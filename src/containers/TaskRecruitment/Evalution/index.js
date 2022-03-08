@@ -11,7 +11,7 @@ import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
 import IconRecall from '../../../assets/img/ic-recall.svg'
 
-class RequestComponent extends React.Component {
+class EvaluationComponent extends React.Component {
   CONFIRM_STATUS = [
     {value: true, label: 'Đã xong'},
     {value: false, label: 'Chưa xong'},
@@ -258,4 +258,4 @@ class RequestComponent extends React.Component {
   }
 }
 
-export default withTranslation()(RequestComponent)
+export default withTranslation()(EvaluationComponent)
