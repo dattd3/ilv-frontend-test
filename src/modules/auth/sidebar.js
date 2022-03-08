@@ -162,7 +162,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.SupportOnBoarding,
     label: 'Hỗ trợ chuẩn bị nhận việc',
-    role: ['V030']
+    role: 'U'
   },
   {
     id:1007,
