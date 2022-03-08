@@ -517,11 +517,25 @@ function TimeTableDetail(props) {
     tomorrow.setDate(currentDate.getDate()+ offset);
     return tomorrow;
   }
+  
+  const getRealDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay, startAssignment, endAssignment) => {
+    let start = currentDay + startTime;
+    let end = startTime < endTime ? currentDay + endTime : nextDay + endTime;
+    if(startAssignment == '-' || startAssignment == '<') {
+      start = nextDay + startTime;
+    };
+    if(endAssignment == '-' || endAssignment == '<') {
+      end = nextDay + endTime;
+    }
+    return {
+      start:start,
+      end: end
+    };
+  }
 
   const getDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay) => {
     //const currentDay = moment(dateString, "DD-MM-YYYY").format("YYYYMMDD");
     //const nextDay = moment( getDayOffset( moment(dateString, 'DD-MM-YYYY').toDate(), 1)).format('YYYYMMDD');
-   
     return {
       start: currentDay + startTime,
       end: startTime < endTime ? currentDay + endTime : nextDay + endTime
@@ -650,7 +664,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         if( checkExist(item.end_time1_fact)) {
           line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
           line2.subtype = 1 + line2.subtype[1];
-          timeSteps.push( getDatetimeForCheckFail(item.start_time1_fact, item.end_time1_fact, currentDay, nextDay));
+          timeSteps.push( getRealDatetimeForCheckFail(item.start_time1_fact, item.end_time1_fact, currentDay, nextDay, item.day_assignment_in1, item.day_assignment_out1));
         } else {
           line2.type1 =   isHoliday(item) ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : EVENT_TYPE.EVENT_LOICONG + line2.type1[1];
           line2.subtype = '1' + line2.subtype[1];
@@ -661,7 +675,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
         if( checkExist(item.end_time2_fact)) {
           line2.type1 = line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = line2.subtype[0] + 1
-          timeSteps.push( getDatetimeForCheckFail(item.start_time2_fact, item.end_time2_fact, currentDay, nextDay));
+          timeSteps.push( getRealDatetimeForCheckFail(item.start_time2_fact, item.end_time2_fact, currentDay, nextDay, item.day_assignment_in2, item.day_assignment_out2));
         } else {
           line2.type1 =  isHoliday(item) ? line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE : line2.type1[0] + EVENT_TYPE.EVENT_LOICONG;
           line2.subtype = line2.subtype[0] + 1
