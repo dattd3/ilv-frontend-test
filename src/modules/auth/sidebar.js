@@ -65,6 +65,14 @@ export const Navigation = [
     icon: 'project-info',
     to: "",
     label: "MenuProjectInformation",
+    role: ['V005'],
+  },
+  {
+    id: 99802,
+    parentId: 998,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.MyProjects,
+    label: "MenuMyProjects",
     role: "U",
   },
   {
@@ -73,14 +81,6 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ListProjects,
     label: "MenuListProjects",
-    role: "U",
-  },
-  {
-    id: 99802,
-    parentId: 998,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    to: map.MyProjects,
-    label: "MenuMyProjects",
     role: "U",
   },
   {
@@ -355,7 +355,8 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail]
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 
+      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
   },
   {
     id: 99999,

@@ -1090,5 +1090,7 @@
   "MenuProjectInformation": "Thông tin dự án",
   "MenuListProjects": "Danh mục dự án",
   "MenuMyProjects": "Dự án của tôi",
-  "MenuMyProfile": "Hồ sơ của tôi"
+  "MenuMyProfile": "Hồ sơ của tôi",
+  "VFCarElectricStakeNet": "Hỗ trợ cọc xe VF (NET)",
+  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)"
 }

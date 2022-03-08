@@ -160,7 +160,8 @@ const Constants = {
     VinFast: "V070",
     VinFastTrading: "V077",
     VinITIS: "V097",
-    VinUni: "V066"
+    VinUni: "V066",
+    VinAI: "V099"
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',

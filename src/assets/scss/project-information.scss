@@ -1,6 +1,10 @@
 .list-projects-page {
     font-size: 14px;
     padding: 10px 0 0 0;
+    & > .pagination {
+        justify-content: center;
+        margin-top: 15px;
+    }
     .wrap-table-list-projects {
         overflow: auto;
         background: #FFFFFF;
@@ -112,6 +116,7 @@
                 color: #0D1B3C;
                 tr {
                     border-bottom: 1px solid #CED4DA;
+                    cursor: pointer;
                     td {
                         padding: 5px 0;
                         // height: 45px;
@@ -260,6 +265,7 @@
     & > .nav-tabs {
         margin: 15px 0;
         border-bottom: 0;
+        font-size: 13px;
         .nav-item {
             background: #FFFFFF;
             color: #F2B153;
@@ -296,28 +302,41 @@
         }
         .content {
             .header-block {
-                // border-bottom: 1px solid #CED4DA;
                 padding-bottom: 10px;
                 .filter-block {
                     padding: 0;
-                    .option-filter {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    margin-bottom: 15px;
+                    .wrap-note {
+                        width: calc(75% - 15px);
                         display: flex;
+                        justify-content: space-between;
                         align-items: center;
-                        justify-content: flex-end;
-                        margin-bottom: 15px;
-                        & > span {
-                            padding: 0 15px;
-                            height: 28px;
-                            display: inline-flex;
+                        .option-filter {
+                            display: flex;
                             align-items: center;
-                            font-size: 12px;
-                            cursor: pointer;
-                            &.week {
-                                background: rgba(242, 177, 83, 0.1);
-                                color: #F2B153;
-                                border-radius: 15px;
-                                font-weight: bold;
+                            justify-content: flex-end;
+                            // margin-bottom: 15px;
+                            & > span {
+                                padding: 0 15px;
+                                height: 28px;
+                                display: inline-flex;
+                                align-items: center;
+                                font-size: 12px;
+                                cursor: pointer;
+                                &.week {
+                                    background: rgba(242, 177, 83, 0.1);
+                                    color: #F2B153;
+                                    border-radius: 15px;
+                                    font-weight: bold;
+                                }
                             }
+                        }
+                        .note-actual-time {
+                            margin: 0;
+                            padding: 8px 15px;
                         }
                     }
                 }
@@ -407,6 +426,7 @@
                                 }
                                 .st {
                                     color: #0D1B3C;
+                                    text-transform: capitalize;
                                 }
                             }
                         }
@@ -433,7 +453,6 @@
                                 padding: 2px 5px;
                                 border: 1px solid #FF7F00;
                                 color: #FF7F00;
-                                border-bottom-right-radius: 3px;
                             }
                             .avatar-block {
                                 width: 100%;
@@ -510,6 +529,7 @@
                                                 color: #2C72C6;
                                                 border-radius: 12px;
                                                 margin: 0 2px;
+                                                overflow: hidden;
                                                 &:first-child {
                                                     margin-left: 0;
                                                 }
@@ -541,6 +561,9 @@
                                     display: flex;
                                     flex-direction: column;
                                     justify-content: center;
+                                    .range-time {
+                                        font-size: 12px;
+                                    }
                                 }
                                 .actual {
                                     width: 100%;
@@ -556,6 +579,28 @@
                                 display: flex;
                                 align-items: center;
                                 height: 100%;
+                                position: relative;
+                                .item-tooltip-submit-time-sheet {
+                                    font-size: 12px;
+                                    // box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+                                }
+                                .btn-submit {
+                                    border: none;
+                                    position: absolute;
+                                    right: -1px;
+                                    top: 0;
+                                    background: #347EF9;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    width: 22px;
+                                    height: 100%;
+                                    z-index: 2;
+                                    outline: none;
+                                    img {
+                                        width: 10px;
+                                    }
+                                }
                                 .item {
                                     width: 14.2857142857%;
                                     height: 100%;
@@ -568,10 +613,51 @@
                                         align-items: center;
                                         font-weight: bold;
                                         position: relative;
+                                        .off-shift {
+                                            width: 100%;
+                                        }
                                         .note {
                                             position: absolute;
                                             top: 0;
-                                            right: 0;
+                                            right: 4px;
+                                            cursor: pointer;
+                                            img {
+                                                height: 15px;
+                                                object-fit: cover;
+                                            }
+                                        }
+                                        .note-time-sheet {
+                                            font-size: 12px;
+                                            padding: 0;
+                                            & > ul {
+                                                margin: 0;
+                                                padding: 0;
+                                                list-style: none;
+                                                & > li {
+                                                    padding: 5px 10px;
+                                                    .title {
+                                                        margin: 0;
+                                                    }
+                                                    .red {
+                                                        color: #FF5370;
+                                                    }
+                                                    .yellow {
+                                                        color: #F2B153;
+                                                    }
+                                                    .violet {
+                                                        color: #9C4DCC;
+                                                    }
+                                                    ul {
+                                                        margin: 0 0 0 15px;
+                                                        padding: 0;
+                                                        font-weight: normal;
+                                                    }
+                                                    border-bottom: 1px solid #CED4DA;
+                                                    &:last-child {
+                                                        border-bottom: none;
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     .bottom {
@@ -600,11 +686,16 @@
                                                 border: 1px solid #CED4DA;
                                                 color: #0D1B3C;
                                             }
+                                            &.denied {
+                                                border: 1px solid #FF5370;
+                                                color: #FF5370;
+                                            }
                                         }
                                         .time {
                                             input {
-                                                width: 60%;
+                                                width: 40%;
                                                 border: 1px solid #CED4DA;
+                                                margin-right: 5px;
                                                 &:focus {
                                                     outline: none;
                                                 }
@@ -614,7 +705,7 @@
                                             }
                                         }
                                     }
-                                    &:nth-child(7) {
+                                    &:nth-child(8) {
                                         border-right: none;
                                     }
                                 }
@@ -625,6 +716,20 @@
                         border-top: 1px solid #CED4DA;
                         border-bottom: 1px solid #CED4DA;
                         padding: 10px 0;
+                        .col-right {
+                            .time-sheet-item {
+                                .col-item {
+                                    .item {
+                                        &:nth-child(8) {
+                                            border-right: 1px solid #CED4DA;
+                                        }
+                                        &:nth-child(9) {
+                                            border-right: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1796,6 +1901,18 @@
             }
             .professional-capacity-assessment, .attitude-behavior, .leadership-skill, .overall {
                 width: 250px;
+                .ok {
+                    color: #4099FF;
+                    border: 1px solid #4099FF;
+                }
+                .fail {
+                    color: #FF7F00;
+                    border: 1px solid #FF7F00;
+                }
+                .outstanding {
+                    color: #2ED87C;
+                    border: 1px solid #2ED87C;
+                }
             }
         }
     }

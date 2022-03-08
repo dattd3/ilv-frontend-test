@@ -3,13 +3,12 @@ import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { Tabs, Tab } from 'react-bootstrap'
 import Select from 'react-select'
-import ReactTooltip from 'react-tooltip'
 import DatePicker, {registerLocale } from 'react-datepicker'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
-import { status, ILoveVinGroupSite } from '../Constants'
+import { status } from '../Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import NoteComponent from './NoteComponent'
 import ProjectStructureComponent from './ProjectStructureComponent'
@@ -27,10 +26,6 @@ import IconVitriBlue from '../../../assets/img/icon/Icon_Vitri_Blue.svg'
 import IconEmailBlue from '../../../assets/img/icon/Icon_Email_Blue.svg'
 import IconKyNangBlue from '../../../assets/img/icon/Icon_Kynang_Blue.svg'
 import IconCheckWhite from '../../../assets/img/icon/Icon_Check_White.svg'
-import IconInfoRed from '../../../assets/img/icon/Icon_Info_Red.svg'
-import IconInfoViolet from '../../../assets/img/icon/Icon_Info_Violet.svg'
-import IconInfoYellow from '../../../assets/img/icon/Icon_Info_Yellow.svg'
-// import { useHistory } from 'react-router'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -39,7 +34,6 @@ registerLocale("vi", vi)
 const currentEmployeeNoLogged = localStorage.getItem('employeeNo')
 
 function ProjectDetail(props) {
-    // const history = useHistory();
     const { t } = useTranslation()
     const [projectData, SetProjectData] = useState({})
     const [projectTimeSheetOriginal, SetProjectTimeSheetOriginal] = useState([])
@@ -66,19 +60,11 @@ function ProjectDetail(props) {
         NOI_BO: 'NB',
         THUE_NGOAI: 'TN'
     }
-
-    const timeSheetStatusApproved = 1
-    const timeSheetStatusDenied = 2
-
     const timeSheetStatusStyleMapping = {
         0: {label: 'Pending', className: 'pending'},
-        [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
-        [timeSheetStatusDenied]: {label: 'Denied', className: 'denied'}
+        1: {label: 'Approved', className: 'approved'},
+        2: {label: 'Denied', className: 'denied'}
     }
-    const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
-    const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
-    const prefixOutSource = 'TN'
-
     const usePrevious = (value) => {
         const ref = useRef()
         useEffect(() => {
@@ -117,8 +103,7 @@ function ProjectDetail(props) {
             try {
                 const config = getRequestConfigurations()
                 config.params = {
-                    id: projectId,
-                    site: ILoveVinGroupSite
+                    id: projectId
                 }
                 const response = await axios.get(`${process.env.REACT_APP_RSM_URL}projects/detail`, config)
                 return prepareProjectDetailData(response)
@@ -154,26 +139,7 @@ function ProjectDetail(props) {
                             skills: item?.rsmResources?.skills ? JSON.parse(item?.rsmResources?.skills) : [],
                             source: item?.resources,
                             timeSheets: [],
-                            rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date),
-                            rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
-                            // rsmLeaveTypeAndComment: [
-                            //     {
-                            //         baseTypeModel: {value: "PQ01", label: "Nghỉ phép năm"},
-                            //         endDate: "20220223",
-                            //         endTime: "1100",
-                            //         startDate: "20220222",
-                            //         startTime: "0900",
-                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                            //     },
-                            //     {
-                            //         baseTypeModel: {value: "WFH1", label: "WFH (Không CTP, có ăn ca)"},
-                            //         endDate: "20220224",
-                            //         endTime: "1730",
-                            //         startDate: "20220224",
-                            //         startTime: "0830",
-                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                            //     }
-                            // ]
+                            rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date)
                         }
                     })
                     return timeSheets
@@ -211,13 +177,8 @@ function ProjectDetail(props) {
                             pernr: item.pernr,
                             username: item.username,
                             status: item.status,
-                            shift_id: item.shift_id,
-                            from_time1: item.from_time1, // Bắt đầu kế hoạch
-                            to_time1: item.to_time1, // Kết thúc kế hoạch
-                            start_time1_fact: item.start_time1_fact, // Bắt đầu thực tế
-                            end_time1_fact: item.end_time1_fact, // Kết thúc thực tế
-                            actualHours: "",
-                            rsmStatus: null,
+                            actualHours: 0,
+                            rsmStatus: null
                         }
                     })
                     const timeSheets = _.groupBy(data, item => item.pernr)
@@ -242,7 +203,7 @@ function ProjectDetail(props) {
             const result = (arrayIncludeKey || []).map(item => {
                 return {
                     ...item,
-                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || "" : "",
+                    actualHours: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.actual || 0 : 0,
                     rsmStatus: objIncludeKey[item.date] ? objIncludeKey[item.date][0]?.statusId : null
                 }
             })
@@ -250,88 +211,25 @@ function ProjectDetail(props) {
             return result
         }
 
-        const prepareOutSourceTimeSheets = (rsmTimeSheet, employeeId, email) => {
-            const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
-            const itemExist = Object.values(rsmTimeSheet)[0][0]
-            const timeSheets = daysFormat.reduce((initial, current) => {
-                let item = rsmTimeSheet[current] && rsmTimeSheet[current].length > 0 ? rsmTimeSheet[current][0] : {}
-                if (rsmTimeSheet[current]?.length > 0) {
-                    const itemExistToSave = {...itemExist}
-                    itemExistToSave['actualHours'] = item?.actual || ""
-                    itemExistToSave['end_time1_fact'] = null
-                    itemExistToSave['date'] = current
-                    itemExistToSave['from_time1'] = null
-                    itemExistToSave['hoursValue'] = item?.hours
-                    itemExistToSave['is_holiday'] = '0'
-                    itemExistToSave['pernr'] = employeeId
-                    itemExistToSave['rsmStatus'] = item?.statusId
-                    itemExistToSave['shift_id'] = item?.shift_Id
-                    itemExistToSave['start_time1_fact'] = null
-                    itemExistToSave['status'] = 0
-                    itemExistToSave['to_time1'] = null
-                    itemExistToSave['username'] = email
-                    initial.push(itemExistToSave)
-                } else {
-                    initial.push({
-                        id: itemExist?.id,
-                        projectId: itemExist?.projectId,
-                        resourceId: itemExist?.resourceId,
-                        actualHours: itemExist?.actual || "",
-                        actual: itemExist?.actual,
-                        plannedTotal: itemExist?.plannedTotal,
-                        date: current,
-                        end_time1_fact: null,
-                        hours: itemExist?.hours,
-                        from_time1: null,
-                        hoursValue: itemExist?.hours,
-                        is_holiday: '0',
-                        pernr: employeeId,
-                        rsmStatus: itemExist?.statusId,
-                        shift_id: itemExist?.shift_Id,
-                        shift_Id: itemExist?.shift_Id,
-                        start_time1_fact: null,
-                        status: 0,
-                        to_time1: null,
-                        username: email,
-                        statusId: itemExist?.statusId,
-                        isEdit: itemExist?.isEdit,
-                        projetctTeamId: itemExist?.projetctTeamId
-                    })
-                }
-                return initial
-            }, [])
-
-            return timeSheets
-        }
-
         const fetchData = async () => {
-            SetIsLoading(true)
+            // SetIsLoading(true)
             const projectDetailData = await getProjectDetail(projectId)
             SetProjectData(projectDetailData)
-            if (projectDetailData && [status.inProgress, status.closed].includes(projectDetailData?.processStatusId)) {
+            if (projectDetailData) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
-                const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
-                .filter(item => item?.rsmResources?.employeeNo && !item?.rsmResources?.employeeNo?.startsWith(prefixOutSource))
-                .map(item => item?.rsmResources?.employeeNo)
                 const employeeIds = (projectDetailData?.rsmProjectTeams || []).map(item => item?.rsmResources?.employeeNo)
-                const payloadUserTimeSheet = {
-                    employeeIds: internalEmployeeIds,
-                    projectId: projectId,
-                    startDate: startDate,
-                    endDate: endDate
-                }
-                const payloadProjectTimeSheet = {
+                const payload = {
                     employeeIds: employeeIds,
                     projectId: projectId,
                     startDate: startDate,
                     endDate: endDate
                 }
 
-                let projectTimeSheetData = await getProjectTimeSheetData(projectId, payloadProjectTimeSheet)
-                const userTimeSheetData = await getUserTimeSheetData(projectId, payloadUserTimeSheet)
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
+                let projectTimeSheetData = await getProjectTimeSheetData(projectId, payload)
+                const userTimeSheetData = await getUserTimeSheetData(projectId, payload)
 
+                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))
                 projectTimeSheetData = (projectTimeSheetData || []).map(item => {
                     return {
                         ...item,
@@ -350,7 +248,6 @@ function ProjectDetail(props) {
                 })
                 SetFilter(filterTemp)
             }
-            SetIsLoading(false)
         }
 
         if (days && days.length > 0) {
@@ -387,7 +284,6 @@ function ProjectDetail(props) {
         const statusModalTemp = {...statusModal}
         statusModalTemp.isShow = false
         SetStatusModal(statusModalTemp)
-        window.location.reload()
     }
 
     const onAcceptClick = async () => {
@@ -416,12 +312,14 @@ function ProjectDetail(props) {
                 statusModalTemp.content = t("AnErrorOccurred")
             }
             SetStatusModal(statusModalTemp)
+            window.location.reload()
         } catch (e) {
             statusModalTemp.isShow = true
             statusModalTemp.isSuccess = false
             statusModalTemp.content = t("AnErrorOccurred")
             SetIsLoading(false)
             SetStatusModal(statusModalTemp)
+            window.location.reload();
         }
     }
 
@@ -435,21 +333,19 @@ function ProjectDetail(props) {
             SetIsLoading(true)
             const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
             const { rsmTimeSheet, timeSheets } = dataToSubmit
-            const payload = (timeSheets || [])
-            .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
-            .map(item => {
+            const payload = (timeSheets || []).map(item => {
                 return {
-                    id: rsmTimeSheet[item.date][0]?.id,
-                    projectId: rsmTimeSheet[item.date][0]?.projectId,
-                    resourceId: rsmTimeSheet[item.date][0]?.resourceId,
-                    projetctTeamId: rsmTimeSheet[item.date][0]?.projetctTeamId,
-                    date: rsmTimeSheet[item.date][0]?.date,
-                    shift_Id: rsmTimeSheet[item.date][0]?.shift_Id,
-                    plannedTotal: rsmTimeSheet[item.date][0]?.plannedTotal,
-                    hours: rsmTimeSheet[item.date][0]?.hours,
+                    id: rsmTimeSheet[[item.date]][0]?.id,
+                    projectId: rsmTimeSheet[[item.date]][0]?.projectId,
+                    resourceId: rsmTimeSheet[[item.date]][0]?.resourceId,
+                    projetctTeamId: rsmTimeSheet[[item.date]][0]?.projetctTeamId,
+                    date: rsmTimeSheet[[item.date]][0]?.date,
+                    shift_Id: rsmTimeSheet[[item.date]][0]?.shift_Id,
+                    plannedTotal: rsmTimeSheet[[item.date]][0]?.plannedTotal,
+                    hours: rsmTimeSheet[[item.date]][0]?.hours,
                     actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
-                    statusId: rsmTimeSheet[item.date][0]?.statusId,
-                    isEdit: rsmTimeSheet[item.date][0]?.isEdit
+                    statusId: rsmTimeSheet[[item.date]][0]?.statusId,
+                    isEdit: rsmTimeSheet[[item.date]][0]?.isEdit
                 }
             })
             const config = getRequestConfigurations()
@@ -489,12 +385,8 @@ function ProjectDetail(props) {
         return result
     }
 
-    const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
-        const actualTimeValid = [0, 2, 4, 6, 8]
-        let value = e?.target?.value || ""
-        if (!actualTimeValid.includes(parseInt(value))) {
-            value = ""
-        }
+    const handleChangeActualTime = (timeSheetIndex, e) => {
+        const value = e?.target?.value
         const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
             if (item?.employeeId != currentEmployeeNoLogged) {
                 return item
@@ -553,7 +445,7 @@ function ProjectDetail(props) {
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
-    const rangeTimeFilter = `${projectData.startDate ? moment(projectData.startDate).format('DD/MM/YYYY') : ''} - ${projectData.endDate ? moment(projectData.endDate).format('DD/MM/YYYY') : ''}`
+    const rangeTimeFilter = `${filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''} - ${filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}`
 
     const customStyles = {
         control: base => ({
@@ -563,97 +455,9 @@ function ProjectDetail(props) {
         })
     };
 
-    const formatMulesoftValue = val => {
-        if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
-            return ""
-        }
-        return val
-    }
-
-    const goBack = () => {
-        const backUrl = localStorage.getItem('backUrl')
-        window.location.href = backUrl
-    }
-
-    const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
-        const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
-        const toTime1 = formatMulesoftValue(timeSheet.to_time1)
-        const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
-        const endTime1Fact = formatMulesoftValue(timeSheet.end_time1_fact)
-
-        let hasLeave = false
-        let hasBusinessTripTraining = false
-        let icon = IconInfoRed
-        let notes = []
-        const isUnusualShift = (
-            ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
-            || ((startTime1Fact > fromTime1 || endTime1Fact < toTime1) && (timeSheet.shift_id !== 'OFF'))
-        )
-
-        const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
-        )
-        const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value)
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
-        )
-
-        if (isUnusualShift) {
-            icon = IconInfoRed
-        } else {
-            if (leaveData && leaveData?.length > 0) {
-                icon = IconInfoYellow
-                hasLeave = true
-            } else if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-                icon = IconInfoViolet
-                hasBusinessTripTraining = true
-            }
-        }
-
-        if (isUnusualShift) {
-            notes.push({
-                className: 'red',
-                line1: 'Bất thường công:',
-                line2: `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`,
-                line3: `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
-            })
-        }
-
-        if (leaveData && leaveData?.length > 0) {
-            icon = IconInfoYellow
-            const leaveDataToSave = leaveData.map(item => {
-                return {
-                    className: 'yellow',
-                    line1: `${item?.baseTypeModel?.label}:`,
-                    line2: item?.user_Comment,
-                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
-                    
-                }
-            })
-            notes = notes.concat(leaveDataToSave)
-        }
-
-        if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-            icon = IconInfoViolet
-            const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
-                return {
-                    className: 'violet',
-                    line1: `${item?.baseTypeModel?.label}:`,
-                    line2: item?.user_Comment,
-                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
-                    
-                }
-            })
-            notes = notes.concat(businessTripTrainingDataToSave)
-        }
-
-        return {
-            hasShowNote: source == employeeSource.THUE_NGOAI ? false : (isUnusualShift || hasLeave || hasBusinessTripTraining),
-            icon: icon,
-            notes: notes
-        }
-    }
+    // console.log("===============================")
+    // console.log(projectTimeSheetFiltered)
+    // console.log(projectTimeSheetOriginal)
 
     return (
         <>
@@ -662,7 +466,7 @@ function ProjectDetail(props) {
             confirmContent={confirmModal.confirmContent} onCancelClick={onCancelClick} onAcceptClick={onAcceptClick} onHide={onHide} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
         <div className="projects-detail-page">
-            <h1 className="content-page-header project-name"><span title="Back" onClick={goBack} style={{cursor: 'pointer'}}><Image src={IconArrowLeft} alt='Arrow' /></span>{projectData?.projectName}</h1>
+            <h1 className="content-page-header project-name"><Image src={IconArrowLeft} alt='Arrow' />{projectData?.projectName}</h1>
             <Tabs defaultActiveKey="plan" id="project-detail-tabs">
                 <Tab eventKey="plan" title='Kế hoạch' className="tab-item">
                     <GeneralInformationComponent projectData={projectData} />
@@ -676,23 +480,20 @@ function ProjectDetail(props) {
                         mandayPlant={mandayPlant} 
                     />
                     <NoteComponent projectComment={projectComment} />
-                    <ButtonComponent handleApply={handleApply} projectStatus={projectData?.processStatusId} />
+                    <ButtonComponent handleApply={handleApply} />
                 </Tab>
                 {
-                    [status.inProgress, status.closed].includes(projectData?.processStatusId)
+                    projectData?.processStatusId == status.inProgress
                     && <Tab eventKey="project-management" title='Quản lý dự án'>
                         <div className="table-title">Đội ngũ dự án</div>
                         <div className="project-management">
                             <div className="content">
                                 <div className="header-block">
                                     <div className="filter-block">
-                                        <div className="wrap-note">
-                                            <div className="alert alert-warning note-actual-time" role="alert">Giờ ACTUAL phải thuộc các giá trị: 0, 2, 4, 6, 8</div>
-                                            <div className="option-filter">
-                                                <span className="date">Ngày</span>
-                                                <span className="week">Tuần</span>
-                                                <span className="month">Tháng</span>
-                                            </div>
+                                        <div className="option-filter">
+                                            <span className="date">Ngày</span>
+                                            <span className="week">Tuần</span>
+                                            <span className="month">Tháng</span>
                                         </div>
                                     </div>
                                     <div className="other-filter-block">
@@ -753,6 +554,7 @@ function ProjectDetail(props) {
                                     {
                                         (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
                                             let isMe = currentEmployeeNoLogged == item.employeeId
+
                                             return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
                                                         <div className="col-left">
                                                             <div className="user-info">
@@ -795,68 +597,27 @@ function ProjectDetail(props) {
                                                                         <div className="range-time">{rangeTimeFilter}</div>
                                                                     </div>
                                                                     <div className="actual">Actual</div>
-                                                                </div>
+                                                                </div>             
                                                                 <div className="col-item">
-                                                                    <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">
-                                                                        <span>Xác nhận Timesheet</span>
-                                                                    </ReactTooltip>
-                                                                    { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
+                                                                    { isMe && <button className="btn-submit" onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button>}
                                                                     {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
-                                                                            let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
-                                                                            let hasEditTime = isMe && projectData?.processStatusId != status.closed 
-                                                                                                && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
-                                                                                                && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
-                                                                                                && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
-                                                                                            {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? <div className="text-center off-shift">OFF</div>
-                                                                                                : <>
-                                                                                                {
-                                                                                                    noteInfos.hasShowNote
-                                                                                                    ? <>
-                                                                                                        <ReactTooltip id={`note-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
-                                                                                                            <ul>
-                                                                                                                {
-                                                                                                                    (noteInfos?.notes).map((note, nIndex) => {
-                                                                                                                        return <li key={nIndex}>
-                                                                                                                                    <p className={`title ${note?.className}`}>{note?.line1}</p>
-                                                                                                                                    <ul>
-                                                                                                                                        <li>{note?.line2}</li>
-                                                                                                                                        <li>{note?.line3}</li>
-                                                                                                                                    </ul>
-                                                                                                                                </li>
-                                                                                                                    })
-                                                                                                                }
-                                                                                                            </ul>
-                                                                                                        </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span>
-                                                                                                    </>
-                                                                                                    : null
-                                                                                                }
-                                                                                                <div className="time">{`${timeSheet?.hoursValue}h`}</div>
-                                                                                                </>
-                                                                                            }
+                                                                                            <span className="note">Note</span>
+                                                                                            <div className="time">{`${timeSheet?.hoursValue}h`}</div>
                                                                                         </div>
                                                                                         <div className="bottom">
-                                                                                            {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? null
-                                                                                                : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
-                                                                                            }
-                                                                                            {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? null
-                                                                                                : <div className="time">
+                                                                                            { timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span> }
+                                                                                            {/* <span className="status pending">Pending</span>
+                                                                                            <span className="status approved">Approved</span> */}
+                                                                                            <div className="time">
                                                                                                 {
-                                                                                                    hasEditTime
-                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(index, tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
-                                                                                                    : `${timeSheet?.actualHours || 0}h`
+                                                                                                    isMe 
+                                                                                                    ? <input type="text" onChange={(e) => handleChangeActualTime(tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || 0} />
+                                                                                                    : `${timeSheet?.actualHours}h`
                                                                                                 }
-                                                                                                </div>
-                                                                                            }
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                         })
@@ -867,6 +628,118 @@ function ProjectDetail(props) {
                                                     </div>
                                         })
                                     }
+
+                                    
+                                    {/* <div className="data-item">
+                                        <div className="col-left">
+                                            <div className="user-info">
+                                                <span className="source">Thuê ngoài</span>
+                                                <div className="avatar-block"><Image src='https://znews-photo.zadn.vn/w660/Uploaded/bzwvopcg/2022_02_07/thumbff.jpg' /></div>
+                                                <div className="full-name">Nguyễn Văn Cường</div>
+                                                <div className="title">Chuyên viên Lập trình</div>
+                                                <div className="other-info">
+                                                    <div className="first">
+                                                        <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />3651641</div>
+                                                        <div className="pool"><Image src={IconVitriBlue} alt='Pool' />BA</div>
+                                                    </div>
+                                                    <div className="second">
+                                                        <div className="email" title="cuongnv56@vingroup.net"><Image src={IconEmailBlue} alt='Email' /><span>cuongnv56@vingroup.net</span></div>
+                                                        <div className="skill">
+                                                            <Image src={IconKyNangBlue} alt='Skill' />
+                                                            <ul className="skills">
+                                                                <li>Kotlin</li>
+                                                                <li>Javascript</li>
+                                                                <li>HTML</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-right">
+                                            <div className="time-sheet-item">
+                                                <div className="col-first">
+                                                    <div className="planned">
+                                                        <div className="font-weight-bold">Planned Total</div>
+                                                        <div>01/12/2021 - 01/06/2021</div>
+                                                    </div>
+                                                    <div className="actual">Actual</div>
+                                                </div>             
+                                                <div className="col-item">
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status pending">Pending</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item">
+                                                        <div className="top">
+                                                            <span className="note">Note</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                        <div className="bottom">
+                                                            <span className="status approved">Approved</span>
+                                                            <div className="time">8h</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
