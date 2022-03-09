@@ -149,7 +149,7 @@ function ProjectDetail(props) {
                             fullName: item?.rsmResources?.fullName,
                             title: item?.rsmResources?.title,
                             employeeId: item?.rsmResources?.employeeNo,
-                            position: item?.rsmResources?.postition,
+                            position: item?.rsmResources?.specialize,
                             email: item?.rsmResources?.email,
                             skills: item?.rsmResources?.skills ? JSON.parse(item?.rsmResources?.skills) : [],
                             source: item?.resources,
