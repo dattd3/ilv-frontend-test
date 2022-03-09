@@ -87,5 +87,11 @@ export default {
   ListProjects: "/list-projects",
   MyProjects: "/my-projects",
   ProjectDetail: "/project/:id",
-  MyProfile: "/my-profile"
+  MyProfile: "/my-profile",
+
+  // Đánh giá
+  Evaluation: "",
+  // MyEvaluation: "/my-evaluation",
+  MyEvaluation: "/my-evaluation",
+  
 };
