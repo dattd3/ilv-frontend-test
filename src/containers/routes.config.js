@@ -538,6 +538,14 @@ export default [
             path: map.MyProfile,
           },
           component: lazy(() => import("./ProjectInformation/MyProfile")),
+        },
+        {
+          key: "my-evaluation",
+          routeProps: {
+            exact: true,
+            path: map.MyEvaluation,
+          },
+          component: lazy(() => import("./Evaluation/MyEvaluation")),
         }
       ],
     },

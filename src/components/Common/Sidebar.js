@@ -7,13 +7,118 @@ import { Navigation } from '../../modules';
 import { useGuardStore } from '../../modules';
 import { useTranslation } from "react-i18next";
 import { Animated } from "react-animated-css";
+import { OverlayTrigger, Popover} from 'react-bootstrap';
+import { Link, withRouter } from 'react-router-dom';
+import classnames from 'classnames';
+
+class RouterLink extends React.Component {
+    componentWillMount() {
+        this.to = this.props.to;
+        if (this.to && this.to[0] !== '/') this.to = `/${this.to}`;
+        this.props.history.listen(this.onLocationChange.bind(this));
+        this.onLocationChange(this.props.location);
+    }
+  
+    onLocationChange(e) {
+        let pathname = e.pathname;
+        if (e.pathname.indexOf('/', 1) > 0 ) {
+            pathname = e.pathname.substring(0, e.pathname.indexOf('/', 1));
+        }
+        if ((pathname || '/') === this.to) {
+            this.props.activateMe();
+        }
+    }
+  
+    render() {
+        const {
+                className,
+                classNameActive,
+                classNameHasActiveChild,
+                active,
+                hasActiveChild,
+                to,
+                label,
+                externalLink,
+                hasSubMenu,
+                toggleSubMenu,
+                children,
+        } = this.props;
+  
+      return (
+        hasSubMenu || externalLink
+        ? children[0].props.className.indexOf('has-tooltip') > 0 ? (
+          <OverlayTrigger
+                  key={"td"}
+                  placement="right"
+                  overlay={ <Popover id="popover-basic" {...this.props}>
+                  <Popover.Content>
+                    <span style={{color: '#8c2332'}}>{label}</span>
+                  </Popover.Content>
+                </Popover>}>
+            <a
+              className={classnames(
+                className,
+                hasActiveChild && classNameHasActiveChild
+              )}
+              target={externalLink ? '_blank' : undefined}
+              href={to}
+              onClick={toggleSubMenu}
+            >
+              {children}
+            </a>
+          </OverlayTrigger>
+        ) : (
+          <a
+            className={classnames(
+              className,
+              hasActiveChild && classNameHasActiveChild
+            )}
+            target={externalLink ? '_blank' : undefined}
+            href={to}
+            onClick={toggleSubMenu}
+          >
+           {children}
+          </a>
+        )
+        : children[0].props.className.indexOf('has-tooltip') > 0 ? (
+          <OverlayTrigger
+                  key={"td"}
+                  placement="right"
+                  overlay={ <Popover id="popover-basic" {...this.props}>
+                  <Popover.Content>
+                    <span style={{color: '#8c2332'}}>{label}</span>
+                  </Popover.Content>
+                </Popover>}>
+            <Link
+            className={classnames(
+              className,
+              active && classNameActive
+            )}
+            to={to ? to : ''}
+            >
+              {children}
+            </Link>
+          </OverlayTrigger>
+        ) : (
+          <Link
+            className={classnames(
+              className,
+              active && classNameActive
+            )}
+            to={to ? to : ''}
+            >
+              {children}
+            </Link>
+        )
+      );
+    }
+}
 
 function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
     const user = guard.getCurentUser();
     const { companyLogoUrl } = props.user;
-
     const { show } = props;
 
     const getNavigation = (role) => {
@@ -45,6 +150,7 @@ function SideBar(props) {
         }
         return rootNav;
     }
+
     const contents = getNavigation(user.employeeLevel).map(c => {
         const contentsChild = c.content.map(contentChild => {
             const contentGrandChildren = contentChild && contentChild.content && contentChild.content.map(cg => ({
@@ -64,6 +170,27 @@ function SideBar(props) {
             label: t(c.label)
         }
     });
+   
+    const isUpdate = (prevProps, nextProps) => true;
+    
+    const MetisMenuMemo = React.memo(props => {
+        return <MetisMenu
+            className='sidebar'
+            content={contents}
+            iconNameStateVisible="arrow_expand"
+            iconNameStateHidden="arrow_collapse"
+            iconNamePrefix="icon-"
+            LinkComponent={withRouter(RouterLink)}
+
+
+            // content={contents}
+            // activeLinkFromLocation
+            // iconNameStateVisible="arrow_expand"
+            // iconNameStateHidden="arrow_collapse"
+            // iconNamePrefix="icon-"
+            // LinkComponent={withRouter(RouterLink)}
+            />
+    }, isUpdate);
 
     return (
         <>
@@ -76,13 +203,15 @@ function SideBar(props) {
                             </a>
                         </div>
                     </Animated>
-                    <MetisMenu
+                    <MetisMenuMemo show={show}/>
+                    {/* <MetisMenu
                         content={contents}
                         activeLinkFromLocation
                         iconNameStateVisible="arrow_expand"
                         iconNameStateHidden="arrow_collapse"
                         iconNamePrefix="icon-"
-                    />
+                        LinkComponent={withRouter(RouterLink)}
+                    /> */}
                 </div>
             </div>
         </>

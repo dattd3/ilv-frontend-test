@@ -1092,5 +1092,7 @@
   "MenuMyProjects": "Dự án của tôi",
   "MenuMyProfile": "Hồ sơ của tôi",
   "VFCarElectricStakeNet": "Hỗ trợ cọc xe VF (NET)",
-  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)"
+  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)",
+  "MenuEvaluation": "Đánh giá",
+  "MenuMyEvaluation": "Đánh giá của tôi"
 }
