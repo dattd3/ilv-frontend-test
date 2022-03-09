@@ -461,20 +461,19 @@
         overflow-x: auto;
         overflow-y: auto;
         border-radius: 5px;
-        &::-webkit-scrollbar {
-            width: 10px;
-            background-color: #F5F5F5;
-        }
-        &::-webkit-scrollbar-thumb {
-            background-color: #C1C1C1;
-        }
-        &::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 6px #F1F1F1;
-            -webkit-box-shadow: inset 0 0 6px #F1F1F1;
-            background-color: #F1F1F1;
-        }
+        background-color: #FFFFFF;
+       
         .table-striped tbody tr:nth-of-type(odd) {
             background-color: #eee;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #F8F8F8;
+            .col-code {
+                background-color: #F8F8F8;
+            }
+            .col-name {
+                background-color: #F8F8F8;
+            }
         }
         .table {
             width: 100%;
@@ -482,13 +481,13 @@
             color: #858796;
             border-radius: 5px;
             thead {
-                color: #347EF9;
-                background-color: #eaecf4;
+                color: #000000;
+                background-color: #FFFFFF;
                 th {
                     vertical-align: middle;
                     // position: sticky;
                     top: 0;
-                    background-color: #eaecf4;
+                    background-color: #FFFFFF;
                     z-index: 10;
                 }
                 th:first-child {
@@ -520,12 +519,16 @@
             }
             tbody{
                 color: #000000;
-
+                td {
+                    border-top: 1px solid #DDDDDD;
+                    border-bottom: 1px solid #DDDDDD;
+                    padding: 0.5rem;
+                }
                 .col-code{
-                    background-color: #f2f2f2;
+                    background-color: #FFFFFF;
                 }
                 .col-name{
-                    background-color: #f2f2f2;
+                    background-color: #FFFFFF;
                 }
                 .col-sub-devices{
                     display: flex;
@@ -536,7 +539,7 @@
                     background: white;
 
                     &.disable{
-                        background-color: unset;
+                        background-color: #eee;
                     }
                     [class$="-control"] {
                         border: none !important;
