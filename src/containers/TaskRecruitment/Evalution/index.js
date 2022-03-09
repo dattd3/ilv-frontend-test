@@ -206,7 +206,7 @@ class EvaluationComponent extends React.Component {
           <h4 className="title text-uppercase">QUẢN LÝ THÔNG TIN ĐÁNH GIÁ CÔNG VIỆC</h4>
         </div>
         <div className="candidate-list shadow">
-                    <table className="table table-borderless table-hover table-striped">
+                    <table className="table table-borderless table-hover">
                         <thead>
                             <tr>
                                 <th scope="col" className="col-code text-center">Mã yêu cầu</th>

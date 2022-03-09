@@ -387,7 +387,7 @@ class SupportOnboardComponent extends React.Component {
             </div>
         </div>
         <div className="candidate-list shadow">
-                    <table className="table table-borderless">
+                    <table className="table table-borderless table-hover">
                         <thead>
                             <tr>
                                 <th scope="col" className="col-code sticky-col text-center">Mã nhân viên</th>
