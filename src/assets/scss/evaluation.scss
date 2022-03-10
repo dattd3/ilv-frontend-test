@@ -1,7 +1,6 @@
 .my-evaluation-page {
     font-size: 14px;
     color: #000000;
-    // padding: 15px;
     .card-evaluation {
         padding: 15px;
         .filter-block {
@@ -65,259 +64,40 @@
             }
         }
     }
+}
 
-
-    & > .pagination {
-        justify-content: center;
-        margin-top: 15px;
-    }
-    .wrap-table-list-projects {
-        overflow: auto;
-        background: #FFFFFF;
-        &::-webkit-scrollbar {
-            height: 8px;
-            background-color: #f5f5f5;
+.evaluation-detail-page {
+    font-size: 14px;
+    color: #000000;
+    .block-overall {
+        display: flex;
+        justify-content: space-between;
+        .card {
+            padding: 15px;
         }
-        &::-webkit-scrollbar-thumb {
-            background-color: #a4afb7;
-            border-left: 1px solid #FFFFFF;
-            border-right: 1px solid #FFFFFF;
-            border-top: 1px solid #FFFFFF;
-            border-bottom: 1px solid #FFFFFF;
-            border-radius: 4px;
+        .card-completed {
+            width: 25%;
         }
-        &::-webkit-scrollbar-track {
-            background-color: #d3d3d3;
-            border-left: 3.5px solid #FFFFFF;
-            border-right: 3.5px solid #FFFFFF;
-            border-top: 3.5px solid #FFFFFF;
-            border-bottom: 3.5px solid #FFFFFF;
-        }
-        .table-list-projects {
-            border-collapse: collapse;
-            width: 100%;
-            .sticky-column {
-                position: sticky;
-                position: -webkit-sticky;
-                z-index: 1;
+        .card-overall {
+            width: 25%;
+            margin: 0 15px;
+            .chart {
+                display: flex;
+                justify-content: center;
             }
-            thead {
-                background: #484848;
-                color: #FFFFFF;
-                th {
-                    font-weight: normal;
-                    padding: 6px 0;
-                    &.col-pnl, &.col-block, &.col-start-date, &.col-end-date {
-                        background: #818181;
-                        border-top: .5px solid #FFFFFF;
-                        padding: 4px 0;
-                    }
-                    &.c-no {
-                        left: 0;
-                        background: #484848 !important;
-                    }
-                    &.c-project-name {
-                        left: 45px;
-                        background: #484848;
-                    }
-                    &.c-short-name {
-                        left: 245px;
-                        background: #484848;
-                    }
-                    &.c-manager {
-                        left: 355px;
-                        background: #484848;
-                    }
-                    &.c-status {
-                        right: 0;
-                        background: #484848;
-                    }
+        }
+        .card-detail {
+            flex: 1 1;
+            .table-list-evaluation {
+                border: 1px solid #DEE2E6;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                td, th {
+                    border: 1px solid #DEE2E6;
+                    padding: 8px;
                 }
-            }
-            .no {
-                width: 45px;
-                text-align: center;
-            }
-            .project-name {
-                width: 200px;
-            }
-            .short-name {
-                width: 110px;
-                text-align: center;
-            }
-            .manager {
-                width: 120px;
-            }
-            .request-summary {
-                width: 350px;
-            }
-            .customer {
-                width: 300px;
-                text-align: center;
-            }
-            .pnl {
-                width: 160px;
-            }
-            .block {
-                width: 140px;
-                text-align: center;
-            }
-            .time {
-                width: 220px;
-                text-align: center;
-            }
-            .start-date, .end-date {
-                width: 110px;
-                text-align: center;
-            }
-            .complexity, .criticality {
-                width: 120px;
-                text-align: center;
-            }
-            .status {
-                width: 160px;
-                text-align: center;
-            }
-            tbody {
-                color: #0D1B3C;
-                tr {
-                    border-bottom: 1px solid #CED4DA;
-                    cursor: pointer;
-                    td {
-                        padding: 5px 0;
-                        // height: 45px;
-                        .complexity, .criticality {
-                            width: 100px;
-                            text-align: center;
-                            margin: 0 auto;
-                            .status {
-                                width: 90px;
-                                height: 30px;
-                                border-radius: 15px;
-                                display: inline-flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: #FFFFFF;
-                                border: 1px solid;
-                                font-weight: normal;
-                                font-size: 12px;
-                                cursor: default;
-                                &.low {
-                                    background: #2ED87C;
-                                }
-                                &.medium {
-                                    background: #FF7F00;
-                                }
-                                &.high {
-                                    background: #FF5370;
-                                }
-                                &.critical {
-                                    background: #FFFFFF;
-                                    color: #FF5370;
-                                    border-color: #FF5370;
-                                }
-                                &.no-critical {
-                                    background: #FFFFFF;
-                                    color: #0D1B3C;
-                                    border-color: #CED4DA;
-                                }
-                            }
-                        }
-                        .status {
-                            display: inline-flex;
-                            justify-content: center;
-                            align-items: center;
-                            width: 120px;
-                            font-size: 12px;
-                            height: 30px;
-                            border-radius: 15px;
-                            cursor: default;
-                            &.draft {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.deny-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.open {
-                                background: #4099FF;
-                                color: #FFFFFF;
-                                cursor: pointer;
-                            }
-                            &.in-progress {
-                                background: #FFFFFF;
-                                color: #FF7F00;
-                                cursor: pointer;
-                                border: 1px solid #FF7F00;
-                            }
-                            &.cancelled {
-                                background: #FF5370;
-                                color: #FFFFFF;
-                                border-color: transparent;
-                            }
-                            &.pending-approval {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.deny {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.pending-review {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.re-open {
-                                background: #FFFFFF;
-                                color: #4099FF;
-                                border: 1px solid #4099FF;
-                            }
-                            &.pending-schedule {
-                                background: #FFFFFF;
-                                color: #0D1B3C;
-                                border: 1px solid #0D1B3C;
-                            }
-                            &.closed {
-                                background: #2ED87C;
-                                color: #FFFFFF;
-                            }
-                        }
-                        &.c-no {
-                            left: 0;
-                            background: #FFFFFF;
-                        }
-                        &.c-project-name {
-                            left: 45px;
-                            background: #FFFFFF;
-                        }
-                        &.c-short-name {
-                            left: 245px;
-                            background: #FFFFFF;
-                        }
-                        &.c-manager {
-                            left: 355px;
-                            background: #FFFFFF;
-                        }
-                        &.c-status {
-                            right: 0;
-                            background: #FFFFFF;
-                        }
-                    }
-                    &:hover {
-                        background: #FAEFE1;
-                        td {
-                            background: #FAEFE1;
-                        }
-                    }
-                    &:last-child {
-                        border-bottom: none;
-                    }
+                .color-red {
+                    color: #C11D2A;
                 }
             }
         }

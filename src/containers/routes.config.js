@@ -546,6 +546,14 @@ export default [
             path: map.MyEvaluation,
           },
           component: lazy(() => import("./Evaluation/MyEvaluation")),
+        },
+        {
+          key: "evaluation-detail",
+          routeProps: {
+            exact: true,
+            path: map.EvaluationDetail,
+          },
+          component: lazy(() => import("./Evaluation/Detail")),
         }
       ],
     },
