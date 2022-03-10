@@ -112,15 +112,43 @@ function EvaluationDetail(props) {
                 projectData.projects.length !== 0   
                 ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
                 : <div>
-                    <div className="overall">
+                    <div className="block-overall">
                         <div className="card shadow card-completed">
-                            <h6>Đã hoàn thành: 10/20</h6>
+                            <h6 className="text-center">Đã hoàn thành: 10/20</h6>
                         </div>
                         <div className="card shadow card-overall">
-                            <h6>Điểm tổng thể</h6>
+                            <h6 className="text-center">Điểm tổng thể</h6>
+                            <div className="chart">
+                                <div className="detail"></div>
+                            </div>
                         </div>
                         <div className="card shadow card-detail">
-                            
+                            <table className='table-list-evaluation'>
+                                <thead>
+                                    <tr>
+                                        <th className='c-criteria'><div className='criteria'>Tên chí đánh giá</div></th>
+                                        <th className='c-self-assessment text-center'><div className='self-assessment'>Tự đánh giá</div></th>
+                                        <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>QLTT đánh giá</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className='c-criteria'><div className='criteria'>Tinh thần thái độ</div></td>
+                                        <td className='c-self-assessment text-center'>80</td>
+                                        <td className='c-manager-assessment text-center color-red'>90</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='c-criteria'><div className='criteria'>Kết quả công việc</div></td>
+                                        <td className='c-self-assessment text-center'>80</td>
+                                        <td className='c-manager-assessment text-center color-red'>90</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>Điểm tổng thể</div></td>
+                                        <td className='c-self-assessment text-center font-weight-bold'>80</td>
+                                        <td className='c-manager-assessment text-center font-weight-bold color-red'>90</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div> 

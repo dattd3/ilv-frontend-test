@@ -95,7 +95,7 @@ export const Navigation = [
   {
     id: 997,
     parentId: 0,
-    icon: 'project-info',
+    icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
     role: "U"
