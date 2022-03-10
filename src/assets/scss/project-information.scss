@@ -1639,9 +1639,9 @@
                     border-bottom: 1px solid #CED4DA;
                     th {
                         padding: 10px 0;
-                        &.c-manday {
-                            padding: 10px 15px 10px 0;
-                        }
+                        // &.c-manday {
+                        //     padding: 10px 15px 10px 0;
+                        // }
                     }
                 }
             }
@@ -1649,32 +1649,29 @@
                 tr {
                     border-bottom: 1px solid #CED4DA;
                     td {
-                        padding: 10px 0;
+                        padding: 10px 5px;
                         &.c-no {
                             width: 4%;
                             text-align: center;
                         }
                         &.c-project-name {
                             width: 26%;
-                            padding: 0 5px;
                         }
                         &.c-project-manager {
-                            width: 16%;
-                            padding: 0 5px;
+                            width: 14%;
                         }
                         &.c-start-date, &.c-end-date {
-                            width: 14%;
+                            width: 11%;
                             text-align: center;
-                            padding: 0 5px;
                         }
                         &.c-role {
                             width: 17%;
-                            padding: 0 5px;
                         }
                         &.c-manday {
                             width: 9%;
-                            text-align: right;
-                            padding: 0 15px 0 5px;
+                        }
+                        &.c-effort {
+                            width: 8%;
                         }
                     }
                     &:hover {
