@@ -1856,6 +1856,7 @@
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: normal;
+                            margin-top: 10px;
                         }
                     }
                     &:hover {
@@ -1894,7 +1895,7 @@
             }
             .manday {
                 width: 90px;
-                text-align: right;
+                text-align: center;
             }
             .professional-capacity-assessment, .attitude-behavior, .leadership-skill, .overall {
                 width: 250px;
