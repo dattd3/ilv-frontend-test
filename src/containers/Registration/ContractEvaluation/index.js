@@ -920,7 +920,7 @@ renderEvalution = (name, data, isDisable) => {
     }
 
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`;
-    let home = '/tasks?tab=evalution';
+    let home = '/evaluation-manager';
     if(this.state.type == 'assess'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
       home = '/tasks?tab=consent';

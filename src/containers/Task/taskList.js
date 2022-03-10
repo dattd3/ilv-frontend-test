@@ -462,8 +462,8 @@ class TaskList extends React.Component {
                                     {
                                         tasks.map((child, index) => {
                                             let totalTime = null;
-                                            let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
-                                            let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
+                                            let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
+                                            let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
                                             }
@@ -554,7 +554,7 @@ class TaskList extends React.Component {
                         : <div className="data-not-found">{t("NoDataFound")}</div>
                     }
                 </div>
-                {tasks.length > 0 ? <div className="row paging mt-2">
+                {tasks.length > 0 ? <div className="row paging mt-2 mb-4">
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
