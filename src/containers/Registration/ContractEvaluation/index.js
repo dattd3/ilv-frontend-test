@@ -164,6 +164,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
     let shouldDisable = false;
+    let isNguoidanhgia = false;
+    if(data.nguoidanhgia?.account && (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') == currentEmployeeNo.toLowerCase()) {
+      isNguoidanhgia = true;
+    }
     switch(data.processStatus) {
       case 9: 
         if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()){
@@ -196,7 +200,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       shouldDisable = data.canAddJob ? false : true;
     }
     this.setState({
-      disableComponent: {...this.state.disableComponent, disableAll: shouldDisable}
+      disableComponent: {...this.state.disableComponent, disableAll: shouldDisable},
+      isNguoidanhgia: isNguoidanhgia
     })
   }
 
@@ -607,19 +612,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
-        errors['boss'] = '(Bắt buộc)';
-      }
-      const array = ['result', 'contract', 'startDate', 'endDate'];
-      const optionFields = ['result', 'contract']
-      
-      array.forEach(name => {
-        if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
-            errors[name] = '(Bắt buộc)'
-        } else {
-            errors[name] = null
+      if(this.state.isNguoidanhgia == false) {
+        if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
+          errors['boss'] = '(Bắt buộc)';
         }
-      })
+        const array = ['result', 'contract', 'startDate', 'endDate'];
+        const optionFields = ['result', 'contract']
+        
+        array.forEach(name => {
+          if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
+              errors[name] = '(Bắt buộc)'
+          } else {
+              errors[name] = null
+          }
+        })
+      }
       const error = this.validateResult();
       if(error) errors['result'] = error;
     }else if( type === 'edit'){
@@ -938,7 +945,8 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            this.showStatusModal(t("RequestSent"), true, true, home)
+            const message = actionType == 2 ? t('RequestSent') : 'Lưu thông tin thành công'
+            this.showStatusModal(message, true, true, home)
             this.setDisabledSubmitButton(false, actionType)
             return;
           }
@@ -1233,7 +1241,14 @@ renderEvalution = (name, data, isDisable) => {
               </div>
             </div>
           </div>
-          }) : null
+          }) : 
+          <div className="box shadow cbnv document">
+          <div className="row">
+            <div className="col-12">
+              <label>Không có vi phạm nào</label>
+            </div>
+          </div>
+         </div>
         }
         
         {
@@ -1270,6 +1285,7 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
+          this.state.isNguoidanhgia ? null : 
           <>
             {/* quan li */}
             <div className="box shadow cbnv more-description">
