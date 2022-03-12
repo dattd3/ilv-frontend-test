@@ -204,7 +204,7 @@ class ApproverComponent extends React.Component {
         <div className="row">
           <div className="col-4">
             <p className="title">Họ và tên</p>
-            <div>
+            <div className='mv-10'>
               <Select
                 isClearable={true}
                 isDisabled={isEdit}

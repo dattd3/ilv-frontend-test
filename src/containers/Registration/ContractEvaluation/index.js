@@ -877,7 +877,7 @@ renderEvalution = (name, data, isDisable) => {
     .then(response => {
         if (response && response.data && response.data.result) {
             if(response.data.result.code == '000000'){
-              this.showStatusModal(t("RequestSent"), true, true, '/tasks?tab=prepare')
+              this.showStatusModal(t("RequestSent"), true, true, '/support-onboard')
               this.setDisabledSubmitButton(false)
               return;
             }
@@ -990,7 +990,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="detail">{data.employeeInfo.departmentName || ""}</div>
             </div>
           </div>
-          <div className="row">
+          <div className="row mv-10">
             <div className="col-4">
               {"Ngày làm việc"}
               <div className="detail">{data.employeeInfo.startDate ? moment(data.employeeInfo.startDate).format("DD/MM/YYYY") : '' }</div>
@@ -1281,7 +1281,7 @@ renderEvalution = (name, data, isDisable) => {
                   Kết quả
                   <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
-                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input"
+                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                   {this.state.errors && this.state.errors['result'] ? <p className="text-danger">{this.state.errors['result']}</p> : null}
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
@@ -1290,7 +1290,7 @@ renderEvalution = (name, data, isDisable) => {
                   Loại hợp đồng lao động
                   <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
-                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input"
+                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                   {this.state.errors && this.state.errors['contract'] ? <p className="text-danger">{this.state.errors['contract']}</p> : null}
                   {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
@@ -1333,7 +1333,7 @@ renderEvalution = (name, data, isDisable) => {
                   {this.state.errors && this.state.errors['endDate'] ? <p className="text-danger">{this.state.errors['endDate']}</p> : null}
                 </div>
               </div>
-              <div className="row">
+              <div className="row mv-10">
                 {/* <div className="col-4">
                   Điều chỉnh lương
                   <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
