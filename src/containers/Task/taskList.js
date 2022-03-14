@@ -228,7 +228,7 @@ class TaskList extends React.Component {
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         tasks.forEach((child) => {
-            if (child.processStatusId == 8 || (page == "approval" && (child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+            if (child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10 || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true
@@ -472,7 +472,7 @@ class TaskList extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     {
-                                                        (((child.processStatusId == 5 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
+                                                        (((child.processStatusId == 5 || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
                                                         && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
                                                         <td scope="col" className="check-box text-left sticky-col">
                                                             <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
@@ -500,7 +500,7 @@ class TaskList extends React.Component {
                                                     {
                                                         child.requestType?.id == 6 ?
                                                         <td className="request-type">
-                                                            <a href={this.getLinkEvalution(child.id)} className="task-title">{child.requestType?.name}</a>
+                                                           {child.requestType?.name}
                                                         </td>
                                                         :
                                                         <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>

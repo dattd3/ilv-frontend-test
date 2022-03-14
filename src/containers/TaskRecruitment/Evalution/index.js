@@ -23,7 +23,8 @@ class EvaluationComponent extends React.Component {
     {value: 11, label: 'QLTT đánh giá'},
     {value: 12, label: 'HR thẩm định'},
     {value: 13, label: 'CBLD phê duyệt'},
-    {value: 14, label: 'Đã phê duyệt'}
+    {value: 2, label: 'Đã phê duyệt'},
+    {value: 1, label: 'Từ chối'}
   ];
 
   _isMounted = false;
