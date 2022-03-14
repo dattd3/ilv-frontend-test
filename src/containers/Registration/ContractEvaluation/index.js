@@ -19,6 +19,7 @@ import _, { debounce } from 'lodash'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -160,9 +161,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
 
-  checkAuthorize = () => {
+  checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
+    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > -7 ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
     if(data.nguoidanhgia?.account && (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') == currentEmployeeNo.toLowerCase()) {
@@ -170,25 +172,25 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     switch(data.processStatus) {
       case 9: 
-        if(!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()){
-          shouldDisable = data.canAddJob ? true : false;
+        if(!isAfterT_7 || (this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase())){
+          shouldDisable = true;
         }
         break;
       case 10: 
-        if((!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'assess') || (!data.nguoidanhgia || !data.nguoidanhgia.account || (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 11: 
-        if((!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'assess') || (!data.qltt || !data.qltt.account || (data.qltt.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
         break;
       case 13: 
-        if((!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
         }
-        break;
+      break;
       case 1:
       case 2: 
         shouldDisable = true;
@@ -196,13 +198,41 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       default:
         shouldDisable = true;
     }
-    if(this.state.type == 'edit'){
-      shouldDisable = data.canAddJob ? false : true;
+    if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
+      const subordinates = await this.getSubordinates()
+      const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeEmail.toLowerCase(), subordinates)
+      shouldDisable = directManagerValidation ? false : true;
     }
     this.setState({
       disableComponent: {...this.state.disableComponent, disableAll: shouldDisable},
       isNguoidanhgia: isNguoidanhgia
     })
+  }
+
+  getSubordinates = async () => {
+    try {
+        const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getMuleSoftHeaderConfigurations())
+
+        if (responses && responses.data) {
+            const employees = responses.data.data
+
+            if (employees && employees.length > 0) {
+                return employees
+            }
+
+            return []
+        }
+    } catch (error) {
+        return []
+    }
+  }
+
+  validateDirectManager = (employeeEmail, subordinates) => {
+    const subordinateAds = subordinates.map(item => item.username?.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION)
+    if(subordinateAds.indexOf(employeeEmail) != -1){
+      return true;
+    }
+    return false;
   }
 
   constructor(props) {
@@ -319,7 +349,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
-    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`;
+    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
+    
     if(type == 'assess' || type == 'approval'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
@@ -364,9 +395,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       staffSuggestions: data.selfEvalution.opinion,
       managersEvaluateStrengths: data.bossEvalution.strong,
       managersEvaluatePointImprove: data.bossEvalution.weak,
-      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations?.contractKpiResult,
-      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations?.contractType,
-      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations?.contractTypeName,
+      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractKpiResult : '',
+      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractType : '',
+      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractTypeName : '',
+      
+
       startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       expireDate: data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       proposed: data.qlttOpinion.otherOption || '',
@@ -374,7 +407,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
 
     remoteData.requestHistorys = {
-      ...remoteData.requestHistorys,
+      ...(remoteData.requestHistorys || {}),
       appraiserInfo: data.nguoidanhgia,
       supervisorInfo: data.qltt,
       approverInfo: data.nguoipheduyet
@@ -836,7 +869,7 @@ renderEvalution = (name, data, isDisable) => {
       </td>
       <td style={{width: '8%'}}>
         {
-          item.canEdit ? 
+           !isDisable && item.canEdit ? 
           <div className="action-group">
             <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isEditing', item.id)} />
             <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isDeleted', item.id)} />
