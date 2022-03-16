@@ -164,7 +164,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > -7 ? true : false;
+    const dateToCheck = data.contractType == 'VA' ? -45 : -7; 
+    const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
     if(data.nguoidanhgia?.account && (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') == currentEmployeeNo.toLowerCase()) {
@@ -438,8 +439,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const candidateInfos = {...this.state.data}
     candidateInfos.remoteData = infos;
     candidateInfos.canAddJob = infos.isEdit;
+    
     //save staff contract
     if(infos.staffContracts){
+      candidateInfos.contractType = infos.staffContracts.contractType
       candidateInfos.employeeInfo = {
         employeeNo: infos.staffContracts.employeeCode,
         fullName: infos.staffContracts.fullName,
