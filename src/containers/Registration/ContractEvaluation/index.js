@@ -961,12 +961,13 @@ renderEvalution = (name, data, isDisable) => {
         this.setDisabledSubmitButton(false, actionType)
         return
     }
-
+    let message = t('RequestSent');
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`;
     let home = '/evaluation-manager';
     if(this.state.type == 'assess'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
       home = '/tasks?tab=consent';
+      if(actionType == 1) message = 'Lưu thông tin thành công';
     }else if(this.state.type == 'approval') {
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/approvals`
       home = '/tasks?tab=approval'
@@ -981,7 +982,6 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            const message = actionType == 2 ? t('RequestSent') : 'Lưu thông tin thành công'
             this.showStatusModal(message, true, true, home)
             this.setDisabledSubmitButton(false, actionType)
             return;
