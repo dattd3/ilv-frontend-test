@@ -805,7 +805,7 @@ function ProjectDetail(props) {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
                                                                             let hasEditTime = isMe && projectData?.processStatusId != status.closed 
-                                                                                                && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
+                                                                                                && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
                                                                                                 && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
                                                                                                 && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
                                                                             return <div className="item" key={tIndex}>
