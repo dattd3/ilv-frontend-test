@@ -815,7 +815,7 @@ function ProjectDetail(props) {
                                                                                                     <ReactTooltip id={`shift-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="top" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
                                                                                                         <div style={{padding: '5px 15px'}}>{(timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1') ? 'Holiday' : 'OFF'}</div>
                                                                                                     </ReactTooltip>
-                                                                                                    <div className="text-center off-shift" data-tip data-for={`shift-infos-${tIndex}-user-index-${index}`}>OFF</div>
+                                                                                                    { item?.rsmTimeSheet[timeSheet?.date] && <div className="text-center off-shift" data-tip data-for={`shift-infos-${tIndex}-user-index-${index}`}>OFF</div> }
                                                                                                     </>
                                                                                                 : <>
                                                                                                 {
@@ -836,22 +836,22 @@ function ProjectDetail(props) {
                                                                                                                 }
                                                                                                             </ul>
                                                                                                         </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span>
+                                                                                                        { item?.rsmTimeSheet[timeSheet?.date] && <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span> }
                                                                                                     </>
                                                                                                     : null
                                                                                                 }
-                                                                                                <div className="time">{`${timeSheet?.hoursValue}h`}</div>
+                                                                                                { item?.rsmTimeSheet[timeSheet?.date] && <div className="time">{`${timeSheet?.hoursValue}h`}</div> }
                                                                                                 </>
                                                                                             }
                                                                                         </div>
                                                                                         <div className="bottom">
                                                                                             {
-                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
+                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
                                                                                                 ? null
                                                                                                 : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
                                                                                             }
                                                                                             {
-                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1') 
+                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
                                                                                                 ? null
                                                                                                 : <div className="time">
                                                                                                 {
