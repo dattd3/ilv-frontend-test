@@ -73,7 +73,7 @@ function ProjectDetail(props) {
     const timeSheetStatusStyleMapping = {
         [timeSheetStatusPending]: {label: 'Pending', className: 'pending'},
         [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
-        [timeSheetStatusDenied]: {label: 'Denied', className: 'denied'}
+        [timeSheetStatusDenied]: {label: 'Rejected', className: 'denied'}
     }
     const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
     const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
@@ -621,7 +621,6 @@ function ProjectDetail(props) {
         }
 
         if (leaveData && leaveData?.length > 0) {
-            icon = IconInfoYellow
             const leaveDataToSave = leaveData.map(item => {
                 return {
                     className: 'yellow',
@@ -635,7 +634,6 @@ function ProjectDetail(props) {
         }
 
         if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-            icon = IconInfoViolet
             const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
                 return {
                     className: 'violet',
