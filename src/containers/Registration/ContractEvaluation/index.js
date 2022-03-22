@@ -255,14 +255,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           
         },
         course: [
-          {
-            name: 'Văn hóa Vin',
-            status: true
-          },
-          {
-            name: 'Quản lý dự án cơ bản',
-            status: false
-          }
         ],
         violation: [
          
@@ -954,8 +946,12 @@ renderEvalution = (name, data, isDisable) => {
 
   submit(actionType) {
     const { t } = this.props
-    const err = this.verifyInputs()
-
+    let err = {};
+    if(actionType != 1) {
+      err = this.verifyInputs()
+    } else {
+      this.setState({errors: {}});
+    }
     this.setDisabledSubmitButton(true, actionType)
     if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
         this.setDisabledSubmitButton(false, actionType)
