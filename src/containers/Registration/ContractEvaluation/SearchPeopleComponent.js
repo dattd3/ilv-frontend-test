@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils';
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -51,11 +52,7 @@ class ApproverComponent extends React.Component {
       current_position: "",
       department: ""
     }
-    let config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    }
+    const config = getMuleSoftHeaderConfigurations();
     const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
