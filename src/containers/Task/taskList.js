@@ -228,7 +228,7 @@ class TaskList extends React.Component {
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         tasks.forEach((child) => {
-            if (child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10 || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+            if (child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true
@@ -365,7 +365,6 @@ class TaskList extends React.Component {
                 return requestTypeObj ? t(requestTypeObj.label) : ""
             }
         }
-
         return (
             <>
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
@@ -473,7 +472,7 @@ class TaskList extends React.Component {
                                                 <tr key={index}>
                                                     {
                                                         (((child.processStatusId == 5 || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
-                                                        && this.props.page == "approval") || child.processStatusId == 8 || child.processStatusId == 11 || child.processStatusId == 10) ?
+                                                        && this.props.page == "approval") || child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase())) ?
                                                         <td scope="col" className="check-box text-left sticky-col">
                                                             <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                         </td>
