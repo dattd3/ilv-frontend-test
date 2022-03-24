@@ -20,6 +20,8 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
+import LoadingModal from '../../../components/Common/LoadingModal'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -239,6 +241,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      loading: false,
       isShowStatusModal: false,
       annualLeaveSummary: {},
       data: {
@@ -310,14 +313,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         showComponent: this.employeeSetting.showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
         type: 'request',
-        id: id
+        id: id,
+        loading: true
       })
     }else if(type == 'edit'){
       this.setState({
         showComponent: this.editableSetting.showComponent,
         disableComponent: {...this.editableSetting.disableComponent, disableAll: true},
         type: 'edit',
-        id: id
+        id: id,
+        loading: true
       })
       
     }else if(type === 'assess'){
@@ -325,14 +330,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         showComponent: this.qlttSetting.showComponent,
         disableComponent: {...this.qlttSetting.disableComponent, disableAll: true},
         type: 'assess',
-        id: id
+        id: id,
+        loading: true
       })
     }else if(type === 'approval'){
       this.setState({
         showComponent: this.bossSetting.showComponent,
         disableComponent: {...this.bossSetting.disableComponent, disableAll: true},
         type: 'approval',
-        id: id
+        id: id,
+        loading: true
       })
     }
     const config = {
@@ -359,6 +366,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
       }
     }).catch(error => {})
+    .finally(() => {
+      this.setState({loading: false})
+    })
 
   }
 
@@ -644,9 +654,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
-        const array = ['result', 'contract', 'startDate', 'endDate'];
+        const array = ['result', 'contract', 'startDate'];
         const optionFields = ['result', 'contract']
-        
+        if(this.state.data.qlttOpinion?.contract?.value != 'VB') {
+          array.push('endDate');
+        }
         array.forEach(name => {
           if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
               errors[name] = '(Bắt buộc)'
@@ -655,8 +667,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         })
       }
-      const error = this.validateResult();
-      if(error) errors['result'] = error;
+      // const error = this.validateResult();
+      //if(error) errors['result'] = error;
     }else if( type === 'edit'){
       if(evalutions && evalutions.length > 0){
         let isMissing = false;
@@ -1002,10 +1014,11 @@ renderEvalution = (name, data, isDisable) => {
     const showComponent = this.state.showComponent;
     const disableComponent = this.state.disableComponent;
     const data = this.state.data;
+    const loading = this.state.loading;
     
     return (
       <div className="registration-section">
-
+        <LoadingModal show={loading}/>
       <div className="leave-of-absence evalution">
         <div className="eval-heading">
             BIÊN BẢN ĐÁNH GIÁ GIAO KẾT / GIA HẠN HĐLĐ 
