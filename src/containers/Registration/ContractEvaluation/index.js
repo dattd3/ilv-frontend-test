@@ -441,6 +441,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const candidateInfos = {...this.state.data}
     candidateInfos.remoteData = infos;
     candidateInfos.canAddJob = infos.isEdit;
+    candidateInfos.comment = null;
     
     //save staff contract
     if(infos.staffContracts){
@@ -530,8 +531,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
 
     if(infos.requestHistorys){
+      candidateInfos.comment = infos.requestHistorys.approverComment;
       candidateInfos.processStatus = infos.requestHistorys.processStatusId;
       candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ?  infos.requestHistorys.appraiserInfo : {};
+      candidateInfos.hasnguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ? true : false;
       candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.account ?  infos.requestHistorys.supervisorInfo : {};
       candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.account ? infos.requestHistorys.approverInfo : {}; 
     }
@@ -654,10 +657,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
-        const array = ['result', 'contract', 'startDate'];
+        let array = ['result', 'contract', 'startDate'];
         const optionFields = ['result', 'contract']
         if(this.state.data.qlttOpinion?.contract?.value != 'VB') {
           array.push('endDate');
+        }
+        if(this.state.data.qlttOpinion?.result.value == 5) {
+          array = ['result'];
         }
         array.forEach(name => {
           if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
@@ -1015,7 +1021,7 @@ renderEvalution = (name, data, isDisable) => {
     const disableComponent = this.state.disableComponent;
     const data = this.state.data;
     const loading = this.state.loading;
-    
+    const comment =  data?.comment || null;
     return (
       <div className="registration-section">
         <LoadingModal show={loading}/>
@@ -1311,7 +1317,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              <ApproverComponent comment={(data.processStatus == 9 && data.hasnguoidanhgia) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
               {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
@@ -1326,7 +1332,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
@@ -1456,14 +1462,14 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             }
             
           </>
         }
-        { 
+        {/* { 
         data.processStatus == 1 ?
         <>
         <h5>THÔNG TIN PHÊ DUYỆT</h5>
@@ -1492,7 +1498,7 @@ renderEvalution = (name, data, isDisable) => {
           
         </div>
         </> : null
-        }
+        } */}
 
         <ul className="list-inline">
             {data.cvs.map((file, index) => {
