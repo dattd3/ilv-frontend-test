@@ -398,9 +398,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       staffSuggestions: data.selfEvalution.opinion,
       managersEvaluateStrengths: data.bossEvalution.strong,
       managersEvaluatePointImprove: data.bossEvalution.weak,
-      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractKpiResult : '',
-      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value: remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractType : '',
-      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label : remoteData.additionInforEvaluations ? remoteData.additionInforEvaluations.contractTypeName : '',
+      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : '',
+      contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value : '',
+      contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label :  '',
       
 
       startDate: data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
@@ -1336,7 +1336,22 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
-          this.state.isNguoidanhgia ? null : 
+          this.state.isNguoidanhgia ? 
+             <div className="box shadow cbnv">
+              <div className="row approve">
+                <div className="col-12">
+                <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                </div>
+              </div>
+              <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
+            </div> 
+            : 
           <>
             {/* quan li */}
             <div className="box shadow cbnv more-description">
