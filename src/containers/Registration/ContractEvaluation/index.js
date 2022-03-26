@@ -398,7 +398,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       staffSuggestions: data.selfEvalution.opinion,
       managersEvaluateStrengths: data.bossEvalution.strong,
       managersEvaluatePointImprove: data.bossEvalution.weak,
-      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : '',
+      contractKpiResult : data.qlttOpinion.result && data.qlttOpinion.result.value ? data.qlttOpinion.result.value : 0,
       contractType: data.qlttOpinion.contract && data.qlttOpinion.contract.value ? data.qlttOpinion.contract.value : '',
       contractTypeName: data.qlttOpinion.contract && data.qlttOpinion.contract.label? data.qlttOpinion.contract.label :  '',
       
