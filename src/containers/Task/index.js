@@ -6,7 +6,6 @@ import ConsentComponent from '../Task/Consent/'
 import ApprovalComponent from '../Task/Approval/'
 import ApprovalDelegationModal from "./ApprovalDelegation/ApprovalDelegationModal"
 import ApprovalDelegationList from "./ApprovalDelegation/index"
-import PrepareComponent from '../Task/Prepare';
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import processingDataReq from "../Utils/Common"
@@ -26,7 +25,7 @@ class Task extends React.Component {
         this.state = {
             isShowApprovalTab: true,
             isShowPrepareTab: false,
-            isShowJobEvalutionTab: true,
+            isShowJobEvalutionTab: false,
             tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
             tasks: [],
             approvalDelegationModal: {
@@ -45,28 +44,7 @@ class Task extends React.Component {
 
     componentDidMount() {
         this.fetchUserApprovalDelegations()
-        this.checkPermissonShowPrepareTab();
     }
-
-    checkPermissonShowPrepareTab = async () => {
-        try {
-            const config = {
-                headers: {
-                  'Authorization': `${localStorage.getItem('accessToken')}`
-                }
-            }
-            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${localStorage.getItem('companyCode')}`, config)
-
-            if (response && response.data) {
-                this.setState({
-                    ...this.state,
-                    isShowPrepareTab: response.data.data?.isSupporter == true ? true : false
-                })
-            }
-        } catch(e) {
-
-        }
-    } 
 
     fetchUserApprovalDelegations = async () => {
         try {
@@ -173,20 +151,6 @@ class Task extends React.Component {
                             <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
                         </Tab>
                         : null
-                    }
-                    {
-                        this.state.isShowPrepareTab == true ?
-                        <Tab eventKey="prepare" title="Hỗ trợ chuẩn bị nhận việc">
-                            <PrepareComponent />
-                        </Tab>
-                        : null
-                    }
-                    {
-                        /*this.state.isShowJobEvalutionTab == true ?
-                        <Tab eventKey="evalution" title="Đánh giá công việc">
-                            <EvalutionComponent />
-                        </Tab>
-                        : null*/
                     }
                 </Tabs>
             </div>
