@@ -532,6 +532,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     if(infos.requestHistorys){
       candidateInfos.comment = infos.requestHistorys.approverComment;
+      candidateInfos.approvalDate = infos.requestHistorys.approvalDate && infos.requestHistorys.approvalDate != '0001-01-01T00:00:00' ? infos.requestHistorys.approvalDate : null;
       candidateInfos.processStatus = infos.requestHistorys.processStatusId;
       candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ?  infos.requestHistorys.appraiserInfo : {};
       candidateInfos.hasnguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ? true : false;
@@ -1477,7 +1478,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             }
