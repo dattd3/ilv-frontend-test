@@ -5,6 +5,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils';
+import moment from 'moment';
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -195,7 +196,7 @@ class ApproverComponent extends React.Component {
         cursor: 'pointer',
       })
     }
-    const { t, isEdit, comment } = this.props;
+    const { t, isEdit, comment, approvalDate } = this.props;
     return <div className="approver">
 
       <div className="row">
@@ -237,6 +238,15 @@ class ApproverComponent extends React.Component {
             <div className="col-4">
               Lý do không duyệt
               <div className="detail">{comment}</div>
+            </div>
+          </div> : null
+      }
+      {
+        approvalDate ? 
+        <div className="row mt-3">
+            <div className="col-4">
+              Ngày phê duyệt
+              <div className="detail">{moment(approvalDate).format('DD/MM/YYYY')}</div>
             </div>
           </div> : null
       }
