@@ -26,7 +26,7 @@ function ProjectRowItem(props) {
             <td><div className='end-date'>{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
             <td><div className='complexity'><span className={`status ${complexityClassName}`}>{item?.complexity || ""}</span></div></td>
             <td><div className='criticality'><span className={`status ${criticalityClassName}`}>{item?.criticality || ""}</span></div></td>
-            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`}>{item?.processStatus?.value}</div></td>
+            <td className='text-center sticky-column c-status'><div className={`status text-truncate ${statusClassName}`} title={item?.processStatus?.value}>{item?.processStatus?.value}</div></td>
         </tr>
     )
 }
