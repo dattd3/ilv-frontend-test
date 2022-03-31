@@ -30,7 +30,6 @@ import IconCheckWhite from '../../../assets/img/icon/Icon_Check_White.svg'
 import IconInfoRed from '../../../assets/img/icon/Icon_Info_Red.svg'
 import IconInfoViolet from '../../../assets/img/icon/Icon_Info_Violet.svg'
 import IconInfoYellow from '../../../assets/img/icon/Icon_Info_Yellow.svg'
-// import { useHistory } from 'react-router'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -67,13 +66,14 @@ function ProjectDetail(props) {
         THUE_NGOAI: 'TN'
     }
 
+    const timeSheetStatusPending = 0
     const timeSheetStatusApproved = 1
     const timeSheetStatusDenied = 2
 
     const timeSheetStatusStyleMapping = {
-        0: {label: 'Pending', className: 'pending'},
+        [timeSheetStatusPending]: {label: 'Pending', className: 'pending'},
         [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
-        [timeSheetStatusDenied]: {label: 'Denied', className: 'denied'}
+        [timeSheetStatusDenied]: {label: 'Rejected', className: 'denied'}
     }
     const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
     const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
@@ -156,24 +156,6 @@ function ProjectDetail(props) {
                             timeSheets: [],
                             rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date),
                             rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
-                            // rsmLeaveTypeAndComment: [
-                            //     {
-                            //         baseTypeModel: {value: "PQ01", label: "Nghỉ phép năm"},
-                            //         endDate: "20220223",
-                            //         endTime: "1100",
-                            //         startDate: "20220222",
-                            //         startTime: "0900",
-                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                            //     },
-                            //     {
-                            //         baseTypeModel: {value: "WFH1", label: "WFH (Không CTP, có ăn ca)"},
-                            //         endDate: "20220224",
-                            //         endTime: "1730",
-                            //         startDate: "20220224",
-                            //         startTime: "0830",
-                            //         user_Comment: "Đăng ký nghỉ theo lịch nghỉ tết của Công ty"
-                            //     }
-                            // ]
                         }
                     })
                     return timeSheets
@@ -436,7 +418,8 @@ function ProjectDetail(props) {
             const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
             const { rsmTimeSheet, timeSheets } = dataToSubmit
             const payload = (timeSheets || [])
-            .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
+            .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+                            && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
             .map(item => {
                 return {
                     id: rsmTimeSheet[item.date][0]?.id,
@@ -448,7 +431,7 @@ function ProjectDetail(props) {
                     plannedTotal: rsmTimeSheet[item.date][0]?.plannedTotal,
                     hours: rsmTimeSheet[item.date][0]?.hours,
                     actual: item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
-                    statusId: rsmTimeSheet[item.date][0]?.statusId,
+                    statusId: item?.isEditing && rsmTimeSheet[item.date][0]?.statusId == timeSheetStatusDenied ? timeSheetStatusPending : rsmTimeSheet[item.date][0]?.statusId,
                     isEdit: rsmTimeSheet[item.date][0]?.isEdit
                 }
             })
@@ -483,7 +466,8 @@ function ProjectDetail(props) {
         const result = (timeSheets || []).map((item, i) => {
             return {
                 ...item,
-                actualHoursTemp: index === i ? val : item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours
+                actualHoursTemp: index === i ? val : item?.actualHoursTemp !== null && item?.actualHoursTemp !== undefined ? item?.actualHoursTemp : item?.actualHours,
+                ...(index === i && { isEditing: true })
             }
         })
         return result
@@ -492,20 +476,36 @@ function ProjectDetail(props) {
     const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
         const actualTimeValid = [0, 2, 4, 6, 8]
         let value = e?.target?.value || ""
+
         if (!actualTimeValid.includes(parseInt(value))) {
             value = ""
         }
-        const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
-            if (item?.employeeId != currentEmployeeNoLogged) {
-                return item
-            }
-            return {
-                ...item,
-                timeSheets: setActualTimeForListTimeSheet(item?.timeSheets, timeSheetIndex, value)
-            }
-        })
 
-        SetProjectTimeSheetOriginal(projectTimeSheetOriginalTemp)
+        if (projectTimeSheetFiltered?.length > 0) {
+            const projectTimeSheetOriginalTemp = [...projectTimeSheetFiltered].map(item => {
+                if (item?.employeeId != currentEmployeeNoLogged) {
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        timeSheets: setActualTimeForListTimeSheet(item?.timeSheets, timeSheetIndex, value)
+                    }
+                }
+            })
+            SetProjectTimeSheetFiltered(projectTimeSheetOriginalTemp)
+        } else {
+            const projectTimeSheetOriginalTemp = [...projectTimeSheetOriginal].map(item => {
+                if (item?.employeeId != currentEmployeeNoLogged) {
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        timeSheets: setActualTimeForListTimeSheet(item?.timeSheets, timeSheetIndex, value)
+                    }
+                }
+            })
+            SetProjectTimeSheetOriginal(projectTimeSheetOriginalTemp)
+        }
     }
 
     const handleChangeSelect = e => {
@@ -553,7 +553,7 @@ function ProjectDetail(props) {
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
-    const rangeTimeFilter = `${projectData.startDate ? moment(projectData.startDate).format('DD/MM/YYYY') : ''} - ${projectData.endDate ? moment(projectData.endDate).format('DD/MM/YYYY') : ''}`
+    const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
 
     const customStyles = {
         control: base => ({
@@ -621,7 +621,6 @@ function ProjectDetail(props) {
         }
 
         if (leaveData && leaveData?.length > 0) {
-            icon = IconInfoYellow
             const leaveDataToSave = leaveData.map(item => {
                 return {
                     className: 'yellow',
@@ -635,7 +634,6 @@ function ProjectDetail(props) {
         }
 
         if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-            icon = IconInfoViolet
             const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
                 return {
                     className: 'violet',
@@ -805,14 +803,20 @@ function ProjectDetail(props) {
                                                                         (item?.timeSheets || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
                                                                             let hasEditTime = isMe && projectData?.processStatusId != status.closed 
-                                                                                                && ![timeSheetStatusApproved, timeSheetStatusDenied].includes(timeSheet?.rsmStatus)
+                                                                                                && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
                                                                                                 && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
                                                                                                 && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
                                                                             return <div className="item" key={tIndex}>
                                                                                         <div className="top">
                                                                                             {
-                                                                                                timeSheet.shift_id === 'OFF' 
-                                                                                                ? <div className="text-center off-shift">OFF</div>
+                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
+                                                                                                ? 
+                                                                                                    <>
+                                                                                                    <ReactTooltip id={`shift-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="top" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
+                                                                                                        <div style={{padding: '5px 15px'}}>{(timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1') ? 'Holiday' : 'OFF'}</div>
+                                                                                                    </ReactTooltip>
+                                                                                                    { item?.rsmTimeSheet[timeSheet?.date] && <div className="text-center off-shift" data-tip data-for={`shift-infos-${tIndex}-user-index-${index}`}>OFF</div> }
+                                                                                                    </>
                                                                                                 : <>
                                                                                                 {
                                                                                                     noteInfos.hasShowNote
@@ -832,22 +836,22 @@ function ProjectDetail(props) {
                                                                                                                 }
                                                                                                             </ul>
                                                                                                         </ReactTooltip>
-                                                                                                        <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span>
+                                                                                                        { item?.rsmTimeSheet[timeSheet?.date] && <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span> }
                                                                                                     </>
                                                                                                     : null
                                                                                                 }
-                                                                                                <div className="time">{`${timeSheet?.hoursValue}h`}</div>
+                                                                                                { item?.rsmTimeSheet[timeSheet?.date] && <div className="time">{`${timeSheet?.hoursValue}h`}</div> }
                                                                                                 </>
                                                                                             }
                                                                                         </div>
                                                                                         <div className="bottom">
                                                                                             {
-                                                                                                timeSheet.shift_id === 'OFF' 
+                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
                                                                                                 ? null
                                                                                                 : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
                                                                                             }
                                                                                             {
-                                                                                                timeSheet.shift_id === 'OFF' 
+                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
                                                                                                 ? null
                                                                                                 : <div className="time">
                                                                                                 {
