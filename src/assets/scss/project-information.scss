@@ -158,14 +158,13 @@
                             }
                         }
                         .status {
-                            display: inline-flex;
-                            justify-content: center;
-                            align-items: center;
+                            line-height: 30px;
                             width: 120px;
                             font-size: 12px;
                             height: 30px;
                             border-radius: 15px;
                             cursor: default;
+                            padding: 0 5px;
                             &.draft {
                                 background: #FFFFFF;
                                 color: #0D1B3C;
