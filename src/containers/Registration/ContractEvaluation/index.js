@@ -422,9 +422,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     remoteData.requestHistorys = {
       ...(remoteData.requestHistorys || {}),
-      appraiserInfo: data.nguoidanhgia,
+      appraiserInfo: data.nguoidanhgia, //data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net'
+      appraiserId: data.nguoidanhgia?.account ? data.nguoidanhgia.account.toLowerCase()  + '@vingroup.net' : '',
       supervisorInfo: data.qltt, 
-      approverInfo: data.nguoipheduyet
+      supervisorId: data.qltt?.account ? data.qltt.account.toLowerCase()  + '@vingroup.net' : '',
+      approverInfo: data.nguoipheduyet,
+      approverId: data.nguoipheduyet?.account ? data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net' : ''
     }
     let bodyFormData = new FormData();
     bodyFormData.append('staffContracts', JSON.stringify(remoteData.staffContracts));
