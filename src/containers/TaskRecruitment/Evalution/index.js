@@ -175,7 +175,8 @@ class EvaluationComponent extends React.Component {
         isShowStatusModal: true,
         modalTitle: title,
         textContentStatusModal: message,
-        isSuccess: status 
+        isSuccess: status,
+        isReload: status
       }
     });
   }

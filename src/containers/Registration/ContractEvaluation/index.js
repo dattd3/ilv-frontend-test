@@ -64,7 +64,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   };
   employeeSetting =  {
     showComponent: {
-      JobEditing: false, // co the edit , them sua xoa noi dung danh gia
+      JobEditing: true, // co the edit , them sua xoa noi dung danh gia
       bossOption: false, //Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
       HrOption: false, //Ý KIẾN THẨM ĐỊNH CỦA BỘ PHẬN NHÂN SỰ
       employeePoC: true, //NGƯỜI ĐÁNH GIÁ (Nếu có)
@@ -78,6 +78,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       employeeSide: true,
       qlttSide: false,
       disableAll: false,
+      editable: true,
     },
     requiredFields: [],
     optionFields: [],
@@ -390,7 +391,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         managementComment: data.evalution[index].ManagementComment
       }
     });
-
+   
+    remoteData.lstTaskAssessments = data.evalution.filter(item => !(item.id == 0 && item.isDeleted == true)).map(item => {
+      return {
+        id: item.id,
+        taskName: item.TaskName,
+        selfAssessmentScore: item.SelfAssessmentScore || 0,
+        managementScore: item.ManagementScore || 0,
+        managementComment: item.ManagementComment || '',
+        isDeleted: item.isDeleted
+      }
+    })
     remoteData.additionInforEvaluations = {
       ...remoteData.additionInforEvaluations,
       selfAssessmentStrengths: data.selfEvalution.strong,
@@ -412,7 +423,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     remoteData.requestHistorys = {
       ...(remoteData.requestHistorys || {}),
       appraiserInfo: data.nguoidanhgia,
-      supervisorInfo: data.qltt,
+      supervisorInfo: data.qltt, 
       approverInfo: data.nguoipheduyet
     }
     let bodyFormData = new FormData();
@@ -467,11 +478,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos.ManagementScoreTotal += item.managementScore;
         return {
             id: item.id,
+            editId: itemCount,
             TaskName: item.taskName || '',
             SelfAssessmentScore: item.selfAssessmentScore,
             ManagementScore: item.managementScore,
             ManagementComment: item.managementComment || '',
-            canEdit: item.isEdit,
+            canEdit: item.createdBy == localStorage.getItem('email')?.toLowerCase(), //item.isEdit,
             isEditing: false,
             isEdited: false,
             isDeleted: false,
@@ -591,17 +603,23 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   verifyInputs = () => {
     const type = this.state.type;
     const errors = {};
-    const evalutions = [...this.state.data.evalution, ...this.state.data.newEvalution];
+    const evalutions = [...this.state.data.evalution, ...this.state.data.newEvalution].filter(item => !item.isDeleted);
     if(type === 'request'){
       if(evalutions && evalutions.length > 0){
-        let isMissing = false;
+        let isMissing = false, isMissingContent = false;
         for(let i = 0; i < evalutions.length ; i++){
           if(evalutions[i].isDeleted === false &&  evalutions[i].SelfAssessmentScore < 1){
             isMissing = true;
             break;
           }
+          if(evalutions[i].isDeleted === false && !evalutions[i].TaskName){
+            isMissingContent = true;
+            break;
+          }
         }
-        if(isMissing)
+        if(isMissingContent) {
+          errors['rating'] = '(Bắt buộc điền nội dung đánh giá)'
+        } else if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
       if(!this.state.data.qltt || !this.state.data.qltt.account){
@@ -795,6 +813,56 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.setState({data : candidateInfos})
   }
 
+  changeEditingStatusForEmployee = (name, subName,  subId) => {
+    const candidateInfos = {...this.state.data};
+      const result = candidateInfos[name].map( (item) => {
+        if(item.editId != subId){
+          return item;
+        }
+        item[subName] = !item[subName];
+        item.isEdited = true;
+        return item;
+      })
+      candidateInfos[name] = result;
+      this.setState({data : candidateInfos}, () => {
+        this.handleRatingChangeForEmployeeItem(0, 'evalution',-1000, 'SelfAssessmentScore')
+      })
+  }
+
+  handleTextInputChangeForEmployeeItem = (e, name, subId, subName) => {
+    const candidateInfos = {...this.state.data};
+    const result = candidateInfos[name].map( (item) => {
+      if(item.editId != subId){
+        return item;
+      }
+      item[subName] = e.target.value;
+      return item;
+    })
+    candidateInfos[name] = result;
+    this.setState({data : candidateInfos})
+  }
+
+  handleRatingChangeForEmployeeItem = (value, name, subId, subName) => {
+    const candidateInfos = {...this.state.data};
+    let total = 0;
+    let count = 0;
+    const result = candidateInfos[name].map( (item) => {
+      if(item.isDeleted) return item;
+      total += item[subName];
+      count++;
+      if(item.editId != subId){
+        return item;
+      }
+      total = (total - item[subName] + value);
+      item[subName] = value;
+      return item;
+    })
+    //candidateInfos['qlttOpinion']['result'] = {}
+    candidateInfos[name] = result;
+    candidateInfos[subName + 'Total'] = Number(total / count).toFixed(2);
+    this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
+  }  
+
   handleRatingChangeForItem = (value, name, subId, subName) => {
     const candidateInfos = {...this.state.data};
     let total = 0;
@@ -897,6 +965,63 @@ renderEvalution = (name, data, isDisable) => {
     :
     null
   }
+
+  addMoreEvalutionForEmployee = () => {
+    const candidateInfos = {...this.state.data};
+    const result = candidateInfos.evalution;
+    const newItem = {
+      id: 0,
+      editId: result.length > 0 ? result[result.length - 1].editId + 1 : 1,
+      TaskName: '',
+      SelfAssessmentScore: 0,
+      ManagementScore: 0,
+      ManagementComment: '',
+      canEdit: true,
+      isEditing: true,
+      isEdited: false,
+      isDeleted: false,
+    }
+    result.push(newItem);
+    candidateInfos.newEvalution = result;
+    this.setState({data: candidateInfos}, () => {
+      this.handleRatingChangeForEmployeeItem(0, 'evalution',-1000, 'SelfAssessmentScore')
+    });
+  }
+
+  renderEvalutionForEmployee = (name, data, isDisable, isRatingDisable) => {
+    return data.length > 0 ? 
+      data.map( (item, index) => {
+        if(item.isDeleted)
+          return null;
+        return <tr key = {index}>
+        <td style={{width: '20%'}}>
+          {
+            item.isEditing ? 
+            <ResizableTextarea onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+            item.TaskName
+          }
+        </td>
+        <td style={{width: '14%'}}><Rating onChange={(rating) => this.handleRatingChangeForEmployeeItem(rating, 'evalution', item.editId, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={isRatingDisable || item.isEditing}/></td>
+        <td style={{width: '16%'}}><Rating initialRating={0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
+        <td style={{width: '42%'}}>
+          <ResizableTextarea disabled={true} />
+        </td>
+        <td style={{width: '8%'}}>
+          {
+             !isDisable && item.canEdit ? 
+            <div className="action-group">
+              <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatusForEmployee(name, 'isEditing', item.editId)} />
+              <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatusForEmployee(name, 'isDeleted', item.editId)} />
+            </div> : null
+          }
+          
+        </td>
+      </tr>
+      })
+      
+      :
+      null
+    }
 
   submitEvalution = () => {
     const { t } = this.props
@@ -1123,6 +1248,35 @@ renderEvalution = (name, data, isDisable) => {
                     </thead>
                   </table>
                   : 
+                  this.state.type == 'request' ?
+                  <>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style={{width: '20%'}}>Nội dung đánh giá</th>
+                        <th style={{width: '14%'}}>Tự đánh giá</th>
+                        <th style={{width: '16%'}}>CBLĐ TT đánh giá</th>
+                        <th style={{width: '42%'}}>Nhận xét</th>
+                        <th style={{width: '8%'}}>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        this.renderEvalutionForEmployee('evalution', data.evalution, disableComponent.disableAll || !disableComponent.editable, disableComponent.disableAll || !disableComponent.employeeSide)
+                      }
+                    </tbody>
+                    <thead>
+                      <tr>
+                        <th style={{width: '20%'}}>Tổng điểm</th>
+                        <th style={{width: '14%'}}>{data.SelfAssessmentScoreTotal}</th>
+                        <th style={{width: '16%'}}>{data.ManagementScoreTotal}</th>
+                        <th style={{width: '42%'}}></th>
+                        <th style={{width: '8%'}}></th>
+                      </tr>
+                    </thead>
+                  </table>
+                  </>
+                  :
                   <>
                   <table>
                     <thead>
@@ -1153,7 +1307,13 @@ renderEvalution = (name, data, isDisable) => {
             showComponent.JobEditing ? disableComponent.disableAll ? null : 
             <div className="row">
               <div className="col-12">
-                <div className="buttn-addmore" onClick={() => this.addMoreEvalution()}>
+                <div className="buttn-addmore" onClick={() => {
+                  if(this.state.type == 'request') {
+                    this.addMoreEvalutionForEmployee()
+                  } else {
+                    this.addMoreEvalution()
+                  }
+                }}>
                   <Image src={IconAdd} alt="Hủy" className="ic-action ic-reset" />
                   Thêm đánh giá
                 </div>
@@ -1174,7 +1334,7 @@ renderEvalution = (name, data, isDisable) => {
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
-              Điểm cần cải thiên
+              Điểm cần cải thiện
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'weak')} className="mv-10"/>
             </div>
             <div className="col-12">
@@ -1193,7 +1353,7 @@ renderEvalution = (name, data, isDisable) => {
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
-              Điểm cần cải thiên
+              Điểm cần cải thiện
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'weak')} className="mv-10"/>
             </div>
           </div>
@@ -1533,7 +1693,7 @@ renderEvalution = (name, data, isDisable) => {
         <div className="bottom">
             <div className="clearfix mt-5 mb-5">
                 {
-                  showComponent.JobEditing ?
+                  showComponent.JobEditing && this.state.type == 'edit' ?
                   <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={this.submitEvalution.bind(this)} disabled={this.state.disabledSubmitButton}>
                     {!this.state.disabledSubmitButton ?
                         <>
@@ -1588,7 +1748,7 @@ renderEvalution = (name, data, isDisable) => {
                   }
                   {showComponent.employeeSide ? 
                   <>
-                  <input type="file" hidden  type="file" id="i_files" name="i_files" onChange={this.handleChangeFileInput} multiple />
+                  <input type="file" hidden id="i_files" name="i_files" onChange={this.handleChangeFileInput} multiple />
                   <label htmlFor="i_files" className="btn btn-light float-right shadow">
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>
