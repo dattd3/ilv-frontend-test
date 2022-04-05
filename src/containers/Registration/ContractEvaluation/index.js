@@ -859,7 +859,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     })
     //candidateInfos['qlttOpinion']['result'] = {}
     candidateInfos[name] = result;
-    candidateInfos[subName + 'Total'] = Number(total / count).toFixed(2);
+    candidateInfos[subName + 'Total'] = count == 0 ? 0 : Number(total / count).toFixed(2);
     this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
   }  
 
@@ -877,7 +877,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     })
     //candidateInfos['qlttOpinion']['result'] = {}
     candidateInfos[name] = result;
-    candidateInfos[subName + 'Total'] = Number(total / candidateInfos[name].length).toFixed(2);
+    candidateInfos[subName + 'Total'] = candidateInfos[name].length == 0 ? 0 : Number(total / candidateInfos[name].length).toFixed(2);
     this.setState({data : candidateInfos, errors: {...this.state.errors, 'result': null}})
   }
 
@@ -1001,7 +1001,7 @@ renderEvalution = (name, data, isDisable) => {
             item.TaskName
           }
         </td>
-        <td style={{width: '14%'}}><Rating onChange={(rating) => this.handleRatingChangeForEmployeeItem(rating, 'evalution', item.editId, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={isRatingDisable || item.isEditing}/></td>
+        <td style={{width: '14%'}}><Rating onChange={(rating) => this.handleRatingChangeForEmployeeItem(rating, 'evalution', item.editId, 'SelfAssessmentScore')} initialRating={item.SelfAssessmentScore || 0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={isRatingDisable}/></td>
         <td style={{width: '16%'}}><Rating initialRating={0} start={0} stop={5}  step={1} emptySymbol={<span className="rating-empty"/>} fullSymbol={<span className="rating-full"/>} readonly={true}/></td>
         <td style={{width: '42%'}}>
           <ResizableTextarea disabled={true} />
