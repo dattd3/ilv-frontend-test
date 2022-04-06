@@ -1076,5 +1076,6 @@
   "MenuMyProfile": "My profile",
   "VFCarElectricStakeNet": "VF car electric stake (net)",
   "VFCarElectricStakeGross": "VF car electric stake (gross)",
-  "RegistrationEmploymentTermination": "Register leave"
+  "RegistrationEmploymentTermination": "Register leave",
+  "RequestRegistration": "Request registration"
 }
