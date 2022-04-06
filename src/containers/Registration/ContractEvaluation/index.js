@@ -28,6 +28,7 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = true
+const GROUP_EMAIL_EXTENSION = '@vingroup.net'
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
@@ -232,7 +233,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   validateDirectManager = (employeeEmail, subordinates) => {
-    const subordinateAds = subordinates.map(item => item.username?.toLowerCase() + Constants.GROUP_EMAIL_EXTENSION)
+    const subordinateAds = subordinates.map(item => item.username?.toLowerCase() + GROUP_EMAIL_EXTENSION)
     if(subordinateAds.indexOf(employeeEmail) != -1){
       return true;
     }
