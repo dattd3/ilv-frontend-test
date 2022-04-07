@@ -18,7 +18,7 @@ const MyOption = props => {
                     <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
                 </div>
                 <div className="float-left text-wrap w-75">
-                    <div className="title">{props.data.fullName}</div>
+                    <div className="title">{props.data.fullname}</div>
                     <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
                 </div>
             </div>
@@ -28,21 +28,21 @@ const MyOption = props => {
 
 class SeniorExecutiveInfoComponent extends React.PureComponent {
     constructor(props) {
-        super();
+        super()
         this.state = {
-            appraiser: null,
+            seniorExecutive: null,
             users: [],
             typingTimeout: 0,
-            appraiserTyping: ""
+            seniorExecutiveTyping: ""
         }
-        this.onInputChange = debounce(this.getAppraiser, 600);
+        this.onInputChange = debounce(this.getApproverInfo, 600)
     }
-
+    
     componentDidMount() {
-        let appraiserModel = {
+        let approverModel = {
             label: "",
             value: "",
-            fullName: "",
+            fullname: "",
             avatar: "",
             employeeLevel: "",
             pnl: "",
@@ -51,122 +51,136 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
             current_position: "",
             department: ""
         }
-        let config = {
+        const config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-        const companiesUsing = ['V070', 'V077', 'V060']
+        const { seniorExecutive } = this.props
+        const companiesUsing = ['V070','V077', 'V060']
         if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-            axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
-                .then(res => {
-                    if (res && res.data && res.data.data && res.data.data.length > 0) {
-                        let manager = res.data.data[0]
-                        let managerApproval = {
-                            ...appraiserModel,
-                            label: manager.fullName,
-                            value: manager.userid.toLowerCase(),
-                            fullName: manager.fullName,
-                            account: manager.userid.toLowerCase(),
-                            current_position: manager.title,
-                            department: manager.department
-                        }
-                        this.setState({ appraiser: managerApproval })
-                        this.props.updateAppraiser(managerApproval, true)
-                    }
-                }).catch(error => {
-
-                });
+          axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+          .then(res => {
+            if (res && res.data && res.data.data && res.data.data.length > 0) {
+                const manager = res.data.data[0]
+                const managerApproval = {
+                    ...approverModel,
+                    label: manager.fullName,
+                    value: manager.userid.toLowerCase(),
+                    fullname: manager.fullName,
+                    account: manager.userid.toLowerCase(),
+                    current_position: manager.title,
+                    department: manager.department
+                }
+                this.setState({ seniorExecutive: managerApproval })
+                this.props.updateApprovalInfos("seniorExecutive", managerApproval, true)
+            }
+          }).catch(error => {
+    
+          })
         }
 
-        const { appraiser } = this.props
-        if (appraiser) {
-            this.setState({
-              appraiser: {
-                ...appraiser,
-                label: appraiser.fullName,
-                value: appraiser.account,
-              }
-            })
-          }
+        if (seniorExecutive) {
+          this.setState({
+            seniorExecutive: {
+              ...seniorExecutive,
+              label: seniorExecutive.fullname,
+              value: seniorExecutive.account,
+            }
+          })
+        }
     }
-
-    handleSelectChange(name, value) {
+    
+      componentWillReceiveProps(nextProps) {
+        const { seniorExecutive } = nextProps;
+        const companiesUsing = ['V070','V077', 'V060']
+    
+        if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+          return
+        }
+    
+        if (seniorExecutive) {
+          this.setState({
+            seniorExecutive: {
+              ...seniorExecutive,
+              label: seniorExecutive.fullname,
+              value: seniorExecutive.account,
+            }
+          })
+        }
+      }
+    
+      handleSelectChange(name, value) {
         if (value) {
-            const currentUserLevel = localStorage.getItem('employeeLevel')
-            this.setState({ [name]: value })
-            const isAppraiser = this.isAppraiser(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-            console.log(value);
-            this.props.updateAppraiser(value, isAppraiser)
+          const currentUserLevel = localStorage.getItem('employeeLevel')
+          this.setState({ [name]: value })
+          const isDirectManager = this.isSeniorExecutive(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
+          this.props.updateApprovalInfos("seniorExecutive", value, isDirectManager)
         } else {
-            this.setState({ [name]: value, users: [] })
-            this.props.updateAppraiser(value, true)
+          this.setState({ [name]: value, users: [] })
+          this.props.updateApprovalInfos("seniorExecutive", value, true)
         }
-    }
-
-    isAppraiser = (levelAppraiserFilter, orglv2Id, currentUserLevel, account) => {
+      }
+    
+      isSeniorExecutive = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
+        const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
         const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
-        let indexCurrentUserLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == currentUserLevel });
-        
-        let indexAppraiserFilterLevel = _.findIndex(Constants.CONSENTER_LIST_LEVEL, function (item) { return item == levelAppraiserFilter },0);
-
-        if (indexAppraiserFilterLevel == -1 || indexCurrentUserLevel > indexAppraiserFilterLevel) {
-            return false
+        let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
+        let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
+    
+        if (indexApproverFilterLevel == -1 || indexCurrentUserLevel > indexApproverFilterLevel) {
+          return false
         }
         if (account.toLowerCase() === localStorage.getItem("email").split("@")[0]) {
-            return false
+          return false
         }
-
-        // if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter) && orglv2IdCurrentUser === orglv2Id) {
-        //     return true
-        // }
-        if (Constants.CONSENTER_LIST_LEVEL.includes(levelAppraiserFilter)) {
-            return true
+    
+        if (APPROVER_LIST_LEVEL.includes(levelApproverFilter) && orglv2IdCurrentUser === orglv2Id) {
+          return true
         }
-
+    
         return false
-    }
-
-    getAppraiser = (value) => {
-        const { approver } = this.props
+      }
+    
+      getApproverInfo = value => {
+        const { seniorExecutive } = this.props
+    
         if (value !== "") {
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                    'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                    'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-                }
+          const config = {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
-
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, config)
-                .then(res => {
-                    if (res && res.data && res.data.data) {
-                        const data = res.data.data || []
-                        const users = data.map(res => {
-                            return {
-                                label: res.fullName,
-                                value: res.user_account,
-                                fullName: res.fullName,
-                                avatar: res.avatar,
-                                employeeLevel: res.employee_level,
-                                pnl: res.pnl,
-                                orglv2Id: res.orglv2_id,
-                                account: res.user_account,
-                                current_position: res.title,
-                                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
-                            }
-                        })
-                        this.setState({ users: approver ? users.filter(user => user.account !== approver.account) : users })
-                    }
-                }).catch(error => { })
+          }
+    
+          axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, config)
+          .then(res => {
+            if (res && res.data && res.data.data) {
+              const data = res.data.data || []
+              const users = data.map(res => {
+                return {
+                  label: res.fullName,
+                  value: res.user_account,
+                  fullname: res.fullName,
+                  avatar: res.avatar,
+                  employeeLevel: res.employee_level,
+                  pnl: res.pnl,
+                  orglv2Id: res.orglv2_id,
+                  account: res.user_account,
+                  current_position: res.title,
+                  department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
+                }
+              })
+              this.setState({ users: seniorExecutive ? users.filter(user => user.account !== seniorExecutive.account) : users })
+            }
+          }).catch(error => { })
         }
-    }
-
-    onInputChange = value => {
-        this.setState({ appraiserTyping: value }, () => {
-            this.onInputChange(value)
+      }
+    
+      onInputChange = value => {
+        this.setState({ seniorExecutiveTyping: value }, () => {
+          this.onInputChange(value)
         })
-    }
+      }
 
     render() {
         const customStyles = {
@@ -179,9 +193,10 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit } = this.props;
+        const { t, isEdit } = this.props
+        const seniorExecutive = this.state.seniorExecutive
 
-        return <div className="block appraiser">
+        return <div className="block senior-executive">
             <div className="box shadow">
                 <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
                 <div className="row">
@@ -194,26 +209,25 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
                                 styles={customStyles}
                                 components={{ Option: MyOption }}
                                 onInputChange={this.onInputChange.bind(this)}
-                                name="appraiser"
-                                onChange={appraiser => this.handleSelectChange('appraiser', appraiser)}
+                                onChange={seniorExecutiveOption => this.handleSelectChange('seniorExecutive', seniorExecutiveOption)}
                                 value={this.state.appraiser}
                                 placeholder={t('Search') + '...'}
-                                key="appraiser"
+                                key="seniorExecutive"
                                 options={this.state.users}
                             />
                         </div>
-                        {this.props.errors && this.props.errors['appraiser'] ? <p className="text-danger">{this.props.errors['appraiser']}</p> : null}
+                        {this.props.errors && this.props.errors['seniorExecutive'] ? <p className="text-danger">{this.props.errors['seniorExecutive']}</p> : null}
                     </div>
                     <div className="col-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={seniorExecutive?.current_position || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-4">
                         <p className="title">{t('DepartmentManage')}</p>
                         <div>
-                            <input type="text" className="form-control" value={this.state.appraiser?.department || ""} readOnly />
+                            <input type="text" className="form-control" value={seniorExecutive?.department || ""} readOnly />
                         </div>
                     </div>
                 </div>
