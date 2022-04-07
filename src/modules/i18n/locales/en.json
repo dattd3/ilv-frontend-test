@@ -1077,5 +1077,18 @@
   "VFCarElectricStakeNet": "VF car electric stake (net)",
   "VFCarElectricStakeGross": "VF car electric stake (gross)",
   "RegistrationEmploymentTermination": "Register leave",
-  "RequestRegistration": "Request registration"
+  "RequestRegistration": "Request registration",
+  "ProposedResignation": "Proposed Resignation",
+  "ProposalToTerminateContract": "Proposal to terminate the contract",
+  "DaysOnWorking": "Days on working",
+  "ContractType": "Loại hợp đồng",
+  "StaffInformation": "Staff Information",
+  "StaffInformationProposedToTerminateContract": "Staff information proposed to terminate the contract",
+  "LastWorkingDay": "Last working day",
+  "ContractTerminationDate": "Contract termination date",
+  "ReasonForContractTermination": "Reason for contract termination",
+  "DetailedReason": "Detailed reason",
+  "DirectManager": "Direct manager",
+  "SeniorExecutive": "Senior executive",
+  "ProposedResignationForStaff": "Proposed resignation for staff"
 }

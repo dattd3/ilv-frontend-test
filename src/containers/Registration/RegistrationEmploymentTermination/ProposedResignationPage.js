@@ -32,7 +32,7 @@ const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 const MATERNITY_LEAVE_KEY = "IN02"
 
-class RegistrationEmploymentTerminationForm extends React.Component {
+class ProposedResignation extends React.Component {
     constructor(props) {
         super();
         this.state = {
@@ -770,10 +770,10 @@ console.log(times)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
 
         return (
-            <div className='registration-section'>
+            <>
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence registration-employment-termination">
-                <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
+                <h5 className="page-title">{t('ProposedResignationForStaff')}</h5>
                 <StaffInfoComponent />
                 <StaffTerminationDetailComponent />
                 <DirectManagerInfoComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
@@ -781,9 +781,9 @@ console.log(times)
                 <AttachmentComponent />
                 <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
             </div>
-            </div>
+            </>
         )
     }
 }
 
-export default withTranslation()(RegistrationEmploymentTerminationForm)
+export default withTranslation()(ProposedResignation)

@@ -569,7 +569,15 @@ export default [
             exact: true,
             path: map.RegistrationEmploymentTermination
           },
-          component: lazy(() => import("./Registration/RegistrationEmploymentTermination"))
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/RegistrationTermination"))
+        },
+        {
+          key: "proposed-resignation",
+          routeProps: {
+            exact: true,
+            path: map.ProposedResignation
+          },
+          component: lazy(() => import("./Registration/RegistrationEmploymentTermination/ProposedResignation"))
         }
       ],
     },

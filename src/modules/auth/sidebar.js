@@ -399,4 +399,12 @@ export const Navigation = [
     to: map.RegistrationEmploymentTermination,
     role: 'U'
   },
+  {
+      id: 129999,
+      parentId: 10,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "ProposedResignation",
+      to: map.ProposedResignation,
+      role: 'U'
+    },
 ];
