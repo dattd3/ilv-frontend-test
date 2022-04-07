@@ -14,6 +14,7 @@ import StaffTerminationDetailComponent from '../TerminationComponents/StaffTermi
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import "react-toastify/dist/ReactToastify.css"
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 const config = {
     headers: {            
@@ -56,8 +57,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
         const requestReasonTypes = axios.get(reasonTypesEndpoint, config)
-        const requestUserInfos = axios.get(userInfosEndpoint, config)
-        const requestUserContractInfos = axios.get(userContractInfosEndpoint, config)
+        const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
+        const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
 
         await axios.all([requestReasonTypes, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])

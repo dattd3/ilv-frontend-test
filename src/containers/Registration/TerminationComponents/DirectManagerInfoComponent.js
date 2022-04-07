@@ -102,23 +102,34 @@ class DirectManagerInfoComponent extends Component {
 
     if (value !== "") {
       this.setState({isSearching: true})
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+      }
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/appraiser`, { account: value, should_check_superviser: true }, getRequestConfigs())
+      const payload = {
+        account: value,
+        status: 3
+      }
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []
           const users = data.map(res => {
             return {
-              label: res?.fullName,
-              value: res?.user_account,
-              fullName: res?.fullName,
+              label: res?.fullname,
+              value: res?.username,
+              fullName: res?.fullname,
               avatar: res?.avatar,
-              employeeLevel: res?.employee_level,
+              employeeLevel:  res.rank_title || res.rank,
               pnl: res?.pnl,
               organizationLv2: res?.orglv2_id,
-              account: res?.user_account,
-              jobTitle: res?.title,
-              department: `${res?.division || ""}${res?.department ? `/${res?.department}` : ""}${res?.part ? `/${res?.part}` : ""}`
+              account: res?.username,
+              jobTitle: res?.postition_name,
+              department:  res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
             }
           })
           this.setState({ users: users, isSearching: false })

@@ -16,6 +16,7 @@ import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import "react-toastify/dist/ReactToastify.css"
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -51,9 +52,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
-        const requestReasonTypes = axios.get(reasonTypesEndpoint, getRequestConfigs())
-        const requestUserInfos = axios.get(userInfosEndpoint, getRequestConfigs())
-        const requestUserContractInfos = axios.get(userContractInfosEndpoint, getRequestConfigs())
+        const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
+        const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
+        const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
 
         await axios.all([requestReasonTypes, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
@@ -151,7 +152,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userAccount = directManager.account?.toLowerCase()
 
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getMuleSoftHeaderConfigurations())
             const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
             
             if (realUserAccounts.includes(userAccount)) {

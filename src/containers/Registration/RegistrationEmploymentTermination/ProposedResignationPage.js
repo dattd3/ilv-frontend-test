@@ -14,6 +14,7 @@ import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import "react-toastify/dist/ReactToastify.css"
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 class ProposedResignationPage extends React.Component {
     constructor(props) {
@@ -49,8 +50,8 @@ class ProposedResignationPage extends React.Component {
     initialData = async () => {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
-        const requestReasonTypes = axios.get(reasonTypesEndpoint, getRequestConfigs())
-        const requestUserInfos = axios.get(userInfosEndpoint, getRequestConfigs())
+        const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
+        const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
 
         await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
