@@ -1,20 +1,18 @@
 import React from 'react'
 import Select from 'react-select'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next"
+import 'react-datepicker/dist/react-datepicker.css'
+import { vi, enUS } from 'date-fns/locale'
 
-class StaffTerminationDetailComponent extends React.Component {
+class StaffTerminationDetailComponent extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
             infos: {}
         }
-    }
-
-    componentDidMount() {
-        
     }
 
     handleSelectChange = e => {
