@@ -1930,10 +1930,12 @@ span.badge-notification[data-badge]::after {
   }
   .staff-information-proposed-resignation-block {
     .search-action-block {
+      margin-bottom: 15px;
       .btn-action-group {
         display: flex;
         justify-content: space-between;
         align-items: center;
+       
         .btn-action {
           width: 45%;
           padding: 6px;
@@ -2092,10 +2094,12 @@ span.badge-notification[data-badge]::after {
   }
   .staff-information-proposed-resignation-block {
     .search-action-block {
+      margin-bottom: 15px;
       .btn-action-group {
         display: flex;
         justify-content: space-between;
         align-items: center;
+       
         .btn-action {
           width: 45%;
           padding: 6px;

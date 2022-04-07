@@ -5,6 +5,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../commons/Constants"
 import { getRequestConfigs } from '../../commons/commonFunctions'
+import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -56,7 +57,7 @@ class ApproverComponent extends React.Component {
     const { approver } = this.props
     const companiesUsing = ['V070','V077', 'V060']
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getRequestConfigs())
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getMuleSoftHeaderConfigurations())
         .then(res => {
           if (res && res.data && res.data.data && res.data.data.length > 0) {
             let manager = res.data.data[0]
@@ -139,21 +140,33 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, getRequestConfigs())
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+      }
+
+      const payload = {
+        account: value,
+        status: 3
+      }
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
             const users = data.map(res => {
               return {
-                label: res.fullName,
-                value: res.user_account,
-                fullName: res.fullName,
+                label: res.fullname,
+                value: res.username,
+                fullName: res.fullname,
                 avatar: res.avatar,
                 employeeLevel: res.employee_level,
                 pnl: res.pnl,
                 orglv2Id: res.orglv2_id,
-                account: res.user_account,
-                current_position: res.title,
+                account: res.username,
+                current_position: res.postition_name,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })

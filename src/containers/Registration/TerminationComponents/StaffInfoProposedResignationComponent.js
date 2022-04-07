@@ -6,6 +6,7 @@ import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -138,26 +139,37 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     
         if (value !== "") {
             this.setState({isSearching: true})
+            const config = {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                  'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+                  'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+                }
+              }
         
+              const payload = {
+                account: value,
+                status: 3
+              }
             // Need update when has Mule api
-            axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: false }, getRequestConfigs())
+            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                const data = res.data.data || []
-                const users = data.map(res => {
+                 const data = res.data.data || []
+                 const users = data.map(res => {
                     return {
-                        label: res.fullName,
-                        value: res.user_account,
-                        fullname: res.fullName,
+                        label: res.fullname,
+                        value: res.username,
+                        fullname: res.fullname,
                         avatar: res.avatar,
-                        account: res.user_account,
-                        employee_no: res.user_account, // need update
-                        job_title: res.title,
-                        department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`,
+                        account: res.username,
+                        employee_no: res.username, // need update
+                        job_title: res.rank_title || res.rank,
+                        department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
                         date_start_work: null,
                         contract_type: null, // need update
                         contract_name: null, // need update
-                        email: `${res.user_account?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
+                        email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
                         unit_name: null, // need update
                         orglv1_id: null, // need update
                         orglv2_id: res.orglv2_id, // need check
@@ -168,7 +180,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         rank_id: null, // need update
                         rank_name: null // need update
                     }
-                })
+                });
                 this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
                 }
             }).catch(error => {
@@ -176,7 +188,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             })
         }
     }
-        
+
     onInputChange = value => {
         this.setState({ employeeTyping: value }, () => {
             this.onInputChange(value)

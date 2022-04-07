@@ -184,6 +184,7 @@ const Constants = {
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
   PAGE_INDEX_DEFAULT: 1,
-  PAGE_SIZE_DEFAULT: 10
+  PAGE_SIZE_DEFAULT: 10,
+  GROUP_EMAIL_EXTENSION: '@vingroup.net'
 };
 export default Constants

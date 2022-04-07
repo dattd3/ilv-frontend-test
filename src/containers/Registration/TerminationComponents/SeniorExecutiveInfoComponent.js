@@ -4,6 +4,7 @@ import axios from 'axios'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
+import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -61,7 +62,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
       this.setState({
         seniorExecutive: {
           ...seniorExecutive,
-          label: seniorExecutive.fullname,
+          label: seniorExecutive.fullName,
           value: seniorExecutive.account,
         }
       })
@@ -106,22 +107,35 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
     if (value !== "") {
       this.setState({isSearching: true})
 
-      axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/search/info`, { account: value, should_check_superviser: true }, getRequestConfigs())
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+        }
+      }
+
+      const payload = {
+        account: value,
+        status: 3
+      }
+
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data || []
           const users = data.map(res => {
             return {
-              label: res?.fullName,
-              value: res?.user_account,
-              fullName: res?.fullName,
+              label: res?.fullname,
+              value: res?.username,
+              fullName: res?.fullname,
               avatar: res?.avatar,
-              employeeLevel: res?.employee_level,
+              employeeLevel:  res.rank_title || res.rank,
               pnl: res?.pnl,
               organizationLv2: res?.orglv2_id,
-              account: res?.user_account,
-              jobTitle: res?.title,
-              department: `${res.division || ""}${res.department ? `/${res.department}` : ""}${res.part ? `/${res.part}` : ""}`
+              account: res?.username,
+              jobTitle:  res.postition_name,
+              department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
             }
           })
           this.setState({ users: users, isSearching: false })
@@ -151,7 +165,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
     }
     const { t, isEdit } = this.props
     const { seniorExecutive, isSearching, users } = this.state
-
     return <div className="block senior-executive">
         <div className="box shadow">
             <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
