@@ -9,7 +9,8 @@ const status = {
     deny: 7,
     pendingReview: 8,
     reOpen: 9,
-    closed: 10
+    closed: 10,
+    pendingScheduleUpdate: 11
 }
 
 const levelColorMapping = {
@@ -30,6 +31,7 @@ const statusStyleMapping = {
     [status.pendingReview]: { label: 'Chờ thẩm định', className: 'waiting-appraisal' },
     [status.reOpen]: { label: 'Mở lại', className: 're-open' },
     [status.closed]: { label: 'Đóng', className: 'closed' },
+    [status.pendingScheduleUpdate]: { label: 'Pending Scheduler Update', className: 'pending-schedule' }
 }
 
 const complexityColorMapping = {

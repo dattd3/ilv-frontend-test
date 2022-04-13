@@ -35,7 +35,7 @@ function Authorize(props) {
         }
 
         SetIsShowLoadingModal(true)
-        const config = getMuleSoftHeaderConfigurations()
+        const config = getMuleSoftHeaderConfigurations() 
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
@@ -75,7 +75,7 @@ function Authorize(props) {
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
             if (response && response.data) {
-                return  response.data.data?.isSupporter == true || (response.data.data?.hasSubordinate  == true && companyCode == 'V030') ? true : false;
+                return  response.data.data?.isSupporter == true || (response.data.data?.hasSubordinate == true) ? true : false;
             }
             return false;
         } catch(e) {
