@@ -649,7 +649,7 @@ class RequestTaskList extends React.Component {
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
-                                                const requestItem = child.requestInfo[0] // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
+                                                const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
                                                 actionType = requestItem ? requestItem.actionType : null
                                             }
                                             let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, actionType)
