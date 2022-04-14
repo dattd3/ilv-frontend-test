@@ -185,6 +185,9 @@ const Constants = {
   statusUserActiveMulesoft: 3,
   PAGE_INDEX_DEFAULT: 1,
   PAGE_SIZE_DEFAULT: 10,
+  // Register and Proposed contract termination
+  REGISTER_CONTRACT_TERMINATION_CODE: 1,
+  PROPOSED_CONTRACT_TERMINATION_CODE: 2,
   GROUP_EMAIL_EXTENSION: '@vingroup.net'
 };
 export default Constants
