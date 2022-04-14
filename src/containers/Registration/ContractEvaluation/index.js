@@ -536,12 +536,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         strong: infos.additionInforEvaluations.managersEvaluateStrengths || '',
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
+      let defaultStartDate = '', defaultEndDate = '';
+      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+        defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+        defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+      }
+      console.log(defaultStartDate, defaultEndDate);
       
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
         contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
-        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : '', 
-        endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : '',
+        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : defaultStartDate, 
+        endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : defaultEndDate,
         otherOption: infos.additionInforEvaluations.proposed || ''
       }
     }
