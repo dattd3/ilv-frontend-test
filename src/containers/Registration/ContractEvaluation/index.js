@@ -22,6 +22,7 @@ import { vi, enUS } from 'date-fns/locale'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import { checkIsExactPnL } from '../../../commons/commonFunctions'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -172,7 +173,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
-    if(data.nguoidanhgia?.account && (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') == currentEmployeeNo.toLowerCase()) {
+    if(data.nguoidanhgia?.account && (data.nguoidanhgia.account.toLowerCase() + '@vingroup.net') == currentEmployeeNo.toLowerCase() && this.state.type == 'assess') {
       isNguoidanhgia = true;
     }
     switch(data.processStatus) {
@@ -536,12 +537,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         strong: infos.additionInforEvaluations.managersEvaluateStrengths || '',
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
+      let defaultStartDate = '', defaultEndDate = '';
+      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+        defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+        defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+      }
+      console.log(defaultStartDate, defaultEndDate);
       
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
         contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
-        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : '', 
-        endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : '',
+        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : defaultStartDate, 
+        endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : defaultEndDate,
         otherOption: infos.additionInforEvaluations.proposed || ''
       }
     }
@@ -626,8 +633,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
-      if(!this.state.data.qltt || !this.state.data.qltt.account){
-        errors['qltt'] = '(Bắt buộc)';
+      if(checkIsExactPnL(Constants.pnlVCode.VinSchool)) {
+        if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
+          errors['nguoidanhgia'] = '(Bắt buộc)';
+        }
+      } else {
+        if(!this.state.data.qltt || !this.state.data.qltt.account){
+          errors['qltt'] = '(Bắt buộc)';
+        }
       }
 
       const fileExtension = [
@@ -676,7 +689,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(this.state.isNguoidanhgia == false) {
+      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool)) {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
@@ -1362,7 +1375,10 @@ renderEvalution = (name, data, isDisable) => {
             </div>
           </div>
         </div>
-
+        {
+          checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+          null :
+        <>
         <h5>Thông tin khóa học</h5>
         <div className="box shadow cbnv">
           <div className="row task">
@@ -1424,7 +1440,9 @@ renderEvalution = (name, data, isDisable) => {
             </div>
           </div>
         </div>
-
+        </>
+        }
+          
         <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
         {
           data.violation.length > 0 ? 
@@ -1474,7 +1492,12 @@ renderEvalution = (name, data, isDisable) => {
             
               <div className="row approve">
                 <div className="col-12">
-                <span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span>
+                  {
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                      <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
+                      : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
+                  }
+                
                 </div>
               </div>
               <div className="row">
@@ -1489,7 +1512,11 @@ renderEvalution = (name, data, isDisable) => {
             <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
-                <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                  {
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                  }
                 </div>
               </div>
               <div className="row">
@@ -1502,10 +1529,92 @@ renderEvalution = (name, data, isDisable) => {
             </div>
           </> : 
           this.state.isNguoidanhgia ? 
+          <>
+          {
+              checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
+              <div className="box shadow cbnv more-description">
+              <div className="title">
+                Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
+              </div>
+              <div className="row">
+                <div className="col-3">
+                  Kết quả
+                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
+                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
+                  styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                  {this.state.errors && this.state.errors['result'] ? <p className="text-danger">{this.state.errors['result']}</p> : null}
+                  {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
+                </div>
+                <div className="col-3">
+                  Loại hợp đồng lao động
+                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
+                  onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
+                  styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                  {this.state.errors && this.state.errors['contract'] ? <p className="text-danger">{this.state.errors['contract']}</p> : null}
+                  {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
+                </div>
+                <div className="col-3">
+                  Ngày bắt đầu hợp đồng
+                  <DatePicker
+                    name="startDate"
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    autoComplete="off"
+                    selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    // minDate={['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                    //onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
+                    onChange={date => this.handleDatePickerInputChange(date, 'qlttOpinion', 'startDate')}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t('Select')}
+                    locale={t("locale")}
+                    className="form-control input" />
+                  {this.state.errors && this.state.errors['startDate'] ? <p className="text-danger">{this.state.errors['startDate']}</p> : null}
+                </div>
+                <div className="col-3">
+                  Ngày kết thúc hợp đồng
+                  <DatePicker
+                    name="startDate"
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    autoComplete="off"
+                    selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    minDate={ data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate + 1, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                    //minDate={moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate()}
+                    onChange={date => this.handleDatePickerInputChange(date, 'qlttOpinion', 'endDate')}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t('Select')}
+                    locale={t("locale")}
+                    className="form-control input" />
+                  {this.state.errors && this.state.errors['endDate'] ? <p className="text-danger">{this.state.errors['endDate']}</p> : null}
+                </div>
+              </div>
+              <div className="row mv-10">
+                {/* <div className="col-4">
+                  Điều chỉnh lương
+                  <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+                </div> */}
+                <div className="col-12">
+                  Đề xuất khác
+                  <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} value={data.qlttOpinion.otherOption || ''} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
+                </div>
+              </div>
+            </div>
+            : null
+            }
+
              <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
-                <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                {
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                  }
                 </div>
               </div>
               <div className="row">
@@ -1515,7 +1624,27 @@ renderEvalution = (name, data, isDisable) => {
               </div>
               <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
-            </div> 
+            </div>
+            
+            {
+              checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+              <div className="box shadow cbnv">
+                <div className="row approve">
+                  <div className="col-12">
+                  <span className="title">NGƯỜI PHÊ DUYỆT</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                  </div>
+                </div>
+                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+                {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
+              </div> : null
+            }
+            
+            </>
             : 
           <>
             {/* quan li */}
