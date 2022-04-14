@@ -10,6 +10,7 @@ import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner"
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
 import IconRecall from '../../../assets/img/ic-recall.svg'
+import { checkIsExactPnL } from '../../../commons/commonFunctions'
 
 class EvaluationComponent extends React.Component {
   CONFIRM_STATUS = [
@@ -19,8 +20,8 @@ class EvaluationComponent extends React.Component {
   
   STATUS_OPTIONS = [
     {value: 9, label: 'Tự đánh giá'},
-    {value: 10, label: 'Người đánh giá'},
-    {value: 11, label: 'QLTT đánh giá'},
+    {value: 10, label: checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 'QLTT đánh giá' : 'Người đánh giá'},
+    {value: 11, label: checkIsExactPnL(Constants.PnLCODE.VinSchool)  ? 'CBLD thẩm định' : 'QLTT đánh giá' },
     {value: 12, label: 'HR thẩm định'},
     {value: 13, label: 'CBLD phê duyệt'},
     {value: 2, label: 'Đã phê duyệt'},
