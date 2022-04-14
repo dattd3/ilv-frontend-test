@@ -32,7 +32,7 @@ const requestTypes = [
   { value: [Constants.CHANGE_DIVISON_SHIFT], label: 'AdminUploadShiftChange' },
   { value: [Constants.DEPARTMENT_TIMESHEET], label: 'DepartmentTimesheet' },
   // { value: [Constants.ONBOARDING], label: 'InOutChangeRequest' },
-  // { value: [Constants.RESIGN_SELF], label: 'InOutChangeRequest' }
+  { value: [Constants.RESIGN_SELF], label: 'Đề nghị chấm dứt hợp đồng' }
 ]
 
 const PN03List = [
