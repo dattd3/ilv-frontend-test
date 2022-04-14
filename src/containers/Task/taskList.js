@@ -16,6 +16,7 @@ import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 import Constants from '../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
 import { absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { checkIsExactPnL } from '../../commons/commonFunctions'
 
 class TaskList extends React.Component {
     constructor() {
@@ -157,8 +158,8 @@ class TaskList extends React.Component {
             8: { label: this.props.t("Waiting"), className: 'request-status' },
             20: { label: this.props.t("Consented"), className: 'request-status' },
             9: {className: 'request-status', label: 'Tự đánh giá'},
-            10: {className: 'request-status', label: 'Người đánh giá'},
-            11: {className: 'request-status', label: 'QLTT đánh giá'},
+            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 'QLTT đánh giá' : 'Người đánh giá'},
+            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool)  ? 'CBLD thẩm định' : 'QLTT đánh giá'},
             12: {className: 'request-status', label: 'HR thẩm định'},
             13: {className: 'request-status', label: 'CBLD phê duyệt'},
             //14: {className: 'request-status', label: 'Đã phê duyệt'}

@@ -317,7 +317,7 @@ class SupportOnboardComponent extends React.Component {
       <td className="col-devices text-center">
         <div className={`col-sub-devices  ${data.isEditable ? '' : 'disable'}`}>
           <Select options={this.CONFIRM_STATUS} isDisabled={!data.isEditable} onChange={value => this.onChangeDropDownStatus(employeeNo, name, value, true)} value={this.CONFIRM_STATUS.filter(os => { return os.value == data.status })} styles={customStylesStatus} noOptionsMessage={() => "Lựa chọn"} menuPortalTarget={document.body} />
-          <input type="text" value={data.note} disabled={!data.isEditable} onChange={(e) => this.onChangeDropDownStatus(employeeNo, name, e.target.value, false)} />
+          <input type="text" value={data.note} title={data.note || ''} disabled={!data.isEditable} onChange={(e) => this.onChangeDropDownStatus(employeeNo, name, e.target.value, false)} />
         </div>
       </td>
       : null;
