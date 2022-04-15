@@ -19,8 +19,8 @@ class ResignationRequestsManagement extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="registration-section justify-content-between">
-        <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)} className="tab-page">
+      <div className="registration-section justify-content-between task-page">
+        <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)} className="task-tabs">
           <Tab eventKey="ResignationRequestsManagementPage" title={t('ResignationRequestsManagement')}>
             <ResignationRequestsManagementPage />
           </Tab>
