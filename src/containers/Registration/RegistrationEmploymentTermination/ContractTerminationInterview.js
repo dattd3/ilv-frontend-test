@@ -12,6 +12,7 @@ import StaffInfoForContractTerminationInterviewComponent from '../TerminationCom
 import InterviewContentFormComponent from '../TerminationComponents/InterviewContentFormComponent'
 import ResultModal from '../ResultModal'
 import VinpearlLogo from '../../../assets/img/logo-vp-vt.png'
+import { exportToPDF } from '../../../commons/Utils';
 
 const CURRENT_JOB = 1
 const MANAGER = 2
@@ -283,29 +284,10 @@ class ContractTerminationInterview extends React.Component {
         this.setState({ disabledSubmitButton: status });
     }
 
-    exportToPDF = () => {
+    exportToPDF1 = () => {
         const elementView = document.getElementById('frame-to-export')
         const fileName = "Phieu-phong-van"
-
-        html2canvas(elementView).then(canvas => {
-            const image = canvas.toDataURL('image/jpeg', 1.0)
-            const doc = new jsPDF('p', 'px', 'a2')
-            const pageWidth = doc.internal.pageSize.getWidth()
-            const pageHeight = doc.internal.pageSize.getHeight()
-    
-            const widthRatio = pageWidth / canvas.width
-            const heightRatio = pageHeight / canvas.height
-            const ratio = widthRatio > heightRatio ? heightRatio : widthRatio
-    
-            const canvasWidth = canvas.width * ratio
-            const canvasHeight = canvas.height * ratio
-    
-            const marginX = (pageWidth - canvasWidth) / 2
-            const marginY = (pageHeight - canvasHeight) / 2
-    
-            doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight)
-            doc.save(`${fileName}.pdf`)
-        })
+        exportToPDF(elementView, fileName);
     }
 
     render() {
@@ -318,7 +300,7 @@ class ContractTerminationInterview extends React.Component {
             {
                 isViewOnly ?
                 <div className="export-button-block">
-                    <button className="export-to-pdf" type="button" onClick={this.exportToPDF}><i className="fas fa-file-export"></i>Xuất PDF</button>
+                    <button className="export-to-pdf" type="button" onClick={this.exportToPDF1}><i className="fas fa-file-export"></i>Xuất PDF</button>
                 </div>
                 : null
             }
