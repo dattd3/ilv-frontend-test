@@ -217,7 +217,7 @@ class RegistrationEmploymentTermination extends React.Component {
         <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatus[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatus[6].label) : t(Constants.mappingStatus[requestInfo.processStatusId].label)}</span>
+          <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatusRequest[6].label) : t(Constants.mappingStatusRequest[requestInfo.processStatusId].label)}</span>
         </div>
         {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ? 
         <DetailButtonComponent 
