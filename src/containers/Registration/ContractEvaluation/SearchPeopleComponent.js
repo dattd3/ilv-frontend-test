@@ -150,8 +150,7 @@ class ApproverComponent extends React.Component {
 
       const payload = {
         account: value,
-        status: 3,
-        pnl_code: localStorage.getItem('companyCode')
+        status: 3
       }
 
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
