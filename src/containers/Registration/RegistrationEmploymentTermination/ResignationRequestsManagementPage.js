@@ -197,7 +197,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 break
             case RESIGNATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
-                requestObj = {...requestConfig, ...{data: {ids: ids}}}
+                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
                 break
             case REPORT_INTERVIEW_RESULTS:
                 requestObj = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`)
