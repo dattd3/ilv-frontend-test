@@ -698,7 +698,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(this.state.data.qlttOpinion?.contract?.value != 'VB') {
           array.push('endDate');
         }
-        if(this.state.data.qlttOpinion?.result.value == 5) {
+        if(this.state.data.qlttOpinion?.result.value == 5 || this.state.data.qlttOpinion?.result.value == 4) {
           array = ['result'];
         }
         array.forEach(name => {
