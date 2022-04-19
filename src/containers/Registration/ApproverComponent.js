@@ -82,7 +82,7 @@ class ApproverComponent extends React.Component {
   loadApproverForPnL = async () => {
     try {
       const config = getMuleSoftHeaderConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
