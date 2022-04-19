@@ -152,7 +152,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userAccount = directManager.account?.toLowerCase()
 
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, getMuleSoftHeaderConfigurations())
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, getMuleSoftHeaderConfigurations())
             const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
             
             if (realUserAccounts.includes(userAccount)) {
