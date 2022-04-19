@@ -67,7 +67,7 @@ class EvaluationComponent extends React.Component {
 
   componentWillUnmount(){
     this._isMounted = false;
-  }
+  } 
 
   fetchCandidateData = params => {
     this.setState({
