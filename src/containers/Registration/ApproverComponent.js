@@ -82,7 +82,7 @@ class ApproverComponent extends React.Component {
   loadApproverForPnL = async () => {
     try {
       const config = getMuleSoftHeaderConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, config)
+      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
@@ -92,7 +92,7 @@ class ApproverComponent extends React.Component {
             label: data?.fullname || "",
             fullName: data?.fullname || "",
             avatar: data?.avatar || "",
-            employeeLevel: "",
+            employeeLevel: data?.rank_title,
             pnl: "",
             orglv2Id: "",
             account: data?.userid?.toLowerCase() || "",
@@ -155,7 +155,7 @@ class ApproverComponent extends React.Component {
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
     let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
-    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnLVCodeLogged)) {
       listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
     }
     const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
