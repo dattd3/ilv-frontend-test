@@ -160,7 +160,7 @@ class ApproverComponent extends React.Component {
     }
     const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
     const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
-    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
+    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
       return false
     }
     if (listLevelsApprover.includes(levelApproverFilter)) {
