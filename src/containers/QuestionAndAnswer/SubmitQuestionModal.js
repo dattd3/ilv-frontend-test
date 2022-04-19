@@ -50,7 +50,7 @@ class SubmitQuestionModal extends React.Component {
     componentWillMount() {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, muleSoftConfig)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     // console.log("Debug check immediatesupervise", res.data.data);
