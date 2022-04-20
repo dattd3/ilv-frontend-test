@@ -249,6 +249,7 @@
   "BasicProfile": "Hồ sơ cơ bản",
   "BehaviorAndAttitude": "Tinh thần thái độ",
   "BehaviorAndAttitudeBonus": "Thưởng YTCLCV",
+  "HourWages": "Lương theo giờ công",
   "BenefitForVfPurchase": "Phúc lợi hỗ trợ xe VF",
   "BenefitByGrade": "Cấp hàm hưởng phúc lợi",
   "BenefitGrade": "Cấp hàm",
@@ -1092,5 +1093,14 @@
   "MenuMyProjects": "Dự án của tôi",
   "MenuMyProfile": "Hồ sơ của tôi",
   "VFCarElectricStakeNet": "Hỗ trợ cọc xe VF (NET)",
-  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)"
+  "VFCarElectricStakeGross": "Hỗ trợ cọc xe VF (GROSSUP)",
+  "VinmecOtherBonus": "Thưởng doanh thu khác",
+  "VinmecRollOutBonus": "Thưởng roll - out",
+  "VinmecHousingSubsidyNet": "Hỗ trợ nhà ở (net)",
+  "VinmecJobLossAllowance": "Trợ cấp mất việc",
+  "VinmecHolidayWelfarePayment": "Phúc lợi ngày lễ",
+  "VinmecTaxRefundsAfterTaxFinalization": "Thuế hoàn lại sau Quyết toán thuế",
+  "VinmecAdditionalTaxAfterTaxFinalization": "Thuế nộp thêm sau Quyết toán thuế",
+  "VinmecReferralRevenueBonus": "Thưởng doanh thu giới thiệu khách",
+  "AllowanceForNursingPosition": "Phụ cấp ưu đãi nghề Điều dưỡng"
 }

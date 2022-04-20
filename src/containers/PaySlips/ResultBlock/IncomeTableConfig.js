@@ -614,7 +614,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ForeignLanguageAllowance"), field: 'responsibility_allowance' },
                                     { label: t("AppearanceBonus"), field: 'looking_allowance' },
                                     { label: t("ForeignLanguageBonus"), field: 'foreign_language_allowance' },
-                                    { label: t("Allowance for Nursing Position"), field: 'nursing_allowance' }
+                                    { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
                             },
                             {
@@ -650,7 +650,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("DoctorCaseBonus"), field: 'doctor_effective_working_bonus' },
                                     { label: t("Medicine_sales_bonus"), field: 'medicine_sales_bonus' },
                                     { label: t("High_tech_center_sales_bonus"), field: 'high_tech_center_sales_bonus' },
+                                    { label: t("VinmecOtherBonus"), field: 'vm_bonus_revenue_other' },
                                     { label: t("CovidMobilzationAllowance"), field: 'covid_mobilzation' },
+                                    { label: t("VinmecRollOutBonus"), field: 'roll_out_bonus' },
                                     { label: t("Sales_bonus"), field: 'sales_bonus' },
                                     { label: t("Head_of_sub_commitee_bonus"), field: 'head_of_sub_commitee_bonus' },
                                     { label: t("VinmecNightShiftOnDutyBonus"), field: 'tip_of_duty' },
@@ -678,6 +680,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("MarriageSupport"), field: 'marriage_subsidy' },
                                     { label: t("FunerralSupport"), field: 'funerral_subsidy' },
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
+                                    { label: t("VinmecHousingSubsidyNet"), field: 'housing_allowance_net' },
                                     { label: t("TransportationSupport"), field: 'transfer_allowance' },
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
                                     { label: t("LivingConditionSupport"), field: 'region_allowance' },
@@ -686,9 +689,12 @@ export const IncomeTablesConfig = t => {
                                     { label: t("NightBonus"), field: 'night_shift_allowance' },
                                     { label: t("AnnualLeaveToilEncashment"), field: 'annual_leave_payment' },
                                     { label: t("MuatuallyAgreedTerminationBonus"), field: 'resignation_agreement_allowance' },
+                                    { label: t("VinmecJobLossAllowance"), field: 'severance_allowance_job' },
                                     { label: t("SeveranceAllowance"), field: 'severance_allowance' },
                                     { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
+                                    { label: t("VinmecReferralRevenueBonus"), field: 'referral_revenue_bonus' },
+                                    { label: t("VinmecHolidayWelfarePayment"), field: 'holiday_welfare' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: 'Quà ngày lễ (VinID)', field: 'vinid_gift' },
                                     { label: 'Thưởng tiền mặt', field: 'cash_bonus' },
@@ -708,6 +714,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
                                     { label: t("VFCarElectricStakeNet"), field: 'vf_car_electric_stake_net' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
                                 ]
@@ -738,6 +745,7 @@ export const IncomeTablesConfig = t => {
                             { label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction' },
                             { label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction' },
                             { label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' },
                             { label: t("OtherDeductions"), field: 'other_deduction' }
                         ]
                     },
@@ -1032,8 +1040,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'quality_of_work_bonus'
                             },
                             {
-                                label: 'Lương theo giờ công',
+                                label: t("HourWages"),
                                 field: 'hourly_salary'
+                            },
+                            {
+                                label: t("Lương ngừng việc thỏa thuận"),
+                                field: 'salary_stopped_working_agreement'
                             }
                         ]
                     },
@@ -1428,7 +1440,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ForeignLanguageAllowance"), field: 'responsibility_allowance' },
                                     { label: t("ForeignLanguageBonus"), field: 'foreign_language_allowance' },
                                     { label: t("AppearanceBonus"), field: 'looking_allowance' },
-                                    { label: t("Allowance for Nursing Position"), field: 'nursing_allowance' }
+                                    { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
                             },
                             {
