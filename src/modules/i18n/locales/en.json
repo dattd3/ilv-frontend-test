@@ -235,6 +235,7 @@
   "BasicProfile": "Basic Profile",
   "BehaviorAndAttitude": "Behavior & Attitude",
   "BehaviorAndAttitudeBonus": "Behavior and Attitude Bonus",
+  "HourWages": "Hour wages",
   "BenefitForVfPurchase": "Benefit for VF Purchase",
   "BenefitByGrade": "Benefit Grade",
   "BenefitGrade": "Benefit Grade",
@@ -1075,5 +1076,14 @@
   "MenuMyProjects": "My projects",
   "MenuMyProfile": "My profile",
   "VFCarElectricStakeNet": "VF car electric stake (net)",
-  "VFCarElectricStakeGross": "VF car electric stake (gross)"
+  "VFCarElectricStakeGross": "VF car electric stake (gross)",
+  "VinmecOtherBonus": "Other bonus",
+  "VinmecRollOutBonus": "Roll out bonus",
+  "VinmecHousingSubsidyNet": "Housing subsidy (net)",
+  "VinmecJobLossAllowance": "Job loss allowance",
+  "VinmecHolidayWelfarePayment": "Holiday welfare payment",
+  "VinmecTaxRefundsAfterTaxFinalization": "Tax Refunds After Tax Finalization",
+  "VinmecAdditionalTaxAfterTaxFinalization": "Additional tax after tax finalization",
+  "VinmecReferralRevenueBonus": "Referral revenue bonus",
+  "AllowanceForNursingPosition": "Allowance for Nursing Position"
 }
