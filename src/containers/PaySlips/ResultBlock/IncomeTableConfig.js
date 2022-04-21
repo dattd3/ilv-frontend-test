@@ -27,7 +27,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProficiencySkillsBonus"), field: 'professional_allowance' },
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
-                                    { label: t("ToxicSubstancesAllowance "), field: 'dangerous_allowance' }
+                                    { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' }
                                 ]
                             },
                             {
@@ -410,7 +410,7 @@ export const IncomeTablesConfig = t => {
                                 field: 'allowance_amount',
                                 level4: [
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
-                                    { label: t("ForeignLanguageAllowance"), field: 'responsibility_allowance' }
+                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' }
                                 ]
                             },
                             {
@@ -610,10 +610,10 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProficiencySkillsBonus"), field: 'professional_allowance' },
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
-                                    { label: t("ToxicSubstancesAllowance "), field: 'dangerous_allowance' },
-                                    { label: t("ForeignLanguageAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
+                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
                                     { label: t("AppearanceBonus"), field: 'looking_allowance' },
-                                    { label: t("ForeignLanguageBonus"), field: 'foreign_language_allowance' },
+                                    { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
                             },
@@ -858,7 +858,7 @@ export const IncomeTablesConfig = t => {
                                 field: 'allowance_amount',
                                 level4: [
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
-                                    { label: t("ToxicSubstancesAllowance "), field: 'dangerous_allowance' }
+                                    { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' }
                                 ]
                             },
                             {
@@ -1436,9 +1436,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProficiencySkillsBonus"), field: 'professional_allowance' },
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
-                                    { label: t("ToxicSubstancesAllowance "), field: 'dangerous_allowance' },
-                                    { label: t("ForeignLanguageAllowance"), field: 'responsibility_allowance' },
-                                    { label: t("ForeignLanguageBonus"), field: 'foreign_language_allowance' },
+                                    { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
+                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
                                     { label: t("AppearanceBonus"), field: 'looking_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
