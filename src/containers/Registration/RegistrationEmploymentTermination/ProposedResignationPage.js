@@ -257,7 +257,6 @@ class ProposedResignationPage extends React.Component {
                 messages: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
             }
         }
-
         if (!subordinates || subordinates.length === 0) {
             return {
                 isValid: false,
@@ -265,7 +264,7 @@ class ProposedResignationPage extends React.Component {
             }
         }
 
-        const subordinateAds = subordinates.map(item => item.account_ad?.toLowerCase())
+        const subordinateAds = subordinates.map(item => item.username?.toLowerCase())
         const userNotInSubordinates = userInfos.filter(item => !subordinateAds.includes(item.ad.toLowerCase()))
         .map(item => item.fullName)
 
@@ -289,7 +288,7 @@ class ProposedResignationPage extends React.Component {
             const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getMuleSoftHeaderConfigurations())
 
             if (responses && responses.data) {
-                const employees = responses.data.employees
+                const employees = responses.data.data
 
                 if (employees && employees.length > 0) {
                     return employees
