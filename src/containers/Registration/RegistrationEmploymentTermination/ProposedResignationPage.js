@@ -286,7 +286,7 @@ class ProposedResignationPage extends React.Component {
 
     getSubordinates = async () => {
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getRequestConfigs())
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getMuleSoftHeaderConfigurations())
 
             if (responses && responses.data) {
                 const employees = responses.data.employees
