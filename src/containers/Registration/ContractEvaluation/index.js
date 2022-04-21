@@ -211,7 +211,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     this.setState({
       disableComponent: {...this.state.disableComponent, disableAll: shouldDisable},
-      isNguoidanhgia: isNguoidanhgia
+      isNguoidanhgia: isNguoidanhgia,
+      loading: false
     })
   }
 
@@ -368,9 +369,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           });
         }
       }
-    }).catch(error => {})
-    .finally(() => {
+    }).catch(error => {
       this.setState({loading: false})
+    })
+    .finally(() => {
+      
     })
 
   }
