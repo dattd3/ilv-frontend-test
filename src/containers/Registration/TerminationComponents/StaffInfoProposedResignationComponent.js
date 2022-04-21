@@ -54,7 +54,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         if (value && _.size(value) > 0) {
             this.setState({ [name]: value })
         } else {
-            this.setState({ users: [] })
+            this.setState({ users: [], [name]: '' })
         }
     }
 
@@ -159,11 +159,11 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                  const users = data.map(res => {
                     return {
                         label: res.fullname,
-                        value: res.username,
+                        value: res.uid,
                         fullname: res.fullname,
                         avatar: res.avatar,
                         account: res.username,
-                        employee_no: res.username, // need update
+                        employee_no: res.uid, // need update
                         job_title: res.rank_title || res.rank,
                         department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
                         date_start_work: null,
@@ -223,6 +223,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                     styles={customStyles}
                                     components={{ Option: MyOption }}
                                     onInputChange={this.onInputChange}
+                                    filterOption={(option, inputvalue) => true}
                                     onChange={employeeOption => this.handleSelectChange('employee', employeeOption)}
                                     value={employee}
                                     placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
