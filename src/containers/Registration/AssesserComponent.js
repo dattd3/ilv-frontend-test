@@ -118,7 +118,7 @@ class AssesserComponent extends React.Component {
         const indexAppraiserFilterLevel = _.findIndex(listLevelsAdditional, function (item) { return item == levelAppraiserFilter }, 0)
         if (indexAppraiserFilterLevel === -1 
             || (indexCurrentUserLevel > indexAppraiserFilterLevel && (!listLevelsSpecificPnL.includes(currentUserLevel) || !listLevelsSpecificPnL.includes(levelAppraiserFilter))) 
-            || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
+            || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
             return false
         }
         if (listLevelsAdditional.includes(levelAppraiserFilter)) {
