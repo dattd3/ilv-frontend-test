@@ -92,7 +92,7 @@ class ApproverComponent extends React.Component {
             label: data?.fullname || "",
             fullName: data?.fullname || "",
             avatar: data?.avatar || "",
-            employeeLevel: "",
+            employeeLevel: data?.rank_title,
             pnl: "",
             orglv2Id: "",
             account: data?.userid?.toLowerCase() || "",
@@ -155,12 +155,12 @@ class ApproverComponent extends React.Component {
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
     let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
-    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool].includes(currentUserPnLVCodeLogged)) {
+    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnLVCodeLogged)) {
       listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
     }
     const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
     const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
-    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]) {
+    if (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
       return false
     }
     if (listLevelsApprover.includes(levelApproverFilter)) {
