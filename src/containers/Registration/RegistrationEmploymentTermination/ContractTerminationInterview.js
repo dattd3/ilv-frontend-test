@@ -52,7 +52,28 @@ class ContractTerminationInterview extends React.Component {
         const userInfos = this.prepareUserInfos(responses)
         const serveyDetail = this.prepareServeyDetail(responses)
 
-        this.setState({userInfos: userInfos, serveyInfos: serveyInfos, serveyDetail: serveyDetail})
+        const resignationReasonOptionsChecked  = [];
+        const comments = {};
+        (serveyInfos || []).map((item, index) => {
+            const options = item.data || [];
+            const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
+            const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
+            options.map((option, i) => {
+                const isChecked =optionSelectedToArray.includes(option.value +'');
+                if(isChecked) {
+                    resignationReasonOptionsChecked[option.value] = {key: option.value, value: isChecked, type: option.type}
+                }
+                return option;
+            })
+            comments[item.categoryCode] = serveyDetail[item.responseKeyDescription] || ""
+        })
+
+        this.setState({userInfos: userInfos, serveyInfos: serveyInfos, serveyDetail: serveyDetail,
+            timeJoinDefault: serveyDetail.worksHistoryMonths,
+            timeInDefault: serveyDetail.positionCurrentsMonths,
+            resignationReasonOptionsChecked: resignationReasonOptionsChecked,
+            comments: comments
+        })
     }
 
     prepareServeyInfos = serveyResponses => {
@@ -310,7 +331,11 @@ class ContractTerminationInterview extends React.Component {
                 </div>
                 <h5 className="page-title">Biểu mẫu phỏng vấn thôi việc</h5>
                 <StaffInfoForContractTerminationInterviewComponent userInfos={userInfos} />
-                <InterviewContentFormComponent serveyInfos={serveyInfos} serveyDetail={serveyDetail} isViewOnly={isViewOnly} updateInterviewContents={this.updateInterviewContents} />
+                <InterviewContentFormComponent serveyInfos={serveyInfos} serveyDetail={serveyDetail} timeJoinDefault={this.state.timeJoinDefault} 
+                timeInDefault={this.state.timeInDefault}
+                resignationReasonOptionsChecked={this.state.resignationReasonOptionsChecked}
+                comments={this.state.comments}
+                isViewOnly={isViewOnly} updateInterviewContents={this.updateInterviewContents} />
                 {
                     isViewOnly ? null : <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />
                 }
