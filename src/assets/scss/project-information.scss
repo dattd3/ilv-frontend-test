@@ -40,7 +40,7 @@
                 color: #FFFFFF;
                 th {
                     font-weight: normal;
-                    padding: 6px 0;
+                    padding: 7px 0;
                     &.col-pnl, &.col-block, &.col-start-date, &.col-end-date {
                         background: #818181;
                         border-top: .5px solid #FFFFFF;
@@ -118,7 +118,7 @@
                     border-bottom: 1px solid #CED4DA;
                     cursor: pointer;
                     td {
-                        padding: 5px 0;
+                        padding: 8px 0;
                         // height: 45px;
                         .complexity, .criticality {
                             width: 100px;
@@ -126,7 +126,7 @@
                             margin: 0 auto;
                             .status {
                                 width: 90px;
-                                height: 30px;
+                                height: 28px;
                                 border-radius: 15px;
                                 display: inline-flex;
                                 align-items: center;
@@ -158,10 +158,10 @@
                             }
                         }
                         .status {
-                            line-height: 30px;
+                            line-height: 28px;
                             width: 120px;
                             font-size: 12px;
-                            height: 30px;
+                            height: 28px;
                             border-radius: 15px;
                             cursor: default;
                             padding: 0 5px;
@@ -1320,8 +1320,8 @@
                     text-align: center;
                     .status {
                         width: 90px;
-                        height: 24px;
-                        border-radius: 12px;
+                        height: 26px;
+                        border-radius: 13px;
                         display: inline-flex;
                         align-items: center;
                         justify-content: center;
@@ -1360,14 +1360,16 @@
                     tr {
                         border-top: 1px solid #CED4DA;
                         td {
-                            padding: 5px 0;
+                            padding: 8px 0;
                             // height: 45px;
                             .status {
                                 display: inline-flex;
                                 justify-content: center;
+                                align-items: center;
                                 width: 120px;
+                                height: 26px;
                                 font-size: 12px;
-                                padding: 5px;
+                                padding: 0 5px;
                                 border-radius: 50px;
                                 cursor: default;
                                 &.draft {
