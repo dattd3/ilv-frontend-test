@@ -311,7 +311,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
     if(isEmployee) {
       for (const [key, value] of Object.entries(data)) {
-        errors[key] = (key == 'employee') || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
+        errors[key] = (['employee', 'tool', 'policy'].includes(key)) || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
       }
     } 
     // else {

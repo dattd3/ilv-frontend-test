@@ -41,7 +41,7 @@ class InterviewContentFormComponent extends React.PureComponent {
             return
         }
 
-        const resignationReasonOptionsChecked = [...this.state.resignationReasonOptionsChecked]
+        const resignationReasonOptionsChecked = [...this.props.resignationReasonOptionsChecked]
         resignationReasonOptionsChecked[code] = {key: code, value: e.target.checked, type: type}
 
         this.setState({resignationReasonOptionsChecked: resignationReasonOptionsChecked})
@@ -53,8 +53,7 @@ class InterviewContentFormComponent extends React.PureComponent {
         if (isViewOnly) {
             return
         }
-
-        const comments = {...this.state.comments}
+        const comments = {...this.props.comments}
         comments[code] = e.target.value || ""
 
         this.setState({comments: comments})
@@ -62,11 +61,10 @@ class InterviewContentFormComponent extends React.PureComponent {
     }
 
     render() {
-        const { t, serveyInfos, serveyDetail, isViewOnly } = this.props
-        const { timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.state
+        const { t, serveyInfos, serveyDetail, isViewOnly, timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.props
+        
         const timeJoinSurveyOptions = this.getTimeSurveyOptions("join")
         const timeInSurveyOptions = this.getTimeSurveyOptions("in")
-
         return (
             <>
             <div className="block interview-content-block">
@@ -78,7 +76,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                 <div className="answer">
                                     {
                                         (timeJoinSurveyOptions || []).map((item, index) => {
-                                            const isDefault = isViewOnly ? item.value == serveyDetail.worksHistoryMonths : item.value == timeJoinDefault
+                                            const isDefault = item.value == timeJoinDefault
                                             return <span key={index}>
                                                         <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeJoinDefault")} />
                                                         <label htmlFor={item.element}>{item.label}</label>
@@ -99,7 +97,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                 <div className="answer">
                                     {
                                         (timeInSurveyOptions || []).map((item, index) => {
-                                            const isDefault = isViewOnly ? item.value == serveyDetail.positionCurrentsMonths : item.value == timeInDefault
+                                            const isDefault = item.value == timeInDefault
                                             return <span key={index}>
                                                         <input type="radio" value={item.value} checked={isDefault} id={item.element} name={item.element} onChange={e => this.handleChangeRadioInput(e, "timeInDefault")} />
                                                         <label htmlFor={item.element}>{item.label}</label>
@@ -137,11 +135,11 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                             <div className="item">
                                                             {
                                                                 (options || []).map((option, i) => {
-                                                                    const isChecked = isViewOnly && optionSelectedToArray.includes(option.value.toString()) ? true : resignationReasonOptionsChecked[option.value] ? resignationReasonOptionsChecked[option.value].value || false : false
+                                                                    const isChecked = resignationReasonOptionsChecked[option.value] ? resignationReasonOptionsChecked[option.value].value || false : false
                                                                     return <div className="sub" key={i}>
-                                                                                <input type="checkbox" checked={isChecked} 
+                                                                                <input type="checkbox" checked={isChecked} id={'key' + index + i}
                                                                                     onChange={e => this.handleCheckboxChange(option.type, option.value, e)} />
-                                                                                <span>{option.label || ""}</span>
+                                                                                <label htmlFor={'key' + index + i}>{option.label || ""}</label>
                                                                             </div>
                                                                 })
                                                             }
@@ -149,7 +147,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                         </td>
                                                         <td className="explain">
                                                             <div className="item comment">
-                                                                <textarea value={isViewOnly ? serveyDetail[item.responseKeyDescription] || "" : comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} />
+                                                                <textarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} disabled={isViewOnly} />
                                                             </div>
                                                         </td>
                                                     </tr>
