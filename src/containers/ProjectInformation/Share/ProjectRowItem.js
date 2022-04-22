@@ -1,6 +1,6 @@
 import React from "react"
 import moment from 'moment'
-import { statusStyleMapping, complexityColorMapping, criticalityColorMapping } from '../Constants'
+import { statusStyleMapping, complexityColorMapping, criticalityColorMapping, status } from '../Constants'
 
 function ProjectRowItem(props) {
     const { item, index } = props
@@ -8,6 +8,16 @@ function ProjectRowItem(props) {
     const statusClassName = statusStyleMapping[processStatus?.key]?.className
     const complexityClassName = complexityColorMapping[item?.complexity]?.className || complexityColorMapping.Low.className
     const criticalityClassName = criticalityColorMapping[item?.criticality]?.className || criticalityColorMapping.NoCritical.className
+    let statusLabel = processStatus?.value
+
+    switch (item?.processStatusId) {
+        case status.pendingSchedule:
+            statusLabel = 'Scheduler'
+            break;
+        case status.pendingScheduleUpdate:
+            statusLabel = 'Update'
+            break;
+    }
 
     const handleStatusClick = (projectId, statusId) => {
         props.handleStatusClick(projectId, statusId)
@@ -26,7 +36,7 @@ function ProjectRowItem(props) {
             <td><div className='end-date'>{item?.endDate && moment(item.endDate).format('DD/MM/YYYY')}</div></td>
             <td><div className='complexity'><span className={`status ${complexityClassName}`}>{item?.complexity || ""}</span></div></td>
             <td><div className='criticality'><span className={`status ${criticalityClassName}`}>{item?.criticality || ""}</span></div></td>
-            <td className='text-center sticky-column c-status'><div className={`status text-truncate ${statusClassName}`} title={item?.processStatus?.value}>{item?.processStatus?.value}</div></td>
+            <td className='text-center sticky-column c-status'><div className={`status text-truncate ${statusClassName}`} title={item?.processStatus?.value}>{statusLabel}</div></td>
         </tr>
     )
 }
