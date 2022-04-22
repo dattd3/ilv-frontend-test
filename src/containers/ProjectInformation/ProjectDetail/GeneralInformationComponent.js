@@ -1,7 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
-import { statusStyleMapping, complexityColorMapping, criticalityColorMapping } from '../Constants'
+import { statusStyleMapping, complexityColorMapping, criticalityColorMapping, status } from '../Constants'
 
 function GeneralInformationComponent(props) {
     const { t } = useTranslation()
@@ -45,6 +45,16 @@ function GeneralInformationComponent(props) {
         })
     }
 
+    let statusLabel = processStatus?.value
+    switch (processStatus?.key) {
+        case status.pendingSchedule:
+            statusLabel = 'Scheduler'
+            break;
+        case status.pendingScheduleUpdate:
+            statusLabel = 'Update'
+            break;
+    }
+
     return (
         <div className="general-information">
             <h2 className="title-block">I. Thông tin chung</h2>
@@ -85,7 +95,7 @@ function GeneralInformationComponent(props) {
                             <td><div className='end-date'>{projectData?.endDate && moment(projectData.endDate).format('DD/MM/YYYY')}</div></td>
                             <th className='c-complexity'><div className="complexity"><span className={`status ${complexityClassName}`}>{complexity || 'No Critical'}</span></div></th>
                             <th className='c-criticality'><div className="criticality"><span className={`status ${criticalityClassName}`}>{criticality || 'Low'}</span></div></th>
-                            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`}>{processStatus?.value}</div></td>
+                            <td className='text-center sticky-column c-status'><div className={`status ${statusClassName}`} title={processStatus?.value}>{statusLabel}</div></td>
                         </tr>
                     </tbody>
                 </table>
