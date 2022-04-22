@@ -31,7 +31,7 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -231,7 +231,7 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -414,7 +414,7 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -612,13 +612,13 @@ export const IncomeTablesConfig = t => {
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
                                     { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
                                     { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
-                                    { label: t("AppearanceBonus"), field: 'looking_allowance' },
+                                    { label: t("AppearanceAllowance"), field: 'looking_allowance' },
                                     { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -862,7 +862,7 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -1251,7 +1251,7 @@ export const IncomeTablesConfig = t => {
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
@@ -1439,12 +1439,12 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
                                     { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
                                     { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
-                                    { label: t("AppearanceBonus"), field: 'looking_allowance' },
+                                    { label: t("AppearanceAllowance"), field: 'looking_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
                                 ]
                             },
                             {
-                                label: t("AppearanceAllowance"),
+                                label: t("AdditionalAllowance"),
                                 field: 'additional_allowance',
                                 level4: []
                             }
