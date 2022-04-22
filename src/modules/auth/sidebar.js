@@ -363,7 +363,7 @@ export const Navigation = [
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "vaccination",
-    to: map.VaxcinList,
+    to: map.VaccineList,
     role: 'U'
   },
 

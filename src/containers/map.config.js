@@ -70,22 +70,21 @@ export default {
   QuestionAndAnswerDetails:"/question-and-answer-details/:id",
 
   //workflow management
-  EmployeeTimeSheets: "/workflow-management/employee-timesheets",
-  LeaveFund: "/workflow-management/leave-fund",
-  PersonalDetails: "/workflow-management/personal-details",
+  EmployeeTimeSheets: "/employee-timesheet-management",
+  LeaveFund: "/leave-fund-management",
+  PersonalDetails: "/personal-detail-management",
 
-  //Vaxcin
-  VaxcinList: "/vaccination/list",
-  VaxcinUpdate: "/vaccination/dtail/:id",
-  VaxcinCreate: "/vaccination/create",
+  //Vaccine
+  VaccineList: "/vaccination",
   Instruct: "/instruct",
   VinmecDTLS: "/VinmecDTLS",
   ClinicVinmec: "/clinic-vinmec",
-  ChangeShiftReport: "/workflow-management/change-shift-report",
+  ChangeShiftReport: "/change-shift-report-management",
 
   // Thông tin dự án
   ListProjects: "/list-projects",
   MyProjects: "/my-projects",
-  ProjectDetail: "/project/:id",
+  MyProjectDetail: "/my-projects/project/:id",
+  ProjectDetail: "/list-projects/project/:id",
   MyProfile: "/my-profile"
 };
