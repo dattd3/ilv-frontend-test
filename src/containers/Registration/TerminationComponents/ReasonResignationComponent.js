@@ -73,11 +73,11 @@ class ReasonResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit, reasonTypes } = this.props
+        const { t, isEdit, reasonTypes, isEmployee } = this.props
         const infos = this.state.infos
 
         return <div className="block reason-resignation-block">
-                    <h6 className="block-title">II. Lý do CBLĐ TT đề xuất cho nghỉ</h6>
+                    <h6 className="block-title">II. {isEmployee ? 'LÝ DO XIN NGHỈ' : 'Lý do CBLĐ TT đề xuất cho nghỉ'}</h6>
                     <div className="box shadow">
                     <div className="row">
                             <div className="col-4">

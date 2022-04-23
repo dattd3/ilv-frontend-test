@@ -366,7 +366,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             <div className="leave-of-absence registration-employment-termination">
                 <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                 <StaffInfoComponent userInfos={userInfos} />
-                <ReasonResignationComponent reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors} />
+                <ReasonResignationComponent isEmployee={true} reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors} />
                 <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
