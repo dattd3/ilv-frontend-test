@@ -320,8 +320,13 @@ function ProjectDetail(props) {
                         timeSheets: mappingActualHours(item?.timeSheets, item?.rsmTimeSheet)
                     }
                 })
-                
                 SetProjectTimeSheetOriginal(projectTimeSheetData)
+
+                if (projectTimeSheetFiltered?.length > 0) {
+                    const employeeFilteredIds = ([...projectTimeSheetFiltered] || []).map(item => item?.employeeId)
+                    const projectTimeSheetFilteredTemp = projectTimeSheetData.filter(item => employeeFilteredIds.includes(item.employeeId))
+                    SetProjectTimeSheetFiltered(projectTimeSheetFilteredTemp)
+                }
 
                 const filterTemp = {...filter}
                 filterTemp.employees = projectTimeSheetData.map(item => {
@@ -554,14 +559,6 @@ function ProjectDetail(props) {
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
     const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
-
-    const customStyles = {
-        control: base => ({
-            ...base,
-            height: 35,
-            minHeight: 35
-        })
-    };
 
     const formatMulesoftValue = val => {
         if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
