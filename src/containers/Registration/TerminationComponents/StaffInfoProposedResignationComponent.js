@@ -81,6 +81,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 organizationLv2: employee.orglv2_id,
                 organizationLv6: employee.orglv6_id,
                 regionId: employee.orglv4_id,
+                divisionId: employee.orglv3_id,
                 departmentId: employee.orglv3_id,
                 unitId: employee.orglv5_id,
                 rankId: employee.rank_id
@@ -172,11 +173,11 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
                         unit_name: null, // need update
                         orglv1_id: null, // need update
-                        orglv2_id: res.orglv2_id, // need check
-                        orglv3_id: res.orglv3_id, // need check
-                        orglv4_id: res.orglv4_id, // need check
-                        orglv5_id: res.orglv5_id, // need check
-                        orglv6_id: null, // need update
+                        orglv2_id: res.organization_lv2, // need check
+                        orglv3_id: res.organization_lv3, // need check
+                        orglv4_id: res.organization_lv4, // need check
+                        orglv5_id: res.organization_lv5, // need check
+                        orglv6_id: res.organization_lv6, // need update
                         rank_id: null, // need update
                         rank_name: null // need update
                     }
