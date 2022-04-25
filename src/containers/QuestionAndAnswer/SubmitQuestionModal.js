@@ -50,7 +50,7 @@ class SubmitQuestionModal extends React.Component {
     componentWillMount() {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/immediatesupervise`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, muleSoftConfig)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.length > 0) {
                     // console.log("Debug check immediatesupervise", res.data.data);
@@ -214,7 +214,7 @@ class SubmitQuestionModal extends React.Component {
                 fullname: (question && isEdit) ? question.agentName : '',
                 userid: (question && isEdit) ? question.agentId.split("@")[0] : ''
             },
-            categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories[0]?.id
+            categorySelectedId: (question && isEdit) ? parseInt(question.ticketCategoryId) : this.state.categories ? this.state.categories[0]?.id : null
         })
 
         if (isEdit) {

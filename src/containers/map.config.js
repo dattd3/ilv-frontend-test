@@ -56,6 +56,10 @@ export default {
   RequestTaskDetail: "/tasks-request/:id",
   ApprovalTaskDetail: "/tasks-approval/:id",
 
+  //stream 2
+  SupportOnBoarding: "/support-onboard",
+  EvaluationManager: "/evaluation-manager",
+
   //Registration
   Registration: "/registration",
   RegistrationEdit: "/registration/:id/edit",
@@ -65,23 +69,24 @@ export default {
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
 
+  //Evalution
+  Evaluation: '/evaluation/:id/:type',
+
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
   QuestionAndAnswerDetails:"/question-and-answer-details/:id",
 
   //workflow management
-  EmployeeTimeSheets: "/workflow-management/employee-timesheets",
-  LeaveFund: "/workflow-management/leave-fund",
-  PersonalDetails: "/workflow-management/personal-details",
+  EmployeeTimeSheets: "/employee-timesheet-management",
+  LeaveFund: "/leave-fund-management",
+  PersonalDetails: "/personal-detail-management",
 
-  //Vaxcin
-  VaxcinList: "/vaccination/list",
-  VaxcinUpdate: "/vaccination/dtail/:id",
-  VaxcinCreate: "/vaccination/create",
+  //Vaccine
+  VaccineList: "/vaccination",
   Instruct: "/instruct",
   VinmecDTLS: "/VinmecDTLS",
   ClinicVinmec: "/clinic-vinmec",
-  ChangeShiftReport: "/workflow-management/change-shift-report",
+  ChangeShiftReport: "/change-shift-report-management",
 
   // Thông tin dự án
   ListProjects: "/list-projects",
@@ -94,4 +99,7 @@ export default {
   EvaluationDetail: "/evaluation/:id",
   MyEvaluation: "/my-evaluation",
   
+  MyProjectDetail: "/my-projects/project/:id",
+  ProjectDetail: "/list-projects/project/:id",
+  MyProfile: "/my-profile"
 };

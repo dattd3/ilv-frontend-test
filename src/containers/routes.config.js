@@ -426,6 +426,14 @@ export default [
           component: lazy(() => import("./Registration/RegistrationEditComponent"))
         },
         {
+          key: "evalution-edit",
+          routeProps: {
+            exact: true,
+            path: map.Evaluation
+          },
+          component: lazy(() => import("./Registration/ContractEvaluation"))
+        },
+        {
           key: "question-and-answer",
           routeProps: {
             exact: true,
@@ -479,7 +487,7 @@ export default [
           key: "vaccination",
           routeProps: {
             exact: true,
-            path: map.VaxcinList
+            path: map.VaccineList
           },
           component: lazy(() => import("./Vaccination/List"))
         },
@@ -524,6 +532,14 @@ export default [
           component: lazy(() => import("./ProjectInformation/MyProjects")),
         },
         {
+          key: "my-project-detail",
+          routeProps: {
+            exact: true,
+            path: map.MyProjectDetail,
+          },
+          component: lazy(() => import("./ProjectInformation/ProjectDetail")),
+        },
+        {
           key: "project-detail",
           routeProps: {
             exact: true,
@@ -554,7 +570,23 @@ export default [
             path: map.EvaluationDetail,
           },
           component: lazy(() => import("./Evaluation/Detail")),
-        }
+        },
+        {
+          key: "support-onboard",
+          routeProps: {
+            exact: true,
+            path: map.SupportOnBoarding
+          },
+          component: lazy(() => import("./TaskRecruitment/SupportOnboard"))
+        },
+        {
+          key: "evaluation-onboard",
+          routeProps: {
+            exact: true,
+            path: map.EvaluationManager
+          },
+          component: lazy(() => import("./TaskRecruitment/Evalution"))
+        },
       ],
     },
   },
