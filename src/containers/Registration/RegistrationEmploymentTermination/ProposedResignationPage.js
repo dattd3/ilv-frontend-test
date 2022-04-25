@@ -183,7 +183,8 @@ class ProposedResignationPage extends React.Component {
         bodyFormData.append('fullName', localStorage.getItem('fullName'));
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'));
         bodyFormData.append('department', localStorage.getItem('department'));
-        bodyFormData.append('employeeNo', localStorage.getItem('companyCode'));
+        bodyFormData.append('employeeNo', localStorage.getItem('employeeNo'));
+        bodyFormData.append('rank', localStorage.getItem('benefitLevel'));
         bodyFormData.append('organizationLv1', localStorage.getItem('organizationLv1'));
         bodyFormData.append('organizationLv2', localStorage.getItem('organizationLv2'));
         bodyFormData.append('divisionId', localStorage.getItem('divisionId'));
@@ -191,9 +192,9 @@ class ProposedResignationPage extends React.Component {
         bodyFormData.append('regionId', localStorage.getItem('regionId'));
         bodyFormData.append('region', localStorage.getItem('region'));
         bodyFormData.append('unitId', localStorage.getItem('unitId'));
-        bodyFormData.append('unit', localStorage.getItem('unit'));
+        bodyFormData.append('unit', localStorage.getItem('unit') && localStorage.getItem('unit') != 'null' ? localStorage.getItem('unit') : '');
         bodyFormData.append('partId', localStorage.getItem('partId'));
-        bodyFormData.append('part', localStorage.getItem('part'));
+        bodyFormData.append('part', localStorage.getItem('part') && localStorage.getItem('part') != 'null' ? localStorage.getItem('part') : '');
 
         if (files && files.length > 0) {
             files.forEach(file => {
