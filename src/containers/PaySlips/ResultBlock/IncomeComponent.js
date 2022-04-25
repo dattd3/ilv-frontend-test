@@ -99,7 +99,7 @@ function IncomeComponent(props) {
                                                 if (row4.field && (payslipCalculate[row4.field] || payslipCalculate[row4.field + '_tax_included'] || payslipCalculate[row4.field + '_without_tax'])) {
                                                     countIndex4++
                                                     if (row4.isSplit) {
-                                                        lv3SplitLabel += " - " + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4
+                                                        // lv3SplitLabel += " - " + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + countIndex4
                                                     }
                                                 }
                                             })

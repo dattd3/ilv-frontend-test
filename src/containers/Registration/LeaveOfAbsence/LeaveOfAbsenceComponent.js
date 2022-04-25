@@ -502,25 +502,31 @@ class LeaveOfAbsenceComponent extends React.Component {
     verifyInput() {
         let { requestInfo, approver, appraiser, errors } = this.state;
         requestInfo.forEach((req, indexReq) => {
+            req.errors["startDate"] = null
             if (!req.startDate) {
                 req.errors["startDate"] = this.props.t('Required')
             }
+            req.errors["endDate"] = null
             if (!req.endDate) {
                 req.errors["endDate"] = this.props.t('Required')
             }
+            req.errors["startTime"] = null
             if (!req.startTime && !req.isAllDay && !req.isAllDayCheckbox) {
                 req.errors["startTime"] = this.props.t('Required')
             }
+            req.errors["endTime"] = null
             if (!req.endTime && !req.isAllDay && !req.isAllDayCheckbox) {
                 req.errors["endTime"] = this.props.t('Required')
             }
+            req.errors["absenceType"] = null
             if (!req.absenceType) {
-                requestInfo[indexReq].errors.absenceType = this.props.t('Required')
+                req.errors["absenceType"] = this.props.t('Required')
             }
+            req.errors["comment"] = null
             if (!req.comment) {
-                requestInfo[indexReq].errors.comment = this.props.t('Required')
+                req.errors["comment"] = this.props.t('Required')
             }
-            requestInfo[indexReq].errors['pn03'] = (requestInfo[indexReq].absenceType && requestInfo[indexReq].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(requestInfo[indexReq]['pn03'])) ? this.props.t('Required') : null
+            req.errors['pn03'] = (req.absenceType && req.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(req['pn03'])) ? this.props.t('Required') : null
         })
         const employeeLevel = localStorage.getItem("employeeLevel")
 
