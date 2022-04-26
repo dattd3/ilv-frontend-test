@@ -1075,9 +1075,25 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  padding: 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 25px;
   .user-infor-header {
     padding: 0;
+  }
+  & > button {
+    padding: 4px 10px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    &:hover {
+      background-color: #347EF9;
+      border-color: transparent;
+    }
+    &:active {
+      background-color: #347EF9 !important;
+      border-color: transparent !important;
+    }
+    &:focus {
+      box-shadow: 0 0 0 0.1rem #347EF9;
+    }
   }
 }
 .model-body-notify {

@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react"
 import Select from 'react-select'
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
+import { Doughnut } from 'react-chartjs-2'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 // import { status, myProjectPageKey, ILoveVinGroupSite } from '../Constants'
 // import { getRequestConfigurations } from '../../../commons/Utils'
 // import ProjectRowItem from '../Share/ProjectRowItem'
 
-import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
+import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
+import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 
 import LoadingModal from '../../../components/Common/LoadingModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
@@ -103,6 +105,53 @@ function EvaluationDetail(props) {
         {value: 2023, label: '2023'}
     ]
 
+    const data = {
+        // labels: ["Red", "Green", "Yellow"],
+        datasets: [
+          {
+            data: [5, 5],
+            backgroundColor: ["#DEE2E6", "#7AD731"],
+            hoverBackgroundColor: ["#DEE2E6", "#7AD731"],
+            borderWidth: 0
+          }
+        ]
+    };
+
+    // const annualLeaveData = (canvas) => {
+    //     const ctx = canvas.getContext("2d")
+    //     const grdGreen = ctx.createLinearGradient(500, 0, 100, 0);
+    //     grdGreen.addColorStop(0, "#91DD33");
+    //     grdGreen.addColorStop(0.5, "#05BD29");
+    //     grdGreen.addColorStop(1, "#91DD33");
+    //     return {
+    //       datasets: [{
+    //         data: [1  , 1],
+    //         title: {
+    //           display: true
+    //         }, 
+    //         backgroundColor: [
+    //           '#F4F3F8',
+    //           grdGreen
+    //         ]
+    //       }]
+    //     }
+    //   }
+
+    // const chartOption = {
+    //     legend: {
+    //       display: false
+    //     },
+    //     maintainAspectRatio: false,
+    //     pieceLabel: {
+    //       render: function (args) {
+    //         return args.value + '%';
+    //       },
+    //       fontSize: 15,
+    //       fontColor: '#DEE2E6'
+    //     },
+    //     rotation: -45
+    //   }
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -115,11 +164,18 @@ function EvaluationDetail(props) {
                     <div className="block-overall">
                         <div className="card shadow card-completed">
                             <h6 className="text-center">Đã hoàn thành: 10/20</h6>
+                            <div className="chart">
+                                <div className="detail">
+                                    <div className="result">
+                                        <Doughnut data={data} />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="card shadow card-overall">
-                            <h6 className="text-center">Điểm tổng thể</h6>
+                            <h6 className="text-center chart-title">Điểm tổng thể</h6>
                             <div className="chart">
-                                <div className="detail"></div>
+                                <div className="detail">80</div>
                             </div>
                         </div>
                         <div className="card shadow card-detail">
@@ -151,9 +207,134 @@ function EvaluationDetail(props) {
                             </table>
                         </div>
                     </div>
+                    <div className="card shadow evaluation-process">
+                        <div className="title">Quy trình đánh giá</div>
+                        <div className="step-block">
+                            <div className="wrap-item">
+                                <div className="line"><hr /></div>
+                                <div className="info">
+                                    <div className="item">
+                                        <span className="no"><span>1</span></span>
+                                        <span className="name">CBNV tự đánh giá</span>
+                                        <Image src={IconArrowRightGray} alt="Next" className="next" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="wrap-item">
+                                <div className="line"><hr /></div>
+                                <div className="info active">
+                                    <div className="item">
+                                        <span className="no"><span>2</span></span>
+                                        <span className="name">CBQL đánh giá</span>
+                                        <Image src={IconArrowRightWhite} alt="Next" className="next" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="wrap-item">
+                                <div className="line"><hr /></div>
+                                <div className="info">
+                                    <div className="item">
+                                        <span className="no"><span>3</span></span>
+                                        <span className="name">CBLĐ có thẩm quyền phê duyệt</span>
+                                        <Image src={IconArrowRightGray} alt="Next" className="next" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="wrap-item">
+                                <div className="line"><hr /></div>
+                                <div className="info">
+                                    <div className="item">
+                                        <span className="no"><span>4</span></span>
+                                        <span className="name">Hoàn thành</span>
+                                        <Image src={IconArrowRightGray} alt="Next" className="next" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="employee-info-block">
+                            <div className="title">Thông tin nhân viên</div>
+                            <div className="detail">
+                                <div className="left">
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">Họ và tên</span><span>:</span></span>
+                                        <span className="value">Nguyễn Văn An</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">Chức danh</span><span>:</span></span>
+                                        <span className="value">Chuyên viên kế toán</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">Cấp bậc</span><span>:</span></span>
+                                        <span className="value">CV</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">Ban/Chuỗi/Khối</span><span>:</span></span>
+                                        <span className="value">Khối hỗ trợ</span>
+                                    </div>
+                                </div>
+                                <div className="right">
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">Phòng/Vùng/Miền</span><span>:</span></span>
+                                        <span className="value">Phòng Nhân sự</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">QLTT đánh giá</span><span>:</span></span>
+                                        <span className="value">Nguyễn Đình Long - Kế toán trưởng</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">CBLĐ phê duyệt</span><span>:</span></span>
+                                        <span className="value">Nguyễn Hải Yến - CEO</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
+                                        <span className="value">Phạm Thu Trang - Chuyên viên Nhân sự</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="part-block attitude">
+                            <div className="title">Phần I - Tinh thần thái độ <span className="red">(20%)</span></div>
+                            <div className="wrap-score-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th className="red">Điểm</th>
+                                            <th><span className="milestones">1</span></th>
+                                            <th><span className="milestones">2</span></th>
+                                            <th><span className="milestones">3</span></th>
+                                            <th><span className="milestones">4</span></th>
+                                            <th><span className="milestones">5</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>%</th>
+                                            <th><span>0% - 10%</span></th>
+                                            <th><span>11% - 49%</span></th>
+                                            <th><span>50% - 69%</span></th>
+                                            <th><span>70% - 89%</span></th>
+                                            <th><span>90% - 100%</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Mức độ thể hiện</td>
+                                            <td><div>Không thể hiện</div></td>
+                                            <td><div>Không thể hiện</div></td>
+                                            <td><div>Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi cần hoặc khi được yêu cầu</div></td>
+                                            <td><div>Thường xuyên thể hiện</div></td>
+                                            <td><div>Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập</div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div> 
                 
                 
+//                 import IconArrowLeftWhite from '../../../assets/img/icon/pms/arrow-left-white.svg'
+// import IconArrowLeftGray from '../../../assets/img/icon/pms/arrow-left-gray.svg'
+
                 // <div className="card shadow card-evaluation">
                 //     <form onSubmit={handleOnSubmit}>
                 //         <div className="filter-block">

@@ -95,8 +95,8 @@ export default {
   MyProfile: "/my-profile",
 
   // Đánh giá
-  Evaluation: "",
-  EvaluationDetail: "/evaluation/:id",
+  // Evaluation: "",
+  EvaluationDetail: "/evaluations/:id",
   MyEvaluation: "/my-evaluation",
   
   MyProjectDetail: "/my-projects/project/:id",
