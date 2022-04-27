@@ -184,8 +184,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       remoteData.handoverUniform = data.uniform.user;
       remoteData.handoverFingerprintEmail = data.finger.user;
       remoteData.handoverDebt = data.inout.user;
-      remoteData.handoverSoftware = data.tool.user;
-      remoteData.handoverConfirmation = data.policy.user;
+      remoteData.handoverSoftware = data.tool.user?.account ? data.tool.user : null ;
+      remoteData.handoverConfirmation = data.policy.user?.account ? data.policy.user : null;
     } else {
       this.state.canEditable.currentActive.map( (key) => {
         switch(key) {
