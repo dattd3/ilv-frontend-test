@@ -185,6 +185,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             seniorExecutive,
             files
         } = this.state
+        this.setDisabledSubmitButton(true)
         const isValid = this.isValidData()
         const fileInfoValidation = this.validateAttachmentFile()
         const isDirectManagerValid = await this.isDirectManagerValid()
@@ -192,16 +193,19 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
+            this.setDisabledSubmitButton(false)
             return
         } else if (!isDirectManagerValid) {
             toast.error("Cán bộ QLTT không có thẩm quyền")
+            this.setDisabledSubmitButton(false)
             return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
+            this.setDisabledSubmitButton(false)
             return
         }
-        this.setState({isShowLoadingModal: true})
-        this.setDisabledSubmitButton(true)
+        //this.setState({isShowLoadingModal: true})
+        
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}

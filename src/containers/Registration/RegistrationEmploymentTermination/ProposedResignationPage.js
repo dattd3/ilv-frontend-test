@@ -139,27 +139,30 @@ class ProposedResignationPage extends React.Component {
             seniorExecutive,
             files
         } = this.state
+        this.setDisabledSubmitButton(true)
         const isValid = this.isValidData()
         const fileInfoValidation = this.validateAttachmentFile()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
+            this.setDisabledSubmitButton(false)
             return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
+            this.setDisabledSubmitButton(false)
             return
         } else {
             const subordinates = await this.getSubordinates()
             const directManagerValidation = this.validateDirectManager(subordinates)
             if (!directManagerValidation.isValid) {
                 toast.error(directManagerValidation.messages)
+                this.setDisabledSubmitButton(false)
                 return
             }
         }
 
-        this.setState({isShowLoadingModal: true})
-        this.setDisabledSubmitButton(true)
+        //this.setState({isShowLoadingModal: true})
 
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
 
