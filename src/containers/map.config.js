@@ -98,6 +98,7 @@ export default {
   // Evaluation: "",
   EvaluationDetail: "/evaluations/:id",
   MyEvaluation: "/my-evaluation",
+  EvaluationApproval: "/evaluation-approval",
   
   MyProjectDetail: "/my-projects/project/:id",
   ProjectDetail: "/list-projects/project/:id",

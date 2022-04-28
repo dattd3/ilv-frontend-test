@@ -109,6 +109,14 @@ export const Navigation = [
     label: "MenuMyEvaluation",
     role: "U",
   },
+  {
+    id: 99702,
+    parentId: 997,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.EvaluationApproval,
+    label: "MenuEvaluationApproval",
+    role: "U",
+  },
   // {
   //   id: 99702,
   //   parentId: 997,

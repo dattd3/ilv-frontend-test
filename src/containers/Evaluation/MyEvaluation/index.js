@@ -9,25 +9,30 @@ import { useGuardStore } from '../../../modules'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import map from '../../map.config'
+import { evaluationStatus } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
 
 function EvaluationFormItem(props) {
     const { item } = props
     const statusDone = 5
-    const status = item?.status === statusDone ? 'Đã hoàn thành' : 'Đang đánh giá'
+    const statusMapping = {
+        label: item?.status === statusDone ? 'Đã hoàn thành' : 'Đang đánh giá',
+        className: item?.status === statusDone ? 'done' : 'in-progress',
+    }
+
     const stepMapping = {
-        1: 'Khởi tạo',
-        2: 'Khởi chạy',
-        3: 'Tự đánh giá',
-        4: 'QLTT đánh giá',
-        5: 'CBLĐ phê duyệt',
+        [evaluationStatus.initialization]: 'Khởi tạo',
+        [evaluationStatus.launch]: 'Khởi chạy',
+        [evaluationStatus.selfAssessment]: 'Tự đánh giá',
+        [evaluationStatus.qlttAssessment]: 'QLTT đánh giá',
+        [evaluationStatus.cbldApproved]: 'CBLĐ phê duyệt'
     }
 
     return (
         <tr>
-            <td className='c-form-name'><div className='form-name'>{item?.checkPhaseFormName}</div></td>
+            <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}`} alt={item?.checkPhaseFormName} className={`form-name ${statusMapping?.className}`}>{item?.checkPhaseFormName}</a></div></td>
             <td className='c-created-date text-center'><div className='created-date'>{item?.createDate && moment(item?.createDate).format("DD/MM/YYYY")}</div></td>
-            <td className='c-status text-center'><div className='status'>{status}</div></td>
+            <td className='c-status text-center'><div className={`status ${statusMapping?.className}`}>{statusMapping?.label}</div></td>
             <td className='c-step text-center'><div className='step'>{stepMapping[item?.status]}</div></td>
         </tr>
     )

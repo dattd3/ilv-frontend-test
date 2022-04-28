@@ -1,6 +1,7 @@
 .my-evaluation-page {
     font-size: 14px;
     color: #000000;
+    margin-top: 15px;
     .not-found-data {
         margin-top: 20px;
     }
@@ -62,6 +63,18 @@
                         td {
                             padding: 15px 0;
                         }
+                        .done {
+                            color: #05BD29;
+                            &.form-name {
+                                color: #000000;
+                            }
+                        }
+                        .in-progress {
+                            color: #FF7F00;
+                            &.form-name {
+                                color: #347EF9;
+                            }
+                        }
                     }
                 }
             }
@@ -72,6 +85,7 @@
 .evaluation-detail-page {
     font-size: 14px;
     color: #000000;
+    margin-top: 15px;
     .block-overall {
         display: flex;
         justify-content: space-between;
@@ -2163,5 +2177,48 @@
             }
         }
     }
-    
+}
+
+.evaluation-approval-page {
+    margin-top: 15px;
+    font-size: 14px;
+    .filter-block {
+        .card-filter {
+            padding: 15px;
+            .nav-item {
+                color: #707070;
+                border-radius: 0;
+                border: none;
+                padding-left: 0;
+                padding-right: 0;
+                &:last-child {
+                    margin-left: 30px;
+                }
+                &.active {
+                    border-bottom: 2px solid #347EF9;
+                    color:#347EF9;
+                }
+            }
+            .approval-tab-content {
+                color: #000000;
+            }
+            .batch-approval-tab-content {
+                color: #000000;
+            }
+            .filter-advanced-block {
+                padding: 5px 0.75rem;
+                .btn-filter-advanced {
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    img {
+                        margin-left: 6px;
+                    }
+                }
+            }
+            .filter-advanced-form {
+                padding: 0 0.75rem;
+            }
+        }
+    }
 }
