@@ -204,7 +204,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    role: 'U'//['V030']
+    role:  ['V061']
   },
   {
     id: 4,
