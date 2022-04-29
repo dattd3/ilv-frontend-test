@@ -145,6 +145,7 @@ function ProjectDetail(props) {
 
                     const timeSheets = (data || []).map(item => {
                         return {
+                            resourceId: item?.resourceId,
                             avatar: item?.rsmResources?.avatar,
                             fullName: item?.rsmResources?.fullName,
                             title: item?.rsmResources?.title,
@@ -293,6 +294,11 @@ function ProjectDetail(props) {
             if (projectDetailData && [status.inProgress, status.closed, status.pendingScheduleUpdate].includes(projectDetailData?.processStatusId)) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
+                const typeCreateNewResources = 1
+                const pendingResourceStatus = 0
+                const resourceIdAddedPendingApprover = (projectDetailData?.rsmProjectTeams || [])
+                .filter(item => item?.rsmResourceId && item?.actions == typeCreateNewResources && item?.status == pendingResourceStatus)
+                .map(item => item?.rsmResourceId)
                 const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
                 .filter(item => item?.rsmResources?.employeeNo && !item?.rsmResources?.employeeNo?.startsWith(prefixOutSource))
                 .map(item => item?.rsmResources?.employeeNo)
@@ -312,7 +318,9 @@ function ProjectDetail(props) {
 
                 let projectTimeSheetData = await getProjectTimeSheetData(projectId, payloadProjectTimeSheet)
                 const userTimeSheetData = await getUserTimeSheetData(projectId, payloadUserTimeSheet)
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
+                projectTimeSheetData = ([...projectTimeSheetData] || [])
+                .filter(item => !resourceIdAddedPendingApprover.includes(item?.resourceId))
+                .map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
 
                 projectTimeSheetData = (projectTimeSheetData || []).map(item => {
                     return {
