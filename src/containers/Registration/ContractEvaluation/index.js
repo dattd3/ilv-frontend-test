@@ -23,6 +23,7 @@ import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
+import ContractEvaluationdetail from './detail'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -545,7 +546,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
         defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
       }
-      console.log(defaultStartDate, defaultEndDate);
       
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
@@ -1168,6 +1168,12 @@ renderEvalution = (name, data, isDisable) => {
     const data = this.state.data;
     const loading = this.state.loading;
     const comment =  data?.comment || null;
+    if(data?.processStatus == 2 ) {
+      return  <div className="registration-section">
+         <LoadingModal show={loading}/>
+       <ContractEvaluationdetail data={data} />
+       </div>
+    }
     return (
       <div className="registration-section">
         <LoadingModal show={loading}/>
