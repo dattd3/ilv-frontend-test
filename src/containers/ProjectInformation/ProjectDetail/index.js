@@ -297,7 +297,7 @@ function ProjectDetail(props) {
                 const typeCreateNewResources = 1
                 const pendingResourceStatus = 0
                 const resourceIdAddedPendingApprover = (projectDetailData?.rsmProjectTeams || [])
-                .filter(item => item?.rsmResourceId && item?.actions == typeCreateNewResources && item?.status == pendingResourceStatus)
+                .filter(item => item?.actions == typeCreateNewResources && item?.status == pendingResourceStatus)
                 .map(item => item?.rsmResourceId)
                 const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
                 .filter(item => item?.rsmResources?.employeeNo && !item?.rsmResources?.employeeNo?.startsWith(prefixOutSource))

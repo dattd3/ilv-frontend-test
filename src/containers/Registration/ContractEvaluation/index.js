@@ -542,7 +542,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
       let defaultStartDate = '', defaultEndDate = '';
-      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
         defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
         defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
       }
