@@ -8,6 +8,8 @@ import LoadingModal from '../../../components/Common/LoadingModal'
 import CustomPaging from '../../../components/Common/CustomPaging';
 import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
+import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
+import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -498,42 +500,87 @@ function EvaluationApproval(props) {
                                 <thead>
                                     <tr>
                                         <th className="c-user-info" colSpan="2"></th>
-                                        <th className="c-attitude" colSpan="2">Tinh thần thái độ</th>
-                                        <th className="c-work-results" colSpan="2">Kết quả công việc</th>
-                                        <th className="c-summary" colSpan="2">Tổng kết</th>
+                                        <th className="text-center text-uppercase c-attitude" colSpan="2">Tinh thần thái độ</th>
+                                        <th className="text-center text-uppercase c-work-results" colSpan="2">Kết quả công việc</th>
+                                        <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">Tổng kết</th>
                                     </tr>
                                     <tr>
                                         <th className="c-user-info" colSpan="2"><div className="user-info">Họ và tên CBNV được đánh giá</div></th>
-                                        <th className="c-self-assessment"><div className="self-assessment">Tự đánh giá</div></th>
-                                        <th className="c-cbql-assessment"><div className="cbql-assessment">CBQL đánh giá</div></th>
-                                        <th className="c-self-assessment"><div className="self-assessment">Tự đánh giá</div></th>
-                                        <th className="c-cbql-assessment"><div className="cbql-assessment">CBQL đánh giá</div></th>                                        <th className="c-self-assessment"><div className="self-assessment">Tự đánh giá</div></th>
-                                        <th className="c-cbql-assessment"><div className="cbql-assessment">CBQL đánh giá</div></th>
+                                        <th className="c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
+                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
+                                        <th className="c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
+                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
+                                        <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
+                                        <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr className="divider"></tr>
                                     <tr>
                                         <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
                                         <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="c-self-assessment">80</td>
-                                        <td className="c-cbql-assessment">85</td>
-                                        <td className="c-self-assessment">100</td>
-                                        <td className="c-cbql-assessment">90</td>
-                                        <td className="c-self-assessment">96</td>
-                                        <td className="c-cbql-assessment">89</td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
                                     </tr>
                                     <tr className="divider"></tr>
                                     <tr>
                                         <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
                                         <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="c-self-assessment">80</td>
-                                        <td className="c-cbql-assessment">85</td>
-                                        <td className="c-self-assessment">100</td>
-                                        <td className="c-cbql-assessment">90</td>
-                                        <td className="c-self-assessment">96</td>
-                                        <td className="c-cbql-assessment">89</td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
                                     </tr>
                                     <tr className="divider"></tr>
+                                    <tr>
+                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
+                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
+                                    </tr>
+                                    <tr className="divider"></tr>
+                                    <tr>
+                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
+                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
+                                    </tr>
+                                    <tr className="divider"></tr>
+                                    <tr>
+                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
+                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
+                                    </tr>
+                                    <tr className="divider"></tr>
+                                    <tr>
+                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
+                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
+                                        <td className="text-center c-self-assessment">80</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
+                                        <td className="text-center c-self-assessment">100</td>
+                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
+                                        <td className="text-center highlight-second c-self-assessment">96</td>
+                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -558,6 +605,10 @@ function EvaluationApproval(props) {
                     }
                     </div>
                 }
+                <div className="button-block">
+                    <button className="btn-action reject"><Image src={IconReject} alt="Reject" />Từ chối</button>
+                    <button className="btn-action approve"><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                </div>
             </div>
         </div>
         </>
