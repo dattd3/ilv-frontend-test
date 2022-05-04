@@ -2294,14 +2294,13 @@
             }
         }
         .batch-approval-data {
-            padding: 15px;
+            padding: 0 15px 15px 15px;
             .wrap-table-list-evaluation {
-                padding: 0 10px;
                 .select-item-block {
                     display: flex;
                     align-items: center;
                     color: #000000;
-                    margin-top: 10px;
+                    margin: 15px 0;
                     label {
                         margin: 0 0 0 5px;
                         cursor: pointer;
@@ -2313,40 +2312,53 @@
                 .table-list-evaluation {
                     width: 100%;
                     color: #000000;
-
-                    .divider {
-                        height: 5px;
-                        border: none;
+                    border-collapse: collapse;
+                    .highlight-first {
+                        background: #D9E6FA;;
                     }
-
+                    .highlight-second {
+                        background: #F0F6FF;
+                    }
+                    .highlight-third {
+                        background: #FFEAEB;
+                    }
                     thead {
                         th {
-                            padding: 15px 0;
+                            padding: 6px 0;
+                            border: 0.5px solid #DEE2E6;
+                            &.c-user-info {
+                                padding-left: calc(3% + 10px);
+                            }
                         }
                     }
-                    .c-form-code {
-                        width: 15%;
+                    .c-check {
+                        width: 3%;
+                        .check {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
                     }
-                    .c-form-sender {
-                        width: 18%;
-                    }
-                    .c-form-name {
+                    .c-full-name {
                         width: 25%;
                     }
-                    .c-sent-date {
+                    .c-self-assessment, .c-cbql-assessment {
                         width: 12%;
-                    }
-                    .c-status {
-                        width: 15%;
-                    }
-                    .c-current-step {
-                        width: 15%;
                     }
                     tbody {
                         tr {
-                            border-top: 1px solid #DEE2E6;
                             td {
-                                padding: 15px 0;
+                                padding: 5px 0;
+                                border: 0.5px solid #DEE2E6;
+                                &.c-check {
+                                    vertical-align: middle;
+                                    input {
+                                        cursor: pointer;
+                                    }
+                                }
+                                .full-name {
+                                    padding: 0 5px 0 10px;
+                                }
                             }
                             .done {
                                 color: #05BD29;
@@ -2360,8 +2372,48 @@
                                     color: #347EF9;
                                 }
                             }
+                            &.divider {
+                                height: 8px;
+                                border: none;
+                            }
                         }
                     }
+                }
+            }
+        }
+        .button-block {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin: 20px 0 15px 0;
+            .btn-action {
+                border: none;
+                border-radius: 5px;
+                color: #FFFFFF;
+                height: 35px;
+                width: 110px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                &.reject {
+                    background: #FF0000;
+                }
+                &.approve {
+                    background: #05BD29;
+                    margin-left: 15px;
+                }
+                & > img {
+                    margin-right: 6px;
+                    height: 10px;
+                }
+                &:active {
+                    border: none;
+                    outline: none;
+                }
+                &:focus {
+                    border: none;
+                    outline: none;
                 }
             }
         }
