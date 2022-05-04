@@ -382,7 +382,7 @@ function ProjectDetail(props) {
         const statusModalTemp = {...statusModal}
         statusModalTemp.isShow = false
         SetStatusModal(statusModalTemp)
-        window.location.reload()
+        // window.location.reload()
     }
 
     const onAcceptClick = async () => {
