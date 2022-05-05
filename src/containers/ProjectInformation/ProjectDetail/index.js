@@ -289,8 +289,12 @@ function ProjectDetail(props) {
 
         const fetchData = async () => {
             SetIsLoading(true)
-            const projectDetailData = await getProjectDetail(projectId)
-            SetProjectData(projectDetailData)
+            let projectDetailData = {...projectData}
+            if (!projectDetailData || _.size(projectDetailData) === 0) {
+                projectDetailData = await getProjectDetail(projectId)
+                SetProjectData(projectDetailData)
+            }
+
             if (projectDetailData && [status.inProgress, status.closed, status.pendingScheduleUpdate].includes(projectDetailData?.processStatusId)) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
@@ -430,9 +434,20 @@ function ProjectDetail(props) {
             SetIsLoading(true)
             const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
             const { rsmTimeSheet, timeSheets } = dataToSubmit
-            const payload = (timeSheets || [])
+            let timeSheetToSubmit = timeSheets
+
+            if (projectTimeSheetFiltered && projectTimeSheetFiltered?.length > 0) {
+                const currentTimeSheetFiltered = projectTimeSheetFiltered.find(item => item.employeeId == currentEmployeeNoLogged)
+                if (currentTimeSheetFiltered) {
+                    timeSheetToSubmit = currentTimeSheetFiltered?.timeSheets
+                }
+            }
+
+            const payload = (timeSheetToSubmit || [])
             .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
-                            && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
+                            && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+                            && rsmTimeSheet[item.date]
+                    )
             .map(item => {
                 return {
                     id: rsmTimeSheet[item.date][0]?.id,
